@@ -370,13 +370,31 @@ describe('VueRouterCompat', () => {
 
   describe('initial route and redirect', () => {
     let originalPathname;
+    let originalHash;
 
     beforeEach(() => {
       originalPathname = window.location.pathname;
+      originalHash = window.location.hash;
     });
 
     afterEach(() => {
-      window.history.replaceState({}, '', originalPathname);
+      window.history.replaceState({}, '', originalPathname + originalHash);
+    });
+
+    it('resolves initial route from hash fragment in hash mode', async () => {
+      window.history.replaceState({}, '', '/some/page#/my-tab');
+
+      const TabComponent = { template: '<div>tab</div>' };
+
+      const router = new VueRouter({
+        mode: 'hash',
+        routes: [{ path: '/:tabId', name: 'tab', component: TabComponent }],
+      });
+
+      shallowMount(TabComponent, { router });
+      await nextTick();
+
+      expect(router.currentRoute.params.tabId).toBe('my-tab');
     });
 
     describe('executes afterEach hook', () => {

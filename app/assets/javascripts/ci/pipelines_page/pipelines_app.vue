@@ -13,7 +13,6 @@ import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
-import { validateParams } from '~/ci/pipeline_details/utils';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import {
   FILTER_TAG_IDENTIFIER,
@@ -25,6 +24,7 @@ import {
 import { etagQueryHeaders, toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
+import { getInitialFilterParams } from '~/ci/pipeline_details/utils';
 import PipelinesFilteredSearch from './components/pipelines_filtered_search.vue';
 import NoCiEmptyState from './components/empty_state/no_ci_empty_state.vue';
 import NavigationControls from './components/nav_controls.vue';
@@ -247,12 +247,13 @@ export default {
       pipelinesCount: 0,
       pipelinesError: false,
       clearCacheLoading: false,
-      scope: getParameterByName('scope') || 'all',
+      // preservePlus so branch/ref names with '+' in URL are not decoded as space (see #589047)
+      scope: getParameterByName('scope', window.location.search, { preservePlus: true }) || 'all',
       visibilityPipelineIdType: this.defaultVisibilityPipelineIdType,
       pagination: {
         ...DEFAULT_PAGINATION,
       },
-      filterParams: validateParams(this.params),
+      filterParams: getInitialFilterParams(this.params),
       pendingIds: new Set(),
     };
   },

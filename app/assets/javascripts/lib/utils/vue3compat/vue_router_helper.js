@@ -6,6 +6,19 @@ const toNewCatchAllPath = (path, { isRoot } = {}) => {
   return path;
 };
 
+export const normalizeLocation = (historyBase = '') => {
+  if (historyBase.includes('#')) {
+    const hashIndex = window.location.href.indexOf('#');
+    return hashIndex >= 0 ? window.location.href.slice(hashIndex + 1) || '/' : '/';
+  }
+
+  let { pathname } = window.location;
+  if (historyBase && pathname.startsWith(historyBase)) {
+    pathname = pathname.slice(historyBase.length) || '/';
+  }
+  return pathname + window.location.search + window.location.hash;
+};
+
 export const transformRoutes = (routes, _routerOptions, transformOptions = { isRoot: true }) => {
   if (!routes) return null;
   const newRoutes = [];

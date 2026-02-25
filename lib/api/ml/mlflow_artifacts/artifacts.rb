@@ -44,6 +44,10 @@ module API
           present package_files, with: Entities::Ml::MlflowArtifacts::ArtifactsList
         end
 
+        desc 'Get MLflow artifact file' do
+          detail 'Retrieves an MLflow artifact file'
+          tags ['mlops']
+        end
         get 'artifacts/:model_version/*file_path', format: false, urgency: :low do
           if candidate_version?(params[:model_version])
             version = params[:model_version].delete_prefix(CANDIDATE_PREFIX)

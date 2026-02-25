@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import App from '~/merge_requests/reports/components/app.vue';
@@ -16,6 +17,8 @@ describe('Merge request reports App component', () => {
 
   const findSecurityScansProvider = () => wrapper.findComponent({ name: 'SecurityScansProvider' });
   const findSecurityNavItem = () => wrapper.findComponent({ name: 'SecurityNavItem' });
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findRouterView = () => wrapper.findComponent({ name: 'RouterView' });
 
   const createComponent = () => {
     const router = new VueRouter({ mode: 'history', routes });
@@ -63,5 +66,21 @@ describe('Merge request reports App component', () => {
     await waitForPromises();
 
     expect(findSecurityNavItem().exists()).toBe(true);
+  });
+
+  it('shows loading icon when mr is not loaded', () => {
+    createComponent();
+
+    expect(findLoadingIcon().exists()).toBe(true);
+    expect(findRouterView().exists()).toBe(false);
+  });
+
+  it('shows router-view when mr is loaded', async () => {
+    createComponent();
+
+    await waitForPromises();
+
+    expect(findLoadingIcon().exists()).toBe(false);
+    expect(findRouterView().exists()).toBe(true);
   });
 });

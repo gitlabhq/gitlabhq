@@ -467,6 +467,21 @@ export default class MergeRequestTabs {
 
     const pathname = location.pathname.replace(/\/*$/, '');
 
+    // For reports tab, preserve Vue Router sub-paths (e.g., /reports/security-scan)
+    const HAS_REPORTS_SUB_PATH = /merge_requests\/\d+\/reports\/.+/;
+    if (action === 'reports' && HAS_REPORTS_SUB_PATH.test(pathname)) {
+      window.history.replaceState(
+        {
+          url: window.location.href,
+          action,
+        },
+        document.title,
+        window.location.href,
+      );
+      const newState = pathname + location.search + location.hash;
+      return newState;
+    }
+
     // Remove a trailing '/commits' '/diffs' '/pipelines'
     let newStatePathname = pathname.replace(this.actionRegex, '');
 

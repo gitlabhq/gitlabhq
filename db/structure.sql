@@ -23550,6 +23550,7 @@ CREATE TABLE namespace_details (
     creator_id bigint,
     deleted_at timestamp with time zone,
     state_metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
+    deletion_scheduled_at timestamp with time zone,
     CONSTRAINT check_namespace_details_state_metadata_is_hash CHECK ((jsonb_typeof(state_metadata) = 'object'::text))
 );
 
@@ -49236,6 +49237,8 @@ CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_index ON snippet_user_me
 CREATE INDEX temp_index_on_users_where_dark_theme ON users USING btree (id) WHERE (theme_id = 11);
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
+
+CREATE INDEX tmp_idx_backfill_deletion_scheduled_at ON namespace_details USING btree (namespace_id) WHERE ((state_metadata ? 'deletion_scheduled_at'::text) AND (deletion_scheduled_at IS NULL));
 
 CREATE INDEX tmp_idx_orphaned_approval_merge_request_rules ON approval_merge_request_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 

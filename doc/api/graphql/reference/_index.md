@@ -56167,6 +56167,7 @@ Lists the status of a virtual registry cleanup policy.
 | ----- | ----------- |
 | <a id="policyviolationstatusfailed"></a>`FAILED` | Represents a failed policy violation. |
 | <a id="policyviolationstatusrunning"></a>`RUNNING` | Represents a running policy violation. |
+| <a id="policyviolationstatusskipped"></a>`SKIPPED` | Represents a skipped policy violation. |
 | <a id="policyviolationstatuswarning"></a>`WARNING` | Represents a policy violation warning. |
 
 ### `PolicyViolations`

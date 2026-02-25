@@ -96,6 +96,13 @@ irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packa
 
 ## Authenticate with GitLab
 
+To authenticate with GitLab, you can either:
+
+- Use the GitLab Duo CLI configuration screen.
+- Use `glab` as a credential provider.
+
+### Use the configuration screen
+
 The first time you run the GitLab Duo CLI, a configuration screen appears with a prompt to set a
 **GitLab Instance URL** and **GitLab Token** for authentication.
 
@@ -112,6 +119,28 @@ To authenticate:
 1. To restart the CLI, run `duo` in your terminal.
 
 To modify the configuration after initial setup, use `duo config edit`.
+
+### Use `glab` as a credential provider
+
+This method uses `glab` as a credential provider and supports OAuth.
+
+> [!note]
+> If you have already used the GitLab Duo CLI configuration screen to authenticate with GitLab, you cannot use this method until you delete your authentication settings from the `~/.gitlab/storage.json` file.
+
+Prerequisites:
+
+- `glab` version 1.85.2 or later.
+- `duo` version 8.68.0 or later.
+
+To authenticate:
+
+1. Authenticate to `glab` by running `glab auth login`.
+1. Run `duo`.
+
+For more information, see:
+
+- [`glab auth login`](https://docs.gitlab.com/cli/auth/login/)
+- [Authenticate `glab` with OAuth](https://gitlab.com/gitlab-org/cli#oauth-gitlab-self-managed-gitlab-dedicated)
 
 ## Use the GitLab Duo CLI
 
@@ -182,6 +211,7 @@ The GitLab Duo CLI supports these options:
   `duo run --help`.
 - `--log-level <level>`: Set the logging level (`debug`, `info`, `warn`, `error`).
 - `-v`, `--version`: Display version information.
+- `--model <model>`: Select the AI model to use for your session.
 
 Additional options for headless mode:
 

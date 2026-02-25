@@ -54,8 +54,7 @@ RSpec.describe 'Projects > Files > User deletes files', :js, feature_category: :
       fill_in(:commit_message, with: commit_message, visible: true)
       click_button('Commit changes')
 
-      # removing trailing slash for Vue.js 2 vs Vue.js 3 compatibility
-      expect(current_path.chomp('/')).to eq(project_tree_path(project, 'master'))
+      expect(page).to have_current_path_ignoring_trailing_slash(project_tree_path(project, 'master'))
       expect(page).not_to have_content('.gitignore')
       expect(page).to have_content(commit_message)
     end

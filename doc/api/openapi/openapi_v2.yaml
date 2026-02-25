@@ -145,12 +145,14 @@ tags:
   description: Operations about jobs
 - name: glql
   description: Operations about glqls
+- name: internal_operations
+  description: Operations about internal_operations
 - name: markdown
   description: Operations about markdowns
 - name: namespaces
   description: Operations about namespaces
-- name: offline_exports
-  description: Operations about offline_exports
+- name: offline_transfers
+  description: Operations about offline_transfers
 - name: organizations
   description: Operations about organizations
 - name: unleash
@@ -2213,6 +2215,7 @@ paths:
       operationId: postApiV4GroupsIdShare
   "/api/v4/groups/{id}/share/{group_id}":
     delete:
+      description: Unshare a group with a group
       produces:
       - application/json
       parameters:
@@ -2229,7 +2232,7 @@ paths:
         required: true
       responses:
         '204':
-          description: deleted Share
+          description: Unshare a group with a group
       tags:
       - groups
       operationId: deleteApiV4GroupsIdShareGroupId
@@ -4217,7 +4220,9 @@ paths:
   "/api/v4/groups/{id}/placeholder_reassignments":
     get:
       summary: Download the list of pending placeholder assignments for a group
-      description: This feature was added in GitLab 17.10
+      description: |-
+        Downloads a CSV file of pending placeholder assignments for a group.
+                  This feature was added in GitLab 17.10
       produces:
       - application/json
       parameters:
@@ -4234,6 +4239,8 @@ paths:
       - groups
       operationId: getApiV4GroupsIdPlaceholderReassignments
     post:
+      summary: Upload placeholder reassignments CSV file
+      description: Uploads a CSV file containing placeholder reassignments for a group
       produces:
       - application/json
       consumes:
@@ -4251,14 +4258,16 @@ paths:
           "$ref": "#/definitions/postApiV4GroupsIdPlaceholderReassignments"
       responses:
         '201':
-          description: created PlaceholderReassignment
+          description: Upload placeholder reassignments CSV file
       tags:
       - groups
       operationId: postApiV4GroupsIdPlaceholderReassignments
   "/api/v4/groups/{id}/placeholder_reassignments/authorize":
     post:
       summary: Workhorse authorization for the reassignment CSV file
-      description: This feature was introduced in GitLab 17.10
+      description: |-
+        Authorizes Workhorse to handle CSV file uploads for placeholder reassignments.
+                  This feature was introduced in GitLab 17.10
       produces:
       - application/json
       consumes:
@@ -25996,6 +26005,7 @@ paths:
       operationId: getApiV4ProjectsIdIssuesIssueIidUserAgentDetail
   "/api/v4/projects/{id}/issues/{issue_iid}/metric_images/authorize":
     post:
+      description: Upload a metric image for an incident
       produces:
       - application/json
       consumes:
@@ -26013,9 +26023,9 @@ paths:
         required: true
       responses:
         '201':
-          description: created Authorize
+          description: Upload a metric image for an incident
       tags:
-      - projects
+      - metric_images
       operationId: postApiV4ProjectsIdIssuesIssueIidMetricImagesAuthorize
   "/api/v4/projects/{id}/issues/{issue_iid}/metric_images":
     post:
@@ -26834,7 +26844,8 @@ paths:
       operationId: getApiV4ProjectsIdMembersAllUserId
   "/api/v4/projects/{id}/create_ci_config":
     post:
-      description: Creates merge request for missing ci config in project
+      summary: Create merge request for missing ci config in project
+      description: Creates a merge request to add missing CI configuration
       produces:
       - application/json
       consumes:
@@ -26847,9 +26858,10 @@ paths:
         required: true
       responses:
         '201':
-          description: Creates merge request for missing ci config in project
+          description: Create merge request for missing ci config in project
       tags:
       - projects
+      - merge_requests
       operationId: postApiV4ProjectsIdCreateCiConfig
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/time_estimate":
     post:
@@ -31157,7 +31169,8 @@ paths:
       operationId: getApiV4ProjectsIdExportRelationsStatus
   "/api/v4/projects/{id}/hooks/{hook_id}/url_variables/{key}":
     put:
-      description: Set a url variable
+      summary: Set a url variable
+      description: Sets a URL variable for a webhook
       produces:
       - application/json
       consumes:
@@ -31188,10 +31201,11 @@ paths:
         '200':
           description: Set a url variable
       tags:
-      - projects
+      - hooks
       operationId: putApiV4ProjectsIdHooksHookIdUrlVariablesKey
     delete:
-      description: Un-Set a url variable
+      summary: Un-Set a url variable
+      description: Removes a URL variable from a webhook
       produces:
       - application/json
       parameters:
@@ -31215,11 +31229,12 @@ paths:
         '204':
           description: Un-Set a url variable
       tags:
-      - projects
+      - hooks
       operationId: deleteApiV4ProjectsIdHooksHookIdUrlVariablesKey
   "/api/v4/projects/{id}/hooks/{hook_id}/custom_headers/{key}":
     put:
-      description: Set a custom header
+      summary: Set a custom header
+      description: Sets a custom header for a webhook
       produces:
       - application/json
       consumes:
@@ -31250,10 +31265,11 @@ paths:
         '200':
           description: Set a custom header
       tags:
-      - projects
+      - hooks
       operationId: putApiV4ProjectsIdHooksHookIdCustomHeadersKey
     delete:
-      description: Un-Set a custom header
+      summary: Un-Set a custom header
+      description: Removes a custom header from a webhook
       produces:
       - application/json
       parameters:
@@ -31277,7 +31293,7 @@ paths:
         '204':
           description: Un-Set a custom header
       tags:
-      - projects
+      - hooks
       operationId: deleteApiV4ProjectsIdHooksHookIdCustomHeadersKey
   "/api/v4/projects/{id}/hooks":
     get:
@@ -44281,27 +44297,33 @@ paths:
       operationId: postApiV4IntegrationsSlackEvents
   "/api/v4/integrations/slack/interactions":
     post:
+      summary: Process Slack interaction events
+      description: Processes interaction events from Slack
       produces:
       - application/json
       consumes:
       - application/json
       responses:
         '201':
-          description: created Interaction
+          description: Process Slack interaction events
       tags:
       - integrations
+      - internal_operations
       operationId: postApiV4IntegrationsSlackInteractions
   "/api/v4/integrations/slack/options":
     post:
+      summary: Get Slack interactive component options
+      description: Retrieves options for Slack interactive components
       produces:
       - application/json
       consumes:
       - application/json
       responses:
         '201':
-          description: created Option
+          description: Get Slack interactive component options
       tags:
       - integrations
+      - internal_operations
       operationId: postApiV4IntegrationsSlackOptions
   "/api/v4/integrations/jira_connect/subscriptions":
     post:
@@ -45416,7 +45438,8 @@ paths:
       operationId: getApiV4NamespacesIdExists
   "/api/v4/offline_exports":
     post:
-      description: Start a new offline transfer export
+      summary: Start a new offline transfer export
+      description: Initiates a new offline transfer export
       produces:
       - application/json
       consumes:
@@ -45431,10 +45454,11 @@ paths:
         '201':
           description: Start a new offline transfer export
       tags:
-      - offline_exports
+      - offline_transfers
       operationId: postApiV4OfflineExports
     get:
-      description: List all offline transfer exports
+      summary: List all offline transfer exports
+      description: Lists all offline transfer exports
       produces:
       - application/json
       parameters:
@@ -45478,11 +45502,12 @@ paths:
         '200':
           description: List all offline transfer exports
       tags:
-      - offline_exports
+      - offline_transfers
       operationId: getApiV4OfflineExports
   "/api/v4/offline_exports/{id}":
     get:
-      description: Get offline transfer export details
+      summary: Get offline transfer export details
+      description: Retrieves details of an offline transfer export
       produces:
       - application/json
       parameters:
@@ -45496,7 +45521,7 @@ paths:
         '200':
           description: Get offline transfer export details
       tags:
-      - offline_exports
+      - offline_transfers
       operationId: getApiV4OfflineExportsId
   "/api/v4/organizations":
     post:
@@ -46323,7 +46348,8 @@ paths:
       operationId: putApiV4SuggestionsBatchApply
   "/api/v4/hooks/{hook_id}/url_variables/{key}":
     put:
-      description: Set a url variable
+      summary: Set a url variable
+      description: Sets a URL variable for a webhook
       produces:
       - application/json
       consumes:
@@ -46352,7 +46378,8 @@ paths:
       - hooks
       operationId: putApiV4HooksHookIdUrlVariablesKey
     delete:
-      description: Un-Set a url variable
+      summary: Un-Set a url variable
+      description: Removes a URL variable from a webhook
       produces:
       - application/json
       parameters:
@@ -46375,7 +46402,8 @@ paths:
       operationId: deleteApiV4HooksHookIdUrlVariablesKey
   "/api/v4/hooks/{hook_id}/custom_headers/{key}":
     put:
-      description: Set a custom header
+      summary: Set a custom header
+      description: Sets a custom header for a webhook
       produces:
       - application/json
       consumes:
@@ -46404,7 +46432,8 @@ paths:
       - hooks
       operationId: putApiV4HooksHookIdCustomHeadersKey
     delete:
-      description: Un-Set a custom header
+      summary: Un-Set a custom header
+      description: Removes a custom header from a webhook
       produces:
       - application/json
       parameters:
@@ -46542,6 +46571,8 @@ paths:
       - hooks
       operationId: putApiV4HooksHookId
     post:
+      summary: Test a hook
+      description: Tests a webhook by triggering a test event
       produces:
       - application/json
       consumes:
@@ -46555,7 +46586,7 @@ paths:
         required: true
       responses:
         '201':
-          description: created Hook
+          description: Test a hook
       tags:
       - hooks
       operationId: postApiV4HooksHookId
@@ -46583,6 +46614,7 @@ paths:
       operationId: deleteApiV4HooksHookId
   "/api/v4/feature_flags/unleash/{project_id}":
     get:
+      description: Get Unleash features
       produces:
       - application/json
       parameters:
@@ -46603,9 +46635,9 @@ paths:
         required: false
       responses:
         '200':
-          description: get Unleash(s)
+          description: Get Unleash features
       tags:
-      - feature_flags
+      - unleash
       operationId: getApiV4FeatureFlagsUnleashProjectId
   "/api/v4/feature_flags/unleash/{project_id}/features":
     get:
@@ -46665,6 +46697,7 @@ paths:
       operationId: getApiV4FeatureFlagsUnleashProjectIdClientFeatures
   "/api/v4/feature_flags/unleash/{project_id}/client/register":
     post:
+      description: Register Unleash client
       produces:
       - application/json
       consumes:
@@ -46682,12 +46715,13 @@ paths:
           "$ref": "#/definitions/postApiV4FeatureFlagsUnleashProjectIdClientRegister"
       responses:
         '201':
-          description: created Register
+          description: Register Unleash client
       tags:
-      - feature_flags
+      - unleash
       operationId: postApiV4FeatureFlagsUnleashProjectIdClientRegister
   "/api/v4/feature_flags/unleash/{project_id}/client/metrics":
     post:
+      description: Report Unleash client metrics
       produces:
       - application/json
       consumes:
@@ -46705,9 +46739,9 @@ paths:
           "$ref": "#/definitions/postApiV4FeatureFlagsUnleashProjectIdClientMetrics"
       responses:
         '201':
-          description: created Metric
+          description: Report Unleash client metrics
       tags:
-      - feature_flags
+      - unleash
       operationId: postApiV4FeatureFlagsUnleashProjectIdClientMetrics
   "/api/v4/usage_data/increment_counter":
     post:
@@ -51267,6 +51301,7 @@ definitions:
         description: The CSV file containing the reassignments
     required:
     - file
+    description: Upload placeholder reassignments CSV file
   API_Entities_Ci_Variable:
     type: object
     properties:
@@ -75003,6 +75038,7 @@ definitions:
       app_name:
         type: string
         description: The application name of Unleash Client
+    description: Register Unleash client
   postApiV4FeatureFlagsUnleashProjectIdClientMetrics:
     type: object
     properties:
@@ -75012,6 +75048,7 @@ definitions:
       app_name:
         type: string
         description: The application name of Unleash Client
+    description: Report Unleash client metrics
   postApiV4UsageDataIncrementCounter:
     type: object
     properties:

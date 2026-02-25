@@ -11,6 +11,7 @@ module API
     resource :snippet_repository_storage_moves do
       desc 'Get a list of all snippet repository storage moves' do
         detail 'This feature was introduced in GitLab 13.8.'
+        tags ['storage_moves']
         is_array true
         success code: 200, model: Entities::Snippets::RepositoryStorageMove
       end
@@ -26,6 +27,7 @@ module API
 
       desc 'Get a snippet repository storage move' do
         detail 'This feature was introduced in GitLab 13.8.'
+        tags ['storage_moves']
         success code: 200, model: Entities::Snippets::RepositoryStorageMove
       end
       params do
@@ -40,6 +42,7 @@ module API
 
       desc 'Schedule bulk snippet repository storage moves' do
         detail 'This feature was introduced in GitLab 13.8.'
+        tags ['storage_moves']
         success code: 202
       end
       params do
@@ -73,6 +76,7 @@ module API
 
       desc 'Get a list of all snippets repository storage moves' do
         detail 'This feature was introduced in GitLab 13.8.'
+        tags ['storage_moves']
         is_array true
         success code: 200, model: Entities::Snippets::RepositoryStorageMove
       end
@@ -88,6 +92,7 @@ module API
 
       desc 'Get a snippet repository storage move' do
         detail 'This feature was introduced in GitLab 13.8.'
+        tags ['storage_moves']
         success code: 200, model: Entities::Snippets::RepositoryStorageMove
       end
       params do
@@ -102,6 +107,7 @@ module API
 
       desc 'Schedule a snippet repository storage move' do
         detail 'This feature was introduced in GitLab 13.8.'
+        tags ['storage_moves']
         success code: 201, model: Entities::Snippets::RepositoryStorageMove
       end
       params do

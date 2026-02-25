@@ -651,6 +651,7 @@ project:
 - value_streams
 - group
 - namespace
+- namespace_details
 - project_namespace
 - management_clusters
 - boards

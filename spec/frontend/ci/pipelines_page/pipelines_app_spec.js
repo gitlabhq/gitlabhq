@@ -23,6 +23,7 @@ import getAllPipelinesCountQuery from '~/ci/pipelines_page/graphql/queries/get_a
 import clearRunnerCacheMutation from '~/ci/pipelines_page/graphql/mutations/clear_runner_cache.mutation.graphql';
 import setSortPreferenceMutation from '~/issues/dashboard/queries/set_sort_preference.mutation.graphql';
 import * as urlUtils from '~/lib/utils/url_utility';
+import * as pipelineDetailsUtils from '~/ci/pipeline_details/utils';
 import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import retryPipelineMutation from '~/ci/pipelines_page/graphql/mutations/retry_pipeline.mutation.graphql';
 import cancelPipelineMutation from '~/ci/pipelines_page/graphql/mutations/cancel_pipeline.mutation.graphql';
@@ -50,7 +51,9 @@ import {
 jest.mock('~/alert');
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/ci/pipeline_details/utils', () => ({
+  ...jest.requireActual('~/ci/pipeline_details/utils'),
   validateParams: jest.fn((params) => ({ ...params })),
+  getInitialFilterParams: jest.fn((params) => ({ ...params })),
 }));
 
 Vue.use(VueApollo);
@@ -154,11 +157,17 @@ describe('Pipelines App', () => {
   };
 
   describe('default', () => {
-    beforeEach(() => {
-      createComponent();
+    it('initializes filterParams via getInitialFilterParams with props params', async () => {
+      createComponent({ props: { params: { status: 'failed' } } });
+      await waitForPromises();
+      expect(pipelineDetailsUtils.getInitialFilterParams).toHaveBeenCalledWith({
+        status: 'failed',
+      });
+      expect(successHandler).toHaveBeenCalledWith(expect.objectContaining({ status: 'FAILED' }));
     });
 
     it('displays table', async () => {
+      createComponent();
       await waitForPromises();
 
       expect(findTable().exists()).toBe(true);
@@ -166,12 +175,14 @@ describe('Pipelines App', () => {
     });
 
     it('displays filtered search', async () => {
+      createComponent();
       await waitForPromises();
 
       expect(findFilteredSearch().exists()).toBe(true);
     });
 
     it('handles loading state', async () => {
+      createComponent();
       expect(findLoadingIcon().exists()).toBe(true);
 
       await waitForPromises();
@@ -451,7 +462,20 @@ describe('Pipelines App', () => {
   });
 
   describe('pipelines filtered search', () => {
-    it('passes intial params to filtered search', async () => {
+    describe('getInitialFilterParams / validated params', () => {
+      it('uses getInitialFilterParams with props params and passes result to filtered search', async () => {
+        const propsParams = { status: 'failed' };
+
+        createComponent({ props: { params: propsParams } });
+
+        await waitForPromises();
+
+        expect(pipelineDetailsUtils.getInitialFilterParams).toHaveBeenCalledWith(propsParams);
+        expect(findFilteredSearch().props('params')).toEqual(propsParams);
+      });
+    });
+
+    it('passes initial params to filtered search', async () => {
       const expectedParams = {
         ref: 'test',
         scope: 'all',

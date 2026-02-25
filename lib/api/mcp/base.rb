@@ -130,6 +130,10 @@ module API
         end
 
         # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#sending-messages-to-the-server
+        desc 'Create MCP request handler' do
+          detail 'Handles Model Context Protocol requests'
+          tags ['mcp']
+        end
         post do
           status :ok
 
@@ -147,6 +151,10 @@ module API
         end
 
         # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#listening-for-messages-from-the-server
+        desc 'Get MCP response listener' do
+          detail 'Listens for Model Context Protocol responses'
+          tags ['mcp']
+        end
         get do
           status :method_not_allowed
         end

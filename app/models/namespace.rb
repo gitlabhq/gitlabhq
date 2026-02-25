@@ -180,8 +180,15 @@ class Namespace < ApplicationRecord
     :npm_package_requests_forwarding,
     to: :package_settings
 
-  delegate :creator, :creator=, :description, :description=, :description_html,
-    :state_metadata, :state_metadata=,
+  delegate :creator,
+    :creator=,
+    :description,
+    :description=,
+    :description_html,
+    :state_metadata,
+    :state_metadata=,
+    :deletion_scheduled_at,
+    :deletion_scheduled_at=,
     to: :namespace_details, allow_nil: true
 
   with_options to: :namespace_settings do

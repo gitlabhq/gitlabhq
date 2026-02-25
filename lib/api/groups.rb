@@ -434,7 +434,9 @@ module API
         delete_group(group)
       end
 
-      desc 'Restore a group.'
+      desc 'Restore a group.' do
+        tags %w[groups]
+      end
       route_setting :authorization, permissions: :restore_group, boundary_type: :group
       post ':id/restore', feature_category: :groups_and_projects do
         authorize! :remove_group, user_group
@@ -743,6 +745,9 @@ module API
         end
       end
 
+      desc 'Unshare a group with a group' do
+        tags ['groups']
+      end
       params do
         requires :group_id, type: Integer, desc: 'The ID of the shared group'
       end

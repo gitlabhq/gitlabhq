@@ -10,7 +10,10 @@ module API
       namespace 'admin' do
         namespace 'sidekiq' do
           namespace 'queues' do
-            desc 'Drop jobs matching the given metadata from the Sidekiq queue'
+            desc 'Drop jobs matching the given metadata from the Sidekiq queue' do
+              detail 'Removes jobs from the Sidekiq queue based on metadata criteria'
+              tags ['sidekiq']
+            end
             params do
               Gitlab::SidekiqQueue::ALLOWED_KEYS.each do |key|
                 optional key, type: String, desc: 'Metadata key to match', allow_blank: false

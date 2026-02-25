@@ -21,6 +21,42 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
     it_behaves_like 'request_accessable'
   end
 
+  describe 'DELETE /*namespace_id/:project_id/-/project_members/leave' do
+    before do
+      sign_in(user)
+    end
+
+    context 'when user is a direct member' do
+      before_all do
+        membershipable.add_developer(user)
+      end
+
+      it 'removes the member' do
+        expect do
+          delete leave_namespace_project_project_members_path(
+            namespace_id: membershipable.namespace,
+            project_id: membershipable
+          )
+        end.to change { membershipable.members.count }.by(-1)
+      end
+    end
+
+    context 'when user is a requester' do
+      before do
+        membershipable.request_access(user)
+      end
+
+      it 'removes the access request' do
+        expect do
+          delete leave_namespace_project_project_members_path(
+            namespace_id: membershipable.namespace,
+            project_id: membershipable
+          )
+        end.to change { membershipable.requesters.count }.by(-1)
+      end
+    end
+  end
+
   describe 'GET /*namespace_id/:project_id/-/project_members/invite_search.json' do
     subject(:request) do
       get invite_search_namespace_project_project_members_path(

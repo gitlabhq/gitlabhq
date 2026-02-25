@@ -238,6 +238,16 @@ RSpec.describe API::AccessRequests, feature_category: :system_access do
           end.to change { source.requesters.count }.by(-1)
         end
 
+        it 'calls Members::DestroyService with skip_subresources' do
+          expect_next_instance_of(Members::DestroyService, maintainer) do |service|
+            expect(service).to receive(:execute).with(anything, skip_subresources: true)
+          end
+
+          delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", maintainer)
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+
         it_behaves_like 'authorizing granular token permissions', :delete_access_request do
           let(:user) { maintainer }
           let(:boundary_object) { source }
@@ -297,5 +307,24 @@ RSpec.describe API::AccessRequests, feature_category: :system_access do
 
   it_behaves_like 'DELETE /:sources/:id/access_requests/:user_id', 'group' do
     let(:source) { group }
+  end
+
+  describe 'DELETE /groups/:id/access_requests/:user_id' do
+    context 'when user has existing project memberships in the group' do
+      let_it_be_with_reload(:project_in_group) { create(:project, group: group) }
+
+      before_all do
+        project_in_group.add_developer(access_requester)
+      end
+
+      it 'preserves project memberships when withdrawing group access request' do
+        expect(project_in_group.members.find_by(user_id: access_requester.id)).to be_present
+
+        delete api("/groups/#{group.id}/access_requests/#{access_requester.id}", access_requester)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(project_in_group.members.find_by(user_id: access_requester.id)).to be_present
+      end
+    end
   end
 end

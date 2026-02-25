@@ -83,22 +83,34 @@ module API
       end
     end
 
-    desc 'Get the Sidekiq queue metrics'
+    desc 'Get the Sidekiq queue metrics' do
+      detail 'Retrieves metrics for Sidekiq queues'
+      tags ['sidekiq']
+    end
     get 'sidekiq/queue_metrics' do
       { queues: queue_metrics }
     end
 
-    desc 'Get the Sidekiq process metrics'
+    desc 'Get the Sidekiq process metrics' do
+      detail 'Retrieves metrics for Sidekiq processes'
+      tags ['sidekiq']
+    end
     get 'sidekiq/process_metrics' do
       { processes: process_metrics }
     end
 
-    desc 'Get the Sidekiq job statistics'
+    desc 'Get the Sidekiq job statistics' do
+      detail 'Retrieves statistics for Sidekiq jobs'
+      tags ['sidekiq']
+    end
     get 'sidekiq/job_stats' do
       { jobs: job_stats }
     end
 
-    desc 'Get the Sidekiq Compound metrics. Includes queue, process, and job statistics'
+    desc 'Get the Sidekiq Compound metrics. Includes queue, process, and job statistics' do
+      detail 'Retrieves compound metrics including queue, process, and job statistics'
+      tags ['sidekiq']
+    end
     get 'sidekiq/compound_metrics' do
       { queues: queue_metrics, processes: process_metrics, jobs: job_stats }
     end

@@ -21,6 +21,7 @@ module API
     resource :project_repository_storage_moves do
       desc 'Get a list of all project repository storage moves' do
         detail 'This feature was introduced in GitLab 13.0.'
+        tags ['storage_moves']
         is_array true
         success code: 200, model: Entities::Projects::RepositoryStorageMove
       end
@@ -36,6 +37,7 @@ module API
 
       desc 'Get a project repository storage move' do
         detail 'This feature was introduced in GitLab 13.0.'
+        tags ['storage_moves']
         success code: 200, model: Entities::Projects::RepositoryStorageMove
       end
       params do
@@ -50,6 +52,7 @@ module API
 
       desc 'Schedule bulk project repository storage moves' do
         detail 'This feature was introduced in GitLab 13.7.'
+        tags ['storage_moves']
         success code: 202
       end
       params do
@@ -73,6 +76,7 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of all project repository storage moves' do
         detail 'This feature was introduced in GitLab 13.1.'
+        tags ['storage_moves']
         is_array true
         success code: 200, model: Entities::Projects::RepositoryStorageMove
       end
@@ -88,6 +92,7 @@ module API
 
       desc 'Get a project repository storage move' do
         detail 'This feature was introduced in GitLab 13.1.'
+        tags ['storage_moves']
         success code: 200, model: Entities::Projects::RepositoryStorageMove
       end
       params do
@@ -102,6 +107,7 @@ module API
 
       desc 'Schedule a project repository storage move' do
         detail 'This feature was introduced in GitLab 13.1.'
+        tags ['storage_moves']
         success code: 201, model: Entities::Projects::RepositoryStorageMove
       end
       params do

@@ -9,7 +9,10 @@ module API
         requires :key, type: String, desc: 'The key of the custom header'
       end
       namespace ':hook_id/custom_headers' do
-        desc 'Set a custom header'
+        desc 'Set a custom header' do
+          detail 'Sets a custom header for a webhook'
+          tags ['hooks']
+        end
         params do
           requires :value, type: String, desc: 'The value of the custom header'
         end
@@ -26,7 +29,10 @@ module API
           status :no_content
         end
 
-        desc 'Un-Set a custom header'
+        desc 'Un-Set a custom header' do
+          detail 'Removes a custom header from a webhook'
+          tags ['hooks']
+        end
         route_setting :authorization, permissions: :delete_webhook_custom_header,
           boundary_type: configuration[:boundary_type]
         delete ":key" do

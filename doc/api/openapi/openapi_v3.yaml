@@ -15,6 +15,8 @@ info:
   termsOfService: https://about.gitlab.com/terms/
   version: v4
 tags:
+- name: AI Catalog
+  description: Operations related to AI Catalog.
 - name: Access requests
   description: Operations related to access requests.
 - name: Access tokens
@@ -27,8 +29,6 @@ tags:
   description: Operations related to advanced search rollout.
 - name: Agents
   description: Operations related to agents.
-- name: Ai catalog
-  description: Operations related to ai catalog.
 - name: Alert management
   description: Operations related to alert management.
 - name: Analytics
@@ -130,11 +130,15 @@ tags:
 - name: GLQL
   description: Operations related to GLQL.
 - name: Geo
-  description: Operations related to geo.
-- name: Gitlab pages
-  description: Operations related to gitlab pages.
-- name: Gitlab subscriptions
-  description: Operations related to gitlab subscriptions.
+  description: Operations related to Geo.
+- name: GitLab Duo
+  description: Operations related to GitLab Duo.
+- name: GitLab Duo workflows
+  description: Operations related to GitLab Duo workflows.
+- name: GitLab Pages
+  description: Operations related to GitLab Pages.
+- name: GitLab subscriptions
+  description: Operations related to GitLab subscriptions.
 - name: Group access tokens
   description: Operations related to group access tokens.
 - name: Group credentials inventory
@@ -151,14 +155,16 @@ tags:
   description: Operations related to instance.
 - name: Integrations
   description: Operations related to integrations.
+- name: Internal operations
+  description: Operations related to internal operations.
 - name: Invitations
   description: Operations related to invitations.
 - name: Issues
   description: Operations related to issues.
 - name: Iterations
   description: Operations related to iterations.
-- name: Jira connect subscriptions
-  description: Operations related to jira connect subscriptions.
+- name: Jira Connect subscriptions
+  description: Operations related to Jira Connect subscriptions.
 - name: Job artifacts
   description: Operations related to job artifacts.
 - name: Jobs
@@ -173,8 +179,14 @@ tags:
   description: Operations related to labels.
 - name: Licenses
   description: Operations related to licenses.
+- name: MCP
+  description: Operations related to MCP.
+- name: ML Model Registry
+  description: Operations related to ML Model Registry.
+- name: MLOps
+  description: Operations related to MLOps.
 - name: Markdown
-  description: Operations related to markdown.
+  description: Operations related to Markdown.
 - name: Member roles
   description: Operations related to member roles.
 - name: Members
@@ -195,10 +207,6 @@ tags:
   description: Operations related to migrations.
 - name: Milestones
   description: Operations related to milestones.
-- name: Ml model registry
-  description: Operations related to ml model registry.
-- name: Mlops
-  description: Operations related to mlops.
 - name: Namespaces
   description: Operations related to namespaces.
 - name: Notes
@@ -207,6 +215,8 @@ tags:
   description: Operations related to notification settings.
 - name: OAuth applications
   description: Operations related to OAuth applications.
+- name: Offline transfers
+  description: Operations related to offline transfers.
 - name: Organizations
   description: Operations related to organizations.
 - name: Packages
@@ -279,10 +289,14 @@ tags:
   description: Operations related to security scans.
 - name: Service accounts
   description: Operations related to service accounts.
+- name: Sidekiq
+  description: Operations related to Sidekiq.
 - name: Snippets
   description: Operations related to snippets.
 - name: Software composition analysis
   description: Operations related to software composition analysis.
+- name: Storage moves
+  description: Operations related to storage moves.
 - name: Submodules
   description: Operations related to submodules.
 - name: Suggestions
@@ -292,11 +306,11 @@ tags:
 - name: Templates
   description: Operations related to templates.
 - name: Terraform
-  description: Operations related to terraform.
+  description: Operations related to Terraform.
 - name: To-dos
   description: Operations related to to-dos.
 - name: Unleash
-  description: Operations related to unleash.
+  description: Operations related to Unleash.
 - name: Usage data
   description: Operations related to usage data.
 - name: Users
@@ -329,7 +343,7 @@ paths:
       summary: Create a subscription for the namespace
       description: Deprecated in GitLab 17.7
       tags:
-      - Gitlab subscriptions
+      - GitLab subscriptions
       responses:
         '201':
           description: Created
@@ -349,7 +363,7 @@ paths:
       summary: Update the subscription for the namespace
       description: Deprecated in GitLab 17.7
       tags:
-      - Gitlab subscriptions
+      - GitLab subscriptions
       responses:
         '200':
           description: OK
@@ -570,7 +584,48 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_22d7ff8e86f2"
+              "$ref": "#/components/schemas/RequestBody_b5285920e9e7"
+  "/api/v4/jobs/{id}/sbom_scans/{sbom_digest}":
+    post:
+      operationId: postApiV4JobsIdSbomScansSbomDigest
+      summary: Reuse sbom scan results if scans for sboms with given digest already
+        exist
+      tags:
+      - Software composition analysis
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesSecurityVulnerabilityScanningSbomScan"
+        '400':
+          description: Bad request
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '410':
+          description: Result no longer available
+      parameters:
+      - name: id
+        required: true
+        description: Job's ID
+        schema:
+          type: integer
+        in: path
+      - name: sbom_digest
+        required: true
+        description: The sbom digest that identifies an sbom scan uniquely
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_677adcd8ef80"
   "/api/v4/jobs/{id}/sbom_scans/{sbom_scan_id}":
     get:
       operationId: getApiV4JobsIdSbomScansSbomScanId
@@ -609,6 +664,9 @@ paths:
     patch:
       operationId: patchApiV4ProjectsIdComplianceExternalControlsControlIdStatus
       summary: Update the status of a control
+      description: Updates the status of an external compliance control
+      tags:
+      - Compliance policy settings
       responses:
         '200':
           description: OK
@@ -665,6 +723,10 @@ paths:
   "/api/v4/duo_code_review/evaluations":
     post:
       operationId: postApiV4DuoCodeReviewEvaluations
+      summary: Evaluate code review
+      description: Evaluates code changes using GitLab Duo code review
+      tags:
+      - GitLab Duo
       responses:
         '201':
           description: Created
@@ -753,9 +815,10 @@ paths:
   "/api/v4/ai/third_party_agents/direct_access":
     post:
       operationId: postApiV4AiThirdPartyAgentsDirectAccess
-      summary: Get connection details so that third party agents can interact with
-        AI Gateway
+      summary: Get connection details for third party agents
       description: This feature is experimental.
+      tags:
+      - GitLab Duo
       responses:
         '201':
           description: Created
@@ -770,6 +833,8 @@ paths:
       operationId: postApiV4AiDuoWorkflowsCodeReviewAddComments
       summary: Add code review comments to a merge request
       description: This feature is experimental.
+      tags:
+      - GitLab Duo workflows
       responses:
         '200':
           description: OK
@@ -791,6 +856,9 @@ paths:
     post:
       operationId: postApiV4AiDuoWorkflowsRevokeToken
       summary: Revoke ai_workflows token
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
       responses:
         '200':
           description: OK
@@ -809,6 +877,10 @@ paths:
   "/api/v4/ai/duo_workflows/workflows/{id}":
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsId
+      summary: Get workflow details
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
       responses:
         '200':
           description: OK
@@ -822,7 +894,10 @@ paths:
         example: 1
     patch:
       operationId: patchApiV4AiDuoWorkflowsWorkflowsId
-      summary: Updates the workflow status
+      summary: Update the workflow status
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
       responses:
         '200':
           description: OK
@@ -843,6 +918,10 @@ paths:
   "/api/v4/ai/duo_workflows/workflows/{id}/checkpoints":
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflowsIdCheckpoints
+      summary: Create workflow checkpoint
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
       responses:
         '201':
           description: Created
@@ -861,6 +940,10 @@ paths:
               "$ref": "#/components/schemas/RequestBody_6acd69bcd213"
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpoints
+      summary: List all workflow checkpoints
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
       responses:
         '200':
           description: OK
@@ -874,6 +957,10 @@ paths:
   "/api/v4/ai/duo_workflows/workflows/{id}/checkpoints/{checkpoint_id}":
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdCheckpointsCheckpointId
+      summary: Get details on a workflow checkpoint
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
       responses:
         '200':
           description: OK
@@ -894,6 +981,10 @@ paths:
   "/api/v4/ai/duo_workflows/workflows/{id}/checkpoint_writes_batch":
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflowsIdCheckpointWritesBatch
+      summary: Create multiple workflow checkpoint writes
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
       responses:
         '201':
           description: Created
@@ -913,6 +1004,10 @@ paths:
   "/api/v4/ai/duo_workflows/workflows/{id}/events":
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflowsIdEvents
+      summary: Create workflow event
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
       responses:
         '201':
           description: Created
@@ -931,12 +1026,20 @@ paths:
               "$ref": "#/components/schemas/RequestBody_bd12dd931d2f"
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsIdEvents
+      summary: List all workflow events
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
       responses:
         '200':
           description: OK
   "/api/v4/ai/duo_workflows/workflows/{id}/events/{event_id}":
     put:
       operationId: putApiV4AiDuoWorkflowsWorkflowsIdEventsEventId
+      summary: Update workflow event
+      tags:
+      - GitLab Duo workflows
+      - Internal operations
       responses:
         '200':
           description: OK
@@ -964,6 +1067,8 @@ paths:
       operationId: postApiV4AiDuoWorkflowsDirectAccess
       summary: Connection details for accessing Duo Agent Platform Service directly
       description: This feature is experimental.
+      tags:
+      - GitLab Duo workflows
       responses:
         '201':
           description: Created
@@ -986,6 +1091,8 @@ paths:
       operationId: getApiV4AiDuoWorkflowsListTools
       summary: List Duo Agent Platform tools
       description: This feature is experimental.
+      tags:
+      - GitLab Duo workflows
       responses:
         '200':
           description: OK
@@ -1006,14 +1113,19 @@ paths:
   "/api/v4/ai/duo_workflows/ws":
     get:
       operationId: getApiV4AiDuoWorkflowsWs
+      summary: Get Duo Workflows WebSocket connection details
+      tags:
+      - GitLab Duo workflows
       responses:
         '200':
           description: OK
   "/api/v4/ai/duo_workflows/workflows":
     post:
       operationId: postApiV4AiDuoWorkflowsWorkflows
-      summary: creates workflow persistence
+      summary: Create workflow persistence
       description: This feature is experimental.
+      tags:
+      - GitLab Duo workflows
       responses:
         '200':
           description: OK
@@ -1034,7 +1146,9 @@ paths:
   "/api/v4/ai/duo_workflows/workflows/agent_privileges":
     get:
       operationId: getApiV4AiDuoWorkflowsWorkflowsAgentPrivileges
-      summary: Get all possible agent privileges and descriptions
+      summary: List all agent privileges and descriptions
+      tags:
+      - GitLab Duo workflows
       responses:
         '200':
           description: OK
@@ -1043,7 +1157,10 @@ paths:
   "/api/v4/ai/llm/git_command":
     post:
       operationId: postApiV4AiLlmGitCommand
-      summary: Generates Git commands from natural text
+      summary: Generate Git commands from natural text
+      description: Generates Git commands from natural language input
+      tags:
+      - GitLab Duo
       responses:
         '201':
           description: Created
@@ -2039,6 +2156,9 @@ paths:
     post:
       operationId: postApiV4ProjectsIdDependencyListExports
       summary: Generate a dependency list export on a project-level
+      description: Generates a dependency list export for a project
+      tags:
+      - Dependency management
       responses:
         '201':
           description: Created
@@ -2061,6 +2181,9 @@ paths:
     post:
       operationId: postApiV4GroupsIdDependencyListExports
       summary: Generate a dependency list export on a group-level
+      description: Generates a dependency list export for a group
+      tags:
+      - Dependency management
       responses:
         '201':
           description: Created
@@ -2083,6 +2206,9 @@ paths:
     post:
       operationId: postApiV4PipelinesIdDependencyListExports
       summary: Generate a dependency list export on a pipeline-level
+      description: Generates a dependency list export for a pipeline
+      tags:
+      - Dependency management
       responses:
         '201':
           description: Created
@@ -2105,6 +2231,9 @@ paths:
     get:
       operationId: getApiV4DependencyListExportsExportId
       summary: Get a dependency list export
+      description: Retrieves a dependency list export
+      tags:
+      - Dependency management
       responses:
         '200':
           description: OK
@@ -2121,6 +2250,9 @@ paths:
     get:
       operationId: getApiV4DependencyListExportsExportIdDownload
       summary: Download a dependency list export
+      description: Downloads a dependency list export file
+      tags:
+      - Dependency management
       responses:
         '200':
           description: OK
@@ -3392,6 +3524,10 @@ paths:
       summary: |-
         Proxy analytics request to cube installation.
                     Requires :product_analytics_features flag to be enabled.
+      description: Proxies analytics requests to the cube installation
+      tags:
+      - Analytics
+      - Internal operations
       responses:
         '201':
           description: Created
@@ -3411,6 +3547,11 @@ paths:
   "/api/v4/projects/{project_id}/product_analytics/request/dry-run":
     post:
       operationId: postApiV4ProjectsProjectIdProductAnalyticsRequestDryRun
+      summary: Dry-run analytics request to cube installation.
+      description: Performs a dry-run of an analytics request to the cube installation
+      tags:
+      - Analytics
+      - Internal operations
       responses:
         '201':
           description: Created
@@ -3430,6 +3571,11 @@ paths:
   "/api/v4/projects/{project_id}/product_analytics/request/meta":
     post:
       operationId: postApiV4ProjectsProjectIdProductAnalyticsRequestMeta
+      summary: Get metadata for analytics.
+      description: Retrieves metadata for analytics from the cube installation
+      tags:
+      - Analytics
+      - Internal operations
       responses:
         '201':
           description: Created
@@ -5481,6 +5627,9 @@ paths:
         example: 20
     post:
       operationId: postApiV4ProjectsIdMergeRequestsMergeRequestIidBlocks
+      summary: Create a merge request dependency
+      tags:
+      - Merge requests
       responses:
         '201':
           description: Created
@@ -5508,6 +5657,9 @@ paths:
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/blocks/{block_id}":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidBlocksBlockId
+      summary: Get a merge request dependency
+      tags:
+      - Merge requests
       responses:
         '200':
           description: OK
@@ -5534,6 +5686,9 @@ paths:
         in: path
     delete:
       operationId: deleteApiV4ProjectsIdMergeRequestsMergeRequestIidBlocksBlockId
+      summary: Delete a merge request dependency
+      tags:
+      - Merge requests
       responses:
         '204':
           description: No Content
@@ -5928,6 +6083,9 @@ paths:
     put:
       operationId: putApiV4GroupsIdHooksHookIdUrlVariablesKey
       summary: Set a url variable
+      description: Sets a URL variable for a webhook
+      tags:
+      - Hooks
       responses:
         '200':
           description: OK
@@ -5953,6 +6111,9 @@ paths:
     delete:
       operationId: deleteApiV4GroupsIdHooksHookIdUrlVariablesKey
       summary: Un-Set a url variable
+      description: Removes a URL variable from a webhook
+      tags:
+      - Hooks
       responses:
         '204':
           description: No Content
@@ -5973,6 +6134,9 @@ paths:
     put:
       operationId: putApiV4GroupsIdHooksHookIdCustomHeadersKey
       summary: Set a custom header
+      description: Sets a custom header for a webhook
+      tags:
+      - Hooks
       responses:
         '200':
           description: OK
@@ -5998,6 +6162,9 @@ paths:
     delete:
       operationId: deleteApiV4GroupsIdHooksHookIdCustomHeadersKey
       summary: Un-Set a custom header
+      description: Removes a custom header from a webhook
+      tags:
+      - Hooks
       responses:
         '204':
           description: No Content
@@ -11521,7 +11688,7 @@ paths:
       summary: MLflow artifact API
       description: MLflow artifacts mapping to GitLab artifacts
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -11536,6 +11703,10 @@ paths:
   "/api/v4/projects/{id}/ml/mlflow/api/2.0/mlflow-artifacts/artifacts/{model_version}/*file_path":
     get:
       operationId: getApiV4ProjectsIdMlMlflowApi20MlflowArtifactsArtifactsModelVersion*filePath
+      summary: Get MLflow artifact file
+      description: Retrieves an MLflow artifact file
+      tags:
+      - MLOps
       responses:
         '200':
           description: OK
@@ -11545,7 +11716,7 @@ paths:
       summary: Creates a Registered Model.
       description: MLFlow Registered Models map to GitLab Models. https://mlflow.org/docs/2.19.0/rest-api.html#create-registeredmodel
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -11565,7 +11736,7 @@ paths:
       summary: Fetch a Registered Model by Name
       description: https://www.mlflow.org/docs/2.19.0/rest-api.html#get-registeredmodel
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -11588,7 +11759,7 @@ paths:
       summary: Update a Registered Model by Name
       description: https://mlflow.org/docs/2.19.0/rest-api.html#update-registeredmodel
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -11608,7 +11779,7 @@ paths:
       summary: Fetch the latest Model Version for the given Registered Model Name
       description: https://mlflow.org/docs/2.19.0/rest-api.html#get-latest-modelversions
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -11628,7 +11799,7 @@ paths:
       summary: Delete a Registered Model by Name
       description: https://mlflow.org/docs/2.19.0/rest-api.html#delete-registeredmodel
       tags:
-      - Mlops
+      - MLOps
       responses:
         '204':
           description: No Content
@@ -11650,7 +11821,7 @@ paths:
       summary: Search Registered Models within a project
       description: https://mlflow.org/docs/2.19.0/rest-api.html#search-registeredmodels
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -11695,7 +11866,7 @@ paths:
       summary: Gets a Model Version by alias
       description: https://mlflow.org/docs/2.19.0/rest-api.html#get-model-version-by-alias
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -11718,7 +11889,7 @@ paths:
       summary: Creates a Run.
       description: MLFlow Runs map to GitLab Candidates. https://www.mlflow.org/docs/2.19.0/rest-api.html#create-run
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -11738,7 +11909,7 @@ paths:
       summary: Gets an MLFlow Run, which maps to GitLab Candidates
       description: https://www.mlflow.org/docs/1.28.0/rest-api.html#get-run
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -11766,7 +11937,7 @@ paths:
       description: https://www.mlflow.org/docs/2.19.0/rest-api.html#search-runsexperiment_ids
         supports only a single experiment ID.Introduced in GitLab 16.4
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -11786,7 +11957,7 @@ paths:
       summary: Updates a Run.
       description: MLFlow Runs map to GitLab Candidates. https://www.mlflow.org/docs/2.19.0/rest-api.html#update-run
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -11806,7 +11977,7 @@ paths:
       summary: Logs a metric to a run.
       description: https://www.mlflow.org/docs/1.28.0/rest-api.html#log-metric
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -11822,7 +11993,7 @@ paths:
       summary: Logs a parameter to a run.
       description: https://www.mlflow.org/docs/2.19.0/rest-api.html#log-param
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -11838,7 +12009,7 @@ paths:
       summary: Sets a tag for a run.
       description: https://www.mlflow.org/docs/2.19.0/rest-api.html#set-tag
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -11854,7 +12025,7 @@ paths:
       summary: Logs multiple parameters and metrics.
       description: https://www.mlflow.org/docs/2.19.0/rest-api.html#log-param
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -11870,7 +12041,7 @@ paths:
       summary: Delete a run.
       description: https://mlflow.org/docs/2.19.0/rest-api.html#delete-run
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -11886,7 +12057,7 @@ paths:
       summary: Creates a Model Version.
       description: MLFlow Model Versions map to GitLab Model Versions. https://mlflow.org/docs/2.19.0/rest-api.html#create-modelversion
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -11906,7 +12077,7 @@ paths:
       summary: Fetch the download URI for the model version.
       description: Returns version in MLflow format "mlflow-artifacts:<version>" https://mlflow.org/docs/2.19.0/rest-api.html#get-download-uri-for-modelversion-artifacts
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -11933,7 +12104,7 @@ paths:
       summary: Fetch model version by name and version
       description: https://mlflow.org/docs/2.19.0/rest-api.html#get-modelversion
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -11960,7 +12131,7 @@ paths:
       summary: Updates a Model Version.
       description: https://mlflow.org/docs/2.19.0/rest-api.html#update-modelversion
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -11980,7 +12151,7 @@ paths:
       summary: Fetch experiment by experiment_id
       description: https://www.mlflow.org/docs/2.19.0/rest-api.html#get-experiment
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -12002,7 +12173,7 @@ paths:
       summary: Fetch experiment by experiment_name
       description: https://www.mlflow.org/docs/2.19.0/rest-api.html#get-experiment-by-name
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -12024,7 +12195,7 @@ paths:
       summary: List experiments
       description: https://www.mlflow.org/docs/2.19.0/rest-api.html#search-experiments
       tags:
-      - Mlops
+      - MLOps
       responses:
         '200':
           description: OK
@@ -12038,7 +12209,7 @@ paths:
       summary: Search experiments
       description: https://www.mlflow.org/docs/2.19.0/rest-api.html#search-experiments
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -12058,7 +12229,7 @@ paths:
       summary: Create experiment
       description: https://www.mlflow.org/docs/2.19.0/rest-api.html#create-experiment
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -12078,7 +12249,7 @@ paths:
       summary: Sets a tag for an experiment.
       description: https://www.mlflow.org/docs/2.19.0/rest-api.html#set-experiment-tag
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -12094,7 +12265,7 @@ paths:
       summary: Delete an experiment.
       description: https://mlflow.org/docs/2.19.0/rest-api.html#delete-experiment
       tags:
-      - Mlops
+      - MLOps
       responses:
         '201':
           description: Created
@@ -14686,6 +14857,8 @@ paths:
       operationId: getApiV4SnippetRepositoryStorageMoves
       summary: Get a list of all snippet repository storage moves
       description: This feature was introduced in GitLab 13.8.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -14714,6 +14887,8 @@ paths:
       operationId: postApiV4SnippetRepositoryStorageMoves
       summary: Schedule bulk snippet repository storage moves
       description: This feature was introduced in GitLab 13.8.
+      tags:
+      - Storage moves
       responses:
         '202':
           description: Accepted
@@ -14728,6 +14903,8 @@ paths:
       operationId: getApiV4SnippetRepositoryStorageMovesRepositoryStorageMoveId
       summary: Get a snippet repository storage move
       description: This feature was introduced in GitLab 13.8.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -14747,6 +14924,8 @@ paths:
       operationId: getApiV4SnippetsIdRepositoryStorageMoves
       summary: Get a list of all snippets repository storage moves
       description: This feature was introduced in GitLab 13.8.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -14781,6 +14960,8 @@ paths:
       operationId: postApiV4SnippetsIdRepositoryStorageMoves
       summary: Schedule a snippet repository storage move
       description: This feature was introduced in GitLab 13.8.
+      tags:
+      - Storage moves
       responses:
         '201':
           description: Created
@@ -14806,6 +14987,8 @@ paths:
       operationId: getApiV4SnippetsIdRepositoryStorageMovesRepositoryStorageMoveId
       summary: Get a snippet repository storage move
       description: This feature was introduced in GitLab 13.8.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -14830,6 +15013,9 @@ paths:
     get:
       operationId: getApiV4SidekiqQueueMetrics
       summary: Get the Sidekiq queue metrics
+      description: Retrieves metrics for Sidekiq queues
+      tags:
+      - Sidekiq
       responses:
         '200':
           description: OK
@@ -14837,6 +15023,9 @@ paths:
     get:
       operationId: getApiV4SidekiqProcessMetrics
       summary: Get the Sidekiq process metrics
+      description: Retrieves metrics for Sidekiq processes
+      tags:
+      - Sidekiq
       responses:
         '200':
           description: OK
@@ -14844,6 +15033,9 @@ paths:
     get:
       operationId: getApiV4SidekiqJobStats
       summary: Get the Sidekiq job statistics
+      description: Retrieves statistics for Sidekiq jobs
+      tags:
+      - Sidekiq
       responses:
         '200':
           description: OK
@@ -14852,6 +15044,9 @@ paths:
       operationId: getApiV4SidekiqCompoundMetrics
       summary: Get the Sidekiq Compound metrics. Includes queue, process, and job
         statistics
+      description: Retrieves compound metrics including queue, process, and job statistics
+      tags:
+      - Sidekiq
       responses:
         '200':
           description: OK
@@ -15353,6 +15548,8 @@ paths:
       operationId: getApiV4ProjectRepositoryStorageMoves
       summary: Get a list of all project repository storage moves
       description: This feature was introduced in GitLab 13.0.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -15381,6 +15578,8 @@ paths:
       operationId: postApiV4ProjectRepositoryStorageMoves
       summary: Schedule bulk project repository storage moves
       description: This feature was introduced in GitLab 13.7.
+      tags:
+      - Storage moves
       responses:
         '202':
           description: Accepted
@@ -15395,6 +15594,8 @@ paths:
       operationId: getApiV4ProjectRepositoryStorageMovesRepositoryStorageMoveId
       summary: Get a project repository storage move
       description: This feature was introduced in GitLab 13.0.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -15414,6 +15615,8 @@ paths:
       operationId: getApiV4ProjectsIdRepositoryStorageMoves
       summary: Get a list of all project repository storage moves
       description: This feature was introduced in GitLab 13.1.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -15450,6 +15653,8 @@ paths:
       operationId: postApiV4ProjectsIdRepositoryStorageMoves
       summary: Schedule a project repository storage move
       description: This feature was introduced in GitLab 13.1.
+      tags:
+      - Storage moves
       responses:
         '201':
           description: Created
@@ -15477,6 +15682,8 @@ paths:
       operationId: getApiV4ProjectsIdRepositoryStorageMovesRepositoryStorageMoveId
       summary: Get a project repository storage move
       description: This feature was introduced in GitLab 13.1.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -17363,6 +17570,10 @@ paths:
   "/api/v4/mcp":
     post:
       operationId: postApiV4Mcp
+      summary: Create MCP request handler
+      description: Handles Model Context Protocol requests
+      tags:
+      - MCP
       responses:
         '201':
           description: Created
@@ -17374,6 +17585,10 @@ paths:
               "$ref": "#/components/schemas/RequestBody_a6074201cd08"
     get:
       operationId: getApiV4Mcp
+      summary: Get MCP response listener
+      description: Listens for Model Context Protocol responses
+      tags:
+      - MCP
       responses:
         '200':
           description: OK
@@ -20318,6 +20533,9 @@ paths:
     delete:
       operationId: deleteApiV4AdminSidekiqQueuesQueueName
       summary: Drop jobs matching the given metadata from the Sidekiq queue
+      description: Removes jobs from the Sidekiq queue based on metadata criteria
+      tags:
+      - Sidekiq
       responses:
         '204':
           description: No Content
@@ -20951,6 +21169,9 @@ paths:
   "/api/v4/feature_flags/unleash/{project_id}":
     get:
       operationId: getApiV4FeatureFlagsUnleashProjectId
+      summary: Get Unleash features
+      tags:
+      - Unleash
       responses:
         '200':
           description: OK
@@ -21034,6 +21255,9 @@ paths:
   "/api/v4/feature_flags/unleash/{project_id}/client/register":
     post:
       operationId: postApiV4FeatureFlagsUnleashProjectIdClientRegister
+      summary: Register Unleash client
+      tags:
+      - Unleash
       responses:
         '201':
           description: Created
@@ -21053,6 +21277,9 @@ paths:
   "/api/v4/feature_flags/unleash/{project_id}/client/metrics":
     post:
       operationId: postApiV4FeatureFlagsUnleashProjectIdClientMetrics
+      summary: Report Unleash client metrics
+      tags:
+      - Unleash
       responses:
         '201':
           description: Created
@@ -22116,6 +22343,9 @@ paths:
     put:
       operationId: putApiV4HooksHookIdUrlVariablesKey
       summary: Set a url variable
+      description: Sets a URL variable for a webhook
+      tags:
+      - Hooks
       responses:
         '200':
           description: OK
@@ -22141,6 +22371,9 @@ paths:
     delete:
       operationId: deleteApiV4HooksHookIdUrlVariablesKey
       summary: Un-Set a url variable
+      description: Removes a URL variable from a webhook
+      tags:
+      - Hooks
       responses:
         '204':
           description: No Content
@@ -22161,6 +22394,9 @@ paths:
     put:
       operationId: putApiV4HooksHookIdCustomHeadersKey
       summary: Set a custom header
+      description: Sets a custom header for a webhook
+      tags:
+      - Hooks
       responses:
         '200':
           description: OK
@@ -22186,6 +22422,9 @@ paths:
     delete:
       operationId: deleteApiV4HooksHookIdCustomHeadersKey
       summary: Un-Set a custom header
+      description: Removes a custom header from a webhook
+      tags:
+      - Hooks
       responses:
         '204':
           description: No Content
@@ -22315,6 +22554,10 @@ paths:
               "$ref": "#/components/schemas/RequestBody_9637773b3eaa"
     post:
       operationId: postApiV4HooksHookId
+      summary: Test a hook
+      description: Tests a webhook by triggering a test event
+      tags:
+      - Hooks
       responses:
         '201':
           description: Created
@@ -29509,6 +29752,9 @@ paths:
     put:
       operationId: putApiV4ProjectsIdHooksHookIdUrlVariablesKey
       summary: Set a url variable
+      description: Sets a URL variable for a webhook
+      tags:
+      - Hooks
       responses:
         '200':
           description: OK
@@ -29534,6 +29780,9 @@ paths:
     delete:
       operationId: deleteApiV4ProjectsIdHooksHookIdUrlVariablesKey
       summary: Un-Set a url variable
+      description: Removes a URL variable from a webhook
+      tags:
+      - Hooks
       responses:
         '204':
           description: No Content
@@ -29554,6 +29803,9 @@ paths:
     put:
       operationId: putApiV4ProjectsIdHooksHookIdCustomHeadersKey
       summary: Set a custom header
+      description: Sets a custom header for a webhook
+      tags:
+      - Hooks
       responses:
         '200':
           description: OK
@@ -29579,6 +29831,9 @@ paths:
     delete:
       operationId: deleteApiV4ProjectsIdHooksHookIdCustomHeadersKey
       summary: Un-Set a custom header
+      description: Removes a custom header from a webhook
+      tags:
+      - Hooks
       responses:
         '204':
           description: No Content
@@ -31603,7 +31858,7 @@ paths:
       operationId: getApiV4PagesDomains
       summary: Get all pages domains
       tags:
-      - Gitlab pages
+      - GitLab Pages
       responses:
         '200':
           description: OK
@@ -31639,7 +31894,7 @@ paths:
       operationId: getApiV4ProjectsIdPagesDomains
       summary: Get all pages domains
       tags:
-      - Gitlab pages
+      - GitLab Pages
       responses:
         '200':
           description: OK
@@ -31677,7 +31932,7 @@ paths:
       operationId: postApiV4ProjectsIdPagesDomains
       summary: Create a new pages domain
       tags:
-      - Gitlab pages
+      - GitLab Pages
       responses:
         '201':
           description: Created
@@ -31706,7 +31961,7 @@ paths:
       operationId: getApiV4ProjectsIdPagesDomainsDomain
       summary: Get a single pages domain
       tags:
-      - Gitlab pages
+      - GitLab Pages
       responses:
         '200':
           description: OK
@@ -31734,7 +31989,7 @@ paths:
       operationId: putApiV4ProjectsIdPagesDomainsDomain
       summary: Updates a pages domain
       tags:
-      - Gitlab pages
+      - GitLab Pages
       responses:
         '200':
           description: OK
@@ -31764,7 +32019,7 @@ paths:
       operationId: deleteApiV4ProjectsIdPagesDomainsDomain
       summary: Delete a pages domain
       tags:
-      - Gitlab pages
+      - GitLab Pages
       responses:
         '204':
           description: No Content
@@ -31789,7 +32044,7 @@ paths:
       operationId: putApiV4ProjectsIdPagesDomainsDomainVerify
       summary: Verify a pages domain
       tags:
-      - Gitlab pages
+      - GitLab Pages
       responses:
         '200':
           description: OK
@@ -31820,7 +32075,7 @@ paths:
       description: Remove pages. The user must have administrator access. This feature
         was introduced in GitLab 12.6
       tags:
-      - Gitlab pages
+      - GitLab Pages
       responses:
         '204':
           description: No Content
@@ -31844,7 +32099,7 @@ paths:
       description: Update page settings for a project. User must have administrative
         access.
       tags:
-      - Gitlab pages
+      - GitLab Pages
       responses:
         '200':
           description: OK
@@ -31874,7 +32129,7 @@ paths:
       description: Get pages URL and other settings. This feature was introduced in
         Gitlab 16.8
       tags:
-      - Gitlab pages
+      - GitLab Pages
       responses:
         '200':
           description: OK
@@ -32056,6 +32311,9 @@ paths:
     post:
       operationId: postApiV4OfflineExports
       summary: Start a new offline transfer export
+      description: Initiates a new offline transfer export
+      tags:
+      - Offline transfers
       responses:
         '201':
           description: Created
@@ -32068,6 +32326,9 @@ paths:
     get:
       operationId: getApiV4OfflineExports
       summary: List all offline transfer exports
+      description: Lists all offline transfer exports
+      tags:
+      - Offline transfers
       responses:
         '200':
           description: OK
@@ -32113,6 +32374,9 @@ paths:
     get:
       operationId: getApiV4OfflineExportsId
       summary: Get offline transfer export details
+      description: Retrieves details of an offline transfer export
+      tags:
+      - Offline transfers
       responses:
         '200':
           description: OK
@@ -33936,7 +34200,7 @@ paths:
       summary: Workhorse authorize model package file
       description: Introduced in GitLab 16.8
       tags:
-      - Ml model registry
+      - ML Model Registry
       responses:
         '200':
           description: OK
@@ -33967,7 +34231,7 @@ paths:
       summary: Workhorse upload model package file
       description: Introduced in GitLab 16.8
       tags:
-      - Ml model registry
+      - ML Model Registry
       responses:
         '201':
           description: Created
@@ -33997,7 +34261,7 @@ paths:
       summary: Download an ml_model package file
       description: This feature was introduced in GitLab 16.8
       tags:
-      - Ml model registry
+      - ML Model Registry
       responses:
         '200':
           description: OK
@@ -34296,7 +34560,11 @@ paths:
   "/api/v4/projects/{id}/create_ci_config":
     post:
       operationId: postApiV4ProjectsIdCreateCiConfig
-      summary: Creates merge request for missing ci config in project
+      summary: Create merge request for missing ci config in project
+      description: Creates a merge request to add missing CI configuration
+      tags:
+      - Projects
+      - Merge requests
       responses:
         '201':
           description: Created
@@ -40518,6 +40786,9 @@ paths:
   "/api/v4/projects/{id}/issues/{issue_iid}/metric_images/authorize":
     post:
       operationId: postApiV4ProjectsIdIssuesIssueIidMetricImagesAuthorize
+      summary: Upload a metric image for an incident
+      tags:
+      - Metric images
       responses:
         '201':
           description: Created
@@ -41063,7 +41334,7 @@ paths:
       summary: Subscribe a namespace to a JiraConnectInstallation
       description: Subscribes the namespace to the JiraConnectInstallation
       tags:
-      - Jira connect subscriptions
+      - Jira Connect subscriptions
       responses:
         '201':
           description: Created
@@ -41088,12 +41359,22 @@ paths:
   "/api/v4/integrations/slack/options":
     post:
       operationId: postApiV4IntegrationsSlackOptions
+      summary: Get Slack interactive component options
+      description: Retrieves options for Slack interactive components
+      tags:
+      - Integrations
+      - Internal operations
       responses:
         '201':
           description: Created
   "/api/v4/integrations/slack/interactions":
     post:
       operationId: postApiV4IntegrationsSlackInteractions
+      summary: Process Slack interaction events
+      description: Processes interaction events from Slack
+      tags:
+      - Integrations
+      - Internal operations
       responses:
         '201':
           description: Created
@@ -46609,7 +46890,11 @@ paths:
     get:
       operationId: getApiV4GroupsIdPlaceholderReassignments
       summary: Download the list of pending placeholder assignments for a group
-      description: This feature was added in GitLab 17.10
+      description: |-
+        Downloads a CSV file of pending placeholder assignments for a group.
+                  This feature was added in GitLab 17.10
+      tags:
+      - Groups
       responses:
         '200':
           description: OK
@@ -46622,6 +46907,10 @@ paths:
         in: path
     post:
       operationId: postApiV4GroupsIdPlaceholderReassignments
+      summary: Upload placeholder reassignments CSV file
+      description: Uploads a CSV file containing placeholder reassignments for a group
+      tags:
+      - Groups
       responses:
         '201':
           description: Created
@@ -46642,7 +46931,11 @@ paths:
     post:
       operationId: postApiV4GroupsIdPlaceholderReassignmentsAuthorize
       summary: Workhorse authorization for the reassignment CSV file
-      description: This feature was introduced in GitLab 17.10
+      description: |-
+        Authorizes Workhorse to handle CSV file uploads for placeholder reassignments.
+                  This feature was introduced in GitLab 17.10
+      tags:
+      - Groups
       responses:
         '201':
           description: Created
@@ -60836,6 +61129,8 @@ paths:
     post:
       operationId: postApiV4GroupsIdRestore
       summary: Restore a group.
+      tags:
+      - Groups
       responses:
         '201':
           description: Created
@@ -61786,6 +62081,9 @@ paths:
   "/api/v4/groups/{id}/share/{group_id}":
     delete:
       operationId: deleteApiV4GroupsIdShareGroupId
+      summary: Unshare a group with a group
+      tags:
+      - Groups
       responses:
         '204':
           description: No Content
@@ -80852,15 +81150,26 @@ components:
         filesize:
           type: integer
           description: Size of artifact file
-    RequestBody_22d7ff8e86f2:
+    RequestBody_b5285920e9e7:
       type: object
       properties:
         file:
           type: string
           format: binary
           description: The sbom file to upload
+        sbom_digest:
+          type: string
+          description: Digest corresponding to uploaded SBOM
       required:
       - file
+    RequestBody_677adcd8ef80:
+      type: object
+      properties:
+        purl_types:
+          type: Array
+          description: The list of purl_types that are valid for given sbom digest
+      required:
+      - purl_types
     RequestBody_5faa40f7c279:
       type: object
       properties:

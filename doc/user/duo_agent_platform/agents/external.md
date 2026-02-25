@@ -260,8 +260,8 @@ The following CI/CD variables are available:
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role for the top-level group.
-- You must have the Maintainer or Owner role for the project.
+- For the top-level group where you enable the agent, you must have the Maintainer or Owner role.
+- For the project where you enable the agent, you must have the Maintainer or Owner role.
 
 {{< tabs >}}
 

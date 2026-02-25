@@ -124,14 +124,19 @@ export function joinPaths(...paths) {
 
 // Returns an array containing the value(s) of the
 // of the key passed as an argument
-export function getParameterValues(sParam, url = window.location) {
+// When options.preservePlusForParams includes sParam, '+' in values is not replaced with space (e.g. for branch/search names)
+export function getParameterValues(sParam, url = window.location, options = {}) {
+  const preservePlus =
+    options?.preservePlusForParams?.includes(sParam) ?? options?.preservePlus === true;
   const sPageURL = decodeURIComponent(new URL(url).search.substring(1));
 
   return sPageURL.split('&').reduce((acc, urlParam) => {
     const sParameterName = urlParam.split('=');
 
     if (sParameterName[0] === sParam) {
-      acc.push(sParameterName[1].replace(/\+/g, ' '));
+      const rawValue = sParameterName[1] ?? '';
+      const value = preservePlus ? rawValue : rawValue.replace(/\+/g, ' ');
+      acc.push(value);
     }
 
     return acc;
@@ -499,14 +504,21 @@ export const getUrlParamsArray = () => urlParamsToArray(window.location.search);
  * @param {Boolean?} options.gatherArrays - gather array values into an Array
  * @param {Boolean?} options.specialOperators - handle special operators `or` & `not` with arrays
  * @param {Boolean?} options.legacySpacesDecode - (deprecated) plus symbols (+) are not replaced with spaces, false by default
+ * @param {Array<String>?} options.preservePlusForKeys - for these param keys, decode values without treating '+' as space (e.g. for ref/branch names)
  * @returns {Object}
  *
  * ex: "?one=1&two=2" into {one: 1, two: 2}
  */
 export function queryToObject(
   query,
-  { gatherArrays = false, specialOperators = false, legacySpacesDecode = false } = {},
+  {
+    gatherArrays = false,
+    specialOperators = false,
+    legacySpacesDecode = false,
+    preservePlusForKeys = [],
+  } = {},
 ) {
+  const preservePlusSet = preservePlusForKeys?.length > 0 ? new Set(preservePlusForKeys) : null;
   const removeQuestionMarkFromQuery = String(query).startsWith('?') ? query.slice(1) : query;
   return removeQuestionMarkFromQuery.split('&').reduce((accumulator, curr) => {
     if (!curr) return accumulator;
@@ -516,8 +528,9 @@ export function queryToObject(
       return accumulator;
     }
 
-    const decodedValue = legacySpacesDecode ? decodeURIComponent(value) : decodeUrlParameter(value);
     const decodedKey = legacySpacesDecode ? decodeURIComponent(key) : decodeUrlParameter(key);
+    const preservePlus = legacySpacesDecode || preservePlusSet?.has(decodedKey);
+    const decodedValue = preservePlus ? decodeURIComponent(value) : decodeUrlParameter(value);
 
     // Handle `or` & `not` operators, eg; or[label_name][] or not[label_name][].
     // Check if the key ends with square brackets (indicating an array)
@@ -558,11 +571,16 @@ export function queryToObject(
  * otherwise it will return the value of the param key provided
  *
  * @param {String} name
- * @param {String?} urlToParse
+ * @param {String?} query - query string (default: window.location.search)
+ * @param {Object?} options
+ * @param {Boolean?} options.preservePlus - if true, decode without treating '+' as space (for ref/branch names containing '+')
  * @returns value of the parameter as string
  */
-export const getParameterByName = (name, query = window.location.search) => {
-  return queryToObject(query)[name] || null;
+export const getParameterByName = (name, query = window.location.search, options = {}) => {
+  const queryString = typeof query === 'string' ? query : window.location.search;
+  const opts = options?.preservePlus === true ? { preservePlusForKeys: [name] } : {};
+  const parsed = queryToObject(queryString, opts);
+  return parsed[name] ?? null;
 };
 
 /**

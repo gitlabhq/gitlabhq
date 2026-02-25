@@ -86,7 +86,7 @@ module MembershipActions
   # rubocop: disable CodeReuse/ActiveRecord
   def leave
     member = members_and_requesters.find_by!(user_id: current_user.id)
-    Members::DestroyService.new(current_user).execute(member)
+    Members::DestroyService.new(current_user).execute(member, skip_subresources: member.request?)
 
     notice =
       if member.request?

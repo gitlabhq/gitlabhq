@@ -49,17 +49,13 @@ module Gitlab
             command: name,
             arguments: arguments,
             response_url: response_url
-          }
+          },
+          variables_attributes: chat_variables
         }
-
-        if Feature.enabled?(:ci_write_pipeline_variables_artifact, project)
-          service_params[:variables_attributes] = chat_variables
-        end
 
         service = ::Ci::CreatePipelineService.new(project, chat_name.user, **service_params)
 
         response = service.execute(:chat) do |pipeline|
-          build_environment_variables(pipeline) if Feature.disabled?(:ci_write_pipeline_variables_artifact, project)
           build_chat_data(pipeline)
         end
 
@@ -73,11 +69,6 @@ module Gitlab
           { key: 'CHAT_CHANNEL', value: channel },
           { key: 'CHAT_USER_ID', value: chat_name.chat_id }
         ]
-      end
-
-      # pipeline - The `Ci::Pipeline` to create the environment variables for.
-      def build_environment_variables(pipeline)
-        pipeline.variables.build(chat_variables)
       end
 
       # pipeline - The `Ci::Pipeline` to create the chat data for.

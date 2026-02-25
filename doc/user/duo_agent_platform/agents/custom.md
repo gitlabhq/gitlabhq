@@ -140,8 +140,8 @@ Enable an agent to use it with Chat.
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role for the top-level group.
-- You must have the Maintainer or Owner role for the project.
+- For the top-level group where you enable the agent, you must have the Maintainer or Owner role.
+- For the project where you enable the agent, you must have the Maintainer or Owner role.
 
 {{< tabs >}}
 
@@ -187,7 +187,7 @@ If an agent is already enabled in a top-level group, you can enable it in the gr
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the project.
-- The agent must be enabled in a top-level group.
+- The agent must be enabled in the project's top-level group.
 
 To enable an agent in a project:
 
@@ -266,7 +266,7 @@ Then, to use a custom agent:
 
 Prerequisites:
 
-- For groups, you must have the Owner role.
+- For groups, you must have the Maintainer or Owner role.
 - For projects, you must have the Maintainer or Owner role.
 
 To disable an agent:

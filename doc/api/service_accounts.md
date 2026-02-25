@@ -175,12 +175,12 @@ Example response:
 {{< /history >}}
 
 Group service accounts are owned by a specific group and can be invited to the group where they were
-created or to any descendant subgroups or projects.
+created or to any descendant subgroups or projects. They cannot be invited to ancestor groups.
 
 Prerequisites:
 
 - On GitLab.com, you must have the Owner role for the group.
-- On GitLab Self-Managed or GitLab Dedicated you must either:
+- On GitLab Self-Managed or GitLab Dedicated, you must either:
   - Be an administrator for the instance.
   - Have the Owner role in a group and be [allowed to create service accounts](../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
 
@@ -563,7 +563,7 @@ Project service accounts are owned by a specific project and are available only 
 Prerequisites:
 
 - On GitLab.com, you must have the Owner or Maintainer role for the project.
-- On GitLab Self-Managed or GitLab Dedicated you must either:
+- On GitLab Self-Managed or GitLab Dedicated, you must either:
   - Be an administrator for the instance.
   - Have the Owner or Maintainer role in a project.
 

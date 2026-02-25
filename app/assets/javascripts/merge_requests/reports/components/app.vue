@@ -1,17 +1,16 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
 
 export default {
   name: 'MergeRequestReportsApp',
   components: {
-    BlockersListItem: () =>
-      import('ee_component/merge_requests/reports/components/blockers_list_item.vue'),
+    GlLoadingIcon,
     SecurityScansProvider: () =>
       import('ee_component/merge_requests/reports/components/security_scans_provider.vue'),
     SecurityNavItem: () => import('~/merge_requests/reports/components/security_nav_item.vue'),
   },
-  inject: ['hasPolicies'],
   data() {
     return {
       mr: null,
@@ -41,14 +40,14 @@ export default {
       class="gl-border-b gl-border-default gl-pb-3 gl-pt-5 @md/panel:gl-border-r @md/panel:gl-border-0 @md/panel:gl-pr-5"
     >
       <nav>
-        <blockers-list-item v-if="hasPolicies" />
         <security-scans-provider v-if="mr" :mr="mr">
           <security-nav-item />
         </security-scans-provider>
       </nav>
     </aside>
     <section class="@md/panel:gl-pt-5">
-      <router-view :mr="mr" />
+      <router-view v-if="mr" :mr="mr" />
+      <gl-loading-icon v-else size="lg" />
     </section>
   </div>
 </template>

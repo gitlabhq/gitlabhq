@@ -1,5 +1,5 @@
 import { pickBy } from 'lodash';
-import { parseUrlPathname } from '~/lib/utils/url_utility';
+import { getParameterByName, parseUrlPathname } from '~/lib/utils/url_utility';
 import {
   NEEDS_PROPERTY,
   SUPPORTED_FILTER_PARAMETERS,
@@ -57,6 +57,24 @@ export const createNodeDict = (nodes, { needsKey = NEEDS_PROPERTY } = {}) => {
 
 export const validateParams = (params) => {
   return pickBy(params, (val, key) => SUPPORTED_FILTER_PARAMETERS.includes(key) && val);
+};
+
+/**
+ * Builds initial filter params for the pipelines list by merging server params
+ * with the ref from the URL. Uses preservePlus when reading ref so branch names
+ * containing '+' are not decoded as space (see https://gitlab.com/gitlab-org/gitlab/-/issues/589047).
+ *
+ * @param {Object} params - Server-provided params (e.g. from Rails)
+ * @returns {Object} Validated filter params for the pipelines list
+ */
+export const getInitialFilterParams = (params) => {
+  const refFromUrl = getParameterByName('ref', window.location.search, {
+    preservePlus: true,
+  });
+  return validateParams({
+    ...params,
+    ...(refFromUrl && { ref: refFromUrl }),
+  });
 };
 
 /**

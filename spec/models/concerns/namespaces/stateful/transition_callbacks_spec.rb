@@ -57,9 +57,10 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
       it 'sets deletion schedule data on successful transition' do
         namespace.schedule_deletion!(transition_user: user)
 
-        metadata = namespace.reload.state_metadata
+        namespace.reload
+        metadata = namespace.state_metadata
 
-        expect(metadata['deletion_scheduled_at']).to eq(Time.current.as_json)
+        expect(namespace.deletion_scheduled_at).to eq(Time.current)
         expect(metadata['deletion_scheduled_by_user_id']).to eq(user.id)
       end
     end
@@ -71,6 +72,7 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
     with_them do
       before do
         set_state(namespace, initial_state)
+        namespace.update!(deletion_scheduled_at: 1.day.ago)
         namespace.state_metadata.merge!(
           deletion_scheduled_at: 1.day.ago.as_json,
           deletion_scheduled_by_user_id: user.id
@@ -81,10 +83,11 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
       it 'clears deletion schedule data on successful transition' do
         namespace.cancel_deletion!(transition_user: user)
 
-        metadata = namespace.reload.state_metadata
+        namespace.reload
 
-        expect(metadata['deletion_scheduled_at']).to be_nil
-        expect(metadata['deletion_scheduled_by_user_id']).to be_nil
+        expect(namespace.deletion_scheduled_at).to be_nil
+        expect(namespace.state_metadata['deletion_scheduled_at']).to be_nil
+        expect(namespace.state_metadata['deletion_scheduled_by_user_id']).to be_nil
       end
     end
   end

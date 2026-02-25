@@ -117,6 +117,23 @@ describe('URL utility', () => {
       expect(urlUtils.getParameterValues('everything', url)).toEqual(['works']);
       expect(urlUtils.getParameterValues('test', url)).toEqual([]);
     });
+
+    it('preserves plus in value when preservePlusForParams includes the param (e.g. branch search)', () => {
+      setWindowLocation('https://gitlab.com?search=release%2F4.5%2B4');
+      expect(urlUtils.getParameterValues('search', window.location)).toEqual(['release/4.5 4']);
+      expect(
+        urlUtils.getParameterValues('search', window.location, {
+          preservePlusForParams: ['search'],
+        }),
+      ).toEqual(['release/4.5+4']);
+
+      setWindowLocation('https://gitlab.com?search=release/4.5+4');
+      expect(
+        urlUtils.getParameterValues('search', window.location, {
+          preservePlusForParams: ['search'],
+        }),
+      ).toEqual(['release/4.5+4']);
+    });
   });
 
   describe('mergeUrlParams', () => {
@@ -984,24 +1001,26 @@ describe('URL utility', () => {
 
   describe('queryToObject', () => {
     it.each`
-      case                                                                      | query                                                 | options                                             | result
-      ${'converts query'}                                                       | ${'?one=1&two=2'}                                     | ${undefined}                                        | ${{ one: '1', two: '2' }}
-      ${'converts query without ?'}                                             | ${'one=1&two=2'}                                      | ${undefined}                                        | ${{ one: '1', two: '2' }}
-      ${'removes undefined values'}                                             | ${'?one=1&two=2&three'}                               | ${undefined}                                        | ${{ one: '1', two: '2' }}
-      ${'overwrites values with same key and does not change key'}              | ${'?one[]=1&one[]=2&two=2&two=3'}                     | ${undefined}                                        | ${{ 'one[]': '2', two: '3' }}
-      ${'gathers values with the same array-key, strips `[]` from key'}         | ${'?one[]=1&one[]=2&two=2&two=3'}                     | ${{ gatherArrays: true }}                           | ${{ one: ['1', '2'], two: '3' }}
-      ${'overwrites values with the same array-key name'}                       | ${'?one=1&one[]=2&two=2&two=3'}                       | ${{ gatherArrays: true }}                           | ${{ one: ['2'], two: '3' }}
-      ${'overwrites values with the same key name'}                             | ${'?one[]=1&one=2&two=2&two=3'}                       | ${{ gatherArrays: true }}                           | ${{ one: '2', two: '3' }}
-      ${'ignores plus symbols'}                                                 | ${'?search=a+b'}                                      | ${{ legacySpacesDecode: true }}                     | ${{ search: 'a+b' }}
-      ${'ignores plus symbols in keys'}                                         | ${'?search+term=a'}                                   | ${{ legacySpacesDecode: true }}                     | ${{ 'search+term': 'a' }}
-      ${'ignores plus symbols when gathering arrays'}                           | ${'?search[]=a+b'}                                    | ${{ gatherArrays: true, legacySpacesDecode: true }} | ${{ search: ['a+b'] }}
-      ${'replaces plus symbols with spaces'}                                    | ${'?search=a+b'}                                      | ${undefined}                                        | ${{ search: 'a b' }}
-      ${'replaces plus symbols in keys with spaces'}                            | ${'?search+term=a'}                                   | ${undefined}                                        | ${{ 'search term': 'a' }}
-      ${'preserves square brackets in array params'}                            | ${'?search[]=a&search[]=b'}                           | ${{ gatherArrays: true }}                           | ${{ search: ['a', 'b'] }}
-      ${'decodes encoded square brackets in array params'}                      | ${'?search%5B%5D=a&search%5B%5D=b'}                   | ${{ gatherArrays: true }}                           | ${{ search: ['a', 'b'] }}
-      ${'handles special (i.e. or/not) operators'}                              | ${'?or[search][]=feature&or[search][]=documentation'} | ${{ specialOperators: true }}                       | ${{ 'or[search][]': ['feature', 'documentation'] }}
-      ${'replaces plus symbols when gathering arrays'}                          | ${'?search[]=a+b'}                                    | ${{ gatherArrays: true }}                           | ${{ search: ['a b'] }}
-      ${'replaces plus symbols when gathering arrays for values with same key'} | ${'?search[]=a+b&search[]=c+d'}                       | ${{ gatherArrays: true }}                           | ${{ search: ['a b', 'c d'] }}
+      case                                                                            | query                                                 | options                                             | result
+      ${'converts query'}                                                             | ${'?one=1&two=2'}                                     | ${undefined}                                        | ${{ one: '1', two: '2' }}
+      ${'converts query without ?'}                                                   | ${'one=1&two=2'}                                      | ${undefined}                                        | ${{ one: '1', two: '2' }}
+      ${'removes undefined values'}                                                   | ${'?one=1&two=2&three'}                               | ${undefined}                                        | ${{ one: '1', two: '2' }}
+      ${'overwrites values with same key and does not change key'}                    | ${'?one[]=1&one[]=2&two=2&two=3'}                     | ${undefined}                                        | ${{ 'one[]': '2', two: '3' }}
+      ${'gathers values with the same array-key, strips `[]` from key'}               | ${'?one[]=1&one[]=2&two=2&two=3'}                     | ${{ gatherArrays: true }}                           | ${{ one: ['1', '2'], two: '3' }}
+      ${'overwrites values with the same array-key name'}                             | ${'?one=1&one[]=2&two=2&two=3'}                       | ${{ gatherArrays: true }}                           | ${{ one: ['2'], two: '3' }}
+      ${'overwrites values with the same key name'}                                   | ${'?one[]=1&one=2&two=2&two=3'}                       | ${{ gatherArrays: true }}                           | ${{ one: '2', two: '3' }}
+      ${'ignores plus symbols'}                                                       | ${'?search=a+b'}                                      | ${{ legacySpacesDecode: true }}                     | ${{ search: 'a+b' }}
+      ${'ignores plus symbols in keys'}                                               | ${'?search+term=a'}                                   | ${{ legacySpacesDecode: true }}                     | ${{ 'search+term': 'a' }}
+      ${'ignores plus symbols when gathering arrays'}                                 | ${'?search[]=a+b'}                                    | ${{ gatherArrays: true, legacySpacesDecode: true }} | ${{ search: ['a+b'] }}
+      ${'replaces plus symbols with spaces'}                                          | ${'?search=a+b'}                                      | ${undefined}                                        | ${{ search: 'a b' }}
+      ${'replaces plus symbols in keys with spaces'}                                  | ${'?search+term=a'}                                   | ${undefined}                                        | ${{ 'search term': 'a' }}
+      ${'preserves square brackets in array params'}                                  | ${'?search[]=a&search[]=b'}                           | ${{ gatherArrays: true }}                           | ${{ search: ['a', 'b'] }}
+      ${'decodes encoded square brackets in array params'}                            | ${'?search%5B%5D=a&search%5B%5D=b'}                   | ${{ gatherArrays: true }}                           | ${{ search: ['a', 'b'] }}
+      ${'handles special (i.e. or/not) operators'}                                    | ${'?or[search][]=feature&or[search][]=documentation'} | ${{ specialOperators: true }}                       | ${{ 'or[search][]': ['feature', 'documentation'] }}
+      ${'replaces plus symbols when gathering arrays'}                                | ${'?search[]=a+b'}                                    | ${{ gatherArrays: true }}                           | ${{ search: ['a b'] }}
+      ${'replaces plus symbols when gathering arrays for values with same key'}       | ${'?search[]=a+b&search[]=c+d'}                       | ${{ gatherArrays: true }}                           | ${{ search: ['a b', 'c d'] }}
+      ${'preserves plus in value for keys in preservePlusForKeys (branch/ref names)'} | ${'?ref=feature+c%2B%2B'}                             | ${{ preservePlusForKeys: ['ref'] }}                 | ${{ ref: 'feature+c++' }}
+      ${'preserves plus in value when key in preservePlusForKeys, literal + in URL'}  | ${'?ref=feature+c++'}                                 | ${{ preservePlusForKeys: ['ref'] }}                 | ${{ ref: 'feature+c++' }}
     `('$case', ({ query, options, result }) => {
       expect(urlUtils.queryToObject(query, options)).toEqual(result);
     });
@@ -1047,6 +1066,19 @@ describe('URL utility', () => {
 
       expect(getParameterByName('manan', 'foo=bar&manan=canchu')).toBe('canchu');
       expect(getParameterByName('manan', '?foo=bar&manan=canchu')).toBe('canchu');
+    });
+
+    it('should preserve plus in ref when options.preservePlus is true (branch names)', () => {
+      expect(getParameterByName('ref', '?ref=feature+c++', { preservePlus: true })).toBe(
+        'feature+c++',
+      );
+      expect(getParameterByName('ref', '?ref=feature%2Bc%2B%2B', { preservePlus: true })).toBe(
+        'feature+c++',
+      );
+    });
+
+    it('should treat plus as space when options.preservePlus is not set', () => {
+      expect(getParameterByName('ref', '?ref=feature+c++')).toBe('feature c  ');
     });
   });
 

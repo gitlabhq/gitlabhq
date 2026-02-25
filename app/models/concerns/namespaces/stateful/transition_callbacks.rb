@@ -14,13 +14,14 @@ module Namespaces
       end
 
       def set_deletion_schedule_data(transition)
+        self.deletion_scheduled_at = Time.current
         state_metadata.merge!(
-          deletion_scheduled_at: Time.current.as_json,
           deletion_scheduled_by_user_id: transition_user(transition).id
         )
       end
 
       def clear_deletion_schedule_data(_transition)
+        self.deletion_scheduled_at = nil
         state_metadata.except!('deletion_scheduled_at', 'deletion_scheduled_by_user_id')
       end
 

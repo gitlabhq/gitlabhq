@@ -5,7 +5,7 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from '@gitlab/vue-router-vue3';
-import { transformRoutes } from './vue_router_helper';
+import { transformRoutes, normalizeLocation } from './vue_router_helper';
 
 const mode = (value, options) => {
   if (!value) return null;
@@ -153,20 +153,15 @@ export default class VueRouterCompat {
       // Get the base path from the history object and strip it from the current path.
       // Vue Router 4's resolve() expects paths relative to the base, not absolute paths.
       const historyBase = router.options.history.base || '';
-      let { pathname } = window.location;
 
       // Strip trailing slash from initial URL to match Vue Router 3 behavior
-      const fullUrl = pathname + window.location.search + window.location.hash;
+      const fullUrl = window.location.pathname + window.location.search + window.location.hash;
       const normalizedUrl = stripTrailingSlash(fullUrl);
       if (normalizedUrl !== fullUrl) {
         window.history.replaceState(window.history.state, '', normalizedUrl);
-        pathname = window.location.pathname;
       }
 
-      if (historyBase && pathname.startsWith(historyBase)) {
-        pathname = pathname.slice(historyBase.length) || '/';
-      }
-      const currentLocation = pathname + window.location.search + window.location.hash;
+      const currentLocation = normalizeLocation(historyBase);
       let resolved = router.resolve(currentLocation);
 
       // Vue Router 4's resolve() does not follow redirects (unlike Vue Router 3's

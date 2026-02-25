@@ -926,6 +926,40 @@ const updateSavedViewsCache = ({ cache, responseData, mutationKey, namespacePath
   });
 };
 
+export const updateCacheAfterViewRemoval = ({ cache, view, action, fullPath }) => {
+  const variants = [true, false];
+
+  variants.forEach((subscribedOnly) => {
+    const query = {
+      query: getSubscribedSavedViewsQuery,
+      variables: {
+        fullPath,
+        subscribedOnly,
+        sort: subscribedOnly ? 'RELATIVE_POSITION' : undefined,
+      },
+    };
+
+    const sourceData = cache.readQuery(query);
+    if (!sourceData) return;
+
+    const newData = produce(sourceData, (draftState) => {
+      const savedViews = draftState.namespace.savedViews.nodes;
+
+      if (subscribedOnly || (!subscribedOnly && action === 'delete')) {
+        const index = savedViews.findIndex((v) => v.id === view.id);
+        if (index !== -1) {
+          savedViews.splice(index, 1);
+        }
+      } else if (!subscribedOnly && action === 'unsubscribe') {
+        const unsubscribedView = savedViews.find((v) => v.id === view.id);
+        if (unsubscribedView) unsubscribedView.subscribed = false;
+      }
+    });
+
+    cache.writeQuery({ ...query, data: newData });
+  });
+};
+
 export const handleEnforceSubscriptionLimit = async ({
   subscribedSavedViewLimit,
   apolloClient,
@@ -971,17 +1005,11 @@ export const handleEnforceSubscriptionLimit = async ({
         },
       },
       update: (cache) => {
-        updateSavedViewsQueryCache({
+        updateCacheAfterViewRemoval({
           cache,
-          responseData: {
-            workItemSavedViewUnsubscribe: {
-              savedView: viewToUnsubscribe,
-            },
-          },
-          mutationKey: 'workItemSavedViewUnsubscribe',
-          namespacePath,
-          action: 'remove',
-          subscribedOnly: true,
+          view: viewToUnsubscribe,
+          action: 'unsubscribe',
+          fullPath: namespacePath,
         });
       },
     });
@@ -1160,40 +1188,6 @@ export const subscribeToSavedView = async ({ view, cache, fullPath }) => {
   });
 
   return result;
-};
-
-export const updateCacheAfterViewRemoval = ({ cache, view, action, fullPath }) => {
-  const variants = [true, false];
-
-  variants.forEach((subscribedOnly) => {
-    const query = {
-      query: getSubscribedSavedViewsQuery,
-      variables: {
-        fullPath,
-        subscribedOnly,
-        sort: subscribedOnly ? 'RELATIVE_POSITION' : undefined,
-      },
-    };
-
-    const sourceData = cache.readQuery(query);
-    if (!sourceData) return;
-
-    const newData = produce(sourceData, (draftState) => {
-      const savedViews = draftState.namespace.savedViews.nodes;
-
-      if (subscribedOnly || (!subscribedOnly && action === 'delete')) {
-        const index = savedViews.findIndex((v) => v.id === view.id);
-        if (index !== -1) {
-          savedViews.splice(index, 1);
-        }
-      } else if (!subscribedOnly && action === 'unsubscribe') {
-        const unsubscribedView = savedViews.find((v) => v.id === view.id);
-        if (unsubscribedView) unsubscribedView.subscribed = false;
-      }
-    });
-
-    cache.writeQuery({ ...query, data: newData });
-  });
 };
 
 export const subscribeWithLimitEnforce = async ({

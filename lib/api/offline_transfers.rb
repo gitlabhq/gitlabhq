@@ -27,7 +27,10 @@ module API
     end
 
     resource :offline_exports do
-      desc 'Start a new offline transfer export'
+      desc 'Start a new offline transfer export' do
+        detail 'Initiates a new offline transfer export'
+        tags ['offline_transfers']
+      end
       params do
         requires :bucket, type: String, desc: 'Name of the object storage bucket where export data is stored'
         optional :aws_s3_configuration, type: Hash, desc: 'AWS S3 object storage configuration' do
@@ -85,7 +88,10 @@ module API
         end
       end
 
-      desc 'List all offline transfer exports'
+      desc 'List all offline transfer exports' do
+        detail 'Lists all offline transfer exports'
+        tags ['offline_transfers']
+      end
       params do
         use :pagination
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
@@ -97,7 +103,10 @@ module API
         present paginate(offline_exports), with: Entities::Import::Offline::Export
       end
 
-      desc 'Get offline transfer export details'
+      desc 'Get offline transfer export details' do
+        detail 'Retrieves details of an offline transfer export'
+        tags ['offline_transfers']
+      end
       params do
         requires :id, type: Integer, desc: "The ID of user's offline transfer export"
       end

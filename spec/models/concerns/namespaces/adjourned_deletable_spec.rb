@@ -35,6 +35,14 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
         allow(record).to receive(:namespace_details).and_return(instance_double(Namespace::Detail, state_metadata: {}))
       end
 
+      context 'when deletion_scheduled_at column is present' do
+        it 'returns deletion_scheduled_at' do
+          allow(record).to receive(:deletion_scheduled_at).and_return(Time.current)
+
+          expect(record.self_deletion_scheduled_deletion_created_on).to eq(Time.current)
+        end
+      end
+
       context 'when record responds to :marked_for_deletion_on' do
         it 'returns marked_for_deletion_on' do
           allow(record).to receive(:marked_for_deletion_on).and_return(Time.current)
@@ -46,7 +54,9 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
 
     context 'when namespace_details.state_metadata is empty' do
       before do
-        allow(record).to receive(:namespace_details).and_return(instance_double(Namespace::Detail, state_metadata: {}))
+        allow(record).to receive(:namespace_details).and_return(
+          instance_double(Namespace::Detail, state_metadata: {}, deletion_scheduled_at: nil)
+        )
       end
 
       it 'returns nil' do

@@ -17,7 +17,6 @@ class Namespace::Detail < ApplicationRecord
     last_updated_at: :datetime,
     last_changed_by_user_id: :integer,
     last_error: :string,
-    deletion_scheduled_at: :datetime,
     deletion_scheduled_by_user_id: :integer
 
   cache_markdown_field :description, pipeline: :description

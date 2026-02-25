@@ -269,6 +269,34 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def branches_params
-    params.permit(:page, :state, :sort, :search, :page_token, :offset)
+    permitted = params.permit(:page, :state, :sort, :search, :page_token, :offset).to_h
+    search_from_raw = search_param_from_raw_query_string
+    permitted[:search] = search_from_raw if search_from_raw
+
+    permitted
+  end
+
+  # Parse search from raw query string so '+' is not decoded as space (branch names can contain '+')
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/589047
+  def search_param_from_raw_query_string
+    return if request.query_string.blank?
+
+    part = request.query_string.split('&').find do |p|
+      key, value = p.split('=', 2)
+      key && value && !key.empty? && !value.empty? && CGI.unescape(key) == 'search'
+    end
+    return unless part
+
+    _, value = part.split('=', 2)
+    unescape_value_preserving_plus(value).presence
+  end
+
+  # CGI.unescape decodes '+' as space; branch names can contain '+'. Decode %XX only and preserve literal '+'.
+  # Use a unique placeholder (not null char) so URLs containing actual null characters are handled correctly.
+  def unescape_value_preserving_plus(value)
+    placeholder = '__GITLAB_PLUS_PLACEHOLDER__'
+    value = value.gsub('+', placeholder)
+    value = CGI.unescape(value)
+    value.gsub(placeholder, '+')
   end
 end

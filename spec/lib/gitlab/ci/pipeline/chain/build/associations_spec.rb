@@ -77,31 +77,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
 
       step.perform!
     end
-
-    context 'when FF `ci_write_pipeline_variables_artifact` is disabled' do
-      before do
-        stub_feature_flags(ci_write_pipeline_variables_artifact: false)
-      end
-
-      it 'assigns variables to the pipeline' do
-        step.perform!
-
-        expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
-          .to eq variables_attributes.map(&:with_indifferent_access)
-      end
-
-      it 'does not call PipelineVariablesArtifactBuilder' do
-        expect(Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder).not_to receive(:new)
-
-        step.perform!
-      end
-
-      it 'does not build a pipeline_variables artifact' do
-        step.perform!
-
-        expect(pipeline.pipeline_artifacts_pipeline_variables).to be_nil
-      end
-    end
   end
 
   it_behaves_like 'assigns pipeline variables'

@@ -1360,7 +1360,8 @@ CREATE TABLE siphon_namespace_details
     `deleted_at` Nullable(DateTime64(6, 'UTC')),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
     `_siphon_deleted` Bool DEFAULT false,
-    `state_metadata` String DEFAULT '{}'
+    `state_metadata` String DEFAULT '{}',
+    `deletion_scheduled_at` Nullable(DateTime64(6, 'UTC'))
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY namespace_id

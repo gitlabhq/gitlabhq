@@ -25,47 +25,73 @@ description: Create non-human accounts for automated processes and third-party s
 {{< /history >}}
 
 Service accounts are user accounts that represent non-human entities rather than individual people.
-You can use service accounts to perform automated actions, access data, or run scheduled processes.
-Service accounts are commonly used in pipelines or third-party integrations where credentials must
-remain stable and unaffected by changes in human user membership.
+Use service accounts to perform automated actions, access data, or run scheduled processes. Service
+accounts are commonly used in pipelines or third-party integrations where credentials must stay
+stable regardless of changes to your team's membership.
 
-There are three types of service accounts:
-
-- Instance service accounts: Available to an entire GitLab instance, but must still be added to
-  groups and projects like a human user. Only available on GitLab Self-Managed and GitLab Dedicated.
-- Group service accounts: Owned by a specific group. Can be invited to the group where they were
-  created or to any descendant subgroups or projects.
-- Project service accounts: Owned by a specific project and can only be invited to that project.
-
-You authenticate as a service account with a [personal access token](personal_access_tokens.md).
-Service accounts have the same abilities as human users, and can perform actions
-like interacting with [package and container registries](../packages/_index.md),
-performing [Git operations](personal_access_tokens.md#clone-repository-using-personal-access-token),
-and accessing the API.
+Service accounts authenticate with a [personal access token](personal_access_tokens.md).
+They can interact with [package and container registries](../packages/_index.md),
+perform [Git operations](personal_access_tokens.md#clone-repository-using-personal-access-token),
+and access the API.
 
 Service accounts:
 
 - Do not use a seat.
 - Cannot sign in to GitLab through the UI.
 - Cannot be managed through services such as LDAP.
-- Are identified in the group and project membership as service accounts.
-- Do not receive notification emails without [adding a custom email address](../../api/service_accounts.md#create-an-instance-service-account).
+- Appear in group and project membership lists as service accounts.
+- Do not receive notification emails unless you add a [custom email address](../../api/service_accounts.md#create-an-instance-service-account).
 - Are not [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) or [internal users](../../administration/internal_users.md).
-- Are available for [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html)
-  of GitLab.com after the Owner of the top-level group verifies their identity.
-- Can be used with trial versions of GitLab Self-Managed and GitLab Dedicated.
+- Are available on [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html)
+  of GitLab. On GitLab.com, the Owner of the top-level group must verify their identity first.
 
 You can also manage service accounts through the [service accounts API](../../api/service_accounts.md).
 
-## Prerequisites
+## Types of service accounts
 
-- On GitLab.com, you must either:
-  - Have the Owner role in a group.
-  - Have the Owner or Maintainer role in a project.
+Service accounts have three types, each with a different scope and prerequisites:
+
+{{< tabs >}}
+
+{{< tab title="Instance service accounts" >}}
+
+Instance service accounts are available to an entire GitLab instance, but must still be added
+to groups and projects like a human user.
+
+Prerequisites:
+
+- Administrator access to the instance.
+
+{{< /tab >}}
+
+{{< tab title="Group service accounts" >}}
+
+Group service accounts are owned by a specific group and can be invited to the group where they were
+created or to any descendant subgroups or projects. They cannot be invited to ancestor groups.
+
+Prerequisites:
+
+- On GitLab.com, you must have the Owner role for the group.
 - On GitLab Self-Managed or GitLab Dedicated, you must either:
   - Be an administrator for the instance.
   - Have the Owner role in a group and be [allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
+
+{{< /tab >}}
+
+{{< tab title="Project service accounts" >}}
+
+Project service accounts are owned by a specific project and are available only to that project.
+
+Prerequisites:
+
+- On GitLab.com, you must have the Owner or Maintainer role for the project.
+- On GitLab Self-Managed or GitLab Dedicated, you must either:
+  - Be an administrator for the instance.
   - Have the Owner or Maintainer role in a project.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## View and manage service accounts
 
@@ -84,11 +110,7 @@ The service accounts page displays information about service accounts in your gr
 
 {{< tabs >}}
 
-{{< tab title="Instance-wide service accounts" >}}
-
-Prerequisites:
-
-- Administrator access.
+{{< tab title="Instance service accounts" >}}
 
 To view service accounts for the entire instance:
 
@@ -166,43 +188,35 @@ To edit a service account:
 1. Edit the name or username for the service account.
 1. Select **Save changes**.
 
-### Service account access to groups and projects
+### Add a service account to a group or project
 
-Service accounts are similar to [external users](../../administration/external_users.md). When first
-created, they have limited access to groups and projects. To give a service account access to
-resources, you must add it to each group or project.
-
-There is no limit to the number of service accounts you can add to a group or project. Service accounts
-can have different roles in each group, subgroup, or project they are a member of.
+Service accounts have limited access until you add them as members of a group or project. You can
+add any number of service accounts to a group or project, and each service account can have a
+different role in each group, subgroup, or project.
 
 Service account access depends on the type of service account:
 
-- **Instance service accounts**: Can be invited to any group or project on the instance.
-- **Group service accounts**: Can be invited to the group where they were created or to any
+- Instance service accounts: Can be invited to any group or project on the instance.
+- Group service accounts: Can be invited to the group where they were created or to any
   descendant subgroups or projects.
-- **Project service accounts**: Can be invited only to the project where they were created.
+- Project service accounts: Can be invited only to the project where they were created.
 
 When a group is [shared with another group](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group),
-all members of that group, including service accounts, gain access to the shared group. This behavior
-is consistent with how human user memberships work.
-
-Service account access to groups and projects is managed the same way as
-human users in the UI. For more information, see
-[groups](../group/_index.md#add-users-to-a-group) and [members of a project](../project/members/_index.md#add-users-to-a-project).
+all members of that group, including service accounts, gain access to the shared group.
 
 You can assign service accounts to groups and projects using:
 
-- The GitLab UI. For more information about using the UI, see
-  [add users to a group](../group/_index.md#add-users-to-a-group) and
-  [add users to a project](../project/members/_index.md#add-users-to-a-project).
-- The [group members API](../../api/group_members.md).
-- The [project members API](../../api/project_members.md).
+- The GitLab UI:
+  - [Add users to a group](../group/_index.md#add-users-to-a-group).
+  - [Add users to a project](../project/members/_index.md#add-users-to-a-project).
+- The API:
+  - The [group members API](../../api/group_members.md).
+  - The [project members API](../../api/project_members.md).
 
-You must use the API when the
-[global SAML group memberships lock](../group/saml_sso/group_sync.md#global-saml-group-memberships-lock)
-or the
-[global LDAP group memberships lock](../../administration/auth/ldap/ldap_synchronization.md#global-ldap-group-memberships-lock)
-is enabled.
+> [!note]
+> If the [global SAML group memberships lock](../group/saml_sso/group_sync.md#global-saml-group-memberships-lock)
+> or the [global LDAP group memberships lock](../../administration/auth/ldap/ldap_synchronization.md#global-ldap-group-memberships-lock)
+> settings are enabled, you must use the API to control service account memberships.
 
 ## Fork projects with a service account
 
