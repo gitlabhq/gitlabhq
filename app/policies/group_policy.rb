@@ -266,6 +266,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_crm_organization
     enable :read_internal_note
     enable :update_issue
+    enable :create_saved_view
   end
 
   rule { reporter }.policy do
@@ -287,6 +288,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_package
     enable :read_prometheus
     enable :update_issue
+    enable :create_saved_view
   end
 
   rule { security_manager }.policy do
@@ -396,10 +398,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
-  end
-
-  rule { can?(:read_group) & ~anonymous }.policy do
-    enable :create_saved_view
   end
 
   rule { public_group }.policy do

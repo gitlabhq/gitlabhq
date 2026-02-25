@@ -6,6 +6,11 @@
     "enforce_pipl_compliance": {
       "type": "boolean",
       "default": false
+    },
+    "security_mr_report_cache_lifetime_minutes": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 60
     }
   },
   "additionalProperties": false

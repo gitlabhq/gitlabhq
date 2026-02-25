@@ -515,6 +515,7 @@ describe('Set Time Estimate Form', () => {
             timeEstimate: '2d',
           },
         },
+        useWorkItemFeatures: false,
       });
     });
   });

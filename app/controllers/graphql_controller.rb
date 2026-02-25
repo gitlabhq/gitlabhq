@@ -51,6 +51,25 @@ class GraphqlController < ApplicationController
   # Max size of the query text in characters
   MAX_QUERY_SIZE = 10_000
 
+  # Operations temporarily allowed to exceed MAX_QUERY_SIZE during the
+  # work-item widgets => features migration. Remove entries as the migration
+  # completes. Tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/587970
+  EXTENDED_QUERY_SIZE_ALLOWLIST = %w[
+    workItemById
+    namespaceWorkItem
+    workItemUpdate
+    createWorkItem
+    workItemConvert
+    addLinkedItems
+    workItemUpdated
+    getWorkItemsFull
+    getWorkItemsFullEE
+    getWorkItemsSlim
+    getWorkItemsSlimEE
+  ].to_set.freeze
+
+  EXTENDED_MAX_QUERY_SIZE = 11_425
+
   # The query string of a standard IntrospectionQuery, used to compare incoming requests for caching
   CACHED_INTROSPECTION_QUERY_STRING = CachedIntrospectionQuery.query_string
   INTROSPECTION_QUERY_OPERATION_NAME = 'IntrospectionQuery'
@@ -176,13 +195,18 @@ class GraphqlController < ApplicationController
   end
 
   def limit_query_size
-    total_size = if multiplex?
-                   multiplex_param.sum { _1[:query].size }
-                 else
-                   query.size
-                 end
+    if multiplex?
+      total_size = multiplex_param.sum { _1[:query].size }
+      raise ::Gitlab::Graphql::Errors::ArgumentError, "Query too large" if total_size > MAX_QUERY_SIZE
+    else
+      max = if permitted_params[:operationName].to_s.in?(EXTENDED_QUERY_SIZE_ALLOWLIST)
+              EXTENDED_MAX_QUERY_SIZE
+            else
+              MAX_QUERY_SIZE
+            end
 
-    raise ::Gitlab::Graphql::Errors::ArgumentError, "Query too large" if total_size > MAX_QUERY_SIZE
+      raise ::Gitlab::Graphql::Errors::ArgumentError, "Query too large" if query.size > max
+    end
   end
 
   def any_mutating_query?

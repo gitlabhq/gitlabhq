@@ -212,6 +212,7 @@ describe('WorkItemDueDate component', () => {
                 startDate: '2022-01-01',
               },
             },
+            useWorkItemFeatures: false,
           });
         });
 

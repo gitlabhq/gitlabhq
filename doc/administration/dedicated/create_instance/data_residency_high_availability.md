@@ -40,15 +40,16 @@ how you meet compliance requirements, and how you protect against regional outag
 
 Primary region
 : Your main deployment where your instance runs and users access GitLab.
-This is where your data is stored and must meet your data residency requirements.
+  This is where your data is stored and must meet your data residency requirements.
 
 Secondary region
-: An optional AWS region for Geo-based disaster recovery. If your primary region becomes unavailable,
-you can fail over to your secondary region. Some secondary regions have limited support.
+: An optional AWS region for Geo-based disaster recovery. If your primary region becomes
+  unavailable, you can fail over to your secondary region.
 
 Backup region
 : An optional AWS region where backups are replicated for additional redundancy.
-This can be the same as your primary or secondary region, or different for increased redundancy.
+  This can be the same as your primary or secondary region, or a different region for
+  increased redundancy.
 
 Consider these factors when selecting regions:
 
@@ -64,14 +65,17 @@ Consider these factors when selecting regions:
   and improve performance.
 
 - Sustainability: If your organization has sustainability commitments, you can consider the carbon emissions
-  of different regions. For low emission region guidance, see how to
+  of different regions. For low-emission region guidance, see how to
   [choose a region based on both business requirements and sustainability goals](https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_region_a2.html).
 
 > [!note]
 > Regions with limitations are clearly marked,
 > and you must acknowledge the associated risks before selecting them.
 
-### Primary regions
+### Supported regions
+
+The following table shows all AWS regions supported by GitLab Dedicated. Any region in this table
+can be used as your primary, secondary, or backup region.
 
 > [!warning] US East (N. Virginia) dependency risk
 > AWS hosts global identity and access management (IAM) services in the `us-east-1` region.
@@ -117,7 +121,7 @@ If you need a region that is not listed, contact your account representative or 
 #### ClickHouse Cloud
 
 [Advanced analytical features](../../../integration/clickhouse.md) are only available in regions
-that support ClickHouse Cloud. Check the primary regions table for ClickHouse availability.
+that support ClickHouse Cloud. Check the supported regions table for ClickHouse availability.
 
 What's included:
 
@@ -134,7 +138,7 @@ Limitations:
 #### AWS SES
 
 AWS Simple Email Service (SES) is used to send emails from your GitLab instance.
-Check the primary regions table for SES availability in each region.
+Check the supported regions table for SES availability in each region.
 
 For regions without AWS SES support, you must set up an [external SMTP mail service](../configure_instance/users_notifications.md#smtp-email-service).
 

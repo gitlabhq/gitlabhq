@@ -32,6 +32,10 @@ including which fields to show or how items are sorted. Keep views private for p
 
 ## Create a saved view
 
+Prerequisites:
+
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project or group.
+
 To create a saved view:
 
 1. On the top bar, select **Search or go to** and find your project or group.

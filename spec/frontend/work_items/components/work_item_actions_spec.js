@@ -367,6 +367,7 @@ describe('WorkItemActions component', () => {
             discussionLocked: true,
           },
         },
+        useWorkItemFeatures: false,
       });
     });
 

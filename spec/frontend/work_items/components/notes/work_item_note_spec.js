@@ -360,6 +360,7 @@ end`;
               assigneeIds: [mockAssignees[1].id],
             },
           },
+          useWorkItemFeatures: false,
         });
       });
 

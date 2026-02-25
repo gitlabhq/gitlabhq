@@ -120,18 +120,6 @@ describe('WorkItemLabels component', () => {
     findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', labels);
   };
 
-  const getMutationInput = (addLabelIds, removeLabelIds) => {
-    return {
-      input: {
-        id: mockWorkItemId,
-        labelsWidget: {
-          addLabelIds,
-          removeLabelIds,
-        },
-      },
-    };
-  };
-
   const expectDropdownCountToBe = (count, toggleDropdownText) => {
     expect(findWorkItemSidebarDropdownWidget().props('itemValue')).toHaveLength(count);
     expect(findWorkItemSidebarDropdownWidget().props('toggleDropdownText')).toBe(
@@ -270,9 +258,16 @@ describe('WorkItemLabels component', () => {
     await waitForPromises();
 
     expectDropdownCountToBe(1, 'Label 1');
-    expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith(
-      getMutationInput([label1Id], []),
-    );
+    expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
+      input: {
+        id: mockWorkItemId,
+        labelsWidget: {
+          addLabelIds: [label1Id],
+          removeLabelIds: [],
+        },
+      },
+      useWorkItemFeatures: false,
+    });
   });
 
   it('update labels when labels are removed', async () => {
@@ -292,9 +287,16 @@ describe('WorkItemLabels component', () => {
     await waitForPromises();
 
     expectDropdownCountToBe(1, 'Label 1');
-    expect(successRemoveLabelWorkItemMutationHandler).toHaveBeenCalledWith(
-      getMutationInput([], [label2Id, label3Id]),
-    );
+    expect(successRemoveLabelWorkItemMutationHandler).toHaveBeenCalledWith({
+      input: {
+        id: mockWorkItemId,
+        labelsWidget: {
+          addLabelIds: [],
+          removeLabelIds: [label2Id, label3Id],
+        },
+      },
+      useWorkItemFeatures: false,
+    });
   });
 
   it('update labels when labels are removed during create mode', async () => {
@@ -333,9 +335,16 @@ describe('WorkItemLabels component', () => {
     await waitForPromises();
 
     expectDropdownCountToBe(2, 'Label 1 and Label 3');
-    expect(successAddRemoveLabelWorkItemMutationHandler).toHaveBeenCalledWith(
-      getMutationInput([label3Id], [label2Id]),
-    );
+    expect(successAddRemoveLabelWorkItemMutationHandler).toHaveBeenCalledWith({
+      input: {
+        id: mockWorkItemId,
+        labelsWidget: {
+          addLabelIds: [label3Id],
+          removeLabelIds: [label2Id],
+        },
+      },
+      useWorkItemFeatures: false,
+    });
   });
 
   it('clears all labels when updateValue has no labels', async () => {
@@ -355,9 +364,16 @@ describe('WorkItemLabels component', () => {
     await waitForPromises();
 
     expectDropdownCountToBe(0, 'No labels');
-    expect(successRemoveAllLabelWorkItemMutationHandler).toHaveBeenCalledWith(
-      getMutationInput([], [label1Id, label2Id, label3Id]),
-    );
+    expect(successRemoveAllLabelWorkItemMutationHandler).toHaveBeenCalledWith({
+      input: {
+        id: mockWorkItemId,
+        labelsWidget: {
+          addLabelIds: [],
+          removeLabelIds: [label1Id, label2Id, label3Id],
+        },
+      },
+      useWorkItemFeatures: false,
+    });
   });
 
   it('shows selected labels at top of list', async () => {

@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.9.1 (2026-02-24)
+
+### Added (1 change)
+
+- [Use namespace opt-in setting for extended logging](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e671a7ddc0a56561bc504a969113ff6fbcef7ecf) **GitLab Enterprise Edition**
+
+### Fixed (3 changes)
+
+- [Fix adding flows when member invites are disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bfb85dbc3244e8a3e1f28d3122a0a7804c843a3f) **GitLab Enterprise Edition**
+- [Fix semantic code search for Premium plans](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f5a52d57dc42f94cd1472ba94399641b89d11e57) **GitLab Enterprise Edition**
+- [Bypass group membership lock for service accounts](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b1b855ee0ce67a2c4ddd870b2b27d590175d4e03) **GitLab Enterprise Edition**
+
+### Security (9 changes)
+
+- [Add rate limiting to bb server importer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8cb6aacb41313a94e897d7685d639b8214b277e4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5788))
+- [Limit the number of paths segments in URI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f1e6a7c37f96b850a4d1c6f689190a5c8beef431) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5775))
+- [Add package protection rule check to Conan authorize endpoints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/93b8165f1fd0f69a11562b86348c9516ec8fe144) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5787))
+- [Add maximum length validation to pipeline trigger description](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5a65d14b5c5b8c51a815cebd704911799e0f271f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5778))
+- [Register new mime type for json validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2898a9d5101baaae116f94f59da09b45547358eb) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5786))
+- [Check MAXIMUM_SIZE_OF_ROUTING_PAYLOAD in routable_payload decode](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f50ec6d0425aace3f706e032c27c7086b498af44) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5783))
+- [Validate relative URL root path in mermaid](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bd2cc217395de34b2066f6e3e8ca12d832d20087) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5781))
+- [Limit JWT token size in Jira Connect events to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/db86c6eba71dd2cee890d9714b9f5ef2fa33b33e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5774))
+- [Added pipeline variables permissions check to retry job](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0c1ce6569fd1873af8c74b038c8f86ab4a462d84) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5770))
+
 ## 18.9.0 (2026-02-18)
 
 ### Added (194 changes)
@@ -1053,6 +1077,31 @@ entry.
 - [Add missing feature category to epic fixture spec](https://gitlab.com/gitlab-org/gitlab/-/commit/d642e91e0cdf9a7e34b59dec37d344be5b5e9003) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217500)) **GitLab Enterprise Edition**
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/ec8385f51e240397707634c2b25f2c2ec2b40425) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217112))
 
+## 18.8.5 (2026-02-24)
+
+### Fixed (5 changes)
+
+- [Fix adding flows when member invites are disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/10c3b3754b9c82fbd985f749bf33c3b55f3ec498) **GitLab Enterprise Edition**
+- [Bypass group membership lock for service accounts](https://gitlab.com/gitlab-org/security/gitlab/-/commit/12e09f8cb9bc348b8adff9c53668caf8633e8f0f) **GitLab Enterprise Edition**
+- [workhorse: Return 400 from /cable without valid websocket upgrade](https://gitlab.com/gitlab-org/security/gitlab/-/commit/19ee0530c14603c427ee6587d780395a9a94d8a2)
+- [Update gitlab-cloud-connector gem to 1.44](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dd2a67d79d205e498edc71efb1b156816b9f6d82)
+- [Reset group_push_rules primary key sequence](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f5be614746af27ac2353c16655bb4828a63dbc9d)
+
+### Changed (1 change)
+
+- [Enable the disable_all_mentions FF by default](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f392be2f6ff17cd3a2d9f151ec766aada82fe7e7)
+
+### Security (8 changes)
+
+- [Add rate limiting to bb server importer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6d759425df7d2ec774dfd7cb1d6b22e2329f1d05) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5789))
+- [Limit the number of paths segments in URI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cb68681eb0ae668394899b203c1f3acc4186a5dd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5736))
+- [Add package protection rule check to Conan authorize endpoints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e53204660f3e4b65ae96ccfab9efe492285ea614) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5767))
+- [Add maximum length validation to pipeline trigger description](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e5c275bd5d7aa0a05732783b6f811aa3ed0a4149) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5663))
+- [Register new mime type for json validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/99237fcc7f49a76a5ffcbb7db9f20351d5fe67fa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5751))
+- [Validate relative URL root path in mermaid](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2ba7628df74f1ff0a43348e69bc46189eb7a45b5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5747))
+- [Limit JWT token size in Jira Connect events to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/860aafdd374da8c14f14f41d1ab2f797ec41d465) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5776))
+- [Added pipeline variables permissions check to retry job](https://gitlab.com/gitlab-org/security/gitlab/-/commit/63e32091ea33b48ef580557b2babd9a112751f36) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5731))
+
 ## 18.8.4 (2026-02-09)
 
 ### Added (1 change)
@@ -1597,6 +1646,25 @@ entry.
 - [Remove restrict_invites_for_comp_id_service_accounts FF](https://gitlab.com/gitlab-org/gitlab/-/commit/247ef39e46547a924893d44a8e77742af7456d6f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213353)) **GitLab Enterprise Edition**
 - [Fix 20 rubocop violations for Layout/ArrayAlignment](https://gitlab.com/gitlab-org/gitlab/-/commit/d7277a5392e541ddbfd436e762c6abd6411d2d77) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200147))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/ac7c5c8ba97b3dd4fe6cda9c3deea0be0dfeea5e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214950))
+
+## 18.7.5 (2026-02-24)
+
+### Fixed (3 changes)
+
+- [workhorse: Return 400 from /cable without valid websocket upgrade](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1a45a5d641de18b32d7d31221fd10c843bd9ad4f)
+- [Reset group_push_rules primary key sequence](https://gitlab.com/gitlab-org/security/gitlab/-/commit/252b01edc19755456bc52b2114eed4fe7cffc4f9)
+- [Add cleanup of replicas without indices to RolloutService](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a798829195abf44f4038c474978e5b2c69a6f28a) **GitLab Enterprise Edition**
+
+### Security (8 changes)
+
+- [Add rate limiting to bb server importer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dff6c953588d24970978e5e42bfc3df76952e7a6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5790))
+- [Limit the number of paths segments in URI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eaca044043c41c0485b461d926fa4aa425c95d1d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5737))
+- [Add package protection rule check to Conan authorize endpoints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b7f72cc4eea5d31804f50e2397b716a6bc9c9d3f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5768))
+- [Add maximum length validation to pipeline trigger description](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2148e8a95fc1cd6de7010b7457e476fdfdc54a57) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5664))
+- [Register new mime type for json validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5755d7c26f5de717bf1a12f34356dc6884f03d2a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5752))
+- [Validate relative URL root path in mermaid](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c27d35180ee4d30be167e965df46765708f200c4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5746))
+- [Limit JWT token size in Jira Connect events to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cd843dc867cb356aa067567db0239352b9a91b42) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5777))
+- [Added pipeline variables permissions check to retry job](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d48940431aa7d2d87fdc98663b0345587c9c4ccd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5732))
 
 ## 18.7.4 (2026-02-09)
 

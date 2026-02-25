@@ -271,6 +271,7 @@ describe('WorkItemAssignees component', () => {
             assigneeIds: [currentUser.id],
           },
         },
+        useWorkItemFeatures: false,
       });
 
       expect(findAssigneeList().props('users')).toHaveLength(1);

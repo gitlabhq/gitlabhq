@@ -1,6 +1,6 @@
 #import "./work_item.fragment.graphql"
 
-mutation workItemUpdate($input: WorkItemUpdateInput!) {
+mutation workItemUpdate($input: WorkItemUpdateInput!, $useWorkItemFeatures: Boolean = false) {
   workItemUpdate(input: $input) {
     workItem {
       ...WorkItem

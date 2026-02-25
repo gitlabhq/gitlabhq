@@ -1,6 +1,6 @@
 #import "ee_else_ce/work_items/graphql/work_item.fragment.graphql"
 
-subscription workItemUpdated($id: WorkItemID!) {
+subscription workItemUpdated($id: WorkItemID!, $useWorkItemFeatures: Boolean = false) {
   workItemUpdated(workItemId: $id) {
     ...WorkItem
   }

@@ -447,6 +447,7 @@ class ProjectPolicy < BasePolicy
     enable :read_merge_request
     enable :read_code
     enable :download_code
+    enable :create_saved_view
   end
 
   rule { private_project & planner }.policy do
@@ -511,6 +512,7 @@ class ProjectPolicy < BasePolicy
     enable :update_design
     enable :move_design
     enable :destroy_design
+    enable :create_saved_view
   end
 
   rule { can?(:security_manager_access) }.policy do
@@ -1256,10 +1258,6 @@ class ProjectPolicy < BasePolicy
   rule { can?(:read_project) }.policy do
     enable :read_incident_management_timeline_event_tag
     enable :read_project_metadata
-  end
-
-  rule { can?(:read_project) & ~anonymous }.policy do
-    enable :create_saved_view
   end
 
   rule { public_project & model_registry_enabled }.policy do

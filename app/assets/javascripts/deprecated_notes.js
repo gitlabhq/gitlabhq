@@ -185,7 +185,7 @@ export default class Notes {
     // when a key is clicked on the notes
     this.$wrapperEl.on('keydown', '.js-note-text', this.keydownNoteText);
     // When the URL fragment/hash has changed, `#note_xxx`
-    $(window).on('hashchange', this.onHashChange);
+    window.addEventListener('hashchange', this.onHashChange);
   }
 
   cleanBinding() {
@@ -209,7 +209,7 @@ export default class Notes {
     this.$wrapperEl.off('ajax:success', '.js-main-target-form');
     this.$wrapperEl.off('ajax:success', '.js-discussion-note-form');
     this.$wrapperEl.off('ajax:complete', '.js-main-target-form');
-    $(window).off('hashchange', this.onHashChange);
+    window.removeEventListener('hashchange', this.onHashChange);
   }
 
   static initCommentTypeToggle(form) {
@@ -340,7 +340,7 @@ export default class Notes {
         const { notes } = data;
         this.last_fetched_at = data.last_fetched_at;
         this.setPollingInterval(data.notes.length);
-        $.each(notes, (i, note) => this.renderNote(note));
+        notes.forEach((note) => this.renderNote(note));
 
         this.refreshing = false;
       })
@@ -394,7 +394,7 @@ export default class Notes {
 
   setupNewNote($note) {
     // Update datetime format on the recent note
-    localTimeAgo($note.find('.js-timeago').get(), false);
+    localTimeAgo($note[0].querySelectorAll('.js-timeago'), false);
 
     this.taskList.init();
 
@@ -1396,7 +1396,7 @@ export default class Notes {
     if (note_ids.length === 0) {
       note_ids = Notes.getNotesIds();
     }
-    const isNewEntry = $.inArray(noteEntity.id, note_ids) === -1;
+    const isNewEntry = !note_ids.includes(noteEntity.id);
     if (isNewEntry) {
       note_ids.push(noteEntity.id);
     }
@@ -1472,8 +1472,7 @@ export default class Notes {
   getFormData($form) {
     const content = $form.find('.js-note-text').val();
     return {
-      // eslint-disable-next-line no-jquery/no-serialize
-      formData: $form.serialize(),
+      formData: new URLSearchParams(new FormData($form.get(0))).toString(),
       formContent: escape(content),
       formAction: $form.attr('action'),
       formContentOriginal: content,

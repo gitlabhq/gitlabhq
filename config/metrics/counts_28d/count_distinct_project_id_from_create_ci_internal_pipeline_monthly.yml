@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_project_id_from_create_ci_internal_pipeline_monthly
 description: Monthly count of unique projects where an internal CI pipeline was created
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 performance_indicator_type:
 - leading_indicator
 value_type: number

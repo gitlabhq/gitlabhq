@@ -77,7 +77,6 @@ To create your GitLab Dedicated instance:
        specific availability zones, including PrivateLink connections.
      Cannot be changed after provisioning.
    - **Secondary region**: Optional. Select your AWS region for Geo-based disaster recovery.
-     Some regions have limited support.
      Cannot be changed after provisioning. Not required if you are using a Geo migration method.
    - **Secondary region Availability Zone IDs (AZ IDs)**: Only available if you configure a secondary region.
      Choose how GitLab selects availability zones:

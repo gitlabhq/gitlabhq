@@ -48,7 +48,7 @@ module Ci
     end
 
     def process(job)
-      Gitlab::OptimisticLocking.retry_lock(job, name: 'ci_requeue_job') do |job|
+      Gitlab::OptimisticLocking.retry_lock_with_transaction(job, name: 'ci_requeue_job') do |job|
         job.process(current_user)
       end
     end

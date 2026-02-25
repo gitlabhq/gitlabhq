@@ -1,6 +1,6 @@
 #import "ee_else_ce/work_items/graphql/work_item.fragment.graphql"
 
-query workItemById($id: WorkItemID!) {
+query workItemById($id: WorkItemID!, $useWorkItemFeatures: Boolean = false) {
   workItem(id: $id) {
     ...WorkItem
   }

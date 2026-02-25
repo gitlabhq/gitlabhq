@@ -199,8 +199,8 @@ ClickHouse Cloud integration, which is enabled by default for eligible customers
 
 - Your GitLab Dedicated tenant is deployed to a commercial AWS region.
   GitLab Dedicated for Government is not supported.
-- Your tenant's primary region supports ClickHouse Cloud. For supported regions, see
-  [primary regions](../../administration/dedicated/create_instance/data_residency_high_availability.md#primary-regions).
+- ClickHouse Cloud is available only in supported regions. For more information, see
+  [supported regions](../../administration/dedicated/create_instance/data_residency_high_availability.md#supported-regions).
 
 #### GitLab Pages
 

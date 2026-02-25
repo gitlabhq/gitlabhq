@@ -13,7 +13,18 @@ class StaticAnalysis
     def cmd
       command.join(' ')
     end
+
+    def enabled?
+      true
+    end
   end
+
+  class EEOnlyTask < Task
+    def enabled?
+      super && Gitlab.ee?
+    end
+  end
+
   NodeAssignment = Struct.new(:index, :tasks) do
     def total_duration
       return 0 if tasks.empty?
@@ -41,10 +52,10 @@ class StaticAnalysis
     Task.new(%w[yarn run lint:prettier], 270),
     Task.new(%w[bin/rake gettext:lint], 120),
     Task.new(%W[scripts/license-check.sh #{project_path}], 80),
-    (Gitlab.ee? ? Task.new(%w[bin/rake gettext:updated_check], 60) : nil),
+    EEOnlyTask.new(%w[bin/rake gettext:updated_check], 60),
     Task.new(%w[bin/rake lint:static_verification], 45),
     Task.new(%w[bin/rake gitlab:sidekiq:all_queues_yml:check], 30),
-    (Gitlab.ee? ? Task.new(%w[bin/rake gitlab:sidekiq:sidekiq_queues_yml:check], 25) : nil),
+    EEOnlyTask.new(%w[bin/rake gitlab:sidekiq:sidekiq_queues_yml:check], 25),
     Task.new(%w[bin/rake config_lint], 10),
     Task.new(%w[yarn run internal:stylelint], 10),
     Task.new(%w[scripts/lint-conflicts.sh], 10),
@@ -53,9 +64,9 @@ class StaticAnalysis
     Task.new(%w[yarn run check-dependencies], 1),
     Task.new(%w[scripts/gemfile_lock_changed.sh], 1),
     Task.new(%w[yarn run deps:check:all --no-cache], 60),
-    (Gitlab.ee? ? Task.new(%w[env GITLAB_SIMULATE_SAAS=false bin/rake gitlab:openapi:v2:check_docs], 30) : nil),
-    (Gitlab.ee? ? Task.new(%w[env GITLAB_SIMULATE_SAAS=false bin/rake gitlab:openapi:v3:check_docs], 30) : nil)
-  ].compact.freeze
+    EEOnlyTask.new(%w[env GITLAB_SIMULATE_SAAS=false bin/rake gitlab:openapi:v2:check_docs], 30),
+    EEOnlyTask.new(%w[env GITLAB_SIMULATE_SAAS=false bin/rake gitlab:openapi:v3:check_docs], 30)
+  ].select(&:enabled?).freeze
 
   def run_tasks!(options = {})
     total_nodes = (ENV['CI_NODE_TOTAL'] || 1).to_i

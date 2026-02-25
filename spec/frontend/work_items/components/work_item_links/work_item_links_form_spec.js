@@ -202,18 +202,20 @@ describe('WorkItemLinksForm', () => {
 
         await waitForPromises();
 
-        expect(createMutationResolver).toHaveBeenCalledWith({
-          input: {
-            title: 'Create task test',
-            namespacePath: 'group-a',
-            workItemTypeId: workItemTypeIdForTask,
-            hierarchyWidget: {
-              parentId: 'gid://gitlab/WorkItem/1',
+        expect(createMutationResolver).toHaveBeenCalledWith(
+          expect.objectContaining({
+            input: {
+              title: 'Create task test',
+              namespacePath: 'group-a',
+              workItemTypeId: workItemTypeIdForTask,
+              hierarchyWidget: {
+                parentId: 'gid://gitlab/WorkItem/1',
+              },
+              confidential: false,
+              createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
             },
-            confidential: false,
-            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
-          },
-        });
+          }),
+        );
         expect(wrapper.emitted('addChild')).toEqual([[]]);
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
@@ -227,18 +229,20 @@ describe('WorkItemLinksForm', () => {
 
         await waitForPromises();
 
-        expect(createMutationResolver).toHaveBeenCalledWith({
-          input: {
-            title: 'Create confidential task',
-            namespacePath: 'group-a',
-            workItemTypeId: workItemTypeIdForTask,
-            hierarchyWidget: {
-              parentId: 'gid://gitlab/WorkItem/1',
+        expect(createMutationResolver).toHaveBeenCalledWith(
+          expect.objectContaining({
+            input: {
+              title: 'Create confidential task',
+              namespacePath: 'group-a',
+              workItemTypeId: workItemTypeIdForTask,
+              hierarchyWidget: {
+                parentId: 'gid://gitlab/WorkItem/1',
+              },
+              confidential: true,
+              createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
             },
-            confidential: true,
-            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
-          },
-        });
+          }),
+        );
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
     });
@@ -267,18 +271,20 @@ describe('WorkItemLinksForm', () => {
 
         await waitForPromises();
 
-        expect(createMutationResolver).toHaveBeenCalledWith({
-          input: {
-            title: 'Create issue test',
-            namespacePath: 'group-a/example-project-a',
-            workItemTypeId: workItemTypeIdForIssue,
-            hierarchyWidget: {
-              parentId: 'gid://gitlab/WorkItem/1',
+        expect(createMutationResolver).toHaveBeenCalledWith(
+          expect.objectContaining({
+            input: {
+              title: 'Create issue test',
+              namespacePath: 'group-a/example-project-a',
+              workItemTypeId: workItemTypeIdForIssue,
+              hierarchyWidget: {
+                parentId: 'gid://gitlab/WorkItem/1',
+              },
+              confidential: false,
+              createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
             },
-            confidential: false,
-            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
-          },
-        });
+          }),
+        );
         expect(wrapper.emitted('addChild')).toEqual([[]]);
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
@@ -297,18 +303,20 @@ describe('WorkItemLinksForm', () => {
 
         await waitForPromises();
 
-        expect(createMutationResolver).toHaveBeenCalledWith({
-          input: {
-            title: 'Create confidential issue',
-            namespacePath: 'group-a/example-project-a',
-            workItemTypeId: workItemTypeIdForIssue,
-            hierarchyWidget: {
-              parentId: 'gid://gitlab/WorkItem/1',
+        expect(createMutationResolver).toHaveBeenCalledWith(
+          expect.objectContaining({
+            input: {
+              title: 'Create confidential issue',
+              namespacePath: 'group-a/example-project-a',
+              workItemTypeId: workItemTypeIdForIssue,
+              hierarchyWidget: {
+                parentId: 'gid://gitlab/WorkItem/1',
+              },
+              confidential: true,
+              createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
             },
-            confidential: true,
-            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
-          },
-        });
+          }),
+        );
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
     });
@@ -381,18 +389,20 @@ describe('WorkItemLinksForm', () => {
 
       await waitForPromises();
 
-      expect(createMutationResolver).toHaveBeenCalledWith({
-        input: {
-          title: 'Actually adding an epic',
-          namespacePath: 'group-a',
-          workItemTypeId: workItemTypeIdForEpic,
-          hierarchyWidget: {
-            parentId: 'gid://gitlab/WorkItem/1',
+      expect(createMutationResolver).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            title: 'Actually adding an epic',
+            namespacePath: 'group-a',
+            workItemTypeId: workItemTypeIdForEpic,
+            hierarchyWidget: {
+              parentId: 'gid://gitlab/WorkItem/1',
+            },
+            confidential: false,
+            createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
           },
-          confidential: false,
-          createSource: WORK_ITEM_CREATE_SOURCES.CHILD_ITEMS_WIDGET,
-        },
-      });
+        }),
+      );
     });
 
     it('requires project selection if group level work item creation is disabled', async () => {

@@ -7349,6 +7349,9 @@ msgstr ""
 msgid "AiImpactAnalytics|Number of agent flows (excluding chats) executed through GitLab Duo Agent Platform."
 msgstr ""
 
+msgid "AiImpactAnalytics|Number of chat sessions in Duo Agent Platform. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "AiImpactAnalytics|Number of chat sessions initiated through GitLab Duo Agent Platform."
 msgstr ""
 
@@ -19569,6 +19572,9 @@ msgid "Configure advanced permissions, Large File Storage, two-factor authentica
 msgstr ""
 
 msgid "Configure advanced permissions, Large File Storage, two-factor authentication, and customer relations settings."
+msgstr ""
+
+msgid "Configure caching behavior for security reports on merge requests"
 msgstr ""
 
 msgid "Configure checkin reminder frequency"
@@ -35336,6 +35342,9 @@ msgstr ""
 msgid "How is progress calculated?"
 msgstr ""
 
+msgid "How long to cache security report comparisons on merge requests before regenerating. Longer durations reduce database load but may show slightly stale data. Must be between 10 and 60 minutes."
+msgstr ""
+
 msgid "How many code indexing jobs are allowed to run concurrently. A higher value improves repository indexing performance by increasing Sidekiq and Elasticsearch or OpenSearch load. Setting it to 0 allows an unlimited number of indexing jobs."
 msgstr ""
 
@@ -42798,6 +42807,12 @@ msgid "Merge request reports"
 msgstr ""
 
 msgid "Merge request reviews"
+msgstr ""
+
+msgid "Merge request security report cache lifetime (minutes)"
+msgstr ""
+
+msgid "Merge request security reports"
 msgstr ""
 
 msgid "Merge request status"
@@ -76708,6 +76723,9 @@ msgstr ""
 msgid "VulnerabilityManagement|Something went wrong, could not fetch AI resolution configuration."
 msgstr ""
 
+msgid "VulnerabilityManagement|Something went wrong, could not fetch AI secret detection configuration."
+msgstr ""
+
 msgid "VulnerabilityManagement|Something went wrong, could not get user."
 msgstr ""
 
@@ -83520,6 +83538,9 @@ msgid "must be before ends at"
 msgstr ""
 
 msgid "must be between 1 day and %{limit}"
+msgstr ""
+
+msgid "must be between 10 and 60 minutes"
 msgstr ""
 
 msgid "must be enabled."

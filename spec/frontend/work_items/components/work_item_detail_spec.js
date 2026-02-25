@@ -282,7 +282,10 @@ describe('WorkItemDetail component', () => {
     });
 
     it('calls the work item updated subscription', () => {
-      expect(workItemUpdatedSubscriptionHandler).toHaveBeenCalledWith({ id });
+      expect(workItemUpdatedSubscriptionHandler).toHaveBeenCalledWith({
+        id,
+        useWorkItemFeatures: false,
+      });
     });
 
     it('fetches allowed children types for current work item', () => {
@@ -398,6 +401,7 @@ describe('WorkItemDetail component', () => {
           id: 'gid://gitlab/WorkItem/1',
           confidential: true,
         },
+        useWorkItemFeatures: false,
       });
     });
 
@@ -611,7 +615,9 @@ describe('WorkItemDetail component', () => {
     createComponent();
     await waitForPromises();
 
-    expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
+    expect(successHandler).toHaveBeenCalledWith(
+      expect.objectContaining({ fullPath: 'group/project', iid: '1' }),
+    );
   });
 
   it('calls the work item query by workItemId', async () => {
@@ -619,7 +625,9 @@ describe('WorkItemDetail component', () => {
     createComponent({ props: { workItemId } });
     await waitForPromises();
 
-    expect(workItemByIdQueryHandler).toHaveBeenCalledWith({ id: workItemId });
+    expect(workItemByIdQueryHandler).toHaveBeenCalledWith(
+      expect.objectContaining({ id: workItemId }),
+    );
     expect(successHandler).not.toHaveBeenCalled();
   });
 
@@ -634,7 +642,9 @@ describe('WorkItemDetail component', () => {
     createComponent({ props: { isModal: true } });
     await waitForPromises();
 
-    expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
+    expect(successHandler).toHaveBeenCalledWith(
+      expect.objectContaining({ fullPath: 'group/project', iid: '1' }),
+    );
   });
 
   describe('hierarchy widget', () => {

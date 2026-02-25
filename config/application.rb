@@ -102,6 +102,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/handle_malformed_strings')
     require_dependency Rails.root.join('lib/gitlab/middleware/json_validation')
     require_dependency Rails.root.join('lib/gitlab/middleware/path_traversal_check')
+    require_dependency Rails.root.join('lib/gitlab/middleware/path_depth_check')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_multipart_tempfile_factory')
     require_dependency Rails.root.join('lib/gitlab/middleware/rack_attack_headers')
     require_dependency Rails.root.join('lib/gitlab/middleware/secure_headers')
@@ -468,6 +469,8 @@ module Gitlab
     config.middleware.insert_after ActionDispatch::ShowExceptions, ::Gitlab::Middleware::HandleMalformedStrings
 
     config.middleware.insert_after ::Gitlab::Middleware::HandleMalformedStrings, ::Gitlab::Middleware::PathTraversalCheck
+
+    config.middleware.insert_after ::Gitlab::Middleware::PathTraversalCheck, ::Gitlab::Middleware::PathDepthCheck
 
     config.middleware.insert_after Rack::Sendfile, ::Gitlab::Middleware::RackMultipartTempfileFactory
 

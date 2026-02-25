@@ -76,7 +76,9 @@ describe('WorkItemPrefetch component', () => {
 
       await triggerQuery();
 
-      expect(getWorkItemQueryHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
+      expect(getWorkItemQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({ fullPath: 'group/project', iid: '1' }),
+      );
     });
 
     it('uses the workItemFullPath prop when provided', async () => {
@@ -84,10 +86,12 @@ describe('WorkItemPrefetch component', () => {
 
       await triggerQuery();
 
-      expect(getWorkItemQueryHandler).toHaveBeenCalledWith({
-        fullPath: 'other-full-path',
-        iid: '1',
-      });
+      expect(getWorkItemQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fullPath: 'other-full-path',
+          iid: '1',
+        }),
+      );
     });
   });
 });

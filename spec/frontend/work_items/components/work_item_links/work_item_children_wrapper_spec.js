@@ -321,15 +321,17 @@ describe('WorkItemChildrenWrapper', () => {
       wrapper.findComponent(Draggable).vm.$emit('end', dragParams);
       await waitForPromises();
 
-      expect(moveWorkItemMutationSuccessHandler).toHaveBeenCalledWith({
-        input: {
-          id: 'gid://gitlab/WorkItem/6',
-          adjacentWorkItemId: 'gid://gitlab/WorkItem/5',
-          relativePosition: 'BEFORE',
-        },
-        endCursor: '',
-        pageSize: 2, // number of children
-      });
+      expect(moveWorkItemMutationSuccessHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            id: 'gid://gitlab/WorkItem/6',
+            adjacentWorkItemId: 'gid://gitlab/WorkItem/5',
+            relativePosition: 'BEFORE',
+          },
+          endCursor: '',
+          pageSize: 2, // number of children
+        }),
+      );
     });
 
     it('calls move mutation with hierarchy params when changing parent', async () => {
@@ -341,16 +343,18 @@ describe('WorkItemChildrenWrapper', () => {
       });
       await waitForPromises();
 
-      expect(moveWorkItemMutationSuccessHandler).toHaveBeenCalledWith({
-        input: {
-          id: 'gid://gitlab/WorkItem/6',
-          parentId: 'gid://gitlab/WorkItem/5',
-          adjacentWorkItemId: undefined,
-          relativePosition: undefined,
-        },
-        endCursor: '',
-        pageSize: 1, // number of children
-      });
+      expect(moveWorkItemMutationSuccessHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            id: 'gid://gitlab/WorkItem/6',
+            parentId: 'gid://gitlab/WorkItem/5',
+            adjacentWorkItemId: undefined,
+            relativePosition: undefined,
+          },
+          endCursor: '',
+          pageSize: 1, // number of children
+        }),
+      );
     });
 
     it('emits error and updates cache when change parent mutation fails', async () => {
@@ -471,6 +475,7 @@ describe('WorkItemChildrenWrapper', () => {
               parentId: null,
             },
           },
+          useWorkItemFeatures: false,
         });
       });
 

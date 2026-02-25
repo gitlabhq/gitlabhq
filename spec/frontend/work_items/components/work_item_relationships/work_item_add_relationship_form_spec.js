@@ -140,6 +140,7 @@ describe('WorkItemAddRelationshipForm', () => {
           linkType: linkTypeInput,
           workItemsIds: ['gid://gitlab/WorkItem/641', 'gid://gitlab/WorkItem/642'],
         },
+        useWorkItemFeatures: false,
       });
     });
 

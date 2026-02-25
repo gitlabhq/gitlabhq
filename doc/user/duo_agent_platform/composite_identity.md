@@ -70,12 +70,8 @@ The composite identity is part of the workflow.
 
 1. Create a flow in the AI Catalog.
    - No composite identity-related changes occur.
-1. Enable the flow for the top-level group.
-   - You must be an Owner to enable it.
+1. Enable the flow for a project.
    - A service account is created in the top-level group. (The name is similar to `ai-flowname-groupname`.)
-1. Enable the flow for your project.
-   - The flow must be enabled in the top-level group.
-   - You must be a Maintainer to enable it in the project.
    - The service account is added to the project with the Developer role.
 1. A user executes the flow.
    - The flow is executed by a one-time composite identity.

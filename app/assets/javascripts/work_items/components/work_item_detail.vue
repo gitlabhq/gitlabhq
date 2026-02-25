@@ -16,7 +16,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import toast from '~/vue_shared/plugins/global_toast';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -146,7 +146,7 @@ export default {
     WorkItemMetadataProvider,
     DuoWorkflowAction,
   },
-  mixins: [glFeatureFlagMixin(), trackingMixin],
+  mixins: [glFeatureFlagsMixin(), trackingMixin],
   inject: {
     groupPath: {
       from: 'groupPath',
@@ -228,20 +228,20 @@ export default {
   apollo: {
     workItem: {
       query() {
-        if (this.workItemId) {
-          return workItemByIdQuery;
-        }
-        return workItemByIidQuery;
+        return this.workItemId ? workItemByIdQuery : workItemByIidQuery;
       },
       variables() {
         if (this.workItemId) {
           return {
             id: this.workItemId,
+            useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
           };
         }
+
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
         };
       },
       skip() {
@@ -290,6 +290,7 @@ export default {
         variables() {
           return {
             id: this.workItem.id,
+            useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
           };
         },
         skip() {
@@ -647,6 +648,7 @@ export default {
               id: this.workItem.id,
               confidential: confidentialStatus,
             },
+            useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
           },
         })
         .then(
@@ -736,6 +738,7 @@ export default {
                 description: this.draftData.description,
               },
             },
+            useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
           },
         });
 

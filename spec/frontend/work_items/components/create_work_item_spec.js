@@ -620,6 +620,7 @@ describe('Create work item component', () => {
           title: 'Test title',
           confidential: true,
         }),
+        useWorkItemFeatures: false,
       });
     });
 
@@ -635,6 +636,7 @@ describe('Create work item component', () => {
         input: expect.objectContaining({
           hierarchyWidget: { parentId },
         }),
+        useWorkItemFeatures: false,
       });
     });
 
@@ -651,6 +653,7 @@ describe('Create work item component', () => {
         input: expect.objectContaining({
           namespacePath: fullPath,
         }),
+        useWorkItemFeatures: false,
       });
     });
 
@@ -750,6 +753,7 @@ describe('Create work item component', () => {
         input: expect.objectContaining({
           createSource: WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST,
         }),
+        useWorkItemFeatures: false,
       });
     });
 
@@ -765,6 +769,7 @@ describe('Create work item component', () => {
         input: expect.objectContaining({
           createSource: WORK_ITEM_CREATE_SOURCES.VULNERABILITY,
         }),
+        useWorkItemFeatures: false,
       });
     });
 
@@ -779,6 +784,7 @@ describe('Create work item component', () => {
         input: expect.not.objectContaining({
           createSource: expect.anything(),
         }),
+        useWorkItemFeatures: false,
       });
     });
 
@@ -798,6 +804,7 @@ describe('Create work item component', () => {
         input: expect.objectContaining({
           createSource: WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV, // Uses prop, not VULNERABILITY
         }),
+        useWorkItemFeatures: false,
       });
     });
   });
@@ -1068,6 +1075,7 @@ describe('Create work item component', () => {
             workItemsIds: [id],
           },
         }),
+        useWorkItemFeatures: false,
       });
     });
 
@@ -1082,6 +1090,7 @@ describe('Create work item component', () => {
             workItemsIds: [id],
           },
         }),
+        useWorkItemFeatures: false,
       });
     });
   });
@@ -1260,6 +1269,7 @@ describe('Create work item component', () => {
             noteableId: 'gid://gitlab/MergeRequest/13',
           },
         }),
+        useWorkItemFeatures: false,
       });
     });
 
@@ -1315,6 +1325,7 @@ describe('Create work item component', () => {
               noteableId: 'gid://gitlab/MergeRequest/13',
             },
           }),
+          useWorkItemFeatures: false,
         });
       });
     });

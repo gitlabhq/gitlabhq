@@ -260,6 +260,7 @@ describe('WorkItemChangeTypeModal component', () => {
           id: 'gid://gitlab/WorkItem/1',
           workItemTypeId: issueTypeId,
         },
+        useWorkItemFeatures: false,
       });
     });
 

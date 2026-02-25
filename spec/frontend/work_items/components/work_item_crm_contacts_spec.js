@@ -81,17 +81,6 @@ describe('WorkItemCrmContacts component', () => {
     findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', items);
   };
 
-  const getMutationInput = (contactIds) => {
-    return {
-      input: {
-        id: workItemId,
-        crmContactsWidget: {
-          contactIds,
-        },
-      },
-    };
-  };
-
   it('renders the work item sidebar dropdown widget with default props', async () => {
     createComponent();
     await waitForPromises();
@@ -194,7 +183,15 @@ describe('WorkItemCrmContacts component', () => {
     updateItems([item1Id]);
     await waitForPromises();
 
-    expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith(getMutationInput([item1Id]));
+    expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
+      input: {
+        id: workItemId,
+        crmContactsWidget: {
+          contactIds: [item1Id],
+        },
+      },
+      useWorkItemFeatures: false,
+    });
   });
 
   it('clears all items when updateValue has no items', async () => {
@@ -202,7 +199,15 @@ describe('WorkItemCrmContacts component', () => {
     findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', []);
     await waitForPromises();
 
-    expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith(getMutationInput([]));
+    expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
+      input: {
+        id: workItemId,
+        crmContactsWidget: {
+          contactIds: [],
+        },
+      },
+      useWorkItemFeatures: false,
+    });
   });
 
   it('only returns active contacts or selected items when searching', async () => {

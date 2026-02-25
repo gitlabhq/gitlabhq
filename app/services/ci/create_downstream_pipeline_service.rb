@@ -61,7 +61,8 @@ module Ci
     private
 
     def update_bridge_status!(bridge, pipeline)
-      Gitlab::OptimisticLocking.retry_lock(bridge, name: 'create_downstream_pipeline_update_bridge_status') do |subject|
+      Gitlab::OptimisticLocking.retry_lock_with_transaction(bridge,
+        name: 'create_downstream_pipeline_update_bridge_status') do |subject|
         if pipeline.created_successfully?
           subject.success! unless subject.has_strategy?
           ServiceResponse.success(payload: pipeline)

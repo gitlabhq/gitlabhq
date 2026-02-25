@@ -142,12 +142,14 @@ describe('Work Item State toggle button component', () => {
 
       findStateToggleButton().vm.$emit('click');
 
-      expect(mutationSuccessHandler).toHaveBeenCalledWith({
-        input: {
-          id,
-          stateEvent: STATE_EVENT_CLOSE,
-        },
-      });
+      expect(mutationSuccessHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            id,
+            stateEvent: STATE_EVENT_CLOSE,
+          },
+        }),
+      );
     });
 
     it('calls a mutation with REOPEN', () => {
@@ -157,12 +159,14 @@ describe('Work Item State toggle button component', () => {
 
       findStateToggleButton().vm.$emit('click');
 
-      expect(mutationSuccessHandler).toHaveBeenCalledWith({
-        input: {
-          id,
-          stateEvent: STATE_EVENT_REOPEN,
-        },
-      });
+      expect(mutationSuccessHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            id,
+            stateEvent: STATE_EVENT_REOPEN,
+          },
+        }),
+      );
     });
 
     it('emits `submit-comment` when hasComment is true', async () => {

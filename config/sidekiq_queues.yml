@@ -67,6 +67,8 @@
   - 1
 - - analytics_devops_adoption_create_snapshot
   - 1
+- - analytics_knowledge_graph_expire_traversal_id_cache
+  - 1
 - - analytics_usage_trends_counter_job
   - 1
 - - anti_abuse_ban_duplicate_users

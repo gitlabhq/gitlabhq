@@ -1,6 +1,9 @@
 #import "ee_else_ce/work_items/graphql/work_item.fragment.graphql"
 
-mutation localUpdateWorkItem($input: LocalUpdateWorkItemInput) {
+mutation localUpdateWorkItem(
+  $input: LocalUpdateWorkItemInput
+  $useWorkItemFeatures: Boolean = false
+) {
   localUpdateWorkItem(input: $input) @client {
     workItem {
       ...WorkItem

@@ -284,6 +284,72 @@ class TrackWorkloadDeletions < Gitlab::Database::Migration[2.3]
 end
 ```
 
+#### On tables without an `id` column
+
+The default tracking helpers (`track_record_deletions` and `track_record_deletions_override_table_name`)
+install a trigger function that references `old_table.id`. If the parent table uses a different
+column as its unique identifier (for example, `group_id`), the trigger fails at runtime
+with `column old_table.id does not exist`.
+
+Use `track_record_deletions_with_custom_column` to specify which column value should be
+stored as `primary_key_value` in the `loose_foreign_keys_deleted_records` table:
+
+```ruby
+class TrackCoolWidgetRecordChanges < Gitlab::Database::Migration[2.3]
+  include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
+
+  def up
+    track_record_deletions_with_custom_column(
+      :cool_widgets,
+      column: :group_id,
+      function_name: 'lfk_deleted_records_for_group_id',  # optional, override if default exceeds 63 chars
+      trigger_name: 'cool_widgets_loose_fk'               # optional, override if default exceeds 63 chars
+    )
+  end
+
+  def down
+    untrack_record_deletions(
+      :cool_widgets,
+      trigger_name: 'cool_widgets_loose_fk'  # must match up migration
+    )
+  end
+end
+```
+
+The `column` parameter must reference a column with a unique index or be
+the sole primary key. An `ArgumentError` is raised if the column is not
+unique, as tracking deletions with a non-unique column can cause accidental
+data loss.
+
+The `column` must reference the value that appears in the child table's
+foreign key column. For example, if the YAML configuration is:
+
+```yaml
+cool_widget_states:
+  - table: cool_widgets
+    column: cool_widget_group_id
+    on_delete: async_delete
+```
+
+Then `column: :group_id` is correct, because `cool_widget_group_id` on the child table
+stores values from the `group_id` column of the parent table.
+
+The trigger function is named after the column (`lfk_deleted_records_for_#{column}`)
+so it can be shared across tables that use the same column. When tracking
+deletions on a partition, pass `parent_table:` so the tracking record stores the
+parent table name:
+
+```ruby
+track_record_deletions_with_custom_column(
+  partition_identifier, column: :group_id,
+  parent_table: :cool_widgets
+)
+```
+
+An `ArgumentError` is raised if the derived function or trigger name exceeds
+the PostgreSQL 63-character identifier limit. Use the `function_name:` and
+`trigger_name:` parameters to provide shorter names.
+
 ### Remove the foreign key
 
 If there is an existing foreign key, then it can be removed from the database. This foreign key describes the link between the `projects` and `ci_pipelines` tables:
@@ -621,8 +687,12 @@ The inserted record stores the following information about the deleted record:
 
 - `fully_qualified_table_name`: name of the database table where the record was located.
 - `primary_key_value`: the ID of the record, the value is present in the child tables as
-  the foreign key value. At the moment, composite primary keys are not supported, the parent table
-  must have an `id` column.
+  the foreign key value. At the moment, composite primary keys are not supported. The parent table
+  must have a single column that uniquely identifies each row, whose values
+  are stored as foreign keys in child tables. By default, the tracking
+  helpers assume this column is named `id`. For tables that use a different
+  column name, use `track_record_deletions_with_custom_column` with the
+  `column` parameter.
 - `status`: defaults to pending, represents the status of the cleanup process.
 - `consume_after`: defaults to the current time.
 - `cleanup_attempts`: defaults to 0. The number of times the worker tried to clean up this record.

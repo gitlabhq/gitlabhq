@@ -2,6 +2,8 @@
 key_path: counts.count_total_create_ci_build
 description: Total count of ci builds across all project and project types
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 performance_indicator_type: []
 value_type: number
 status: active

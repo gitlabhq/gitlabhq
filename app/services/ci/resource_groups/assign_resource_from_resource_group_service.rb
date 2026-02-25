@@ -24,7 +24,8 @@ module Ci
         resource_group.upcoming_processables.take(free_resources).each do |upcoming|
           enqueued = false
 
-          Gitlab::OptimisticLocking.retry_lock(upcoming, name: 'enqueue_waiting_for_resource') do |processable|
+          Gitlab::OptimisticLocking.retry_lock_with_transaction(upcoming,
+            name: 'enqueue_waiting_for_resource') do |processable|
             if processable.has_outdated_deployment?
               processable.drop!(:failed_outdated_deployment_job)
             else

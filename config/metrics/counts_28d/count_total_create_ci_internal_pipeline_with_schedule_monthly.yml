@@ -2,6 +2,8 @@
 key_path: counts.count_total_create_ci_internal_pipeline_with_schedule_monthly
 description: Monthly count of internal pipelines created through a schedule
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 performance_indicator_type: []
 value_type: number
 status: active
