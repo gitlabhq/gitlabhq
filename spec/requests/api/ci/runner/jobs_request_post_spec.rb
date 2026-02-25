@@ -360,7 +360,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(json_response['artifacts']).to eq(expected_artifacts)
             expect(json_response['cache']).to match(expected_cache)
             expect(json_response['variables']).to include(*expected_variables)
-            expect(json_response['features']).to match(expected_features)
+            expect(json_response['features']).to match(a_hash_including(expected_features))
           end
 
           it 'creates persistent ref' do

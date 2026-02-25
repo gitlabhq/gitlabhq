@@ -1,11 +1,24 @@
 # frozen_string_literal: true
 
+def configure_load_balancing!
+  Gitlab::Database::LoadBalancing.configure! do |load_balancer|
+    load_balancer.enabled = !Gitlab::Runtime.rake?
+    load_balancer.default_pool_size = Gitlab::Database.default_pool_size
+    load_balancer.base_models = ::Gitlab::Database.database_base_models_using_load_balancing.values.freeze
+    load_balancer.all_database_names = ::Gitlab::Database.all_database_names.freeze
+  end
+end
+
+configure_load_balancing!
+
 Gitlab::Application.configure do |config|
   config.middleware.use(Gitlab::Database::LoadBalancing::RackMiddleware)
 
   # We need re-rerun the setup when code reloads in development
   config.reloader.to_prepare do
     if Gitlab.dev_or_test_env?
+      configure_load_balancing!
+
       Gitlab::Database::LoadBalancing.base_models.each do |model|
         Gitlab::Database::LoadBalancing::Setup.new(model).setup
       end

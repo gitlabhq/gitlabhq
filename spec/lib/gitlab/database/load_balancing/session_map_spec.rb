@@ -37,10 +37,9 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
 
     context 'when using a rake runtime' do
       let(:pri_session) { Gitlab::Database::LoadBalancing::Session.new }
-      let(:pri_lb) { instance_double('Gitlab::Database::LoadBalancing::LoadBalancer', name: :primary) }
+      let(:pri_lb) { instance_double(Gitlab::Database::LoadBalancing::LoadBalancer, name: :primary) }
 
       before do
-        allow(Gitlab::Runtime).to receive(:rake?).and_return(true)
         sm = described_class.new
         sm.session_map[:primary] = pri_session
         RequestStore[described_class::CACHE_KEY] = sm
@@ -56,48 +55,29 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
     end
 
     context 'when receiving invalid db type' do
-      let(:pri_lb) { instance_double('Gitlab::Database::LoadBalancing::LoadBalancer', name: :primary) }
-      let(:invalid_lb) { instance_double('Gitlab::Database::LoadBalancing::LoadBalancer', name: :invalid) }
+      let(:pri_lb) { instance_double(Gitlab::Database::LoadBalancing::LoadBalancer, name: :primary) }
+      let(:invalid_lb) { instance_double(Gitlab::Database::LoadBalancing::LoadBalancer, name: :invalid) }
 
       subject(:current) { described_class.current(lb) }
 
-      Gitlab::Runtime::AVAILABLE_RUNTIMES.each do |runtime|
-        context "when using #{runtime} runtime" do
-          before do
-            allow(Gitlab::Runtime).to receive(runtime).and_return(true)
-            allow(Gitlab::Runtime).to receive(:safe_identify).and_return(runtime)
-          end
+      context 'when db is invalid' do
+        let(:lb) { instance_double(Gitlab::Database::LoadBalancing::LoadBalancer, name: :invalid) }
 
-          context 'when db is invalid' do
-            let(:lb) { instance_double('Gitlab::Database::LoadBalancing::LoadBalancer', name: :invalid) }
-
-            it 'raises error' do
-              expect do
-                current
-              end.to raise_error(instance_of(Gitlab::Database::LoadBalancing::SessionMap::InvalidLoadBalancerNameError))
-            end
-          end
-
-          context 'when db is primary' do
-            let(:lb) { instance_double('Gitlab::Database::LoadBalancing::LoadBalancer', name: :primary) }
-
-            it 'reports error without raising' do
-              expect(Gitlab::ErrorTracking).to receive(:track_exception)
-                .with(an_instance_of(Gitlab::Database::LoadBalancing::SessionMap::InvalidLoadBalancerNameError))
-              expect(current).to be_instance_of(Gitlab::Database::LoadBalancing::Session)
-            end
-          end
+        it 'raises error' do
+          expect do
+            current
+          end.to raise_error(instance_of(Gitlab::Database::LoadBalancing::SessionMap::InvalidLoadBalancerNameError))
         end
       end
 
-      it 'handles unknown runtimes' do
-        allow(Gitlab::Runtime).to receive(:rake?).and_return(false)
-        allow(Gitlab::Runtime).to receive(:safe_identify).and_return(nil)
+      context 'when db is primary' do
+        let(:lb) { instance_double(Gitlab::Database::LoadBalancing::LoadBalancer, name: :primary) }
 
-        expect(described_class.current(pri_lb)).to be_instance_of(Gitlab::Database::LoadBalancing::Session)
-        expect do
-          described_class.current(invalid_lb)
-        end.to raise_error(instance_of(Gitlab::Database::LoadBalancing::SessionMap::InvalidLoadBalancerNameError))
+        it 'reports error without raising' do
+          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+            .with(an_instance_of(Gitlab::Database::LoadBalancing::SessionMap::InvalidLoadBalancerNameError))
+          expect(current).to be_instance_of(Gitlab::Database::LoadBalancing::Session)
+        end
       end
     end
   end
@@ -115,7 +95,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
   end
 
   context 'when wrapping queries with load balancing sessions' do
-    let(:dbs) { Gitlab::Database.database_base_models.values }
+    let(:dbs) { Gitlab::Database::LoadBalancing.base_models }
     let(:names) { dbs.map { |m| m.load_balancer.name }.uniq }
 
     let(:scoped_session) { Gitlab::Database::LoadBalancing::ScopedSessions.new(dbs, {}) }

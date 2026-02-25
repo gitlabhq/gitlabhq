@@ -5421,6 +5421,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '#features' do
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+
+    subject { build.features }
+
+    it 'includes default features' do
+      is_expected.to include(
+        trace_sections: true,
+        failure_reasons: include('script_failure')
+      )
+    end
+  end
+
   describe '#supported_runner?' do
     let_it_be_with_refind(:build) { create(:ci_build, pipeline: pipeline) }
 
@@ -6341,7 +6354,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it 'includes partition_id in the token prefix' do
-        prefix = ci_build.token.match(/^glcbt-([\h]+)_/)
+        prefix = ci_build.token.match(/^glcbt-(\h+)_/)
         partition_prefix = prefix[1].to_i(16)
 
         expect(partition_prefix).to eq(ci_testing_partition_id)

@@ -309,27 +309,7 @@ module Gitlab
     end
 
     def self.db_config_for_connection(connection)
-      return unless connection
-
-      # For a ConnectionProxy we want to avoid ambiguous db_config as it may
-      # sometimes default to replica so we always return the primary config
-      # instead.
-      if connection.is_a?(::Gitlab::Database::LoadBalancing::ConnectionProxy)
-        return connection.load_balancer.configuration.db_config
-      end
-
-      # During application init we might receive `NullPool`
-      return unless connection.respond_to?(:pool) &&
-        connection.pool.respond_to?(:db_config)
-
-      db_config = connection.pool.db_config
-      db_config unless empty_config?(db_config)
-    end
-
-    def self.empty_config?(db_config)
-      return true unless db_config
-
-      db_config.is_a?(ActiveRecord::ConnectionAdapters::NullPool::NullConfig)
+      Gitlab::Database::LoadBalancing.db_config_for_connection(connection)
     end
 
     # At the moment, the connection can only be retrieved by
