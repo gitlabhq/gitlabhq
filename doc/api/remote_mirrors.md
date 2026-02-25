@@ -222,11 +222,8 @@ project pull mirroring API.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Each project can have a maximum of 10 enabled push mirrors. For more information, see [Maximum number of project push mirrors](../administration/instance_limits.md#maximum-number-of-project-push-mirrors).
-
-{{< /alert >}}
+> [!note]
+> Each project can have a maximum of 10 enabled push mirrors. For more information, see [Maximum number of project push mirrors](../administration/instance_limits.md#maximum-number-of-project-push-mirrors).
 
 Create a push mirror for a project. Push mirroring is disabled by default. To enable it, include the optional parameter
 `enabled` when you create the mirror.

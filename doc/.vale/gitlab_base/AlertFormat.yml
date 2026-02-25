@@ -11,5 +11,5 @@ level: error
 nonword: true
 scope: raw
 tokens:
-  - '\{\{< alert type="(note|warning|flag|disclaimer)" />\}\}'
+  - '\{\{< alert type="(note|warning|flag|disclaimer)" >\}\}'
   - '^ *note:'

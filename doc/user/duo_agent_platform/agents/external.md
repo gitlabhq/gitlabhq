@@ -468,11 +468,8 @@ Mention the service account username when you assign tasks to the external agent
 
 If you create an external agent from the AI Catalog and enable it in a top-level group, a service account is automatically created with the name `ai-<agent>-<group>`. For example, if you enable an agent named `Claude code agent` in the `GitLab Duo` group, the service account name is `ai-claude-code-agent-gitlab-duo`.
 
-{{< alert type="warning" >}}
-
-If you use the same service account across multiple projects, that gives the external agent attached to that service account access to all of those projects.
-
-{{< /alert >}}
+> [!warning]
+> If you use the same service account across multiple projects, that gives the external agent attached to that service account access to all of those projects.
 
 To set up the service account, take the following actions. If you do not have sufficient
 permissions, ask your instance administrator or top-level group Owner for help.

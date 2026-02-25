@@ -38,15 +38,12 @@ The GitLab Duo CLI can help you:
 - Automate CI/CD configuration, troubleshoot pipeline errors, and optimize pipelines.
 - Perform multi-step development tasks autonomously.
 
-{{< alert type="note" >}}
-
-The GitLab Duo CLI (`duo`) is a separate tool from the [GitLab CLI](https://docs.gitlab.com/cli/)
-(`glab`). While `glab` provides command-line access to GitLab features like issues and merge
-requests, `duo` provides autonomous AI capabilities to complete tasks and assist you while you work.
-
-A unified experience is proposed in [epic 20826](https://gitlab.com/groups/gitlab-org/-/work_items/20826).
-
-{{< /alert >}}
+> [!note]
+> The GitLab Duo CLI (`duo`) is a separate tool from the [GitLab CLI](https://docs.gitlab.com/cli/)
+> (`glab`). While `glab` provides command-line access to GitLab features like issues and merge
+> requests, `duo` provides autonomous AI capabilities to complete tasks and assist you while you work.
+>
+> A unified experience is proposed in [epic 20826](https://gitlab.com/groups/gitlab-org/-/work_items/20826).
 
 The GitLab Duo CLI offers two modes:
 

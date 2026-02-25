@@ -88,7 +88,8 @@ To enable static reachability analysis in your project:
 ```yaml
 include:
 - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
-  variables:
+
+variables:
   DS_STATIC_REACHABILITY_ENABLED: true
 ```
 
@@ -100,14 +101,14 @@ runs and outputs an SBOM, the results are supplemented by static reachability an
 A dependency can have one of the following reachability values. Prioritize triage and remediation of
 dependencies marked as **Yes**, because these are confirmed to be used in your code.
 
-**Yes**
-: The package linked to this vulnerability is confirmed reachable in code. When a direct
-dependency is marked as reachable, its transitive dependencies are also marked as reachable.
+Yes
+: The package linked to this vulnerability is confirmed reachable in code. When a direct dependency
+is marked as reachable, its transitive dependencies are also marked as reachable.
 
-**Not Found**
+Not Found
 : Static reachability analysis ran successfully but did not detect usage of the vulnerable package.
 
-**Not Available**
+Not Available
 : Static reachability analysis was not executed, so no reachability data exists.
 
 To find the reachability value for a vulnerable dependency:
