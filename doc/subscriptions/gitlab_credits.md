@@ -29,6 +29,10 @@ where each usage action consumes a number of credits.
 Credits are calculated based on the features and models you use, as listed in the credit multiplier tables.
 You are billed for features that are [generally available](../policy/development_stages_support.md#generally-available).
 
+Billing occurs at the root namespace or top-level group level, not at the project level.
+Credit usage is attributed to the user who performs the action, regardless of which project they are using the features in.
+All usage in a root namespace or top-level group is consolidated for billing purposes.
+
 GitLab provides three ways to obtain credits:
 
 - Included credits
@@ -233,6 +237,9 @@ The following table lists the number of requests you can make with one GitLab Cr
 [GitLab Duo Chat (Agentic)](../user/gitlab_duo_chat/agentic_chat.md) doesn't use a fixed model,
 so credit cost varies based on the model selected for the request.
 With the default model (`claude-4.5-haiku`) you can make 6.7 requests with one credit.
+
+Each message sent to GitLab Duo Chat (Agentic) counts as one billable request.
+One conversation window can include multiple messages, and so multiple billable requests.
 
 ## GitLab Credits dashboard
 
