@@ -53673,6 +53673,8 @@ Values for sorting CI/CD job analytics.
 | <a id="cijobanalyticssortp95_duration_desc"></a>`P95_DURATION_DESC` | Sort by 95th percentile duration in descending order. |
 | <a id="cijobanalyticssortp99_duration_asc"></a>`P99_DURATION_ASC` | Sort by 99th percentile duration in ascending order. |
 | <a id="cijobanalyticssortp99_duration_desc"></a>`P99_DURATION_DESC` | Sort by 99th percentile duration in descending order. |
+| <a id="cijobanalyticssortstage_name_asc"></a>`STAGE_NAME_ASC` | Sort by stage name in ascending order. |
+| <a id="cijobanalyticssortstage_name_desc"></a>`STAGE_NAME_DESC` | Sort by stage name in descending order. |
 | <a id="cijobanalyticssortsuccess_rate_asc"></a>`SUCCESS_RATE_ASC` | Sort by success rate in ascending order. |
 | <a id="cijobanalyticssortsuccess_rate_desc"></a>`SUCCESS_RATE_DESC` | Sort by success rate in descending order. |
 

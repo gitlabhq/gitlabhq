@@ -1,0 +1,10 @@
+---
+name: use_job_analytics_deduplicated_finder
+description: Use deduplicated finder for CI job analytics to support safe rollout during ClickHouse backfill
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/585179
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224886
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591429
+milestone: '18.10'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

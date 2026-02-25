@@ -10,7 +10,7 @@ PATH
     gitlab-rspec (0.1.0)
       activerecord (>= 6.1, < 8)
       activesupport (>= 6.1, < 8)
-      gitlab_quality-test_tooling (>= 3.1, < 4)
+      gitlab_quality-test_tooling (>= 3.8, < 4)
       rspec (~> 3.0)
 
 PATH
@@ -198,13 +198,12 @@ GEM
       rubocop-rails (~> 2.26.0)
       rubocop-rspec (~> 3.0.4)
       rubocop-rspec_rails (~> 2.30.0)
-    gitlab_quality-test_tooling (3.1.0)
+    gitlab_quality-test_tooling (3.8.0)
       activesupport (>= 7.0)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
       gitlab (>= 4.19, < 7.0)
       http (~> 5.0)
-      influxdb-client (~> 3.1)
       nokogiri (~> 1.10)
       parallel (>= 1, < 2)
       rainbow (>= 3, < 4)
@@ -263,8 +262,6 @@ GEM
       mutex_m
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    influxdb-client (3.2.0)
-      csv
     io-console (0.8.1)
     irb (1.15.2)
       pp (>= 0.6.0)
@@ -585,7 +582,7 @@ CHECKSUMS
   gitlab-safe_request_store (0.1.0)
   gitlab-styles (13.1.0) sha256=46c7c5729616355868b7b40a4ffcd052b36346076042abe8cafaee1688cbf2c1
   gitlab-utils (0.2.0)
-  gitlab_quality-test_tooling (3.1.0) sha256=0c0cb0f24e556eb06181a6c1b971efd963675171b52ed46025c7091263ec56f4
+  gitlab_quality-test_tooling (3.8.0) sha256=fe6153e037426e4c979ae2992cbc3de6b370fc82a9cd2dd624587cf1b4f98a17
   globalid (1.2.1) sha256=70bf76711871f843dbba72beb8613229a49429d1866828476f9c9d6ccc327ce9
   google-apis-compute_v1 (0.136.0) sha256=04db183803f547265b0489df92e76d9761b2b7ce36be8ead88bc14ed36ab4582
   google-apis-core (0.18.0) sha256=96b057816feeeab448139ed5b5c78eab7fc2a9d8958f0fbc8217dedffad054ee
@@ -604,7 +601,6 @@ CHECKSUMS
   httparty (0.23.2) sha256=72d52830ab5862115a3c9a4b16738dd67d9a691ffd796cf86bad8abaa8f1febb
   httpclient (2.9.0) sha256=4b645958e494b2f86c2f8a2f304c959baa273a310e77a2931ddb986d83e498c8
   i18n (1.12.0) sha256=91e3cc1b97616d308707eedee413d82ee021d751c918661fb82152793e64aced
-  influxdb-client (3.2.0) sha256=dc1e8ec80542f64c9f31af6d9bfa4c147474bf32b9179a7f0cab970793b8e1f2
   io-console (0.8.1) sha256=1e15440a6b2f67b6ea496df7c474ed62c860ad11237f29b3bd187f054b925fcb
   irb (1.15.2) sha256=222f32952e278da34b58ffe45e8634bf4afc2dc7aa9da23fed67e581aa50fdba
   json (2.6.3) sha256=86aaea16adf346a2b22743d88f8dcceeb1038843989ab93cda44b5176c845459

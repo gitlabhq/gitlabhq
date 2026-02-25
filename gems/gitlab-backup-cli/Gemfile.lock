@@ -4,7 +4,7 @@ PATH
     gitlab-rspec (0.1.0)
       activerecord (>= 6.1, < 8)
       activesupport (>= 6.1, < 8)
-      gitlab_quality-test_tooling (>= 3.1, < 4)
+      gitlab_quality-test_tooling (>= 3.8, < 4)
       rspec (~> 3.0)
 
 PATH
@@ -139,13 +139,12 @@ GEM
       rubocop-performance (~> 1.15)
       rubocop-rails (~> 2.17)
       rubocop-rspec (~> 2.22)
-    gitlab_quality-test_tooling (3.1.0)
+    gitlab_quality-test_tooling (3.8.0)
       activesupport (>= 7.0)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
       gitlab (>= 4.19, < 7.0)
       http (~> 5.0)
-      influxdb-client (~> 3.1)
       nokogiri (~> 1.10)
       parallel (>= 1, < 2)
       rainbow (>= 3, < 4)
@@ -241,8 +240,6 @@ GEM
       mutex_m
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
-    influxdb-client (3.2.0)
-      csv
     io-console (0.8.1)
     json (2.10.1)
     jwt (2.8.2)
@@ -458,7 +455,7 @@ CHECKSUMS
   gitlab-backup-cli (0.0.1)
   gitlab-rspec (0.1.0)
   gitlab-styles (11.0.0) sha256=0dd8ec066ce9955ac51d3616c6bfded30f75bb526f39ff392ece6f43d5b9406b
-  gitlab_quality-test_tooling (3.1.0) sha256=0c0cb0f24e556eb06181a6c1b971efd963675171b52ed46025c7091263ec56f4
+  gitlab_quality-test_tooling (3.8.0) sha256=fe6153e037426e4c979ae2992cbc3de6b370fc82a9cd2dd624587cf1b4f98a17
   google-apis-compute_v1 (0.136.0) sha256=04db183803f547265b0489df92e76d9761b2b7ce36be8ead88bc14ed36ab4582
   google-apis-core (0.18.0) sha256=96b057816feeeab448139ed5b5c78eab7fc2a9d8958f0fbc8217dedffad054ee
   google-apis-dns_v1 (0.49.0) sha256=4ffec461dfdbf2650470f3a0f44a9d9f7af34c672f079e740f366c36efec70ea
@@ -494,7 +491,6 @@ CHECKSUMS
   httparty (0.23.2) sha256=72d52830ab5862115a3c9a4b16738dd67d9a691ffd796cf86bad8abaa8f1febb
   httpclient (2.9.0) sha256=4b645958e494b2f86c2f8a2f304c959baa273a310e77a2931ddb986d83e498c8
   i18n (1.14.5) sha256=26dcbc05e364b57e27ab430148b3377bc413987d34cc042336271d8f42e9d1b9
-  influxdb-client (3.2.0) sha256=dc1e8ec80542f64c9f31af6d9bfa4c147474bf32b9179a7f0cab970793b8e1f2
   io-console (0.8.1) sha256=1e15440a6b2f67b6ea496df7c474ed62c860ad11237f29b3bd187f054b925fcb
   json (2.10.1) sha256=ddc88ad91a1baf3f0038c174f253af3b086d30dc74db17ca4259bbde982f94dc
   jwt (2.8.2) sha256=5a9877315e224d551785560870287267088eedfec02d5239664def148d18bc12

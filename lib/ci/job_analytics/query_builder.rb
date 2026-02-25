@@ -33,7 +33,11 @@ module Ci
         return unless ::Gitlab::ClickHouse.enabled_for_analytics? && Ability.allowed?(current_user, :read_build,
           project)
 
-        build_finder.query_builder
+        finder = build_finder
+
+        return finder.final_query if finder.is_a?(::ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder)
+
+        finder.query_builder
       end
 
       private
@@ -63,7 +67,8 @@ module Ci
       end
 
       def use_deduplicated_finder?
-        ::ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper.backfill_in_progress?
+        ::Feature.enabled?(:use_job_analytics_deduplicated_finder, project, type: :gitlab_com_derisk) &&
+          ::ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper.backfill_in_progress?
       end
 
       def extract_sort_info(value)

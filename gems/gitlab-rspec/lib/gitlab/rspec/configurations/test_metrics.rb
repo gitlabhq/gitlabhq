@@ -24,19 +24,19 @@ module Gitlab
               next if rspec_config.dry_run?
 
               GitlabQuality::TestTooling::TestMetricsExporter::Config.configure do |exporter_config|
+                self.logger = exporter_config.logger
+
                 if clickhouse_env_vars_present?
                   yield(exporter_config) if block_given?
 
                   exporter_config.run_type = run_type
-                  exporter_config.custom_metrics_proc = custom_metrics_proc(exporter_config.logger)
+                  exporter_config.custom_metrics_proc = custom_metrics_proc
                   exporter_config.clickhouse_config = clickhouse_config
 
                   rspec_config.add_formatter GitlabQuality::TestTooling::TestMetricsExporter::Formatter
                 else
                   missing = REQUIRED_CLICKHOUSE_ENV_VARS.reject { |var| ENV[var] && !ENV[var].empty? }
-                  exporter_config.logger.warn(
-                    "Test metrics export is enabled but missing environment variables: #{missing.join(', ')}"
-                  )
+                  logger.warn("Test metrics export is enabled but missing environment variables: #{missing.join(', ')}")
                 end
               end
             end
@@ -44,17 +44,26 @@ module Gitlab
 
           private
 
+          attr_writer :logger
+
+          def logger
+            @logger ||= Logger.new($stdout)
+          end
+
           def clickhouse_env_vars_present?
             REQUIRED_CLICKHOUSE_ENV_VARS.all? { |var| ENV[var] && !ENV[var].empty? }
           end
 
-          def owners_table
-            @owners_table ||= GitlabQuality::TestTooling::CodeCoverage::ClickHouse::CategoryOwnersTable.new(
+          def owner_records
+            @owner_records ||= GitlabQuality::TestTooling::CodeCoverage::ClickHouse::CategoryOwnersTable.new(
               database: ENV["GLCI_CLICKHOUSE_SHARED_DB"],
               url: clickhouse_url,
               username: clickhouse_username,
               password: clickhouse_password
-            )
+            ).owner_records
+          rescue StandardError => e
+            logger.error("Failed to retrieve owner data: #{e}")
+            @owner_records = {}
           end
 
           def clickhouse_config
@@ -67,20 +76,18 @@ module Gitlab
             )
           end
 
-          def custom_metrics_proc(logger)
+          def custom_metrics_proc
             proc do |example|
               feature_category = example.metadata[:feature_category]
 
-              owners = begin
-                feature_category ? owners_table.owners(feature_category.to_s) : {}
-              rescue GitlabQuality::TestTooling::CodeCoverage::ClickHouse::CategoryOwnersTable::MissingMappingError
-                logger.error("Example '#{example.location}' contains unknown feature_category '#{feature_category}'")
-                {}
-              rescue StandardError => e
-                logger.error("Failed to fetch owners for feature category '#{feature_category}'")
-                logger.error(e.message)
-                {}
-              end
+              owners = if feature_category
+                         owner_records.fetch(feature_category.to_s, {}).tap do |o|
+                           logger.warn("Feature category '#{feature_category}' has no owner data") if o.empty?
+                         end
+                       else
+                         logger.warn("Example '#{example.description}' missing feature category metadata.")
+                         {}
+                       end
 
               { pipeline_type: pipeline_type, ci_pipeline_id: ci_pipeline_id, **owners }
             end

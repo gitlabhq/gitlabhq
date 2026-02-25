@@ -9,7 +9,6 @@ RSpec.describe Gitlab::Rspec::Configurations::TestMetrics do
 
   describe '.configure!' do
     let(:rspec_config) { instance_double(RSpec::Core::Configuration, dry_run?: false) }
-    let(:logger) { instance_double(Logger, warn: nil, info: nil, error: nil, debug: nil) }
     let(:exporter_config) do
       instance_double(
         GitlabQuality::TestTooling::TestMetricsExporter::Config,
@@ -19,6 +18,9 @@ RSpec.describe Gitlab::Rspec::Configurations::TestMetrics do
         'clickhouse_config=': nil
       )
     end
+
+    let!(:original_logger) { described_class.instance_variable_get(:@logger) }
+    let(:logger) { instance_double(Logger, warn: nil, info: nil, error: nil, debug: nil) }
 
     let(:all_env_vars) do
       {
@@ -36,12 +38,19 @@ RSpec.describe Gitlab::Rspec::Configurations::TestMetrics do
 
     before do
       described_class.instance_variable_set(:@run_type, nil)
+      described_class.instance_variable_set(:@logger, logger)
 
       all_env_vars.each { |key, value| stub_env(key, value) }
 
       allow(RSpec).to receive(:configure).and_yield(rspec_config)
       allow(GitlabQuality::TestTooling::TestMetricsExporter::Config).to receive(:configure).and_yield(exporter_config)
       allow(rspec_config).to receive(:add_formatter)
+    end
+
+    after do
+      # on ci test_metrics export is setup for the test process running this test,
+      # so we need to ensure class instance variable is restored to original state
+      described_class.instance_variable_set(:@logger, original_logger)
     end
 
     context 'when all required environment variables are set' do

@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
+import SnippetBlobEditHeader from '~/snippets/components/snippet_blob_edit_header.vue';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { getBaseURL, joinPaths } from '~/lib/utils/url_utility';
@@ -10,7 +10,7 @@ import SourceEditor from '~/vue_shared/components/source_editor.vue';
 
 export default {
   components: {
-    BlobHeaderEdit,
+    SnippetBlobEditHeader,
     GlLoadingIcon,
     SourceEditor,
   },
@@ -71,7 +71,7 @@ export default {
 </script>
 <template>
   <div class="file-holder snippet" data-testid="file-holder-container">
-    <blob-header-edit
+    <snippet-blob-edit-header
       :id="inputId"
       :value="blob.path"
       data-testid="file-name-field"

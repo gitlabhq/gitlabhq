@@ -397,15 +397,6 @@ To customize the time format:
 1. Under **Time format**, select either the **System**, **12-hour**, or **24-hour** option.
 1. Select **Save changes**.
 
-<!--- start_remove The following content will be removed on remove_date: '2026-02-19' -->
-
-## Disable exact code search (removed)
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/554933) in GitLab 18.3
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210974) in 18.6.
-
-<!--- end_remove -->
-
 ## User identities in CI job JSON web tokens
 
 {{< history >}}

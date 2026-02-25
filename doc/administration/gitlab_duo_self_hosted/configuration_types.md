@@ -9,7 +9,6 @@ title: AI Gateway configuration and authentication
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}

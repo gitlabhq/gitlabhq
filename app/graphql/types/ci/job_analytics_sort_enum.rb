@@ -9,6 +9,9 @@ module Types
       value 'NAME_ASC', 'Sort by name in ascending order.', value: :name_asc
       value 'NAME_DESC', 'Sort by name in descending order.', value: :name_desc
 
+      value 'STAGE_NAME_ASC', 'Sort by stage name in ascending order.', value: :stage_name_asc
+      value 'STAGE_NAME_DESC', 'Sort by stage name in descending order.', value: :stage_name_desc
+
       value 'MEAN_DURATION_ASC',
         'Sort by mean duration in ascending order.',
         value: :mean_duration_asc

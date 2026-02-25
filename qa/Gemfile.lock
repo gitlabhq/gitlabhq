@@ -4,7 +4,7 @@ PATH
     gitlab-rspec (0.1.0)
       activerecord (>= 6.1, < 8)
       activesupport (>= 6.1, < 8)
-      gitlab_quality-test_tooling (>= 3.1, < 4)
+      gitlab_quality-test_tooling (>= 3.8, < 4)
       rspec (~> 3.0)
 
 PATH
@@ -156,7 +156,7 @@ GEM
       rainbow (>= 3, < 4)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_quality-test_tooling (3.6.1)
+    gitlab_quality-test_tooling (3.8.0)
       activesupport (>= 7.0)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
@@ -408,7 +408,7 @@ DEPENDENCIES
   gitlab-qa (~> 15, >= 15.7.1)
   gitlab-rspec!
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 3.6.1)
+  gitlab_quality-test_tooling (~> 3.8.0)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)
   nokogiri (~> 1.18, >= 1.18.9)

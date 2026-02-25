@@ -4,7 +4,7 @@ PATH
     gitlab-rspec (0.1.0)
       activerecord (>= 6.1, < 8)
       activesupport (>= 6.1, < 8)
-      gitlab_quality-test_tooling (>= 3.1, < 4)
+      gitlab_quality-test_tooling (>= 3.8, < 4)
       rspec (~> 3.0)
 
 GEM
@@ -117,13 +117,12 @@ GEM
       rubocop-performance (~> 1.15)
       rubocop-rails (~> 2.17)
       rubocop-rspec (~> 2.22)
-    gitlab_quality-test_tooling (3.1.0)
+    gitlab_quality-test_tooling (3.8.0)
       activesupport (>= 7.0)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
       gitlab (>= 4.19, < 7.0)
       http (~> 5.0)
-      influxdb-client (~> 3.1)
       nokogiri (~> 1.10)
       parallel (>= 1, < 2)
       rainbow (>= 3, < 4)
@@ -178,8 +177,6 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.13.0)
       concurrent-ruby (~> 1.0)
-    influxdb-client (3.2.0)
-      csv
     io-console (0.8.1)
     json (2.6.3)
     jwt (3.1.2)
@@ -415,7 +412,7 @@ CHECKSUMS
   gitlab (6.1.0) sha256=4ae1f866a1f5ae07aa1125e86c0a656b2ad0fe1d78d5ad91b8bc3b67d66063a5
   gitlab-rspec (0.1.0)
   gitlab-styles (10.1.0) sha256=f42745f5397d042fe24cf2d0eb56c995b37f9f43d8fb79b834d197a1cafdc84a
-  gitlab_quality-test_tooling (3.1.0) sha256=0c0cb0f24e556eb06181a6c1b971efd963675171b52ed46025c7091263ec56f4
+  gitlab_quality-test_tooling (3.8.0) sha256=fe6153e037426e4c979ae2992cbc3de6b370fc82a9cd2dd624587cf1b4f98a17
   google-apis-compute_v1 (0.136.0) sha256=04db183803f547265b0489df92e76d9761b2b7ce36be8ead88bc14ed36ab4582
   google-apis-core (1.0.2) sha256=ba4579aaadc902d6cc7bc8db88f566ab00f5e31ea87ab41e9f9a032c470f2629
   google-apis-dns_v1 (0.49.0) sha256=4ffec461dfdbf2650470f3a0f44a9d9f7af34c672f079e740f366c36efec70ea
@@ -432,7 +429,6 @@ CHECKSUMS
   http-form_data (2.3.0) sha256=cc4eeb1361d9876821e31d7b1cf0b68f1cf874b201d27903480479d86448a5f3
   httparty (0.23.2) sha256=72d52830ab5862115a3c9a4b16738dd67d9a691ffd796cf86bad8abaa8f1febb
   i18n (1.13.0) sha256=1d24cacd941be578faa7fc5d537d573a3e76e2822ce7dffc0c71c41ba91e63fa
-  influxdb-client (3.2.0) sha256=dc1e8ec80542f64c9f31af6d9bfa4c147474bf32b9179a7f0cab970793b8e1f2
   io-console (0.8.1) sha256=1e15440a6b2f67b6ea496df7c474ed62c860ad11237f29b3bd187f054b925fcb
   json (2.6.3) sha256=86aaea16adf346a2b22743d88f8dcceeb1038843989ab93cda44b5176c845459
   jwt (3.1.2) sha256=af6991f19a6bb4060d618d9add7a66f0eeb005ac0bc017cd01f63b42e122d535

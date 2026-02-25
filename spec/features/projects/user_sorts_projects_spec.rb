@@ -30,6 +30,22 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
         expect(find_dropdown_toggle).to have_content(sort_label)
       end
     end
+
+    it "is set on the group_canonical_path" do
+      visit(group_canonical_path(group))
+
+      within '[data-testid=groups-projects-sort]' do
+        expect(find_dropdown_toggle).to have_content(sort_label)
+      end
+    end
+
+    it "is set on the details_group_path" do
+      visit(details_group_path(group))
+
+      within '[data-testid=groups-projects-sort]' do
+        expect(find_dropdown_toggle).to have_content(sort_label)
+      end
+    end
   end
 
   context "from explore projects", :js do

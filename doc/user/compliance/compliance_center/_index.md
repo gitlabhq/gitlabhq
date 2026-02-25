@@ -29,7 +29,6 @@ The compliance center comprises the:
 
 - [Compliance overview dashboard](compliance_overview_dashboard.md).
 - [Compliance status report](compliance_status_report.md).
-- [Compliance standards adherence dashboard](compliance_standards_adherence_dashboard.md).
 - [Compliance violations report](compliance_violations_report.md).
 - [Compliance frameworks report](compliance_frameworks_report.md).
 - [Compliance projects report](compliance_projects_report.md).

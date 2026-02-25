@@ -9,7 +9,6 @@ title: Configure GitLab to use self-hosted models
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}

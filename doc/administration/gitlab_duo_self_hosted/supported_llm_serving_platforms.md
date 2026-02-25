@@ -9,7 +9,6 @@ title: Supported platforms for self-hosted models
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -157,12 +156,12 @@ GitLab has validated and tested the following providers. The AI Gateway supports
 - [OpenAI](https://developers.openai.com/api/docs/models) 
 
 For configuration information, see the following provider documentation:
- 
+
 - [Anthropic API overview](https://platform.claude.com/docs/en/api/overview)
 - [OpenAI API overview](https://developers.openai.com/api/docs)
 - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
 
-### Configure authentication with AWS Bedrock 
+### Configure authentication with AWS Bedrock
 
 To access AWS Bedrock models:
 

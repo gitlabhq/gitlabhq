@@ -159,6 +159,39 @@ RSpec.describe 'Query.project.jobAnalytics', :click_house, :freeze_time, feature
 
         it { expect(failed_rates).to eq(failed_rates.compact.sort.reverse) }
       end
+
+      context 'when sorted by stage name ascending' do
+        let(:job_analytics_args) { { sort: :STAGE_NAME_ASC } }
+        let(:job_analytics_fields) do
+          query_graphql_field(:nodes, nil, [:name, :stage_name])
+        end
+
+        let(:stage_names) { nodes.pluck('stageName') }
+
+        it { expect(stage_names).to eq(stage_names.sort) }
+      end
+
+      context 'when sorted by stage name descending' do
+        let(:job_analytics_args) { { sort: :STAGE_NAME_DESC } }
+        let(:job_analytics_fields) do
+          query_graphql_field(:nodes, nil, [:name, :stage_name])
+        end
+
+        let(:stage_names) { nodes.pluck('stageName') }
+
+        it { expect(stage_names).to eq(stage_names.sort.reverse) }
+      end
+
+      context 'when sorted by stage name without requesting stage_name field' do
+        let(:job_analytics_args) { { sort: :STAGE_NAME_ASC } }
+        let(:job_analytics_fields) { simple_name_fields }
+        let(:stage_names) { nodes.pluck('stageName') }
+
+        it 'returns results sorted correctly without errors' do
+          expect_graphql_errors_to_be_empty
+          expect(stage_names).to eq(stage_names.sort)
+        end
+      end
     end
 
     context 'with all aggregations' do
@@ -183,6 +216,30 @@ RSpec.describe 'Query.project.jobAnalytics', :click_house, :freeze_time, feature
             'otherRate' => anything
           ))
         )
+      end
+
+      context 'when backfill is in progress' do
+        before do
+          allow(::ClickHouse::MigrationSupport::CiFinishedBuildsConsistencyHelper).to receive(:backfill_in_progress?)
+            .and_return(true)
+        end
+
+        it 'returns result using deduplicated finder' do
+          expect_next_instance_of(::ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder) do |instance|
+            allow(instance).to receive(:final_query).and_call_original
+          end.at_least(:once)
+
+          post_graphql(query, current_user: current_user)
+
+          expect(nodes).to all(
+            include('statistics' => a_hash_including(
+              'durationStatistics' => include('mean', 'p95'),
+              'successRate' => anything,
+              'failedRate' => anything,
+              'otherRate' => anything
+            ))
+          )
+        end
       end
     end
 

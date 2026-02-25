@@ -74,6 +74,11 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           with_outer_query(outer_query.offset(count))
         end
 
+        def final_query
+          inner = selected_fields ? inner_query : default_inner_query
+          outer_query.from(inner, SUBQUERY_ALIAS)
+        end
+
         private
 
         attr_reader :inner_query, :outer_query, :selected_fields
@@ -84,11 +89,6 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
         def base_outer_query
           ClickHouse::Client::QueryBuilder.new(SUBQUERY_ALIAS)
-        end
-
-        def final_query
-          inner = selected_fields ? inner_query : default_inner_query
-          outer_query.from(inner, SUBQUERY_ALIAS)
         end
 
         def default_inner_query
