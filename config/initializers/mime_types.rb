@@ -16,6 +16,9 @@ Mime::Type.register "video/webm", :webm
 Mime::Type.register "video/ogg",  :ogv
 
 Mime::Type.unregister :json
-Mime::Type.register 'application/json', :json, [LfsRequest::CONTENT_TYPE, 'application/json']
-
+Mime::Type.register 'application/json', :json, [
+  LfsRequest::CONTENT_TYPE,
+  'application/json',
+  'application/vnd.docker.distribution.events.v1+json'
+]
 Mime::Type.register 'image/x-icon', :ico

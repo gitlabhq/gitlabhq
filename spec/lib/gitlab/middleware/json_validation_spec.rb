@@ -175,6 +175,12 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :shared do
 
         it_behaves_like 'validates JSON content type'
       end
+
+      context 'with application/vnd.docker.distribution.events.v1+json' do
+        let(:content_type) { 'application/vnd.docker.distribution.events.v1+json' }
+
+        it_behaves_like 'validates JSON content type'
+      end
     end
 
     context 'with empty body' do
