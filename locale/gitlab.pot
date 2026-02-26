@@ -12710,9 +12710,6 @@ msgstr ""
 msgid "Branch target does not exist"
 msgstr ""
 
-msgid "BranchRules|%{linkStart}Wildcards%{linkEnd} such as *-stable or production/* are supported."
-msgstr ""
-
 msgid "BranchRules|%{total} approval %{subject}"
 msgstr ""
 
@@ -12776,16 +12773,10 @@ msgstr ""
 msgid "BranchRules|Also rejects code pushes that change files listed in CODEOWNERS file."
 msgstr ""
 
-msgid "BranchRules|An error occurred while fetching branches."
-msgstr ""
-
 msgid "BranchRules|Approvals to ensure separation of duties for new merge requests. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "BranchRules|Are you sure you want to delete this branch rule? This action cannot be undone."
-msgstr ""
-
-msgid "BranchRules|Branch"
 msgstr ""
 
 msgid "BranchRules|Branch name or pattern"
@@ -12816,9 +12807,6 @@ msgid "BranchRules|Create protected branch"
 msgstr ""
 
 msgid "BranchRules|Create wildcard"
-msgstr ""
-
-msgid "BranchRules|Create wildcard: %{searchTerm}"
 msgstr ""
 
 msgid "BranchRules|Delete %{statusCheckName}"
@@ -12902,9 +12890,6 @@ msgstr ""
 msgid "BranchRules|No data to display"
 msgstr ""
 
-msgid "BranchRules|No matching results"
-msgstr ""
-
 msgid "BranchRules|No one"
 msgstr ""
 
@@ -12921,15 +12906,6 @@ msgid "BranchRules|Policy warn mode"
 msgstr ""
 
 msgid "BranchRules|Protect branch"
-msgstr ""
-
-msgid "BranchRules|Protections"
-msgstr ""
-
-msgid "BranchRules|Reject code pushes that change files listed in the CODEOWNERS file."
-msgstr ""
-
-msgid "BranchRules|Require approval from code owners."
 msgstr ""
 
 msgid "BranchRules|Require code owner approval"
@@ -60324,6 +60300,9 @@ msgstr ""
 msgid "SearchCodeResults|of %{link_to_project}"
 msgstr ""
 
+msgid "SearchError|%{error_message}"
+msgstr ""
+
 msgid "SearchError|%{search_syntax_link_start}What is the supported syntax%{search_syntax_link_end}?"
 msgstr ""
 
@@ -71304,6 +71283,9 @@ msgid "To remove the %{link_start}read-only%{link_end} state and regain write ac
 msgstr ""
 
 msgid "To remove the read-only state, reduce git repository and git LFS storage."
+msgstr ""
+
+msgid "To resolve the problem, check the query syntax and try again."
 msgstr ""
 
 msgid "To resolve the problem, refine your search criteria. Select a group or project or use double quotes for multiple keywords (for example, %{code_open}\"your search\"%{code_close})."

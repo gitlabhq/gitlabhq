@@ -77,8 +77,7 @@
        We need to disable content-visibility with opened dropdowns because it applies paint containment,
        which clips dropdowns content.
  */
-.rd-diff-file[data-virtual],
-.rd-diff-file[data-collapsed] {
+.rd-diff-file:where([data-virtual], [data-collapsed]) {
   content-visibility: var(--rd-content-visibility-auto, auto);
 }
 
@@ -103,7 +102,7 @@
 
 // content-visibility: auto; applies paint containment, which means you can not draw outside a diff file
 // we need to disable this when we show dropdowns and other elements which extend past a diff file
-.rd-diff-file[data-virtual]:has(button[aria-controls*='base-dropdown'][aria-expanded='true']),
+.rd-diff-file:where([data-virtual], [data-collapsed]):has(button[aria-controls*='base-dropdown'][aria-expanded='true']),
 // discussions change the dimensions of a diff file, virtual dimensions are no longer relevant,
 // switch into Fine-grained mode
 .rd-diff-file[data-virtual]:has([data-new-discussion-toggle]),

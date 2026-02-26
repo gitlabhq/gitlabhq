@@ -39,9 +39,7 @@ module SessionsHelper
   end
 
   def fallback_to_email_otp_permitted?(user)
-    Feature.enabled?(:email_based_mfa, user) &&
-      user.email_otp_required_after&.past? &&
-      !treat_as_locked?(user)
+    user.email_based_otp_required? && !treat_as_locked?(user)
   end
 
   def passkey_authentication_data(params)

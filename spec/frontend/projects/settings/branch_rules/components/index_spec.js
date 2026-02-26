@@ -13,12 +13,12 @@ import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
-import RuleView from '~/projects/settings/branch_rules/components/view/index.vue';
-import AccessLevelsDrawer from '~/projects/settings/branch_rules/components/view/access_levels_drawer.vue';
-import SquashSettingsDrawer from '~/projects/settings/branch_rules/components/view/squash_settings_drawer.vue';
+import RuleView from '~/projects/settings/branch_rules/components/index.vue';
+import AccessLevelsDrawer from '~/projects/settings/branch_rules/components/access_levels_drawer.vue';
+import SquashSettingsDrawer from '~/projects/settings/branch_rules/components/squash_settings_drawer.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import Protection from '~/projects/settings/branch_rules/components/view/protection.vue';
-import ProtectionToggle from '~/projects/settings/branch_rules/components/view/protection_toggle.vue';
+import Protection from '~/projects/settings/branch_rules/components/protection.vue';
+import ProtectionToggle from '~/projects/settings/branch_rules/components/protection_toggle.vue';
 import BranchRuleModal from '~/projects/settings/components/branch_rule_modal.vue';
 import getProtectableBranches from '~/projects/settings/graphql/queries/protectable_branches.query.graphql';
 
@@ -27,7 +27,7 @@ import {
   ALL_BRANCHES_WILDCARD,
   DELETE_RULE_MODAL_ID,
   EDIT_RULE_MODAL_ID,
-} from '~/projects/settings/branch_rules/components/view/constants';
+} from '~/projects/settings/branch_rules/components/constants';
 import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import deleteBranchRuleMutation from '~/projects/settings/branch_rules/mutations/branch_rule_delete.mutation.graphql';
@@ -47,7 +47,7 @@ import {
   protectableBranchesMockResponse,
   allowedToMergeDrawerProps,
   protectionPropsMock,
-} from 'ee_else_ce_jest/projects/settings/branch_rules/components/view/mock_data';
+} from 'ee_else_ce_jest/projects/settings/branch_rules/components/mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   getParameterByName: jest.fn().mockReturnValue('main'),

@@ -4,7 +4,7 @@ import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { s__, sprintf, n__ } from '~/locale';
-import { accessLevelsConfig } from '~/projects/settings/branch_rules/components/view/constants';
+import { accessLevelsConfig } from '~/projects/settings/branch_rules/components/constants';
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
 import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
 import { getAccessLevels } from '../../../utils';

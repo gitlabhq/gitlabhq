@@ -113,6 +113,24 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
       end
     end
 
+    describe '#error_type' do
+      it 'returns nil for any scope' do
+        expect(results.error_type('projects')).to be_nil
+      end
+    end
+
+    describe '#error' do
+      it 'returns nil for any scope' do
+        expect(results.error('projects')).to be_nil
+      end
+    end
+
+    describe '#failed?' do
+      it 'returns false for any scope' do
+        expect(results.failed?('projects')).to be false
+      end
+    end
+
     context 'when count_limit is lower than total amount' do
       before do
         allow(results).to receive(:count_limit).and_return(1)

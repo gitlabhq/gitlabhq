@@ -3,13 +3,13 @@ import { GlDrawer, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
-import AccessLevelsDrawer from '~/projects/settings/branch_rules/components/view/access_levels_drawer.vue';
+import AccessLevelsDrawer from '~/projects/settings/branch_rules/components/access_levels_drawer.vue';
 import {
   allowedToMergeDrawerProps,
   editRuleData,
   editRuleDataNoAccessLevels,
   editRuleDataNoOne,
-} from 'ee_else_ce_jest/projects/settings/branch_rules/components/view/mock_data';
+} from 'ee_else_ce_jest/projects/settings/branch_rules/components/mock_data';
 
 jest.mock('~/lib/utils/dom_utils', () => ({ getContentWrapperHeight: jest.fn() }));
 

@@ -5,12 +5,12 @@ module QA
     module Project
       module Settings
         class BranchRulesDetails < Page::Base
-          view 'app/assets/javascripts/projects/settings/branch_rules/components/view/index.vue' do
+          view 'app/assets/javascripts/projects/settings/branch_rules/components/index.vue' do
             element 'allowed-to-push-content'
             element 'allowed-to-merge-content'
           end
 
-          view 'app/assets/javascripts/projects/settings/branch_rules/components/view/protection_row.vue' do
+          view 'app/assets/javascripts/projects/settings/branch_rules/components/protection_row.vue' do
             element 'access-level'
           end
 

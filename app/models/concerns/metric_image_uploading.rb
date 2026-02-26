@@ -27,14 +27,14 @@ module MetricImageUploading
   end
 
   def file_path
-    @file_path ||= begin
-      return file&.url unless file&.upload
+    @file_path ||= if file&.upload
+                     # If we're using a CDN, we need to use the full URL
+                     asset_host = ActionController::Base.asset_host || Gitlab.config.gitlab.base_url
 
-      # If we're using a CDN, we need to use the full URL
-      asset_host = ActionController::Base.asset_host || Gitlab.config.gitlab.base_url
-
-      Gitlab::Utils.append_path(asset_host, local_path)
-    end
+                     Gitlab::Utils.append_path(asset_host, local_path)
+                   else
+                     file&.url
+                   end
   end
 
   private

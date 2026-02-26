@@ -134,6 +134,10 @@ module Gitlab
       false
     end
 
+    def error_type(*)
+      nil
+    end
+
     def error(*)
       nil
     end

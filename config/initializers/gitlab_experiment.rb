@@ -18,6 +18,9 @@ Gitlab::Experiment.configure do |config|
   # Follow gitlab config usage for other cookies
   config.secure_cookie = Gitlab.config.gitlab.https
 
+  # Allow forced variant assignment via the glex_force query parameter.
+  config.allow_forced_assignment = true
+
   # Mount the engine and middleware at a gitlab friendly style path.
   #
   # The middleware currently focuses only on handling redirection logic, which

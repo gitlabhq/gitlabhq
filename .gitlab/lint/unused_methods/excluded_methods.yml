@@ -44,3 +44,5 @@ ee/app/models/ci/secrets/integration.rb:
   - hashicorp_vault?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
   - aws?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
   - gitlab_secrets_manager?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
+app/helpers/groups_helper.rb:
+  - group_more_action_data: Will be used once the frontend implementation is added

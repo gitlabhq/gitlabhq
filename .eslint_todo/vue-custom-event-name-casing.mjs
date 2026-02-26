@@ -135,8 +135,8 @@ export default {
     'app/assets/javascripts/projects/new_v2/components/project_destination_select.vue',
     'app/assets/javascripts/projects/new_v2/components/project_name_validator.vue',
     'app/assets/javascripts/projects/new_v2/components/shared_project_creation_fields.vue',
-    'app/assets/javascripts/projects/settings/branch_rules/components/edit/branch_dropdown.vue',
-    'app/assets/javascripts/projects/settings/branch_rules/components/view/access_levels_drawer.vue',
+
+    'app/assets/javascripts/projects/settings/branch_rules/components/access_levels_drawer.vue',
     'app/assets/javascripts/projects/settings/components/transfer_project_form.vue',
     'app/assets/javascripts/rapid_diffs/app/discussions/discussion_notes.vue',
     'app/assets/javascripts/rapid_diffs/app/discussions/note_actions.vue',

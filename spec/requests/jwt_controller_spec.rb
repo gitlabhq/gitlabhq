@@ -16,6 +16,8 @@ RSpec.describe JwtController, feature_category: :system_access do
 
   shared_examples 'user logging' do
     it 'logs username and ID' do
+      subject
+
       expect(log_data['username']).to eq(user.username)
       expect(log_data['user_id']).to eq(user.id)
       expect(log_data['meta.user']).to eq(user.username)
@@ -316,9 +318,13 @@ RSpec.describe JwtController, feature_category: :system_access do
         let(:user) { create(:user) }
         let(:headers) { { authorization: credentials(user.username, user.password) } }
 
-        subject! { get '/jwt/auth', params: parameters, headers: headers }
+        subject(:request_jwt_auth) { get '/jwt/auth', params: parameters, headers: headers }
 
-        it { expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters.merge(auth_type: :gitlab_or_ldap)).permit!) }
+        it 'initializes the service class with arguments' do
+          request_jwt_auth
+
+          expect(service_class).to have_received(:new).with(nil, user, ActionController::Parameters.new(parameters.merge(auth_type: :gitlab_or_ldap)).permit!)
+        end
 
         it_behaves_like 'rejecting a blocked user'
 
@@ -338,7 +344,11 @@ RSpec.describe JwtController, feature_category: :system_access do
             ActionController::Parameters.new({ service: service_name, scopes: %w[scope1 scope2] }).permit!
           end
 
-          it { expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap)) }
+          it 'initializes the service class with arguments' do
+            request_jwt_auth
+
+            expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap))
+          end
 
           it_behaves_like 'user logging'
         end
@@ -355,7 +365,11 @@ RSpec.describe JwtController, feature_category: :system_access do
             ActionController::Parameters.new({ service: service_name, scopes: %w[scope1 scope2] }).permit!
           end
 
-          it { expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap)) }
+          it 'initializes service class with arguments' do
+            request_jwt_auth
+
+            expect(service_class).to have_received(:new).with(nil, user, service_parameters.merge(auth_type: :gitlab_or_ldap))
+          end
         end
 
         context 'when user has 2FA enabled' do
@@ -370,6 +384,8 @@ RSpec.describe JwtController, feature_category: :system_access do
             let(:headers) { { authorization: credentials(user.username, access_token.token) } }
 
             it 'accepts the authorization attempt' do
+              request_jwt_auth
+
               expect(response).to have_gitlab_http_status(:ok)
             end
           end
@@ -387,6 +403,8 @@ RSpec.describe JwtController, feature_category: :system_access do
             let(:headers) { { authorization: credentials(user.username, access_token.token) } }
 
             it 'accepts the authorization attempt' do
+              request_jwt_auth
+
               expect(response).to have_gitlab_http_status(:ok)
             end
           end
@@ -394,10 +412,62 @@ RSpec.describe JwtController, feature_category: :system_access do
           context 'when :email_based_mfa feature flag disabled' do
             it 'accepts the authorization attempt' do
               stub_feature_flags(email_based_mfa: false)
-
-              get '/jwt/auth', params: parameters, headers: headers
+              request_jwt_auth
 
               expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+
+        # Ensuring the valid state of `email_otp_required_after`, by
+        # `set_email_otp_required_after_based_on_restrictions` method, is
+        # tested in depth in spec/models/concerns/users/email_otp_enrollment_spec.rb
+        context 'for ensuring the valid state of `email_otp_required_after`' do
+          context 'when email_otp_required_after is unset despite instance requirement' do
+            let_it_be_with_reload(:user) do
+              create(:user, email_otp_required_after: nil)
+            end
+
+            before do
+              stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+            end
+
+            context 'when username and password are provided' do
+              it_behaves_like 'with invalid credentials'
+
+              it 'calls set_email_otp_required_after_based_on_restrictions' do
+                allow_next_instance_of(User) do |instance|
+                  expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+                    .with(save: true).and_call_original
+                end
+
+                request_jwt_auth
+
+                expect(response).to have_gitlab_http_status(:unauthorized)
+              end
+
+              context 'when :email_based_mfa feature flag disabled' do
+                before do
+                  stub_feature_flags(email_based_mfa: false)
+                end
+
+                it 'accepts the authorization attempt' do
+                  request_jwt_auth
+
+                  expect(response).to have_gitlab_http_status(:ok)
+                end
+              end
+            end
+
+            context 'with personal token' do
+              let(:access_token) { create(:personal_access_token, user: user) }
+              let(:headers) { { authorization: credentials(user.username, access_token.token) } }
+
+              it 'accepts the authorization attempt' do
+                request_jwt_auth
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
             end
           end
         end
@@ -405,7 +475,7 @@ RSpec.describe JwtController, feature_category: :system_access do
         it 'does not cause session based checks to be activated' do
           expect(Gitlab::Session).not_to receive(:with_session)
 
-          get '/jwt/auth', params: parameters, headers: headers
+          request_jwt_auth
 
           expect(response).to have_gitlab_http_status(:ok)
         end
@@ -419,12 +489,16 @@ RSpec.describe JwtController, feature_category: :system_access do
           # since that should not matter for data based operations
           context 'when admin mode is enabled', :enable_admin_mode do
             it 'accepts the authorization attempt' do
+              request_jwt_auth
+
               expect(response).to have_gitlab_http_status(:ok)
             end
           end
 
           context 'when admin mode is disabled' do
             it 'accepts the authorization attempt' do
+              request_jwt_auth
+
               expect(response).to have_gitlab_http_status(:ok)
             end
           end

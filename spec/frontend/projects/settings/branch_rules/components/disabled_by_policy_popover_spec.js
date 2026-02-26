@@ -1,7 +1,7 @@
 import { GlPopover, GlSprintf } from '@gitlab/ui';
 import { trimText } from 'helpers/text_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/view/disabled_by_policy_popover.vue';
+import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/disabled_by_policy_popover.vue';
 
 describe('DisabledByPolicyPopover', () => {
   let wrapper;

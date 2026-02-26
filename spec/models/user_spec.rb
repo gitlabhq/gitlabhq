@@ -3666,14 +3666,34 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       is_expected.to eq(true)
     end
 
-    context 'when :email_based_mfa feature flag is disabled' do
-      it 'returns false' do
-        stub_feature_flags(email_based_mfa: false)
+    it 'returns true when email_otp_required_after is the current time' do
+      user.email_otp_required_after = Time.current
 
+      is_expected.to eq(true)
+    end
+
+    context 'when :email_based_mfa feature flag is disabled' do
+      before do
+        stub_feature_flags(email_based_mfa: false)
+      end
+
+      it 'returns false despite email_otp_required_after is in the past' do
         user.email_otp_required_after = 1.second.ago
 
         is_expected.to eq(false)
       end
+    end
+
+    # Ensuring the valid state of `email_otp_required_after`, by
+    # `set_email_otp_required_after_based_on_restrictions` method, is
+    # tested in depth in spec/models/concerns/users/email_otp_enrollment_spec.rb
+    it 'ensures that `email_otp_required_after` is set to a valid state' do
+      stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+
+      expect(user).to receive(:set_email_otp_required_after_based_on_restrictions)
+        .with(save: true).and_call_original
+
+      is_expected.to eq(true)
     end
   end
 

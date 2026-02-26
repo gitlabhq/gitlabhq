@@ -11,7 +11,6 @@ RSpec/ExpectChange:
     - 'ee/spec/lib/gitlab/compliance_management/violations/approved_by_committer_spec.rb'
     - 'ee/spec/lib/gitlab/compliance_management/violations/approved_by_insufficient_users_spec.rb'
     - 'ee/spec/lib/gitlab/compliance_management/violations/approved_by_merge_request_author_spec.rb'
-    - 'ee/spec/lib/gitlab/instrumentation/elasticsearch_transport_spec.rb'
     - 'ee/spec/lib/gitlab/legacy_github_import/project_creator_spec.rb'
     - 'ee/spec/lib/projects/project_changes_auditor_spec.rb'
     - 'ee/spec/lib/projects/project_feature_changes_auditor_spec.rb'

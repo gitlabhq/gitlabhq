@@ -198,7 +198,7 @@ export default {
 };
 </script>
 <template>
-  <div class="wiki-comments">
+  <div class="wiki-comments gl-px-3">
     <wiki-notes-activity-header />
     <ordered-layout :slot-keys="slotKeys">
       <template #form>

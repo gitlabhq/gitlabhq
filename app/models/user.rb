@@ -1490,8 +1490,11 @@ class User < ApplicationRecord
   end
 
   def email_based_otp_required?
+    # Ensure that `email_otp_required_after` is set to a valid state.
+    set_email_otp_required_after_based_on_restrictions(save: true)
+
     Feature.enabled?(:email_based_mfa, self) &&
-      !!email_otp_required_after&.past?
+      email_otp_required_after.present? && email_otp_required_after <= Time.zone.now
   end
 
   def update_otp_secret!

@@ -110,8 +110,8 @@ export default {
     'app/assets/javascripts/projects/new_v2/components/ci_cd_project_form.vue',
     'app/assets/javascripts/projects/new_v2/components/import_by_url_form.vue',
     'app/assets/javascripts/projects/new_v2/components/shared_project_creation_fields.vue',
-    'app/assets/javascripts/projects/settings/branch_rules/components/edit/index.vue',
-    'app/assets/javascripts/projects/settings/branch_rules/components/view/index.vue',
+
+    'app/assets/javascripts/projects/settings/branch_rules/components/index.vue',
     'app/assets/javascripts/rapid_diffs/app/discussions/diff_discussions.vue',
     'app/assets/javascripts/rapid_diffs/app/discussions/discussion_notes.vue',
     'app/assets/javascripts/rapid_diffs/app/discussions/note_form.vue',

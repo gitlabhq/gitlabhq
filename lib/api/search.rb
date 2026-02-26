@@ -37,7 +37,7 @@ module API
     urgency :low
 
     rescue_from ActiveRecord::QueryCanceled do |_e|
-      render_api_error!({ error: 'Request timed out' }, 408)
+      render_api_error!('Request timed out', 408)
     end
 
     helpers do
@@ -83,9 +83,7 @@ module API
         end
 
         search_results = search_service.search_results
-        if search_results.respond_to?(:failed?) && search_results.failed?(search_service.scope)
-          bad_request!(search_results.error(search_service.scope))
-        end
+        bad_request!(search_results.error(search_service.scope)) if search_results.try(:failed?, search_service.scope)
 
         set_global_search_log_information(additional_params)
 

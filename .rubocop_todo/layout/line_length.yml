@@ -1157,7 +1157,6 @@ Layout/LineLength:
     - 'ee/spec/lib/gitlab/insights/serializers/chartjs/bar_time_series_serializer_spec.rb'
     - 'ee/spec/lib/gitlab/insights/serializers/chartjs/multi_series_serializer_spec.rb'
     - 'ee/spec/lib/gitlab/insights/validators/params_validator_spec.rb'
-    - 'ee/spec/lib/gitlab/instrumentation/elasticsearch_transport_spec.rb'
     - 'ee/spec/lib/gitlab/mirror_spec.rb'
     - 'ee/spec/lib/gitlab/patch/database_config_spec.rb'
     - 'ee/spec/lib/gitlab/reference_extractor_spec.rb'

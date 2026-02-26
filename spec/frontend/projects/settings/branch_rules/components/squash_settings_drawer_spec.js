@@ -3,14 +3,14 @@ import { GlDrawer, GlFormRadioGroup, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
-import SquashSettingsDrawer from '~/projects/settings/branch_rules/components/view/squash_settings_drawer.vue';
+import SquashSettingsDrawer from '~/projects/settings/branch_rules/components/squash_settings_drawer.vue';
 import {
   SQUASH_SETTING_DEFAULT,
   SQUASH_SETTING_DO_NOT_ALLOW,
   SQUASH_SETTING_ALLOW,
   SQUASH_SETTING_ENCOURAGE,
   SQUASH_SETTING_REQUIRE,
-} from '~/projects/settings/branch_rules/components/view/constants';
+} from '~/projects/settings/branch_rules/components/constants';
 
 jest.mock('~/lib/utils/dom_utils', () => ({ getContentWrapperHeight: jest.fn() }));
 

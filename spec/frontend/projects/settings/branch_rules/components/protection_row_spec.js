@@ -3,7 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ProtectionRow, {
   MAX_VISIBLE_AVATARS,
   AVATAR_SIZE,
-} from '~/projects/settings/branch_rules/components/view/protection_row.vue';
+} from '~/projects/settings/branch_rules/components/protection_row.vue';
 import { protectionRowPropsMock, deployKeysMock } from './mock_data';
 
 describe('Branch rule protection row', () => {

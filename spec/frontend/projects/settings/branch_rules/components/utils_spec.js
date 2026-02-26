@@ -1,4 +1,4 @@
-import { findSelectedOptionValueByLabel } from '~/projects/settings/branch_rules/components/view/utils';
+import { findSelectedOptionValueByLabel } from '~/projects/settings/branch_rules/components/utils';
 
 describe('utils', () => {
   describe('findSelectedOptionValueByLabel', () => {

@@ -70,7 +70,7 @@ module Gitlab
           return unless replacement.present?
           return "`#{replacement}`" unless replacement.include?('.') # only fully qualified references can be linked
 
-          "[`#{replacement}`](##{replacement.downcase.tr('.', '')})"
+          "[`#{replacement}`](##{replacement.downcase.tr('.', '-')})"
         end
 
         def edit_description(original_description)

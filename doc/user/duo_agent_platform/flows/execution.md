@@ -70,10 +70,9 @@ The configuration is applied when flows run in CI/CD for your project.
 By default, all flows executed with CI/CD use a standard Docker image provided by GitLab.
 This Docker image automatically includes network protection by using
 [Anthropic Sandbox Runtime (`srt`)](https://github.com/anthropic-experimental/sandbox-runtime).
-This image is configured to allow access to the GitLab instance only.
-However, you can change the Docker image and specify your own instead.
+You can change the Docker image and specify your own instead.
 Your own image can be useful for complex projects that require specific dependencies or tools.
-If you do this, and you still want to use the `srt` environment, make sure to add it to your
+If you do this, and you still want to use network protection, make sure to add `srt` to your
 Docker image with your preferred version:
 
 ```Docker

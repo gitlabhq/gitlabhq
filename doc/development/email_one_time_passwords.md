@@ -146,10 +146,16 @@ current grace period), or a past date (enforcement active).
 Updating a User through
 [`Users::UpdateService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/users/update_service.rb)
 enforces state management, potentially overriding the value, using
-`set_email_otp_required_after_based_on_restrictions`. The same check
-also occurs during sign in.
-This behavior is expected and generates logs with the method name in
-`event.message`. Code comments explain the state transitions.
+`set_email_otp_required_after_based_on_restrictions`. It was done for the rollout
+purposes and [may be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/work_items/551258#refactor-the-state-management-of-email_otp_required_after).
+
+The same `set_email_otp_required_after_based_on_restrictions` method call
+also occurs in `User#email_based_otp_required?` as this method is the SSoT for
+checking whether email OTP is required for a user and
+is being used for all flows where email OTP requirement is applicable.
+
+This behavior is expected and generates logs with `set_email_otp_required_after_based_on_restrictions`
+method name in `event.message`. Code comments explain the state transitions.
 
 ### Security
 

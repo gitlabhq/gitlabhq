@@ -248,7 +248,7 @@ module Tooling
           fields = mutation[:return_fields]
           return if fields.blank?
 
-          name = owner.to_s + mutation[:name]
+          name = [owner, mutation[:name]].compact.join('-')
           render_object_fields(fields, owner: { name: name })
         end
 
@@ -268,8 +268,7 @@ module Tooling
 
           return rendered_name unless owner
 
-          owner = Array.wrap(owner).join('')
-          id = (owner + object[:name]).downcase
+          id = (Array.wrap(owner) + [object[:name]]).join('-').downcase
 
           %(<a id="#{id}"></a>) + rendered_name
         end

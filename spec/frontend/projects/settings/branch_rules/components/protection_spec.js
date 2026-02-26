@@ -1,8 +1,8 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import Protection, { i18n } from '~/projects/settings/branch_rules/components/view/protection.vue';
-import ProtectionRow from '~/projects/settings/branch_rules/components/view/protection_row.vue';
-import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/view/disabled_by_policy_popover.vue';
+import Protection, { i18n } from '~/projects/settings/branch_rules/components/protection.vue';
+import ProtectionRow from '~/projects/settings/branch_rules/components/protection_row.vue';
+import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/disabled_by_policy_popover.vue';
 import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
 import { protectionPropsMock, protectionEmptyStatePropsMock, deployKeysMock } from './mock_data';
 

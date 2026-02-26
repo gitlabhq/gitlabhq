@@ -1,8 +1,8 @@
 import { GlToggle, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/view/disabled_by_policy_popover.vue';
+import DisabledByPolicyPopover from '~/projects/settings/branch_rules/components/disabled_by_policy_popover.vue';
 import GroupInheritancePopover from '~/vue_shared/components/settings/group_inheritance_popover.vue';
-import ProtectionToggle from '~/projects/settings/branch_rules/components/view/protection_toggle.vue';
+import ProtectionToggle from '~/projects/settings/branch_rules/components/protection_toggle.vue';
 
 describe('ProtectionToggle', () => {
   let wrapper;

@@ -98,6 +98,52 @@ RSpec.describe 'Gitlab OAuth2 Resource Owner Password Credentials Flow', feature
           end
         end
       end
+
+      # Ensuring the valid state of `email_otp_required_after`, by
+      # `set_email_otp_required_after_based_on_restrictions` method, is
+      # tested in depth in spec/models/concerns/users/email_otp_enrollment_spec.rb
+      context 'for ensuring the valid state of `email_otp_required_after`' do
+        context 'when email_otp_required_after is unset despite instance requirement' do
+          let_it_be_with_reload(:user) do
+            create(:user, email_otp_required_after: nil)
+          end
+
+          before do
+            stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+          end
+
+          it 'returns an error' do
+            token_response = fetch_access_token(token_params)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(token_response['error']).to eq('invalid_grant')
+          end
+
+          it 'calls set_email_otp_required_after_based_on_restrictions' do
+            allow_next_instance_of(User) do |instance|
+              expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+                .with(save: true).and_call_original
+            end
+
+            fetch_access_token(token_params)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+
+          context 'when :email_based_mfa feature flag disabled' do
+            before do
+              stub_feature_flags(email_based_mfa: false)
+            end
+
+            it 'returns an access token' do
+              token_response = fetch_access_token(token_params)
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(token_response).to include('access_token', 'token_type', 'expires_in', 'refresh_token')
+            end
+          end
+        end
+      end
     end
 
     context 'without client credentials' do

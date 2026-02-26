@@ -246,17 +246,12 @@ module VerifiesWithEmail
   def require_email_based_otp?(user)
     return false unless Feature.enabled?(:email_based_mfa, user)
 
-    # As a final time-of-use check, ensure that
-    # `email_otp_required_after` is set to a valid state
-    user.set_email_otp_required_after_based_on_restrictions(save: true)
-
     password_based_login? &&
       # Skip on first log in (which occurs for most during account
       # creation), to avoid double email verification with
       # Devise::Confirmable
       user.last_sign_in_at.present? &&
-      user.email_otp_required_after.present? &&
-      (user.email_otp_required_after <= Time.zone.now || in_email_otp_grace_period?(user))
+      (user.email_based_otp_required? || in_email_otp_grace_period?(user))
   end
 
   def verify_token(user, token)

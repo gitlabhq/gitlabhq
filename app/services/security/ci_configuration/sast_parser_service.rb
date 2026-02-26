@@ -92,9 +92,7 @@ module Security
           config_content = @project.repository.blob_data_at(
             @project.repository.root_ref_sha, @project.ci_config_path_or_default
           )
-          return {} unless config_content
-
-          build_sast_attributes(config_content)
+          config_content ? build_sast_attributes(config_content) : {}
         end
       end
 

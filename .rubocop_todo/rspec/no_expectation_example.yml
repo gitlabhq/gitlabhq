@@ -17,7 +17,6 @@ RSpec/NoExpectationExample:
     - 'ee/spec/lib/gitlab/ci/runners_availability/allowed_plans_spec.rb'
     - 'ee/spec/lib/gitlab/ci/runners_availability/minutes_spec.rb'
     - 'ee/spec/lib/gitlab/database/desired_sharding_key_spec.rb'
-    - 'ee/spec/lib/gitlab/instrumentation/elasticsearch_transport_spec.rb'
     - 'ee/spec/lib/gitlab/llm/ai_gateway/client_spec.rb'
     - 'ee/spec/mailers/notify_spec.rb'
     - 'ee/spec/models/ci/minutes/project_monthly_usage_spec.rb'

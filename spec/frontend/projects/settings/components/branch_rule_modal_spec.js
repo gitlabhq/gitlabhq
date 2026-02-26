@@ -6,7 +6,7 @@ import getProtectableBranches from '~/projects/settings/graphql/queries/protecta
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BranchRuleModal from '~/projects/settings/components/branch_rule_modal.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { protectableBranchesMockResponse } from '../branch_rules/components/view/mock_data';
+import { protectableBranchesMockResponse } from '../branch_rules/components/mock_data';
 
 Vue.use(VueApollo);
 

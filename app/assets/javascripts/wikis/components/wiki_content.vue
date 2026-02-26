@@ -86,26 +86,28 @@ export default {
 };
 </script>
 <template>
-  <gl-skeleton-loader v-if="isLoadingContent" :width="830" :height="113">
-    <rect width="540" height="16" rx="4" />
-    <rect y="49" width="701" height="16" rx="4" />
-    <rect y="24" width="830" height="16" rx="4" />
-    <rect y="73" width="540" height="16" rx="4" />
-  </gl-skeleton-loader>
-  <gl-alert
-    v-else-if="loadingContentFailed"
-    :dismissible="false"
-    variant="danger"
-    :primary-button-text="$options.i18n.retryLoadingContent"
-    @primaryAction="loadWikiContent"
-  >
-    {{ $options.i18n.loadingContentFailed }}
-  </gl-alert>
-  <div
-    v-else-if="!loadingContentFailed && !isLoadingContent"
-    ref="content"
-    v-safe-html="content"
-    data-testid="wiki-page-content"
-    class="js-wiki-page-content md gl-px-3"
-  ></div>
+  <div class="gl-px-3">
+    <gl-skeleton-loader v-if="isLoadingContent" :width="830" :height="113">
+      <rect width="540" height="16" rx="4" />
+      <rect y="49" width="701" height="16" rx="4" />
+      <rect y="24" width="830" height="16" rx="4" />
+      <rect y="73" width="540" height="16" rx="4" />
+    </gl-skeleton-loader>
+    <gl-alert
+      v-else-if="loadingContentFailed"
+      :dismissible="false"
+      variant="danger"
+      :primary-button-text="$options.i18n.retryLoadingContent"
+      @primaryAction="loadWikiContent"
+    >
+      {{ $options.i18n.loadingContentFailed }}
+    </gl-alert>
+    <div
+      v-else-if="!loadingContentFailed && !isLoadingContent"
+      ref="content"
+      v-safe-html="content"
+      data-testid="wiki-page-content"
+      class="js-wiki-page-content md"
+    ></div>
+  </div>
 </template>

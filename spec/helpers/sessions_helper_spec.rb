@@ -147,7 +147,7 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
   end
 
   describe '#fallback_to_email_otp_permitted?' do
-    let(:user) { build_stubbed(:user) }
+    let_it_be_with_reload(:user) { create(:user) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- we need to create it
 
     context 'when email_based_mfa feature flag is disabled' do
       before do
@@ -165,7 +165,9 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
       end
 
       context 'when user has email_otp_required_after set to nil' do
-        let(:user) { build_stubbed(:user, email_otp_required_after: nil) }
+        before do
+          user.update!(email_otp_required_after: nil)
+        end
 
         it 'returns false' do
           expect(helper.fallback_to_email_otp_permitted?(user)).to be_falsy
@@ -173,8 +175,8 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
       end
 
       context 'when user has email_otp_required_after set to future date' do
-        let(:user) do
-          build_stubbed(:user, email_otp_required_after: Time.zone.today + 1.day)
+        before do
+          user.update!(email_otp_required_after: Time.zone.today + 1.day)
         end
 
         it 'returns false' do
@@ -193,7 +195,9 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
       end
 
       context 'when user has email_otp_required_after set to today' do
-        let(:user) { build_stubbed(:user, email_otp_required_after: Time.zone.today) }
+        before do
+          user.update!(email_otp_required_after: Time.zone.today)
+        end
 
         it 'returns true' do
           expect(helper.fallback_to_email_otp_permitted?(user)).to be true
@@ -201,7 +205,9 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
       end
 
       context 'when user has email_otp_required_after set to past date' do
-        let(:user) { build_stubbed(:user, email_otp_required_after: Time.zone.today - 1.day) }
+        before do
+          user.update!(email_otp_required_after: Time.zone.today - 1.day)
+        end
 
         it 'returns true' do
           expect(helper.fallback_to_email_otp_permitted?(user)).to be true

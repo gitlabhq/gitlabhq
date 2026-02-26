@@ -624,6 +624,15 @@ Support::PermissionsCheck.inject(Ability.singleton_class)
 
 ActiveRecord::Migration.maintain_test_schema!
 
+# maintain_test_schema! may rebuild the test DB from structure.sql via
+# clear_all_connections! + db:test:prepare. This clears connection-level
+# schema caches but NOT class-level column caches on AR models. If an
+# initializer (e.g. session_store.rb) queried ApplicationSetting before
+# the rebuild, stale column names persist - causing PG::UndefinedColumn
+# errors for models using explicit column selection (those with
+# ignored_columns).
+ApplicationSetting.reset_column_information
+
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|
     with.test_framework :rspec

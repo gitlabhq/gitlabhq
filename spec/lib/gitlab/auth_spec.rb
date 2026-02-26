@@ -1019,6 +1019,42 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         end
       end
 
+      # Ensuring the valid state of `email_otp_required_after`, by
+      # `set_email_otp_required_after_based_on_restrictions` method, is
+      # tested in depth in spec/models/concerns/users/email_otp_enrollment_spec.rb
+      context 'for ensuring the valid state of `email_otp_required_after`' do
+        context 'when email_otp_required_after is unset despite instance requirement' do
+          let_it_be_with_reload(:user) do
+            create(:user, email_otp_required_after: nil)
+          end
+
+          before do
+            stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+          end
+
+          it 'calls set_email_otp_required_after_based_on_restrictions and fails' do
+            allow_next_instance_of(User) do |instance|
+              expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+                .with(save: true).and_call_original
+            end
+
+            expect { gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request) }
+              .to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
+          end
+
+          context 'when :email_based_mfa feature flag disabled' do
+            before do
+              stub_feature_flags(email_based_mfa: false)
+            end
+
+            it 'goes through' do
+              expect(gl_auth.find_for_git_client(user.username, user.password, project: nil, request: request))
+                .to have_attributes(actor: user, project: nil, type: :gitlab_or_ldap, authentication_abilities: described_class.full_authentication_abilities)
+            end
+          end
+        end
+      end
+
       it 'goes through lfs authentication' do
         user = create(
           :user,

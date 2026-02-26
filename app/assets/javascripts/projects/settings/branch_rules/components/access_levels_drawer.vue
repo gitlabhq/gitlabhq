@@ -38,7 +38,7 @@ export default {
     GlFormGroup,
     GlFormCheckbox,
     ItemsSelector: () =>
-      import('ee_component/projects/settings/branch_rules/components/view/items_selector.vue'),
+      import('ee_component/projects/settings/branch_rules/components/items_selector.vue'),
   },
   inject: {
     showEnterpriseAccessLevels: { default: false },

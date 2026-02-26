@@ -28,9 +28,7 @@ module VerifiesWithEmailHelper
   private
 
   def in_email_otp_grace_period?(user)
-    email_otp_required_after = user.email_otp_required_after
-
-    return false unless email_otp_required_after.present?
+    return false unless user.email_otp_required_after.present?
 
     days_until_enrollment = (user.email_otp_required_after.to_date - Date.current).to_i
     days_until_enrollment.between?(1, 7)

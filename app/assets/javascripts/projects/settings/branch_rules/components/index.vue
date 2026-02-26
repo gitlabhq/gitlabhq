@@ -38,10 +38,10 @@ import {
   UNPROTECTED_BRANCH,
   CHANGED_REQUIRE_CODEOWNER_APPROVAL,
 } from 'ee_else_ce/projects/settings/branch_rules/tracking/constants';
-import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
-import editSquashOptionMutation from '../../mutations/edit_squash_option.mutation.graphql';
-import deleteSquashOptionMutation from '../../mutations/delete_squash_option.mutation.graphql';
-import BranchRuleModal from '../../../components/branch_rule_modal.vue';
+import deleteBranchRuleMutation from '../mutations/branch_rule_delete.mutation.graphql';
+import editSquashOptionMutation from '../mutations/edit_squash_option.mutation.graphql';
+import deleteSquashOptionMutation from '../mutations/delete_squash_option.mutation.graphql';
+import BranchRuleModal from '../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
 import AccessLevelsDrawer from './access_levels_drawer.vue';
 import SquashSettingsDrawer from './squash_settings_drawer.vue';

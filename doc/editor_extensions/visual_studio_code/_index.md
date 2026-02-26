@@ -21,8 +21,7 @@ When configured, this extension brings the GitLab features you use every day dir
 - [View pipeline status](cicd.md) and [job outputs](cicd.md#view-cicd-job-output).
 - Create and manage snippets.
 - [Browse repositories](remote_urls.md#browse-a-repository-in-read-only-mode) without cloning them.
-- View security findings.
-- Perform SAST scanning.
+- [Secure your application](security_scanning.md) with security findings and SAST scanning.
 
 The GitLab for VS Code extension also streamlines your VS Code workflow with AI-assisted features:
 
@@ -262,88 +261,6 @@ To open a file from your current GitLab project in the GitLab UI, with specific 
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
    - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. In the Command Palette, search for **GitLab: Open active file on GitLab** and press <kbd>Enter</kbd>.
-
-## View security findings
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-Prerequisites:
-
-- You're using GitLab for VS Code version 3.74.0 or later.
-- Your project includes [Security Risk Management](https://about.gitlab.com/features/?stage=secure) features, such as
-  static application security testing (SAST), dynamic application security testing (DAST),
-  container scanning, or dependency scanning.
-- You configured the [security risk management](../../user/application_security/secure_your_application.md) features.
-
-To view security findings:
-
-1. On the vertical menu bar, select **GitLab** ({{< icon name="tanuki" >}}) to display the extension sidebar.
-1. On the sidebar, expand **Security scanning**.
-1. Select either **New findings** or **Fixed findings**.
-1. Select a desired severity level.
-1. Select a finding to open it in a VS Code tab.
-
-## Perform SAST scanning
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab.com
-- Status: Experiment
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1675) in VS Code extension version 5.31.
-
-{{< /history >}}
-
-Static application security testing (SAST) in VS Code detects vulnerabilities in the active file.
-With early detection, you can remediate vulnerabilities before you merge your changes into the
-default branch.
-
-When you trigger a SAST scan, the content of the active file is passed to GitLab and checked against
-SAST vulnerability rules. GitLab shows scan results in the primary side bar.
-
-<i class="fa-youtube-play" aria-hidden="true"></i>
-To learn about setting up SAST scanning, see
-[SAST scanning in VS Code](https://www.youtube.com/watch?v=s-qOSQO0i-8) on GitLab Unfiltered.
-<!-- Video published on 2025-02-10 -->
-
-Prerequisites:
-
-- You're using GitLab for VS Code version 5.31.0 or later.
-- You've [authenticated with GitLab](setup.md#authenticate-with-gitlab).
-- You've selected the [**Enable Real-time SAST scan checkbox**](setup.md#code-security).
-
-To perform SAST scanning of a file in VS Code:
-
-<!-- markdownlint-disable MD044 -->
-
-1. Open the file.
-1. Trigger the SAST scan by either:
-   - Saving the file (if you have [selected the **Enable scanning on file save** option](setup.md#code-security)).
-   - Using the Command Palette:
-     1. Open the Command Palette:
-        - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-        - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-     1. Search for **GitLab: Run Remote Scan (SAST)** and press
-        <kbd>Enter</kbd>.
-1. View the results of the SAST scan.
-   1. View the **Primary Side Bar**.
-   1. Select **GitLab** ({{< icon name="tanuki" >}}) to display the extension sidebar.
-   1. Expand the **GITLAB REMOTE SCAN (SAST)** section.
-
-   The results of the SAST scan are listed in descending order by severity. To see details of a
-   finding, select it in the **GITLAB REMOTE SCAN (SAST)** section of the extension sidebar.
-
-<!-- markdownlint-enable MD044 -->
 
 ## Search issues and merge requests
 
