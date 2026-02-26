@@ -34183,9 +34183,6 @@ msgstr ""
 msgid "GroupSettings|There was a problem updating the group CI/CD settings: %{error_messages}."
 msgstr ""
 
-msgid "GroupSettings|This can also prevent Duo Agent Platform flows from adding service accounts. %{learn_more_link}."
-msgstr ""
-
 msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
 msgstr ""
 
@@ -35618,9 +35615,6 @@ msgid "If disabled, a diverged local branch will not be automatically updated wi
 msgstr ""
 
 msgid "If disabled, only administrators can configure repository mirroring."
-msgstr ""
-
-msgid "If enabled, Duo Agent Platform flows cannot add service accounts to projects and will not run."
 msgstr ""
 
 msgid "If enabled, all branches will be mirrored."
