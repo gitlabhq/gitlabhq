@@ -66,7 +66,7 @@ module Gitlab
         end
 
         def lease_taken_log_level
-          :info
+          :debug
         end
 
         def with_redis(&)
