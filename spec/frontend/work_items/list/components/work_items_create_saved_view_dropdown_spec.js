@@ -1,4 +1,5 @@
 import { GlDisclosureDropdownItem, GlIcon, GlLink } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemsCreateSavedViewDropdown from '~/work_items/list/components/work_items_create_saved_view_dropdown.vue';
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
@@ -6,14 +7,15 @@ import WorkItemsExistingSavedViewsModal from '~/work_items/list/components/work_
 import { CREATED_DESC } from '~/work_items/list/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/common_utils');
+jest.mock('~/lib/utils/url_utility');
 
 describe('WorkItemsCreateSavedViewDropdown', () => {
   let wrapper;
 
-  const createComponent = ({ props = {}, isLoggedInValue = true } = {}) => {
-    isLoggedIn.mockReturnValue(isLoggedInValue);
+  const createComponent = ({ props = {}, provide = {} } = {}) => {
     wrapper = shallowMountExtended(WorkItemsCreateSavedViewDropdown, {
       propsData: {
         fullPath: 'test-project-path',
@@ -21,6 +23,11 @@ describe('WorkItemsCreateSavedViewDropdown', () => {
         filters: {},
         displaySettings: {},
         ...props,
+      },
+      provide: {
+        canCreateSavedView: true,
+        signInPath: 'sign-in-path',
+        ...provide,
       },
     });
   };
@@ -32,9 +39,11 @@ describe('WorkItemsCreateSavedViewDropdown', () => {
   const findWarningMessage = () => wrapper.find('.gl-bg-orange-50');
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
   const findLearnMoreLink = () => wrapper.findComponent(GlLink);
+  const findAddViewButton = () => wrapper.findByTestId('add-saved-view-fallback');
 
-  describe('when user is logged in', () => {
+  describe('when user is logged in and can create saved views', () => {
     beforeEach(() => {
+      isLoggedIn.mockReturnValue(true);
       createComponent();
     });
 
@@ -109,14 +118,40 @@ describe('WorkItemsCreateSavedViewDropdown', () => {
     });
   });
 
-  describe('when user is logged out', () => {
-    beforeEach(() => {
-      createComponent({ isLoggedInValue: false });
+  describe('when user cannot create saved views', () => {
+    describe('when logged in', () => {
+      beforeEach(() => {
+        isLoggedIn.mockReturnValue(true);
+        createComponent({ provide: { canCreateSavedView: false } });
+      });
+
+      it('renders fallback button instead of dropdown', () => {
+        expect(findDropdownToggle().exists()).toBe(false);
+        expect(findAddViewButton().exists()).toBe(true);
+        expect(findAddViewButton().text()).toBe('Add view');
+      });
+
+      it('opens existing views modal when clicked', async () => {
+        expect(findExistingSavedViewsModal().props('show')).toBe(false);
+
+        await findAddViewButton().vm.$emit('click');
+
+        expect(findExistingSavedViewsModal().props('show')).toBe(true);
+      });
     });
 
-    it('does not render the dropdown', () => {
-      expect(findDropdownToggle().exists()).toBe(false);
-      expect(findDropdownItems()).toHaveLength(0);
+    describe('when logged out', () => {
+      beforeEach(async () => {
+        isLoggedIn.mockReturnValue(false);
+        createComponent({ provide: { canCreateSavedView: false } });
+        await nextTick();
+      });
+
+      it('redirects to sign-in when fallback button clicked', async () => {
+        await findAddViewButton().vm.$emit('click');
+
+        expect(visitUrl).toHaveBeenCalledWith('sign-in-path');
+      });
     });
   });
 });

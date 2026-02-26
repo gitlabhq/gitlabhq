@@ -2,6 +2,7 @@ import { isEqual } from 'lodash';
 import { STATUS_CLOSED, STATUS_REOPENED } from '~/issues/constants';
 import { isInMRPage } from '~/lib/utils/common_utils';
 import createState from '~/notes/stores/state';
+import { useDiscussions } from '~/notes/store/discussions';
 import * as constants from '../../constants';
 import * as types from '../../stores/mutation_types';
 import * as utils from '../../stores/utils';
@@ -10,7 +11,7 @@ export default {
   [types.ADD_NEW_NOTE](data) {
     const note = data.discussion ? data.discussion.notes[0] : data;
     const { discussion_id: discussionId, type } = note;
-    const [exists] = this.discussions.filter((n) => n.id === note.discussion_id);
+    const [exists] = useDiscussions().discussions.filter((n) => n.id === note.discussion_id);
     const isDiscussion = type === constants.DISCUSSION_NOTE || type === constants.DIFF_NOTE;
 
     if (!exists) {
@@ -41,12 +42,12 @@ export default {
       const notes = [{ ...note }];
       delete notes[0].base_discussion;
 
-      this.discussions.push({ ...discussion, notes });
+      useDiscussions().discussions.push({ ...discussion, notes });
     }
   },
 
   [types.ADD_NEW_REPLY_TO_DISCUSSION](note) {
-    const discussion = utils.findNoteObjectById(this.discussions, note.discussion_id);
+    const discussion = utils.findNoteObjectById(useDiscussions().discussions, note.discussion_id);
     const existingNote = discussion && utils.findNoteObjectById(discussion.notes, note.id);
 
     if (discussion && !existingNote) {
@@ -55,32 +56,32 @@ export default {
   },
 
   [types.DELETE_NOTE](note) {
-    const noteObj = utils.findNoteObjectById(this.discussions, note.discussion_id);
+    const noteObj = utils.findNoteObjectById(useDiscussions().discussions, note.discussion_id);
 
     if (noteObj.individual_note) {
-      this.discussions.splice(this.discussions.indexOf(noteObj), 1);
+      useDiscussions().discussions.splice(useDiscussions().discussions.indexOf(noteObj), 1);
     } else {
       const comment = utils.findNoteObjectById(noteObj.notes, note.id);
       noteObj.notes.splice(noteObj.notes.indexOf(comment), 1);
 
       if (!noteObj.notes.length) {
-        this.discussions.splice(this.discussions.indexOf(noteObj), 1);
+        useDiscussions().discussions.splice(useDiscussions().discussions.indexOf(noteObj), 1);
       }
     }
   },
 
   [types.EXPAND_DISCUSSION]({ discussionId }) {
-    const discussion = utils.findNoteObjectById(this.discussions, discussionId);
+    const discussion = utils.findNoteObjectById(useDiscussions().discussions, discussionId);
     Object.assign(discussion, { expanded: true });
   },
 
   [types.COLLAPSE_DISCUSSION]({ discussionId }) {
-    const discussion = utils.findNoteObjectById(this.discussions, discussionId);
+    const discussion = utils.findNoteObjectById(useDiscussions().discussions, discussionId);
     Object.assign(discussion, { expanded: false });
   },
 
   [types.REMOVE_PLACEHOLDER_NOTES]() {
-    const { discussions } = this;
+    const { discussions } = useDiscussions();
 
     for (let i = discussions.length - 1; i >= 0; i -= 1) {
       const note = discussions[i];
@@ -121,7 +122,7 @@ export default {
   },
 
   [types.CLEAR_DISCUSSIONS]() {
-    this.discussions = [];
+    useDiscussions().discussions = [];
   },
 
   [types.ADD_OR_UPDATE_DISCUSSIONS](discussionsData) {
@@ -145,28 +146,36 @@ export default {
             ...diffData,
             notes: [n], // override notes array to only have one item to mimick individual_note
           };
-          const oldDiscussion = this.discussions.find(
+          const oldDiscussion = useDiscussions().discussions.find(
             (existingDiscussion) =>
               existingDiscussion.id === discussion.id && existingDiscussion.notes[0].id === n.id,
           );
 
           if (oldDiscussion) {
-            this.discussions.splice(this.discussions.indexOf(oldDiscussion), 1, newDiscussion);
+            useDiscussions().discussions.splice(
+              useDiscussions().discussions.indexOf(oldDiscussion),
+              1,
+              newDiscussion,
+            );
           } else {
-            this.discussions.push(newDiscussion);
+            useDiscussions().discussions.push(newDiscussion);
           }
         });
       } else {
-        const oldDiscussion = utils.findNoteObjectById(this.discussions, discussion.id);
+        const oldDiscussion = utils.findNoteObjectById(useDiscussions().discussions, discussion.id);
 
         if (oldDiscussion) {
-          this.discussions.splice(this.discussions.indexOf(oldDiscussion), 1, {
-            ...discussion,
-            ...diffData,
-            expanded: oldDiscussion.expanded,
-          });
+          useDiscussions().discussions.splice(
+            useDiscussions().discussions.indexOf(oldDiscussion),
+            1,
+            {
+              ...discussion,
+              ...diffData,
+              expanded: oldDiscussion.expanded,
+            },
+          );
         } else {
-          this.discussions.push({ ...discussion, ...diffData });
+          useDiscussions().discussions.push({ ...discussion, ...diffData });
         }
       }
     });
@@ -193,11 +202,11 @@ export default {
       ],
     };
 
-    const existingDiscussion = utils.findNoteObjectById(this.discussions, data.replyId);
+    const existingDiscussion = utils.findNoteObjectById(useDiscussions().discussions, data.replyId);
     if (existingDiscussion) {
       existingDiscussion.notes = [...existingDiscussion.notes, placeholder];
     } else {
-      this.discussions.push(placeholder);
+      useDiscussions().discussions.push(placeholder);
     }
   },
 
@@ -221,7 +230,7 @@ export default {
   },
 
   [types.TOGGLE_DISCUSSION]({ discussionId, forceExpanded = null }) {
-    const discussion = utils.findNoteObjectById(this.discussions, discussionId);
+    const discussion = utils.findNoteObjectById(useDiscussions().discussions, discussionId);
     Object.assign(discussion, {
       expanded: forceExpanded === null ? !discussion.expanded : forceExpanded,
     });
@@ -230,14 +239,14 @@ export default {
   [types.SET_EXPAND_DISCUSSIONS]({ discussionIds, expanded }) {
     if (discussionIds?.length) {
       discussionIds.forEach((discussionId) => {
-        const discussion = utils.findNoteObjectById(this.discussions, discussionId);
+        const discussion = utils.findNoteObjectById(useDiscussions().discussions, discussionId);
         Object.assign(discussion, { expanded });
       });
     }
   },
 
   [types.SET_EXPAND_ALL_DISCUSSIONS](expanded) {
-    this.discussions.forEach((discussion) => {
+    useDiscussions().discussions.forEach((discussion) => {
       Object.assign(discussion, { expanded });
     });
   },
@@ -247,7 +256,7 @@ export default {
   },
 
   [types.UPDATE_NOTE](note) {
-    const discussion = utils.findNoteObjectById(this.discussions, note.discussion_id);
+    const discussion = utils.findNoteObjectById(useDiscussions().discussions, note.discussion_id);
 
     // Disable eslint here so we can delete the property that we no longer need
     // in the note object
@@ -280,7 +289,7 @@ export default {
   },
 
   [types.APPLY_SUGGESTION]({ noteId, discussionId, suggestionId }) {
-    const noteObj = utils.findNoteObjectById(this.discussions, discussionId);
+    const noteObj = utils.findNoteObjectById(useDiscussions().discussions, discussionId);
     const comment = utils.findNoteObjectById(noteObj.notes, noteId);
 
     comment.suggestions = comment.suggestions.map((suggestion) => ({
@@ -294,7 +303,7 @@ export default {
     this.batchSuggestionsInfo.forEach((suggestionInfo) => {
       const { discussionId, noteId, suggestionId } = suggestionInfo;
 
-      const noteObj = utils.findNoteObjectById(this.discussions, discussionId);
+      const noteObj = utils.findNoteObjectById(useDiscussions().discussions, discussionId);
       const comment = utils.findNoteObjectById(noteObj.notes, noteId);
 
       comment.suggestions = comment.suggestions.map((suggestion) => ({
@@ -325,13 +334,15 @@ export default {
 
   [types.UPDATE_DISCUSSION](noteData) {
     const note = noteData;
-    const selectedDiscussion = this.discussions.find((disc) => disc.id === note.id);
+    const selectedDiscussion = useDiscussions().discussions.find((disc) => disc.id === note.id);
     note.expanded = true; // override expand flag to prevent collapse
     Object.assign(selectedDiscussion, { ...note });
   },
 
   [types.UPDATE_DISCUSSION_POSITION]({ discussionId, position }) {
-    const selectedDiscussion = this.discussions.find((disc) => disc.id === discussionId);
+    const selectedDiscussion = useDiscussions().discussions.find(
+      (disc) => disc.id === discussionId,
+    );
     if (selectedDiscussion) Object.assign(selectedDiscussion.position, { ...position });
   },
 
@@ -360,7 +371,7 @@ export default {
   },
 
   [types.SET_DISCUSSION_DIFF_LINES]({ discussionId, diffLines }) {
-    const discussion = utils.findNoteObjectById(this.discussions, discussionId);
+    const discussion = utils.findNoteObjectById(useDiscussions().discussions, discussionId);
 
     discussion.truncated_diff_lines = utils.prepareDiffLines(diffLines);
   },
@@ -386,10 +397,10 @@ export default {
     this.commentsDisabled = value;
   },
   [types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS]() {
-    this.resolvableDiscussionsCount = this.discussions.filter(
+    this.resolvableDiscussionsCount = useDiscussions().discussions.filter(
       (discussion) => !discussion.individual_note && discussion.resolvable,
     ).length;
-    this.unresolvedDiscussionsCount = this.discussions.filter(
+    this.unresolvedDiscussionsCount = useDiscussions().discussions.filter(
       (discussion) =>
         !discussion.individual_note &&
         discussion.resolvable &&
@@ -453,5 +464,6 @@ export default {
   },
   reset() {
     Object.assign(this, createState());
+    useDiscussions().discussions = [];
   },
 };

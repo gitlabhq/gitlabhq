@@ -37,8 +37,8 @@ describe('ExploreGroupsApp', () => {
       filteredSearchRecentSearchesStorageKey: 'groups',
       filteredSearchInputPlaceholder: 'Search',
       timestampTypeMap: {
-        created_at: 'createdAt',
-        updated_at: 'updatedAt',
+        created: 'createdAt',
+        updated: 'updatedAt',
       },
       initialSort: 'latest_activity',
       shouldUpdateActiveTabCountFromTabQuery: false,

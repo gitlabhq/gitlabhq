@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { pinia } from '~/pinia/instance';
+import { commitDiffDiscussionsStore } from '~/rapid_diffs/stores/instances/commit_discussions';
 import CommitTimeline from './discussions/timeline.vue';
 
 export function initTimeline(appData) {
@@ -9,8 +9,8 @@ export function initTimeline(appData) {
   new Vue({
     el: timelineContainer,
     name: 'CommitTimelineRoot',
-    pinia,
     provide: {
+      store: commitDiffDiscussionsStore,
       userPermissions: appData.userPermissions,
       endpoints: {
         discussions: appData.discussionsEndpoint,

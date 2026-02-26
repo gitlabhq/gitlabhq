@@ -2,14 +2,15 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/AvoidTestProf -- The tests run inside a database transaction
 RSpec.describe 'gitlab:packages namespace rake task', :silence_stdout, feature_category: :package_registry do
   before(:all) do
     Rake.application.rake_require 'tasks/gitlab/packages/migrate'
   end
 
   describe 'migrate' do
-    let(:local) { ObjectStorage::Store::LOCAL }
-    let(:remote) { ObjectStorage::Store::REMOTE }
+    let_it_be(:local) { ObjectStorage::Store::LOCAL }
+    let_it_be(:remote) { ObjectStorage::Store::REMOTE }
 
     def packages_migrate(target = 'remote')
       run_rake_task('gitlab:packages:migrate', target)
@@ -28,8 +29,13 @@ RSpec.describe 'gitlab:packages namespace rake task', :silence_stdout, feature_c
     end
 
     context 'when object storage is enabled' do
+      let_it_be(:project) { create(:project) }
+
       before do
         stub_package_file_object_storage
+        stub_helm_metadata_cache_object_storage
+        stub_npm_metadata_cache_object_storage
+        stub_nuget_symbol_object_storage
       end
 
       context 'when migrating to remote storage' do
@@ -37,6 +43,33 @@ RSpec.describe 'gitlab:packages namespace rake task', :silence_stdout, feature_c
 
         it 'migrates local file to object storage' do
           expect { packages_migrate }.to change { package_file.reload.file_store }.from(local).to(remote)
+        end
+
+        context 'with Helm metadata cache' do
+          let_it_be(:helm_cache) { create(:helm_metadata_cache, project: project, file_store: local) }
+
+          it 'migrates Helm metadata caches stored locally to object storage' do
+            expect { packages_migrate }.to change { helm_cache.reload.file_store }.from(local).to(remote)
+          end
+        end
+
+        context 'with NPM metadata cache' do
+          let_it_be(:npm_cache) { create(:npm_metadata_cache, project: project, file_store: local) }
+
+          it 'migrates NPM metadata caches stored locally to object storage' do
+            expect { packages_migrate }.to change { npm_cache.reload.file_store }.from(local).to(remote)
+          end
+        end
+
+        context 'with NuGet symbol' do
+          let_it_be(:nuget_symbol) do
+            create(:nuget_symbol, file_store: local,
+              package: create(:nuget_package, project: project))
+          end
+
+          it 'migrates NuGet symbols stored locally to object storage' do
+            expect { packages_migrate }.to change { nuget_symbol.reload.file_store }.from(local).to(remote)
+          end
         end
 
         context 'when an error occurs during migration' do
@@ -61,6 +94,35 @@ RSpec.describe 'gitlab:packages namespace rake task', :silence_stdout, feature_c
 
         it 'migrates remote file to local storage' do
           expect { packages_migrate('local') }.to change { package_file.reload.file_store }.from(remote).to(local)
+        end
+
+        context 'with Helm metadata cache' do
+          let!(:helm_cache) { create(:helm_metadata_cache, :object_storage, project: project) }
+
+          it 'migrates Helm metadata caches from object storage to local' do
+            expect { packages_migrate('local') }.to change { helm_cache.reload.file_store }
+              .from(remote).to(local)
+          end
+        end
+
+        context 'with NPM metadata cache' do
+          let!(:npm_cache) { create(:npm_metadata_cache, :object_storage, project: project) }
+
+          it 'migrates NPM metadata caches from object storage to local' do
+            expect { packages_migrate('local') }.to change { npm_cache.reload.file_store }
+              .from(remote).to(local)
+          end
+        end
+
+        context 'with NuGet symbol' do
+          let!(:nuget_symbol) do
+            create(:nuget_symbol, :object_storage, package: create(:nuget_package, project: project))
+          end
+
+          it 'migrates NuGet symbols from object storage to local' do
+            expect { packages_migrate('local') }.to change { nuget_symbol.reload.file_store }
+              .from(remote).to(local)
+          end
         end
 
         context 'when an error occurs during migration' do
@@ -100,3 +162,4 @@ RSpec.describe 'gitlab:packages namespace rake task', :silence_stdout, feature_c
     end
   end
 end
+# rubocop:enable RSpec/AvoidTestProf

@@ -41,6 +41,7 @@ module Gitlab
           fetch_google_ip_list: { threshold: 10, interval: 1.minute },
           github_import: { threshold: 6, interval: 1.minute },
           fogbugz_import: { threshold: 1, interval: 1.minute },
+          geo_proxy: { threshold: 60, interval: 1.minute },
           gitea_import: { threshold: 6, interval: 1.minute },
           gitlab_shell_operation: { threshold: application_settings.gitlab_shell_operation_limit, interval: 1.minute },
           glql: { threshold: 1, interval: 15.minutes },

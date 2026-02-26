@@ -40,6 +40,8 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
       permission_integer
       relative_path
       web_url
+      request_access_path
+      withdraw_access_request_path
     ].each do |attribute|
       it "includes #{attribute}" do
         expect(json[attribute]).not_to be_nil
@@ -575,6 +577,38 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
       let(:object) { group }
 
       include_examples 'archive permission attribute'
+    end
+  end
+
+  describe 'request_access_path attribute' do
+    subject { json[:request_access_path] }
+
+    describe 'for a group' do
+      let(:object) { create(:group) }
+
+      it { is_expected.to eq(request_access_group_group_members_path(object)) }
+    end
+
+    describe 'for a project' do
+      let(:object) { create(:project) }
+
+      it { is_expected.to eq(request_access_project_project_members_path(object)) }
+    end
+  end
+
+  describe 'withdraw_access_request_path attribute' do
+    subject { json[:withdraw_access_request_path] }
+
+    describe 'for a group' do
+      let(:object) { create(:group) }
+
+      it { is_expected.to eq(leave_group_group_members_path(object)) }
+    end
+
+    describe 'for a project' do
+      let(:object) { create(:project) }
+
+      it { is_expected.to eq(leave_project_project_members_path(object)) }
     end
   end
 end

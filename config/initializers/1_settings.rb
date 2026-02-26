@@ -1110,6 +1110,9 @@ Gitlab.ee do
   Settings.cron_jobs['ai_active_context_migration_worker'] ||= {}
   Settings.cron_jobs['ai_active_context_migration_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['ai_active_context_migration_worker']['job_class'] ||= 'Ai::ActiveContext::MigrationWorker'
+  Settings.cron_jobs['ai_active_context_task_worker'] ||= {}
+  Settings.cron_jobs['ai_active_context_task_worker']['cron'] ||= '*/5 * * * *'
+  Settings.cron_jobs['ai_active_context_task_worker']['job_class'] ||= 'Ai::ActiveContext::TaskWorker'
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker'] ||= {}
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['cron'] ||= '*/11 * * * *'
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['job_class'] = 'Namespaces::EnableDescendantsCacheCronWorker'

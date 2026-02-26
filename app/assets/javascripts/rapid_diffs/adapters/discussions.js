@@ -1,16 +1,14 @@
-import Vue from 'vue';
+import Vue, { watch } from 'vue';
 import { MOUNTED } from '~/rapid_diffs/adapter_events';
-import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
-import { pinia } from '~/pinia/instance';
 import DiffLineDiscussions from '~/rapid_diffs/app/discussions/diff_line_discussions.vue';
 
-function mountVueApp({ el, position, appData, onEmpty }) {
+function mountVueApp({ el, position, appData, store, onEmpty }) {
   const instance = new Vue({
     el,
     name: 'DiffLineDiscussionsRoot',
-    pinia,
     provide() {
       return {
+        store,
         userPermissions: appData.userPermissions,
         endpoints: {
           discussions: appData.discussionsEndpoint,
@@ -104,7 +102,7 @@ function addParallelCells(lineRow) {
 }
 
 function createDiscussionMount(createCell) {
-  return ({ diffElement, position, appData }) => {
+  return ({ diffElement, position, appData, store }) => {
     const cell = createCell(diffElement, position.old_line, position.new_line);
     if (cell.hasMountedApp) return;
     const mountTarget = document.createElement('div');
@@ -119,6 +117,7 @@ function createDiscussionMount(createCell) {
         newPath: position.new_path,
       },
       appData,
+      store,
       onEmpty() {
         const row = cell.parentElement;
         // parallel view can have discussions on both sides, we should only remove the whole row if the last discussion was removed
@@ -149,17 +148,11 @@ const mountInlineDiscussion = createDiscussionMount((diffElement, oldLine, newLi
   return addInlineCell(lineRow, oldLine, newLine);
 });
 
-function createDiscussionsWatcher(oldPath, newPath, callback) {
-  const store = useDiffDiscussions(pinia);
-  return store.$subscribe(
-    () => {
-      const matchedDiscussions = store.discussions.filter((discussion) => {
-        return (
-          discussion.diff_discussion &&
-          discussion.position.old_path === oldPath &&
-          discussion.position.new_path === newPath
-        );
-      });
+// eslint-disable-next-line max-params
+function createDiscussionsWatcher(oldPath, newPath, callback, store) {
+  return watch(
+    () => store.findAllDiscussionsForFile({ oldPath, newPath }),
+    (matchedDiscussions) => {
       matchedDiscussions.forEach(callback);
     },
     { immediate: true },
@@ -170,20 +163,25 @@ function focusForm(id) {
   document.querySelector(`[data-discussion-id="${id}"] textarea:not(.hidden)`)?.focus();
 }
 
-export const parallelDiscussionsAdapter = {
+export const createParallelDiscussionsAdapter = (store) => ({
   [MOUNTED](addCleanup) {
     const { diffElement, appData } = this;
     addCleanup(
-      createDiscussionsWatcher(this.data.oldPath, this.data.newPath, ({ id, position }) => {
-        mountParallelDiscussion({ diffElement, id, position, appData });
-      }),
+      createDiscussionsWatcher(
+        this.data.oldPath,
+        this.data.newPath,
+        ({ id, position }) => {
+          mountParallelDiscussion({ diffElement, id, position, appData, store });
+        },
+        store,
+      ),
     );
   },
   clicks: {
     newDiscussion(event, button) {
       const [oldLine, newLine] = getParallelPosition(button);
       const { oldPath, newPath } = this.data;
-      const existingDiscussionId = useDiffDiscussions(pinia).replyToLineDiscussion({
+      const existingDiscussionId = store.replyToLineDiscussion({
         oldPath,
         newPath,
         oldLine,
@@ -192,22 +190,27 @@ export const parallelDiscussionsAdapter = {
       if (existingDiscussionId) focusForm(existingDiscussionId);
     },
   },
-};
+});
 
-export const inlineDiscussionsAdapter = {
+export const createInlineDiscussionsAdapter = (store) => ({
   [MOUNTED](addCleanup) {
     const { diffElement, appData } = this;
     addCleanup(
-      createDiscussionsWatcher(this.data.oldPath, this.data.newPath, ({ id, position }) => {
-        mountInlineDiscussion({ diffElement, id, position, appData });
-      }),
+      createDiscussionsWatcher(
+        this.data.oldPath,
+        this.data.newPath,
+        ({ id, position }) => {
+          mountInlineDiscussion({ diffElement, id, position, appData, store });
+        },
+        store,
+      ),
     );
   },
   clicks: {
     newDiscussion(event, button) {
       const [oldLine, newLine] = getInlinePosition(button);
       const { oldPath, newPath } = this.data;
-      const existingDiscussionId = useDiffDiscussions(pinia).replyToLineDiscussion({
+      const existingDiscussionId = store.replyToLineDiscussion({
         oldPath,
         newPath,
         oldLine,
@@ -216,4 +219,4 @@ export const inlineDiscussionsAdapter = {
       if (existingDiscussionId) focusForm(existingDiscussionId);
     },
   },
-};
+});

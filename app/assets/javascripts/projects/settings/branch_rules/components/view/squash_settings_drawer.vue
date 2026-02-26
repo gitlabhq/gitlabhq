@@ -134,7 +134,7 @@ export default {
         <gl-button variant="confirm" :disabled="!hasChanged" :loading="isLoading" @click="submit">
           {{ $options.i18n.saveChanges }}
         </gl-button>
-        <gl-button variant="confirm" category="secondary" @click="$emit('close')">
+        <gl-button @click="$emit('close')">
           {{ $options.i18n.cancel }}
         </gl-button>
       </div>

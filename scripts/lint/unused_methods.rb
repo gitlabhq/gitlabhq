@@ -12,6 +12,12 @@ print_report = %w[true 1].include? ENV["REPORT_ALL_UNUSED_METHODS"]
 
 start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
+# If we have no `ee/*` files to process, this indicates that we are running in
+#   gitlab-org/gitlab-foss, which means we don't have EE-specific files. In this
+#   case, we should exit early since the script is designed to work with EE files.
+#
+exit unless Dir.exist?('ee')
+
 # Build an array of filename globs to process.
 # Only search file types that might use or define a method.
 #

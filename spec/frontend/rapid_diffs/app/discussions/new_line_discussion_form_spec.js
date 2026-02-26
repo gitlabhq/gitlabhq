@@ -38,13 +38,15 @@ describe('NewLineDiscussionForm', () => {
     },
   });
 
+  let store;
+
   const createComponent = (props = {}, provide = {}) => {
     const { discussion = createDiscussion() } = props;
-    useDiffDiscussions().discussions = [discussion];
+    store.discussions = [discussion];
     wrapper = shallowMount(NewLineDiscussionForm, {
       pinia,
       propsData: merge({ discussion }, props),
-      provide: merge(defaultProvisions, provide),
+      provide: merge({ store }, defaultProvisions, provide),
     });
   };
 
@@ -53,6 +55,7 @@ describe('NewLineDiscussionForm', () => {
   beforeEach(() => {
     mockAdapter = new MockAdapter(axios);
     pinia = createTestingPinia({ stubActions: false });
+    store = useDiffDiscussions();
   });
 
   it('has data-discussion-id attribute', () => {

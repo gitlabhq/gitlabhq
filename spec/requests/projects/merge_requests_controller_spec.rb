@@ -11,15 +11,17 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
   let_it_be(:base_diff_1) { merge_request.merge_request_diff }
 
-  let_it_be(:base_diff_2) do
+  let_it_be(:commit_id) do
     create_file_in_repo(
       merge_request.project,
       'master',
       'master',
       'new_file.txt',
       'new content'
-    )
+    )[:result]
+  end
 
+  let_it_be(:base_diff_2) do
     merge_request.clear_memoized_shas
     merge_request.create_merge_request_diff
   end
@@ -311,6 +313,18 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
           expect(response.body).to include('new content')
         end
       end
+
+      context 'when commit_id param is set' do
+        let(:params) { { commit_id: commit_id } }
+
+        it 'shows only files in the commit' do
+          get diffs_project_merge_request_path(project, merge_request, params.merge(rapid_diffs: 'true'))
+
+          expect(response.body.scan('<diff-file ').size).to eq(1)
+          expect(response.body).to include('new_file.txt')
+          expect(response.body).to include('new content')
+        end
+      end
     end
 
     private
@@ -366,6 +380,12 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
         include_examples 'diff files metadata'
       end
+    end
+
+    context 'when commit_id param is set' do
+      let(:additional_params) { { commit_id: commit_id } }
+
+      include_examples 'diff files metadata'
     end
   end
 
@@ -435,6 +455,20 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
               diffs_count: 1
             }
           end
+        end
+      end
+    end
+
+    context 'when commit_id param is set' do
+      let(:additional_params) { { commit_id: commit_id } }
+
+      it_behaves_like 'diffs stats' do
+        let(:expected_stats) do
+          {
+            added_lines: 1,
+            removed_lines: 0,
+            diffs_count: 1
+          }
         end
       end
     end

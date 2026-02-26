@@ -22,6 +22,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
 import { useBatchComments } from '~/batch_comments/store';
 import { uuids } from '~/lib/utils/uuids';
+import { useDiscussions } from '~/notes/store/discussions';
 import notesEventHub from '../../event_hub';
 
 import promoteTimelineEvent from '../../graphql/promote_timeline_event.mutation.graphql';
@@ -65,7 +66,7 @@ export function expandDiscussion(data) {
 }
 
 export function collapseDiscussion(discussionId) {
-  const discussion = utils.findNoteObjectById(this.discussions, discussionId);
+  const discussion = utils.findNoteObjectById(useDiscussions().discussions, discussionId);
   Object.assign(discussion, { expanded: false });
   if (!discussion.diff_file) return;
   this.tryStore('legacyDiffs').collapseDiffDiscussion(discussion);
@@ -232,7 +233,7 @@ export function updateDiscussion(discussion) {
 
   this[types.UPDATE_DISCUSSION](discussion);
 
-  return utils.findNoteObjectById(this.discussions, discussion.id);
+  return utils.findNoteObjectById(useDiscussions().discussions, discussion.id);
 }
 
 export function setDiscussionSortDirection({ direction, persist = true }) {
@@ -252,7 +253,7 @@ export function setSelectedCommentPositionHover(position) {
 }
 
 export function removeNote(note) {
-  const discussion = this.discussions.find(({ id }) => id === note.discussion_id);
+  const discussion = useDiscussions().discussions.find(({ id }) => id === note.discussion_id);
 
   this[types.DELETE_NOTE](note);
 
@@ -300,7 +301,7 @@ export function updateOrCreateNotes(notes) {
     if (this.notesById[note.id]) {
       this[types.UPDATE_NOTE](note);
     } else if (note.type === constants.DISCUSSION_NOTE || note.type === constants.DIFF_NOTE) {
-      const discussion = utils.findNoteObjectById(this.discussions, note.discussion_id);
+      const discussion = utils.findNoteObjectById(useDiscussions().discussions, note.discussion_id);
 
       if (discussion) {
         this[types.ADD_NEW_REPLY_TO_DISCUSSION](note);
@@ -396,7 +397,7 @@ export function removePlaceholderNotes() {
 }
 
 export function resolveDiscussion({ discussionId }) {
-  const discussion = utils.findNoteObjectById(this.discussions, discussionId);
+  const discussion = utils.findNoteObjectById(useDiscussions().discussions, discussionId);
   const isResolved = this.isDiscussionResolved(discussionId);
 
   if (!discussion) {
@@ -631,10 +632,12 @@ export function fetchUpdatedNotes() {
         );
 
         if (botNote) {
-          let discussions = this.discussions.filter((d) => d.id === botNote.discussion_id);
+          let discussions = useDiscussions().discussions.filter(
+            (d) => d.id === botNote.discussion_id,
+          );
 
           if (!discussions.length) {
-            discussions = this.discussions;
+            discussions = useDiscussions().discussions;
           }
 
           for (const discussion of discussions) {

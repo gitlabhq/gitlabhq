@@ -240,11 +240,16 @@ Runner controller scopes define which jobs a runner controller evaluates for adm
 A runner controller must have at least one scope to receive admission requests. Without a scope,
 the controller remains inactive even when its state is `enabled` or `dry_run`.
 
-Instance scope: The runner controller evaluates jobs for all runners in the GitLab instance.
+Runner controller scopes support two mutually exclusive scoping types:
+
+- **Instance scope**: The runner controller evaluates jobs for all runners in the GitLab instance.
+- **Runner scope**: The runner controller evaluates jobs only for specific instance runners.
+
+A runner controller can have either an instance scope or one or more runner scopes, but not both.
 
 > [!note]
-> Only instance scoping is available. Runner scoping and additional
-> scope types are proposed in [issue 586419](https://gitlab.com/gitlab-org/gitlab/-/issues/586419).
+> Only instance and runner scopes are available. Additional scope types (group, project) are
+> proposed in [issue 586419](https://gitlab.com/gitlab-org/gitlab/-/issues/586419).
 
 ### List all scopes for a runner controller
 
@@ -265,9 +270,13 @@ response attributes:
 
 | Attribute                              | Type         | Description                                               |
 |----------------------------------------|--------------|-----------------------------------------------------------|
-| `instance_level_scopings`              | object array | List of instance-level scoping for the runner controller. |
-| `instance_level_scopings[].created_at` | datetime     | The date and time when the scoping was created.           |
-| `instance_level_scopings[].updated_at` | datetime     | The date and time when the scoping was last updated.      |
+| `instance_level_scopings`              | object array | List of instance scopes for the runner controller. |
+| `instance_level_scopings[].created_at` | datetime     | The date and time when the scope was created.           |
+| `instance_level_scopings[].updated_at` | datetime     | The date and time when the scope was last updated.      |
+| `runner_level_scopings`                | object array | List of runner scopes for the runner controller.  |
+| `runner_level_scopings[].runner_id`    | integer      | The ID of the runner.                                     |
+| `runner_level_scopings[].created_at`   | datetime     | The date and time when the scope was created.           |
+| `runner_level_scopings[].updated_at`   | datetime     | The date and time when the scope was last updated.      |
 
 Example request:
 
@@ -285,7 +294,8 @@ Example response:
             "created_at": "2026-01-01T00:00:00Z",
             "updated_at": "2026-01-01T00:00:00Z"
         }
-    ]
+    ],
+    "runner_level_scopings": []
 }
 ```
 
@@ -354,4 +364,87 @@ Example request:
 curl --request DELETE \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/runner_controllers/1/scopes/instance"
+```
+
+### Add runner scope
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/586417) in GitLab 18.10.
+
+{{< /history >}}
+
+Adds a runner scope to a runner controller. When added, the runner controller
+evaluates jobs only for the specified runner.
+
+A runner controller with an instance scope cannot have runner scopes. Remove
+the instance scope before adding runner scopes.
+
+```plaintext
+POST /runner_controllers/:id/scopes/runners/:runner_id
+```
+
+Supported attributes:
+
+| Attribute   | Type    | Required | Description                      |
+|-------------|---------|----------|----------------------------------|
+| `id`        | integer | Yes      | The ID of the runner controller. |
+| `runner_id` | integer | Yes      | The ID of the runner. Must be an instance runner. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute    | Type     | Description                                          |
+|--------------|----------|------------------------------------------------------|
+| `runner_id`  | integer  | The ID of the runner.                                |
+| `created_at` | datetime | The date and time when the scope was created.      |
+| `updated_at` | datetime | The date and time when the scope was last updated. |
+
+Example request:
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runner_controllers/1/scopes/runners/5"
+```
+
+Example response:
+
+```json
+{
+    "runner_id": 5,
+    "created_at": "2026-01-01T00:00:00Z",
+    "updated_at": "2026-01-01T00:00:00Z"
+}
+```
+
+### Remove runner scope
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/586417) in GitLab 18.10.
+
+{{< /history >}}
+
+Removes a runner scope from a runner controller.
+
+```plaintext
+DELETE /runner_controllers/:id/scopes/runners/:runner_id
+```
+
+Supported attributes:
+
+| Attribute   | Type    | Required | Description                      |
+|-------------|---------|----------|----------------------------------|
+| `id`        | integer | Yes      | The ID of the runner controller. |
+| `runner_id` | integer | Yes      | The ID of the runner.            |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
+
+```shell
+curl --request DELETE \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/runner_controllers/1/scopes/runners/5"
 ```

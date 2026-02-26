@@ -4,8 +4,13 @@ import { isInMRPage } from '~/lib/utils/common_utils';
 import { doesHashExistInUrl } from '~/lib/utils/url_utility';
 import { useBatchComments } from '~/batch_comments/store';
 import { badgeState } from '~/merge_requests/badge_state';
+import { useDiscussions } from '~/notes/store/discussions';
 import * as constants from '../../constants';
 import { collapseSystemNotes } from '../../stores/collapse_utils';
+
+export function discussions() {
+  return useDiscussions().discussions;
+}
 
 const getDraftComments = (drafts) => {
   return drafts
@@ -54,7 +59,7 @@ const hideActivity = (filters, discussion) => {
 };
 
 export function filteredDiscussions() {
-  let discussionsInState = clone(this.discussions);
+  let discussionsInState = clone(useDiscussions().discussions);
   // NOTE: not testing bc will be removed when backend is finished.
 
   if (this.noteableData.targetType === 'merge_request') {
@@ -148,7 +153,7 @@ export function canUserAddIncidentTimelineEvents() {
 }
 
 export function notesById() {
-  return this.discussions.reduce((acc, note) => {
+  return useDiscussions().discussions.reduce((acc, note) => {
     note.notes.every((n) => Object.assign(acc, { [n.id]: n }));
     return acc;
   }, {});
@@ -170,9 +175,9 @@ const isCurrentUserLastNote = (note, state) =>
   !note.system && state.userData && note.author && note.author.id === state.userData.id;
 
 export function getCurrentUserLastNote() {
-  return flattenDeep(reverseNotes(this.discussions).map((note) => reverseNotes(note.notes))).find(
-    (el) => isCurrentUserLastNote(el, this),
-  );
+  return flattenDeep(
+    reverseNotes(useDiscussions().discussions).map((note) => reverseNotes(note.notes)),
+  ).find((el) => isCurrentUserLastNote(el, this));
 }
 
 export function getDiscussionCurrentUserLastNote() {
@@ -196,14 +201,14 @@ export function isDiscussionResolved() {
 }
 
 export function allResolvableDiscussions() {
-  return this.discussions.filter((d) => !d.individual_note && d.resolvable);
+  return useDiscussions().discussions.filter((d) => !d.individual_note && d.resolvable);
 }
 
 export function resolvedDiscussionsById() {
   const map = {};
 
-  this.discussions
-    .filter((d) => d.resolvable)
+  useDiscussions()
+    .discussions.filter((d) => d.resolvable)
     .forEach((n) => {
       if (n.notes) {
         const resolved = n.notes.filter((note) => note.resolvable).every((note) => note.resolved);
@@ -278,7 +283,7 @@ export function resolvedDiscussionCount() {
 }
 
 export function discussionTabCounter() {
-  return this.discussions.reduce(
+  return useDiscussions().discussions.reduce(
     (acc, discussion) =>
       acc + discussion.notes.filter((note) => !note.system && !note.placeholder).length,
     0,
@@ -342,7 +347,8 @@ export function firstUnresolvedDiscussionId() {
 }
 
 export function getDiscussion() {
-  return (discussionId) => this.discussions.find((discussion) => discussion.id === discussionId);
+  return (discussionId) =>
+    useDiscussions().discussions.find((discussion) => discussion.id === discussionId);
 }
 
 export function suggestionsCount() {
@@ -356,7 +362,7 @@ export function hasDrafts() {
 export function getSuggestionsFilePaths() {
   return () =>
     this.batchSuggestionsInfo.reduce((acc, suggestion) => {
-      const discussion = this.discussions.find((d) => d.id === suggestion.discussionId);
+      const discussion = useDiscussions().discussions.find((d) => d.id === suggestion.discussionId);
 
       if (acc.indexOf(discussion?.diff_file?.file_path) === -1) {
         acc.push(discussion.diff_file.file_path);
@@ -386,5 +392,5 @@ export function getFetchDiscussionsConfig() {
 }
 
 export function allDiscussionsExpanded() {
-  return this.discussions.every((discussion) => discussion.expanded);
+  return useDiscussions().discussions.every((discussion) => discussion.expanded);
 }

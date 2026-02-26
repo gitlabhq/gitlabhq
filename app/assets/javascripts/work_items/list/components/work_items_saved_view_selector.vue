@@ -155,9 +155,8 @@ export default {
         </template>
       </gl-disclosure-dropdown-item>
 
-      <gl-disclosure-dropdown-group bordered>
+      <gl-disclosure-dropdown-group v-if="canDeleteSavedView" bordered>
         <gl-disclosure-dropdown-item
-          v-if="canDeleteSavedView"
           data-testid="delete-action"
           variant="danger"
           @action="deleteView"

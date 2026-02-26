@@ -250,12 +250,7 @@ export default {
           >
             {{ $options.i18n.saveChanges }}
           </gl-button>
-          <gl-button
-            variant="confirm"
-            category="secondary"
-            data-testid="cancel-btn"
-            @click="$emit('close')"
-          >
+          <gl-button data-testid="cancel-btn" @click="$emit('close')">
             {{ $options.i18n.cancel }}
           </gl-button>
         </div>

@@ -21,6 +21,7 @@ import { createAlert } from '~/alert';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { useBatchComments } from '~/batch_comments/store';
 import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import {
@@ -40,6 +41,7 @@ jest.mock('~/alert');
 
 function createPinia({ stubActions = true } = {}) {
   const pinia = createTestingPinia({ stubActions, plugins: [globalAccessorPlugin] });
+  useDiscussions();
   const diffsStore = useLegacyDiffs();
   useNotes().noteableData = noteableDataMock;
   useNotes().notesData = notesDataMock;

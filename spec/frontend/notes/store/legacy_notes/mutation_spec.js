@@ -2,6 +2,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { DISCUSSION_NOTE, DESC } from '~/notes/constants';
 import * as types from '~/notes/stores/mutation_types';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import {
   note,
   discussionMock,
@@ -20,10 +21,12 @@ const WEIRD_NOTE = { resolvable: false, resolved: true };
 
 describe('Notes Store mutations', () => {
   let store;
+  let discussionsStore;
 
   beforeEach(() => {
     setActivePinia(createPinia());
     store = useNotes();
+    discussionsStore = useDiscussions();
   });
 
   describe('ADD_NEW_NOTE', () => {
@@ -68,7 +71,7 @@ describe('Notes Store mutations', () => {
     const newReply = { ...note, discussion_id: discussionMock.id };
 
     beforeEach(() => {
-      store.discussions = [{ ...discussionMock }];
+      discussionsStore.discussions = [{ ...discussionMock }];
     });
 
     it('should add a reply to a specific discussion', () => {
@@ -87,7 +90,7 @@ describe('Notes Store mutations', () => {
 
   describe('DELETE_NOTE', () => {
     it('should delete a note', () => {
-      store.$patch({ discussions: [discussionMock] });
+      discussionsStore.discussions = [discussionMock];
       const toDelete = discussionMock.notes[0];
       const lengthBefore = discussionMock.notes.length;
 
@@ -101,9 +104,7 @@ describe('Notes Store mutations', () => {
     it('should expand a collapsed discussion', () => {
       const discussion = { ...discussionMock, expanded: false };
 
-      store.$patch({
-        discussions: [discussion],
-      });
+      discussionsStore.discussions = [discussion];
 
       store[types.EXPAND_DISCUSSION]({ discussionId: discussion.id });
 
@@ -115,9 +116,7 @@ describe('Notes Store mutations', () => {
     it('should collapse an expanded discussion', () => {
       const discussion = { ...discussionMock, expanded: true };
 
-      store.$patch({
-        discussions: [discussion],
-      });
+      discussionsStore.discussions = [discussion];
 
       store[types.COLLAPSE_DISCUSSION]({ discussionId: discussion.id });
 
@@ -128,7 +127,7 @@ describe('Notes Store mutations', () => {
   describe('REMOVE_PLACEHOLDER_NOTES', () => {
     it('should remove all placeholder individual notes', () => {
       const placeholderNote = { ...individualNote, isPlaceholderNote: true };
-      store.$patch({ discussions: [placeholderNote] });
+      discussionsStore.discussions = [placeholderNote];
 
       store[types.REMOVE_PLACEHOLDER_NOTES]();
 
@@ -145,9 +144,7 @@ describe('Notes Store mutations', () => {
       const placeholderNote = { ...individualNote, isPlaceholderNote: true };
       discussion.notes.push(placeholderNote);
 
-      store.$patch({
-        discussions: [discussion],
-      });
+      discussionsStore.discussions = [discussion];
 
       store[types.REMOVE_PLACEHOLDER_NOTES]();
 
@@ -193,9 +190,7 @@ describe('Notes Store mutations', () => {
 
   describe('CLEAR_DISCUSSIONS', () => {
     it('should set discussions to an empty array', () => {
-      store.$patch({
-        discussions: [discussionMock],
-      });
+      discussionsStore.discussions = [discussionMock];
 
       store[types.CLEAR_DISCUSSIONS]();
 
@@ -205,9 +200,7 @@ describe('Notes Store mutations', () => {
 
   describe('ADD_OR_UPDATE_DISCUSSIONS', () => {
     it('should set the initial notes received', () => {
-      store.$patch({
-        discussions: [],
-      });
+      discussionsStore.discussions = [];
       const legacyNote = {
         id: 2,
         individual_note: true,
@@ -232,9 +225,7 @@ describe('Notes Store mutations', () => {
     });
 
     it('adds truncated_diff_lines if discussion is a diffFile', () => {
-      store.$patch({
-        discussions: [],
-      });
+      discussionsStore.discussions = [];
 
       store[types.ADD_OR_UPDATE_DISCUSSIONS]([
         {
@@ -250,9 +241,7 @@ describe('Notes Store mutations', () => {
     });
 
     it('adds empty truncated_diff_lines when not in discussion', () => {
-      store.$patch({
-        discussions: [],
-      });
+      discussionsStore.discussions = [];
 
       store[types.ADD_OR_UPDATE_DISCUSSIONS]([
         {
@@ -293,9 +282,7 @@ describe('Notes Store mutations', () => {
 
   describe('SHOW_PLACEHOLDER_NOTE', () => {
     it('should set a placeholder note', () => {
-      store.$patch({
-        discussions: [],
-      });
+      discussionsStore.discussions = [];
       store[types.SHOW_PLACEHOLDER_NOTE](note);
 
       expect(store.discussions[0].isPlaceholderNote).toEqual(true);
@@ -304,8 +291,8 @@ describe('Notes Store mutations', () => {
 
   describe('TOGGLE_AWARD', () => {
     it('should add award if user has not reacted yet', () => {
+      discussionsStore.discussions = [note];
       store.$patch({
-        discussions: [note],
         userData: userDataMock,
       });
 
@@ -324,8 +311,8 @@ describe('Notes Store mutations', () => {
     });
 
     it('should remove award if user already reacted', () => {
+      discussionsStore.discussions = [note];
       store.$patch({
-        discussions: [note],
         userData: {
           id: 1,
           name: 'Administrator',
@@ -347,9 +334,7 @@ describe('Notes Store mutations', () => {
     it('should open a closed discussion', () => {
       const discussion = { ...discussionMock, expanded: false };
 
-      store.$patch({
-        discussions: [discussion],
-      });
+      discussionsStore.discussions = [discussion];
 
       store[types.TOGGLE_DISCUSSION]({ discussionId: discussion.id });
 
@@ -357,9 +342,7 @@ describe('Notes Store mutations', () => {
     });
 
     it('should close a opened discussion', () => {
-      store.$patch({
-        discussions: [discussionMock],
-      });
+      discussionsStore.discussions = [discussionMock];
 
       store[types.TOGGLE_DISCUSSION]({ discussionId: discussionMock.id });
 
@@ -367,9 +350,7 @@ describe('Notes Store mutations', () => {
     });
 
     it('forces a discussions expanded state', () => {
-      store.$patch({
-        discussions: [{ ...discussionMock, expanded: false }],
-      });
+      discussionsStore.discussions = [{ ...discussionMock, expanded: false }];
 
       store[types.TOGGLE_DISCUSSION]({ discussionId: discussionMock.id, forceExpanded: true });
 
@@ -395,7 +376,7 @@ describe('Notes Store mutations', () => {
       const discussion2 = { ...discussionMock, id: 1, expanded: true };
       const discussionIds = [discussion1.id, discussion2.id];
 
-      store.$patch({ discussions: [discussion1, discussion2] });
+      discussionsStore.discussions = [discussion1, discussion2];
 
       store[types.SET_EXPAND_DISCUSSIONS]({ discussionIds, expanded: true });
 
@@ -409,7 +390,7 @@ describe('Notes Store mutations', () => {
       const discussion2 = { ...discussionMock, id: 1, expanded: true };
       const discussionIds = [discussion1.id, discussion2.id];
 
-      store.$patch({ discussions: [discussion1, discussion2] });
+      discussionsStore.discussions = [discussion1, discussion2];
 
       store[types.SET_EXPAND_DISCUSSIONS]({ discussionIds, expanded: false });
 
@@ -429,9 +410,7 @@ describe('Notes Store mutations', () => {
 
   describe('UPDATE_NOTE', () => {
     it('should update a note', () => {
-      store.$patch({
-        discussions: [individualNote],
-      });
+      discussionsStore.discussions = [individualNote];
 
       const updated = { ...individualNote.notes[0], note: 'Foo' };
 
@@ -442,9 +421,7 @@ describe('Notes Store mutations', () => {
 
     it('does not update existing note if it matches', () => {
       const originalNote = { ...individualNote, individual_note: false };
-      store.$patch({
-        discussions: [originalNote],
-      });
+      discussionsStore.discussions = [originalNote];
 
       const updated = individualNote.notes[0];
 
@@ -454,9 +431,7 @@ describe('Notes Store mutations', () => {
     });
 
     it('transforms an individual note to discussion', () => {
-      store.$patch({
-        discussions: [individualNote],
-      });
+      discussionsStore.discussions = [individualNote];
 
       const transformedNote = {
         ...individualNote.notes[0],
@@ -471,7 +446,7 @@ describe('Notes Store mutations', () => {
     });
 
     it('copies resolve state to discussion', () => {
-      store.$patch({ discussions: [{ ...discussionMock }] });
+      discussionsStore.discussions = [{ ...discussionMock }];
 
       const resolvedNote = {
         ...discussionMock.notes[0],
@@ -494,7 +469,6 @@ describe('Notes Store mutations', () => {
   describe('CLOSE_ISSUE', () => {
     it('should set issue as closed', () => {
       store.$patch({
-        discussions: [],
         targetNoteHash: null,
         lastFetchedAt: null,
         isToggleStateButtonLoading: false,
@@ -512,7 +486,6 @@ describe('Notes Store mutations', () => {
   describe('REOPEN_ISSUE', () => {
     it('should set issue as closed', () => {
       store.$patch({
-        discussions: [],
         targetNoteHash: null,
         lastFetchedAt: null,
         isToggleStateButtonLoading: false,
@@ -530,7 +503,6 @@ describe('Notes Store mutations', () => {
   describe('TOGGLE_STATE_BUTTON_LOADING', () => {
     it('should set isToggleStateButtonLoading as true', () => {
       store.$patch({
-        discussions: [],
         targetNoteHash: null,
         lastFetchedAt: null,
         isToggleStateButtonLoading: false,
@@ -546,7 +518,6 @@ describe('Notes Store mutations', () => {
 
     it('should set isToggleStateButtonLoading as false', () => {
       store.$patch({
-        discussions: [],
         targetNoteHash: null,
         lastFetchedAt: null,
         isToggleStateButtonLoading: true,
@@ -575,13 +546,11 @@ describe('Notes Store mutations', () => {
 
   describe('SET_DISCUSSION_DIFF_LINES', () => {
     it('sets truncated_diff_lines', () => {
-      store.$patch({
-        discussions: [
-          {
-            id: 1,
-          },
-        ],
-      });
+      discussionsStore.discussions = [
+        {
+          id: 1,
+        },
+      ];
 
       store[types.SET_DISCUSSION_DIFF_LINES]({
         discussionId: 1,
@@ -592,14 +561,12 @@ describe('Notes Store mutations', () => {
     });
 
     it('keeps reactivity of discussion', () => {
-      store.$patch({
-        discussions: [
-          {
-            id: 1,
-            expanded: false,
-          },
-        ],
-      });
+      discussionsStore.discussions = [
+        {
+          id: 1,
+          expanded: false,
+        },
+      ];
 
       const discussion = store.discussions[0];
 
@@ -640,13 +607,11 @@ describe('Notes Store mutations', () => {
 
   describe('UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS', () => {
     it('with unresolvable discussions, updates state', () => {
-      store.$patch({
-        discussions: [
-          { individual_note: false, resolvable: true, notes: [UNRESOLVED_NOTE] },
-          { individual_note: true, resolvable: true, notes: [UNRESOLVED_NOTE] },
-          { individual_note: false, resolvable: false, notes: [UNRESOLVED_NOTE] },
-        ],
-      });
+      discussionsStore.discussions = [
+        { individual_note: false, resolvable: true, notes: [UNRESOLVED_NOTE] },
+        { individual_note: true, resolvable: true, notes: [UNRESOLVED_NOTE] },
+        { individual_note: false, resolvable: false, notes: [UNRESOLVED_NOTE] },
+      ];
 
       store[types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS]();
 
@@ -659,30 +624,28 @@ describe('Notes Store mutations', () => {
     });
 
     it('with resolvable discussions, updates state', () => {
-      store.$patch({
-        discussions: [
-          {
-            individual_note: false,
-            resolvable: true,
-            notes: [RESOLVED_NOTE, SYSTEM_NOTE, RESOLVED_NOTE],
-          },
-          {
-            individual_note: false,
-            resolvable: true,
-            notes: [RESOLVED_NOTE, SYSTEM_NOTE, WEIRD_NOTE],
-          },
-          {
-            individual_note: false,
-            resolvable: true,
-            notes: [SYSTEM_NOTE, RESOLVED_NOTE, WEIRD_NOTE, UNRESOLVED_NOTE],
-          },
-          {
-            individual_note: false,
-            resolvable: true,
-            notes: [UNRESOLVED_NOTE],
-          },
-        ],
-      });
+      discussionsStore.discussions = [
+        {
+          individual_note: false,
+          resolvable: true,
+          notes: [RESOLVED_NOTE, SYSTEM_NOTE, RESOLVED_NOTE],
+        },
+        {
+          individual_note: false,
+          resolvable: true,
+          notes: [RESOLVED_NOTE, SYSTEM_NOTE, WEIRD_NOTE],
+        },
+        {
+          individual_note: false,
+          resolvable: true,
+          notes: [SYSTEM_NOTE, RESOLVED_NOTE, WEIRD_NOTE, UNRESOLVED_NOTE],
+        },
+        {
+          individual_note: false,
+          resolvable: true,
+          notes: [UNRESOLVED_NOTE],
+        },
+      ];
 
       store[types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS]();
 
@@ -787,9 +750,9 @@ describe('Notes Store mutations', () => {
       [batchedSuggestionInfo] = batchSuggestionsInfoMock;
       suggestions = batchSuggestionsInfoMock.map(({ suggestionId }) => ({ id: suggestionId }));
       discussions = buildDiscussions(batchSuggestionsInfoMock);
+      discussionsStore.discussions = discussions;
       store.$patch({
         batchSuggestionsInfo: [batchedSuggestionInfo],
-        discussions,
       });
     });
 
@@ -899,9 +862,7 @@ describe('Notes Store mutations', () => {
       const discussion1 = { id: 1, position: { line_code: 'abc_1_1' } };
       const discussion2 = { id: 2, position: { line_code: 'abc_2_2' } };
       const discussion3 = { id: 3, position: { line_code: 'abc_3_3' } };
-      store.$patch({
-        discussions: [discussion1, discussion2, discussion3],
-      });
+      discussionsStore.discussions = [discussion1, discussion2, discussion3];
       const discussion1Position = { ...discussion1.position };
       const position = { ...discussion1Position, test: true };
 
@@ -924,9 +885,7 @@ describe('Notes Store mutations', () => {
 
   describe('SET_EXPAND_ALL_DISCUSSIONS', () => {
     it('should set expanded for every discussion', () => {
-      store.$patch({
-        discussions: [{ expanded: false }, { expanded: false }],
-      });
+      discussionsStore.discussions = [{ expanded: false }, { expanded: false }];
 
       store[types.SET_EXPAND_ALL_DISCUSSIONS](true);
 

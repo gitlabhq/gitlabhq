@@ -255,6 +255,7 @@ export default {
     'newIssuePath',
     'workItemPlanningViewEnabled',
     'subscribedSavedViewLimit',
+    'canCreateSavedView',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -1112,6 +1113,9 @@ export default {
         this.subscribedSavedViewLimit &&
         this.subscribedSavedViews.length >= this.subscribedSavedViewLimit
       );
+    },
+    shouldShowSaveView() {
+      return this.canCreateSavedView && this.viewConfigChanged;
     },
   },
   watch: {
@@ -2041,7 +2045,7 @@ export default {
 
             <template v-if="!isSavedView">
               <gl-button
-                v-if="viewConfigChanged"
+                v-if="shouldShowSaveView"
                 size="small"
                 category="primary"
                 variant="default"

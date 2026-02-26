@@ -15,13 +15,15 @@ jest.mock('~/lib/utils/common_utils');
 describe('DiffLineDiscussions', () => {
   let wrapper;
 
+  let store;
+
   const createComponent = (
     propsData = {},
     provide = { userPermissions: { can_create_note: true } },
   ) => {
     wrapper = shallowMount(DiffLineDiscussions, {
       propsData,
-      provide,
+      provide: { store, ...provide },
     });
   };
 
@@ -31,13 +33,14 @@ describe('DiffLineDiscussions', () => {
   ) => {
     wrapper = mount(DiffLineDiscussions, {
       propsData,
-      provide,
+      provide: { store, ...provide },
       attachTo: document.body,
     });
   };
 
   beforeEach(() => {
     createTestingPinia({ stubActions: false });
+    store = useDiffDiscussions();
   });
 
   it('shows regular discussions', () => {

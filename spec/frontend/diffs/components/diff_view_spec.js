@@ -45,6 +45,7 @@ describe('DiffView', () => {
           legacyNotes: {},
           legacyDiffs: {},
           fileBrowser: {},
+          discussions: {},
           batchComments: {
             shouldRenderDraftRow: () => false,
             shouldRenderParallelDraftRow: () => () => true,

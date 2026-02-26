@@ -2186,6 +2186,7 @@
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
       when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
 
 .qa:rules:fulfillment-e2e-quarantine-report:

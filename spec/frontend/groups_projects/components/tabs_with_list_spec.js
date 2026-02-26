@@ -383,7 +383,7 @@ describe('TabsWithList', () => {
           },
         });
 
-        expect(findFilteredSearchAndSort().props('activeSortOption')).toBe(SORT_OPTION_UPDATED);
+        expect(findFilteredSearchAndSort().props('activeSortOption')).toBe(SORT_OPTION_CREATED);
       });
 
       describe('when sortOptions and defaultSortOption are not set', () => {
@@ -705,7 +705,7 @@ describe('TabsWithList', () => {
 
     it('falls back to defaultSortOption prop descending order', () => {
       expect(findTabView().props()).toMatchObject({
-        sort: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}`,
+        sort: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_DESC}`,
       });
     });
   });

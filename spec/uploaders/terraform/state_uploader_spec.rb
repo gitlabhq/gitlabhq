@@ -71,24 +71,8 @@ RSpec.describe Terraform::StateUploader, feature_category: :deployment_managemen
         stub_application_setting(terraform_state_encryption_enabled: true)
       end
 
-      context 'when skip_encrypting_terraform_state_file feature flag is enabled' do
-        before do
-          stub_feature_flags(skip_encrypting_terraform_state_file: true)
-        end
-
-        it 'encrypts the stored file' do
-          expect(subject.file.read).not_to eq(fixture_file('terraform/terraform.tfstate'))
-        end
-      end
-
-      context 'when skip_encrypting_terraform_state_file feature flag is disabled' do
-        before do
-          stub_feature_flags(skip_encrypting_terraform_state_file: false)
-        end
-
-        it 'encrypts the stored file' do
-          expect(subject.file.read).not_to eq(fixture_file('terraform/terraform.tfstate'))
-        end
+      it 'encrypts the stored file' do
+        expect(subject.file.read).not_to eq(fixture_file('terraform/terraform.tfstate'))
       end
     end
 
@@ -98,24 +82,8 @@ RSpec.describe Terraform::StateUploader, feature_category: :deployment_managemen
         stub_application_setting(terraform_state_encryption_enabled: false)
       end
 
-      context 'when skip_encrypting_terraform_state_file feature flag is enabled' do
-        before do
-          stub_feature_flags(skip_encrypting_terraform_state_file: true)
-        end
-
-        it 'does not encrypt the stored file' do
-          expect(subject.file.read).to eq(fixture_file('terraform/terraform.tfstate'))
-        end
-      end
-
-      context 'when skip_encrypting_terraform_state_file feature flag is disabled' do
-        before do
-          stub_feature_flags(skip_encrypting_terraform_state_file: false)
-        end
-
-        it 'encrypts the stored file' do
-          expect(subject.file.read).not_to eq(fixture_file('terraform/terraform.tfstate'))
-        end
+      it 'does not encrypt the stored file' do
+        expect(subject.file.read).to eq(fixture_file('terraform/terraform.tfstate'))
       end
     end
   end

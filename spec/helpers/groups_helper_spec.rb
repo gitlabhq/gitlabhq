@@ -785,4 +785,55 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       it { is_expected.to match_array(expected_options) }
     end
   end
+
+  describe '#group_more_action_data' do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:group) { create(:group, :public) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    subject(:result) { helper.group_more_action_data(group) }
+
+    it 'returns expected values' do
+      serialized_group = GroupChildSerializer.new(current_user: user).represent(group).to_json
+
+      expect(result).to include({ group: serialized_group, after_delete_path: '/' })
+    end
+
+    context 'when user has no access request' do
+      context 'when user can request access' do
+        specify { expect(result[:can_request_access]).to eq('true') }
+      end
+
+      context 'when user cannot request access' do
+        before do
+          group.update!(request_access_enabled: false)
+        end
+
+        specify { expect(result[:can_request_access]).to eq('false') }
+      end
+    end
+
+    context 'when user has existing access request' do
+      let_it_be(:access_request) { create(:group_member, :guest, :access_request, group: group, user: user) }
+
+      specify { expect(result[:can_request_access]).to eq('false') }
+
+      context 'when user can withdraw access request' do
+        specify { expect(result[:can_withdraw_access_request]).to eq('true') }
+      end
+
+      context 'when user cannot withdraw access request' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :withdraw_member_access_request, access_request)
+            .and_return(false)
+        end
+
+        specify { expect(result[:can_withdraw_access_request]).to eq('false') }
+      end
+    end
+  end
 end

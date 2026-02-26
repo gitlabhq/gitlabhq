@@ -12,6 +12,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { createCustomGetters } from 'helpers/pinia_helpers';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import discussion from '../../mock_data/diff_discussions';
@@ -29,6 +30,7 @@ describe('Diffs Module Getters', () => {
         legacyMrNotes: {},
         batchComments: {},
         fileBrowser: {},
+        discussions: {},
       })),
       globalAccessorPlugin,
     ],
@@ -305,13 +307,13 @@ describe('Diffs Module Getters', () => {
   describe('getDiffFileDiscussions', () => {
     it('returns an array with discussions when fileHash matches and the discussion belongs to a diff', () => {
       discussionMock.diff_file.file_hash = diffFileMock.file_hash;
-      useNotes().discussions = [discussionMock];
+      useDiscussions().discussions = [discussionMock];
 
       expect(store.getDiffFileDiscussions(diffFileMock)).toHaveLength(1);
     });
 
     it('returns an empty array when no discussions are found in the given diff', () => {
-      useNotes().discussions = [];
+      useDiscussions().discussions = [];
       expect(store.getDiffFileDiscussions(diffFileMock)).toHaveLength(0);
     });
   });

@@ -183,6 +183,7 @@ The following API resources are available outside of project and group contexts 
 | [Dependency list exports](dependency_list_export.md)                                         | `/pipelines/:id/dependency_list_exports`, `/projects/:id/dependency_list_exports`, `/groups/:id/dependency_list_exports`, `/security/dependency_list_exports/:id`, `/security/dependency_list_exports/:id/download` |
 | [Deploy keys](deploy_keys.md)                                                                | `/deploy_keys` (also available for projects) |
 | [Deploy tokens](deploy_tokens.md)                                                            | `/deploy_tokens` (also available for projects and groups) |
+| [GitLab Duo Agent Platform flows](duo_agent_platform_flows.md)                                      | `/ai/duo_workflows` |
 | [Events](events.md)                                                                          | `/events`, `/users/:id/events` (also available for projects) |
 | [Feature flags](features.md)                                                                 | `/features` |
 | [Geo Nodes](geo_nodes.md)                                                                    | `/geo_nodes` |

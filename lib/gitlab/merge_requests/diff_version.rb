@@ -3,12 +3,15 @@
 module Gitlab
   module MergeRequests
     class DiffVersion
+      include Gitlab::Utils::StrongMemoize
+
       def initialize(merge_request, params = {})
         @merge_request = merge_request
         @params = params
       end
 
       def resolve
+        return commit if commit.present?
         return merge_request.merge_head_diff if merge_head_diff?
         return merge_request.merge_request_diff if diff_id.blank?
 
@@ -22,6 +25,14 @@ module Gitlab
       def merge_head_diff?
         merge_request.diffable_merge_ref? && diff_id.blank? && start_sha.blank?
       end
+
+      def commit
+        return if commit_id.blank?
+        return unless merge_request.commit_exists?(commit_id)
+
+        merge_request.project.commit(commit_id)
+      end
+      strong_memoize_attr :commit
 
       def merge_request_diff_by_id
         found_diff = merge_request.find_viewable_diff_by_id(diff_id)
@@ -51,6 +62,10 @@ module Gitlab
 
       def start_sha
         params[:start_sha]
+      end
+
+      def commit_id
+        params[:commit_id]
       end
     end
   end

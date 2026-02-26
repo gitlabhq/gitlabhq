@@ -10542,6 +10542,68 @@ paths:
         schema:
           type: integer
         in: path
+  "/api/v4/runner_controllers/{id}/scopes/runners/{runner_id}":
+    post:
+      operationId: postApiV4RunnerControllersIdScopesRunnersRunnerId
+      summary: Add runner scope
+      description: Add a runner scope to a runner controller. This feature is experimental.
+      tags:
+      - Runner controllers
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesCiRunnerControllerRunnerLevelScoping"
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+        '409':
+          description: Conflict
+        '422':
+          description: Unprocessable Entity
+      parameters:
+      - name: id
+        required: true
+        description: ID of the runner controller
+        schema:
+          type: integer
+        in: path
+      - name: runner_id
+        required: true
+        description: ID of the runner
+        schema:
+          type: integer
+        in: path
+    delete:
+      operationId: deleteApiV4RunnerControllersIdScopesRunnersRunnerId
+      summary: Remove runner scope
+      description: Remove a runner scope from a runner controller. This feature is
+        experimental.
+      tags:
+      - Runner controllers
+      responses:
+        '204':
+          description: No Content
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      parameters:
+      - name: id
+        required: true
+        description: ID of the runner controller
+        schema:
+          type: integer
+        in: path
+      - name: runner_id
+        required: true
+        description: ID of the runner
+        schema:
+          type: integer
+        in: path
   "/api/v4/runner_controllers":
     get:
       operationId: getApiV4RunnerControllers
@@ -68168,6 +68230,15 @@ components:
         description:
           type: string
           example: Controller for managing runner
+        created_at:
+          type: DateTime
+        updated_at:
+          type: DateTime
+    APIEntitiesCiRunnerControllerRunnerLevelScoping:
+      type: object
+      properties:
+        runner_id:
+          type: integer
         created_at:
           type: DateTime
         updated_at:

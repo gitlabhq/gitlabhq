@@ -3,6 +3,7 @@ import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import PreviewItem from '~/batch_comments/components/preview_item.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { globalAccessorPlugin } from '~/pinia/plugins';
@@ -19,6 +20,7 @@ describe('Batch comments draft preview item component', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useDiscussions();
     useLegacyDiffs();
     useNotes();
   });
@@ -100,7 +102,7 @@ describe('Batch comments draft preview item component', () => {
 
   describe('for thread', () => {
     beforeEach(() => {
-      useNotes().discussions = [
+      useDiscussions().discussions = [
         {
           id: '1',
           notes: [

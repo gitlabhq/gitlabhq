@@ -9705,6 +9705,7 @@ export const mockMetadataQueryResponse = {
         readCrmOrganization: true,
         readCrmContact: true,
         createWorkItem: true,
+        createSavedView: true,
       },
       metadata: {
         __typename: 'NamespaceMetadata',

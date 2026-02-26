@@ -246,6 +246,8 @@ After configuring object storage, you can use the following tasks to migrate pac
 
 #### Migrate to object storage
 
+The migration task moves package files and metadata caches to object storage: package files (`packages_package_files`), Helm metadata caches (`packages_helm_metadata_caches`), NPM metadata caches (`packages_npm_metadata_caches`), and NuGet symbols (`packages_nuget_symbols`). If you previously ran the migration and have leftover files for any of these types, run the task again; it will migrate any remaining local files.
+
 1. Migrate the packages to object storage:
 
    {{< tabs >}}
@@ -328,6 +330,8 @@ After configuring object storage, you can use the following tasks to migrate pac
    {{< /tabs >}}
 
 #### Migrate from object storage to local storage
+
+The same types are migrated as when moving to object storage (package files, Helm metadata caches, NPM metadata caches, and NuGet symbols).
 
 1. Migrate the packages from object storage to local storage:
 

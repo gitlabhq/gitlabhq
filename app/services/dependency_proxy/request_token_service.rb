@@ -15,7 +15,7 @@ module DependencyProxy
       )
 
       if response.success?
-        success(token: Gitlab::Json.parse(response.body)['token'])
+        success(token: Gitlab::Json.safe_parse(response.body)['token'])
       else
         error('Expected 200 response code for an access token', response.code)
       end

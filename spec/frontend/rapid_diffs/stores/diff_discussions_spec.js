@@ -625,6 +625,48 @@ describe('diffDiscussions store', () => {
     });
   });
 
+  describe('findAllDiscussionsForFile', () => {
+    beforeEach(() => {
+      useDiffDiscussions().discussions = [
+        {
+          id: '1',
+          diff_discussion: true,
+          position: { old_path: 'file1.js', new_path: 'file1.js' },
+        },
+        {
+          id: '2',
+          diff_discussion: true,
+          position: { old_path: 'file2.js', new_path: 'file2.js' },
+        },
+        {
+          id: '3',
+          isForm: true,
+          diff_discussion: true,
+          position: { old_path: 'file1.js', new_path: 'file1.js' },
+        },
+      ];
+    });
+
+    it('returns all discussions matching the file paths including forms', () => {
+      const discussions = useDiffDiscussions().findAllDiscussionsForFile({
+        oldPath: 'file1.js',
+        newPath: 'file1.js',
+      });
+
+      expect(discussions).toHaveLength(2);
+      expect(discussions.map((d) => d.id)).toEqual(['1', '3']);
+    });
+
+    it('returns empty array when no discussions match', () => {
+      const discussions = useDiffDiscussions().findAllDiscussionsForFile({
+        oldPath: 'nonexistent.js',
+        newPath: 'nonexistent.js',
+      });
+
+      expect(discussions).toHaveLength(0);
+    });
+  });
+
   describe('getImageDiscussions', () => {
     it('returns discussions with matching image position type', () => {
       useDiffDiscussions().discussions = [

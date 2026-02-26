@@ -23,6 +23,7 @@ describe('CommitDiffFileOptionsDropdown', () => {
         ...props,
       },
       pinia,
+      provide: { store },
     });
   };
 

@@ -1,11 +1,9 @@
 <script>
-import { mapActions } from 'pinia';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { clearDraft } from '~/lib/utils/autosave';
-import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import NoteForm from './note_form.vue';
 
 export default {
@@ -14,6 +12,7 @@ export default {
     NoteForm,
   },
   inject: {
+    store: { type: Object },
     endpoints: {
       type: Object,
     },
@@ -38,15 +37,9 @@ export default {
     },
   },
   mounted() {
-    this.setNewLineDiscussionFormAutofocus(this.discussion, false);
+    this.store.setNewLineDiscussionFormAutofocus(this.discussion, false);
   },
   methods: {
-    ...mapActions(useDiffDiscussions, [
-      'setNewLineDiscussionFormText',
-      'removeNewLineDiscussionForm',
-      'setNewLineDiscussionFormAutofocus',
-      'replaceDiscussion',
-    ]),
     cancelReplyForm: ignoreWhilePending(async function cancelReplyForm() {
       if (this.discussion.noteBody) {
         const confirmed = await confirmAction(
@@ -61,7 +54,7 @@ export default {
       }
 
       clearDraft(this.autosaveKey);
-      this.removeNewLineDiscussionForm(this.discussion);
+      this.store.removeNewLineDiscussionForm(this.discussion);
     }),
     async saveNote(noteBody) {
       const {
@@ -72,7 +65,7 @@ export default {
           note: noteBody,
         },
       });
-      this.replaceDiscussion(this.discussion, discussion);
+      this.store.replaceDiscussion(this.discussion, discussion);
     },
   },
 };
@@ -91,7 +84,7 @@ export default {
       :save-button-title="__('Comment')"
       :save-note="saveNote"
       restore-from-autosave
-      @input="setNewLineDiscussionFormText(discussion, $event)"
+      @input="store.setNewLineDiscussionFormText(discussion, $event)"
       @cancel="cancelReplyForm"
     />
   </div>

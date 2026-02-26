@@ -96,6 +96,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
 
   const createComponent = async ({
     props,
+    provide = {},
     mockSavedViewsHandler = savedViewsHandler,
     subscribeMutationHandler = successSubscribeMutationHandler,
   } = {}) => {
@@ -110,6 +111,10 @@ describe('WorkItemsExistingSavedViewsModal', () => {
         show: true,
         fullPath: 'test-project-path',
         ...props,
+      },
+      provide: {
+        canCreateSavedView: true,
+        ...provide,
       },
       mocks: {
         $router: {
@@ -311,6 +316,17 @@ describe('WorkItemsExistingSavedViewsModal', () => {
           'If you add a view, the last view in your list will be removed.',
         );
       });
+    });
+  });
+
+  describe('permissions', () => {
+    it('hides empty state button when user cannot create saved view', async () => {
+      await createComponent({
+        provide: { canCreateSavedView: false },
+        mockSavedViewsHandler: emptySavedViewsHandler,
+      });
+
+      expect(findNewViewButton().exists()).toBe(false);
     });
   });
 });

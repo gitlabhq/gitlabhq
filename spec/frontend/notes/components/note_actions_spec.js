@@ -18,6 +18,7 @@ import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_sel
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { userDataMock } from '../mock_data';
 
@@ -74,6 +75,7 @@ describe('noteActions', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin], stubActions: false });
+    useDiscussions();
     useLegacyDiffs();
     useNotes().toggleAwardRequest.mockResolvedValue();
     useNotes().promoteCommentToTimelineEvent.mockResolvedValue();

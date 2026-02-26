@@ -42,6 +42,7 @@ import { scrollToElement } from '~/lib/utils/scroll_utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { diffMetadata } from '../../mock_data/diff_metadata';
@@ -78,6 +79,7 @@ describe('legacyDiffs actions', () => {
           legacyDiffs: getters,
           legacyNotes: notesGetters,
           batchComments: {},
+          discussions: {},
           fileBrowser: fileBrowserGetters,
         })),
         globalAccessorPlugin,
@@ -1635,7 +1637,7 @@ describe('legacyDiffs actions', () => {
     });
 
     beforeEach(() => {
-      useNotes().$patch(notesState);
+      useDiscussions().discussions = notesState.discussions;
       $emit = jest.spyOn(eventHub, '$emit');
     });
 

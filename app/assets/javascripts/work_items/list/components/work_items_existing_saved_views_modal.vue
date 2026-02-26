@@ -49,6 +49,7 @@ export default {
   savedViewLimitsHelpPath: helpPagePath('user/work_items/saved_views.md', {
     anchor: 'saved-view-limits',
   }),
+  inject: ['canCreateSavedView'],
   model: {
     prop: 'show',
     event: 'hide',
@@ -202,6 +203,7 @@ export default {
         </h3>
         <span>{{ $options.i18n.emptyViewsDescription }}</span>
         <gl-button
+          v-if="canCreateSavedView"
           variant="confirm"
           class="gl-mt-5"
           data-testid="new-view-button"

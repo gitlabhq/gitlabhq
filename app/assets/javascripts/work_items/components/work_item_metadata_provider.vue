@@ -77,6 +77,7 @@ export default normalizeRender({
       }),
       workItemTypesConfiguration: computed(() => this.workItemTypesConfiguration),
       subscribedSavedViewLimit: computed(() => this.metadata.subscribedSavedViewLimit),
+      canCreateSavedView: computed(() => Boolean(this.metadata?.createSavedView)),
     };
   },
   props: {

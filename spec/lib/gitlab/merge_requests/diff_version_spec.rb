@@ -8,15 +8,17 @@ RSpec.describe Gitlab::MergeRequests::DiffVersion, feature_category: :code_revie
   let_it_be(:merge_request) { create(:merge_request) }
   let_it_be(:base_diff_1) { merge_request.merge_request_diff }
 
-  let_it_be(:base_diff_2) do
+  let_it_be(:commit_sha) do
     create_file_in_repo(
       merge_request.project,
       'master',
       'master',
       'new_file.txt',
       'new content'
-    )
+    )[:result]
+  end
 
+  let_it_be(:base_diff_2) do
     merge_request.clear_memoized_shas
     merge_request.create_merge_request_diff
   end
@@ -78,6 +80,23 @@ RSpec.describe Gitlab::MergeRequests::DiffVersion, feature_category: :code_revie
 
       it 'returns HEAD diff' do
         expect(diff_version.resolve).to eq(head_diff)
+      end
+    end
+
+    context 'when commit_id param is set' do
+      let(:params) { { commit_id: commit_sha } }
+      let(:expected_commit) { merge_request.project.commit(commit_sha) }
+
+      it 'returns matching commit' do
+        expect(diff_version.resolve).to eq(expected_commit)
+      end
+
+      context 'when commit_id does not match a commit' do
+        let(:params) { { commit_id: 'abc123' } }
+
+        it 'returns latest diff' do
+          expect(diff_version.resolve).to eq(base_diff_2)
+        end
       end
     end
   end

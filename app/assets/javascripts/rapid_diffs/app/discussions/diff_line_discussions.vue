@@ -1,7 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_widget.vue';
 import NewLineDiscussionForm from './new_line_discussion_form.vue';
 import DiffDiscussions from './diff_discussions.vue';
@@ -19,6 +18,7 @@ export default {
     DiffDiscussions,
   },
   inject: {
+    store: { type: Object },
     userPermissions: {
       type: Object,
     },
@@ -37,7 +37,7 @@ export default {
   },
   computed: {
     discussions() {
-      return useDiffDiscussions()
+      return this.store
         .findDiscussionsForPosition(this.position)
         .filter((discussion) => !discussion.hidden);
     },
@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     startAnotherThread() {
-      useDiffDiscussions().addNewLineDiscussionForm(this.position);
+      this.store.addNewLineDiscussionForm(this.position);
     },
     scrollToNoteFragment() {
       if (!window.location.hash.startsWith('#note_') || scrolledToNote) return;

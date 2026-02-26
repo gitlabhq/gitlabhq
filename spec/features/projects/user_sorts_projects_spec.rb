@@ -75,32 +75,4 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
 
     it_behaves_like "sort order persists across all views", "Created"
   end
-
-  context 'from group homepage', :js do
-    before do
-      sign_in(user)
-      visit(group_canonical_path(group))
-      within '[data-testid=groups-projects-sort]' do
-        find_dropdown_toggle.click
-        find('li', text: 'Created').click
-        wait_for_requests
-      end
-    end
-
-    it_behaves_like "sort order persists across all views", "Created"
-  end
-
-  context 'from group details', :js do
-    before do
-      sign_in(user)
-      visit(details_group_path(group))
-      within '[data-testid=groups-projects-sort]' do
-        find_dropdown_toggle.click
-        find('li', text: 'Updated').click
-        wait_for_requests
-      end
-    end
-
-    it_behaves_like "sort order persists across all views", "Updated"
-  end
 end

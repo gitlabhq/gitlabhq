@@ -363,6 +363,7 @@ const mountComponent = ({
       newIssuePath: '',
       workItemPlanningViewEnabled: false,
       subscribedSavedViewLimit: 5,
+      canCreateSavedView: true,
       ...provide,
     },
     propsData: {
@@ -2252,6 +2253,22 @@ describe('Saved Views', () => {
         await nextTick();
 
         expect(findNewSavedViewModal().exists()).toBe(true);
+      });
+
+      it('does not render "Save view" button when canCreateSavedView is false', async () => {
+        await mountComponent({
+          workItemPlanningView: true,
+          provide: { canCreateSavedView: false },
+        });
+        await waitForPromises();
+
+        findIssuableList().vm.$emit('filter', [
+          { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
+          { type: TOKEN_TYPE_SEARCH_WITHIN, value: { data: 'TITLE', operator: OPERATOR_IS } },
+        ]);
+        await nextTick();
+
+        expect(findSaveViewButton().exists()).toBe(false);
       });
     });
 

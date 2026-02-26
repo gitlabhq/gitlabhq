@@ -68,7 +68,7 @@ const baseSubgroupsAndProjectsTab = {
     "Your subgroups and projects couldn't be loaded. Refresh the page to try again.",
   ),
   sortOptions: SORT_OPTIONS_WITH_STARS,
-  defaultSortOption: SORT_OPTION_UPDATED,
+  defaultSortOption: SORT_OPTION_CREATED,
 };
 
 export const SUBGROUPS_AND_PROJECTS_TAB = {
@@ -94,7 +94,7 @@ export const SHARED_PROJECTS_TAB = {
   value: 'shared_projects',
   queryErrorMessage: __('Shared projects could not be loaded. Refresh the page to try again.'),
   sortOptions: SORT_OPTIONS,
-  defaultSortOption: SORT_OPTION_UPDATED,
+  defaultSortOption: SORT_OPTION_CREATED,
 };
 
 export const SHARED_GROUPS_TAB = {
@@ -124,7 +124,7 @@ export const SHARED_GROUPS_TAB = {
     };
   },
   sortOptions: SORT_OPTIONS,
-  defaultSortOption: SORT_OPTION_UPDATED,
+  defaultSortOption: SORT_OPTION_CREATED,
 };
 
 export const INACTIVE_TAB = {

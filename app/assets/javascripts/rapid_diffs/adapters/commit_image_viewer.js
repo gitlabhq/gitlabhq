@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import ImageViewer from '~/rapid_diffs/app/image_viewer/image_diff_viewer_with_discussions.vue';
+import { commitDiffDiscussionsStore } from '~/rapid_diffs/stores/instances/commit_discussions';
 import { MOUNTED } from '../adapter_events';
 
 export const commitImageViewerAdapter = {
@@ -15,6 +16,7 @@ export const commitImageViewerAdapter = {
       name: 'ImageViewerRoot',
       provide() {
         return {
+          store: commitDiffDiscussionsStore,
           userPermissions: appData.userPermissions,
           endpoints: {
             discussions: appData.discussionsEndpoint,

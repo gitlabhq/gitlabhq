@@ -43,15 +43,17 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
 
     let_it_be(:base_diff_1) { merge_request.merge_request_diff }
 
-    let_it_be(:base_diff_2) do
+    let_it_be(:commit_id) do
       create_file_in_repo(
         merge_request.project,
         'expand-collapse-files',
         'expand-collapse-files',
         'new_file.txt',
         'new content'
-      )
+      )[:result]
+    end
 
+    let_it_be(:base_diff_2) do
       merge_request.clear_memoized_shas
       merge_request.create_merge_request_diff
     end
@@ -124,6 +126,16 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
             expect(response.body.scan('<diff-file ').size).to eq(1)
             expect(response.body).to include(*file_identifier_hashes(compare))
           end
+        end
+      end
+
+      context 'when commit_id param is set' do
+        it 'streams all diffs in the specified diff' do
+          go(commit_id: commit_id)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(response.body.scan('<diff-file ').size).to eq(1)
+          expect(response.body).to include(*file_identifier_hashes(project.commit(commit_id)))
         end
       end
     end

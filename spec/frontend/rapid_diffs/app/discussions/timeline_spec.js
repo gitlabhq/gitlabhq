@@ -29,6 +29,8 @@ describe('CommitTimeline', () => {
     ...overrides,
   });
 
+  let store;
+
   const defaultProvide = {
     userPermissions: { can_create_note: true },
     endpoints: { discussions: '/api/discussions' },
@@ -38,17 +40,18 @@ describe('CommitTimeline', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia({ stubActions: false });
+    store = useDiffDiscussions(pinia);
     axiosMock = new AxiosMockAdapter(axios);
     isLoggedIn.mockReturnValue(true);
     detectAndConfirmSensitiveTokens.mockResolvedValue(true);
   });
 
   const createComponent = (discussions = [], provide = {}) => {
-    useDiffDiscussions(pinia).$patch({ discussions });
+    store.$patch({ discussions });
 
     wrapper = shallowMount(CommitTimeline, {
       pinia,
-      provide: { ...defaultProvide, ...provide },
+      provide: { store, ...defaultProvide, ...provide },
     });
   };
 

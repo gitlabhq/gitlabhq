@@ -1,12 +1,11 @@
 import Vue from 'vue';
-import { pinia } from '~/pinia/instance';
 import DiffFileOptionsDropdown from '~/rapid_diffs/app/options_menu/diff_file_options_dropdown.vue';
 
 function getMenuItems(container) {
   return JSON.parse(container.querySelector('script').textContent);
 }
 
-export const createOptionsMenuAdapter = (dropdownComponent) => {
+export const createOptionsMenuAdapter = (dropdownComponent, store) => {
   return {
     clicks: {
       toggleOptionsMenu(event, button) {
@@ -20,7 +19,7 @@ export const createOptionsMenuAdapter = (dropdownComponent) => {
         new Vue({
           el: button,
           name: 'DropdownComponentRoot',
-          pinia,
+          provide: { store },
           render(h) {
             return h(dropdownComponent, { props: { items, oldPath, newPath, fileId } });
           },

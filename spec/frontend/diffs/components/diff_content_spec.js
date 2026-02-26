@@ -51,6 +51,7 @@ describe('DiffContent', () => {
           legacyNotes: {},
           legacyDiffs: {},
           fileBrowser: {},
+          discussions: {},
           batchComments: {
             draftsForFile: () => () => true,
             draftsForLine: () => () => true,

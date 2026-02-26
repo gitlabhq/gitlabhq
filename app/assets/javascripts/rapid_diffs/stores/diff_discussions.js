@@ -193,9 +193,15 @@ export const useDiffDiscussions = defineStore('diffDiscussions', {
     },
     findDiscussionsForFile() {
       return ({ oldPath, newPath }) => {
+        return this.findAllDiscussionsForFile({ oldPath, newPath }).filter((discussion) => {
+          return !discussion.isForm;
+        });
+      };
+    },
+    findAllDiscussionsForFile() {
+      return ({ oldPath, newPath }) => {
         return this.discussions.filter((discussion) => {
           return (
-            !discussion.isForm &&
             discussion.diff_discussion &&
             discussion.position?.old_path === oldPath &&
             discussion.position?.new_path === newPath

@@ -1,8 +1,15 @@
 <script>
-import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlIcon, GlLink } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlIcon,
+  GlLink,
+  GlButton,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import WorkItemsNewSavedViewModal from './work_items_new_saved_view_modal.vue';
 import WorkItemsExistingSavedViewsModal from './work_items_existing_saved_views_modal.vue';
 
@@ -15,6 +22,7 @@ export default {
     GlDisclosureDropdownItem,
     WorkItemsNewSavedViewModal,
     WorkItemsExistingSavedViewsModal,
+    GlButton,
   },
   i18n: {
     addViewButtonText: s__('WorkItem|Add view'),
@@ -28,6 +36,7 @@ export default {
   savedViewLimitsHelpPath: helpPagePath('user/work_items/saved_views.md', {
     anchor: 'saved-view-limits',
   }),
+  inject: ['canCreateSavedView', 'signInPath'],
   props: {
     fullPath: {
       type: String,
@@ -60,12 +69,22 @@ export default {
       isLoggedIn: isLoggedIn(),
     };
   },
+  methods: {
+    openExistingViewModal() {
+      if (this.isLoggedIn) {
+        this.isExistingViewModalVisible = true;
+      } else {
+        visitUrl(this.signInPath);
+      }
+    },
+  },
 };
 </script>
 
 <template>
-  <div v-if="isLoggedIn" class="gl-self-center">
+  <div class="gl-self-center">
     <gl-disclosure-dropdown
+      v-if="canCreateSavedView"
       icon="plus"
       category="tertiary"
       :toggle-text="$options.i18n.addViewButtonText"
@@ -78,7 +97,7 @@ export default {
           <span>{{ $options.i18n.newViewTitle }}</span>
         </template>
       </gl-disclosure-dropdown-item>
-      <gl-disclosure-dropdown-item @action="isExistingViewModalVisible = true">
+      <gl-disclosure-dropdown-item @action="openExistingViewModal">
         <template #list-item>
           <span>{{ $options.i18n.existingViewDropdownTitle }}</span>
         </template>
@@ -96,6 +115,16 @@ export default {
         </span>
       </div>
     </gl-disclosure-dropdown>
+    <gl-button
+      v-else
+      icon="plus"
+      category="tertiary"
+      data-testid="add-saved-view-fallback"
+      @click="openExistingViewModal"
+    >
+      {{ $options.i18n.addViewButtonText }}
+    </gl-button>
+
     <work-items-new-saved-view-modal
       v-model="isNewViewModalVisible"
       :full-path="fullPath"

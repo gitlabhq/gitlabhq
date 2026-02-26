@@ -24,6 +24,7 @@ import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import notesEventHub from '~/notes/event_hub';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { createCustomGetters, createTestPiniaAction } from 'helpers/pinia_helpers';
 import { useBatchComments } from '~/batch_comments/store';
 import { globalAccessorPlugin } from '~/pinia/plugins';
@@ -50,6 +51,7 @@ jest.mock('~/vue_shared/plugins/global_toast');
 describe('Actions Notes Store', () => {
   let getters = {};
   let store;
+  let discussionsStore;
   let testAction;
   let axiosMock;
 
@@ -64,6 +66,7 @@ describe('Actions Notes Store', () => {
           batchComments: {},
           legacyDiffs: {},
           fileBrowser: {},
+          discussions: {},
         })),
         globalAccessorPlugin,
       ],
@@ -71,6 +74,7 @@ describe('Actions Notes Store', () => {
     useFileBrowser();
     useLegacyDiffs();
     store = useNotes();
+    discussionsStore = useDiscussions();
     testAction = createTestPiniaAction(store);
     axiosMock = new AxiosMockAdapter(axios);
 
@@ -161,10 +165,11 @@ describe('Actions Notes Store', () => {
 
   describe('toggleDiscussion', () => {
     it('should toggle discussion', () => {
+      discussionsStore.discussions = [discussionMock];
       return testAction(
         store.toggleDiscussion,
         { discussionId: discussionMock.id },
-        { discussions: [discussionMock] },
+        {},
         [{ type: store[types.TOGGLE_DISCUSSION], payload: { discussionId: discussionMock.id } }],
         [],
       );
@@ -174,10 +179,11 @@ describe('Actions Notes Store', () => {
   describe('expandDiscussion', () => {
     it('should expand discussion', () => {
       const spy = jest.spyOn(useLegacyDiffs(), 'renderFileForDiscussionId');
+      discussionsStore.discussions = [discussionMock];
       return testAction(
         store.expandDiscussion,
         { discussionId: discussionMock.id },
-        { discussions: [discussionMock] },
+        {},
         [{ type: store[types.EXPAND_DISCUSSION], payload: { discussionId: discussionMock.id } }],
         [{ type: spy, payload: discussionMock.id }],
       );
@@ -192,7 +198,7 @@ describe('Actions Notes Store', () => {
       const collapseDiffDiscussionSpy = jest
         .spyOn(useLegacyDiffs(), 'collapseDiffDiscussion')
         .mockImplementation(() => {});
-      store.$patch({ discussions: [discussion] });
+      discussionsStore.discussions = [discussion];
 
       store.collapseDiscussion(discussionId);
 
@@ -203,7 +209,7 @@ describe('Actions Notes Store', () => {
     it('sets expanded to false without calling collapseDiffDiscussion when no diff_file', () => {
       const discussion = { id: discussionId, expanded: true };
       const collapseDiffDiscussionSpy = jest.spyOn(useLegacyDiffs(), 'collapseDiffDiscussion');
-      store.$patch({ discussions: [discussion] });
+      discussionsStore.discussions = [discussion];
 
       store.collapseDiscussion(discussionId);
 
@@ -403,10 +409,11 @@ describe('Actions Notes Store', () => {
           last_fetched_at: '123456',
         });
 
+        discussionsStore.discussions = [{ notes: [systemNote] }];
         return testAction(
           store.fetchUpdatedNotes,
           undefined,
-          { discussions: [{ notes: [systemNote] }] },
+          {},
           [],
           [
             {
@@ -449,10 +456,11 @@ describe('Actions Notes Store', () => {
     it('commits DELETE_NOTE and dispatches updateMergeRequestWidget', () => {
       const note = { path: endpoint, id: 1, discussion_id: 1, individual_note: true };
 
+      discussionsStore.discussions = [note];
       return testAction(
         store.removeNote,
         note,
-        { discussions: [note] },
+        {},
         [
           {
             type: store[types.DELETE_NOTE],
@@ -476,10 +484,11 @@ describe('Actions Notes Store', () => {
 
       document.body.dataset.page = 'projects:merge_requests:show';
 
+      discussionsStore.discussions = [note];
       return testAction(
         store.removeNote,
         note,
-        { discussions: [note] },
+        {},
         [
           {
             type: store[types.DELETE_NOTE],
@@ -519,10 +528,11 @@ describe('Actions Notes Store', () => {
     it('dispatches removeNote', () => {
       const note = { path: endpoint, id: 1, discussion_id: 1, individual_note: true };
 
+      discussionsStore.discussions = [note];
       return testAction(
         store.deleteNote,
         note,
-        { discussions: [note] },
+        {},
         [],
         [
           {
@@ -606,14 +616,13 @@ describe('Actions Notes Store', () => {
 
     describe('as note', () => {
       it('commits UPDATE_NOTE and dispatches updateMergeRequestWidget', () => {
+        discussionsStore.discussions = [
+          { resolved: false, discussion_id: 1, id: 1, individual_note: true, notes: [] },
+        ];
         return testAction(
           store.toggleResolveNote,
           { endpoint: `${TEST_HOST}`, isResolved: true, discussion: false },
-          {
-            discussions: [
-              { resolved: false, discussion_id: 1, id: 1, individual_note: true, notes: [] },
-            ],
-          },
+          {},
           [
             {
               type: store[types.UPDATE_NOTE],
@@ -634,14 +643,13 @@ describe('Actions Notes Store', () => {
 
     describe('as discussion', () => {
       it('commits UPDATE_DISCUSSION and dispatches updateMergeRequestWidget', () => {
+        discussionsStore.discussions = [
+          { resolved: false, discussion_id: 1, id: 1, individual_note: true, notes: [] },
+        ];
         return testAction(
           store.toggleResolveNote,
           { endpoint: `${TEST_HOST}`, isResolved: true, discussion: true },
-          {
-            discussions: [
-              { resolved: false, discussion_id: 1, id: 1, individual_note: true, notes: [] },
-            ],
-          },
+          {},
           [
             {
               type: store[types.UPDATE_DISCUSSION],
@@ -716,7 +724,8 @@ describe('Actions Notes Store', () => {
     it('Prevents `fetchDiscussions` being called multiple times within time limit', () => {
       const note = { id: 1234, type: notesConstants.DIFF_NOTE };
       getters = { notesById: {} };
-      store.$patch({ discussions: [note], notesData: { discussionsPath: '' } });
+      discussionsStore.discussions = [note];
+      store.$patch({ notesData: { discussionsPath: '' } });
 
       store.updateOrCreateNotes([note]);
       store.updateOrCreateNotes([note]);
@@ -730,7 +739,7 @@ describe('Actions Notes Store', () => {
 
     it('Updates existing note', () => {
       const note = { id: 1234 };
-      store.discussions = [{ notes: [note] }];
+      discussionsStore.discussions = [{ notes: [note] }];
 
       store.updateOrCreateNotes([note]);
 
@@ -753,7 +762,7 @@ describe('Actions Notes Store', () => {
       });
 
       it('Adds a reply to an existing discussion', () => {
-        store.discussions = [{ id: 1234, notes: [] }];
+        discussionsStore.discussions = [{ id: 1234, notes: [] }];
         const discussionNote = {
           ...note,
           type: notesConstants.DISCUSSION_NOTE,
@@ -766,7 +775,8 @@ describe('Actions Notes Store', () => {
       });
 
       it('fetches discussions for diff notes', () => {
-        store.$patch({ discussions: [], notesData: { discussionsPath: 'Hello world' } });
+        discussionsStore.discussions = [];
+        store.$patch({ notesData: { discussionsPath: 'Hello world' } });
         const diffNote = { ...note, type: notesConstants.DIFF_NOTE, discussion_id: 1234 };
 
         store.updateOrCreateNotes([diffNote]);
@@ -777,7 +787,7 @@ describe('Actions Notes Store', () => {
       });
 
       it('Adds a new note', () => {
-        store.discussions = [];
+        discussionsStore.discussions = [];
         const discussionNote = {
           ...note,
           type: notesConstants.DISCUSSION_NOTE,
@@ -798,10 +808,11 @@ describe('Actions Notes Store', () => {
       const discussion = { notes: [] };
       axiosMock.onAny().reply(HTTP_STATUS_OK, { discussion });
 
+      discussionsStore.discussions = [discussion];
       return testAction(
         store.replyToDiscussion,
         payload,
-        { discussions: [discussion] },
+        {},
         [{ type: store[types.UPDATE_DISCUSSION], payload: discussion }],
         [
           { type: store.updateOrCreateNotes, payload: [] },
@@ -844,7 +855,7 @@ describe('Actions Notes Store', () => {
 
     beforeEach(() => {
       discussionId = discussionMock.id;
-      store.discussions = [discussionMock];
+      discussionsStore.discussions = [discussionMock];
       getters = {
         isDiscussionResolved: () => false,
       };
@@ -987,10 +998,10 @@ describe('Actions Notes Store', () => {
     beforeEach(() => {
       jest.spyOn(Api, 'applySuggestionBatch');
       Api.applySuggestionBatch.mockReturnValue(Promise.resolve());
-      const discussions = batchSuggestionsInfoMock.map(({ discussionId, noteId }) => {
+      discussionsStore.discussions = batchSuggestionsInfoMock.map(({ discussionId, noteId }) => {
         return { id: discussionId, notes: [{ id: noteId, suggestions: [] }] };
       });
-      store.$patch({ discussions, batchSuggestionsInfo });
+      store.$patch({ batchSuggestionsInfo });
       flashContainer = {};
     });
 
@@ -1215,7 +1226,7 @@ describe('Actions Notes Store', () => {
       return testAction(
         store.updateAssignees,
         [userDataMock.id],
-        { discussions: [noteableDataMock] },
+        {},
         [{ type: store[types.UPDATE_ASSIGNEES], payload: [userDataMock.id] }],
         [],
       );
@@ -1513,10 +1524,11 @@ describe('Actions Notes Store', () => {
 
   describe('toggleAllDiscussions', () => {
     it('commits SET_EXPAND_ALL_DISCUSSIONS', () => {
+      discussionsStore.discussions = [{ expanded: false }];
       return testAction(
         store.toggleAllDiscussions,
         undefined,
-        { discussions: [{ expanded: false }] },
+        {},
         [{ type: store[types.SET_EXPAND_ALL_DISCUSSIONS], payload: true }],
         [],
       );

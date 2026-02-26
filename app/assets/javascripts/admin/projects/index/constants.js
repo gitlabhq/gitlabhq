@@ -75,7 +75,7 @@ const baseTab = {
       };
     }),
   sortOptions: SORT_OPTIONS,
-  defaultSortOption: SORT_OPTION_UPDATED,
+  defaultSortOption: SORT_OPTION_CREATED,
 };
 
 export const ACTIVE_TAB = {

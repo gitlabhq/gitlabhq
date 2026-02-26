@@ -79,6 +79,7 @@ describe('ImageDiffViewerWithDiscussions', () => {
         ...props,
       },
       provide: {
+        store: useDiffDiscussions(),
         ...defaultProvide,
         ...provide,
       },

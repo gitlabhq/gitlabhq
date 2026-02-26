@@ -1,9 +1,7 @@
 <script>
-import { mapState, mapActions } from 'pinia';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
-import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import DiffDiscussions from './diff_discussions.vue';
 import NoteForm from './note_form.vue';
 import NoteSignedOutWidget from './note_signed_out_widget.vue';
@@ -16,6 +14,7 @@ export default {
     NoteSignedOutWidget,
   },
   inject: {
+    store: { type: Object },
     userPermissions: { type: Object },
     endpoints: { type: Object },
   },
@@ -25,15 +24,13 @@ export default {
     };
   },
   computed: {
-    ...mapState(useDiffDiscussions, ['discussions']),
     timelineDiscussions() {
-      return this.discussions.filter(
+      return this.store.discussions.filter(
         (discussion) => !discussion.isForm && !discussion.diff_discussion,
       );
     },
   },
   methods: {
-    ...mapActions(useDiffDiscussions, ['addDiscussion']),
     async saveNote(noteText) {
       if (!noteText) return;
 
@@ -43,7 +40,7 @@ export default {
       const {
         data: { discussion },
       } = await axios.post(this.endpoints.discussions, { note: { note: noteText } });
-      this.addDiscussion(discussion);
+      this.store.addDiscussion(discussion);
     },
   },
 };

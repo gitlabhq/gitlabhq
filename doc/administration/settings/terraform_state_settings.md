@@ -33,7 +33,6 @@ without any encryption applied.
 Prerequisites:
 
 - You must have administrator access.
-- The `skip_encrypting_terraform_state_file` feature flag must be enabled.
 
 To configure Terraform state encryption:
 

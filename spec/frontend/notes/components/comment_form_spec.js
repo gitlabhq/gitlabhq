@@ -27,6 +27,7 @@ import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { useBatchComments } from '~/batch_comments/store';
 import DiscussionLockedWidget from '~/notes/components/discussion_locked_widget.vue';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
@@ -342,7 +343,7 @@ describe('issue_comment_form component', () => {
       describe('edit mode', () => {
         it('should enter edit mode when arrow up is pressed', async () => {
           const noteId = 2;
-          useNotes().discussions = [{ notes: [{ id: noteId, author: userDataMock }] }];
+          useDiscussions().discussions = [{ notes: [{ id: noteId, author: userDataMock }] }];
           mountComponent({ mountFunction: mountExtended });
           jest.spyOn(eventHub, '$emit');
           await findMarkdownEditorTextarea().trigger('keydown.up');

@@ -28,6 +28,49 @@
             }
           }
         },
+        "scan_finding": {
+          "type": "object",
+          "properties": {
+            "uuids": {
+              "type": "object",
+              "properties": {
+                "previously_existing": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 50
+                  }
+                },
+                "newly_detected": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 50
+                  }
+                }
+              },
+              "anyOf": [
+                {
+                  "required": [
+                    "previously_existing"
+                  ]
+                },
+                {
+                  "required": [
+                    "newly_detected"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "uuids"
+          ]
+        },
         "license_scanning": {
           "type": "object",
           "minProperties": 1,

@@ -24,6 +24,7 @@ module API
       # requests. Workhorse doesn't know if it's in a FOSS/EE context.
       get '/proxy' do
         require_gitlab_workhorse!
+        check_rate_limit!(:geo_proxy, scope: [ip_address])
 
         status :ok
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
