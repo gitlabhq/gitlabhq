@@ -119,6 +119,8 @@ The flow appears in the AI Catalog.
 
 Enable a flow to trigger it from an issue, merge request, or discussion.
 
+The flow is enabled in a top-level group and a project at the same time.
+
 Prerequisites:
 
 - For the top-level group where you enable the flow, you must have the Maintainer or Owner role.
@@ -171,6 +173,7 @@ To enable a flow:
 {{< /tabs >}}
 
 The flow appears in the group and project **Automate** > **Flows** pages.
+Members of any project in the top-level group can now enable the flow in their project.
 
 A service account is created in the group. The name of the account
 follows this naming convention: `ai-<flow>-<group>`.

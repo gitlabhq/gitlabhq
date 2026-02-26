@@ -25,7 +25,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/graphql/types/permission_types/project_spec.rb'
     - 'ee/spec/graphql/types/project_statistics_type_spec.rb'
     - 'ee/spec/graphql/types/project_type_spec.rb'
-    - 'ee/spec/graphql/types/query_type_spec.rb'
     - 'ee/spec/graphql/types/repository/code_owner_error_type_spec.rb'
     - 'ee/spec/graphql/types/repository/code_owner_validation_type_spec.rb'
     - 'ee/spec/helpers/projects_helper_spec.rb'

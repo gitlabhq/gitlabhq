@@ -138,6 +138,8 @@ The agent appears in the AI Catalog. To use the agent with Chat, you must enable
 
 Enable an agent to use it with Chat.
 
+The agent is enabled in a top-level group and a project at the same time.
+
 Prerequisites:
 
 - For the top-level group where you enable the agent, you must have the Maintainer or Owner role.
@@ -176,6 +178,7 @@ To enable an agent:
 {{< /tabs >}}
 
 The agent appears in the group and project **Automate** > **Agents** pages.
+Members of any project in the top-level group can now enable the agent in their project.
 
 In the project, you can start a new chat with the agent.
 For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).

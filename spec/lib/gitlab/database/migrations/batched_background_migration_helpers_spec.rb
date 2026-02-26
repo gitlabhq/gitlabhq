@@ -268,6 +268,27 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
         end
       end
 
+      context 'when there is a single record where min_value equals max_value' do
+        let!(:event) { create(:event) }
+
+        before do
+          allow(migration).to receive(:version).and_return('20231204101122')
+          allow(Gitlab::Database::PgClass).to receive(:for_table).with(:events).and_return(pgclass_info)
+        end
+
+        it 'creates the record with an active status' do
+          expect do
+            migration.queue_batched_background_migration(
+              job_class.name, :events, :id,
+              job_interval: 5.minutes,
+              batch_min_value: event.id
+            )
+          end.to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }.by(1)
+
+          expect(Gitlab::Database::BackgroundMigration::BatchedMigration.last).to be_active
+        end
+      end
+
       context 'when the database is empty' do
         it 'sets the max value to the min value' do
           expect do
@@ -333,6 +354,20 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
 
           expect(created_migration.min_cursor).to match_array([event1.id])
           expect(created_migration.max_cursor).to match_array([event3.id])
+          expect(created_migration).to be_active
+        end
+      end
+
+      context 'when there is a single record where min_cursor equals max_cursor' do
+        let!(:event) { create(:event) }
+
+        it 'creates the migration with an active status' do
+          migration.queue_batched_background_migration('MyCursorJobClass', :events, :id, job_interval: 5.minutes)
+
+          created_migration = Gitlab::Database::BackgroundMigration::BatchedMigration.last
+
+          expect(created_migration.min_cursor).to match_array([event.id])
+          expect(created_migration.max_cursor).to match_array([event.id])
           expect(created_migration).to be_active
         end
       end

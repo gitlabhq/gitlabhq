@@ -23,9 +23,13 @@ module Gitlab
   #       raise Gitlab::AbstractMethodError, 'Must return a hash with :status and :result keys'
   #     end
   #   end
-  class AbstractMethodError < StandardError # rubocop:disable Gitlab/NamespacedClass -- This is a platform level module/function, not product
+  # rubocop:disable Gitlab/NamespacedClass -- This is a platform level module/function, not product
+  # rubocop:disable Lint/InheritException -- We want this to only be explicitly catchable
+  class AbstractMethodError < Exception # rubocop:disable Gitlab/NamespacedClass -- This is a platform level module/function, not product
     def initialize(message = 'Inheriting class must implement this method')
       super
     end
   end
+  # rubocop:enable Gitlab/NamespacedClass
+  # rubocop:enable Lint/InheritException
 end

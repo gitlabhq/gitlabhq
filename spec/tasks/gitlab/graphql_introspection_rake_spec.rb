@@ -42,6 +42,7 @@ RSpec.describe 'gitlab:graphql rake tasks', :silence_stdout, feature_category: :
 
       it 'raises SystemExit' do
         expect { run_rake_task('gitlab:graphql:generate_introspection_schema') }.to raise_error(SystemExit)
+                                                                                .and output.to_stderr
       end
     end
 
@@ -119,6 +120,7 @@ RSpec.describe 'gitlab:graphql rake tasks', :silence_stdout, feature_category: :
         expect do
           run_rake_task('gitlab:graphql:generate_introspection_schema_no_deprecated')
         end.to raise_error(SystemExit)
+           .and output.to_stderr
       end
     end
 
@@ -214,6 +216,7 @@ RSpec.describe 'gitlab:graphql rake tasks', :silence_stdout, feature_category: :
 
       it 'raises SystemExit' do
         expect { run_rake_task('gitlab:graphql:check_introspection_sync') }.to raise_error(SystemExit)
+                                                                           .and output.to_stderr
       end
     end
 

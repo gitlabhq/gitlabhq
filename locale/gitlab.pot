@@ -16889,6 +16889,9 @@ msgstr ""
 msgid "CodeSuggestions|Get started with GitLab Duo Pro today."
 msgstr ""
 
+msgid "CodeSuggestions|GitLab Duo Agent Platform Self-Hosted"
+msgstr ""
+
 msgid "CodeSuggestions|GitLab Duo Core"
 msgstr ""
 
@@ -16899,9 +16902,6 @@ msgid "CodeSuggestions|GitLab Duo Pro"
 msgstr ""
 
 msgid "CodeSuggestions|GitLab Duo should be operational."
-msgstr ""
-
-msgid "CodeSuggestions|GitLab Self-Hosted Duo Agent Platform"
 msgstr ""
 
 msgid "CodeSuggestions|Helps you get up to speed quickly by explaining source code"
@@ -79911,6 +79911,9 @@ msgid "WorkItem|Work item not found"
 msgstr ""
 
 msgid "WorkItem|Work item settings"
+msgstr ""
+
+msgid "WorkItem|Work item type created."
 msgstr ""
 
 msgid "WorkItem|Work item type updated."

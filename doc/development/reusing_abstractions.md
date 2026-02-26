@@ -369,7 +369,7 @@ If you have a base class with methods that must be implemented by subclasses, us
 - **Default error message**: No need to write boilerplate error messages
 - **Avoids `NoMethodError` issues**: No conflict with `respond_to?` behavior
 - **Avoids `NotImplementedError` misuse**: That's for platform-specific features, not abstract methods
-- **Inherits from `StandardError`**: Catchable in standard rescue blocks
+- **Inherits from `Exception`**: Only catchable with explicit rescue blocks
 - **Enforceable**: Can be validated with RuboCop rules (future work)
 
 ### Why not use `NotImplementedError` or `NoMethodError`?

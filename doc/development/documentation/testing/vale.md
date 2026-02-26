@@ -63,9 +63,7 @@ To configure Vale in your editor, install one of the following as appropriate:
 
 - [LSP for Sublime Text](https://lsp.sublimetext.io) package [`LSP-vale-ls`](https://packagecontrol.io/packages/LSP-vale-ls).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
-- JetBrains IDEs - No plugin exists, but
-  [this issue comment](https://github.com/errata-ai/vale-server/issues/39#issuecomment-751714451)
-  contains tips for configuring an external tool.
+- [JetBrains plugin](https://plugins.jetbrains.com/plugin/19613-vale-cli/docs).
 - Emacs [Flycheck extension](https://github.com/flycheck/flycheck). A minimal configuration
   for Flycheck to work with Vale could look like:
 

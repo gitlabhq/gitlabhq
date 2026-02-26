@@ -306,6 +306,10 @@ variables:
   # Runner features
   FF_NETWORK_PER_BUILD: "true"
   FF_USE_FASTZIP: "true"
+  # Feature flag for authenticated CI calls:
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/591004
+  # https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/6444
+  FF_USE_GIT_PROACTIVE_AUTH: "true"
 
 include:
   - local: .gitlab/ci/overrides/skip.yml

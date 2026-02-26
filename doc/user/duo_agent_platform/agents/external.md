@@ -258,6 +258,10 @@ The following CI/CD variables are available:
 
 ## Enable the agent
 
+Enable an agent to trigger it from an issue, merge request, or discussion.
+
+The agent is enabled in a top-level group and a project at the same time.
+
 Prerequisites:
 
 - For the top-level group where you enable the agent, you must have the Maintainer or Owner role.
@@ -310,6 +314,7 @@ To enable an external agent:
 {{< /tabs >}}
 
 The external agent appears in the group and project **Automate** > **Agents** pages.
+Members of any project in the top-level group can now enable the agent in their project.
 
 A service account is created in the group. The name of the account
 follows this naming convention: `ai-<agent>-<group>`.

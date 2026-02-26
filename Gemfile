@@ -645,7 +645,7 @@ gem 'gitaly', '~> 18.8.0', feature_category: :gitaly
 # KAS GRPC protocol definitions
 gem 'gitlab-kas-grpc', '~> 18.5.0-rc4', feature_category: :deployment_management
 
-gem 'grpc', '~> 1.76.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+gem 'grpc', '~> 1.78.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 gem 'google-protobuf', '>= 3.25', '< 5.0', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
