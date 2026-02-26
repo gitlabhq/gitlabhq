@@ -6,4 +6,4 @@
     = sprite_icon('bitbucket', css_class: 'gl-mr-3', size: 48)
   = _('Import projects from Bitbucket')
 
-= render 'import/githubish_status', provider: 'bitbucket', default_namespace: @namespace
+= render 'import/githubish_status', provider: 'bitbucket', default_namespace: @namespace, paginatable: true

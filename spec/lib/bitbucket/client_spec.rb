@@ -110,7 +110,9 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
     let(:path) { "/repositories/#{repo}/issues?sort=created_on" }
 
     it 'requests a collection' do
-      expect(Bitbucket::Paginator).to receive(:new).with(anything, path, :issue, page_number: nil, limit: nil)
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :issue, page_number: nil, limit: nil, after_cursor: nil
+      )
 
       client.issues(repo)
     end
@@ -133,7 +135,9 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
     let(:path) { "/repositories/#{repo}/issues/#{issue_id}/comments?sort=created_on" }
 
     it 'requests a collection' do
-      expect(Bitbucket::Paginator).to receive(:new).with(anything, path, :comment, page_number: nil, limit: nil)
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :comment, page_number: nil, limit: nil, after_cursor: nil
+      )
 
       client.issue_comments(repo, issue_id)
     end
@@ -143,7 +147,9 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
     let(:path) { "/repositories/#{repo}/pullrequests?state=ALL&sort=created_on&fields=#{pull_request_values}" }
 
     it 'requests a collection' do
-      expect(Bitbucket::Paginator).to receive(:new).with(anything, path, :pull_request, page_number: nil, limit: nil)
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :pull_request, page_number: nil, limit: nil, after_cursor: nil
+      )
 
       client.pull_requests(repo)
     end
@@ -167,7 +173,7 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
 
     it 'requests a collection' do
       expect(Bitbucket::Paginator).to receive(:new).with(
-        anything, path, :pull_request_comment, page_number: nil, limit: nil
+        anything, path, :pull_request_comment, page_number: nil, limit: nil, after_cursor: nil
       )
 
       client.pull_request_comments(repo, pull_request_id)
@@ -204,7 +210,9 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
     let(:repo_name_filter) { 'my' }
 
     it 'requests a collection without a filter' do
-      expect(Bitbucket::Paginator).to receive(:new).with(anything, path, :repo, page_number: nil, limit: nil)
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :repo, page_number: nil, limit: nil, after_cursor: nil
+      )
 
       client.repos
     end
@@ -213,10 +221,78 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
       path_with_filter = "#{path}&q=name~\"#{repo_name_filter}\""
 
       expect(Bitbucket::Paginator).to receive(:new).with(
-        anything, path_with_filter, :repo, page_number: nil, limit: nil
+        anything, path_with_filter, :repo, page_number: nil, limit: nil, after_cursor: nil
       )
 
       client.repos(filter: repo_name_filter)
+    end
+
+    it 'requests a collection with after_cursor' do
+      after_cursor = '2025-12-10T12:13:37.393445+00:00'
+
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :repo, page_number: nil, limit: nil, after_cursor: after_cursor
+      )
+
+      client.repos(after_cursor: after_cursor)
+    end
+  end
+
+  describe '#multi_workspace_repos' do
+    let(:workspaces) do
+      [
+        instance_double(Bitbucket::Representation::Workspace, slug: 'workspace-1'),
+        instance_double(Bitbucket::Representation::Workspace, slug: 'workspace-2')
+      ]
+    end
+
+    before do
+      allow(client).to receive(:all_workspaces).and_return(workspaces)
+    end
+
+    it 'fetches all workspaces when no page infos provided' do
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(2)
+        expect(configs.pluck(:workspace)).to eq(%w[workspace-1 workspace-2])
+      end
+
+      client.multi_workspace_repos
+    end
+
+    it 'fetches only specified workspaces when page infos provided' do
+      workspace_paging_info = [
+        { workspace: 'workspace-1', page_info: { next_page: 2, has_next_page: true } }
+      ]
+
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(1)
+        expect(configs[0][:workspace]).to eq('workspace-1')
+        expect(configs[0][:page_number]).to eq(2)
+      end
+
+      client.multi_workspace_repos(workspace_paging_info: workspace_paging_info)
+    end
+
+    it 'includes filter in repository path when provided' do
+      filter = 'my-repo'
+
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(2)
+        expect(configs[0][:path]).to include('q=name~"my-repo"')
+        expect(configs[1][:path]).to include('q=name~"my-repo"')
+      end
+
+      client.multi_workspace_repos(filter: filter)
+    end
+
+    it 'does not include filter in path when not provided' do
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(2)
+        expect(configs[0][:path]).not_to include('q=name')
+        expect(configs[1][:path]).not_to include('q=name')
+      end
+
+      client.multi_workspace_repos
     end
   end
 
@@ -237,7 +313,9 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
     let(:path) { "/workspaces/#{workspace}/members" }
 
     it 'requests a collection' do
-      expect(Bitbucket::Paginator).to receive(:new).with(anything, path, :user, page_number: nil, limit: nil)
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :user, page_number: nil, limit: nil, after_cursor: nil
+      )
 
       client.users(workspace)
     end
@@ -246,7 +324,9 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
       page = 10
       limit = 100
 
-      expect(Bitbucket::Paginator).to receive(:new).with(anything, path, :user, page_number: page, limit: limit)
+      expect(Bitbucket::Paginator).to receive(:new).with(
+        anything, path, :user, page_number: page, limit: limit, after_cursor: nil
+      )
 
       client.users(workspace, page_number: page, limit: limit)
     end

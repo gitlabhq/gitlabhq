@@ -33,6 +33,7 @@ describe('import_projects store mutations', () => {
           endCursor: 'Y3Vyc29yOjI1',
           hasNextPage: false,
         },
+        workspacePagingInfo: { 'workspace-1': { nextPage: 2, hasNextPage: true } },
       };
       mutations[types.SET_FILTER](state, NEW_VALUE);
     });
@@ -46,6 +47,10 @@ describe('import_projects store mutations', () => {
       expect(state.pageInfo.startCursor).toBe(null);
       expect(state.pageInfo.endCursor).toBe(null);
       expect(state.pageInfo.hasNextPage).toBe(true);
+    });
+
+    it('clears workspace page info', () => {
+      expect(state.workspacePagingInfo).toEqual({});
     });
 
     it('merges filter updates', () => {
@@ -329,6 +334,44 @@ describe('import_projects store mutations', () => {
 
       mutations[types.SET_PAGE_CURSORS](state, NEW_CURSORS);
       expect(state.pageInfo).toEqual({ ...NEW_CURSORS, page: 1 });
+    });
+
+    it('sets workspace page info when provided', () => {
+      const NEW_CURSORS = { startCursor: 'startCur', endCursor: 'endCur', hasNextPage: false };
+      const WORKSPACE_PAGE_INFOS = [
+        { workspace: 'workspace-1', pageInfo: { nextPage: 2, hasNextPage: true } },
+        { workspace: 'workspace-2', pageInfo: { nextPage: null, hasNextPage: false } },
+      ];
+      state = {
+        pageInfo: { page: 1, startCursor: null, endCursor: null, hasNextPage: true },
+        workspacePagingInfo: {},
+      };
+
+      mutations[types.SET_PAGE_CURSORS](state, {
+        ...NEW_CURSORS,
+        workspacePagingInfo: WORKSPACE_PAGE_INFOS,
+      });
+
+      expect(state.workspacePagingInfo).toEqual({
+        'workspace-1': { nextPage: 2, hasNextPage: true },
+        'workspace-2': { nextPage: null, hasNextPage: false },
+      });
+    });
+
+    it('does not set workspace page info when not provided', () => {
+      const NEW_CURSORS = { startCursor: 'startCur', endCursor: 'endCur', hasNextPage: false };
+      state = {
+        pageInfo: { page: 1, startCursor: null, endCursor: null, hasNextPage: true },
+        workspacePagingInfo: {
+          'existing-workspace': { nextPage: 3, hasNextPage: true },
+        },
+      };
+
+      mutations[types.SET_PAGE_CURSORS](state, NEW_CURSORS);
+
+      expect(state.workspacePagingInfo).toEqual({
+        'existing-workspace': { nextPage: 3, hasNextPage: true },
+      });
     });
   });
 

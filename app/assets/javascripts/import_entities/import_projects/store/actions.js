@@ -17,6 +17,8 @@ let eTagPoll;
 const hasRedirectInError = (e) => e?.response?.data?.error?.redirect;
 const redirectToUrlInError = (e) => visitUrl(e.response.data.error.redirect);
 const tooManyRequests = (e) => e.response.status === HTTP_STATUS_TOO_MANY_REQUESTS;
+const supportsCursorPagination = (provider) =>
+  provider === PROVIDERS.GITHUB || provider === PROVIDERS.BITBUCKET;
 const pathWithParams = ({ path, ...params }) => {
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(([, value]) => value !== ''),
@@ -25,10 +27,15 @@ const pathWithParams = ({ path, ...params }) => {
   return queryString ? `${path}?${queryString}` : path;
 };
 const commitPaginationData = ({ state, commit, data }) => {
-  const cursorsGitHubResponse = !isEmpty(data.pageInfo || {});
+  const hasCursors = !isEmpty(data.pageInfo || {});
 
-  if (state.provider === PROVIDERS.GITHUB && cursorsGitHubResponse) {
-    commit(types.SET_PAGE_CURSORS, data.pageInfo);
+  if (supportsCursorPagination(state.provider) && hasCursors) {
+    const payload = { ...data.pageInfo };
+    if (state.provider === PROVIDERS.BITBUCKET && data.workspacePagingInfo) {
+      payload.workspacePagingInfo = data.workspacePagingInfo;
+    }
+
+    commit(types.SET_PAGE_CURSORS, payload);
   } else {
     const nextPage = state.pageInfo.page + 1;
     commit(types.SET_PAGE, nextPage);
@@ -45,7 +52,25 @@ const commitPaginationData = ({ state, commit, data }) => {
   }
 };
 const paginationParams = ({ state }) => {
-  if (state.provider === PROVIDERS.GITHUB && state.pageInfo.endCursor) {
+  if (state.provider === PROVIDERS.BITBUCKET) {
+    const workspacesWithNextPage = Object.entries(state.workspacePagingInfo)
+      .filter(([, info]) => Boolean(info.hasNextPage))
+      .map(([workspace, pageInfo]) => ({
+        workspace,
+        page_info: {
+          next_page: pageInfo.nextPage,
+          has_next_page: pageInfo.hasNextPage,
+        },
+      }));
+
+    if (workspacesWithNextPage.length > 0) {
+      return { workspace_paging_info: btoa(JSON.stringify(workspacesWithNextPage)) };
+    }
+
+    return {};
+  }
+
+  if (supportsCursorPagination(state.provider) && state.pageInfo.endCursor) {
     return { after: state.pageInfo.endCursor };
   }
 
