@@ -361,6 +361,9 @@ RSpec.configure do |config|
       # This feature has global impact and most tests aren't ready for it yet
       stub_feature_flags(cells_unique_claims: false)
 
+      # Org migration target cell mode is only enabled in Cells on GitLab.com
+      stub_feature_flags(org_migration_target_cell: false)
+
       # This feature flag will be removed in %19.0
       stub_feature_flags(work_item_legacy_url: false)
 

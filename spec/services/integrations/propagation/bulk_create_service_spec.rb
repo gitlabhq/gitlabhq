@@ -18,6 +18,7 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
       id project_id group_id inherit_from_id instance template
       created_at updated_at
       encrypted_properties encrypted_properties_iv organization_id project_id group_id
+      event_filters
     ]
   end
 

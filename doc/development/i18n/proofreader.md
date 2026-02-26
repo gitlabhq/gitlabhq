@@ -45,7 +45,7 @@ are very appreciative of the work done by translators and proofreaders!
 - English (UK)
   - Proofreaders needed.
 - Esperanto
-  - Proofreaders needed.
+  - Jorge Maldonado Ventura - [GitLab](https://gitlab.com/jorgesumle), [Crowdin](https://crowdin.com/profile/jorgesumle)
 - Estonian
   - Proofreaders needed.
 - Farsi

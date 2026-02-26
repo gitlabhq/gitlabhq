@@ -20,6 +20,28 @@ RSpec.shared_context 'with API work items shared helpers' do
       raise ArgumentError, "Unsupported namespace: #{namespace.inspect}"
     end
   end
+
+  def create_label_for_namespace(namespace)
+    case namespace.owner_entity_name
+    when :group
+      create(:group_label, group: namespace)
+    when :project
+      create(:label, project: namespace.owner_entity)
+    else
+      raise ArgumentError, "Unsupported namespace: #{namespace.inspect}"
+    end
+  end
+
+  def create_milestone_for_namespace(namespace)
+    case namespace.owner_entity_name
+    when :group
+      create(:milestone, group: namespace)
+    when :project
+      create(:milestone, project: namespace.owner_entity)
+    else
+      raise ArgumentError, "Unsupported namespace: #{namespace.inspect}"
+    end
+  end
 end
 
 RSpec.shared_examples 'work item pagination' do
@@ -192,6 +214,45 @@ RSpec.shared_examples 'avoids N+1 queries' do
 
     expect(response).to have_gitlab_http_status(:ok)
     expect(json_response.size).to eq(expected_work_item_ids.size + 1)
+  end
+end
+
+RSpec.shared_examples 'work item N+1 query prevention' do
+  let(:request_params) { { fields: 'reference,web_url', features: 'labels,milestone' } }
+
+  before do
+    2.times do
+      work_item_label = create_label_for_namespace(namespace_record)
+      ms = create_milestone_for_namespace(namespace_record)
+      create_namespace_work_item(namespace_record, labels: [work_item_label], milestone: ms)
+    end
+
+    get api(api_request_path, user), params: request_params
+  end
+
+  it 'does not cause excessive N+1 queries when adding work items with labels, milestones, and URL fields' do
+    baseline = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      get api(api_request_path, user), params: request_params
+    end
+
+    2.times do
+      new_label = create_label_for_namespace(namespace_record)
+      new_milestone = create_milestone_for_namespace(namespace_record)
+      create_namespace_work_item(namespace_record, labels: [new_label], milestone: new_milestone)
+    end
+
+    expect do
+      get api(api_request_path, user), params: request_params
+    end.to issue_same_number_of_queries_as(baseline).with_threshold(1)
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response.first).to include('reference', 'web_url')
+
+    work_item_with_milestone = json_response.find { |wi| wi.dig('features', 'milestone') }
+    expect(work_item_with_milestone.dig('features', 'milestone', 'web_url')).to be_present
+
+    work_item_with_labels = json_response.find { |wi| wi.dig('features', 'labels') }
+    expect(work_item_with_labels.dig('features', 'labels')).to have_key('allows_scoped_labels')
   end
 end
 

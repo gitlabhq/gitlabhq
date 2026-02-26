@@ -7,6 +7,10 @@ module Groups
 
       before_action :authorize_admin_integrations!
 
+      before_action only: [:edit] do
+        push_frontend_feature_flag(:finer_filters_for_integrations, group)
+      end
+
       feature_category :integrations
 
       layout 'group_settings'

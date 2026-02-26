@@ -44,6 +44,14 @@ describe('FilterableList', () => {
 
       expect(List.getPagePath()).toEqual('/foo/bar?alpha=beta&name=blah');
     });
+
+    it('serializes form data correctly', () => {
+      List.filterForm.action = '/foo/bar/';
+      List.filterForm.insertAdjacentHTML('beforeend', '<input name="other" value="test" />');
+      List.listFilterElement.value = 'hello world&foo=bar';
+
+      expect(List.getPagePath()).toEqual('/foo/bar/?name=hello+world%26foo%3Dbar&other=test');
+    });
   });
 
   describe('getFilterEndpoint', () => {

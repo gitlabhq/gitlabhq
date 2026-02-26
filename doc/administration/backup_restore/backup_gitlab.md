@@ -149,7 +149,7 @@ GitLab stores blobs (or files) such as issue attachments or LFS objects into eit
 - The file system in a specific location.
 - An [Object Storage](../object_storage.md) solution. Object Storage solutions can be:
   - Cloud based like Amazon S3 and Google Cloud Storage.
-  - Hosted by you (like MinIO).
+  - Self-hosted S3-compatible object storage.
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
 #### Object storage
@@ -176,7 +176,7 @@ GitLab container registry storage can be configured in either:
 - The file system in a specific location.
 - An Object Storage solution. Object Storage solutions can be:
   - Cloud based like Amazon S3 and Google Cloud Storage.
-  - Hosted by you (like MinIO).
+  - Self-hosted S3-compatible object storage.
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
 The backup command does not back up registry data when they are stored in Object Storage.

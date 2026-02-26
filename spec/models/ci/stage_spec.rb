@@ -521,4 +521,17 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       it { expect(stage.confirm_manual_job?).to be_falsy }
     end
   end
+
+  describe 'play_manual' do
+    let(:current_user) { create(:user) }
+    let(:stage) { create(:ci_stage, pipeline: pipeline) }
+
+    subject { stage.play_manual(current_user) }
+
+    it 'queues a worker to play all manual jobs' do
+      expect(Ci::PlayManualStageWorker).to receive(:perform_async).with(stage.id, current_user.id).once
+
+      subject
+    end
+  end
 end

@@ -5,7 +5,7 @@ module JiraConnect
     # This is not inheriting from JiraConnect::Application controller because
     # it doesn't need to handle JWT authentication.
 
-    feature_category :integrations
+    feature_category :team_planning
 
     skip_before_action :authenticate_user!
 

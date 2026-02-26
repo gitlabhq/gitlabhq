@@ -10,7 +10,6 @@ module Import
       end
 
       def allowed?
-        return false if Feature.disabled?(:user_mapping_service_account_and_bots, reassigned_by_user)
         return false unless reassigned_by_user.can?(:admin_namespace, group)
         return false unless assignee_user&.project_bot?
 

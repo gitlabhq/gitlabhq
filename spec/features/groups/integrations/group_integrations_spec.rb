@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group integrations', :js, feature_category: :integrations do
+# FIXME: feature_category is fixed but this test loops over integrations that
+# are owned by different groups
+RSpec.describe 'Group integrations', :js, feature_category: :not_owned do # rubocop:disable RSpec/FeatureCategory -- See above
   include_context 'group integration activation'
 
   before do

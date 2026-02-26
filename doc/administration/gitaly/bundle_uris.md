@@ -251,7 +251,7 @@ go_cloud_url = "s3://<bucket>?region=us-west-1"
 
 {{< /history >}}
 
-S3-compatible servers such as MinIO are configured similarly to S3 with the
+S3-compatible servers are configured similarly to S3 with the
 addition of the `endpoint` parameter.
 
 The following parameters are supported:
@@ -280,12 +280,12 @@ Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
 
 ```ruby
 gitaly['env'] = {
-    'AWS_ACCESS_KEY_ID' => 'minio_access_key_id',
-    'AWS_SECRET_ACCESS_KEY' => 'minio_secret_access_key'
+    'AWS_ACCESS_KEY_ID' => '<your_access_key_id>',
+    'AWS_SECRET_ACCESS_KEY' => '<your_secret_access_key>'
 }
 gitaly['configuration'] = {
     bundle_uri: {
-        go_cloud_url: 's3://<bucket>?region=minio&endpoint=my.minio.local:8080&disable_https=true&use_path_style=true'
+        go_cloud_url: 's3://<bucket>?region=us-east-1&endpoint=s3.example.com:9000&disable_https=true&use_path_style=true'
     }
 }
 ```
@@ -298,7 +298,7 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 
 ```toml
 [bundle_uri]
-go_cloud_url = "s3://<bucket>?region=minio&endpoint=my.minio.local:8080&disable_https=true&use_path_style=true"
+go_cloud_url = "s3://<bucket>?region=us-east-1&endpoint=s3.example.com:9000&disable_https=true&use_path_style=true"
 ```
 
 {{< /tab >}}

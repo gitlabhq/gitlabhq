@@ -77,6 +77,12 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
         get api("/projects/#{project.id}/-/work_items", personal_access_token: pat)
       end
     end
+
+    context 'with N+1 query prevention' do
+      let(:api_request_path) { "/projects/#{project.id}/-/work_items" }
+
+      it_behaves_like 'work item N+1 query prevention'
+    end
   end
 
   describe 'GET /groups/:id/-/work_items' do

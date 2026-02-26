@@ -38,7 +38,7 @@ GitLab is tightly integrated with the Fog library, so you can see which
 [providers](https://fog.github.io/about/provider_documentation.html) can be used
 with GitLab.
 
-Specifically, GitLab has been tested by vendors and customers on a number of object storage providers:
+The following providers are known to work, though this list is not exhaustive:
 
 - [Amazon S3](https://aws.amazon.com/s3/) ([Object Lock](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html)
   is not supported, see [issue #335775](https://gitlab.com/gitlab-org/gitlab/-/issues/335775)
@@ -48,8 +48,9 @@ Specifically, GitLab has been tested by vendors and customers on a number of obj
 - [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
 - [OpenStack Swift (S3 compatible mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
-- [MinIO](https://min.io/) (S3 compatible)
 - On-premises hardware and appliances from various storage vendors, whose list is not officially established.
+
+Beyond the providers listed above, other services supported by the Fog library may also be compatible. Use them at your discretion. Any support is subject to commercially-reasonable efforts.
 
 ## Configure a single storage connection for all object types (consolidated form)
 
@@ -203,8 +204,8 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `enable_signature_v4_streaming`             | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`. GitLab 17.4 changed the default from `true` to `false`.  | `false` |
 | `region`                                    | AWS region.                        | |
 | `host`                                      | DEPRECATED: Use `endpoint` instead. S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
-| `endpoint`                                  | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. Always use `endpoint` for consolidated form. | (optional) |
-| `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Set to `true` for using [MinIO](https://min.io). Leave as `false` for AWS S3. | `false` |
+| `endpoint`                                  | Can be used when configuring an S3-compatible service, by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. Always use `endpoint` for consolidated form. | (optional) |
+| `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Set to `true` for S3-compatible services that require path-style addressing. Leave as `false` for AWS S3. | `false` |
 | `use_iam_profile`                           | Set to `true` to use IAM profile instead of access keys. | `false` |
 | `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) in seconds when using temporary credentials in IAM. | `15` |
 | `disable_imds_v2`                           | Force the use of IMDS v1 by disabling access to the IMDS v2 endpoint that retrieves `X-aws-ec2-metadata-token`. | `false` |
@@ -1344,9 +1345,8 @@ between the object storage provider and the client.
 
 ### ETag mismatch
 
-Using the default GitLab settings, some object storage back-ends such as
-[MinIO](https://gitlab.com/gitlab-org/gitlab/-/issues/23188)
-and [Alibaba](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1564)
+Using the default GitLab settings, some S3-compatible object storage back-ends such as
+[Alibaba](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1564)
 might generate `ETag mismatch` errors.
 
 #### Amazon S3 encryption
@@ -1358,9 +1358,8 @@ To fix this issue, you have two options:
 - [Use the consolidated form](#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 - [Use Amazon instance profiles](#use-amazon-instance-profiles).
 
-The first option is recommended for MinIO. Otherwise, the
-[workaround for MinIO](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/1564#note_244497658)
-is to use the `--compat` parameter on the server.
+The consolidated form is recommended for S3-compatible services. Some services may also require
+additional server-side configuration, such as enabling a compatibility mode, to resolve ETag mismatch errors.
 
 Without the consolidated form or instance profiles enabled,
 GitLab Workhorse uploads files to S3 using pre-signed URLs that do

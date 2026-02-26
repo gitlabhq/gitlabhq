@@ -5,7 +5,7 @@
 # The GitLab.com for Jira App (https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud)
 #
 class JiraConnect::OauthCallbacksController < ApplicationController
-  feature_category :integrations
+  feature_category :team_planning
 
   skip_before_action :authenticate_user!
 

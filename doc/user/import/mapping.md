@@ -22,10 +22,15 @@ title: Post-migration contribution and membership mapping
 - Enabled on GitLab Self-Managed in GitLab 17.8 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508945) in GitLab 18.4 for direct transfer. Feature flag `bulk_import_importer_user_mapping` removed.
-- Reassigning contributions to service accounts, project bots, and group bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573124) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `user_mapping_service_account_and_bots`. Enabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512211) in GitLab 18.6 for Gitea. Feature flag `gitea_user_mapping` removed.
+- Reassigning contributions to service accounts, project bots, and group
+  bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573124) in GitLab
+  18.5 [with a flag](../../administration/feature_flags/_index.md) named `user_mapping_service_account_and_bots`.
+  Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512211) in GitLab 18.6 for Gitea. Feature flag
+  `gitea_user_mapping` removed.
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/211626) in GitLab 18.6. Feature flag `user_mapping_to_personal_namespace_owner` removed.
 - `github_user_mapping` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216778) in GitLab 18.8.
+- `user_mapping_service_account_and_bots` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223142) in GitLab 18.10.
 
 {{< /history >}}
 

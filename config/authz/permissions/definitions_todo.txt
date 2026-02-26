@@ -349,7 +349,6 @@ manage_ai_flow_triggers
 manage_deploy_tokens
 manage_destroy
 manage_devops_adoption_namespaces
-manage_duo_core_settings
 manage_group_link_with_owner_access
 manage_instance_model_selection
 manage_merge_request_settings
@@ -357,7 +356,6 @@ manage_owners
 manage_project_security_exclusions
 manage_protected_tags
 manage_resource_access_tokens
-manage_security_settings
 manage_self_hosted_models_settings
 manage_subscription
 manage_trigger

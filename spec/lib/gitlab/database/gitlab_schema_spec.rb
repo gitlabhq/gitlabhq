@@ -330,7 +330,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         %w[evidences ci_pipelines] | false
         %w[users detached_partitions] | false
         %w[users namespaces] | true
-        %w[plans namespaces] | true
+        %w[plans namespaces] | false
         %w[users achievements] | true
         %w[users agent_group_authorizations] | true
       end

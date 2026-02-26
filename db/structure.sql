@@ -21584,6 +21584,7 @@ CREATE TABLE integrations (
     group_mention_events boolean DEFAULT false NOT NULL,
     group_confidential_mention_events boolean DEFAULT false NOT NULL,
     organization_id bigint,
+    event_filters jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_2aae034509 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)),
     CONSTRAINT check_a948a0aa7e CHECK ((char_length(type_new) <= 255))
 );
@@ -27453,6 +27454,7 @@ CREATE TABLE project_settings (
     duo_sast_fp_detection_enabled boolean DEFAULT false NOT NULL,
     duo_sast_vr_workflow_enabled boolean DEFAULT false NOT NULL,
     automatic_rebase_enabled boolean DEFAULT false NOT NULL,
+    duo_secret_detection_fp_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
     CONSTRAINT check_237486989c CHECK ((char_length(merge_request_title_regex_description) <= 255)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
@@ -43701,6 +43703,8 @@ CREATE INDEX idx_vulnerability_reads_for_traversal_ids_queries_srt_severity ON v
 CREATE INDEX idx_vulnerability_reads_project_id_scanner_id_vulnerability_id ON vulnerability_reads USING btree (project_id, scanner_id, vulnerability_id);
 
 CREATE INDEX idx_vulnerability_statistics_on_traversal_ids_and_letter_grade ON vulnerability_statistics USING btree (traversal_ids, letter_grade) WHERE (archived = false);
+
+CREATE INDEX idx_web_hook_logs_daily_on_hook_id_resp_status_created_at ON ONLY web_hook_logs_daily USING btree (web_hook_id, response_status, created_at);
 
 CREATE UNIQUE INDEX idx_wi_current_statuses_on_wi_id_custom_status_id_unique ON work_item_current_statuses USING btree (work_item_id, custom_status_id);
 

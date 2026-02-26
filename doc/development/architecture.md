@@ -339,7 +339,7 @@ click Geo "#gitlab-geo"
 click NGINX "#nginx"
 click Runner "#gitlab-runner"
 click Registry "#registry"
-click ObjectStorage "#minio"
+click ObjectStorage "#object-storage"
 click Mattermost "#mattermost"
 click Gitaly "#gitaly"
 click Jaeger "#jaeger"
@@ -403,7 +403,7 @@ Component statuses are linked to configuration documentation for each component.
 | [Jaeger integration](#jaeger)                         | Distributed tracing for deployed apps                                |       ⤓        |       ⤓        |      ⤓       |        ⤓         |     ⤓      |   ⤓    |  ⚙  | EE Only |
 | [LDAP Authentication](#ldap-authentication)           | Authenticate users against centralized LDAP directory                |       ⤓        |       ⤓        |      ⤓       |        ⤓         |     ❌      |   ⤓    |  ⚙  | CE & EE |
 | [Mattermost](#mattermost)                             | Open-source Slack alternative                                        |       ⚙       |       ⚙        |      ⤓       |        ⤓         |     ⤓      |   ❌    |  ⚙  | CE & EE |
-| [MinIO](#minio)                                       | Object storage service                                               |       ⤓        |       ⤓        |      ✅       |        ✅         |     ✅      |   ❌    |  ⚙  | CE & EE |
+| [Object storage](#object-storage)                     | S3-compatible object storage service                                 |       ⤓        |       ⤓        |      ✅       |        ✅         |     ✅      |   ❌    |  ⚙  | CE & EE |
 | [NGINX](#nginx)                                       | Routes requests to appropriate components, terminates SSL            |       ✅       |       ✅        |      ✅       |        ⚙         |     ✅      |   ⤓    |  ⚙  | CE & EE |
 | [Node Exporter](#node-exporter)                       | Prometheus endpoint with system metrics                              |       ✅       |       ✅        |     N/A      |       N/A        |     ✅      |   ❌    |  ❌  | CE & EE |
 | [Outbound email (SMTP)](#outbound-email)              | Send email messages to users                                         |       ⤓        |       ⤓        |      ⚙       |        ⤓         |     ✅      |   ⤓    |  ⤓  | CE & EE |
@@ -684,17 +684,16 @@ to make sure we were logging responsibly. This is just a packaged version of the
 
 Mattermost is an open source, private cloud, Slack-alternative from <https://mattermost.com>.
 
-#### MinIO
+#### Object storage
 
-- [Project page](https://github.com/minio/minio/blob/master/README.md)
 - Configuration:
-  - [Omnibus](https://min.io/download)
-  - [Charts](https://docs.gitlab.com/charts/charts/minio/)
+  - [Omnibus](../administration/object_storage.md)
+  - [Charts](https://docs.gitlab.com/charts/advanced/external-object-storage/)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/object_storage.md)
 - Layer: Core Service (Data)
 - GitLab.com: [Storage Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#storage-architecture)
 
-MinIO is an object storage server released under the GNU AGPL v3.0. It is compatible with Amazon S3 cloud storage service. It is best suited for storing unstructured data such as photos, videos, log files, backups, and container / VM images. Size of an object can range from a few KB to a maximum of 5 TB.
+GitLab requires an S3-compatible object storage for storing data such as CI artifacts, LFS objects, uploads, and container registry images. GitLab is compatible with any object storage provider that offers full S3 API compatibility. The choice of provider is your responsibility. Cloud-managed services such as Amazon S3, Google Cloud Storage, and Azure Blob Storage are commonly used, as is any self-hosted S3-compatible solution.
 
 #### NGINX
 

@@ -136,8 +136,6 @@ To interact with Git from the command line, you can use Git commands:
 For more comprehensive information and detailed explanations,
 see [common Git commands](commands.md) guide.
 
-<!--- Use this section when the [Generate an SSH key pair](../user/ssh.md) page is added to the navigation
-
 ### Use SSH with Git
 
 When you work with remote repositories, you should use SSH for secure communication.
@@ -146,9 +144,13 @@ GitLab uses the SSH protocol to securely communicate with Git.
 When you use SSH keys to authenticate to the GitLab remote server,
 you don't need to supply your username and password each time.
 
-To learn how to generate and add SSH keys to your GitLab account,
-see [Generate an SSH key pair](../user/ssh.md).
--->
+To use SSH with GitLab, you must:
+
+1. Generate an SSH key pair on your local system.
+1. Add your SSH key to your GitLab account.
+1. Verify your SSH connection to GitLab.
+
+For more information, see [use SSH keys with GitLab](../../user/ssh.md).
 
 ## Related topics
 

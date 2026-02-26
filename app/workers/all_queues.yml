@@ -2161,7 +2161,7 @@
   :queue_namespace: :incident_management
 - :name: jira_connect:integrations_jira_connect_remove_branch
   :worker_name: Integrations::JiraConnect::RemoveBranchWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2171,7 +2171,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_forward_event
   :worker_name: JiraConnect::ForwardEventWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2181,7 +2181,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_jira_cloud_app_deactivation
   :worker_name: JiraConnect::JiraCloudAppDeactivationWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2191,7 +2191,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_retry_request
   :worker_name: JiraConnect::RetryRequestWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2201,7 +2201,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_send_uninstalled_hook
   :worker_name: JiraConnect::SendUninstalledHookWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2211,7 +2211,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_branch
   :worker_name: JiraConnect::SyncBranchWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2221,7 +2221,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_builds
   :worker_name: JiraConnect::SyncBuildsWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2231,7 +2231,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_deployments
   :worker_name: JiraConnect::SyncDeploymentsWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2241,7 +2241,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_feature_flags
   :worker_name: JiraConnect::SyncFeatureFlagsWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2251,7 +2251,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_merge_request
   :worker_name: JiraConnect::SyncMergeRequestWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2261,7 +2261,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_project
   :worker_name: JiraConnect::SyncProjectWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2979,6 +2979,16 @@
   :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 5
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :pipeline_processing
+- :name: pipeline_processing:ci_play_manual_stage
+  :worker_name: Ci::PlayManualStageWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :high
   :resource_boundary: :cpu
   :weight: 5
   :idempotent: true

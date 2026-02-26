@@ -560,6 +560,7 @@ module Integrations
         validates :type, uniqueness: { scope: :instance }, if: :instance_level?
         validates :type, uniqueness: { scope: :project_id }, if: :project_level?
         validates :type, uniqueness: { scope: :group_id }, if: :group_level?
+        validates :event_filters, json_schema: { filename: 'integration_event_filters', size_limit: 64.kilobytes }
         validates_with ExactlyOnePresentValidator, fields: [:project_id, :group_id, :organization_id]
         validate :validate_encrypted_properties_size_limit, if: :encrypted_properties_changed?
 

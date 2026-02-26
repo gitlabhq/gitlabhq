@@ -4,6 +4,9 @@ class Admin::IntegrationsController < Admin::ApplicationController
   include ::Integrations::Actions
 
   before_action :not_found, unless: -> { instance_level_integrations? }
+  before_action only: [:edit] do
+    push_frontend_feature_flag(:finer_filters_for_integrations)
+  end
 
   feature_category :integrations
 

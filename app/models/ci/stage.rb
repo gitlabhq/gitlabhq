@@ -206,6 +206,10 @@ module Ci
       end
     end
 
+    def play_manual(current_user)
+      Ci::PlayManualStageWorker.perform_async(id, current_user.id)
+    end
+
     # This will be removed with ci_remove_ensure_stage_service
     def latest_stage_status
       statuses.latest.composite_status || 'skipped'

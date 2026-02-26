@@ -62,6 +62,14 @@ required upgrade stops occur at versions:
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## 18.10.0
+
+### Geo installations 18.10.0
+
+- The current 8-hour (28,800 seconds) hardcoded Geo blob download timeout causes sync failures for very large LFS objects (5+ GB) that require longer transfer times, leaving them stuck in "started" state. A new `blob_download_timeout` setting controls the per-site timeout (in seconds) for blob replication (LFS objects, uploads, job artifacts, etc.). Configurable through the [Geo Sites API](../../api/geo_sites.md).
+  - Default: `28800` (8 hours).
+  - Maximum: `86400` (24 hours).
+
 ## 18.9.0
 
 Upgrading to GitLab 18.9 might fail with a `PG::CheckViolation` error during the

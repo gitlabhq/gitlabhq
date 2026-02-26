@@ -2,8 +2,8 @@
 name: web_hook_event_resend_api_endpoint_rate_limit
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372826
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151130
-rollout_issue_url: # No rollout: This is an ops flag
-milestone: '17.4'
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587887
+milestone: '18.10'
 group: group::import
 type: ops
 default_enabled: true

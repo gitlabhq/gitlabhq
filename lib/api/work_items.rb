@@ -31,18 +31,40 @@ module API
       milestone: [:milestone],
       start_and_due_date: [:dates_source]
     }.freeze
+
+    PROJECT_FEATURE_PRELOADS = {
+      milestone: [{ milestone: :project }]
+    }.freeze
+
+    GROUP_FEATURE_PRELOADS = {
+      milestone: [{ milestone: :group }]
+    }.freeze
+
     FIELD_PRELOADS = {
       author: [:author],
       work_item_type: [:work_item_type],
-      create_note_email: [:project],
       duplicated_to_work_item_url: [:duplicated_to],
       moved_to_work_item_url: [:moved_to],
       promoted_to_epic_url: [:work_item_transition],
-      reference: [:project, { namespace: :route }],
-      web_url: [:project, { namespace: :route }],
-      web_path: [:project, { namespace: :route }],
+      web_url: [:author, :work_item_type],
+      web_path: [:author, :work_item_type]
+    }.freeze
+
+    PROJECT_FIELD_PRELOADS = {
+      create_note_email: [:project],
+      reference: [{ namespace: :route }, { project: :namespace }],
+      web_url: [{ namespace: :route }, { project: :namespace }],
+      web_path: [{ namespace: :route }, { project: :namespace }],
       user_permissions: [:project],
-      features: [:work_item_type, :project, { namespace: :route }]
+      features: [:work_item_type, :project]
+    }.freeze
+
+    GROUP_FIELD_PRELOADS = {
+      reference: [{ namespace: :route }],
+      web_url: [{ namespace: :route }],
+      web_path: [{ namespace: :route }],
+      user_permissions: [:namespace],
+      features: [:work_item_type, { namespace: :route }]
     }.freeze
 
     helpers do
@@ -75,14 +97,15 @@ module API
           work_items_finder_params(resource_parent)
         ).execute
 
-        preloads = preload_associations_for(field_keys, feature_keys)
+        preloads = preload_associations_for(field_keys, feature_keys, resource_parent)
         work_items_relation = work_items_relation.preload(*preloads) if preloads.present? # rubocop:disable CodeReuse/ActiveRecord -- Preloading associations for API response
 
         present paginate_with_strategies(work_items_relation),
           with: Entities::WorkItemBasic,
           current_user: current_user,
           requested_features: feature_keys,
-          fields: field_keys
+          fields: field_keys,
+          resource_parent: resource_parent
       end
 
       private
@@ -118,9 +141,23 @@ module API
           .uniq
       end
 
-      def preload_associations_for(field_keys, feature_keys)
-        field_preloads = field_keys.flat_map { |field| FIELD_PRELOADS.fetch(field, []) }
-        feature_preloads = feature_keys.flat_map { |feature| FEATURE_PRELOADS.fetch(feature, []) }
+      def preload_associations_for(field_keys, feature_keys, resource_parent)
+        is_project = resource_parent.is_a?(::Project)
+
+        context_field_preloads, context_feature_preloads =
+          if is_project
+            [PROJECT_FIELD_PRELOADS, PROJECT_FEATURE_PRELOADS]
+          else
+            [GROUP_FIELD_PRELOADS, GROUP_FEATURE_PRELOADS]
+          end
+
+        field_preloads = field_keys.flat_map do |field|
+          FIELD_PRELOADS.fetch(field, []) + context_field_preloads.fetch(field, [])
+        end
+
+        feature_preloads = feature_keys.flat_map do |feature|
+          FEATURE_PRELOADS.fetch(feature, []) + context_feature_preloads.fetch(feature, [])
+        end
 
         (field_preloads + feature_preloads).uniq
       end

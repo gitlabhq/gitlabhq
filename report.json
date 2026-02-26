@@ -1,0 +1,1480 @@
+{
+  "version": "15.2.2",
+  "vulnerabilities": [
+    {
+      "id": "9354c49bcb77448a44270e9867e2750e3cce1f8dffa062187def5acc5d73556b",
+      "name": "Bypass of a protection mechanism in libxslt",
+      "description": "The libxslt binary, which is included in nokogiri, allows bypass of a protection mechanism because callers of `xsltCheckRead` and `xsltCheckWrite` permit access even upon receiving a -1 error code. `xsltCheckRead` can return -1 for a crafted URL that is not actually invalid and is subsequently loaded.",
+      "severity": "Critical",
+      "solution": "Upgrade to version 1.2.0 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-1a2e2e6e-67ba-4142-bfa1-3391f5416e4c",
+          "value": "1a2e2e6e-67ba-4142-bfa1-3391f5416e4c",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/CVE-2019-11068.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2019-11068",
+          "value": "CVE-2019-11068",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-11068"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:P/I:P/A:P"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-11068"
+        },
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1892"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-11068"
+        },
+        {
+          "url": "https://people.canonical.com/~ubuntu-security/cve/CVE-2019-11068"
+        },
+        {
+          "url": "https://security-tracker.debian.org/tracker/CVE-2019-11068"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    },
+    {
+      "id": "d1315787fc58521472b0faa809443e23fdcabf47514d8fa2fd58c62aba59e1cc",
+      "name": "libxml2 vulnerabilities",
+      "description": "Nokogiri is affected via its dependency libxml2. CVE-2016-4448: Format string vulnerability in libxml2 allows attackers to have unspecified impact via format string specifiers in unknown vectors. CVE-2016-4658: libxml2 allows remote attackers to execute arbitrary code or cause a denial of service (memory corruption) via a crafted XML document. CVE-2016-5131: libxml2 allows remote attackers to cause a denial of service or possibly have unspecified other impact via vectors related to the XPointer range-to function. ",
+      "severity": "Critical",
+      "solution": "Upgrade to latest version",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-208c00fd-0100-4109-9577-79b0a9a63a60",
+          "value": "208c00fd-0100-4109-9577-79b0a9a63a60",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/CVE-2016-4658.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2016-4658",
+          "value": "CVE-2016-4658",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2016-4658"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:C/I:C/A:C"
+        }
+      ],
+      "links": [
+        {
+          "url": "http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-4448.html"
+        },
+        {
+          "url": "http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-4658.html"
+        },
+        {
+          "url": "http://people.canonical.com/~ubuntu-security/cve/2016/CVE-2016-5131.html"
+        },
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1615"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    },
+    {
+      "id": "5f5ca42e2a575b5a97e61a19677b0301d8f942a657addfa0f370f604794d06a4",
+      "name": "Command Injection",
+      "description": "A command injection vulnerability in Nokogiri and earlier allows commands to be executed in a subprocess via Ruby's `Kernel.open` method. Processes are vulnerable only if the undocumented method `Nokogiri::CSS::Tokenizer#load_file` is being called with unsafe user input as the filename.",
+      "severity": "Critical",
+      "solution": "Upgrade to version 1.10.4 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-7e9c16eb-d4ee-4c0a-a3b7-ed88f1ea7125",
+          "value": "7e9c16eb-d4ee-4c0a-a3b7-ed88f1ea7125",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/CVE-2019-5477.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2019-5477",
+          "value": "CVE-2019-5477",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-5477"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:P/I:P/A:P"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1915"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-5477"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    },
+    {
+      "id": "b7fbb35f5d6ec814c86d71a6b0cbd194035ba5f5c49f68791d3f56d0ad1a2b3b",
+      "name": "Untrusted Search Path",
+      "description": "ruby-ffi has a DLL loading issue which can be hijacked on Windows OS, when a Symbol is used as DLL name instead of a String.",
+      "severity": "High",
+      "solution": "Upgrade to version 1.9.24 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "ffi"
+          },
+          "version": "1.9.21"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-8e0cf74f-27fb-41ad-939b-d86940adefa2",
+          "value": "8e0cf74f-27fb-41ad-939b-d86940adefa2",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/ffi/CVE-2018-1000201.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2018-1000201",
+          "value": "CVE-2018-1000201",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-1000201"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:L/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:M/Au:N/C:P/I:P/A:P"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-1000201"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "ffi:1.9.21"
+        }
+      }
+    },
+    {
+      "id": "01c1dbfff3b91b6417ecf3c826d5013db21ea4b2aeb4261e4bba15791347fc4c",
+      "name": "Improper Input Validation",
+      "description": "In `numbers.c` in libxslt 1.1.33, which is used by nokogiri, an `xsl:number` with certain format strings could lead to an uninitialized read in `xsltNumberFormatInsertNumbers`.  This could allow an attacker to discern whether a byte on the stack contains the characters `[AaIi0]`, or any other character.",
+      "severity": "High",
+      "solution": "Upgrade to version 1.10.5 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-0f3c3d7c-8e3c-4bc7-8b8d-a3a6703fff7d",
+          "value": "0f3c3d7c-8e3c-4bc7-8b8d-a3a6703fff7d",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/CVE-2019-13117.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2019-13117",
+          "value": "CVE-2019-13117",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-13117"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=14471"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-13117"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    },
+    {
+      "id": "2ea331b797eca607aa5fcd967fac376fd5987a45c09c8011ff713e6be278da44",
+      "name": "Upstream libxslt vulnerabilities",
+      "description": "The `xsltAddTextString` function in `transform.c` in libxslt, as used by nokogiri, lacks a check for integer overflow during a size calculation, which allows a remote attacker to perform an out-of-bounds memory write via a crafted HTML page.",
+      "severity": "High",
+      "solution": "Upgrade to version 1.7.1 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-4289ba56-7bdf-4067-8314-1b3209d05948",
+          "value": "4289ba56-7bdf-4067-8314-1b3209d05948",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/CVE-2017-5029.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2017-5029",
+          "value": "CVE-2017-5029",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5029"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:M/Au:N/C:P/I:P/A:P"
+        }
+      ],
+      "links": [
+        {
+          "url": "http://www.securityfocus.com/bid/96767"
+        },
+        {
+          "url": "https://crbug.com/676623"
+        },
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1634"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-5029"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    },
+    {
+      "id": "f18083fd1ce33bbe6fcab2ce393502f6e2c99085bf815289f4c4a036dfd985b2",
+      "name": "Access of Resource Using Incompatible Type (Type Confusion)",
+      "description": "Type confusion in `xsltNumberFormatGetMultipleLevel` in libxslt, which is included in nokogiri, could allow attackers to potentially exploit heap corruption via crafted XML data.",
+      "severity": "High",
+      "solution": "Upgrade to version 1.2.0 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-66bbb585-09a1-4042-bb63-e57e64568ded",
+          "value": "66bbb585-09a1-4042-bb63-e57e64568ded",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/CVE-2019-5815.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2019-5815",
+          "value": "CVE-2019-5815",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-5815"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://bugs.chromium.org/p/chromium/issues/detail?id=930663"
+        },
+        {
+          "url": "https://gitlab.gnome.org/GNOME/libxslt/commit/08b62c25871b38d5d573515ca8a065b4b8f64f6b"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-5815"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    },
+    {
+      "id": "c96fcb10dd794f2fe02d1e9fd7440d4a00bd0987e4dbf0dc0d7258c0f731d6d4",
+      "name": "Infinite recursion in parameter entities",
+      "description": "The library libxml2, which is included in nokogiri, incorrectly handles certain parameter entities. An attacker can leverage this with specially constructed XML data to cause libxml2 to consume resources, leading to a denial of service.",
+      "severity": "High",
+      "solution": "Upgrade to latest version.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-6a0d56f6-2441-492a-9b14-edb95ac31919",
+          "value": "6a0d56f6-2441-492a-9b14-edb95ac31919",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/CVE-2017-16932.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2017-16932",
+          "value": "CVE-2017-16932",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16932"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16932"
+        },
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1714"
+        },
+        {
+          "url": "https://people.canonical.com/~ubuntu-security/cve/2017/CVE-2017-16932.html"
+        },
+        {
+          "url": "https://usn.ubuntu.com/usn/usn-3504-1/"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    },
+    {
+      "id": "725615cdc97a7adc2e1d99fcf5117af1f86fdf67fe669f605355f7d3b6620f8f",
+      "name": "Denial of Service",
+      "description": "The libxml2 binary, which is included in nokogiri, incorrectly handles certain files. An attacker can use this issue with specially constructed XML data to cause libxml2 to consume resources, leading to a denial of service. ",
+      "severity": "High",
+      "solution": "Upgrade to latest version.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-78658378-bd8f-4d79-81c8-07c419302426",
+          "value": "78658378-bd8f-4d79-81c8-07c419302426",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/CVE-2017-15412.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2017-15412",
+          "value": "CVE-2017-15412",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-15412"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:M/Au:N/C:P/I:P/A:P"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-15412"
+        },
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1714"
+        },
+        {
+          "url": "https://people.canonical.com/~ubuntu-security/cve/2017/CVE-2017-15412.html"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    },
+    {
+      "id": "f5b29838f9a746b70372de9e4d735e950e684fa395473965408e0682f3d8f590",
+      "name": "Denial of service or RCE from libxml2 and libxslt",
+      "description": "Nokogiri is affected by series of vulnerabilities in libxml2 and libxslt, which are libraries Nokogiri depends on. It was discovered that libxml2 and libxslt incorrectly handled certain malformed documents, which can allow malicious users to cause issues ranging from denial of service to remote code execution attacks.",
+      "severity": "High",
+      "solution": "Upgrade to latest version.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-988aa1ec-2e90-4cdf-9ed5-0900f3846b70",
+          "value": "988aa1ec-2e90-4cdf-9ed5-0900f3846b70",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/CVE-2015-8806.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2015-8806",
+          "value": "CVE-2015-8806",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-8806"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+        }
+      ],
+      "links": [
+        {
+          "url": "http://www.ubuntu.com/usn/usn-2994-1/"
+        },
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/commit/03d402212707bd5dfa0a21b7de5e91a7f9d90028"
+        },
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1473"
+        },
+        {
+          "url": "https://mail.gnome.org/archives/xml/2016-May/msg00023.html"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    },
+    {
+      "id": "ec3d6be70f9223f874d03a90fdacc8572dd08de48c601d9dc4b186f8a19cf728",
+      "name": "Improper Input Validation",
+      "description": "In `numbers.c` in libxslt 1.1.33, which is used by nokogiri, a type holding grouping characters of an `xsl:number` instruction was too narrow and an invalid character/length combination could be passed to `xsltNumberFormatDecimal`, leading to a read of uninitialized stack data.",
+      "severity": "High",
+      "solution": "Upgrade to version 1.10.5 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-e81fe131-f92b-4449-bc54-ca2baa35b06f",
+          "value": "e81fe131-f92b-4449-bc54-ca2baa35b06f",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/CVE-2019-13118.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2019-13118",
+          "value": "CVE-2019-13118",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-13118"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-13118"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    },
+    {
+      "id": "c0a45908742a77d0b9c984128d53c0c0adb64fea3146aa9e38278824eedccb9a",
+      "name": "Use After Free",
+      "description": "In `xsltCopyText` in `transform.c` in libxslt, which is used by nokogiri, a pointer variable isn't reset under certain circumstances. If the relevant memory area happened to be freed and reused in a certain way, a bounds check could fail and memory outside a buffer could be written to, or uninitialized data could be disclosed.",
+      "severity": "High",
+      "solution": "Upgrade to version 1.10.5 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-ecf64d0e-4f5c-4ebe-9f3f-c75ea81dc837",
+          "value": "ecf64d0e-4f5c-4ebe-9f3f-c75ea81dc837",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/CVE-2019-18197.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2019-18197",
+          "value": "CVE-2019-18197",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-18197"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:H"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:H/Au:N/C:P/I:P/A:P"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-18197"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    },
+    {
+      "id": "f16975486c7ddd52da15bfcd18e24c10d2561bb841b555b0269cc677bb721e0d",
+      "name": "Inconsistent Interpretation of HTTP Requests (HTTP Request Smuggling)",
+      "description": " In Puma (RubyGem), a client could smuggle a request through a proxy, causing the proxy to send a response back to another unknown client. If the proxy uses persistent connections and the client adds another request in via HTTP pipelining, the proxy may mistake it as the first request's body. Puma, however, would see it as two requests, and when processing the second request, send back a response that the proxy does not expect. If the proxy has reused the persistent connection to Puma to send another request for a different client, the second response from the first client will be sent to the second client.",
+      "severity": "High",
+      "solution": "Upgrade to versions 3.12.6, 4.3.5 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "puma"
+          },
+          "version": "3.12.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-1cd16c54-101c-455b-9267-b5e2904acc67",
+          "value": "1cd16c54-101c-455b-9267-b5e2904acc67",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/puma/CVE-2020-11077.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2020-11077",
+          "value": "CVE-2020-11077",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-11077"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:N/I:P/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-11077"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "puma:3.12.0"
+        }
+      }
+    },
+    {
+      "id": "828b41ad3348b75958e2e4320a674f16c6006a67f143890ffae03d5b0dbe6468",
+      "name": "Inconsistent Interpretation of HTTP Requests (HTTP Request Smuggling)",
+      "description": "In Puma (RubyGem), an attacker could smuggle an HTTP response, by using an invalid transfer-encoding header.",
+      "severity": "High",
+      "solution": "Upgrade to versions 3.12.6, 4.3.5 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "puma"
+          },
+          "version": "3.12.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-3f0a2579-150e-454f-a3d7-2f3e1959be45",
+          "value": "3f0a2579-150e-454f-a3d7-2f3e1959be45",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/puma/CVE-2020-11076.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2020-11076",
+          "value": "CVE-2020-11076",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-11076"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:N/I:P/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-11076"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "puma:3.12.0"
+        }
+      }
+    },
+    {
+      "id": "d9a0d2302e682a1ab85fd09648c80585e9f041c624d3078c44f47f2b3902060c",
+      "name": "Improper Neutralization of CRLF Sequences in HTTP Headers",
+      "description": "In Puma (RubyGem), if an application using Puma allows untrusted input in a response header, an attacker can use newline characters (i.e. `CR`, `LF` or`/r`, `/n`) to end the header and inject malicious content, such as additional headers or an entirely new response body. This vulnerability is known as HTTP Response Splitting. While not an attack in itself, response splitting is a vector for several other attacks, such as cross-site scripting (XSS).",
+      "severity": "High",
+      "solution": "Upgrade to versions 3.12.4, 4.3.3 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "puma"
+          },
+          "version": "3.12.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-66c46af8-8f1d-46c9-be8e-36ee0801fba3",
+          "value": "66c46af8-8f1d-46c9-be8e-36ee0801fba3",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/puma/CVE-2020-5247.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2020-5247",
+          "value": "CVE-2020-5247",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-5247"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:N/I:P/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/puma/puma/security/advisories/GHSA-84j7-475p-hp8v"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-5247"
+        },
+        {
+          "url": "https://www.ruby-lang.org/en/news/2019/10/01/http-response-splitting-in-webrick-cve-2019-16254"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "puma:3.12.0"
+        }
+      }
+    },
+    {
+      "id": "9de07ece627743f54fe1728dd504926c5b64a42cf80dfe916be9d22069db5439",
+      "name": "Path Traversal",
+      "description": "A directory traversal vulnerability exists in rack that allows an attacker perform directory traversal vulnerability in the `Rack::Directory` app that is bundled with Rack which could result in information disclosure.",
+      "severity": "High",
+      "solution": "Upgrade to version 2.2.0 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "rack"
+          },
+          "version": "2.0.4"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-53834578-b5cb-4f46-9607-ce88978e7443",
+          "value": "53834578-b5cb-4f46-9607-ce88978e7443",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/rack/CVE-2020-8161.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2020-8161",
+          "value": "CVE-2020-8161",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-8161"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-8161"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "rack:2.0.4"
+        }
+      }
+    },
+    {
+      "id": "85425b3b1739f08832d0dae4613f72e8e7c2e2bb3065412b0cfa1b4df41edafe",
+      "name": "Improper Input Validation",
+      "description": "A reliance on cookies without `validation/integrity` check security vulnerability exists in rack that makes it is possible for an attacker to forge a secure or host-only cookie prefix.",
+      "severity": "High",
+      "solution": "Upgrade to versions 2.1.4, 2.2.3 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "rack"
+          },
+          "version": "2.0.4"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-b960a2e0-c5c1-4117-b443-bf772494bcb7",
+          "value": "b960a2e0-c5c1-4117-b443-bf772494bcb7",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/rack/CVE-2020-8184.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2020-8184",
+          "value": "CVE-2020-8184",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-8184"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:N/I:P/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-8184"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "rack:2.0.4"
+        }
+      }
+    },
+    {
+      "id": "6ad0acf44b1bc0f7abb563d9b4015666c5f1207c782ca854133f0edb6b421dea",
+      "name": "Uncontrolled Resource Consumption",
+      "description": "There is a possible DoS vulnerability in the multipart parser in Rack. Specially crafted requests can cause the multipart parser to enter a pathological state, causing the parser to use CPU resources disproportionate to the request size.",
+      "severity": "High",
+      "solution": "Upgrade to version 2.0.6 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "rack"
+          },
+          "version": "2.0.4"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-fafa07ab-4b63-433a-a2aa-573f542f8f4d",
+          "value": "fafa07ab-4b63-433a-a2aa-573f542f8f4d",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/rack/CVE-2018-16470.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2018-16470",
+          "value": "CVE-2018-16470",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-16470"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-16470"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "rack:2.0.4"
+        }
+      }
+    },
+    {
+      "id": "a3c5be14e88e52dd732a00e4f03daa04515e53b17924e3f3ec4e8ec549a571dc",
+      "name": "Allocation of Resources Without Limits or Throttling",
+      "description": "In Puma, a poorly-behaved client could use keepalive requests to monopolize Puma's reactor and create a denial of service attack. If more keepalive connections to Puma are opened than there are threads available, additional connections will wait permanently if the attacker sends requests frequently enough.",
+      "severity": "Medium",
+      "solution": "Upgrade to versions 3.12.2, 4.3.1 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "puma"
+          },
+          "version": "3.12.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-855d4255-6625-4349-b9d9-b8df7a97e7f5",
+          "value": "855d4255-6625-4349-b9d9-b8df7a97e7f5",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/puma/CVE-2019-16770.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2019-16770",
+          "value": "CVE-2019-16770",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-16770"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-16770"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "puma:3.12.0"
+        }
+      }
+    },
+    {
+      "id": "2cbfd1b9540ebc6f770ad88755c22cb30a0d536bf1315f107082e78475e0ea37",
+      "name": "Injection Vulnerability",
+      "description": "In Puma (RubyGem), if an application using Puma allows untrusted input in an early-hints header, an attacker can use a carriage return character to end the header and inject malicious content, such as additional headers or an entirely new response body. This vulnerability is known as HTTP Response Splitting. While not an attack in itself, response splitting is a vector for several other attacks, such as cross-site scripting (XSS).",
+      "severity": "Medium",
+      "solution": "Upgrade to versions 3.12.4, 4.3.3 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "puma"
+          },
+          "version": "3.12.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-9b88f320-c56b-477d-8d32-f99f79147d74",
+          "value": "9b88f320-c56b-477d-8d32-f99f79147d74",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/puma/CVE-2020-5249.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2020-5249",
+          "value": "CVE-2020-5249",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-5249"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:H/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:S/C:N/I:P/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-5249"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "puma:3.12.0"
+        }
+      }
+    },
+    {
+      "id": "657c0ec29488a2041cb15c96b94e3bea648d9d5c11d79140d85c0fa36f1eed11",
+      "name": "Path traversal on Windows",
+      "description": "Path traversal is possible via backslash characters on Windows. An attacker could access arbitrary files and directories stored on the file system.",
+      "severity": "Medium",
+      "solution": "Upgrade to version 2.0.1 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "rack-protection"
+          },
+          "version": "2.0.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-fff2cf11-3422-4aaf-b18f-aa30a0f2ae37",
+          "value": "fff2cf11-3422-4aaf-b18f-aa30a0f2ae37",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/rack-protection/CVE-2018-7212.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2018-7212",
+          "value": "CVE-2018-7212",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7212"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/sinatra/rack-protection/pull/120"
+        },
+        {
+          "url": "https://github.com/sinatra/rack-protection/pull/120/commits/4239c2f189a73dfc93e957fc97adcbcbc0ed31c6"
+        },
+        {
+          "url": "https://github.com/sinatra/sinatra/commit/d17aa95f5056c52daf5d7c3170fbfd831dc96381"
+        },
+        {
+          "url": "https://github.com/sinatra/sinatra/pull/1379"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "rack-protection:2.0.0"
+        }
+      }
+    },
+    {
+      "id": "5ef6e0cedf7595368e41782b9266befbd37dc57c93f530d67e442e134473772b",
+      "name": "Cross-site Scripting",
+      "description": "There is a possible XSS vulnerability in Rack. Carefully crafted requests can impact the data returned by the `scheme` method on `Rack::Request`. Applications that expect the scheme to be limited to HTTP or HTTPS and do not escape the return value could be vulnerable to an XSS attack. Note that applications using the normal escaping mechanisms provided by Rails may not be impacted, but applications that bypass the escaping mechanisms, or do not use them may be vulnerable.",
+      "severity": "Medium",
+      "solution": "Upgrade to versions 1.6.11, 2.0.6 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "rack"
+          },
+          "version": "2.0.4"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-effd904a-dbb5-4117-945f-fe7e235d2380",
+          "value": "effd904a-dbb5-4117-945f-fe7e235d2380",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/rack/CVE-2018-16471.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2018-16471",
+          "value": "CVE-2018-16471",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-16471"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:M/Au:N/C:N/I:P/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-16471"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "rack:2.0.4"
+        }
+      }
+    },
+    {
+      "id": "4ffde1ffd6a75bb736a1169ceb897b7209fd2dbf0e7cf55483267cbb866c198b",
+      "name": "Information Exposure",
+      "description": "There's a possible information leak / session hijack vulnerability in Rack (RubyGem rack). Attackers may be able to find and hijack sessions by using timing attacks targeting the session id. Session ids are usually stored and indexed in a database that uses some kind of scheme for speeding up lookups of that session id. By carefully measuring the amount of time it takes to look up a session, an attacker may be able to find a valid session id and hijack the session. The session id itself may be generated randomly, but the way the session is indexed by the backing store does not use a secure comparison.",
+      "severity": "Medium",
+      "solution": "Upgrade to version 2.0.8 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "rack"
+          },
+          "version": "2.0.4"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-f3c4e135-0d7a-4ab9-a4ef-a331ef23c423",
+          "value": "f3c4e135-0d7a-4ab9-a4ef-a331ef23c423",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/rack/CVE-2019-16782.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2019-16782",
+          "value": "CVE-2019-16782",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-16782"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:M/Au:N/C:P/I:N/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/rack/rack/security/advisories/GHSA-hrqr-hxpp-chr3"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-16782"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "rack:2.0.4"
+        }
+      }
+    },
+    {
+      "id": "44e0452be0e292b419e7bf3c9535b50dd516b056e8391bb69c7145b7cf4822b6",
+      "name": "Cross-site Scripting",
+      "description": "Sinatra has XSS via the 400 Bad Request page that occurs upon a params parser exception.",
+      "severity": "Medium",
+      "solution": "Upgrade to version 2.0.2 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "sinatra"
+          },
+          "version": "2.0.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-5027319e-8131-41e0-b7dc-57f9777c36df",
+          "value": "5027319e-8131-41e0-b7dc-57f9777c36df",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/sinatra/CVE-2018-11627.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2018-11627",
+          "value": "CVE-2018-11627",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-11627"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:M/Au:N/C:N/I:P/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-11627"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "sinatra:2.0.0"
+        }
+      }
+    },
+    {
+      "id": "e7a3835c6ab288a8019ab1ebda8e89e11ba58bb94d5ec7b7ea7a7c515567ab4c",
+      "name": "Path Traversal",
+      "description": "An issue was discovered in `rack-protection/lib/rack/protection/path_traversal.rb` in Sinatra on Windows. Path traversal is possible via backslash characters.",
+      "severity": "Medium",
+      "solution": "Upgrade to version 2.0.2 or above.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "sinatra"
+          },
+          "version": "2.0.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-eed4c5a3-014f-4bbf-b95e-0d393956e75b",
+          "value": "eed4c5a3-014f-4bbf-b95e-0d393956e75b",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/sinatra/CVE-2018-7212.yml"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2018-7212",
+          "value": "CVE-2018-7212",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-7212"
+        }
+      ],
+      "cvss_vectors": [
+        {
+          "vendor": "NVD",
+          "vector": "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N"
+        },
+        {
+          "vendor": "NVD",
+          "vector": "AV:N/AC:L/Au:N/C:P/I:N/A:N"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/sinatra/sinatra/pull/1379"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-7212"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "sinatra:2.0.0"
+        }
+      }
+    },
+    {
+      "id": "3ff6bcce953e296d91b30c7af907ecd404554c2a006052623763f0881dbe9157",
+      "name": "Vulnerabilities in libxml2",
+      "description": "The version of libxml2 packaged with Nokogiri contains several vulnerabilities.\nNokogiri has mitigated these issues by upgrading to libxml 2.9.5. It was discovered that a type confusion error existed in libxml2. An attacker could use this to specially construct XML data that could cause a denial of service or possibly execute arbitrary code. (CVE-2017-0663) It was discovered that libxml2 did not properly validate parsed entity references. An attacker could use this to specially construct XML data that could expose sensitive information. (CVE-2017-7375) It was discovered that a buffer overflow existed in libxml2 when handling HTTP redirects. An attacker could use this to specially construct XML data that could cause a denial of service or possibly execute arbitrary code. (CVE-2017-7376) Marcel Böhme and Van-Thuan Pham discovered a buffer overflow in libxml2 when handling elements. An attacker could use this to specially construct XML data that could cause a denial of service or possibly execute arbitrary code. (CVE-2017-9047) Marcel Böhme and Van-Thuan Pham discovered a buffer overread in libxml2 when handling elements. An attacker could use this to specially construct XML data that could cause a denial of service. (CVE-2017-9048) Marcel Böhme and Van-Thuan Pham discovered multiple buffer overreads in libxml2 when handling parameter-entity references. An attacker could use these to specially construct XML data that could cause a denial of service. (CVE-2017-9049, CVE-2017-9050)",
+      "severity": "Unknown",
+      "solution": "Upgrade to latest version.",
+      "location": {
+        "file": "Gemfile.lock",
+        "dependency": {
+          "package": {
+            "name": "nokogiri"
+          },
+          "version": "1.6.7.2"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-06565b64-486d-4326-b906-890d9915804d",
+          "value": "06565b64-486d-4326-b906-890d9915804d",
+          "url": "https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/blob/v1.2.142/gem/nokogiri/USN-3424-1.yml"
+        },
+        {
+          "type": "usn",
+          "name": "USN-3424-1",
+          "value": "USN-3424-1",
+          "url": "https://usn.ubuntu.com/3424-1/"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/sparklemotion/nokogiri/issues/1673"
+        }
+      ],
+      "details": {
+        "vulnerable_package": {
+          "type": "text",
+          "name": "Vulnerable Package",
+          "value": "nokogiri:1.6.7.2"
+        }
+      }
+    }
+  ],
+  "scan": {
+    "analyzer": {
+      "id": "gemnasium",
+      "name": "Gemnasium",
+      "url": "https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium",
+      "vendor": {
+        "name": "GitLab"
+      },
+      "version": "6.6.1"
+    },
+    "scanner": {
+      "id": "gemnasium",
+      "name": "Gemnasium",
+      "url": "https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium",
+      "vendor": {
+        "name": "GitLab"
+      },
+      "version": "6.6.1"
+    },
+    "type": "dependency_scanning",
+    "start_time": "2026-02-20T01:04:43",
+    "end_time": "2026-02-20T01:04:51",
+    "status": "success",
+    "observability": {
+      "events": [
+        {
+          "event": "collect_gemnasium_scan_metrics_from_pipeline",
+          "property": "2fd46050-b6c1-45ff-af65-d255eb21d0f5",
+          "label": "6.6.1",
+          "value": 26
+        },
+        {
+          "event": "collect_gemnasium_scan_performance_metrics_from_pipeline",
+          "property": "2fd46050-b6c1-45ff-af65-d255eb21d0f5",
+          "value": 7
+        },
+        {
+          "event": "collect_gemnasium_scan_sbom_metrics_from_pipeline",
+          "property": "2fd46050-b6c1-45ff-af65-d255eb21d0f5",
+          "label": "gem",
+          "value": 46,
+          "input_file_path": "Gemfile.lock"
+        }
+      ]
+    }
+  }
+}

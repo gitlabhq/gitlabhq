@@ -12,8 +12,10 @@ RSpec.describe API::Entities::WorkItems::Features::Labels, feature_category: :te
     )
   end
 
+  let(:options) { {} }
+
   subject(:representation) do
-    described_class.new(labels_widget).as_json
+    described_class.new(labels_widget, options).as_json
   end
 
   it 'exposes whether scoped labels are allowed' do
@@ -26,5 +28,39 @@ RSpec.describe API::Entities::WorkItems::Features::Labels, feature_category: :te
       .as_json
 
     expect(representation[:labels]).to contain_exactly(expected_label)
+  end
+
+  context 'when resource_parent option is provided' do
+    let(:resource_parent) { instance_double(Group) }
+    let(:options) { { resource_parent: resource_parent } }
+
+    it 'uses resource_parent to check scoped labels instead of the widget' do
+      allow(resource_parent).to receive(:licensed_feature_available?).with(:scoped_labels).and_return(false)
+
+      expect(labels_widget).not_to receive(:allows_scoped_labels?)
+      expect(resource_parent).to receive(:licensed_feature_available?).with(:scoped_labels)
+
+      expect(representation[:allows_scoped_labels]).to be(false)
+    end
+
+    it 'returns true when scoped_labels license is available' do
+      allow(resource_parent).to receive(:licensed_feature_available?).with(:scoped_labels).and_return(true)
+
+      expect(representation[:allows_scoped_labels]).to be(true)
+    end
+
+    it 'returns false when scoped_labels license is not available' do
+      allow(resource_parent).to receive(:licensed_feature_available?).with(:scoped_labels).and_return(false)
+
+      expect(representation[:allows_scoped_labels]).to be(false)
+    end
+  end
+
+  context 'when resource_parent option is not provided' do
+    it 'uses the widget to check scoped labels' do
+      expect(labels_widget).to receive(:allows_scoped_labels?)
+
+      representation
+    end
   end
 end

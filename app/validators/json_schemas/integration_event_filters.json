@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Integration Event Filters",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "actions": {
+      "type": "object",
+      "description": "Filter events by action types per event type",
+      "additionalProperties": true
+    },
+    "users": {
+      "type": "object",
+      "description": "Filter events by users per event type",
+      "additionalProperties": true
+    }
+  }
+}

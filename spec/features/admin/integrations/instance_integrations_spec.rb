@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Instance integrations', :js, feature_category: :integrations, quarantine: {
+# FIXME: feature_category is fixed but this test loops over integrations that
+RSpec.describe 'Instance integrations', :js, feature_category: :not_owned, quarantine: { # rubocop:disable RSpec/FeatureCategory -- See above
   type: :waiting_on,
   issue: 'https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/work_items/4245'
 } do

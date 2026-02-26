@@ -10,7 +10,7 @@ gem 'gitlab-rspec', path: '../gems/gitlab-rspec', require: false
 gem 'activesupport', '~> 7.2.3' # This should stay in sync with the root's Gemfile
 gem 'allure-rspec', '~> 2.28.0'
 gem 'capybara', '~> 3.40.0'
-gem 'capybara-screenshot', '~> 1.0.26'
+gem 'capybara-screenshot', '~> 1.0.27'
 gem 'deprecation_toolkit', '~> 2.3.0', require: false
 gem 'factory_bot', '~> 6.5.1'
 gem 'rake', '~> 13', '>= 13.3.1'
