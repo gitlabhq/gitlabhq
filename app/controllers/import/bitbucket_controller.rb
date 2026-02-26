@@ -12,6 +12,7 @@ class Import::BitbucketController < Import::BaseController
   rescue_from Bitbucket::Error::Unauthorized, with: :bitbucket_unauthorized
 
   PAGE_LENGTH = 25
+  WORKSPACE_SLUG_MAX_LENGTH = 62
 
   def callback
     auth_state = session[:bitbucket_auth_state]
@@ -37,10 +38,13 @@ class Import::BitbucketController < Import::BaseController
   def status
     respond_to do |format|
       format.json do
-        render json: { imported_projects: serialized_imported_projects,
-                       provider_repos: serialized_provider_repos,
-                       incompatible_repos: serialized_incompatible_repos,
-                       page_info: page_info }
+        render json: {
+          imported_projects: serialized_imported_projects,
+          provider_repos: serialized_provider_repos,
+          incompatible_repos: serialized_incompatible_repos,
+          page_info: page_info,
+          workspace_paging_info: bitbucket_repos.try(:workspace_paging_info)
+        }
       end
 
       format.html do
@@ -102,12 +106,16 @@ class Import::BitbucketController < Import::BaseController
 
   override :importable_repos
   def importable_repos
-    bitbucket_repos.filter(&:valid?)
+    partitioned_repos.first
   end
 
   override :incompatible_repos
   def incompatible_repos
-    bitbucket_repos.reject(&:valid?)
+    partitioned_repos.last
+  end
+
+  def partitioned_repos
+    @partitioned_repos ||= bitbucket_repos.partition(&:valid?)
   end
 
   def provider_url
@@ -153,11 +161,48 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def bitbucket_repos
-    @bitbucket_repos ||= client.repos(
+    @bitbucket_repos ||= client.multi_workspace_repos(
       filter: sanitized_filter_param,
       limit: PAGE_LENGTH,
-      after_cursor: params[:after].presence
+      workspace_paging_info: workspace_paging_info_param
     )
+  end
+
+  def workspace_paging_info_param
+    return [] unless params[:workspace_paging_info].present?
+
+    decoded = Base64.decode64(params[:workspace_paging_info])
+    workspace_paging_info = Gitlab::Json.safe_parse(decoded)
+
+    return [] unless workspace_paging_info.is_a?(Array)
+
+    workspace_paging_info
+      .map(&:deep_symbolize_keys)
+      .select { |config| valid_workspace_slug?(config[:workspace]) }
+  rescue StandardError => e
+    log_exception(e)
+
+    []
+  end
+
+  def valid_workspace_slug?(slug)
+    # As per bitbucket cloud workspace slug requirements:
+    # - Must be 1-62 characters
+    # - Can only contain lowercase letters, numbers, dashes, and underscores
+    valid = slug.present? &&
+      slug.is_a?(String) &&
+      slug.length.between?(1, WORKSPACE_SLUG_MAX_LENGTH) &&
+      ::Gitlab::UntrustedRegexp.new('\A[a-z0-9_-]+\z').match?(slug)
+
+    unless valid
+      Gitlab::AppLogger.warn(
+        message: 'Invalid Bitbucket Cloud workspace slug',
+        bitbucket_cloud_workspace_slug: slug,
+        Labkit::Fields::GL_USER_ID => current_user.id
+      )
+    end
+
+    valid
   end
 
   def options

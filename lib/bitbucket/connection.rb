@@ -22,6 +22,10 @@ module Bitbucket
                       end
     end
 
+    def get(...)
+      connection.get(...)
+    end
+
     private
 
     def app_password_connection?

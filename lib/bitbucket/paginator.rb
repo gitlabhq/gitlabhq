@@ -27,7 +27,8 @@ module Bitbucket
       {
         has_next_page: page.attrs[:next].present?,
         start_cursor: @after_cursor,
-        end_cursor: next_page_cursor
+        end_cursor: next_page_cursor,
+        next_page: next_page_number
       }
     end
 
@@ -55,7 +56,7 @@ module Bitbucket
 
     def fetch_next_page
       extra_query = { pagelen: max_per_page }
-      extra_query[:page] = page_number if page_number && limit
+      extra_query[:page] = page_number if page_number && page.nil?
       extra_query[:after] = after_cursor if after_cursor && page.nil?
 
       parsed_response = connection.get(next_url, extra_query)
@@ -65,7 +66,17 @@ module Bitbucket
     def next_page_cursor
       return unless page.next?
 
-      Rack::Utils.parse_nested_query(URI.parse(next_url).query)['after']
+      next_page_query['after']
+    end
+
+    def next_page_number
+      return unless page.next?
+
+      next_page_query['page']&.to_i
+    end
+
+    def next_page_query
+      Rack::Utils.parse_nested_query(URI.parse(next_url).query)
     end
   end
 end

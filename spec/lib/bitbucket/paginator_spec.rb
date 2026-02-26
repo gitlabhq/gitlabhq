@@ -115,6 +115,26 @@ RSpec.describe Bitbucket::Paginator, feature_category: :importers do
         expect(page_info[:end_cursor]).to be_nil
       end
     end
+
+    describe 'with page_number' do
+      it 'sets next_page' do
+        allow(connection)
+          .to receive(:get)
+          .with(url, hash_including(page: 2))
+          .and_return(
+            {
+              'values' => ['item1'],
+              'next' => 'https://example.com?page=3'
+            }
+          )
+
+        paginator = described_class.new(connection, url, type, page_number: 2, limit: 10)
+        paginator.items
+
+        page_info = paginator.page_info
+        expect(page_info[:next_page]).to eq(3)
+      end
+    end
   end
 
   describe 'with after_cursor' do

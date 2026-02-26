@@ -31,6 +31,7 @@ export default {
       endCursor: null,
       hasNextPage: true,
     };
+    state.workspacePagingInfo = {};
   },
 
   [types.REQUEST_REPOS](state) {
@@ -143,9 +144,19 @@ export default {
     state.pageInfo.page = page;
   },
 
-  [types.SET_PAGE_CURSORS](state, pageInfo) {
-    const { startCursor, endCursor, hasNextPage } = pageInfo;
+  [types.SET_PAGE_CURSORS](state, payload) {
+    const { startCursor, endCursor, hasNextPage, workspacePagingInfo } = payload;
     state.pageInfo = { ...state.pageInfo, startCursor, endCursor, hasNextPage };
+
+    if (workspacePagingInfo) {
+      state.workspacePagingInfo = workspacePagingInfo.reduce((acc, info) => {
+        acc[info.workspace] = {
+          nextPage: info.pageInfo.nextPage,
+          hasNextPage: info.pageInfo.hasNextPage,
+        };
+        return acc;
+      }, {});
+    }
   },
 
   [types.SET_HAS_NEXT_PAGE](state, hasNextPage) {

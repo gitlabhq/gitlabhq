@@ -146,11 +146,11 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
         let(:repo_id) { @repo.full_name }
         let(:import_source) { @repo.full_name }
         let(:provider_name) { 'bitbucket' }
-        let(:client_repos_field) { :repos }
+        let(:client_repos_field) { :multi_workspace_repos }
       end
 
       it 'returns invalid repos' do
-        allow_any_instance_of(Bitbucket::Client).to receive(:repos).and_return([@repo, @invalid_repo])
+        allow_any_instance_of(Bitbucket::Client).to receive(:multi_workspace_repos).and_return([@repo, @invalid_repo])
 
         get :status, format: :json
 
@@ -169,10 +169,10 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
 
         it 'passes sanitized filter param to bitbucket client' do
           expect_next_instance_of(Bitbucket::Client) do |client|
-            expect(client).to receive(:repos).with(
+            expect(client).to receive(:multi_workspace_repos).with(
               filter: expected_filter,
               limit: Import::BitbucketController::PAGE_LENGTH,
-              after_cursor: nil
+              workspace_paging_info: []
             ).and_return([@repo])
           end
 
@@ -180,28 +180,88 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
         end
       end
 
-      context 'when paginating' do
-        let(:after_cursor) { '2025-12-10T12:13:37.393445+00:00' }
+      context 'with workspace paging info' do
+        let(:collection) { instance_double(Bitbucket::MultiWorkspaceCollection, workspace_paging_info: workspace_paging_info) }
 
-        subject { get :status, params: { after: after_cursor }, as: :json }
+        let(:workspace_paging_info) do
+          [
+            { workspace: 'workspace-1', page_info: { next_page: 2, has_next_page: true } },
+            { workspace: 'workspace-2', page_info: { next_page: 1, has_next_page: true } },
+            { workspace: 'workspace-3', page_info: { next_page: nil, has_next_page: false } }
+          ]
+        end
 
-        it 'passes after cursor parameter to bitbucket client' do
-          allow(controller).to receive(:page_info).and_return({
-            has_next_page: false,
-            has_previous_page: false,
-            start_cursor: nil,
-            end_cursor: nil
-          })
+        before do
+          allow(collection).to receive(:partition).and_return([[@repo], []])
+        end
 
+        it 'fetches multi workspace repos and includes workspace_paging_info in response' do
           expect_next_instance_of(Bitbucket::Client) do |client|
-            expect(client).to receive(:repos).with(
-              filter: nil,
-              limit: Import::BitbucketController::PAGE_LENGTH,
-              after_cursor: after_cursor
-            ).and_return([@repo])
+            expect(client)
+              .to receive(:multi_workspace_repos)
+              .with(filter: nil, limit: described_class::PAGE_LENGTH, workspace_paging_info: [])
+              .and_return(collection)
           end
 
-          subject
+          get :status, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['workspace_paging_info']).to eq(workspace_paging_info.as_json)
+        end
+
+        context 'with invalid base64 payload' do
+          it 'logs exception and fetches all workspaces' do
+            expect(controller).to receive(:log_exception).with(an_instance_of(JSON::ParserError))
+
+            expect_next_instance_of(Bitbucket::Client) do |client|
+              expect(client)
+                .to receive(:multi_workspace_repos)
+                .with(filter: nil, limit: described_class::PAGE_LENGTH, workspace_paging_info: [])
+                .and_return(collection)
+            end
+
+            get :status, params: { workspace_paging_info: 'invalid-base64' }, as: :json
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['workspace_paging_info']).to eq(workspace_paging_info.as_json)
+          end
+        end
+
+        context 'with workspace slug validation' do
+          where(:slug, :valid) do
+            [
+              ['valid-workspace',       true],
+              ['valid_underscore_123',  true],
+              ['-__-2-test_bitbucket',  true],
+              ['x' * 63,                false],
+              ['',                      false],
+              ['invalid@slug!',         false],
+              ['invalid.slug',          false],
+              ['../../../etc/passwd',   false],
+              ['slug with spaces',      false],
+              ['InvalidUpperCase',      false]
+            ]
+          end
+
+          with_them do
+            it 'filters workspace slugs correctly' do
+              payload = [{ workspace: slug, page_info: { next_page: 1, has_next_page: true } }]
+              encoded_payload = Base64.strict_encode64(payload.to_json)
+
+              expect_next_instance_of(Bitbucket::Client) do |client|
+                expected_workspace_paging_info = valid ? [{ workspace: slug, page_info: { next_page: 1, has_next_page: true } }] : []
+
+                expect(client)
+                  .to receive(:multi_workspace_repos)
+                  .with(filter: nil, limit: described_class::PAGE_LENGTH, workspace_paging_info: expected_workspace_paging_info)
+                  .and_return(collection)
+              end
+
+              get :status, params: { workspace_paging_info: encoded_payload }, as: :json
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
         end
       end
 

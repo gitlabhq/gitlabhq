@@ -11,4 +11,5 @@ export default () => ({
     endCursor: null,
     hasNextPage: false,
   },
+  workspacePagingInfo: {},
 });
