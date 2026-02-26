@@ -248,24 +248,51 @@ describe('import_projects store actions', () => {
           localState.provider = PROVIDERS.BITBUCKET;
         });
 
-        it('includes cursor in url query params', async () => {
-          let requestedUrl;
-          mock.onGet().reply((config) => {
-            requestedUrl = config.url;
-            return [HTTP_STATUS_OK, payload];
-          });
+        it('sends workspace_paging_info and filters out workspaces without next page', () => {
+          localState.workspacePagingInfo = {
+            'workspace-1': { nextPage: 2, hasNextPage: true },
+            'workspace-2': { nextPage: 3, hasNextPage: false },
+          };
 
-          const localStateWithPage = { ...localState, pageInfo: { endCursor: 'endTest' } };
+          const requestWorkspaceInfos = [
+            { workspace: 'workspace-1', page_info: { next_page: 2, has_next_page: true } },
+          ];
+          const responseWorkspaceInfos = [
+            { workspace: 'workspace-1', page_info: { next_page: 3, has_next_page: true } },
+          ];
 
-          await testAction(
+          const encodedWorkspaceInfos = btoa(JSON.stringify(requestWorkspaceInfos));
+          mock
+            .onGet(`${MOCK_ENDPOINT}?workspace_paging_info=${encodedWorkspaceInfos}`)
+            .reply(HTTP_STATUS_OK, { ...payload, workspace_paging_info: responseWorkspaceInfos });
+
+          return testAction(
             fetchRepos,
             null,
-            localStateWithPage,
-            expect.any(Array),
-            expect.any(Array),
+            localState,
+            [
+              { type: REQUEST_REPOS },
+              {
+                type: SET_PAGE_CURSORS,
+                payload: {
+                  startCursor: 'start',
+                  endCursor: 'end',
+                  hasNextPage: true,
+                  workspacePagingInfo: [
+                    { workspace: 'workspace-1', pageInfo: { nextPage: 3, hasNextPage: true } },
+                  ],
+                },
+              },
+              {
+                type: RECEIVE_REPOS_SUCCESS,
+                payload: convertObjectPropsToCamelCase(
+                  { ...payload, workspace_paging_info: responseWorkspaceInfos },
+                  { deep: true },
+                ),
+              },
+            ],
+            [],
           );
-
-          expect(requestedUrl).toBe(`${MOCK_ENDPOINT}?after=endTest`);
         });
       });
     });

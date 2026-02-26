@@ -238,6 +238,64 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
     end
   end
 
+  describe '#multi_workspace_repos' do
+    let(:workspaces) do
+      [
+        instance_double(Bitbucket::Representation::Workspace, slug: 'workspace-1'),
+        instance_double(Bitbucket::Representation::Workspace, slug: 'workspace-2')
+      ]
+    end
+
+    before do
+      allow(client).to receive(:all_workspaces).and_return(workspaces)
+    end
+
+    it 'fetches all workspaces when no page infos provided' do
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(2)
+        expect(configs.pluck(:workspace)).to eq(%w[workspace-1 workspace-2])
+      end
+
+      client.multi_workspace_repos
+    end
+
+    it 'fetches only specified workspaces when page infos provided' do
+      workspace_paging_info = [
+        { workspace: 'workspace-1', page_info: { next_page: 2, has_next_page: true } }
+      ]
+
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(1)
+        expect(configs[0][:workspace]).to eq('workspace-1')
+        expect(configs[0][:page_number]).to eq(2)
+      end
+
+      client.multi_workspace_repos(workspace_paging_info: workspace_paging_info)
+    end
+
+    it 'includes filter in repository path when provided' do
+      filter = 'my-repo'
+
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(2)
+        expect(configs[0][:path]).to include('q=name~"my-repo"')
+        expect(configs[1][:path]).to include('q=name~"my-repo"')
+      end
+
+      client.multi_workspace_repos(filter: filter)
+    end
+
+    it 'does not include filter in path when not provided' do
+      expect(Bitbucket::MultiWorkspaceCollection).to receive(:new) do |configs, _, _|
+        expect(configs.length).to eq(2)
+        expect(configs[0][:path]).not_to include('q=name')
+        expect(configs[1][:path]).not_to include('q=name')
+      end
+
+      client.multi_workspace_repos
+    end
+  end
+
   describe '#user' do
     let(:url) { "#{root_url}/user" }
 
