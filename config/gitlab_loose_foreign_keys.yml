@@ -1195,3 +1195,19 @@ wiki_repository_states:
   - table: projects
     column: project_id
     on_delete: async_delete
+work_item_custom_status_mappings:
+  - table: work_item_custom_types
+    column: work_item_type_id
+    on_delete: async_delete
+work_item_type_custom_fields:
+  - table: work_item_custom_types
+    column: work_item_type_id
+    on_delete: async_delete
+work_item_type_custom_lifecycles:
+  - table: work_item_custom_types
+    column: work_item_type_id
+    on_delete: async_delete
+work_item_type_user_preferences:
+  - table: work_item_custom_types
+    column: work_item_type_id
+    on_delete: async_delete

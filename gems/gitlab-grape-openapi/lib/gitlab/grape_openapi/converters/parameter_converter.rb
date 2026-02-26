@@ -28,13 +28,20 @@ module Gitlab
         def schema
           object_type = TypeResolver.resolve_type(options[:type]) || 'string'
           object_format = TypeResolver.resolve_format(nil, options[:type])
+          type_str = options[:type].to_s
 
-          return build_union_schema(object_type) if options[:type]&.start_with?('[')
+          return build_simple_array_schema if type_str.start_with?('[') && type_str.exclude?(',')
+          return build_union_schema(object_type) if type_str.start_with?('[')
           return build_range_schema(object_type) if options[:values].is_a?(Range)
           return build_enum_schema(object_type) if options[:values]
           return build_array_schema if array_type?(object_type)
 
           build_basic_schema(object_type, object_format)
+        end
+
+        def build_simple_array_schema
+          item_type = options[:type].to_s.delete('[').delete(']')
+          { type: 'array', items: { type: TypeResolver.resolve_type(item_type) } }
         end
 
         def build_union_schema(object_type)

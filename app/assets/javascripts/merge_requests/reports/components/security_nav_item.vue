@@ -8,7 +8,7 @@ export default {
   components: {
     ReportListItem,
   },
-  inject: ['totalNewFindings', 'isLoading', 'topLevelErrorMessage'],
+  inject: ['totalNewFindings', 'isSecurityScansLoading', 'topLevelErrorMessage'],
   computed: {
     statusIcon() {
       if (this.topLevelErrorMessage) {
@@ -30,7 +30,7 @@ export default {
   <report-list-item
     :to="$options.routeNames.SECURITY_SCAN_ROUTE"
     :status-icon="statusIcon"
-    :is-loading="isLoading"
+    :is-loading="isSecurityScansLoading"
   >
     {{ s__('MrReports|Security scan') }}
   </report-list-item>

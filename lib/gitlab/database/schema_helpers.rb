@@ -32,9 +32,10 @@ module Gitlab
         !!connection.select_value("SELECT 1 FROM pg_proc WHERE proname = '#{name}'")
       end
 
-      def create_trigger(table_name, name, function_name, fires:)
+      def create_trigger(table_name, name, function_name, fires:, replace: false)
+        replace_clause = optional_clause(replace, "OR REPLACE")
         execute(<<~SQL)
-          CREATE TRIGGER #{name}
+          CREATE #{replace_clause} TRIGGER #{name}
           #{fires} ON #{table_name}
           FOR EACH ROW
           #{yield if block_given?}

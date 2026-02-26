@@ -789,12 +789,12 @@ Project permissions for [repository](project/repository/_index.md) features incl
 | Action                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | --------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | View project code <sup>1</sup>                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) project code <sup>2</sup>                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| [Search](search/_index.md) commits and comments <sup>3</sup>          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
-| Pull project code <sup>4</sup>                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) project code <sup>1</sup> <sup>2</sup>                  |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| [Search](search/_index.md) commits and comments <sup>1</sup> <sup>2</sup>          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| Pull project code <sup>3</sup>                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | View commit status                                                    |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create commit status <sup>5</sup>                                     |       |         |          |     ✓     |     ✓      |   ✓   |
-| Update commit status <sup>5</sup>                                     |       |         |          |     ✓     |     ✓      |   ✓   |
+| Create commit status <sup>4</sup>                                     |       |         |          |     ✓     |     ✓      |   ✓   |
+| Update commit status <sup>4</sup>                                     |       |         |          |     ✓     |     ✓      |   ✓   |
 | Create [Git tags](project/repository/tags/_index.md)                  |       |         |          |     ✓     |     ✓      |   ✓   |
 | Delete [Git tags](project/repository/tags/_index.md)                  |       |         |          |     ✓     |     ✓      |   ✓   |
 | Create new [branches](project/repository/branches/_index.md)          |       |         |          |     ✓     |     ✓      |   ✓   |
@@ -802,12 +802,12 @@ Project permissions for [repository](project/repository/_index.md) features incl
 | Force push to non-protected branches                                  |       |         |          |     ✓     |     ✓      |   ✓   |
 | Delete non-protected branches                                         |       |         |          |     ✓     |     ✓      |   ✓   |
 | Manage [protected branches](project/repository/branches/protected.md) |       |         |          |           |     ✓      |   ✓   |
-| Push to protected branches <sup>5</sup>                               |       |         |          |           |     ✓      |   ✓   |
+| Push to protected branches <sup>4</sup>                               |       |         |          |           |     ✓      |   ✓   |
 | Delete protected branches                                             |       |         |          |           |     ✓      |   ✓   |
 | Manage [protected tags](project/protected_tags.md)                    |       |         |          |           |     ✓      |   ✓   |
 | Manage [push rules](project/repository/push_rules.md)                 |       |         |          |           |     ✓      |   ✓   |
 | Remove fork relationship                                              |       |         |          |           |            |   ✓   |
-| Force push to protected branches <sup>6</sup>                         |       |         |          |           |            |       |
+| Force push to protected branches <sup>5</sup>                         |       |         |          |           |            |       |
 
 **Footnotes**:
 
@@ -816,30 +816,17 @@ Project permissions for [repository](project/repository/_index.md) features incl
 
 1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
    and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must be given explicit access (at least the **Reporter** role) even if the project is internal.
+   must be given explicit access (at least the **Planner** role) even if the project is internal.
    Users with the Guest role on GitLab.com are only able to perform this action on public projects because
    internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an
    Ultimate license can view private repository content if an administrator (on GitLab Self-Managed
    or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
    or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
    that role to the users. In GitLab 18.7 and later, users with the Planner role can view private repository content.
-2. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
-   and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
-   with the Guest role on GitLab.com are only able to perform this action on public projects because
-   internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an
-   Ultimate license can search private repository content if an administrator (on GitLab Self-Managed
-   or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
-   or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
-   that role to the users.
-3. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
-   and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
-   with the Guest role on GitLab.com are only able to perform this action on public projects because
-   internal visibility is not available.
-4. If the [branch is protected](project/repository/branches/protected.md), this depends on the
+1. Users with the Planner role can not use exact code search or advanced search for code, commits, and comments on commits in private projects. For more information, see [epic &17674](https://gitlab.com/groups/gitlab-org/-/work_items/17674).
+1. If the [branch is protected](project/repository/branches/protected.md), this depends on the
    access given to Developers and Maintainers.
-5. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
+1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
    and internal projects (not on private projects). [External users](../administration/external_users.md)
    must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
    with the Guest role on GitLab.com are only able to perform this action on public projects because
@@ -848,7 +835,7 @@ Project permissions for [repository](project/repository/_index.md) features incl
    or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
    or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
    that role to the users.
-6. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/repository/branches/protected.md#allow-force-push).
+1. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/repository/branches/protected.md#allow-force-push).
 
 <!-- markdownlint-enable MD029 -->
 

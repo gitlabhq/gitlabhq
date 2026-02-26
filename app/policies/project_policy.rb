@@ -320,11 +320,6 @@ class ProjectPolicy < BasePolicy
     !Gitlab.config.terraform_state.enabled
   end
 
-  desc "User has either planner or reporter access"
-  condition(:planner_or_reporter_access) do
-    can?(:reporter_access) || can?(:planner_access)
-  end
-
   condition(:allow_guest_plus_roles_to_pull_packages_enabled, scope: :subject) do
     Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
   end
@@ -749,7 +744,8 @@ class ProjectPolicy < BasePolicy
   rule { ~request_access_enabled }.prevent :request_access
 
   rule { (can?(:planner_access) | can?(:developer_access)) & can?(:create_issue) }.enable :import_issues
-  rule { planner_or_reporter_access & can?(:create_work_item) }.enable :import_work_items
+  rule { can?(:planner_access) & can?(:create_work_item) }.enable :import_work_items
+  rule { can?(:reporter_access) & can?(:create_work_item) }.enable :import_work_items
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
     enable :create_pipeline

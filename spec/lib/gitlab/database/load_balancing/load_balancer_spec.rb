@@ -594,11 +594,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
     it 'returns the diff between two write locations' do
       loc1 = lb.send(:get_write_location, lb.pool.connection)
 
-      ActiveRecord::Schema.define do
-        create_table :_test_load_balancing_test, force: true do |t|
-          t.string :name, null: true
-        end
-      end
+      create(:user) # This ensures we get a new WAL location
 
       loc2 = lb.send(:get_write_location, lb.pool.connection)
       diff = lb.wal_diff(loc2, loc1)

@@ -5385,7 +5385,7 @@ Input type: `ContainerUpstreamUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutation-containerupstreamupdate-cachevalidityhours"></a>`cacheValidityHours` | [`Int`](#int) | Cache validity period. Defaults to 24 hours. |
+| <a id="mutation-containerupstreamupdate-cachevalidityhours"></a>`cacheValidityHours` | [`Int`](#int) | Cache validity period. |
 | <a id="mutation-containerupstreamupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-containerupstreamupdate-description"></a>`description` | [`String`](#string) | Description of the upstream registry. |
 | <a id="mutation-containerupstreamupdate-id"></a>`id` | [`VirtualRegistriesContainerUpstreamID!`](#virtualregistriescontainerupstreamid) | ID of the container virtual registry upstream. |
@@ -10051,7 +10051,7 @@ Input type: `MavenUpstreamCreateInput`
 | <a id="mutation-mavenupstreamcreate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-mavenupstreamcreate-description"></a>`description` | [`String`](#string) | Description of the upstream registry. |
 | <a id="mutation-mavenupstreamcreate-id"></a>`id` | [`VirtualRegistriesPackagesMavenRegistryID!`](#virtualregistriespackagesmavenregistryid) | ID of the upstream registry. |
-| <a id="mutation-mavenupstreamcreate-metadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
+| <a id="mutation-mavenupstreamcreate-metadatacachevalidityhours"></a>`metadataCacheValidityHours` | [`Int`](#int) | Metadata cache validity period. Defaults to 24 hours. |
 | <a id="mutation-mavenupstreamcreate-name"></a>`name` | [`String!`](#string) | Name of upstream registry. |
 | <a id="mutation-mavenupstreamcreate-password"></a>`password` | [`String`](#string) | Password of the upstream registry. |
 | <a id="mutation-mavenupstreamcreate-url"></a>`url` | [`String!`](#string) | URL of the upstream registry. |
@@ -10088,6 +10088,37 @@ Input type: `MavenUpstreamDeleteInput`
 | <a id="mutation-mavenupstreamdelete-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-mavenupstreamdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-mavenupstreamdelete-upstream"></a>`upstream` | [`MavenUpstreamDetails`](#mavenupstreamdetails) | Destroyed upstream. |
+
+### `Mutation.mavenUpstreamUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `MavenUpstreamUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mavenupstreamupdate-cachevalidityhours"></a>`cacheValidityHours` | [`Int`](#int) | Cache validity period. |
+| <a id="mutation-mavenupstreamupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mavenupstreamupdate-description"></a>`description` | [`String`](#string) | Description of the upstream registry. |
+| <a id="mutation-mavenupstreamupdate-id"></a>`id` | [`VirtualRegistriesPackagesMavenUpstreamID!`](#virtualregistriespackagesmavenupstreamid) | ID of the upstream registry. |
+| <a id="mutation-mavenupstreamupdate-metadatacachevalidityhours"></a>`metadataCacheValidityHours` | [`Int`](#int) | Metadata cache validity period. |
+| <a id="mutation-mavenupstreamupdate-name"></a>`name` | [`String`](#string) | Name of upstream registry. |
+| <a id="mutation-mavenupstreamupdate-password"></a>`password` | [`String`](#string) | Password of the upstream registry. |
+| <a id="mutation-mavenupstreamupdate-url"></a>`url` | [`String`](#string) | URL of the upstream registry. |
+| <a id="mutation-mavenupstreamupdate-username"></a>`username` | [`String`](#string) | Username of the upstream registry. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mavenupstreamupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mavenupstreamupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-mavenupstreamupdate-upstream"></a>`upstream` | [`MavenUpstreamDetails`](#mavenupstreamdetails) | Maven upstream after the mutation. |
 
 ### `Mutation.mavenVirtualRegistryCacheDelete`
 

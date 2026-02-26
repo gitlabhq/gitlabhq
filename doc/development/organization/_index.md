@@ -21,6 +21,10 @@ The current development focus is achieving **feature parity** for organizations.
 Guidance on building new features on organizations, or migrating existing features from top-level group to organizations, will come in the future.
 Please contact the team on Slack (`#g_organizations`) if you wish to informally discuss this.
 
+## Database table design
+
+See the [sharding guidelines](sharding/_index.md).
+
 ## Using `Current.organization`
 
 The application maps incoming requests to an organization through `Current.organization`. This context is automatically set in the request layer and should be used to ensure data is properly scoped to the current organization.

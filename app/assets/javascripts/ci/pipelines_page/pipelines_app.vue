@@ -351,18 +351,9 @@ export default {
   created() {
     this.fetchUpdatedPipelines = debounce(this.updatePipelines, BATCH_DEBOUNCE);
     toggleQueryPollingByVisibility(this.$apollo.queries.pipelines, POLL_INTERVAL);
-
-    this.visibilityChangeHandler = Visibility.change(() => {
-      if (!Visibility.hidden()) {
-        this.$apollo.queries.pipelines.refetch();
-      }
-    });
   },
   beforeDestroy() {
     this.cancelBatch();
-    if (this.visibilityChangeHandler) {
-      Visibility.unbind(this.visibilityChangeHandler);
-    }
   },
   methods: {
     onChangeTab(scope) {

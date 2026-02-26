@@ -553,10 +553,37 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe 'callbacks' do
     context 'when running after_create callback' do
-      it 'executes hooks' do
-        expect_next(described_class).to receive(:execute_hooks)
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_trigger_build_hooks_in_chain: false)
+        end
 
-        create(:ci_build, pipeline: pipeline)
+        it 'executes hooks' do
+          expect_next(described_class).to receive(:execute_hooks)
+
+          create(:ci_build, pipeline: pipeline)
+        end
+      end
+
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(ci_trigger_build_hooks_in_chain: true)
+        end
+
+        it 'does not execute hooks when chain is handling webhooks' do
+          allow(Gitlab::SafeRequestStore).to receive(:[]).and_call_original
+          allow(Gitlab::SafeRequestStore).to receive(:[]).with(:ci_triggering_build_hooks_via_chain).and_return(true)
+
+          expect_next(described_class).not_to receive(:execute_hooks)
+
+          create(:ci_build, pipeline: pipeline)
+        end
+
+        it 'executes hooks when chain is not handling webhooks' do
+          expect_next(described_class).to receive(:execute_hooks)
+
+          create(:ci_build, pipeline: pipeline)
+        end
       end
     end
 

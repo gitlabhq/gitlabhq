@@ -287,6 +287,10 @@ if (USE_VUE3) {
       ROOT_PATH,
       'vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
     ),
+    'vue-virtual-scroll-list': path.join(
+      ROOT_PATH,
+      'app/assets/javascripts/vue_shared/vue_virtual_scroll_list_vue3.js',
+    ),
     'portal-vue-vue3-impl$': path.join(
       ROOT_PATH,
       'app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',

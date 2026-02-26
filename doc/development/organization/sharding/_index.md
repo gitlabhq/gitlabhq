@@ -38,7 +38,7 @@ The reasoning for adding sharding keys, and which keys to add to a table/row, go
   transfers) inefficient (due to `namespace_id` rewrites) to the point of being impractical.
 - Compromise: Add `organization_id`, `namespace_id`, or `project_id` to all rows of all tables (whichever is most specific).
 
-### Choosing the right sharding key
+## Choosing the right sharding key
 
 Every row must have exactly 1 sharding key, and it should be as specific as possible. Exceptions cannot be made on large
 tables.
@@ -98,7 +98,7 @@ The following are examples of valid sharding keys:
     user_id: users
   ```
 
-#### The sharding key must be immutable
+### The sharding key must be immutable
 
 The choice of a `sharding_key` should always be immutable. This is because the
 sharding key column is used as an index for the planned
@@ -121,7 +121,7 @@ existing feature that needs to allow moving data you will need to reach out to
 the Tenant Scale team early on to discuss options for how to manage the
 sharding key.
 
-#### Using `namespace_id` as sharding key
+### Using `namespace_id` as sharding key
 
 The `namespaces` table has rows that can refer to a `Group`, a `ProjectNamespace`,
 or a `UserNamespace`. The `UserNamespace` type is also known as a personal namespace.
@@ -131,7 +131,7 @@ refers to a `UserNamespace`. Because a user does not necessarily have a related
 `namespace` record, this sharding key can be `NULL`. A sharding key should not
 have `NULL` values.
 
-#### Using the same sharding key for projects and namespaces
+### Using the same sharding key for projects and namespaces
 
 Developers may also choose to use `namespace_id` only for tables that can
 belong to a project where the feature used by the table is being developed
@@ -140,7 +140,7 @@ following the
 In that case the `namespace_id` would need to be the ID of the
 `ProjectNamespace` and not the group that the namespace belongs to.
 
-#### Using `organization_id` as sharding key
+### Using `organization_id` as sharding key
 
 Usually, `project_id` or `namespace_id` are the most common sharding keys.
 However, there are cases where a table does not belong to a project or a namespace.
@@ -172,14 +172,106 @@ When you add a new table or modify an existing table to be sharded by `organizat
 1. **Add transfer service support**: Update records' `organization_id` when a group or users transfer to a new organization.
 1. **Use common organization in factories**: Ensure RSpec factories automatically associate with the common organization. See the after build block in the Namespaces factory.
 
-### Implementing sharding keys
+## Cross-schema references
+
+The Cells architecture requires that organization data be safely migratable between cells.
+Cross schema references are not allowed, in general.
+
+### Core principle: Organization data must be migratable
+
+When an organization moves to a different cell, all its data stored in organization-level tables must be transferred. This means:
+
+1. **Organization data cannot depend on cell-local data** unless that dependency is consistent or self-healing.
+1. **Cell-local data can reference organization data** because organization data is stable and moves with the organization.
+
+### Acceptable patterns
+
+These cross-schema references are permitted:
+
+| From | To | Why |
+|---|---|---|
+| `gitlab_main_cell_local` | `gitlab_main_org` | Cell-local data can safely reference org data; org data moves with the organization. |
+| `gitlab_ci_cell_local` | `gitlab_ci` | CI/CD cell-local data can reference CI/CD org data. |
+
+### Implementation guidance
+
+**If organization data needs to reference cell-local data:**
+
+Use a Loose Foreign Key to avoid blocking migrations:
+
+```yaml
+# config/gitlab_loose_foreign_keys.yml
+org_table:
+  - table: cell_local_table
+    column: cell_local_id
+    on_delete: async_delete
+```
+
+However, you must also implement application logic to self-heal or regenerate the reference after migration.
+The referenced cell-local data may not exist in the destination cell or may have different IDs.
+The application must either:
+
+- Regenerate the reference by re-computing or re-fetching the data from the source of truth
+- Gracefully handle missing or stale references
+- Validate and repair references as part of the migration process
+
+**If cell-local data needs to reference organization data:**
+
+Use a regular foreign key.
+
+```ruby
+class AddForeignKeyToCellLocalTable < Gitlab::Database::Migration[2.2]
+  disable_ddl_transaction!
+
+  def up
+    add_foreign_key :cell_local_table, :org_table,
+      column: :org_table_id,
+      on_delete: :cascade
+  end
+
+  def down
+    remove_foreign_key :cell_local_table, :org_table
+  end
+end
+```
+
+### Validation
+
+The test `spec/lib/gitlab/database/no_cross_db_foreign_keys_spec.rb` enforces these principles.
+If it fails with a cross-database foreign key error, either:
+
+1. Use a Loose Foreign Key (recommended for org → cell-local references).
+1. Add to `allowed_cross_database_foreign_keys` with an issue number (pre-existing FKs only).
+
+### Lesson learned: Avoid unstable identifiers in organization data
+
+When organization data references external sources (like Gitaly), don't persist identifiers that may be inconsistent across cells.
+
+**Example:** The `programming_languages` table receives data from Gitaly. IDs generated in one cell may differ from another because:
+
+- Different cells have different initial language sets
+- New languages are discovered at runtime
+- Insertion order varies between cells
+
+If organization data (like `repository_languages`) persists these unstable IDs, the data becomes inconsistent across cells and cannot be reliably migrated.
+
+**Solutions:**
+
+1. **Use globally stable identifiers**: If organization data must reference external data, use identifiers that are consistent across all cells (for example, from a pre-defined list).
+1. **Don't persist computed data**: If the data is computed on-the-fly and doesn't need to move with the organization, don't persist the IDs in organization tables.
+1. **Make references self-healing**: If you must persist references to cell-local data, ensure they can be regenerated or validated after migration.
+1. **Use Loose Foreign Keys**: For references from organization data to cell-local data, use Loose Foreign Keys so migrations aren't blocked.
+
+See [issue 519895](https://gitlab.com/gitlab-org/gitlab/-/work_items/519895) for a detailed case study.
+
+## Implementing sharding keys
 
 To add a sharding key to a table, follow these steps. We need to backfill a `sharding_key` to hundreds of tables that do
 not have one. To minimize repetitive effort, we've introduced a declarative way to describe how to backfill the
 `sharding_key` using [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper),
 which can create the MRs with the desired changes rather than manually doing it.
 
-#### Ensure sharding key presence on application level
+### Ensure sharding key presence on application level
 
 When you define your sharding key you must make sure it's filled on application level.
 Every `ApplicationRecord` model includes a helper `populate_sharding_key`, which
@@ -249,7 +341,7 @@ desired_sharding_key:
 There are edge cases where this `desired_sharding_key` structure is not suitable for backfilling a `sharding_key`. In
 such cases, the team owning the table will need to create the necessary merge requests manually.
 
-#### Add column, triggers, indexes, and foreign keys
+### Add column, triggers, indexes, and foreign keys
 
 This is the step where we add the sharding key column, indexes, foreign keys and necessary triggers.
 
@@ -384,7 +476,7 @@ The keep file contains code that:
        on_delete: async_delete
    ```
 
-#### Finalization Migration
+### Finalization Migration
 
 Once the column has been added and the backfill is finished we need to finalize the migration. We can check the status of queued migration in `#chat-ops-test` Slack channel.
 
@@ -430,7 +522,7 @@ Once the column has been added and the backfill is finished we need to finalize 
 
 - You are all set. Git commit and create MR 🎉
 
-#### Add a NOT NULL constraint
+### Add a NOT NULL constraint
 
 The last step is to make sure the sharding key has a `NOT NULL` constraint.
 
@@ -547,7 +639,7 @@ In this case we have to add async validation before we can add the sharding key.
 > [!note]
 > Pipelines might complain about a missing FK. You must add the FK to `allowed_to_be_missing_foreign_key` in [sharding_key_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/organizations/sharding_key_spec.rb?ref_type=heads#L81).
 
-#### Add transfer service support
+### Add transfer service support
 
 1. When a table is sharded by `organization_id`, you must also add `organization_transfer_support` to track whether the table is handled during organization transfers (when users or groups move between organizations).
    - Set to `supported` if you've implemented the transfer logic in one of the transfer services:
@@ -573,7 +665,7 @@ In this case we have to add async validation before we can add the sharding key.
    end
    ```
 
-#### Use common organization in factories
+### Use common organization in factories
 
 RSpec factories for models sharded by `organization_id` must automatically associate with the common organization.
 This ensures tests work correctly without requiring explicit organization setup.
@@ -587,7 +679,7 @@ factory :your_model do
 end
 ```
 
-#### Debug Failures
+### Debug Failures
 
 **Using Kibana**
 

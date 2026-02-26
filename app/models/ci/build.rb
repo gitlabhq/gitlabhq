@@ -262,6 +262,8 @@ module Ci
     after_save :stick_build_if_status_changed
 
     after_create unless: :importing? do |build|
+      next if Gitlab::SafeRequestStore[:ci_triggering_build_hooks_via_chain]
+
       run_after_commit { build.execute_hooks }
     end
 

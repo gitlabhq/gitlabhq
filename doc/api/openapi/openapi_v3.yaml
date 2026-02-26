@@ -527,6 +527,22 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_71a7f1aae684"
+  "/api/v4/internal/knowledge_graph/{project_id}/repository_info":
+    get:
+      operationId: getApiV4InternalKnowledgeGraphProjectIdRepositoryInfo
+      summary: Retrieve repository information
+      description: Retrieve Gitaly connection details for the given project
+      tags:
+      - Knowledge graph
+      responses:
+        '200':
+          description: OK
+      parameters:
+      - name: project_id
+        required: true
+        schema:
+          type: integer
+        in: path
   "/api/v4/jobs/{id}/sbom_scans/authorize":
     post:
       operationId: postApiV4JobsIdSbomScansAuthorize
@@ -2629,8 +2645,9 @@ paths:
           given in the argument `search`. The available options are `title` and `cadence_title`.
           Defaults to `[title]`
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: "[title, cadence_title]"
       - name: include_ancestors
@@ -2733,8 +2750,9 @@ paths:
           given in the argument `search`. The available options are `title` and `cadence_title`.
           Defaults to `[title]`
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: "[title, cadence_title]"
       - name: include_ancestors
@@ -3673,8 +3691,9 @@ paths:
         required: false
         description: Array of label names to filter by
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example:
         - feature
@@ -3714,8 +3733,9 @@ paths:
         required: false
         description: Array of label names to filter by
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example:
         - feature
@@ -3761,8 +3781,9 @@ paths:
           bundler, yarn, npm, pnpm, maven, composer, pip, conan, go, nuget, sbt, gradle,
           pipenv, poetry, setuptools, apk, conda, pub, cargo.'
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: maven,yarn
       - name: page
@@ -4290,8 +4311,9 @@ paths:
         required: false
         description: The type of report vulnerability belongs to
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: scope
         required: false
@@ -4307,8 +4329,9 @@ paths:
         description: 'Returns vulnerabilities belonging to specified severity level:
           `info`, `unknown`, `low`, `medium`, `high`, or `critical`. Defaults to all'
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: pipeline_id
         required: false
@@ -6059,8 +6082,9 @@ paths:
         required: false
         description: HTTP status code of the event
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: per_page
         required: false
@@ -8445,8 +8469,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: bug,reproduced
       - name: with_labels_details
@@ -8539,8 +8564,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: bug,reproduced
       - name: not[author_id]
@@ -8640,8 +8666,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: bug,reproduced
       - name: with_labels_details
@@ -8734,8 +8761,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: bug,reproduced
       - name: not[author_id]
@@ -9450,8 +9478,9 @@ paths:
         required: false
         description: The tiers of the environments. Default is `production`
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
   "/api/v4/groups/{id}/dora/metrics":
     get:
@@ -9507,8 +9536,9 @@ paths:
         required: false
         description: The tiers of the environments. Default is `production`
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
   "/api/v4/projects/{id}/approval_settings":
     get:
@@ -15722,8 +15752,9 @@ paths:
         required: false
         description: The IIDs of the milestones
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: title
         required: false
@@ -17606,8 +17637,9 @@ paths:
         required: false
         description: The IIDs of the milestones
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: title
         required: false
@@ -22841,8 +22873,9 @@ paths:
         required: false
         description: Array of fields you wish to search. Available with advanced search.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: exclude_forks
         required: false
@@ -22943,8 +22976,9 @@ paths:
         required: false
         description: Array of fields you wish to search. Available with advanced search.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: exclude_forks
         required: false
@@ -23045,8 +23079,9 @@ paths:
         required: false
         description: Array of fields you wish to search. Available with advanced search.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: regex
         required: false
@@ -23239,8 +23274,9 @@ paths:
         required: false
         description: Comma delimited gem names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
   "/api/v4/projects/{id}/packages/rpm":
     post:
@@ -24147,8 +24183,9 @@ paths:
         required: false
         description: Comma-separated list of paths to exclude from the archive
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
   "/api/v4/projects/{id}/repository/compare":
     get:
@@ -24330,8 +24367,9 @@ paths:
         description: The refs to find the common ancestor of, multiple refs can be
           passed
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: main
   "/api/v4/projects/{id}/repository/changelog":
@@ -25853,8 +25891,9 @@ paths:
         description: Comma-separated list of topics. Limit results to projects having
           all topics
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: topic_id
         required: false
@@ -26206,8 +26245,9 @@ paths:
         description: Comma-separated list of topics. Limit results to projects having
           all topics
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: topic_id
         required: false
@@ -26553,8 +26593,9 @@ paths:
         description: Comma-separated list of topics. Limit results to projects having
           all topics
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: topic_id
         required: false
@@ -27071,8 +27112,9 @@ paths:
         description: Comma-separated list of topics. Limit results to projects having
           all topics
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: topic_id
         required: false
@@ -27523,8 +27565,9 @@ paths:
         required: false
         description: Filter out users with the specified IDs
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: page
         required: false
@@ -27579,8 +27622,9 @@ paths:
         required: false
         description: Array of group ids to exclude from list
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: with_shared
         required: false
@@ -27649,8 +27693,9 @@ paths:
         required: false
         description: Filter by group relation
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: search
         required: false
@@ -29494,8 +29539,9 @@ paths:
         required: false
         description: HTTP status code of the event
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: per_page
         required: false
@@ -30024,16 +30070,18 @@ paths:
         required: false
         description: The list of Components
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: main
       - name: architectures
         required: false
         description: The list of Architectures
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: amd64
   "/api/v4/projects/{id}/debian_distributions/{codename}":
@@ -30209,16 +30257,18 @@ paths:
         required: false
         description: The list of Components
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: main
       - name: architectures
         required: false
         description: The list of Architectures
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: amd64
   "/api/v4/projects/{id}/debian_distributions/{codename}/key.asc":
@@ -33038,8 +33088,9 @@ paths:
         description: Returns merge requests created by the given `username`. Mutually
           exclusive with `author_id`.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: reviewer_username
         required: false
@@ -33056,8 +33107,9 @@ paths:
           `None` lists all merge requests with no labels. `Any` lists all merge requests
           with at least one label. Predefined names are case-insensitive.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: milestone
         required: false
@@ -33276,8 +33328,9 @@ paths:
         description: "`<Negated>` Returns merge requests created by the given `username`.
           Mutually exclusive with `author_id`."
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[reviewer_username]
         required: false
@@ -33294,8 +33347,9 @@ paths:
           list of labels. `None` lists all merge requests with no labels. `Any` lists
           all merge requests with at least one label. Predefined names are case-insensitive."
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[milestone]
         required: false
@@ -33470,8 +33524,9 @@ paths:
         description: Returns merge requests created by the given `username`. Mutually
           exclusive with `author_id`.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: reviewer_username
         required: false
@@ -33488,8 +33543,9 @@ paths:
           `None` lists all merge requests with no labels. `Any` lists all merge requests
           with at least one label. Predefined names are case-insensitive.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: milestone
         required: false
@@ -33708,8 +33764,9 @@ paths:
         description: "`<Negated>` Returns merge requests created by the given `username`.
           Mutually exclusive with `author_id`."
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[reviewer_username]
         required: false
@@ -33726,8 +33783,9 @@ paths:
           list of labels. `None` lists all merge requests with no labels. `Any` lists
           all merge requests with at least one label. Predefined names are case-insensitive."
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[milestone]
         required: false
@@ -34089,8 +34147,9 @@ paths:
         description: Returns merge requests created by the given `username`. Mutually
           exclusive with `author_id`.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: reviewer_username
         required: false
@@ -34107,8 +34166,9 @@ paths:
           `None` lists all merge requests with no labels. `Any` lists all merge requests
           with at least one label. Predefined names are case-insensitive.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: milestone
         required: false
@@ -34327,8 +34387,9 @@ paths:
         description: "`<Negated>` Returns merge requests created by the given `username`.
           Mutually exclusive with `author_id`."
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[reviewer_username]
         required: false
@@ -34345,8 +34406,9 @@ paths:
           list of labels. `None` lists all merge requests with no labels. `Any` lists
           all merge requests with at least one label. Predefined names are case-insensitive."
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[milestone]
         required: false
@@ -34468,8 +34530,9 @@ paths:
         required: false
         description: Returns the request having the given `iid`.
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
     post:
       operationId: postApiV4ProjectsIdMergeRequests
@@ -34808,8 +34871,9 @@ paths:
         required: true
         description: The context commits’ SHA.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/changes":
     get:
@@ -35221,15 +35285,17 @@ paths:
         required: false
         description: Array of user ids to look up for membership
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: skip_users
         required: false
         description: Array of user ids to be skipped for membership
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: show_seat_info
         required: false
@@ -35315,8 +35381,9 @@ paths:
         required: false
         description: Array of user ids to look up for membership
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: show_seat_info
         required: false
@@ -35499,15 +35566,17 @@ paths:
         required: false
         description: Array of user ids to look up for membership
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: skip_users
         required: false
         description: Array of user ids to be skipped for membership
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: show_seat_info
         required: false
@@ -35593,8 +35662,9 @@ paths:
         required: false
         description: Array of user ids to look up for membership
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: show_seat_info
         required: false
@@ -36516,8 +36586,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: milestone
         required: false
@@ -36541,8 +36612,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: search
         required: false
@@ -36581,8 +36653,9 @@ paths:
         required: false
         description: Return issues which are assigned to the user with the given username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: created_after
         required: false
@@ -36622,8 +36695,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[milestone]
         required: false
@@ -36647,8 +36721,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: not[author_id]
         required: false
@@ -36676,8 +36751,9 @@ paths:
         description: Return issues which are not assigned to the user with the given
           username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[weight]
         required: false
@@ -36871,8 +36947,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: milestone
         required: false
@@ -36896,8 +36973,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: search
         required: false
@@ -36936,8 +37014,9 @@ paths:
         required: false
         description: Return issues which are assigned to the user with the given username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: created_after
         required: false
@@ -36977,8 +37056,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[milestone]
         required: false
@@ -37002,8 +37082,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: not[author_id]
         required: false
@@ -37031,8 +37112,9 @@ paths:
         description: Return issues which are not assigned to the user with the given
           username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[weight]
         required: false
@@ -37277,8 +37359,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: milestone
         required: false
@@ -37302,8 +37385,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: search
         required: false
@@ -37342,8 +37426,9 @@ paths:
         required: false
         description: Return issues which are assigned to the user with the given username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: created_after
         required: false
@@ -37383,8 +37468,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[milestone]
         required: false
@@ -37408,8 +37494,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: not[author_id]
         required: false
@@ -37437,8 +37524,9 @@ paths:
         description: Return issues which are not assigned to the user with the given
           username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[weight]
         required: false
@@ -37576,8 +37664,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: milestone
         required: false
@@ -37601,8 +37690,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: search
         required: false
@@ -37641,8 +37731,9 @@ paths:
         required: false
         description: Return issues which are assigned to the user with the given username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: created_after
         required: false
@@ -37682,8 +37773,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[milestone]
         required: false
@@ -37707,8 +37799,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: not[author_id]
         required: false
@@ -37736,8 +37829,9 @@ paths:
         description: Return issues which are not assigned to the user with the given
           username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[weight]
         required: false
@@ -38120,8 +38214,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: milestone
         required: false
@@ -38145,8 +38240,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: search
         required: false
@@ -38185,8 +38281,9 @@ paths:
         required: false
         description: Return issues which are assigned to the user with the given username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: created_after
         required: false
@@ -38226,8 +38323,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[milestone]
         required: false
@@ -38251,8 +38349,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: not[author_id]
         required: false
@@ -38280,8 +38379,9 @@ paths:
         description: Return issues which are not assigned to the user with the given
           username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[weight]
         required: false
@@ -38447,8 +38547,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: milestone
         required: false
@@ -38472,8 +38573,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: search
         required: false
@@ -38512,8 +38614,9 @@ paths:
         required: false
         description: Return issues which are assigned to the user with the given username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: created_after
         required: false
@@ -38553,8 +38656,9 @@ paths:
         required: false
         description: Comma-separated list of label names
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[milestone]
         required: false
@@ -38578,8 +38682,9 @@ paths:
         required: false
         description: The IID array of issues
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: not[author_id]
         required: false
@@ -38607,8 +38712,9 @@ paths:
         description: Return issues which are not assigned to the user with the given
           username
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[weight]
         required: false
@@ -45633,16 +45739,18 @@ paths:
         required: false
         description: The list of Components
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: main
       - name: architectures
         required: false
         description: The list of Architectures
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: amd64
   "/api/v4/groups/{id}/-/debian_distributions/{codename}":
@@ -45818,16 +45926,18 @@ paths:
         required: false
         description: The list of Components
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: main
       - name: architectures
         required: false
         description: The list of Architectures
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: amd64
   "/api/v4/groups/{id}/-/debian_distributions/{codename}/key.asc":
@@ -48510,8 +48620,9 @@ paths:
         description: Returns merge requests created by the given `username`. Mutually
           exclusive with `author_id`.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: reviewer_username
         required: false
@@ -48528,8 +48639,9 @@ paths:
           `None` lists all merge requests with no labels. `Any` lists all merge requests
           with at least one label. Predefined names are case-insensitive.
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: milestone
         required: false
@@ -48748,8 +48860,9 @@ paths:
         description: "`<Negated>` Returns merge requests created by the given `username`.
           Mutually exclusive with `author_id`."
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[reviewer_username]
         required: false
@@ -48766,8 +48879,9 @@ paths:
           list of labels. `None` lists all merge requests with no labels. `Any` lists
           all merge requests with at least one label. Predefined names are case-insensitive."
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: not[milestone]
         required: false
@@ -56291,8 +56405,9 @@ paths:
         required: false
         description: A list of runner tags
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: "['macos', 'shell']"
       - name: version_prefix
@@ -56433,8 +56548,9 @@ paths:
         required: false
         description: A list of runner tags
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: "['macos', 'shell']"
       - name: version_prefix
@@ -56828,8 +56944,9 @@ paths:
         required: false
         description: A list of runner tags
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: "['macos', 'shell']"
       - name: version_prefix
@@ -56994,8 +57111,9 @@ paths:
         required: false
         description: A list of runner tags
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example: "['macos', 'shell']"
       - name: version_prefix
@@ -57603,8 +57721,9 @@ paths:
         required: false
         description: The scope of builds to show
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
         example:
         - pending
@@ -57959,8 +58078,9 @@ paths:
         required: false
         description: Array of group ids to exclude from list
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: all_available
         required: false
@@ -58258,8 +58378,9 @@ paths:
         required: false
         description: Array of group ids to exclude from list
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: visibility
         required: false
@@ -58362,8 +58483,9 @@ paths:
         required: false
         description: Include group relations
         schema:
-          oneOf:
-          - type: string
+          type: array
+          items:
+            type: string
         in: query
       - name: search
         required: false
@@ -58746,8 +58868,9 @@ paths:
         required: false
         description: Array of group ids to exclude from list
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: all_available
         required: false
@@ -58900,8 +59023,9 @@ paths:
         required: false
         description: Array of group ids to exclude from list
         schema:
-          oneOf:
-          - type: integer
+          type: array
+          items:
+            type: integer
         in: query
       - name: all_available
         required: false

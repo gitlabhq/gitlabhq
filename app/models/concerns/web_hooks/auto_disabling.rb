@@ -85,7 +85,7 @@ module WebHooks
     def temporarily_disabled?
       return false unless auto_disabling_enabled?
 
-      disabled_until.present? && disabled_until >= Time.current &&
+      (disabled_until.nil? || disabled_until >= Time.current) &&
         recent_failures.between?(TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1, PERMANENTLY_DISABLED_FAILURE_THRESHOLD)
     end
 

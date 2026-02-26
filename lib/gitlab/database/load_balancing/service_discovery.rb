@@ -253,14 +253,14 @@ module Gitlab
         def disconnect_old_hosts(hosts)
           return unless hosts.present?
 
-          gentle_disconnect_start = ::Gitlab::Utils::System.monotonic_time
+          gentle_disconnect_start = ::Gitlab::Metrics::System.monotonic_time
           gentle_disconnect_deadline = gentle_disconnect_start + disconnect_timeout
 
           hosts_to_disconnect = hosts
 
           gentle_disconnected_hosts = []
           gentle_disconnect_duration = Benchmark.realtime do
-            while ::Gitlab::Utils::System.monotonic_time < gentle_disconnect_deadline
+            while ::Gitlab::Metrics::System.monotonic_time < gentle_disconnect_deadline
               newly_disconnected, still_to_disconnect = hosts_to_disconnect.partition(&:try_disconnect)
               gentle_disconnected_hosts.concat(newly_disconnected)
               hosts_to_disconnect = still_to_disconnect

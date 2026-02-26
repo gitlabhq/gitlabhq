@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Geoの同期と検証のエラーのトラブルシューティング
 description: "Geoの同期と検証の失敗のトラブルシューティングを行い、手動再試行手順、一括操作、エラー診断、データ整合性の復元について説明します。"
 ---
@@ -15,19 +15,81 @@ description: "Geoの同期と検証の失敗のトラブルシューティング
 
 `Admin > Geo > Sites`または[同期ステータスのRakeタスク](common.md#sync-status-rake-task)でレプリケーションまたは検証の失敗に気付いた場合は、次の一般的な手順で失敗を解決できます:
 
-1. Geoは、失敗を自動的に再試行します。失敗が新しく数が少ない場合、または根本原因が既に解決されていると思われる場合は、失敗がなくなるまで待つことができます。
-1. 失敗が長時間存在する場合は、多くの再試行が既に行われており、自動再試行の間隔は、失敗の種類に応じて最大4時間まで長くなっています。根本原因が既に解決されていると思われる場合は、待機時間を回避するために[レプリケーションまたは検証を手動で再試行](#manually-retry-replication-or-verification)できます。
-1. 失敗が解決しない場合は、次のセクションを使用して解決を試みます。
+1. Geoは、失敗した処理を自動的に再試行します。もし失敗が新たに発生したもので数が少ない場合、または根本原因がすでに解決されたと考えられる場合は、そのまま様子を見て問題が収まるか確認することができます。
+1. 失敗が長期間発生していた場合、すでに多数の再試行が行われており、失敗の種類によっては自動再試行の間隔が最大で4時間まで延びている可能性があります。原因がすでに解決されたと考えられる場合は、待たずに[手動でレプリケーションまたは検証を再試行](#manually-retry-replication-or-verification)することもできます。
+1. 失敗が解決しない場合は、以下のセクションを参照し、問題の解決を試みてください。
 
 ## トラブルシューティングの手順 {#diagnostic-procedures}
 
-手動での再試行を試みる前に、これらの拡張された診断手順を使用して、同期の問題の範囲と性質をより深く理解できます。
+手動での再試行を行う前に、以下の拡張診断手順を使用して、同期問題のスコープや性質をより正確に把握することができます。
+
+### モデルのステータスチェック {#model-status-check}
+
+この手順では、すべての[Geoデータ型モデルクラス](#geo-data-type-model-classes)に関する詳細なステータス情報を提供し、チェックサム計算の失敗を特定するのに役立ちます。これらのエラーは、レプリケーション可能なオブジェクトのチェックサムを計算できなかった場合に発生します。これらは「プライマリ検証の失敗」とも呼ばれます。
+
+チェックサムのエラーは、UIまたはRailsコンソールから表示できます。
+
+{{< tabs >}}
+
+{{< tab title="UI" >}}
+
+**プライマリ**サイトで、[データ管理ページ](../../../admin_area.md#data-management)を使用してください。
+
+{{< /tab >}}
+
+{{< tab title="Railsコンソール" >}}
+
+次のスクリプトを使用すると、次のものを含むモデルタイプごとの詳細情報を出力できます:
+
+- レコードの総数
+- 失敗、検証済み、および保留中のレコード数
+- 調査用のサンプル失敗レコード
+
+> [!note]
+> `ModelMapper`クラスは、[GitLab 18.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196293)で追加されました。以前のバージョンでは、[Geoデータ型モデルクラス](#geo-data-type-model-classes)のリストを手動で指定する必要があります。
+
+1. **プライマリ**サイトで、[Railsコンソールセッションを開始](../../../operations/rails_console.md#starting-a-rails-console-session)してください。
+1. 包括的な概要を取得するには、次のスクリプトを実行します:
+
+   ```ruby
+   def output_geo_verification_failures
+     model_classes = ::Gitlab::Geo::ModelMapper.available_models
+
+     model_classes.each do |klass|
+       total = klass.count
+       state_klass = klass.verification_state_table_class
+       failed_examples = []
+
+       puts "\n=== #{klass.name} ==="
+       puts "Total: #{total}"
+       ::Geo::VerificationState::VERIFICATION_STATE_VALUES.each do |key, value|
+         records = state_klass.where(verification_state: value)
+         failed_examples = records if key == 'verification_failed'
+
+         puts "#{key.gsub('verification_', '').camelize}: #{records.size}"
+       end
+
+       if failed_examples.any?
+         puts "\nSample failed records:"
+         failed_examples.limit(3).each { |record| puts "  ID: #{record.id}, Checksum: #{record.verification_checksum || 'nil'}, Error: #{record.verification_failure}" }
+       end
+     end
+
+     nil
+   end
+
+   output_geo_verification_failures
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### レジストリステータスチェック {#registry-status-check}
 
 この手順では、すべてのGeoレジストリタイプに関する詳細なステータス情報が提供され、失敗のパターンを特定できます。
 
-1. [Railsコンソールセッションを開始](../../../operations/rails_console.md#starting-a-rails-console-session)します。**セカンダリ**サイトで。
+1. **セカンダリ**サイトで[Railsコンソールセッションを開始](../../../operations/rails_console.md#starting-a-rails-console-session)します。
 
 1. 包括的な概要を取得するには、次のスクリプトを実行します:
 
@@ -153,13 +215,13 @@ replicator = registry.replicator
 
 このスニペットは、**セカンダリ**サイトでのみ機能します。
 
-これにより、コンソールで同期コードが同同期的に実行されるため、リソースの同期にかかる時間を確認したり、完全なエラーバックトレースを表示したりできます。
+このコマンドはコンソール上で同期コードを同期的に実行します。そのため、リソースの同期にかかる時間を確認したり、エラーの完全なバックトレースを表示したりすることができます。
 
 ```ruby
 replicator.sync
 ```
 
-オプションで、コンソールのログレベルを構成されたログレベルよりも詳細にしてから、同期を実行します:
+必要に応じて、コンソールのログレベルを設定済みのレベルより詳細に変更し、その後で同期処理を実行してください:
 
 ```ruby
 Rails.logger.level = :debug
@@ -169,9 +231,9 @@ Rails.logger.level = :debug
 
 このスニペットは、**プライマリ**または**セカンダリ**サイトで機能します。
 
-**プライマリ**サイトでは、リソースをチェックサムし、結果をメインのGitLabデータベースに保存します。**セカンダリ**サイトでは、リソースをチェックサムし、メインのGitLabデータベース(**プライマリ**サイトによって生成される)のチェックサムと照合して、結果をGeoトラッキングデータベースに保存します。
+**プライマリ**サイトでは、リソースをチェックサムし、結果をメインのGitLabデータベースに保存します。**セカンダリ**サイトでは、リソースをチェックサムし、メインのGitLabデータベース（**プライマリ**サイトによって生成される）のチェックサムと照合して、結果をGeoトラッキングデータベースに保存します。
 
-これにより、コンソールでチェックサムと検証コードが同同期的に実行されるため、かかる時間を確認したり、完全なエラーバックトレースを表示したりできます。
+これにより、コンソールでチェックサムと検証コードが同期的に実行されるため、かかる時間を確認したり、完全なエラーバックトレースを表示したりできます。
 
 ```ruby
 replicator.verify
@@ -181,7 +243,7 @@ replicator.verify
 
 このスニペットは、**セカンダリ**サイトでのみ機能します。
 
-Sidekiqがリソースの[sync](#sync-in-the-console)を実行するためのジョブをエンキューします。
+このコマンドは、Sidekiqにジョブをキューイングし、リソースの[同期処理](#sync-in-the-console)を実行させます。
 
 ```ruby
 replicator.enqueue_sync
@@ -191,7 +253,7 @@ replicator.enqueue_sync
 
 このスニペットは、**プライマリ**または**セカンダリ**サイトで機能します。
 
-Sidekiqがリソースの[チェックサムまたは検証](#checksum-or-verify-in-the-console)を実行するためのジョブをエンキューします。
+Sidekiqがリソースの[チェックサムまたは検証](#checksum-or-verify-in-the-console)を実行するためのジョブをキューイングします。
 
 ```ruby
 replicator.verify_async
@@ -217,7 +279,7 @@ replicator.registry
 
 Geoデータ型は、関連データを格納するために1つ以上のGitLab機能に必要なデータの特定のクラスであり、Geoによってセカンダリサイトにレプリケートされます。
 
-- **Blob types**:
+- **Blob型**:
   - `Ci::JobArtifact`
   - `Ci::PipelineArtifact`
   - `Ci::SecureFile`
@@ -229,22 +291,22 @@ Geoデータ型は、関連データを格納するために1つ以上のGitLab�
   - `Upload`
   - `DependencyProxy::Manifest`
   - `DependencyProxy::Blob`
-- **Git Repository types**:
+- **Gitリポジトリ型**:
   - `DesignManagement::Repository`
   - `ProjectRepository`
   - `ProjectWikiRepository`
   - `SnippetRepository`
   - `GroupWikiRepository`
-- **Other types**:
+- **その他の型**:
   - `ContainerRepository`
 
-主なクラスの種類は、レジストリ、モデル、およびReplicatorです。これらのクラスのいずれかのインスタンスがある場合は、他のインスタンスを取得できます。レジストリとモデルは、主にPostgreSQL DBの状態を管理します。Replicatorは、PostgreSQL以外のデータ(ファイル/Gitリポジトリ/コンテナリポジトリ)をレプリケートまたは検証する方法を認識しています。
+主なクラスの種類は、レジストリ、モデル、およびReplicatorです。これらのクラスのいずれかのインスタンスがある場合は、他のインスタンスを取得できます。レジストリとモデルは、主にPostgreSQL DBの状態を管理します。Replicatorは、PostgreSQL以外のデータ（ファイル/Gitリポジトリ/コンテナリポジトリ）をレプリケートまたは検証する方法を認識しています。
 
 #### Geoレジストリクラス {#geo-registry-classes}
 
-GitLab Geoのコンテキストでは、**registry record**は、Geoトラッキングデータベース内のレジストリテーブルを指します。各レコードは、LFSファイルやプロジェクトのGitリポジトリなど、メインのGitLabデータベース内の単一のレプリケート可能なファイルを追跡します。クエリできるGeoレジストリテーブルに対応するRailsモデルは次のとおりです:
+GitLab Geoのコンテキストでは、**レジストリレコード**とは、Geoトラッキングデータベース内のレジストリテーブルを指します。各レコードは、LFSファイルやプロジェクトのGitリポジトリなど、メインのGitLabデータベース内の単一のレプリケート可能なファイルを追跡します。クエリできるGeoレジストリテーブルに対応するRailsモデルは次のとおりです:
 
-- **Blob types**:
+- **Blob型**:
   - `Geo::CiSecureFileRegistry`
   - `Geo::DependencyProxyBlobRegistry`
   - `Geo::DependencyProxyManifestRegistry`
@@ -258,13 +320,13 @@ GitLab Geoのコンテキストでは、**registry record**は、Geoトラッキ
   - `Geo::SnippetRepositoryRegistry`
   - `Geo::TerraformStateVersionRegistry`
   - `Geo::UploadRegistry`
-- **Git Repository types**:
+- **Gitリポジトリ型**:
   - `Geo::DesignManagementRepositoryRegistry`
   - `Geo::ProjectRepositoryRegistry`
   - `Geo::ProjectWikiRepositoryRegistry`
   - `Geo::SnippetRepositoryRegistry`
   - `Geo::GroupWikiRepositoryRegistry`
-- **Other types**:
+- **その他の型**:
   - `Geo::ContainerRepositoryRegistry`
 
 ### 複数のコンポーネントを再度同期して再検証する {#resync-and-reverify-multiple-components}
@@ -275,9 +337,10 @@ GitLab Geoのコンテキストでは、**registry record**は、Geoトラッキ
 
 {{< /history >}}
 
-コンポーネントリソースの同期または検証に失敗した場合、一括アクションをトリガーしてレプリケーションキューを再開できます。これらのアクションは、再試行回数とスケジュール時刻を0にリセットし、システムが失敗したリソースを最大1時間待機するのではなく、より早く処理するようにします。
+コンポーネントリソースの同期や検証に失敗した場合、一括アクションを実行してレプリケーションキューを再起動することができます。これらのアクションは再試行回数とスケジュール時間を0にリセットし、最大1時間待たずに失敗したリソースを優先的に処理させます。
 
-> [!note]これらのアクションは、リソースをすぐに処理するわけではありません。代わりに、同期と検証を処理するバックグラウンドジョブを再キューに入れます。実際には、標準のGeoレプリケーションプロセスを通じて、非同期的にレプリケーション作業が行われます。
+> [!note]
+> これらのアクションは、リソースをすぐに処理するわけではありません。代わりに、同期と検証を処理するバックグラウンドジョブを再キューに入れます。実際には、標準のGeoレプリケーションプロセスを通じて、非同期的にレプリケーション作業が行われます。
 
 #### 再同期と再検証の仕組み {#how-resync-and-reverification-works}
 
@@ -293,17 +356,17 @@ UIから1つのコンポーネントのすべてのリソースの完全な再�
 
 1. 右上隅で、**管理者**を選択します。
 1. 右上隅で、**Geo**を選択します。次に**サイト**を選択します。
-1. **Replication details**で、目的のコンポーネントを選択します。
+1. **レプリケーションの詳細**で、目的のコンポーネントを選択します。
 
 ##### 選択したコンポーネントのリソースを再同期する {#resync-resources-for-the-selected-component}
 
-1. **すべて再同期**を選択します: これにより、選択したリソースのすべてのレコードの状態が、既に同期されているかどうかに関係なくリセットされます。
-1. **すべての再同期に失敗しました**を選択します: これにより、同期に失敗したすべてのレコードがリセットされます。
+1. **すべて再同期**を選択: これにより、選択したリソースのすべてのレコードの状態が、既に同期されているかどうかに関係なくリセットされます。
+1. **すべての再同期に失敗しました**を選択: これにより、同期に失敗したすべてのレコードがリセットされます。
 
 ##### 選択したコンポーネントのリソースを再検証する {#reverify-resources-for-the-selected-component}
 
-1. **すべて再検証**を選択します: これにより、選択したリソースのすべてのレコードの状態が、既に検証されているかどうかに関係なくリセットされます。
-1. **すべての失敗を再検証**を選択します: これにより、検証に失敗したが、同期が成功したすべてのレコードがリセットされます。
+1. **すべて再検証**を選択: これにより、選択したリソースのすべてのレコードの状態が、既に検証されているかどうかに関係なくリセットされます。
+1. **すべての失敗を再検証**を選択: これにより、検証に失敗したが、同期が成功したすべてのレコードがリセットされます。
 
 ##### すべてのサイトで1つのコンポーネントを再検証する {#reverify-one-component-on-all-sites}
 
@@ -316,7 +379,8 @@ UIからプライマリサイトのチェックサムを再計算できます:
 1. ドロップダウンリストで目的のコンポーネントを選択します。
 1. **すべてのチェックサム**を選択します。
 
-> [!warning] **すべて再同期**、**すべて再検証**、および**すべてのチェックサム**は、すでに同期または検証されているかどうかに関係なく、すべてのリソースの更新をトリガーします。インスタンス内に何千ものオブジェクトタイプ(CIジョブアーティファクトなど)がある場合は、実行しないでください。
+> [!warning]
+> **すべて再同期**、**すべて再検証**、および**すべてのチェックサム**は、すでに同期または検証されているかどうかに関係なく、すべてのリソースの更新をトリガーします。インスタンス内に何千ものオブジェクトタイプ（CIジョブアーティファクトなど）がある場合は、実行しないでください。
 
 #### Railsコンソールから {#from-the-rails-console}
 
@@ -326,15 +390,15 @@ UIからプライマリサイトのチェックサムを再計算できます:
 
 ##### 同期に失敗した1つのコンポーネントのすべてのリソースを同期する {#sync-all-resources-of-one-component-that-failed-to-sync}
 
-次のスクリプト:
+次のスクリプトは、以下を行います:
 
 - 失敗したすべてのリポジトリをループ処理します。
-- 最後の失敗の理由を含む、Geo同期と検証のメタデータを表示します。
+- 最後の失敗の理由を含む、Geoの同期と検証のメタデータを表示します。
 - リポジトリの再同期を試みます。
 - 失敗が発生した場合、およびその理由を報告します。
 - 完了するまでに時間がかかる場合があります。各リポジトリチェックは、結果を報告する前に完了する必要があります。セッションがタイムアウトした場合は、`screen`セッションを開始するか、[Railsランナー](../../../operations/rails_console.md#using-the-rails-runner)と`nohup`を使用して実行するなど、プロセスが実行され続けるように対策を講じてください。
 
-このスクリプトを**on the secondary Geo site**実行します。
+このスクリプトを**セカンダリGeoサイト**で実行します。
 
 ```ruby
 Geo::ProjectRepositoryRegistry.failed.find_each do |registry|
@@ -350,9 +414,9 @@ end; nil
 
 ##### プライマリサイトでチェックサムに失敗したすべてのリソースを再検証する {#reverify-all-resources-that-failed-to-checksum-on-the-primary-site}
 
-システムは、プライマリサイトでチェックサムに失敗したすべてのリソースを自動的に再検証しますが、過剰な量の失敗を回避するために、段階的なバックオフ方式を使用します。
+システムは、プライマリサイトでチェックサムに失敗したすべてのリソースを自動的に再検証します。ただし、過剰な失敗発生を防ぐために段階的なバックオフ方式を採用しています。
 
-オプションで、たとえば、試行された介入を完了した場合は、より早く手動で再検証をトリガーできます:
+たとえば試行された介入を完了した場合は、オプションでより早く手動で再検証をトリガーできます:
 
 1. **プライマリ**サイトのGitLab RailsノードにSSH接続します。
 1. [Railsコンソール](../../../operations/rails_console.md#starting-a-rails-console-session)を開きます。
@@ -368,15 +432,16 @@ end; nil
 
 ### メッセージ: `The file is missing on the Geo primary site` {#message-the-file-is-missing-on-the-geo-primary-site}
 
-`The file is missing on the Geo primary site`同期の失敗は、最初にセカンダリGeoサイトをセットアップするときによく発生しますが、これはプライマリサイトのデータ不整合が原因です。
+同期エラー`The file is missing on the Geo primary site`は、セカンダリGeoサイトを初めてセットアップする際によく発生する問題です。このエラーは、プライマリサイト上のデータ不整合が原因で発生します。
 
-GitLabの運用中に、システムエラーまたは人為的エラーが原因で、データの不整合やファイルの欠落が発生する可能性があります。たとえば、インスタンス管理者がローカルファイルシステムの複数のアーティファクトを手動で削除したとします。このような変更はデータベースに適切に伝播されず、不整合が発生します。これらの矛盾は残り、摩擦を引き起こす可能性があります。これらのファイルはデータベースでまだ参照されているために、Geoセカンダリは引き続きこれらのファイルのレプリケートを試行する可能性がありますが、ファイルは存在していません。
+GitLabの運用中に、システムエラーまたは人為的エラーが原因で、データの不整合やファイルの欠落が発生する可能性があります。たとえば、インスタンス管理者がローカルファイルシステムの複数のアーティファクトを手動で削除したとします。このような変更はデータベースに適切に伝播されず、不整合が発生します。これらの不整合は残存し、さまざまな問題を引き起こす可能性があります。これらのファイルはデータベースでまだ参照されているために、Geoセカンダリは引き続きこれらのファイルのレプリケートを試行する可能性がありますが、ファイルは存在していません。
 
-> [!note]ローカルからオブジェクトストレージへの最近の移行の場合は、専用の[オブジェクトストレージトラブルシューティングセクション](../../../object_storage.md#inconsistencies-after-migrating-to-object-storage)を参照してください。
+> [!note]
+> ローカルからオブジェクトストレージへの最近の移行の場合は、専用の[オブジェクトストレージトラブルシューティングセクション](../../../object_storage.md#inconsistencies-after-migrating-to-object-storage)を参照してください。
 
-#### 矛盾の特定 {#identify-inconsistencies}
+#### 不整合の特定 {#identify-inconsistencies}
 
-ファイルが見つからない場合や矛盾がある場合は、次のような`geo.log`にエントリが表示されることがあります。フィールド`"primary_missing_file" : true`に注意してください:
+ファイルの欠落やデータの不整合がある場合、`geo.log`に次のようなエントリが表示されることがあります。このとき、フィールド`"primary_missing_file" : true`に注目してください:
 
 ```json
 {
@@ -399,7 +464,7 @@ GitLabの運用中に、システムエラーまたは人為的エラーが原�
 }
 ```
 
-特定のレプリケート可能オブジェクトの同期ステータスを確認すると、同じエラーが**管理者** > **Geo** > **サイト**のUIにも反映されます。このシナリオでは、特定のアップロードが見つかりません:
+特定のレプリケート可能オブジェクトの同期ステータスを確認すると、同じエラーが**管理者** > **Geo** > **サイト**のUIにも反映されます。このシナリオでは、特定のアップロードファイルが欠落しています:
 
 ![すべての失敗したエラーを表示するGeoアップロードレプリケート可能なダッシュボード。](img/geo_uploads_file_missing_v17_11.png)
 
@@ -407,13 +472,14 @@ GitLabの運用中に、システムエラーまたは人為的エラーが原�
 
 #### 不整合をクリーンアップする {#clean-up-inconsistencies}
 
-> [!warning]削除コマンドを発行する前に、最近使用したバックアップを手元に用意しておいてください。
+> [!warning]
+> 削除コマンドを発行する前に、最近使用したバックアップを手元に用意しておいてください。
 
-これらのエラーを削除するには、まず、どの特定のリソースが影響を受けているかを特定します。次に、適切な`destroy`コマンドを実行して、すべてのGeoサイトとそのデータベースに削除が確実に伝播されるようにします。前のシナリオに基づいて、**upload**がそれらのエラーを引き起こしており、以下の例として使用されます。
+これらのエラーを削除するには、まず、どの特定のリソースが影響を受けているかを特定します。次に、適切な`destroy`コマンドを実行して、すべてのGeoサイトとそのデータベースに削除が確実に伝播されるようにします。前述のシナリオに基づくと、**アップロード**がこれらのエラーの原因となっています。以下では、そのアップロードを例として使用します。
 
 1. 特定された不整合を、それぞれの[Geoモデルクラス](#geo-data-type-model-classes)名にマップします。クラス名は、以下のステップで必要になります。このシナリオでは、アップロードの場合、`Upload`に対応します。
-1. **Geo primary site**で[Railsコンソール](../../../operations/rails_console.md#starting-a-rails-console-session)を開始します。
-1. 前の手順の*Geoモデルクラス*に基づいて、ファイルが見つからないために検証が失敗したすべてのリソースを照会します。より多くの結果を表示するには、`limit(20)`を調整または削除します。リストされたリソースがUIに表示される失敗したリソースと一致することを確認してください:
+1. **Geoプライマリサイト**で[Railsコンソール](../../../operations/rails_console.md#starting-a-rails-console-session)を開始します。
+1. 前の手順の*Geoモデルクラス*に基づいて、ファイルが見つからないために検証が失敗したすべてのリソースをクエリします。より多くの結果を表示するには、`limit(20)`を調整または削除します。リストされたリソースがUIに表示される失敗したリソースと一致することを確認してください:
 
    ```ruby
    Upload.verification_failed.where("verification_failure like '%File is not checksummable%'").limit(20)
@@ -463,12 +529,12 @@ GitLabの運用中に、システムエラーまたは人為的エラーが原�
     verification_checksum: nil>
    ```
 
-   - 影響を受けるリソースを回復する必要があると判断した場合は、次のオプション(すべてではありません)を検討して回復できます:
+   - 影響を受けたリソースを復旧する必要があると判断した場合は、次のような（以下に挙げるものに限らない）いくつかの復旧方法を検討できます:
      - セカンダリサイトにオブジェクトがあるかどうかを確認し、手動でプライマリにコピーします。
      - 古いバックアップを調べて、オブジェクトを手動でプライマリサイトにコピーして戻します。
-     - いくつかのスポットチェックを行い、レコードを削除しても問題ないかどうかを確認します。たとえば、すべて非常に古いアーティファクトである場合、それらは重要なデータではない可能性があります。
+     - いくつかをスポットチェックして、レコードを削除しても問題なさそうか判断します。たとえば、それらがすべて古いアーティファクトであれば、重要なデータではない可能性があります。
 
-1. 識別されたリソースの`id`を使用して、`destroy`を使用して個別にまたはまとめて適切に削除します。適切な*Geo Model class*名を使用してください。
+1. 特定したリソースの`id`を使用して、`destroy`を使い、個別または一括で正しく削除します。適切な*Geoモデルクラス*名を使用してください。
    - 個々のリソースを削除します:
 
      ```ruby
@@ -499,11 +565,16 @@ GitLabの運用中に、システムエラーまたは人為的エラーが原�
 
 ### メッセージ: `"Error during verification","error":"File is not checksummable"` {#message-error-during-verificationerrorfile-is-not-checksummable}
 
-エラー`"Error during verification","error":"File is not checksummable"`は、プライマリサイトの不整合が原因で発生します。[Geoプライマリサイトにファイルがない](#message-the-file-is-missing-on-the-geo-primary-site)に記載されている手順に従ってください。
+エラー`"Error during verification","error":"File is not checksummable"`は、プライマリサイトの不整合が原因で発生します。GitLab 18.9以降、エラーメッセージには原因に関する追加の詳細が含まれています:
 
-### プライマリGeoサイトでのアップロードの検証に失敗しました {#failed-verification-of-uploads-on-the-primary-geo-site}
+- `File is not checksummable - file does not exist at: <path>`: ファイルがストレージにありません。表示されるパスは、見つからないファイルを特定するのに役立ちます。
+- `File is not checksummable - <ModelClass> <ID> is excluded from verification`: レコードは検証スコープから除外されています。
 
-いくつかのアップロードの検証が、`verification_checksum = nil`のあるプライマリGeoサイトで失敗した場合、`verification_failure`に``Error during verification: undefined method `underscore' for NilClass:Class``または``The model which owns this Upload is missing.``が含まれている場合、これは孤立したアップロードが原因です。アップロードを所有する親レコード（アップロードの「モデル」）が何らかの理由で削除されましたが、アップロードレコードはまだ存在します。これは通常、アプリケーションのバグが原因で発生します。関連するアップロードレコードをまとめて削除することを忘れて、「モデル」の一括削除を実装することで導入されます。したがって、これらの検証の失敗は検証の失敗ではなく、Postgres内のデータが不良であることによって発生したエラーです。
+[Geoプライマリサイトにファイルがない](#message-the-file-is-missing-on-the-geo-primary-site)に記載されている手順に従ってください。
+
+### プライマリGeoサイトでのアップロードの検証に失敗 {#failed-verification-of-uploads-on-the-primary-geo-site}
+
+いくつかのアップロードの検証が、`verification_checksum = nil`のあるプライマリGeoサイトで失敗した際に、`verification_failure`に``Error during verification: undefined method `underscore' for NilClass:Class``または``The model which owns this Upload is missing.``が含まれている場合は、これは孤立したアップロードが原因です。アップロードを所有する親レコード（アップロードの「モデル」）が何らかの理由で削除されましたが、アップロードレコードはまだ存在します。この問題は通常、アプリケーションのバグが原因です。具体的には、「モデル」の一括削除を実装する際に、関連するアップロードレコードの一括削除を忘れたことによって発生します。したがって、これらの検証エラーは実際には検証の失敗ではなく、Postgres内の不正なデータが原因で発生しているものです。
 
 これらのエラーは、プライマリGeoサイトの`geo.log`ファイルで確認できます。
 
@@ -546,29 +617,91 @@ def delete_orphaned_uploads(dry_run: true)
 end
 ```
 
-前のスクリプトは、ドライ実行を実行するためにこのように呼び出すことができる`delete_orphaned_uploads`という名前のメソッドを定義します:
+前述のスクリプトでは、`delete_orphaned_uploads`というメソッドが定義されています。次のように呼び出すことで、ドライランを実行できます:
 
 ```ruby
 delete_orphaned_uploads(dry_run: true)
 ```
 
-また、孤立したアップロードの行を実際に削除するには、:
+また、孤立したアップロード行を実際に削除するには、以下のようにします:
 
 ```ruby
 delete_orphaned_uploads(dry_run: false)
 ```
 
+### リポジトリ同期をブロックしている孤立した排他的キー {#orphaned-exclusive-lease-keys-blocking-repository-sync}
+
+排他的なリースキーが孤立すると、リポジトリの同期がブロックされ、最大8時間同期操作が妨げられる場合があります。
+
+**兆候:**
+
+- リポジトリ同期がブロックされました。影響を受けるリポジトリのレプリケーション状態が、`pending`状態と`failed`状態の間で交互に切り替わります。
+- `geo.log`で「排他的リースを取得できません」というメッセージを含むログ行の数が増えました。
+- 影響を受けるリポジトリに対して実行されているアクティブな同期ジョブはありません。
+- リースが期限切れになるまで、最大8時間、単一のリポジトリに影響します。
+
+**診断:**
+
+1. Geoの管理インターフェースを確認して、リポジトリがアクティブに同期されていないことを確認します。
+1. 「排他的リースを取得できません」というメッセージの数が増加していないか、`geo.log`を確認してください:
+
+   ```shell
+   grep "Cannot obtain an exclusive lease" /var/log/gitlab/geo/geo.log
+   ```
+
+1. これらのすべてのログ行に、値`geo_sync_ssf_service:project_repository:<repository id>`の`lease_key`フィールドが含まれていることを確認します。ここで、`<repository id>`は影響を受けるリポジトリの一意のIDです。
+1. 影響を受けるリポジトリに対して、Sidekiqでアクティブな同期ジョブが実行されていないことを確認します。
+
+**回避策:**
+
+> [!warning]
+> 推奨される方法は、8時間のリース有効期限が切れるまで待つことです。手動によるリースリリースは、即時の同期が不可欠であり、アクティブに実行されている同期ジョブがないことが確認されている場合にのみ使用してください。
+
+孤立したリースキーを手動でリリースするには:
+
+1. **セカンダリ**サイトで[Railsコンソールセッションを開始](../../../operations/rails_console.md#starting-a-rails-console-session)します。
+1. 影響を受けるリポジトリのプロジェクトIDを見つけます（`<project-path>`を実際のプロジェクトパスに置き換えます）:
+
+   ```ruby
+   project = Project.find_by_full_path('<project-path>')
+   project_id = project.id
+   ```
+
+1. 同じセッションで、孤立したリースをリリースします:
+
+   ```ruby
+   replicator = Geo::ProjectRepositoryRegistry.find_by(project_id: project_id).replicator
+   sync_service = Geo::FrameworkRepositorySyncService.new(replicator)
+   uuid = Gitlab::ExclusiveLease.get_uuid(sync_service.lease_key)
+
+   if uuid
+     Gitlab::ExclusiveLease.cancel(sync_service.lease_key, uuid)
+     puts "Lease released for project ID #{project_id}"
+   else
+     puts "No active lease found for project ID #{project_id}"
+   end
+   ```
+
+1. リースがリリースされたことを確認し、新しい同期をトリガーします:
+
+   ```ruby
+   replicator.sync
+   ```
+
+> [!note]
+> リースをリリースした後、通常Geoの同期スケジュールに従ってリポジトリ同期が再試行されます。または、上記のように手動で同期をトリガーすることもできます
+
 ### エラー: `Error syncing repository: 13:fatal: could not read Username` {#error-error-syncing-repository-13fatal-could-not-read-username}
 
-`last_sync_failure`エラー`Error syncing repository: 13:fatal: could not read Username for 'https://gitlab.example.com': terminal prompts disabled`は、Geoクローンまたはフェッチリクエスト中にJWT認証が失敗していることを示します。
+`last_sync_failure`エラーの`Error syncing repository: 13:fatal: could not read Username for 'https://gitlab.example.com': terminal prompts disabled`は、Geoのクローンまたはフェッチ要求の際に、JWT認証が失敗していることを示しています。
 
 まず、システムクロックが同期されていることを確認してください。[ヘルスチェックRakeタスク](common.md#health-check-rake-task)を実行するか、セカンダリサイトのすべてのSidekiqノードと、プライマリサイトのすべてのPumaノードで`date`が同じであることを手動で確認します。
 
 システムクロックが同期されている場合、Gitフェッチが2つの別個のHTTPリクエスト間で計算を実行している間に、JWTトークンが期限切れになる可能性があります。[イシュー464101](https://gitlab.com/gitlab-org/gitlab/-/issues/464101)を参照してください。これは、GitLab 17.1.0、17.0.5、および16.11.7で修正されるまで、すべてのGitLabバージョンに存在していました。
 
-この問題が発生しているかどうかを検証するには:
+この問題が発生しているかどうかを検証するには、以下を実行します:
 
-1. [Railsコンソール](../../../operations/rails_console.md#starting-a-rails-console-session)でコードにモンキーパッチを適用して、トークンの有効期間を1分から10分に増やします。同じRailsコンソールで、影響を受けるプロジェクトを再同期します:
+1. [Railsコンソール](../../../operations/rails_console.md#starting-a-rails-console-session)でコードにモンキーパッチを適用して、トークンの有効期間を1分から10分に増やします。セカンダリサイトのRailsコンソールで、これを実行します:
 
    ```ruby
    module Gitlab; module Geo; class BaseRequest
@@ -587,13 +720,13 @@ delete_orphaned_uploads(dry_run: false)
    Project.find_by_full_path('<mygroup/mysubgroup/myproject>').replicator.resync
    ```
 
-1. 同期状態を確認してください:
+1. 同期状態を確認します:
 
    ```ruby
    Project.find_by_full_path('<mygroup/mysubgroup/myproject>').replicator.registry
    ```
 
-1. `last_sync_failure`にエラー`fatal: could not read Username`が含まれなくなった場合は、この問題の影響を受けています。状態は`2`になり、同期されたことを意味します。その場合は、修正を含むGitLabバージョンにアップグレードする必要があります。この問題の重大度を軽減する[イシュー466681](https://gitlab.com/gitlab-org/gitlab/-/issues/466681)に同意するかコメントすることもできます。
+1. `last_sync_failure`にエラー`fatal: could not read Username`がもう含まれていない場合、この問題の影響を受けています。現在の状態は`2`になっているはずで、これは同期が完了していることを意味します。その場合は、修正が含まれているGitLabのバージョンにアップグレードしてください。また、この問題の重大度を軽減する改善が提案されている[イシュー466681](https://gitlab.com/gitlab-org/gitlab/-/issues/466681)に、同意したりコメントを残したりすることも推奨します。
 
 この問題を回避するには、JWTの有効期限を延長するために、セカンダリサイトのすべてのSidekiqノードにホットパッチを適用する必要があります:
 
@@ -619,41 +752,41 @@ delete_orphaned_uploads(dry_run: false)
 
 リポジトリの作成中に終了コード128が発生した場合、Gitがクローン作成中に致命的なエラーが発生したことを意味します。これは、リポジトリの破損、ネットワークの問題、認証の問題、リソース制限、またはプロジェクトに関連付けられたGitリポジトリがないことが原因である可能性があります。このような失敗の特定の原因に関する詳細については、Gitalyのログに記録されます。
 
-どこから始めればよいかわからない場合は、[コマンドラインで`git fsck`コマンドを手動で実行する](../../../../administration/repository_checks.md#run-a-check-using-the-command-line)ことで、プライマリサイトのソースリポジトリで整合性チェックを実行します。
+どこから始めればよいかわからない場合は、[コマンドラインで`git fsck`コマンドを手動で実行する](../../../../administration/repository_checks.md#run-a-check-using-the-command-line)することで、プライマリサイトのソースリポジトリで整合性チェックを実行できます。
 
 ### エラー: `gitmodulesUrl: disallowed submodule url` {#error-gitmodulesurl-disallowed-submodule-url}
 
-一部のプロジェクトリポジトリは、エラー`Error syncing repository: 13:creating repository: cloning repository: exit status 128`で一貫して同期に失敗します。ただし、一部のリポジトリでは、Gitalyログの特定のエラーメッセージが異なり、 `gitmodulesUrl: disallowed submodule url`と表示されます。このエラーは、リポジトリに`.gitmodules`ファイル内の無効なサブモジュールURLが含まれている場合に発生します。
+一部のプロジェクトリポジトリは、エラー`Error syncing repository: 13:creating repository: cloning repository: exit status 128`で一貫して同期に失敗します。ただし、一部のリポジトリでは、Gitalyログの特定のエラーメッセージが異なり、`gitmodulesUrl: disallowed submodule url`と表示されます。このエラーは、リポジトリに`.gitmodules`ファイル内の無効なサブモジュールURLが含まれている場合に発生します。
 
-**根本原因: **この問題は、不正な形式のURLを持つ`.gitmodules`ファイルを含むGitリポジトリ内の**historical commits**によって引き起こされます。この問題は、Geoがプライマリからセカンダリにリポジトリをクローンしようとしたときに実行されるGitの整合性チェック（`git fsck`）中に発生します。
+**根本原因: **この問題は、Gitリポジトリ内の**過去のコミット**に含まれる、不正な形式のURLを持つ`.gitmodules`ファイルが原因で発生します。この問題は、Geoがプライマリからセカンダリにリポジトリをクローンしようとしたときに実行されるGitの整合性チェック（`git fsck`）中に発生します。
 
 問題はリポジトリのコミット履歴にあります。`.gitmodules`ファイル内のサブモジュールURLには無効な形式が含まれており、パス内で`:`の代わりに`/`を使用しています:
 
 - 無効: `https://example.gitlab.com:group/project.git`
 - 有効: `https://example.gitlab.com/group/project.git`
 
-**Why this breaks Geo synchronization:**
+**Geoの同期が失敗する理由:**
 
-1. **Git's strict validation**: GitLab 17.0以降のGitバージョンでは、Gitはクローン操作中に、より厳密な`fsck`チェックを実行します
-1. **Historical data persistence**: 現在の`.gitmodules`ファイルが正しい場合でも、Gitはすべての過去のバージョンをリポジトリ内の「blob」として保存します
-1. **Clone-time failure**: Geoがリポジトリをクローンしようとすると、Gitの`fsck`は**all objects**を調べ、不正な形式のURLが見つかると失敗します
-1. **Complete sync failure**: クローン操作全体が失敗し、リポジトリがセカンダリサイトに到達するのを防ぎます
+1. **Gitの厳格な検証**: GitLab 17.0以降および新しいGitバージョンでは、クローン処理中に より厳格な`fsck`チェックが行われます。
+1. **履歴データの保持**: 現在の`.gitmodules`ファイルが正しい場合でも、Gitはすべての過去のバージョンをリポジトリ内の 「blob」 として保持します。
+1. **クローン時の失敗**: Geoがリポジトリをクローンしようとすると、Gitの`fsck`は**すべてのオブジェクト**（履歴を含む）を検証し、不正な形式のURLを検出した時点で失敗します。
+1. **完全な同期失敗**: クローン全体の処理が失敗し、リポジトリがセカンダリサイトに複製されなくなります。
 
-**重要:**問題のあるデータはリポジトリのGit履歴に存在し、ファイルの現在のバージョンにのみ存在するわけではないため、現在の`.gitmodules`ファイルを編集しても、この問題は**not**されません。
+**重要:** 現在の`.gitmodules`ファイル を編集しても、この問題は解決**しません**。問題のデータは、ファイルの現在のバージョンではなく、リポジトリのGit履歴内に存在しているためです。
 
-この問題はGitLab 17.0以降で確認されており、より厳密なリポジトリ整合性チェックの結果です。この新しい動作は、このチェックが追加されたGit自体の変更の結果です。これは、GitLab GeoまたはGitalyに固有のものではありません。詳細については、[イシュー468560](https://gitlab.com/gitlab-org/gitlab/-/issues/468560)を参照してください。
+この問題はGitLab 17.0以降で確認されている既知の問題で、より厳格なリポジトリ整合性チェックの導入によって発生します。この新しい動作はGit自体の変更によるもので、このチェック機能が追加されたことが原因です。したがって、これはGitLab GeoやGitalyに特有の問題ではありません。詳細については、[イシュー468560](https://gitlab.com/gitlab-org/gitlab/-/issues/468560)を参照してください。
 
 #### 回避策 {#workaround}
 
-1. **Backup projects**
+1. **プロジェクトをバックアップする**
 
-   続行する前に、[プロジェクトエクスポートオプション](../../../../user/project/settings/import_export.md)を使用して、プロジェクトを事前にバックアップしてください。
+   作業を進める前に、[プロジェクトのエクスポート機能](../../../../user/project/settings/import_export.md)を使用して、事前にプロジェクトをバックアップしておくようにしてください。
 
-1. **Identify problematic blob IDs**
+1. **問題のあるBlob IDを特定する**
 
-   影響を受ける各プロジェクトについて、次のいずれかの方法を使用して、問題のあるblobIDを識別します:
+   影響を受けた各プロジェクトについて、以下のいずれかの方法を使用して問題のあるBlob IDを特定します:
 
-   - `git fsck`を使用します: リポジトリをクローンし、 `git fsck`を実行して問題を確認します:
+   - `git fsck`を使用します:リポジトリをクローンし、`git fsck`を実行して問題を確認します:
 
      ```shell
      git clone https://example.gitlab.com/group/project.git
@@ -673,22 +806,23 @@ delete_orphaned_uploads(dry_run: false)
 
 1. **blobを消去する**
 
-   影響を受ける各プロジェクトについて、前の手順で識別された[問題のあるblobIDを削除します](../../../../user/project/repository/repository_size.md#remove-blobs)。
+   影響を受ける各プロジェクトについて、前の手順で識別された[問題のあるblob IDを削除します](../../../../user/project/repository/repository_size.md#remove-blobs)。
 
-   **Important limitation:**これらのリポジトリのいずれかがフォークネットワークの一部である場合、blobの削除方法は機能しない可能性があります（オブジェクトプールに含まれるblobはこの方法では削除できません）。
+   **重要な制限事項:** これらのリポジトリのいずれかがフォークネットワークの一部である場合、Blobの削除方法は機能しない可能性があります（オブジェクトプール内に含まれるBlobは、この方法では削除できません）。
 
-1. **Fix .gitmodules invalid URLs if required**
+1. **必要に応じて.gitmodulesの不正なURLを修正する**
 
-   影響を受ける各リポジトリで`.gitmodules`ファイルの状態を確認します
+   影響を受ける各リポジトリで`.gitmodules`ファイルの状態を確認します。
 
    `.gitmodules`に`https://example.gitlab.com:foo/bar.git`の代わりに`https://example.gitlab.com/foo/bar.git`のような無効なURLがまだ含まれている場合、顧客は次のことを行う必要があります:
 
-   - `.gitmodules`ファイル内のURLを修正します
-   - 有効なURLでコミットをプッシュします
+   - `.gitmodules`ファイル内のURLを修正する
+   - 有効なURLでコミットをプッシュする
 
-> [!warning]修正後、影響を受けるプロジェクトで作業しているすべてのデベロッパーは、現在のローカルコピーを削除し、新しいリポジトリをクローンする必要があります。そうしないと、変更をプッシュするときに、問題のあるblobが再度導入される可能性があります。
+> [!warning]
+> 修正後、影響を受けるプロジェクトで作業しているすべてのデベロッパーは、現在のローカルコピーを削除し、新しいリポジトリをクローンする必要があります。そうしないと、変更をプッシュするときに、問題のあるblobが再度導入される可能性があります。
 
-### エラー: 正確に3時間後の`fetch remote: signal: terminated: context deadline exceeded` {#error-fetch-remote-signal-terminated-context-deadline-exceeded-at-exactly-3-hours}
+### エラー: `fetch remote: signal: terminated: context deadline exceeded`（ちょうど3時間後に発生） {#error-fetch-remote-signal-terminated-context-deadline-exceeded-at-exactly-3-hours}
 
 Gitリポジトリの同期中にGitフェッチが正確に3時間後に失敗した場合:
 
@@ -705,7 +839,7 @@ Gitリポジトリの同期中にGitフェッチが正確に3時間後に失敗�
    sudo gitlab-ctl reconfigure
    ```
 
-### レジストリレプリケーションの設定時にセカンダリでエラー`Failed to open TCP connection to localhost:5000` {#error-failed-to-open-tcp-connection-to-localhost5000-on-secondary-when-configuring-registry-replication}
+### エラー: レジストリレプリケーションの構成中に、セカンダリで`Failed to open TCP connection to localhost:5000`が発生 {#error-failed-to-open-tcp-connection-to-localhost5000-on-secondary-when-configuring-registry-replication}
 
 セカンダリサイトでコンテナレジストリレプリケーションを構成するときに、次のエラーが発生する場合があります:
 
@@ -717,11 +851,11 @@ Failed to open TCP connection to localhost:5000 (Connection refused - connect(2)
 
 ### エラー: `Verification timed out after 28800` {#error-verification-timed-out-after-28800}
 
-**ありうる根本原因:** レジストリレコードの重複が、さまざまなレジストリタイプ間で検証の競合を引き起こしています。
+**ありうる根本原因:** レジストリレコードの重複が、さまざまなレジストリタイプ間で検証の競合を引き起こしている。
 
-**Diagnosis:**
+**診断:**
 
-セカンダリサイトの異なるタイプ間で重複したレジストリがないか確認します:
+セカンダリサイト上で、異なるタイプ間で重複しているレジストリがないかを確認します:
 
 ```ruby
 # Check for duplicate upload registries
@@ -755,7 +889,7 @@ puts "Duplicate terraform state version IDs count: #{terraform_state_ids.size}"
 puts 'Duplicate Terraform State Version IDs:', terraform_state_ids
 ```
 
-**Resolution:**
+**解決策:**
 
 1. 影響を受けるタイプごとに、重複したレジストリエントリを削除します:
 
@@ -827,7 +961,7 @@ puts 'Duplicate Terraform State Version IDs:', terraform_state_ids
 
 **ありうる根本原因:** チェックサムの不整合を引き起こすリポジトリまたはコンテナレジストリの検証間隔の変更。
 
-**Diagnosis:**
+**診断:**
 
 セカンダリで失敗したリポジトリまたはコンテナレジストリを確認します:
 
@@ -853,7 +987,7 @@ failed_container_repos.each do |repo|
 end
 ```
 
-**Resolution:**
+**解決策:**
 
 特定のプロジェクトまたはコンテナレジストリに対して、プライマリで再検証を強制します:
 
@@ -891,7 +1025,7 @@ Geoデータタイプが異なると、固有の特性と一般的な失敗パ�
 
 #### アップロード {#uploads}
 
-**Diagnosis:**
+**診断:**
 
 ファイルが欠落しているアップロードを識別します:
 
@@ -912,11 +1046,12 @@ checksummable_failures.limit(5).each_with_index do |record, index|
 end
 ```
 
-**Resolution:**
+**解決策:**
 
-> [!warning]アップロードレコードを削除する前に、最新の動作するバックアップがあることを確認してください。これらのアップロードを安全に削除できることを確認するために、チームと調整します。
+> [!warning]
+> アップロードレコードを削除する前に、最新の動作するバックアップがあることを確認してください。これらのアップロードを安全に削除できることを確認するために、チームと調整する必要があります。
 
-確認後、問題のあるアップロードを削除します:
+確認後、問題のあるアップロードを削除してください:
 
 ```ruby
 # Remove individual upload
@@ -928,7 +1063,7 @@ Upload.verification_failed.where("verification_failure LIKE '%File is not checks
 
 #### ページデプロイ {#pages-deployments}
 
-**Diagnosis:**
+**診断:**
 
 問題のあるページデプロイを調べます:
 
@@ -946,9 +1081,9 @@ checksummable_failures.each_with_index do |record, index|
 end
 ```
 
-**Resolution:**
+**解決策:**
 
-デプロイを安全に削除できることをチームに確認した後:
+デプロイを安全に削除できることをチームに確認した後、以下を行います:
 
 ```ruby
 failed_ids = [21875, 21907, 21992] # Replace with actual IDs
@@ -958,7 +1093,7 @@ puts "Removed #{failed_ids.size} problematic pages deployments"
 
 #### LFSオブジェクト {#lfs-objects}
 
-**Diagnosis:**
+**診断:**
 
 問題のあるLFSオブジェクトを調べます:
 
@@ -988,9 +1123,10 @@ checksummable_failures.each_with_index do |record, index|
 end
 ```
 
-**Resolution:**
+**解決策:**
 
-> [!warning]LFSオブジェクトを削除すると、それらを参照するすべてのプロジェクトに影響します。削除する前に、バックアップを用意し、プロジェクトメンテナーと調整してください。
+> [!warning]
+> LFSオブジェクトを削除すると、それらを参照するすべてのプロジェクトに影響します。削除する前に、バックアップを用意し、プロジェクトメンテナーと調整してください。
 
 ファイルが欠落しているLFSオブジェクトを削除します:
 
@@ -1026,7 +1162,7 @@ destroy_lfs_not_checksummable(dry_run: true)
 
 #### ジョブアーティファクト {#job-artifacts}
 
-**Diagnosis:**
+**診断:**
 
 ファイルが欠落しているアーティファクトがないか確認します:
 
@@ -1048,7 +1184,7 @@ failed_artifacts.each do |registry|
 end
 ```
 
-**Resolution:**
+**解決策:**
 
 ファイルが欠落しているアーティファクトをクリーンアップします:
 
@@ -1077,7 +1213,7 @@ cleanup_missing_artifacts(dry_run: true)
 
 #### パイプラインアーティファクト {#pipeline-artifacts}
 
-**Diagnosis:**
+**診断:**
 
 ファイルが欠落しているアーティファクトがないか確認します:
 
@@ -1099,7 +1235,7 @@ failed_pipeline_artifacts.each do |registry|
 end
 ```
 
-**Resolution:**
+**解決策:**
 
 ファイルが欠落しているパイプラインアーティファクトを削除します:
 
@@ -1124,17 +1260,17 @@ destroy_pipeline_artifacts_not_checksummable
 
 ### エラー: `Projects - Error during verification: Repository does not exist` {#error-projects---error-during-verification-repository-does-not-exist}
 
-**根本原因:** Gitリポジトリがないプロジェクトでは、検証に失敗します。
+**根本原因:** Gitリポジトリがないプロジェクトで、検証に失敗する。
 
-**Symptoms:**
+**兆候:**
 
-- プロジェクトの検証中に「リポジトリが存在しません」というエラーが表示されます
-- 正当な理由でリポジトリがないプロジェクトの場合、Geo UIに誤ったエラーレポートが表示されます
-- 存在しないリポジトリでの無駄な同期試行
+- プロジェクトの検証中に「リポジトリが存在しません」というエラーが表示される
+- 正当な理由でリポジトリがないプロジェクトの場合、Geo UIに誤ったエラーレポートが表示される
+- 存在しないリポジトリでの無駄な同期試行が発生している
 
 **回避策:**
 
-存在しない場合に、プライマリにプロジェクトリポジトリを作成します:
+存在しない場合は、プライマリにプロジェクトリポジトリを作成します:
 
 ```ruby
 puts "Found #{Project.verification_failed.count} project repos failed to checksum"
@@ -1145,15 +1281,15 @@ end
 
 ### エラー: `Expected(200) <=> Actual(403 Forbidden)` {#error-expected200--actual403-forbidden}
 
-**根本原因:** S3 APIが404ではなく403を返す原因となる、`ListBucket`権限がありません。
+**根本原因:** S3 APIが404ではなく403を返す原因となる、`ListBucket`権限がない。
 
-**Symptoms:**
+**兆候:**
 
 - S3エンドポイントを使用したログの403エラー
 - S3バケットへのHEADリクエストの失敗
 - オブジェクトストレージをバックアップしたデータタイプの同期の失敗
 
-**Resolution:**
+**解決策:**
 
 これには、インフラストラクチャチームの介入が必要になり、GitLabで使用されるS3 IAMポリシーに`ListBucket`権限を追加する必要があります。
 
@@ -1167,7 +1303,7 @@ end
 Synchronization failed - Error syncing repository [..] fatal: fsck error in packed object
 ```
 
-いくつかの問題がこのエラーをトリガーする可能性があります。たとえば、メールアドレスに関する問題:
+いくつかの問題がこのエラーをトリガーする可能性があります。たとえば、メールアドレスに関する問題です:
 
 ```plaintext
 Error syncing repository: 13:fetch remote: "error: object <SHA>: badEmail: invalid author/committer line - bad email
@@ -1185,14 +1321,14 @@ Error syncing repository: 13:Received RST_STREAM with error code 2.
 
 これらのエラーは、[失敗したすべてのリポジトリをすぐに同期する](#sync-all-resources-of-one-component-that-failed-to-sync)ことで確認できます。
 
-整合性エラーの原因となっている不正な形式のオブジェクトを削除するには、リポジトリの履歴を書き換える必要があります。これは通常、オプションではありません。
+整合性エラーの原因となっている不正な形式のオブジェクトを削除するには、リポジトリの履歴を書き換える必要があります。ただし、これは通常推奨されない方法です。
 
-これらの整合性チェックを無視するには、これらの`git fsck`の問題を無視するように、**on the secondary Geo sites** Gitalyを再構成します。次の構成例:
+これらの整合性チェックを無視するには、**セカンダリGeoサイト上**のGitalyを再設定し、`git fsck`に関する問題を無視するように構成してください。次の構成例では、以下のとおりとなっています:
 
 - GitLab 16.0から必須となった[新しい構成構造を使用](../../../../update/versions/gitlab_16_changes.md#gitaly-configuration-structure-change)します。
 - 5つの一般的なチェックエラーを無視します。
 
-Gitalyの[ドキュメントには、](../../../gitaly/consistency_checks.md)Gitのその他のチェックエラーやGitLabの以前のバージョンに関する詳細が記載されています。
+[Gitalyのドキュメント](../../../gitaly/consistency_checks.md)には、Gitのその他のチェックエラーやGitLabの以前のバージョンに関する詳細が記載されています。
 
 ```ruby
 gitaly['configuration'] = {
@@ -1222,11 +1358,11 @@ gitaly['configuration'] = {
 
 GitLab 16.1バージョン以降では、これらのイシューの一部を解決できる可能性のある[拡張機能](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5879)が含まれています。
 
-[Gitaly issue 5625](https://gitlab.com/gitlab-org/gitaly/-/issues/5625)では、Geoが、ソースリポジトリに問題のあるコミットが含まれている場合でも、リポジトリをレプリケートすることを保証することを提案しています。
+[Gitalyイシュー5625](https://gitlab.com/gitlab-org/gitaly/-/issues/5625)では、Geoが、ソースリポジトリに問題のあるコミットが含まれている場合でも、リポジトリをレプリケートすることを保証することを提案しています。
 
 ### 関連エラー`does not appear to be a git repository` {#related-error-does-not-appear-to-be-a-git-repository}
 
-次のログメッセージとともに、エラーメッセージ`Synchronization failed - Error syncing repository`が表示されることもあります。このエラーは、期待されるGeoリモートが`.git/config`ファイルシステム上のsecondary Geoサイトのリポジトリのファイルに存在しないことを示しています:
+次のログメッセージとともに、エラーメッセージ`Synchronization failed - Error syncing repository`が表示されることもあります。このエラーは、期待されるGeoリモートが`.git/config`ファイルシステム上のセカンダリGeoサイトのリポジトリのファイルに存在しないことを示しています:
 
 ```json
 {
@@ -1248,11 +1384,11 @@ GitLab 16.1バージョン以降では、これらのイシューの一部を解
 
 これを解決するには、次の手順に従います:
 
-1. secondary GeoサイトのWebインターフェースでサインインします。
+1. セカンダリGeoサイトのWebインターフェースでサインインします。
 
 1. [`.git`フォルダー](../../../repository_storage_paths.md#translate-hashed-storage-paths)をバックアップします。
 
-1. オプション。それらのIDのいくつかが、既知のGeoレプリケーションの失敗が発生しているプロジェクトに実際に対応しているかどうかを[スポットチェック](../../../logs/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem)します。`fatal: 'geo'`を`grep`用語として使用し、次のAPIコールを使用します:
+1. オプション。それらのIDのいくつかが、既知のGeoレプリケーションの失敗が発生しているプロジェクトに実際に対応しているかどうかを[スポットチェック](../../../logs/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem)します。`fatal: 'geo'`を`grep`の値として使用し、次の APIコールを実行します:
 
    ```shell
    curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<first_failed_geo_sync_ID>"
@@ -1298,32 +1434,34 @@ unexpected disconnect while reading sideband packet
 
 このエラーは、リポジトリをサイト間でゼロからレプリケートする必要がある場合に発生しやすくなります。
 
-Geoは数回再試行しますが、ネットワークの同期がネットワークのヒカップによって一貫して中断される場合は、`rsync`などの別の方法を使用して`git`を回避し、Geoによるレプリケーションに失敗したリポジトリの初期コピーを作成できます。
+GitLab Geo は複数回再試行を行いますが、通信がネットワークの一時的な障害によって継続的に中断される場合、`rsync`のような代替手段を使用して`git`を回避し、Geoによるレプリケーションに失敗したリポジトリの初期コピーを作成することができます。
 
-各失敗リポジトリを個別に転送し、各転送後に一貫性をチェックすることをお勧めします。プライマリサイトから[影響を受ける各リポジトリを`rsync`を別のサーバーにプルする手順に従って、secondaryサイトに転送します](../../../operations/moving_repositories.md#use-rsync-to-another-server)。
+各失敗リポジトリを個別に転送し、各転送後に整合性をチェックすることをお勧めします。プライマリサイトから[影響を受ける各リポジトリを`rsync`を別のサーバーにプルする手順に従って、セカンダリサイトに転送します](../../../operations/moving_repositories.md#use-rsync-to-another-server)。
 
-## Geosecondaryサイトでリポジトリチェックの失敗を見つける {#find-repository-check-failures-in-a-geo-secondary-site}
+## Geoセカンダリサイトでリポジトリチェックの失敗を見つける {#find-repository-check-failures-in-a-geo-secondary-site}
 
-> [!note]すべてのリポジトリデータ型は、GitLab 16.3でGeo Self-Service Frameworkに移行されました。[Geo Self-Service Frameworkにこの機能を実装し直すためのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/426659)があります。
+> [!note]
+> すべてのリポジトリデータ型は、GitLab 16.3でGeo Self-Service Frameworkに移行されました。[この機能をGitLab Geo Self-Service Frameworkに再実装するためのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/426659)が作成されています。
 
 GitLab 16.2以前の場合:
 
-[すべてのプロジェクトで有効になっている](../../../repository_checks.md#enable-repository-checks-for-all-projects)場合、[リポジトリチェック](../../../repository_checks.md)もGeosecondaryサイトで実行されます。メタデータは、Geoトラッキングデータベースに保存されます。
+[すべてのプロジェクトで有効になっている](../../../repository_checks.md#enable-repository-checks-for-all-projects)場合、[リポジトリチェック](../../../repository_checks.md)もGeoセカンダリサイトで実行されます。メタデータは、Geoトラッキングデータベースに保存されます。
 
-Geosecondaryサイトでのリポジトリチェックの失敗は、必ずしもレプリケーションの問題を意味するものではありません。これらの失敗を解決するための一般的なアプローチを次に示します。
+Geoセカンダリサイトでのリポジトリチェックの失敗は、必ずしもレプリケーションの問題を意味するものではありません。これらの失敗を解決するための一般的なアプローチを次に示します。
 
 1. 以下に示す影響を受けるリポジトリと、[記録されたエラー](../../../repository_checks.md#what-to-do-if-a-check-failed)を検索します。
-1. 特定のエラーを診断してみてください`git fsck`。可能性のあるエラーの範囲は広いため、検索エンジンに入力してみてください。
-1. 影響を受けるリポジトリの一般的な機能をテストします。secondaryからプルし、ファイルを表示します。
-1. プライマリサイトのリポジトリのコピーに同一のエラーがあるかどうかを確認します`git fsck`。フェイルオーバーを計画している場合は、secondaryサイトにプライマリサイトと同じ情報があることを優先することを検討してください。プライマリのバックアップがあることを確認し、[計画されたフェイルオーバーのガイドライン](../../disaster_recovery/planned_failover.md)に従ってください。
-1. プライマリにプッシュし、変更がsecondaryサイトにレプリケートされるかどうかを確認します。
+1. 特定の`git fsck`エラーの原因を診断してみてください。発生しうるエラーの範囲は広いため、検索エンジンで調べてみることをおすすめします。
+1. 影響を受けるリポジトリの一般的な機能をテストします。セカンダリからプルし、ファイルを表示します。
+1. プライマリサイト側のリポジトリコピーに、同じ`git fsck`エラーが発生していないか確認してください。フェイルオーバーを計画している場合は、セカンダリサイトがプライマリサイトと同じ情報を保持していることを優先して検討してください。また、プライマリのバックアップを取得したうえで、[計画的フェイルオーバーガイドライン](../../disaster_recovery/planned_failover.md)に従って作業を進めてください。
+1. プライマリにプッシュし、変更がセカンダリサイトにレプリケートされるかどうかを確認します。
 1. レプリケーションが自動的に機能しない場合は、リポジトリを同期を手動で試してください。
 
 [Railsコンソールセッションを開始](../../../operations/rails_console.md#starting-a-rails-console-session)して、次の基本的なトラブルシューティングの手順を実行します。
 
-> [!warning]データを変更するコマンドは、正しく実行されない場合、または適切な条件下で実行されない場合に、損害を引き起こす可能性があります。最初にテスト環境でコマンドを実行し、復元できるバックアップインスタンスを準備してください。
+> [!warning]
+> データを変更するコマンドは、正しく実行されない場合、または適切な条件下で実行されない場合に、損傷を引き起こす可能性があります。最初にテスト環境でコマンドを実行し、復元できるバックアップインスタンスを準備してください。
 
-### リポジトリチェックに失敗したリポジトリの数を取得します {#get-the-number-of-repositories-that-failed-the-repository-check}
+### リポジトリチェックに失敗したリポジトリの数を取得 {#get-the-number-of-repositories-that-failed-the-repository-check}
 
 ```ruby
 Geo::ProjectRegistry.where(last_repository_check_failed: true).count
@@ -1335,40 +1473,41 @@ Geo::ProjectRegistry.where(last_repository_check_failed: true).count
 Geo::ProjectRegistry.where(last_repository_check_failed: true)
 ```
 
-## Gitaly Clusterからリポジトリを完全に削除して再同期する {#hard-delete-a-repository-from-gitaly-cluster-and-resync}
+## Gitalyクラスターからリポジトリを完全に削除して再同期する {#hard-delete-a-repository-from-gitaly-cluster-and-resync}
 
-> [!warning]この手順は危険で、強引です。他のトラブルシューティング方法が失敗した場合にのみ、最後の手段として使用してください。この手順により、リポジトリが再同期されるまで、一時的なデータ損失が発生します。
+> [!warning]
+> この手順はリスクが高く、強制的な方法です。他のトラブルシューティング手段で問題が解決しなかった場合の最終手段としてのみ実行してください。この手順を実行すると、リポジトリが再同期されるまで一時的にデータが失われます。
 
-この手順では、secondaryサイトのGitalyクラスターからリポジトリを削除し、再度同期します。リスクを理解している場合にのみ、使用を検討する必要があります。また、次の条件がすべて当てはまる場合にのみ使用する必要があります:
+この手順は、セカンダリサイトのGitalyクラスターからリポジトリを削除し、再同期を実行します。この操作にはリスクが伴うため、以下の条件をすべて満たし、そのリスクを十分理解している場合にのみ実施してください:
 
-- プライマリサイト上のリポジトリで`git clone`が機能しています。
-- `p.replicator.sync_repository`(ここで、`p`はプロジェクトモデルインスタンスです)は、secondaryサイトでGitalyエラーを記録します。
-- 標準のトラブルシューティングで問題が解決しませんでした。
+- プライマリサイト上のリポジトリで`git clone`が機能している
+- `p.replicator.sync_repository`（ここで、`p`はプロジェクトモデルインスタンスです）が、セカンダリサイトでGitalyエラーを記録している
+- 標準のトラブルシューティングで問題が解決しなかった
 
 前提条件: 
 
-- secondaryサイトのRailsコンソールとPraefectノードの両方への管理アクセス権があることを確認してください。
-- リポジトリがプライマリサイトでアクセス可能で、正しく機能していることを確認します。
+- セカンダリサイトのRailsコンソールとPraefectノードの両方への管理アクセス権があることを確認してください。
+- リポジトリがプライマリサイトでアクセス可能で、正しく機能していることを確認してください。
 - この手順を元に戻す必要がある場合に備えて、バックアップ計画を用意しておいてください。
 
 これを行うには、次の手順を実行します:
 
-1. secondaryサイトのRailsコンソールにサインインします。
+1. セカンダリサイトのRailsコンソールにサインインします。
 1. プロジェクトモデルをインスタンス化し、次のいずれかのオプションを使用して、変数`p`に保存します:
 
-   - 影響を受けるプロジェクトIDがわかっている場合 (たとえば、`60087`):
+   - 影響を受けるプロジェクトIDがわかっている場合（たとえば、`60087`）:
 
      ```ruby
      p = Project.find(60087)
      ```
 
-   - GitLabで影響を受けるプロジェクトパスがわかっている場合 (たとえば、`my-group/my-project`):
+   - GitLabで影響を受けるプロジェクトパスがわかっている場合（たとえば、`my-group/my-project`）:
 
      ```ruby
      p = Project.find_by_full_path('my-group/my-project')
      ```
 
-1. プロジェクトGitリポジトリの仮想ストレージを出力し、後で使用するために書き留めます:
+1. プロジェクトGitリポジトリの仮想ストレージを出力し、後で使用するためにメモします:
 
    ```ruby
    p.repository.storage
@@ -1381,7 +1520,7 @@ Geo::ProjectRegistry.where(last_repository_check_failed: true)
    => "default"
    ```
 
-1. プロジェクトGitリポジトリの相対パスを出力し、後で使用するために書き留めます:
+1. プロジェクトGitリポジトリの相対パスを出力し、後で使用するためにメモします:
 
    ```ruby
    p.repository.disk_path + '.git'
@@ -1394,10 +1533,10 @@ Geo::ProjectRegistry.where(last_repository_check_failed: true)
    => "@hashed/66/b2/66b2fc8562b3432399acc2d0108fcd2782b32bd31d59226c7a03a20b32c76ee8.git"
    ```
 
-1. secondaryサイトのPraefectノードにSSHで接続します。
-1. [Gitalyクラスターからリポジトリを手動で削除する](../../../gitaly/praefect/recovery.md#manually-remove-repositories)手順に従って、前の手順で書き留めた仮想ストレージと相対パスを使用します。
+1. セカンダリサイトのPraefectノードにSSHで接続します。
+1. [Gitalyクラスターからリポジトリを手動で削除する](../../../gitaly/praefect/recovery.md#manually-remove-repositories)手順に従って、前の手順でメモした仮想ストレージと相対パスを使用します。
 
-   secondaryサイトのGitリポジトリが削除されました。
+   セカンダリサイトのGitリポジトリが削除されました。
 
 1. Railsコンソールで、再同期する前に、相関IDを設定します。このIDを使用すると、このセッションで実行するコマンドに関連するすべてのログを検索できます:
 
@@ -1418,31 +1557,32 @@ Geo::ProjectRegistry.where(last_repository_check_failed: true)
    p.replicator.sync_repository
    ```
 
-Gitリポジトリがプライマリサイトからsecondaryサイトに再同期されるようになりました。Geo管理インターフェースを通じて同期処理を監視するか、Railsコンソールでリポジトリの同期ステータスを確認します。
+Gitリポジトリがプライマリサイトからセカンダリサイトに再同期されるようになりました。Geo管理インターフェースを通じて同期処理を監視するか、Railsコンソールでリポジトリの同期ステータスを確認します。
 
 ## インフラストラクチャとパフォーマンスに関する考慮事項 {#infrastructure-and-performance-considerations}
 
 一部の同期の問題は、インフラストラクチャレベルの問題またはパフォーマンスの制約によって発生します。
 
-### 並行処理の高い問題 {#high-concurrency-issues}
+### 高い並行処理数による問題 {#high-concurrency-issues}
 
-過度のGeo検証並行処理は、データベースを圧倒し、同期の失敗を引き起こす可能性があります。
+Geoの検証処理の並行処理数が過剰になると、データベースに過負荷がかかり、同期の失敗を引き起こす可能性があります。
 
-**Symptoms:**
+**兆候:**
 
 - データベース接続タイムアウト
 - データベースサーバーでのCPU使用率が高い
 - インフラストラクチャが正常であるにもかかわらず、同期の処理が遅い
 
-**Diagnosis and Resolution:**
+**診断と解決策:**
 
-[UI](../tuning.md#changing-the-syncverification-concurrency-values)を使用して、**プライマリ**サイトの並行処理設定を削減します
+[UI](../tuning.md#changing-the-syncverification-concurrency-values)を使用して、**プライマリ**サイトの並行処理の設定を下げます
 
 ## 手動同期ステータスの更新 {#manual-sync-status-updates}
 
-場合によっては、根本的な問題を解決した後、オブジェクト型を手動で同期済みとしてマークする必要がある場合があります。このシナリオは、secondaryサイトのオブジェクトバケットに手動でファイルをアップロードすることでしか問題を修正できない場合に発生します。通常、その操作は必要ありませんが、バージョンのバグが原因で発生する可能性があります。以下に、それらの手動でアップロードされたオブジェクト型（この場合はアップロード）を同期済みとしてマークする方法を示します。
+場合によっては、根本的な問題を解決した後、オブジェクト型を手動で同期済みとしてマークする必要がある場合があります。このシナリオは、セカンダリサイトのオブジェクトバケットに手動でファイルをアップロードすることでしか問題を修正できない場合に発生します。通常、その操作は必要ありませんが、バージョンのバグが原因で発生する可能性があります。以下に、それらの手動でアップロードされたオブジェクト型（この場合はアップロード）を同期済みとしてマークする方法を示します。
 
-> [!warning]ファイルが実際にsecondaryサイトに存在し、アクセス可能であることを確認した場合にのみ、オブジェクトを同期済みとしてマークしてください。
+> [!warning]
+> ファイルが実際にセカンダリサイトに存在し、アクセス可能であることを確認した場合にのみ、オブジェクトを同期済みとしてマークしてください。
 
 ```ruby
 def mark_upload_synced(upload_id)
@@ -1460,13 +1600,13 @@ upload_ids.each { |id| mark_upload_synced(id) }
 
 ## Geo**セカンダリ**サイトのレプリケーションのリセット {#resetting-geo-secondary-site-replication}
 
-壊れた状態の**セカンダリ**サイトを取得し、レプリケーションの状態をリセットして最初からやり直したい場合は、いくつかの手順が役立ちます:
+壊れた状態の**セカンダリ**サイトを取得してしまい、レプリケーションの状態をリセットして最初からやり直したい場合は、次に行ういくつかの手順が役立ちます:
 
 1. SidekiqとGeoログカーソルを停止します。
 
-   Sidekiqを正常に停止させることは可能ですが、新しいジョブを取得するのを停止させ、現在のジョブが処理を終了するまで待機させます。
+   Sidekiqを安全に停止させることが可能です。新しいジョブの受け付けを停止し、現在実行中のジョブが処理を完了するまで待機させることができます。
 
-   最初のフェーズでは**SIGTSTP**キルシグナルを送信し、すべてのジョブが完了したら**SIGTERM**を送信する必要があります。それ以外の場合は、`gitlab-ctl stop`コマンドを使用します。
+   最初の段階では**SIGTSTP**シグナルを送信し、すべてのジョブが完了した後に**SIGTERM**シグナルを送信する必要があります。それ以外の場合は、`gitlab-ctl stop`コマンドを使用します。
 
    ```shell
    gitlab-ctl status sidekiq
@@ -1483,7 +1623,7 @@ upload_ids.each { |id| mark_upload_synced(id) }
    gitlab-ctl tail sidekiq
    ```
 
-1. GitalyとGitaly Cluster（Praefect）データをクリアします。
+1. GitalyとGitalyクラスター（Praefect）データをクリアします。
 
    {{< tabs >}}
 
@@ -1548,7 +1688,7 @@ upload_ids.each { |id| mark_upload_synced(id) }
    - `/var/opt/gitlab/gitlab-rails/shared`
    - `/var/opt/gitlab/gitlab-rails/uploads`
 
-   それらのすべての名前を変更するには:
+   それらのすべての名前を変更するには、以下を実行します:
 
    ```shell
    gitlab-ctl stop

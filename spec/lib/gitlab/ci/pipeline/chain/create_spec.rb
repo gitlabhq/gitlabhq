@@ -36,6 +36,34 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_
       expect(pipeline.reload.stages).to be_one
       expect(pipeline.stages.first).to be_persisted
     end
+
+    context 'when coordinating webhook execution with worker', :request_store do
+      let(:stage) { build(:ci_stage, pipeline: pipeline, project: project) }
+      let(:ci_build) { build(:ci_build, pipeline: pipeline, ci_stage: stage, project: project, user: user) }
+
+      before do
+        pipeline.stages = [stage]
+        stage.statuses = [ci_build]
+      end
+
+      it 'sets request store flag to prevent build callbacks from executing hooks' do
+        expect(ci_build).not_to receive(:execute_hooks)
+
+        step.perform!
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_trigger_build_hooks_in_chain: false)
+        end
+
+        it 'does not set request store flag' do
+          expect(Gitlab::SafeRequestStore).not_to receive(:[]=).with(:ci_triggering_build_hooks_via_chain, true)
+
+          step.perform!
+        end
+      end
+    end
   end
 
   context 'when pipeline has validation errors' do

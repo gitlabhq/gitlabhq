@@ -222,6 +222,19 @@ BEGIN
 END
 $$;
 
+CREATE FUNCTION check_work_item_custom_type_exists(custom_type_id bigint) RETURNS boolean
+    LANGUAGE plpgsql COST 1 PARALLEL SAFE
+    AS $_$
+BEGIN
+  PERFORM 1
+  FROM work_item_custom_types
+  WHERE id = $1
+  FOR KEY SHARE;
+
+  RETURN FOUND;
+END;
+$_$;
+
 CREATE FUNCTION cleanup_pipeline_iid_after_delete() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -418,6 +431,19 @@ BEGIN
   RETURN NEW;
 END;
 $$;
+
+CREATE FUNCTION exists_issues_for_work_item_custom_type(work_item_type_id bigint) RETURNS boolean
+    LANGUAGE plpgsql STABLE COST 1 PARALLEL SAFE
+    AS $_$
+BEGIN
+  PERFORM 1
+  FROM "issues"
+  WHERE "issues"."work_item_type_id" = $1
+  LIMIT 1;
+
+  RETURN FOUND;
+END;
+$_$;
 
 CREATE TABLE namespaces (
     id bigint NOT NULL,
@@ -5339,6 +5365,42 @@ SET
   auto_resolved = NEW.auto_resolved
 WHERE vulnerability_id = NEW.id;
 RETURN NULL;
+
+END
+$$;
+
+CREATE FUNCTION validate_work_item_type_id_is_valid() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW.work_item_type_id >= 1001 THEN
+  IF NOT check_work_item_custom_type_exists(NEW.work_item_type_id) THEN
+    RAISE EXCEPTION
+      'Specified custom work item type does not exist: %',
+      NEW.work_item_type_id;
+  END IF;
+ELSIF NEW.work_item_type_id > 9 THEN
+  RAISE EXCEPTION
+    'Specified system defined work item type does not exist: %',
+    NEW.work_item_type_id;
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION work_item_custom_types_integrity_children_check() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF exists_issues_for_work_item_custom_type(OLD.id) THEN
+  RAISE EXCEPTION
+    'Cannot delete work_item_custom_type %, referenced in issues',
+    OLD.id;
+END IF;
+
+RETURN OLD;
 
 END
 $$;
@@ -53406,6 +53468,8 @@ CREATE TRIGGER plans_loose_fk_trigger AFTER DELETE ON plans REFERENCING OLD TABL
 
 CREATE TRIGGER pool_repositories_loose_fk_trigger AFTER DELETE ON pool_repositories REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER prevent_custom_work_item_type_deletion_if_referenced BEFORE DELETE ON work_item_custom_types FOR EACH ROW EXECUTE FUNCTION work_item_custom_types_integrity_children_check();
+
 CREATE TRIGGER prevent_delete_of_default_organization_before_destroy BEFORE DELETE ON organizations FOR EACH ROW EXECUTE FUNCTION prevent_delete_of_default_organization();
 
 CREATE TRIGGER project_repositories_loose_fk_trigger AFTER DELETE ON project_repositories REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -53990,6 +54054,16 @@ CREATE TRIGGER trigger_web_hook_logs_daily_assign_sharding_keys BEFORE INSERT OR
 
 CREATE TRIGGER users_loose_fk_trigger AFTER DELETE ON users REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER validate_work_item_type_on_insert_or_update_custom_fields BEFORE INSERT OR UPDATE OF work_item_type_id ON work_item_type_custom_fields FOR EACH ROW EXECUTE FUNCTION validate_work_item_type_id_is_valid();
+
+CREATE TRIGGER validate_work_item_type_on_insert_or_update_custom_lifecycles BEFORE INSERT OR UPDATE OF work_item_type_id ON work_item_type_custom_lifecycles FOR EACH ROW EXECUTE FUNCTION validate_work_item_type_id_is_valid();
+
+CREATE TRIGGER validate_work_item_type_on_insert_or_update_issues BEFORE INSERT OR UPDATE OF work_item_type_id ON issues FOR EACH ROW EXECUTE FUNCTION validate_work_item_type_id_is_valid();
+
+CREATE TRIGGER validate_work_item_type_on_insert_or_update_status_mappings BEFORE INSERT OR UPDATE OF work_item_type_id ON work_item_custom_status_mappings FOR EACH ROW EXECUTE FUNCTION validate_work_item_type_id_is_valid();
+
+CREATE TRIGGER validate_work_item_type_on_insert_or_update_work_item_user_pref BEFORE INSERT OR UPDATE OF work_item_type_id ON work_item_type_user_preferences FOR EACH ROW EXECUTE FUNCTION validate_work_item_type_id_is_valid();
+
 CREATE TRIGGER virtual_registries_container_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_container_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER virtual_registries_packages_maven_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_packages_maven_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -53997,6 +54071,8 @@ CREATE TRIGGER virtual_registries_packages_maven_upstreams_loose_fk_trigger AFTE
 CREATE TRIGGER virtual_registries_packages_npm_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_packages_npm_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER vulnerabilities_loose_fk_trigger AFTER DELETE ON vulnerabilities REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER work_item_custom_types_loose_fk_trigger AFTER DELETE ON work_item_custom_types REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 ALTER TABLE ONLY ai_conversation_threads
     ADD CONSTRAINT fk_00234c7444 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

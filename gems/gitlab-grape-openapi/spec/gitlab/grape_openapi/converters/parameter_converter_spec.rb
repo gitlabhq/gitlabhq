@@ -380,19 +380,19 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
     let(:converter) { described_class.new(name, options: options, validations: validations, route: route) }
 
     describe 'array types' do
-      context 'when type is [String] (single type in brackets)' do
-        let(:options) { { type: '[String]' } }
-
-        it 'generates oneOf schema with single string type' do
-          expect(converter.schema).to eq({ oneOf: [{ type: 'string' }] })
-        end
-      end
-
       context 'when type is [Integer] (single type in brackets)' do
         let(:options) { { type: '[Integer]' } }
 
-        it 'generates oneOf schema with single integer type' do
-          expect(converter.schema).to eq({ oneOf: [{ type: 'integer' }] })
+        it 'generates array schema with integer items' do
+          expect(converter.schema).to eq({ type: 'array', items: { type: 'integer' } })
+        end
+      end
+
+      context 'when type is [Grape::API::Boolean] (single type in brackets)' do
+        let(:options) { { type: '[Grape::API::Boolean]' } }
+
+        it 'generates array schema with boolean items' do
+          expect(converter.schema).to eq({ type: 'array', items: { type: 'boolean' } })
         end
       end
     end

@@ -61,6 +61,8 @@ module.exports = (path, options = {}) => {
       '^vue-router$': '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/vue_router.js',
       '^vendor/vue-virtual-scroller$':
         '<rootDir>/vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
+      '^vue-virtual-scroll-list$':
+        '<rootDir>/app/assets/javascripts/vue_shared/vue_virtual_scroll_list_vue3.js',
       '^portal-vue-vue3-impl$':
         '<rootDir>/app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
     });

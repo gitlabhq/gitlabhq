@@ -118,7 +118,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
   end
 
   let(:hook_params) do
-    event_names.to_h { [_1, true] }.merge(hook_param_overrides).merge(
+    event_names.index_with { true }.merge(hook_param_overrides).merge(
       url: "http://example.com",
       url_variables: [
         { key: 'token', value: 'very-secret' },
@@ -241,7 +241,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
           expect(response).to have_gitlab_http_status(:ok)
 
-          expect(json_response).to include('alert_status' => 'disabled') unless hook.executable?
+          expect(json_response).to include('alert_status' => 'temporarily_disabled') unless hook.executable?
         end
       end
 

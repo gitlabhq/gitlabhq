@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: ClickHouse
 ---
@@ -16,7 +16,7 @@ title: ClickHouse
 
 [ClickHouse](https://clickhouse.com)は、オープンソースのカラム指向データベース管理システムです。大規模なデータセットに対して、効率的にフィルタリング、集計、クエリを実行できます。
 
-GitLabは、ClickHouseをセカンダリデータストアとして使用し、GitLab Duo、SDLCトレンド、および CI分析といった高度な分析機能を実現しています。ClickHouseでは、GitLabはこれらの機能をサポートするために必要なデータのみが保存されます。
+GitLabは、GitLab Duo、SDLCトレンド、CI分析などの高度な分析機能を有効にするために、ClickHouseをセカンダリデータストアとして使用します。GitLabは、これらの機能をサポートするデータのみをClickHouseに保存します。
 
 ClickHouseをGitLabに接続するには、[ClickHouse Cloud](https://clickhouse.com/cloud)を使用する必要があります。
 
@@ -44,7 +44,8 @@ ClickHouseを設定すると、次の分析機能を使用できます:
 
 ClickHouse Cloudは、常に最新の安定したGitLabリリースと互換性があります。
 
-{{< alert type="warning" >}} ClickHouse 25.12を使用している場合は、`ALTER MODIFY COLUMN`に対する[下位互換性のない変更](https://clickhouse.com/docs/whats-new/changelog#backward-incompatible-change)が導入されたことに注意してください。これにより、バージョン18.8より前のGitLabにおけるClickHouseインテグレーションの移行処理が失敗します。GitLabをバージョン18.8以降にアップグレードしてください。{{< /alert >}}
+> [!warning]
+> ClickHouse 25.12を使用している場合、[backward-incompatible change](https://clickhouse.com/docs/whats-new/changelog#backward-incompatible-change)が`ALTER MODIFY COLUMN`に導入されたことに注意してください。これにより、バージョン18.8より前のGitLabにおけるClickHouseインテグレーションの移行処理が失敗します。GitLabをバージョン18.8以降にアップグレードする必要があります。
 
 ## ClickHouseの設定 {#set-up-clickhouse}
 
@@ -66,10 +67,10 @@ ClickHouseインスタンスを設定した後、次を行います:
 前提条件: 
 
 - ClickHouse Cloudアカウントを持っている。
-- GitLabインスタンスからClickHouse Cloudへのネットワーク接続を有効にします。
+- GitLabインスタンスからClickHouse Cloudへのネットワーク接続が有効である。
 - GitLabインスタンスの管理者である。
 
-ClickHouse Cloudを設定するには:
+ClickHouse Cloudを設定するには、以下を実行します:
 
 1. [ClickHouse Cloud](https://clickhouse.cloud)にサインインします。
 1. **New Service**を選択します。
@@ -85,7 +86,8 @@ ClickHouse Cloudを設定するには:
    - ユーザー名
    - パスワード
 
-{{< alert type="note" >}} ClickHouse Cloudは、バージョンのアップグレードとセキュリティパッチを自動的に処理します。Enterprise Edition（EE）のお客様は、ビジネス時間中の予期しないサービス中断を回避し、発生時期を制御するためにアップグレードをスケジュールできます。詳細については、[ClickHouseのアップグレード](#upgrade-clickhouse)を参照してください。{{< /alert >}}
+> [!note]
+> ClickHouse Cloudは、バージョンアップグレードとセキュリティパッチを自動的に処理します。Enterprise Edition（EE）のお客様は、ビジネス時間中の予期しないサービス中断を回避し、発生時期を制御するためにアップグレードをスケジュールできます。詳細については、[ClickHouseのアップグレード](#upgrade-clickhouse)を参照してください。
 
 ClickHouse Cloudサービスを作成したら、[GitLabデータベースとユーザーを作成します](#create-database-and-user)。
 
@@ -100,7 +102,8 @@ ClickHouse Cloudサービスを作成したら、[GitLabデータベースとユ
 - GitLabインスタンスからClickHouseへのネットワーク接続を有効である。
 - ClickHouseとGitLabインスタンスの両方の管理者である。
 
-{{< alert type="warning" >}} GitLab Self-Managed用ClickHouseの場合、バージョンのアップグレード、セキュリティパッチ、およびバックアップの計画と実行は、お客様の責任となります。詳細については、[ClickHouseのアップグレード](#upgrade-clickhouse)を参照してください。{{< /alert >}}
+> [!warning]
+> ClickHouse for GitLab Self-Managedの場合、バージョンアップグレード、セキュリティパッチ、およびバックアップの計画と実行はお客様の責任となります。詳細については、[ClickHouseのアップグレード](#upgrade-clickhouse)を参照してください。
 
 #### 高可用性の設定 {#configure-high-availability}
 
@@ -121,9 +124,9 @@ HA用にデータベースを設定するときは、`ON CLUSTER`句を使用し
 
 #### ロードバランサーの設定 {#configure-load-balancer}
 
-GitLabアプリケーションは、HTTP / HTTPSインターフェースを介してClickHouseクラスターと通信します。HAデプロイメントの場合は、HTTPプロキシまたはロードバランサーを使用して、ClickHouseクラスターノード全体にリクエストを分散させます。
+GitLabアプリケーションは、HTTP / HTTPSインターフェースを介してClickHouseクラスターと通信します。HAデプロイの場合は、HTTPプロキシまたはロードバランサーを使用して、ClickHouseクラスターノード全体にリクエストを分散させます。
 
-推奨されるロードバランサーオプション:
+推奨されるロードバランサーのオプション:
 
 - [chproxy](https://www.chproxy.org/) \- 組み込みのキャッシュとルーティングを備えたClickHouse固有のHTTPプロキシ。
 - HAProxy - 汎用TCP / HTTPロードバランサー。
@@ -176,11 +179,11 @@ GitLab Self-Managedインスタンス用ClickHouseを設定したら、[GitLab�
    clickhouse-client --host your-clickhouse-host --port 9440 --secure --user default --password 'your-password'
    ```
 
-   {{< alert type="note" >}}TLSをまだ設定していない場合は、初期テスト用に`--secure`フラグなしでポート`9000`を使用します。{{< /alert >}}
+   > [!note] TLSをまだ設定していない場合は、初期テストのために`--secure`フラグなしでポート`9000`を使用してください。
 
 ### データベースとユーザーを作成 {#create-database-and-user}
 
-必要なユーザーとデータベースオブジェクトを作成するには:
+必要なユーザーとデータベースオブジェクトを作成するには以下の手順に従います:
 
 1. 安全なパスワードを生成して保存します。
 1. サインインします:
@@ -226,7 +229,7 @@ GRANT gitlab_app TO gitlab ON CLUSTER CLUSTER_NAME_HERE;
 
 {{< tab title="Linuxパッケージ" >}}
 
-GitLabにClickHouseの認証情報を提供するには:
+GitLabにClickHouseの認証情報を提供するには、以下を実行します:
 
 1. `/etc/gitlab/gitlab.rb`を編集します: 
 
@@ -294,11 +297,11 @@ GitLabにClickHouseの認証情報を提供するには:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}本番環境のデプロイの場合は、ClickHouseインスタンスでTLS / SSLを設定し、`https://` URLを使用します。GitLab Self-Managedのインストールについては、[ネットワークセキュリティ](#network-security)ドキュメントを参照してください。{{< /alert >}}
+> [!note]本番環境デプロイの場合、ClickHouseインスタンスでTLS/SSLを設定し、`https://` URLを使用してください。GitLab Self-Managedインストールの場合は、[ネットワークセキュリティ](#network-security)のドキュメントを参照してください。
 
 ### 接続の確認 {#verify-the-connection}
 
-接続が正常に設定されたことを確認するには:
+接続が正常に設定されたことを確認するには、以下を実行します:
 
 1. [Railsコンソール](../administration/operations/rails_console.md#starting-a-rails-console-session)にサインインします。
 1. 次のコマンドを実行します:
@@ -333,7 +336,7 @@ sudo gitlab-rake gitlab:clickhouse:migrate
 
 {{< tab title="Helm Chart（Kubernetes）" >}}
 
-移行は、GitLab-Migrationsチャートを使用して自動的に実行されます。
+移行は、[GitLab-Migrationsチャート](https://docs.gitlab.com/charts/charts/gitlab/migrations/)で自動的に実行されます。
 
 または、Toolboxポッドで次のコマンドを実行して、移行を実行することもできます:
 
@@ -355,31 +358,31 @@ GitLabインスタンスがClickHouseに接続されたら、ClickHouseを使用
 - ClickHouse接続が設定され、検証されている。
 - 移行が正常に完了している。
 
-分析用ClickHouseを有効にするには:
+分析用ClickHouseを有効にするには、以下の手順に従います:
 
 1. 左側のサイドバーの下部で、**管理者**を選択します。
 1. **設定** > **一般**を選択します。
 1. **ClickHouse**を展開します。
-1. **Enable ClickHouse for Analytics**を選択します。
+1. **分析用ClickHouseの有効化**を選択します。
 1. **変更を保存**を選択します。
 
 ### 分析用ClickHouseの無効化 {#disable-clickhouse-for-analytics}
 
-分析用ClickHouseを無効にするには:
+分析用ClickHouseを無効にするには、以下の手順に従います:
 
 前提条件: 
 
 - インスタンスへの管理者アクセス権が必要です。
 
-無効にするには:
+無効にするには、以下の手順に従います:
 
 1. 左側のサイドバーの下部で、**管理者**を選択します。
 1. **設定** > **一般**を選択します。
 1. **ClickHouse**を展開します。
-1. **Enable ClickHouse for Analytics**チェックボックスをオフにします。
+1. **分析用ClickHouseの有効化**チェックボックスをオフにします。
 1. **変更を保存**を選択します。
 
-{{< alert type="note" >}} 分析用ClickHouseを無効にすると、GitLabはClickHouseのクエリを停止しますが、ClickHouseインスタンスからデータが削除されることはありません。ClickHouseに依存する分析機能は、代替データソースにフォールバックするか、使用できなくなります。{{< /alert >}}
+> [!note] AnalyticsにClickHouseを無効にすると、GitLabはClickHouseのクエリを停止しますが、ClickHouseインスタンスからデータは削除されません。ClickHouseに依存する分析機能は、代替データストアにフォールバックするか、使用できなくなります。
 
 ## ClickHouseのアップグレード {#upgrade-clickhouse}
 
@@ -389,7 +392,7 @@ ClickHouse Cloudは、バージョンのアップグレードとセキュリテ�
 
 アップグレードのスケジュールとメンテナンス期間については、[ClickHouse Cloudのドキュメント](https://clickhouse.com/docs/cloud/manage/updates)を参照してください。
 
-{{< alert type="note" >}} ClickHouse Cloudは、今後のアップグレードについて事前に通知します。新機能と変更点に関する情報を得るには、[ClickHouse Cloudの変更履歴](https://clickhouse.com/docs/cloud/changes)をご確認ください。{{< /alert >}}
+> [!note] ClickHouse Cloudは、今後のアップグレードについて事前にお知らせします。[ClickHouse Cloud変更履歴](https://clickhouse.com/docs/cloud/changes)を確認して、新機能と変更点について常に最新情報を入手してください。
 
 ### GitLab Self-Managed用ClickHouse（BYOC） {#clickhouse-for-gitlab-self-managed-byoc}
 
@@ -400,14 +403,14 @@ GitLab Self-Managed用ClickHouseの場合、バージョンアップグレード
 - ClickHouseインスタンスへの管理者アクセス権が必要です。
 - アップグレードする前に、データをバックアップしてください。[ディザスターリカバリー](#disaster-recovery)を参照してください。
 
-アップグレードする前に:
+アップグレードする前に下記をご確認ください:
 
 1. 破壊的な変更については、[ClickHouseのリリースノート](https://clickhouse.com/docs/category/release-notes)をご確認ください。
 1. GitLabのバージョンとの[互換性](#supported-clickhouse-versions)を確認してください。
 1. 非本番環境でアップグレードをテストしてください。
 1. 想定されるダウンタイムに備えるか、HAクラスターではローリングアップグレード戦略を採用してください。
 
-ClickHouseをアップグレードするには:
+ClickHouseをアップグレードするには、以下の手順に従います:
 
 1. 単一ノードデプロイの場合は、[ClickHouseのアップグレードドキュメント](https://clickhouse.com/docs/manage/updates)に従ってください。
 1. HAクラスター環境でデプロイを行う場合は、ダウンタイムを最小限に抑えるためにローリングアップグレードを実施してください:
@@ -415,7 +418,8 @@ ClickHouseをアップグレードするには:
    - ノードがクラスターに再結合するまで待ちます。
    - 次のノードに進む前に、クラスターのヘルスを検証します。
 
-{{< alert type="warning" >}} ClickHouseのバージョンが、常にGitLabのバージョンと互換性があることを確認してください。互換性のないバージョンを使用すると、インデックス作成処理が一時停止したり、機能が動作しなくなったりする可能性があります。詳細については、[サポートされているClickHouseのバージョン](#supported-clickhouse-versions)を参照してください。{{< /alert >}}
+> [!warning] 
+> ClickHouseのバージョンがGitLabのバージョンと互換性があることを常に確認してください。互換性のないバージョンを使用すると、インデックス作成処理が一時停止したり、機能が動作しなくなったりする可能性があります。詳細については、[サポートされているClickHouseのバージョン](#supported-clickhouse-versions)を参照してください
 
 詳細なアップグレード手順については、[アップデートに関するClickHouseのドキュメント](https://clickhouse.com/docs/manage/updates)を参照してください。
 
@@ -427,12 +431,12 @@ ClickHouseをアップグレードするには:
 
 - インスタンスへの管理者アクセス権が必要です。
 
-ClickHouseの移行ステータスを確認するには:
+ClickHouseの移行ステータスを確認するには、以下の手順に従います:
 
 1. 左側のサイドバーの下部で、**管理者**を選択します。
 1. **設定** > **一般**を選択します。
 1. **ClickHouse**を展開します。
-1. 利用可能な場合は、**Migration status**セクションを確認します。
+1. 利用可能な場合は、**移行ステータス**セクションを確認します。
 
 または、Railsコンソールを使用して、保留中の移行を確認します:
 
@@ -458,7 +462,7 @@ ClickHouseの移行が失敗した場合:
    bundle exec rake gitlab:clickhouse:migrate RAILS_ENV=production
    ```
 
-{{< alert type="note" >}}移行はべき等性を持ち、再実行しても安全に動作するように設計されています。移行が途中で失敗した場合でも、再実行すると中断した箇所から処理を再開するか、すでに完了しているステップをスキップします。{{< /alert >}}
+> [!note]移行は、べき等になるように設計されており、安全に再試行できます。移行が途中で失敗した場合、再度実行すると、中断したところから再開するか、すでに完了した手順をスキップします。
 
 ## ClickHouse Rakeタスク {#clickhouse-rake-tasks}
 
@@ -475,13 +479,13 @@ GitLabには、ClickHouseデータベースを管理するためのいくつか�
 | [`sudo gitlab-rake gitlab:clickhouse:schema:dump`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | バックアップまたはバージョン管理のために、現在のデータベーススキーマをファイルにダンプします。 |
 | [`sudo gitlab-rake gitlab:clickhouse:schema:load`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/click_house/migration.rake) | ダンプファイルからデータベーススキーマを読み込みます。 |
 
-{{< alert type="note" >}}セルフコンパイルインストールの場合、`bundle exec rake`ではなく`sudo gitlab-rake`を使用し、コマンドの最後に`RAILS_ENV=production`を追加します。{{< /alert >}}
+> [!note]セルフコンパイルインストールの場合、`sudo gitlab-rake`の代わりに`bundle exec rake`を使用し、コマンドの最後に`RAILS_ENV=production`を追加します。
 
 ### 一般的なタスクの例 {#common-task-examples}
 
 #### ClickHouseの接続とスキーマの検証 {#verify-clickhouse-connection-and-schema}
 
-ClickHouseの接続が動作していることを検証するには:
+ClickHouseの接続が動作していることを検証するには、以下を実行します:
 
 ```shell
 # For installations that use the Linux package
@@ -495,7 +499,7 @@ bundle exec rake gitlab:clickhouse:info RAILS_ENV=production
 
 #### すべての移行を再実行 {#re-run-all-migrations}
 
-保留中のすべての移行を実行するには:
+保留中のすべての移行を実行するには、以下を実行します:
 
 ```shell
 # For installations that use the Linux package
@@ -507,9 +511,10 @@ bundle exec rake gitlab:clickhouse:migrate RAILS_ENV=production
 
 #### データベースのリセット {#reset-the-database}
 
-{{< alert type="warning" >}}これは、ClickHouseデータベース内のすべてのデータを削除します。トラブルシューティングを行う場合や、開発環境でのみ使用してください。{{< /alert >}}
+> [!warning]
+> これにより、ClickHouseデータベース内のすべてのデータが削除されます。開発環境でのみ、またはトラブルシューティング時に使用してください。
 
-データベースをドロップして再作成するには:
+データベースをドロップして再作成するには、以下を実行します:
 
 ```shell
 # For installations that use the Linux package
@@ -531,7 +536,7 @@ bundle exec rake gitlab:clickhouse:setup RAILS_ENV=production
 
 ## パフォーマンスチューニング {#performance-tuning}
 
-{{< alert type="note" >}}ユーザー数に基づいたリソースサイジングとデプロイの推奨事項については、[システム要件](#system-requirements)を参照してください。{{< /alert >}}
+> [!note]ユーザー数に基づいたリソースサイジングとデプロイの推奨事項については、[システム要件](#system-requirements)を参照してください。
 
 ClickHouseのアーキテクチャとパフォーマンスチューニングについては、[アーキテクチャに関するClickHouseのドキュメント](https://clickhouse.com/docs/architecture/introduction)を参照してください。
 
@@ -556,7 +561,7 @@ ClickHouse Cloudは自動的に以下を行います:
 
 #### GitLab Self-Managed用ClickHouse {#clickhouse-for-gitlab-self-managed}
 
-独自のClickHouseインスタンスを運用している場合は、データの安全性を確保するために定期的にバックアップを取得することを推奨します。
+独自のClickHouseインスタンスを運用している場合は、データの安全性を確保するために定期的にバックアップを取得することを推奨します:
 
 - [オブジェクトストレージバケット（例: AWS S3）](https://clickhouse.com/docs/en/operations/backup#configuring-backuprestore-to-use-an-s3-endpoint)に、（`metrics`や`logs`のようなシステムテーブルを除く）テーブルの最初の完全バックアップを実行します。
 - この最初の完全バックアップの後に、[増分バックアップ](https://clickhouse.com/docs/en/operations/backup#take-an-incremental-backup)を実行します。
@@ -577,7 +582,7 @@ APIの認証情報を生成したら、コレクターを設定して、ClickHou
 
 ### GitLab Self-Managed用ClickHouse {#clickhouse-for-gitlab-self-managed-1}
 
-ClickHouseは、[Prometheus形式でメトリクス](https://clickhouse.com/docs/operations/server-configuration-parameters/settings#prometheus)を公開できます。これを有効にするには:
+ClickHouseは、[Prometheus形式でメトリクス](https://clickhouse.com/docs/operations/server-configuration-parameters/settings#prometheus)を公開できます。これを有効にするには、以下を実行します:
 
 1. `config.xml`の`prometheus`セクションを設定して、専用ポート（デフォルトは`9363`）でメトリクスを公開します。
 
@@ -661,7 +666,7 @@ Self-Managedインスタンスの場合、サーバー設定で`query_log`設定
 | 5,000 | ClickHouse Cloud Scale | `m8g.4xlarge` | `c4a-standard-16` | `Standard_D16ps_v6` | 管理または単一ノード |
 | 10,000 | ClickHouse Cloud Scale | `m8g.4xlarge` | `c4a-standard-16` | `Standard_D16ps_v6` | 管理または単一ノード/HA |
 | 25,000 | GitLab Self-Managed版ClickHouseまたはClickHouse Cloud Scale | `m8g.8xlarge`または3×`m8g.4xlarge` | `c4a-standard-32`または3×`c4a-standard-16` | `Standard_D32ps_v6`または3x`Standard_D16ps_v6` | 管理または単一ノード/HA |
-| 50,000 | GitLab Self-Managed高可用性（HA）用 ClickHouseまたはClickHouse Cloud Scale | 3×`m8g.4xlarge` | 3×`c4a-standard-16` | 3x`Standard_D16ps_v6` | 管理またはHAクラスター |
+| 50,000 | GitLab Self-Managed高可用性（HA）用ClickHouseまたはClickHouse Cloud Scale | 3×`m8g.4xlarge` | 3×`c4a-standard-16` | 3x`Standard_D16ps_v6` | 管理またはHAクラスター |
 
 ### 1,000ユーザー {#1k-users}
 
@@ -777,15 +782,16 @@ HAセットアップは、10,000ユーザー以上でのみ費用対効果が高
 
 ### GitLab 18.0.0以前のデータベーススキーマの移行 {#database-schema-migrations-on-gitlab-1800-and-earlier}
 
-{{< alert type="warning" >}} GitLab 18.0.0以前では、ClickHouseのデータベーススキーマの移行を実行すると、ClickHouse 24.xおよび25.xで次のエラーメッセージが表示されて失敗する場合があります:
+> [!warning]
+> GitLab 18.0.0および以前では、ClickHouseのデータベーススキーマ移行をClickHouse 24.xおよび25.xに対して実行すると、次のエラーメッセージで失敗する可能性があります:
+>
+> ```plaintext
+> Code: 344. DB::Exception: Projection is fully supported in ReplacingMergeTree with deduplicate_merge_projection_mode = throw. Use 'drop' or 'rebuild' option of deduplicate_merge_projection_mode
+> ```
+>
+> すべての移行を実行しないと、ClickHouseインテグレーションは機能しません。
 
-```plaintext
-Code: 344. DB::Exception: Projection is fully supported in ReplacingMergeTree with deduplicate_merge_projection_mode = throw. Use 'drop' or 'rebuild' option of deduplicate_merge_projection_mode
-```
-
-すべての移行を実行しないと、ClickHouseインテグレーションは機能しません。{{< /alert >}}
-
-この問題を回避して移行を実行するには:
+この問題を回避して移行を実行するには、以下の手順に従います:
 
 1. [Railsコンソール](../administration/operations/rails_console.md#starting-a-rails-console-session)にサインインします。
 1. 次のコマンドを実行します:
@@ -840,3 +846,11 @@ DB::Exception: gitlab: Not enough privileges.
 ```
 
 権限を付与した後は、マイグレーションを安全に再試行できます（1〜2時間待って分散マイグレーションロックが解除されるのを確認してから実行するのが理想です）。
+
+### ClickHouse CIジョブデータマテリアライズドビューのデータの不整合 {#clickhouse-ci-job-data-materialized-view-data-inconsistencies}
+
+GitLab 18.5および以前のバージョンでは、ネットワークタイムアウト後にSidekiqワーカーが再試行すると、重複データがClickHouseテーブル（`ci_finished_pipelines`や`ci_finished_builds`など）に挿入される可能性がありました。この問題により、マテリアライズドビューに、Runnerフリートダッシュボードを含む分析ダッシュボードに誤った集計メトリクスが表示されるようになりました。
+
+この問題はGitLab 18.9で修正され、18.6、18.7、および18.8にバックポートされました。この問題を解決するには、GitLab 18.6以降にアップグレードしてください。
+
+既存の重複データがある場合、影響を受けるマテリアライズドビューをリビルドするための修正は、[イシュー586319](https://gitlab.com/gitlab-org/gitlab/-/issues/586319)でGitLab 18.10で計画されています。支援が必要な場合は、GitLabサポートにお問い合わせください。

@@ -11,7 +11,7 @@ describe('SecurityNavItem', () => {
     wrapper = shallowMountExtended(SecurityNavItem, {
       provide: {
         totalNewFindings: 0,
-        isLoading: false,
+        isSecurityScansLoading: false,
         topLevelErrorMessage: '',
         ...provide,
       },
@@ -31,8 +31,8 @@ describe('SecurityNavItem', () => {
       expect(findReportListItem().text()).toBe('Security scan');
     });
 
-    it('passes isLoading to ReportListItem', () => {
-      createComponent({ provide: { isLoading: true } });
+    it('passes isSecurityScansLoading to ReportListItem', () => {
+      createComponent({ provide: { isSecurityScansLoading: true } });
 
       expect(findReportListItem().props('isLoading')).toBe(true);
     });
