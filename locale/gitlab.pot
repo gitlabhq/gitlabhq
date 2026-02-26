@@ -37522,6 +37522,15 @@ msgstr ""
 msgid "Invite members"
 msgstr ""
 
+msgid "Invite members to collaborate on changes to the repository."
+msgstr ""
+
+msgid "Invite members to plan and track work."
+msgstr ""
+
+msgid "Invite members to review changes to the repository."
+msgstr ""
+
 msgid "InviteEmail|%{inviter} invited you to join the %{project_or_group_name} %{project_or_group} with the following role: %{role}."
 msgstr ""
 

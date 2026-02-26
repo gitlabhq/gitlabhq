@@ -1,6 +1,7 @@
 <script>
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import { __ } from '~/locale';
+import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 
 export default {
   displayText: __('Invite members'),
@@ -17,15 +18,19 @@ export default {
     triggerSource() {
       return `${this.issuableType}_assignee_dropdown`;
     },
+    inviteHelpText() {
+      if (this.issuableType === TYPE_MERGE_REQUEST) {
+        return __('Invite members to collaborate on changes to the repository.');
+      }
+      return __('Invite members to plan and track work.');
+    },
   },
 };
 </script>
 
 <template>
-  <invite-members-trigger
-    trigger-element="anchor"
-    :display-text="$options.displayText"
-    :trigger-source="triggerSource"
-    classes="gl-block gl-pl-0 hover:gl-no-underline hover:!gl-text-link"
-  />
+  <div class="gl-rounded-b-lg gl-bg-subtle gl-p-5">
+    <p class="gl-mb-3">{{ inviteHelpText }}</p>
+    <invite-members-trigger :display-text="$options.displayText" :trigger-source="triggerSource" />
+  </div>
 </template>

@@ -1,5 +1,4 @@
 <script>
-import { GlDropdownItem } from '@gitlab/ui';
 import Vue from 'vue';
 import { createAlert } from '~/alert';
 import { TYPE_ALERT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
@@ -34,7 +33,6 @@ export default {
   components: {
     SidebarEditableItem,
     IssuableAssignees,
-    GlDropdownItem,
     SidebarInviteMembers,
     SidebarAssigneesRealtime,
     UserSelect,
@@ -321,10 +319,11 @@ export default {
           @input="onInput"
         >
           <template #footer>
-            <gl-dropdown-item v-if="directlyInviteMembers">
-              <sidebar-invite-members :issuable-type="issuableType" />
-            </gl-dropdown-item> </template
-        ></user-select>
+            <div class="-gl-my-3">
+              <sidebar-invite-members v-if="directlyInviteMembers" :issuable-type="issuableType" />
+            </div>
+          </template>
+        </user-select>
       </template>
     </sidebar-editable-item>
   </div>

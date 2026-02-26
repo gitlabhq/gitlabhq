@@ -9,7 +9,7 @@ RSpec.shared_examples 'issuable invite members' do
       visit issuable_path
 
       open_assignees_dropdown
-      click_link 'Invite members'
+      click_button 'Invite members'
 
       page.within invite_modal_selector do
         expect(page).to have_content("You're inviting members to the #{project.name} project")
@@ -24,7 +24,7 @@ RSpec.shared_examples 'issuable invite members' do
 
       open_assignees_dropdown
 
-      expect(page).not_to have_link('Invite members')
+      expect(page).not_to have_button('Invite members')
     end
   end
 end

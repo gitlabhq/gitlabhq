@@ -3,8 +3,14 @@
 RSpec.shared_context 'with CI job analytics test data' do |with_pipelines: true|
   let_it_be(:project, freeze: true) { create(:project) }
   let_it_be(:project2, freeze: true) { create(:project) }
-  let_it_be(:pipeline, freeze: true) { create(:ci_pipeline, project: project, started_at: 12.hours.ago) }
-  let_it_be(:pipeline1, freeze: true) { create(:ci_pipeline, project: project2, started_at: 24.hours.ago) }
+  let_it_be(:pipeline, freeze: true) do
+    create(:ci_pipeline, project: project, started_at: 12.hours.ago, finished_at: 11.hours.ago)
+  end
+
+  let_it_be(:pipeline1, freeze: true) do
+    create(:ci_pipeline, project: project2, started_at: 24.hours.ago, finished_at: 23.hours.ago)
+  end
+
   let_it_be(:stage1, freeze: true) { create(:ci_stage, pipeline: pipeline, project: project, name: 'build') }
   let_it_be(:stage2, freeze: true) { create(:ci_stage, pipeline: pipeline, project: project, name: 'test') }
   let_it_be(:stage3, freeze: true) { create(:ci_stage, pipeline: pipeline1, project: project2, name: 'deploy') }
@@ -37,11 +43,11 @@ RSpec.shared_context 'with CI job analytics test data' do |with_pipelines: true|
   if with_pipelines
 
     let_it_be(:ref_pipeline, freeze: true) do
-      create(:ci_pipeline, project: project, ref: 'feature-branch', started_at: 6.hours.ago)
+      create(:ci_pipeline, project: project, ref: 'feature-branch', started_at: 6.hours.ago, finished_at: 5.hours.ago)
     end
 
     let_it_be(:source_pipeline, freeze: true) do
-      create(:ci_pipeline, project: project, source: 'web', started_at: 12.hours.ago)
+      create(:ci_pipeline, project: project, source: 'web', started_at: 12.hours.ago, finished_at: 11.hours.ago)
     end
 
     let_it_be(:ref_stage, freeze: true) do

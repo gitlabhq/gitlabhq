@@ -52,12 +52,13 @@ module Ci
 
         finder = finder.filter_by_job_name(name_search) if name_search
 
-        finder.filter_by_pipeline_attrs(project: project,
+        finder = finder.filter_by_pipeline_attrs(project: project,
           from_time: from_time,
           to_time: to_time,
           source: source,
           ref: ref
         )
+        finder.apply_finished_at_lower_bound(from_time)
       end
 
       def base_finder

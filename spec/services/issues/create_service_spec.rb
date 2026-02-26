@@ -104,30 +104,6 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         end
       end
 
-      context "when work_item_system_defined_type is disabled" do
-        before do
-          stub_feature_flags(work_item_system_defined_type: false)
-        end
-
-        it 'raises an error if work item types have not been created yet' do
-          WorkItems::Type.delete_all
-
-          expect do
-            issue
-          end.to raise_error(
-            WorkItems::Type::DEFAULT_TYPES_NOT_SEEDED,
-            <<~STRING
-              Default work item types have not been created yet. Make sure the DB has been seeded successfully.
-              See related documentation in
-              https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
-
-              If you have additional questions, you can ask in
-              https://gitlab.com/gitlab-org/gitlab/-/issues/423483
-            STRING
-          )
-        end
-      end
-
       it 'creates the issue with the given params' do
         expect(Issuable::CommonSystemNotesService).to receive_message_chain(:new, :execute)
 

@@ -36,7 +36,8 @@
         = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
 
 - if can_update_merge_request && context_commits&.empty? && !(defined?(@next_page) && @next_page)
-  .add-review-item-modal-trigger{ data: { context_commits_empty: 'true' } }
+  %li
+    .add-review-item-modal-trigger{ data: { context_commits_empty: 'true' } }
 
 - if commits.size == 0 && context_commits.nil?
   %li{ data: { empty_list: true } }

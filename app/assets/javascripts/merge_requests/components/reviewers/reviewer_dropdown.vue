@@ -436,15 +436,14 @@ export default {
     </template>
     <template v-if="directlyInviteMembers" #footer>
       <div
-        class="gl-flex gl-flex-col gl-border-t-1 gl-border-t-dropdown !gl-p-2 !gl-pt-0 gl-border-t-solid"
+        class="gl-rounded-b-lg gl-border-t-1 gl-border-t-dropdown gl-bg-subtle !gl-p-5 gl-font-normal gl-border-t-solid"
       >
+        <p class="gl-mb-3">
+          {{ __('Invite members to review changes to the repository.') }}
+        </p>
         <invite-members-trigger
-          trigger-element="button"
           :display-text="__('Invite members')"
           trigger-source="merge_request_reviewers_dropdown"
-          category="tertiary"
-          block
-          class="!gl-mt-2 !gl-justify-start"
         />
       </div>
     </template>

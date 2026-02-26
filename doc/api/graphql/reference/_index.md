@@ -5551,6 +5551,31 @@ Input type: `ContainerVirtualRegistryUpstreamDeleteInput`
 | <a id="mutation-containervirtualregistryupstreamdelete-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-containervirtualregistryupstreamdelete-registryupstream"></a>`registryUpstream` | [`ContainerRegistryUpstreamWithRegistry`](#containerregistryupstreamwithregistry) | Deleted container registry upstream. |
 
+### `Mutation.containerVirtualRegistryUpstreamUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ContainerVirtualRegistryUpstreamUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-containervirtualregistryupstreamupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-containervirtualregistryupstreamupdate-id"></a>`id` | [`VirtualRegistriesContainerRegistryUpstreamID!`](#virtualregistriescontainerregistryupstreamid) | ID of the container virtual registry upstream. |
+| <a id="mutation-containervirtualregistryupstreamupdate-position"></a>`position` | [`Int!`](#int) | Priority order of an upstream within a virtual registry. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-containervirtualregistryupstreamupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-containervirtualregistryupstreamupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-containervirtualregistryupstreamupdate-registryupstream"></a>`registryUpstream` | [`ContainerRegistryUpstreamWithRegistry`](#containerregistryupstreamwithregistry) | Container registry upstream after update. |
+
 ### `Mutation.corpusCreate`
 
 Input type: `CorpusCreateInput`

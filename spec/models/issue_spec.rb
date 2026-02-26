@@ -1972,7 +1972,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#has_widget?' do
-    let(:work_item_type) { create(:work_item_type, :task) }
+    let(:work_item_type) { create(:work_item_system_defined_type, :task) }
     let(:issue) { create(:issue, project: reusable_project, work_item_type: work_item_type) }
 
     # Setting a fixed widget here so we don't get a licensed widget from the list as that could break the specs.
@@ -1980,10 +1980,6 @@ RSpec.describe Issue, feature_category: :team_planning do
     let(:widget_type) { :designs }
 
     subject { issue.has_widget?(widget_type) }
-
-    before do
-      stub_feature_flags(work_item_system_defined_type: false)
-    end
 
     context 'when the work item does not have the widget' do
       it { is_expected.to be_falsey }

@@ -7,7 +7,7 @@ import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_i
 import groupUsersSearchQuery from '~/graphql_shared/queries/group_users_search.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
-import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
+import SidebarInviteMembers from '~/sidebar/components/assignees/sidebar_invite_members.vue';
 import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -41,7 +41,7 @@ describe('WorkItemAssignees component', () => {
     participantsWidgetPresent: false,
   });
 
-  const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
+  const findInviteMembersTrigger = () => wrapper.findComponent(SidebarInviteMembers);
   const findAssignSelfButton = () => wrapper.findByTestId('assign-self');
   const findSidebarDropdownWidget = () => wrapper.findComponent(WorkItemSidebarDropdownWidget);
   const findAssigneeList = () => wrapper.findComponent(UncollapsedAssigneeList);

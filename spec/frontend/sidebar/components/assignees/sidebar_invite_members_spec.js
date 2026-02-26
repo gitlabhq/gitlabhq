@@ -4,11 +4,11 @@ import SidebarInviteMembers from '~/sidebar/components/assignees/sidebar_invite_
 
 describe('Sidebar invite members component', () => {
   let wrapper;
-  const issuableType = 'issue';
 
   const findDirectInviteLink = () => wrapper.findComponent(InviteMembersTrigger);
+  const findHelpText = () => wrapper.find('p');
 
-  const createComponent = () => {
+  const createComponent = (issuableType = 'issue') => {
     wrapper = shallowMount(SidebarInviteMembers, {
       propsData: {
         issuableType,
@@ -27,6 +27,22 @@ describe('Sidebar invite members component', () => {
 
     it('has expected attributes on the trigger', () => {
       expect(findDirectInviteLink().props('triggerSource')).toBe('issue_assignee_dropdown');
+    });
+  });
+
+  describe('invite help text', () => {
+    it('renders help text for non-merge-request issuable types', () => {
+      createComponent('issue');
+
+      expect(findHelpText().text()).toBe('Invite members to plan and track work.');
+    });
+
+    it('renders help text for merge request issuable type', () => {
+      createComponent('merge_request');
+
+      expect(findHelpText().text()).toBe(
+        'Invite members to collaborate on changes to the repository.',
+      );
     });
   });
 });

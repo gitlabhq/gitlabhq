@@ -15,19 +15,6 @@ RSpec.shared_examples 'quick actions that change work item type' do
       )
     end
 
-    context "when the FF for system defined types is disabled" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it 'populates :issue_type: and :work_item_type' do
-        _, updates, message = service.execute(command, work_item)
-
-        expect(message).to eq(_('Type changed successfully.'))
-        expect(updates).to eq({ issue_type: 'task', work_item_type: build_stubbed(:work_item_type, :task) })
-      end
-    end
-
     context 'when new type is invalid' do
       let(:command) { '/type foo' }
 
@@ -69,19 +56,6 @@ RSpec.shared_examples 'quick actions that change work item type' do
       let(:new_type) { 'incident' }
       let(:unsupported_type) { 'task' }
 
-      context "when the FF for system defined types is disabled" do
-        before do
-          stub_feature_flags(work_item_system_defined_type: false)
-        end
-
-        it 'populates :issue_type: and :work_item_type' do
-          _, updates, message = service.execute(command, work_item)
-
-          expect(message).to eq(_('Promoted successfully.'))
-          expect(updates).to eq({ issue_type: 'incident', work_item_type: build_stubbed(:work_item_type, :incident) })
-        end
-      end
-
       it 'populates :issue_type: and :work_item_type' do
         _, updates, message = service.execute(command, work_item)
 
@@ -99,19 +73,6 @@ RSpec.shared_examples 'quick actions that change work item type' do
       let(:work_item) { task }
       let(:new_type) { 'issue' }
       let(:unsupported_type) { 'incident' }
-
-      context "when the FF for system defined types is disabled" do
-        before do
-          stub_feature_flags(work_item_system_defined_type: false)
-        end
-
-        it 'populates :issue_type: and :work_item_type' do
-          _, updates, message = service.execute(command, work_item)
-
-          expect(message).to eq(_('Promoted successfully.'))
-          expect(updates).to eq({ issue_type: 'issue', work_item_type: build_stubbed(:work_item_type, :issue) })
-        end
-      end
 
       it 'populates :issue_type: and :work_item_type' do
         _, updates, message = service.execute(command, work_item)

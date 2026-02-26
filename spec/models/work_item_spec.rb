@@ -437,29 +437,8 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
     end
 
-    context "when using the work_item_type model" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      let_it_be(:custom_type_without_widgets) do
-        create(:work_item_type, :task) do |work_item_type|
-          work_item_type.widget_definitions
-            .where(widget_type: %w[assignees labels start_and_due_date current_user_todos development])
-            .delete_all
-
-          work_item_type
-        end
-      end
-
-      let_it_be(:custom_work_item_type) { create(:work_item_type, :issue) }
-
-      it_behaves_like "supports quick action commands"
-    end
-
     context "when using the system defined work_item_type model" do
       before do
-        stub_feature_flags(work_item_system_defined_type: true)
         allow(custom_type_without_widgets).to receive(:widget_definitions).and_return([])
       end
 
@@ -718,26 +697,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
           (all_types - [type]).each do |new_type|
             work_item.work_item_type_id = new_type
-
-            expect(work_item).to be_valid, "#{type} to #{new_type}"
-          end
-        end
-      end
-    end
-
-    context "when using the WorkItems::Type model" do
-      let_it_be(:all_types) { WorkItems::Type::BASE_TYPES.keys }
-
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it 'is possible to change between all types', :aggregate_failures do
-        all_types.each do |type|
-          work_item = build(:work_item, type, project: reusable_project)
-
-          (all_types - [type]).each do |new_type|
-            work_item.work_item_type_id = create(:work_item_type, new_type).id
 
             expect(work_item).to be_valid, "#{type} to #{new_type}"
           end

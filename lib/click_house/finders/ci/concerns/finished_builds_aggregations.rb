@@ -163,6 +163,14 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           def ms_to_s(node)
             query_builder.division(node, 1000.0)
           end
+
+          def format_datetime64(time)
+            query_builder.func('toDateTime64', [
+              query_builder.quote(time.utc.strftime('%Y-%m-%d %H:%M:%S')),
+              6,
+              query_builder.quote('UTC')
+            ])
+          end
         end
       end
     end

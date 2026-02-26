@@ -48,22 +48,6 @@ RSpec.describe WorkItems::TypesFramework::HasType, feature_category: :team_plann
         expect(work_item.work_item_type).to be_nil
       end
     end
-
-    context "when the FF for system defined types is disabled" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it 'returns the WorkItems::Type from the provider' do
-        expect(work_item.work_item_type).to eq(work_item_type)
-      end
-
-      it 'calls super' do
-        expect(work_item).to receive(:work_item_type).and_call_original
-
-        work_item.work_item_type
-      end
-    end
   end
 
   describe '#work_item_type=' do
@@ -119,31 +103,6 @@ RSpec.describe WorkItems::TypesFramework::HasType, feature_category: :team_plann
             .from(nil)
             .to(system_defined_type.id)
         end
-      end
-    end
-
-    context "when the FF for system defined types is disabled" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it 'uses the belongs_to setter' do
-        work_item.work_item_type = work_item_type
-
-        expect(work_item.association(:work_item_type).loaded?).to be true
-      end
-
-      it 'calls super' do
-        expect(work_item).to receive(:work_item_type=).and_call_original
-
-        work_item.work_item_type = work_item_type
-      end
-
-      it 'sets the work_item_type_id' do
-        expect { work_item.work_item_type = work_item_type }
-          .to change { work_item.work_item_type_id }
-          .from(nil)
-          .to(work_item_type.id)
       end
     end
   end

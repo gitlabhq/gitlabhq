@@ -5,20 +5,20 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { sortNameAlphabetically, newWorkItemId } from '~/work_items/utils';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
-import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
 import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import { s__, sprintf, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
+import SidebarInviteMembers from '~/sidebar/components/assignees/sidebar_invite_members.vue';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 
 export default {
   components: {
     WorkItemSidebarDropdownWidget,
-    InviteMembersTrigger,
+    SidebarInviteMembers,
     SidebarParticipant,
     GlButton,
     UncollapsedAssigneeList,
@@ -366,15 +366,9 @@ export default {
       <sidebar-participant v-if="item" :user="item" />
     </template>
     <template v-if="canInviteMembers" #footer>
-      <gl-button category="tertiary" block class="!gl-justify-start">
-        <invite-members-trigger
-          :display-text="__('Invite members')"
-          trigger-element="side-nav"
-          icon="plus"
-          trigger-source="work-item-assignees"
-          classes="hover:!gl-no-underline gl-pb-2"
-        />
-      </gl-button>
+      <div class="-gl-m-2">
+        <sidebar-invite-members :issuable-type="workItemType" />
+      </div>
     </template>
     <template #none>
       <div class="gl-flex gl-items-center gl-gap-2 gl-text-subtle">

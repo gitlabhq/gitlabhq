@@ -17,6 +17,10 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
 
   let(:pipeline_class) do
     Class.new do
+      def self.relation
+        'fake_relation'
+      end
+
       def initialize(_); end
 
       def on_finish; end
@@ -45,6 +49,9 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
         allow(instance).to receive(:pipelines)
           .and_return([{ stage: 0, pipeline: pipeline_class }])
       end
+
+      allow(BulkImports::ExportStatus).to receive(:new)
+        .and_return(instance_double(BulkImports::ExportStatus, batches_count: 1))
     end
 
     context 'when tracker is not found' do
@@ -106,6 +113,28 @@ RSpec.describe BulkImports::FinishBatchedPipelineWorker, feature_category: :impo
           .with(described_class::REQUEUE_DELAY, pipeline_tracker.id)
 
         subject.perform(pipeline_tracker.id)
+      end
+
+      context 'when not all batches have been created yet' do
+        it 're-enqueues when export has more batches than have been created' do
+          export_status = instance_double(BulkImports::ExportStatus, batches_count: 2)
+          allow(BulkImports::ExportStatus).to receive(:new).and_return(export_status)
+
+          expect(described_class)
+            .to receive(:perform_in)
+            .with(described_class::REQUEUE_DELAY, pipeline_tracker.id)
+
+          subject.perform(pipeline_tracker.id)
+        end
+
+        it 'finishes the tracker when all expected batches are created and done' do
+          export_status = instance_double(BulkImports::ExportStatus, batches_count: 1)
+          allow(BulkImports::ExportStatus).to receive(:new).and_return(export_status)
+
+          expect { subject.perform(pipeline_tracker.id) }
+            .to change { pipeline_tracker.reload.finished? }
+            .from(false).to(true)
+        end
       end
     end
 

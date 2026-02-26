@@ -51,7 +51,15 @@ module BulkImports
     end
 
     def import_in_progress?
-      sorted_batches.in_progress.any?
+      sorted_batches.in_progress.any? || !all_batches_created?
+    end
+
+    def all_batches_created?
+      tracker.batches.count >= export_status.batches_count
+    end
+
+    def export_status
+      @export_status ||= ExportStatus.new(tracker, tracker.importing_relation)
     end
 
     def most_recent_batch_stale?

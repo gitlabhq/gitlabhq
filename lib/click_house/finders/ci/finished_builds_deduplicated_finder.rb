@@ -66,6 +66,10 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           with_inner_query(inner_query.having(condition))
         end
 
+        def apply_finished_at_lower_bound(from_time)
+          with_inner_query(inner_query.where(inner_query[:finished_at].gteq(format_datetime64(from_time))))
+        end
+
         def limit(count)
           with_outer_query(outer_query.limit(count))
         end

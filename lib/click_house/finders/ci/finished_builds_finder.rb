@@ -37,6 +37,10 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           where(query_builder[:name].matches("%#{sanitize_sql_like(term.downcase)}%"))
         end
 
+        def apply_finished_at_lower_bound(from_time)
+          where(query_builder[:finished_at].gteq(format_datetime64(from_time)))
+        end
+
         private
 
         def add_aggregation_select(expression, **)

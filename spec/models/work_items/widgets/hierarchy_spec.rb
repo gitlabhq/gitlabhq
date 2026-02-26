@@ -169,33 +169,6 @@ RSpec.describe WorkItems::Widgets::Hierarchy, feature_category: :team_planning d
         )
       end
     end
-
-    context "when the FF for system defined types is disabled" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it 'returns rolled up dates by work item type and state' do
-        is_expected.to contain_exactly(
-          {
-            work_item_type: build(:work_item_type, :epic),
-            counts_by_state: { all: 3, opened: 2, closed: 1 }
-          },
-          {
-            work_item_type: build(:work_item_type, :issue),
-            counts_by_state: { all: 2, opened: 1, closed: 1 }
-          },
-          {
-            work_item_type: build(:work_item_type, :task),
-            counts_by_state: { all: 1, opened: 1, closed: 0 }
-          },
-          {
-            work_item_type: build(:work_item_type, :ticket),
-            counts_by_state: { all: 0, opened: 0, closed: 0 }
-          }
-        )
-      end
-    end
   end
 
   describe '#depth_limit_reached_by_type' do

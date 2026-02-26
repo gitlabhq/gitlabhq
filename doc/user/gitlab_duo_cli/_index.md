@@ -98,13 +98,42 @@ irm "https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/raw/main/packa
 
 To authenticate with GitLab, you can either:
 
+- Use the GitLab CLI as a credential helper (recommended).
 - Use the GitLab Duo CLI configuration screen.
-- Use `glab` as a credential provider.
 
-### Use the configuration screen
+### GitLab CLI credential helper
 
-The first time you run the GitLab Duo CLI, a configuration screen appears with a prompt to set a
-**GitLab Instance URL** and **GitLab Token** for authentication.
+Use the [GitLab CLI (`glab`)](https://docs.gitlab.com/cli/) as a credential helper to maintain a single authentication configuration for both `duo` and `glab`. This method supports both personal access tokens and OAuth.
+
+Prerequisites:
+
+- `glab` version 1.85.2 or later.
+- `duo` version 8.68.0 or later.
+
+#### Use a personal access token
+
+To authenticate with a personal access token:
+
+1. Authenticate `glab` with a PAT by running `glab auth login`.
+1. Run `duo`.
+
+For more information, see [`glab auth login`](https://docs.gitlab.com/cli/auth/login/).
+
+#### Use OAuth
+
+To authenticate with OAuth, you must use the GitLab CLI credential helper.
+
+1. In the GitLab CLI documentation, follow the OAuth authentication instructions for either:
+   - [GitLab.com](https://gitlab.com/gitlab-org/cli#oauth-gitlab-com).
+   - [GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/cli#oauth-gitlab-self-managed-gitlab-dedicated).
+1. After `glab` is authenticated, run `duo`.
+
+> [!note]
+> If you have already used the GitLab Duo CLI configuration screen, you cannot use this method until you delete your authentication settings from the `~/.gitlab/storage.json` file.
+
+### Duo CLI configuration screen
+
+Alternatively, you can configure personal access token authentication directly in the Duo CLI configuration screen. This method only supports personal access tokens, and maintains a separate authentication configuration from `glab`.
 
 Prerequisites:
 
@@ -112,35 +141,15 @@ Prerequisites:
 
 To authenticate:
 
-1. Enter a **GitLab Instance URL** and then press <kbd>Enter</kbd>. For example,
-   `https://gitlab.com`.
+1. Run `duo` in your terminal. The first time you run the GitLab Duo CLI, a configuration screen appears.
+1. Enter a **GitLab Instance URL** and then press <kbd>Enter</kbd>:
+   - For GitLab.com, enter `https://gitlab.com`.
+   - For GitLab Self-Managed or GitLab Dedicated, enter your instance URL.
 1. For **GitLab Token**, enter your personal access token.
-1. To save and exit the CLI, press <kbd>Control</kbd>+<kbd>S</kbd>.
+1. To save and exit the CLI, press <kbd>Enter</kbd>.
 1. To restart the CLI, run `duo` in your terminal.
 
 To modify the configuration after initial setup, use `duo config edit`.
-
-### Use `glab` as a credential provider
-
-This method uses `glab` as a credential provider and supports OAuth.
-
-> [!note]
-> If you have already used the GitLab Duo CLI configuration screen to authenticate with GitLab, you cannot use this method until you delete your authentication settings from the `~/.gitlab/storage.json` file.
-
-Prerequisites:
-
-- `glab` version 1.85.2 or later.
-- `duo` version 8.68.0 or later.
-
-To authenticate:
-
-1. Authenticate to `glab` by running `glab auth login`.
-1. Run `duo`.
-
-For more information, see:
-
-- [`glab auth login`](https://docs.gitlab.com/cli/auth/login/)
-- [Authenticate `glab` with OAuth](https://gitlab.com/gitlab-org/cli#oauth-gitlab-self-managed-gitlab-dedicated)
 
 ## Use the GitLab Duo CLI
 

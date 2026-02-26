@@ -40,6 +40,7 @@ class AbuseReportsController < ApplicationController
       message = _("Thank you for your report. A GitLab administrator will look into it shortly.")
       redirect_to root_path, notice: message
     elsif report_params[:user_id].present?
+      @abuse_report = response.payload
       render :new
     else
       redirect_to root_path,

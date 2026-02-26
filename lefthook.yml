@@ -166,6 +166,8 @@ pre-push:
       run: scripts/lint/check_deprecated_files.rb
     unused-methods-linter:
       tags: backend
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: '*.{haml,rb,erb}'
       run: scripts/lint/unused_methods.rb
     validate-fast-spec-helper:
       tags: backend test
