@@ -732,12 +732,12 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
       end
     end
 
-    describe 'type resolution' do
+    describe 'type resolution via schema output' do
       context 'with String type' do
         let(:options) { { type: 'String' } }
 
         it 'resolves to string' do
-          expect(converter.resolve_object_type).to eq('string')
+          expect(converter.schema).to eq({ type: 'string' })
         end
       end
 
@@ -745,7 +745,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'Integer' } }
 
         it 'resolves to integer' do
-          expect(converter.resolve_object_type).to eq('integer')
+          expect(converter.schema).to eq({ type: 'integer' })
         end
       end
 
@@ -753,7 +753,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'Grape::API::Boolean' } }
 
         it 'resolves to boolean' do
-          expect(converter.resolve_object_type).to eq('boolean')
+          expect(converter.schema).to eq({ type: 'boolean' })
         end
       end
 
@@ -761,15 +761,15 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'Hash' } }
 
         it 'resolves to object' do
-          expect(converter.resolve_object_type).to eq('object')
+          expect(converter.schema).to eq({ type: 'object' })
         end
       end
 
       context 'with DateTime type' do
         let(:options) { { type: 'DateTime' } }
 
-        it 'resolves to string' do
-          expect(converter.resolve_object_type).to eq('string')
+        it 'resolves to string with date-time format' do
+          expect(converter.schema).to eq({ type: 'string', format: 'date-time' })
         end
       end
 
@@ -777,41 +777,31 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { {} }
 
         it 'defaults to string' do
-          expect(converter.resolve_object_type).to eq('string')
-        end
-      end
-    end
-
-    describe 'format resolution' do
-      context 'with Date type' do
-        let(:options) { { type: 'Date' } }
-
-        it 'resolves format to date' do
-          expect(converter.resolve_object_format).to eq('date')
+          expect(converter.schema).to eq({ type: 'string' })
         end
       end
 
-      context 'with DateTime type' do
-        let(:options) { { type: 'DateTime' } }
+      context 'with Symbol type' do
+        let(:options) { { type: 'Symbol' } }
 
-        it 'resolves format to date-time' do
-          expect(converter.resolve_object_format).to eq('date-time')
+        it 'resolves to string' do
+          expect(converter.schema).to eq({ type: 'string' })
         end
       end
 
-      context 'with String type' do
-        let(:options) { { type: 'String' } }
+      context 'with Float type' do
+        let(:options) { { type: 'Float' } }
 
-        it 'has no format' do
-          expect(converter.resolve_object_format).to be_nil
+        it 'resolves to number' do
+          expect(converter.schema).to eq({ type: 'number' })
         end
       end
 
-      context 'with Integer type' do
-        let(:options) { { type: 'Integer' } }
+      context 'with Time type' do
+        let(:options) { { type: 'Time' } }
 
-        it 'has no format' do
-          expect(converter.resolve_object_format).to be_nil
+        it 'resolves to string with date-time format' do
+          expect(converter.schema).to eq({ type: 'string', format: 'date-time' })
         end
       end
     end

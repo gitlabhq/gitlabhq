@@ -1867,7 +1867,6 @@ Layout/LineLength:
     - 'lib/gitlab/ci/parsers/coverage/documents/cobertura_document.rb'
     - 'lib/gitlab/ci/parsers/security/common.rb'
     - 'lib/gitlab/ci/pipeline/chain/create_cross_database_associations.rb'
-    - 'lib/gitlab/ci/pipeline/chain/template_usage.rb'
     - 'lib/gitlab/ci/pipeline/chain/validate/abilities.rb'
     - 'lib/gitlab/ci/pipeline/chain/validate/after_config.rb'
     - 'lib/gitlab/ci/pipeline/chain/validate/external.rb'

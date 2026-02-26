@@ -26,8 +26,8 @@ module Gitlab
         end
 
         def schema
-          object_type = resolve_object_type
-          object_format = resolve_object_format
+          object_type = TypeResolver.resolve_type(options[:type]) || 'string'
+          object_format = TypeResolver.resolve_format(nil, options[:type])
 
           return build_union_schema(object_type) if options[:type]&.start_with?('[')
           return build_range_schema(object_type) if options[:values].is_a?(Range)
@@ -37,21 +37,9 @@ module Gitlab
           build_basic_schema(object_type, object_format)
         end
 
-        def resolve_object_format
-          return 'date-time' if options[:type] == 'DateTime'
-
-          'date' if options[:type] == 'Date'
-        end
-
-        def resolve_object_type
-          return 'string' if options[:type] == 'DateTime' || options[:type] == 'Date'
-
-          TypeResolver.resolve_type(options[:type]) || 'string'
-        end
-
         def build_union_schema(object_type)
           types = object_type[1..-2].split(", ")
-          { oneOf: types.map { |type| { type: TypeResolver.resolve_type(type) } } }
+          { oneOf: types.map { |type| TypeResolver.resolve_union_member(type) } }
         end
 
         def build_range_schema(object_type)

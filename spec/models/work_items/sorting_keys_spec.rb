@@ -40,19 +40,4 @@ RSpec.describe WorkItems::SortingKeys, feature_category: :team_planning do
       expect(described_class.available?('unknown', widget_list: widget_list)).to be(false)
     end
   end
-
-  describe '#widget_definition_class' do
-    it 'returns SystemDefined::WidgetDefinition' do
-      expect(described_class.send(:widget_definition_class))
-        .to eq(::WorkItems::TypesFramework::SystemDefined::WidgetDefinition)
-    end
-
-    context 'when work_item_system_defined_type flag is disabled' do
-      it 'returns WidgetDefinition' do
-        stub_feature_flags(work_item_system_defined_type: false)
-
-        expect(described_class.send(:widget_definition_class)).to eq(::WorkItems::WidgetDefinition)
-      end
-    end
-  end
 end

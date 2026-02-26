@@ -4279,7 +4279,6 @@
 - './spec/lib/gitlab/ci/pipeline/chain/seed_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/chain/sequence_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/chain/skip_spec.rb'
-- './spec/lib/gitlab/ci/pipeline/chain/template_usage_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/chain/validate/abilities_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/chain/validate/external_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/chain/validate/repository_spec.rb'

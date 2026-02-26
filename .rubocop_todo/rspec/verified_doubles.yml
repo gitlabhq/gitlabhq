@@ -328,7 +328,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/ci/pipeline/chain/remove_unwanted_chat_jobs_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/sequence_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/skip_spec.rb'
-    - 'spec/lib/gitlab/ci/pipeline/chain/template_usage_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/expression/lexeme/and_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/expression/lexeme/equals_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/expression/lexeme/matches_spec.rb'

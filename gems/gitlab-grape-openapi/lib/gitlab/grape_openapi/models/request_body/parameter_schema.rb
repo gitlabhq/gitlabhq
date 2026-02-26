@@ -27,8 +27,8 @@ module Gitlab
             return build_union_type_schema(param_options) if type_str.start_with?('[')
 
             validations = validations_for(key.to_sym)
-            object_type = resolve_param_type(param_options[:type])
-            object_format = resolve_param_format(param_options[:type])
+            object_type = Converters::TypeResolver.resolve_type(param_options[:type]) || 'string'
+            object_format = Converters::TypeResolver.resolve_format(nil, param_options[:type])
 
             # Handle range values
             return build_range_schema(object_type, param_options) if param_options[:values].is_a?(Range)
@@ -65,7 +65,7 @@ module Gitlab
 
           def build_union_type_schema(param_options)
             types = param_options[:type][1..-2].split(", ")
-            { oneOf: types.map { |type| { type: Converters::TypeResolver.resolve_type(type) } } }
+            { oneOf: types.map { |type| Converters::TypeResolver.resolve_union_member(type) } }
           end
 
           def build_range_schema(object_type, param_options)
@@ -171,16 +171,6 @@ module Gitlab
               .namespace_stackable
               .new_values[:validations]
               &.select { |v| v[:attributes].include?(attribute) }
-          end
-
-          def resolve_param_type(type)
-            return 'string' if type == 'DateTime'
-
-            Converters::TypeResolver.resolve_type(type) || 'string'
-          end
-
-          def resolve_param_format(type)
-            'date-time' if type == 'DateTime'
           end
         end
       end

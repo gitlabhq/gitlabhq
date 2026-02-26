@@ -28,7 +28,20 @@ module Gitlab
         attr_reader :config, :routes, :schema_registry, :request_body_registry
 
         def grouped_routes
-          routes.group_by { |route| normalize_path(route) }
+          routes
+            .reject { |route| skip_route?(route) }
+            .group_by { |route| normalize_path(route) }
+        end
+
+        def skip_route?(route)
+          method = extract_method(route)
+          path = normalize_path(route)
+
+          # Grape registers catch-all routes with HTTP method * (matches any method) and
+          # paths containing *path (wildcard segments). Neither is valid OpenAPI: * isn't
+          # an HTTP method, and *path isn't a valid path segment. These are internal
+          # Grape routing artifacts, not actual API endpoints.
+          method == '*' || path.include?('*')
         end
 
         def normalize_path(route)

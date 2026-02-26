@@ -102,18 +102,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     it "returns the items with widget iteration enabled" do
       expect(with_enabled_widget_definition).not_to include(issue)
     end
-
-    context "when the FF for system defined types is disabled" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-        # Ensure that the widget definition does not exists.
-        WorkItems::WidgetDefinition.where(widget_type: "iteration", work_item_type: issue.work_item_type).delete_all
-      end
-
-      it "returns the items with widget iteration enabled" do
-        expect(with_enabled_widget_definition).not_to include(issue)
-      end
-    end
   end
 
   describe '.with_parent_ids' do

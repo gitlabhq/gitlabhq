@@ -94,11 +94,32 @@ connection = Ai::ActiveContext::Connection.create!(
 connection.activate!
 ```
 
+For PostgreSQL, use the `pgvector` extension:
+
+1. In the PostgreSQL database, create the extension:
+
+   ```sql
+   CREATE EXTENSION vector;
+   ```
+
+1. In the Rails console, create the connection:
+
+   ```ruby
+   connection = Ai::ActiveContext::Connection.create!(
+     name: "postgres",
+     options: { host: 'localhost', port: 5432, user: 'postgres', password: 'password' },
+     adapter_class: "ActiveContext::Databases::Postgresql::Adapter"
+   )
+   connection.activate!
+   ```
+
+For more information, see the [`pgvector` documentation](https://github.com/pgvector/pgvector).
+
 Supported adapter classes:
 
 - `ActiveContext::Databases::Elasticsearch::Adapter`
 - `ActiveContext::Databases::OpenSearch::Adapter`
-- `ActiveContext::Databases::Postgres::Adapter`
+- `ActiveContext::Databases::Postgresql::Adapter`
 
 The `options` hash should contain the connection details specific to your vector store (URL, credentials, etc.).
 

@@ -45,5 +45,33 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::PathConverter do
         expect(paths).to be_empty
       end
     end
+
+    context 'with wildcard routes' do
+      # Grape registers catch-all routes with method '*' and '*path' segments.
+      # This method builds a fake route that mimics Grape::Router::Route's
+      # internal structure (instance variables @pattern and @options) because
+      # PathConverter reads them via instance_variable_get.
+      def build_fake_route(origin:, method:)
+        pattern = Object.new
+        pattern.instance_variable_set(:@origin, origin)
+
+        route = Object.new
+        route.instance_variable_set(:@pattern, pattern)
+        route.instance_variable_set(:@options, { method: method, params: {} })
+        route
+      end
+
+      let(:wildcard_route) { build_fake_route(origin: '/api/:version/*path(.:format)', method: '*') }
+
+      let(:routes) { TestApis::UsersApi.routes + [wildcard_route] }
+
+      it 'excludes wildcard routes from output' do
+        expect(paths.keys).not_to include(a_string_matching(/\*/))
+      end
+
+      it 'still includes normal routes' do
+        expect(paths.keys).to include('/api/v1/users')
+      end
+    end
   end
 end

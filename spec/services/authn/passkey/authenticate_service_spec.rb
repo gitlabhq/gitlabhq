@@ -44,7 +44,7 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
     client.get(
       challenge: challenge,
       sign_count: passkey_registration.counter + 1,
-      allow_credentials: user.passkeys.pluck(:credential_xid), # `[]` in grpd for browser to auto-"discover" credentials
+      allow_credentials: user.passkeys.pluck(:credential_xid),
       extensions: { "credProps" => { "rk" => true } }
     )
   end
@@ -56,18 +56,21 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
   subject(:authenticate_service) { described_class.new(device_response, challenge).execute }
 
   describe '#execute' do
-    shared_examples 'returns authentication failure' do
-      it 'returns a Service.error' do
+    shared_examples 'returns authentication failure' do |message:|
+      it 'returns a ServiceResponse.error with message' do
         expect(authenticate_service).to be_a(ServiceResponse)
         expect(authenticate_service).to be_error
         expect(authenticate_service.message).to be_present
+        expect(authenticate_service.message).to match(message)
       end
     end
 
     shared_examples 'returns authentication success' do
-      it 'returns a Service.success' do
+      it 'returns a ServiceResponse.success with message' do
         expect(authenticate_service).to be_a(ServiceResponse)
         expect(authenticate_service).to be_success
+        expect(authenticate_service.message).to be_present
+        expect(authenticate_service.message).to match('Passkey successfully authenticated.')
       end
     end
 
@@ -92,11 +95,7 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
           end
         end
 
-        it_behaves_like 'returns authentication failure'
-
-        it 'returns generic error message' do
-          expect(authenticate_service.message).to eq(_('Failed to connect to your device. Try again.'))
-        end
+        it_behaves_like 'returns authentication failure', message: 'Failed to connect to your device. Try again.'
       end
     end
 
@@ -113,73 +112,49 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
           )
         end
 
-        it_behaves_like 'returns authentication failure'
+        it_behaves_like 'returns authentication failure', message: 'Failed to verify WebAuthn challenge. Try again.'
       end
 
       context 'with an invalid JSON response' do
         let(:device_response) { 'bad response' }
 
-        it_behaves_like 'returns authentication failure'
+        it_behaves_like 'returns authentication failure', message: 'Your passkey did not send a valid JSON response.'
       end
 
-      context 'with a wrong origin (rpID)' do
-        context 'with a cloned authenticator' do
-          let(:webauthn_authenticate_result) do
-            client.get(
-              challenge: challenge,
-              sign_count: passkey_registration.counter - 1,
-              allow_credentials: user.passkeys.pluck(:credential_xid),
-              extensions: { "credProps" => { "rk" => true } }
-            )
-          end
-
-          it_behaves_like 'returns authentication failure'
+      context 'with a cloned authenticator' do
+        let(:webauthn_authenticate_result) do
+          client.get(
+            challenge: challenge,
+            sign_count: passkey_registration.counter - 1,
+            allow_credentials: user.passkeys.pluck(:credential_xid),
+            extensions: { "credProps" => { "rk" => true } }
+          )
         end
 
-        context 'with a non-existent authenticator' do
-          let(:different_client) { WebAuthn::FakeClient.new(origin) }
-
-          let(:webauthn_creation_result) do
-            different_client.create( # rubocop:disable Rails/SaveBang -- .create is a FakeClient method
-              challenge: registration_challenge,
-              user_verified: true,
-              extensions: { "credProps" => { "rk" => true } }
-            )
-          end
-
-          let(:webauthn_authenticate_result) do
-            different_client.get(
-              challenge: challenge,
-              sign_count: 1,
-              allow_credentials: user.passkeys.pluck(:credential_xid),
-              extensions: { "credProps" => { "rk" => true } }
-            )
-          end
-
-          it_behaves_like 'returns authentication failure'
-        end
+        it_behaves_like 'returns authentication failure',
+          message: 'Passkey may have been cloned. Contact your administrator.'
       end
 
       context 'with a user trying to sign-in with a passkey, without having registered one' do
         let(:device_response) do
-          create_response = client.create(challenge: challenge) # rubocop:disable Rails/SaveBang -- .create is a FakeClient method
-          credential_id = create_response["rawId"]
-
-          create(:webauthn_registration,
-            credential_xid: credential_id,
-            user: user
+          create_response = client.create( # rubocop:disable Rails/SaveBang -- .create is a FakeClient method
+            challenge: challenge,
+            user_verified: true,
+            extensions: { "credProps" => { "rk" => true } }
           )
+          credential_id = create_response["rawId"]
 
           webauthn_authenticate_result = client.get(
             challenge: challenge,
             sign_count: 1,
-            allow_credentials: [credential_id]
+            allow_credentials: [credential_id],
+            extensions: { "credProps" => { "rk" => true } }
           )
 
           webauthn_authenticate_result.to_json
         end
 
-        it_behaves_like 'returns authentication failure'
+        it_behaves_like 'returns authentication failure', message: 'Failed to authenticate passkey.'
 
         it 'returns an error message with a hyperlink to the passkey page' do
           expect(authenticate_service.message).to be_html_safe
@@ -189,14 +164,14 @@ RSpec.describe Authn::Passkey::AuthenticateService, feature_category: :system_ac
         end
       end
 
-      context 'when webauthn verification returns false' do
+      context 'when webauthn credential verification fails' do
         before do
-          allow_next_instance_of(WebAuthn::AuthenticatorAssertionResponse) do |instance|
-            allow(instance).to receive(:verify).and_return(false)
+          allow_next_instance_of(WebAuthn::PublicKeyCredentialWithAssertion) do |instance|
+            allow(instance).to receive(:verify).and_raise(WebAuthn::VerificationError)
           end
         end
 
-        it_behaves_like 'returns authentication failure'
+        it_behaves_like 'returns authentication failure', message: 'Failed to connect to your device. Try again.'
       end
     end
   end

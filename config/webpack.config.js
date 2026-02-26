@@ -2,14 +2,14 @@
 const crypto = require('./helpers/patched_crypto');
 
 const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
-const { VUE_COMPILER_VERSION = EXPLICIT_VUE_VERSION } = process.env;
+const { VUE_COMPILER_VERSION } = process.env;
 if (![undefined, '2', '3'].includes(EXPLICIT_VUE_VERSION)) {
   throw new Error(
     `Invalid VUE_VERSION value: ${EXPLICIT_VUE_VERSION}. Only '2' and '3' are supported`,
   );
 }
 const USE_VUE3 = EXPLICIT_VUE_VERSION === '3';
-const USE_VUE3_COMPILER = VUE_COMPILER_VERSION === '3';
+const USE_VUE3_COMPILER = USE_VUE3 && VUE_COMPILER_VERSION === '3';
 
 if (USE_VUE3) {
   console.log('[V] Using Vue.js 3');
@@ -309,6 +309,8 @@ if (USE_VUE3) {
     // Has no real effect here, since we're using thread-loader which serializes config passing to threads
     // Implemented in custom compiler itself instead, kept here for future upgrade and consistency with vite
     vueLoaderOptions.compilerOptions.isCustomElement = isCustomElement;
+  } else {
+    vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/vue2_compiler.js');
   }
 } else {
   Object.assign(alias, {

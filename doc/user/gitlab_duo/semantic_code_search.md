@@ -42,9 +42,10 @@ and [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110).
   - For GitLab.com, experiment features for your top-level namespace.
   - For GitLab Self-Managed, GitLab Duo experiment and beta features for the instance.
 - [GitLab Duo](../duo_agent_platform/turn_on_off.md#turn-gitlab-duo-on-or-off) turned on for your project.
-- A supported vector store configured:
+- One of these vector stores configured:
   - Elasticsearch 8.0 and later.
   - OpenSearch 2.0 and later.
+  - PostgreSQL with the [`pgvector`](https://github.com/pgvector/pgvector) extension.
 - Administrator access.
 
 ## Enable semantic code search
@@ -61,15 +62,20 @@ you can enable semantic code search by connecting to the same cluster:
 
 ### With the Rails console
 
-To create a custom vector store connection for Elasticsearch or OpenSearch,
+To create a custom vector store connection for Elasticsearch, OpenSearch, or PostgreSQL,
 in the Rails console, create a connection with `adapter` and `options`.
+
+> [!note]
+> You should use Elasticsearch or OpenSearch for medium to large repositories.
+> Use PostgreSQL with `pgvector` only for setups with a few small repositories.
+> Indexing and querying performance might be limited with `pgvector`.
 
 #### Elasticsearch
 
 ```ruby
 connection = Ai::ActiveContext::Connection.create!(
   name: "elasticsearch",
-  options: { url: ["http://your-elasticsearch-url:9200"] },
+  options: options,
   adapter_class: "ActiveContext::Databases::Elasticsearch::Adapter"
 )
 connection.activate!
@@ -90,7 +96,7 @@ Connection options:
 ```ruby
 connection = Ai::ActiveContext::Connection.create!(
   name: "opensearch",
-  options: { url: ["http://your-opensearch-url:9200"] },
+  options: options,
   adapter_class: "ActiveContext::Databases::Opensearch::Adapter"
 )
 connection.activate!
@@ -110,6 +116,45 @@ Connection options:
 | `aws_access_key`         | string           | No       | None       | AWS access key ID. |
 | `aws_secret_access_key`  | string           | No       | None       | AWS secret access key. |
 
+#### PostgreSQL with `pgvector`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/552311) in GitLab 18.8.
+
+{{< /history >}}
+
+For PostgreSQL, use the [`pgvector`](https://github.com/pgvector/pgvector) extension:
+
+1. In the PostgreSQL database, create the extension:
+
+   ```sql
+   CREATE EXTENSION vector;
+   ```
+
+1. In the Rails console, create the connection:
+
+   ```ruby
+   connection = Ai::ActiveContext::Connection.create!(
+     name: "postgres",
+     options: options,
+     adapter_class: "ActiveContext::Databases::Postgresql::Adapter"
+   )
+   connection.activate!
+   ```
+
+Connection options:
+
+| Option           | Type    | Required | Default | Description |
+|------------------|---------|----------|---------|-------------|
+| `host`           | string  | Yes      | None    | PostgreSQL host. |
+| `port`           | integer | No       | None    | PostgreSQL port. |
+| `database`       | string  | No       | None    | Database name. |
+| `user`           | string  | No       | None    | PostgreSQL user. |
+| `password`       | string  | No       | None    | PostgreSQL password. |
+| `connect_timeout`| integer | No       | `5`     | Connection timeout in seconds. |
+| `pool_size`      | integer | No       | `5`     | Connection pool size. |
+
 ## Use semantic code search
 
 Semantic code search is available as a GitLab MCP server tool.
@@ -122,4 +167,4 @@ When you first use semantic code search in a GitLab project:
 - These embeddings are stored in your configured vector store.
 - Updates are processed incrementally when code is merged to the default branch.
 
-Initial indexing might take a few minutes depending on your repository size.
+Initial indexing might take a while depending on your repository size.

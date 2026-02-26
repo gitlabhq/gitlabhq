@@ -26,6 +26,12 @@ Prerequisites:
 
 ## Create a Geo site
 
+{{< history >}}
+
+- `blob_download_timeout` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/569919) in GitLab 18.10.
+
+{{< /history >}}
+
 Creates a Geo site.
 
 ```plaintext
@@ -55,6 +61,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/
 | `selective_sync_shards`               | array   | no       | The repository storage for the projects synced if `selective_sync_type` == `shards`.                                                                   |
 | `selective_sync_namespace_ids`        | array   | no       | The IDs of groups that should be synced, if `selective_sync_type` == `namespaces`.                                                                     |
 | `minimum_reverification_interval`     | integer | no       | The interval (in days) in which the repository verification is valid. Once expired, it is reverified. This has no effect when set on a secondary site. |
+| `blob_download_timeout`               | integer | no       | The timeout (in seconds) for blob replication. Defaults to 28800. Maximum is 86400.                                                                    |
 
 Example response:
 
@@ -76,6 +83,7 @@ Example response:
   "selective_sync_namespace_ids": [1, 25],
   "minimum_reverification_interval": 7,
   "sync_object_storage": false,
+  "blob_download_timeout": 28800,
   "web_edit_url": "https://primary.example.com/admin/geo/sites/3/edit",
   "web_geo_replication_details_url": "https://secondary.example.com/admin/geo/sites/3/replication/lfs_objects",
   "_links": {
@@ -118,6 +126,7 @@ Example response:
     "selective_sync_shards": [],
     "selective_sync_namespace_ids": [1, 25],
     "minimum_reverification_interval": 7,
+    "blob_download_timeout": 28800,
     "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
     "_links": {
       "self": "https://primary.example.com/api/v4/geo_sites/1",
@@ -142,6 +151,7 @@ Example response:
     "selective_sync_namespace_ids": [1, 25],
     "minimum_reverification_interval": 7,
     "sync_object_storage": true,
+    "blob_download_timeout": 28800,
     "web_edit_url": "https://primary.example.com/admin/geo/sites/2/edit",
     "web_geo_replication_details_url": "https://secondary.example.com/admin/geo/sites/2/replication/lfs_objects",
     "_links": {
@@ -184,6 +194,7 @@ Example response:
   "selective_sync_shards": [],
   "selective_sync_namespace_ids": [1, 25],
   "minimum_reverification_interval": 7,
+  "blob_download_timeout": 28800,
   "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
   "_links": {
     "self": "https://primary.example.com/api/v4/geo_sites/1",
@@ -194,6 +205,12 @@ Example response:
 ```
 
 ## Update a Geo site
+
+{{< history >}}
+
+- `blob_download_timeout` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/569919) in GitLab 18.10.
+
+{{< /history >}}
 
 Updates a specified Geo site.
 
@@ -216,6 +233,7 @@ PUT /geo_sites/:id
 | `selective_sync_shards`               | array   | no       | The repository storage for the projects synced if `selective_sync_type` == `shards`.                                                                   |
 | `selective_sync_namespace_ids`        | array   | no       | The IDs of groups that should be synced, if `selective_sync_type` == `namespaces`.                                                                     |
 | `minimum_reverification_interval`     | integer | no       | The interval (in days) in which the repository verification is valid. Once expired, it is reverified. This has no effect when set on a secondary site. |
+| `blob_download_timeout`               | integer | no       | The timeout (in seconds) for blob replication. Defaults to 28800. Maximum is 86400.                                                                    |
 
 Example response:
 
@@ -236,6 +254,7 @@ Example response:
   "selective_sync_shards": [],
   "selective_sync_namespace_ids": [1, 25],
   "minimum_reverification_interval": 7,
+  "blob_download_timeout": 28800,
   "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
   "_links": {
     "self": "https://primary.example.com/api/v4/geo_sites/1",
@@ -287,6 +306,7 @@ Example response:
   "repos_max_capacity": 25,
   "verification_max_capacity": 100,
   "container_repositories_max_capacity": 10,
+  "blob_download_timeout": 28800,
   "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
   "_links": {
     "self": "https://primary.example.com/api/v4/geo_sites/1",

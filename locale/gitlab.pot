@@ -64654,6 +64654,24 @@ msgstr ""
 msgid "Semantic search will be disabled soon."
 msgstr ""
 
+msgid "SemanticSearch|Connect a vector store to index and store embeddings."
+msgstr ""
+
+msgid "SemanticSearch|Current status of the semantic code search."
+msgstr ""
+
+msgid "SemanticSearch|Disabled"
+msgstr ""
+
+msgid "SemanticSearch|Enabled"
+msgstr ""
+
+msgid "SemanticSearch|Status"
+msgstr ""
+
+msgid "SemanticSearch|Vector storage"
+msgstr ""
+
 msgid "Send"
 msgstr ""
 

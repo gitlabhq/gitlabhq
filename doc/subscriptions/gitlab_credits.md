@@ -184,8 +184,9 @@ Some features have multiple model options to choose from, while other features u
 
 ### Models
 
-The following table lists the number of requests you can make with one GitLab Credit for different models.
+The following table lists the number of requests you can make with one GitLab Credit for different [models](../user/duo_agent_platform/model_selection.md).
 Newer, more complex models have a higher multiplier and require more credits.
+A request is made anytime a model is called.
 
 For self-hosted models, you can make eight requests for one credit for any [supported](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#supported-models) or [compatible](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#compatible-models) model.
 
@@ -203,13 +204,13 @@ For premium models with optimized integration:
 
 | Model | Requests with one credit |
 |-------|------------------------|
-| `claude-4.5-haiku` (default Agentic Chat model) | 6.7 |
+| `claude-4.5-haiku` | 6.7 |
 | `gpt-5-codex` | 3.3|
 | `gpt-5` | 3.3 |
 | `gpt-5.2` | 2.5 |
 | `claude-3.5-sonnet` | 2.0 |
 | `claude-3.7-sonnet` | 2.0 |
-| `claude-sonnet-4` <sup>1</sup> (default model) | 2.0 |
+| `claude-sonnet-4` <sup>1</sup> | 2.0 |
 | `claude-sonnet-4.5` <sup>1</sup> | 2.0 |
 | `claude-sonnet-4.6` <sup>1</sup> | 2.0 |
 | `claude-opus-4.5` | 1.2 |
@@ -236,7 +237,7 @@ The following table lists the number of requests you can make with one GitLab Cr
 
 [GitLab Duo Chat (Agentic)](../user/gitlab_duo_chat/agentic_chat.md) doesn't use a fixed model,
 so credit cost varies based on the model selected for the request.
-With the default model (`claude-4.5-haiku`) you can make 6.7 requests with one credit.
+With the [default model](../user/duo_agent_platform/model_selection.md#default-models) you can make 6.7 requests with one credit.
 
 Each message sent to GitLab Duo Chat (Agentic) counts as one billable request.
 One conversation window can include multiple messages, and so multiple billable requests.

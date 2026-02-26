@@ -29,14 +29,13 @@ module Gitlab
 
         def build_schema_hash
           {}.tap do |hash|
-            add_type_and_format(hash)
+            add_type(hash)
             add_properties(hash)
           end
         end
 
-        def add_type_and_format(hash)
+        def add_type(hash)
           hash[:type] = type if type
-          hash[:format] = @properties[:format] if @properties[:format]
         end
 
         def add_properties(hash)

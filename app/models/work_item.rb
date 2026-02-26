@@ -52,12 +52,7 @@ class WorkItem < Issue
   end
 
   scope :with_enabled_widget_definition, ->(type) do
-    if Feature.enabled?(:work_item_system_defined_type, :instance)
-      where(work_item_type_id: ::WorkItems::TypesFramework::SystemDefined::Type.with_widget_definition(type).map(&:id))
-    else
-      joins(work_item_type: :enabled_widget_definitions)
-        .merge(::WorkItems::WidgetDefinition.by_enabled_widget_type(type))
-    end
+    where(work_item_type_id: ::WorkItems::TypesFramework::SystemDefined::Type.with_widget_definition(type).map(&:id))
   end
 
   scope :with_group_level_and_project_issues_enabled, ->(include_group_level_items: true) do

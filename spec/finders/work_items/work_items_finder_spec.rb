@@ -263,31 +263,4 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
       end
     end
   end
-
-  describe '#widget_definition_class' do
-    subject(:finder) { described_class.new(user, params) }
-
-    context 'with group params' do
-      let(:params) { { group_id: group.id } }
-
-      it 'returns SystemDefined::WidgetDefinition' do
-        expect(finder.send(:widget_definition_class))
-          .to eq(WorkItems::TypesFramework::SystemDefined::WidgetDefinition)
-      end
-    end
-
-    context 'when work_item_system_defined_type feature flag is disabled' do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      context 'with group params' do
-        let(:params) { { group_id: group.id } }
-
-        it 'returns legacy WidgetDefinition' do
-          expect(finder.send(:widget_definition_class)).to eq(WorkItems::WidgetDefinition)
-        end
-      end
-    end
-  end
 end

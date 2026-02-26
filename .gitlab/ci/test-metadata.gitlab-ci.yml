@@ -71,6 +71,7 @@ verify-tests-metadata:
 
 export-predictive-test-metrics:
   stage: post-test
+  when: always
   extends:
     - .yarn-cache
     - .with-ci-node-image

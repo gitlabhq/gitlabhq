@@ -18,9 +18,11 @@ module Webauthn
       encoded_raw_id = Base64.strict_encode64(webauthn_credential.raw_id)
       stored_webauthn_credential = stored_passkey_or_second_factor_webauthn_credential(encoded_raw_id)
 
-      encoder = WebAuthn.configuration.encoder
-
-      raise WebAuthn::Error unless verify_webauthn(stored_webauthn_credential, webauthn_credential, @challenge, encoder)
+      webauthn_credential.verify(
+        @challenge,
+        public_key: stored_webauthn_credential.public_key,
+        sign_count: stored_webauthn_credential.counter
+      )
 
       raise WebAuthn::Error if stored_webauthn_credential.passkey? && !@user.allow_passkey_authentication?
 
@@ -66,41 +68,8 @@ module Webauthn
       )
     end
 
-    def verify_webauthn(stored_webauthn_credential, webauthn_credential, challenge, encoder)
-      stored_webauthn_credential &&
-        validate_webauthn_credential(webauthn_credential) &&
-        verify_webauthn_credential(webauthn_credential, stored_webauthn_credential, challenge, encoder)
-    end
-
     def stored_passkey_or_second_factor_webauthn_credential(encoded_raw_id)
       @user.webauthn_registrations.find_by_credential_xid!(encoded_raw_id)
-    end
-
-    ##
-    # Validates that webauthn_credential is syntactically valid
-    #
-    # duplicated from WebAuthn::PublicKeyCredential#verify
-    # which can't be used here as we need to call WebAuthn::AuthenticatorAssertionResponse#verify instead
-    # (which is done in #verify_webauthn_credential)
-    def validate_webauthn_credential(webauthn_credential)
-      webauthn_credential.type == WebAuthn::TYPE_PUBLIC_KEY &&
-        webauthn_credential.raw_id && webauthn_credential.id &&
-        webauthn_credential.raw_id == WebAuthn.standard_encoder.decode(webauthn_credential.id)
-    end
-
-    ##
-    # Verifies that webauthn_credential matches stored_credential with the given challenge
-    #
-    def verify_webauthn_credential(webauthn_credential, stored_credential, challenge, encoder)
-      # We need to adjust the relaying party id (RP id) we verify against if the registration in question
-      # is a migrated U2F registration. This is because the appid of U2F and the rp id of WebAuthn differ.
-      rp_id = webauthn_credential&.client_extension_outputs&.dig('appid') ? WebAuthn.configuration.origin : URI(WebAuthn.configuration.origin).host
-      webauthn_credential.response.verify(
-        encoder.decode(challenge),
-        public_key: encoder.decode(stored_credential.public_key),
-        sign_count: stored_credential.counter,
-        rp_id: rp_id
-      )
     end
   end
 end

@@ -111,6 +111,8 @@ module Analytics
           ON CONFLICT(stage_event_hash_id, #{issuable_id_column})
           DO UPDATE SET
             #{column_updates.join(",\n")}
+          WHERE
+            #{mutable_column_conditions.join(" AND\n")}
           SQL
 
           result = connection.execute(query)
@@ -168,6 +170,19 @@ module Analytics
             :end_event_timestamp,
             :duration_in_milliseconds
           ]
+        end
+
+        def mutable_column_conditions
+          columns_to_ignore = [
+            adapter_class.quote_column_name(issuable_id_column),
+            *Array(primary_key).map(&:to_sym)
+          ]
+
+          (insert_column_list - columns_to_ignore).map do |column|
+            column_with_table = "#{table_name}.#{column}"
+
+            "#{column_with_table} IS DISTINCT FROM EXCLUDED.#{column}"
+          end
         end
 
         def column_updates

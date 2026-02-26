@@ -142,15 +142,11 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         expect(pipeline.error_messages).to be_empty
       end
 
-      it 'increments the prometheus counter' do
-        counter = spy('pipeline created counter')
-
-        allow(Gitlab::Ci::Pipeline::Metrics)
-          .to receive(:pipelines_created_counter).and_return(counter)
+      it 'enqueues PipelineCreationMetricsWorker' do
+        expect(Ci::PipelineCreationMetricsWorker)
+          .to receive(:perform_async).with(kind_of(Integer), nil, anything, anything)
 
         pipeline
-
-        expect(counter).to have_received(:increment)
       end
 
       it 'schedules TrackPipelineTriggerEventsWorker via PipelineCreatedEvent' do
@@ -172,14 +168,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
         expect(histogram).to have_received(:observe)
           .with({ source: 'push', plan: project.actual_plan_name }, 5)
-      end
-
-      it 'tracks included template usage' do
-        expect_next_instance_of(Gitlab::Ci::Pipeline::Chain::TemplateUsage) do |instance|
-          expect(instance).to receive(:perform!)
-        end
-
-        execute_service
       end
 
       it 'tracks included catalog component usage' do

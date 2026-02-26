@@ -300,15 +300,11 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
           expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response)
         end
 
-        it 'tracks the usage of inputs' do
-          expect do
-            worker.perform(pipeline_schedule.id, user.id)
-          end.to trigger_internal_events('create_pipeline_with_inputs').with(
-            category: 'Gitlab::Ci::Pipeline::Chain::Metrics',
-            additional_properties: { value: 2, label: 'schedule', property: 'repository_source' },
-            project: project,
-            user: user
-          )
+        it 'enqueues PipelineCreationMetricsWorker with inputs count' do
+          expect(Ci::PipelineCreationMetricsWorker)
+            .to receive(:perform_async).with(kind_of(Integer), 2, anything, anything)
+
+          worker.perform(pipeline_schedule.id, user.id)
         end
       end
 

@@ -231,18 +231,29 @@ For example, we renamed the merge request _WIP_ feature to _Draft_. To accomplis
 
 Customers did not experience any disruption to their existing API integrations.
 
-#### Maintain API backwards-compatibility for feature removals
+#### What to do with feature removals
 
-Even when a feature that an endpoint interfaced with is [removed](deprecation_guidelines/_index.md) in a major GitLab version, we must still maintain API backwards-compatibility.
+When a feature that an endpoint interfaced with is [removed](deprecation_guidelines/_index.md) in a major GitLab version, we must maintain a balance
+between API backwards-compatibility and returning a result the user can rely on.
 
-Acceptable solutions for maintaining API backwards-compatibility include:
+Choose the appropriate approach based on the context:
+
+**Silent degradation** - Use when an error would disrupt broader functionality:
 
 - Return a sensible static value from a field, or an empty response (for example,
   `null` or `[]`).
 - Turn an argument into a no-op by continuing to accept the argument but having it
   no longer be operational.
+- Best suited for endpoints like Application Settings where removing one setting
+  should not cause the entire endpoint to fail.
 
-The key principle is that existing customer API integrations must not experience errors.
+**Error response** - Use when a feature has been fully removed:
+
+- Return a `404 Not Found` when the removed feature was the primary purpose of the endpoint.
+- This clearly communicates to users that the feature no longer exists.
+
+The key principle is that existing customer API integrations should degrade gracefully
+where possible, while providing clear feedback when a feature is no longer available.
 The endpoints continue to respond with the same fields and accept the same
 arguments, although the underlying feature interaction is no longer operational.
 

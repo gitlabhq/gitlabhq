@@ -31297,7 +31297,7 @@ Represents a container upstream registry.
 | <a id="containerupstream-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
 | <a id="containerupstream-registriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.6. **Status**: Experiment. Number of registries using the upstream. |
 | <a id="containerupstream-url"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
-| <a id="containerupstream-username"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
+| <a id="containerupstream-username"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Username to sign in to the upstream registry. |
 
 ### `ContainerUpstreamCacheEntry`
 
@@ -31335,7 +31335,7 @@ Represents container upstream details.
 | <a id="containerupstreamdetails-registriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.6. **Status**: Experiment. Number of registries using the upstream. |
 | <a id="containerupstreamdetails-registryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[ContainerRegistryUpstreamWithRegistry!]!`](#containerregistryupstreamwithregistry) | **Introduced** in GitLab 18.8. **Status**: Experiment. Represents the connected upstream registry for an upstream and the upstream position data. |
 | <a id="containerupstreamdetails-url"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
-| <a id="containerupstreamdetails-username"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
+| <a id="containerupstreamdetails-username"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.7. **Status**: Experiment. Username to sign in to the upstream registry. |
 
 #### Fields with arguments
 
@@ -60378,7 +60378,6 @@ Implementations:
 | <a id="upstreaminterface-name"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
 | <a id="upstreaminterface-registriescount"></a>`registriesCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.6. **Status**: Experiment. Number of registries using the upstream. |
 | <a id="upstreaminterface-url"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
-| <a id="upstreaminterface-username"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
 
 #### `User`
 

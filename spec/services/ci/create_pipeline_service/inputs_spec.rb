@@ -117,13 +117,11 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
           expect(my_job_deploy.options[:script]).to eq(['echo "Deploying to staging using blue-green strategy"'])
         end
 
-        it 'tracks the usage of inputs' do
-          expect { execute }.to trigger_internal_events('create_pipeline_with_inputs').with(
-            category: 'Gitlab::Ci::Pipeline::Chain::Metrics',
-            additional_properties: { value: 5, label: 'push', property: config_source },
-            project: project,
-            user: user
-          )
+        it 'enqueues PipelineCreationMetricsWorker with inputs count' do
+          expect(Ci::PipelineCreationMetricsWorker)
+            .to receive(:perform_async).with(kind_of(Integer), 5, anything, anything)
+
+          execute
         end
       end
     end
