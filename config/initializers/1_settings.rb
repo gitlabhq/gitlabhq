@@ -1250,6 +1250,14 @@ Settings.gitlab_kas['client_timeout_seconds'] ||= 5
 # Settings.gitlab_kas['external_k8s_proxy_url'] ||= 'grpc://localhost:8154' # NOTE: Do not set a default until all distributions have been updated with a correct value
 
 #
+# Knowledge Graph
+#
+Gitlab.ee do
+  Settings['knowledge_graph'] ||= {}
+  Settings.knowledge_graph['secret_file'] ||= Rails.root.join('.gitlab_knowledge_graph_secret')
+end
+
+#
 # Authentication
 #
 Settings['authn'] ||= {}

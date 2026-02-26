@@ -1,9 +1,10 @@
 <script>
-import { GlModal, GlSprintf, GlFormInput } from '@gitlab/ui';
+import { GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 import { __, s__, sprintf } from '~/locale';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
-import { getDayDifference, newDate, getCurrentUtcDate } from '~/lib/utils/datetime_utility';
+import { getCurrentUtcDate, getDayDifference, newDate } from '~/lib/utils/datetime_utility';
+import PermanentDeletionConfirmCheckbox from '~/groups_projects/components/permanent_deletion_confirm_checkbox.vue';
 
 export default {
   name: 'GroupsProjectsDeleteModal',
@@ -29,7 +30,12 @@ export default {
       ),
     },
   },
-  components: { GlModal, GlSprintf, GlFormInput },
+  components: {
+    GlModal,
+    GlSprintf,
+    GlFormInput,
+    PermanentDeletionConfirmCheckbox,
+  },
   model: {
     prop: 'visible',
     event: 'change',
@@ -69,6 +75,7 @@ export default {
   data() {
     return {
       userInput: null,
+      checkboxChecked: false,
       modalId: uniqueId(`delete-modal-`),
     };
   },
@@ -76,8 +83,17 @@ export default {
     i18n() {
       return this.$options.resourceStrings[this.resourceType];
     },
+    checkboxRequired() {
+      const featureAvailable =
+        window.gon?.saas_features?.groupProjectPermanentDeletionConfirmation ||
+        window.gon?.dedicated_features?.groupProjectPermanentDeletionConfirmation;
+
+      return featureAvailable && this.markedForDeletion;
+    },
     confirmDisabled() {
-      return this.userInput !== this.confirmPhrase;
+      const phraseMatches = this.userInput === this.confirmPhrase;
+      const checkboxValid = !this.checkboxRequired || this.checkboxChecked;
+      return !phraseMatches || !checkboxValid;
     },
     modalActionProps() {
       return {
@@ -124,6 +140,16 @@ export default {
       }
     },
   },
+  methods: {
+    handleModalChange(isVisible) {
+      if (!isVisible) {
+        this.userInput = null;
+        this.checkboxChecked = false;
+      }
+
+      this.$emit('change', isVisible);
+    },
+  },
 };
 </script>
 
@@ -135,7 +161,7 @@ export default {
     :action-cancel="modalActionProps.cancel"
     :aria-label="ariaLabel"
     @primary.prevent="$emit('primary')"
-    @change="$emit('change', $event)"
+    @change="handleModalChange"
   >
     <template #modal-title>{{ __('Are you absolutely sure?') }}</template>
     <div>
@@ -166,9 +192,16 @@ export default {
       <gl-form-input
         id="confirm_name_input"
         v-model="userInput"
+        class="gl-mb-5"
         name="confirm_name_input"
         type="text"
         data-testid="confirm-name-field"
+      />
+
+      <permanent-deletion-confirm-checkbox
+        v-if="checkboxRequired"
+        v-model="checkboxChecked"
+        :resource-type="resourceType"
       />
     </div>
   </gl-modal>

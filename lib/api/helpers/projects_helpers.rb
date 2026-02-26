@@ -88,6 +88,7 @@ module API
       end
 
       params :optional_project_params_ee do
+        # EE-specific project parameters
       end
 
       params :optional_project_params do
@@ -101,6 +102,7 @@ module API
       end
 
       params :optional_create_project_params_ee do
+        # EE-specific project creation parameters
       end
 
       params :optional_create_project_params do
@@ -110,6 +112,7 @@ module API
       end
 
       params :optional_filter_params_ee do
+        # EE-specific filter parameters
       end
 
       params :optional_update_params_ce do
@@ -130,6 +133,7 @@ module API
       end
 
       params :optional_update_params_ee do
+        # EE-specific project update parameters
       end
 
       params :optional_update_params do

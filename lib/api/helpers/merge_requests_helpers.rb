@@ -9,6 +9,7 @@ module API
       UNPROCESSABLE_ERROR_KEYS = [:project_access, :branch_conflict, :validate_fork, :base].freeze
 
       params :ee_approval_params do
+        # EE-specific approval parameters
       end
 
       params :merge_requests_negatable_params do |options|

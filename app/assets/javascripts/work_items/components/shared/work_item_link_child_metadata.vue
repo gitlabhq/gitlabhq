@@ -33,6 +33,12 @@ export default {
       required: false,
       default: () => [],
     },
+    // eslint-disable-next-line vue/no-unused-properties -- Used by EE component extension
+    namespacePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     milestone() {

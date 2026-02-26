@@ -151,9 +151,9 @@ This change has been observed to notably improve response times in internal benc
 GitLab has validated and tested the following providers. The AI Gateway supports LLM providers that are compatible with [LiteLLM](https://docs.litellm.ai/docs/providers).
 
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
-- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions) 
-- [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview) 
-- [OpenAI](https://developers.openai.com/api/docs/models) 
+- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
+- [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)
+- [OpenAI](https://developers.openai.com/api/docs/models)
 
 For configuration information, see the following provider documentation:
 

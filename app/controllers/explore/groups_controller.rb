@@ -36,3 +36,5 @@ class Explore::GroupsController < Explore::ApplicationController
     render_group_tree GroupsFinder.new(current_user, finder_params).execute.limit(MAX_QUERY_SIZE)
   end
 end
+
+Explore::GroupsController.prepend_mod_with('Explore::GroupsController')

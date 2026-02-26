@@ -323,6 +323,7 @@ export default {
         :is-child-item-open="isChildItemOpen"
         :metadata-widgets="metadataWidgets"
         :hidden-metadata-keys="hiddenMetadataKeys"
+        :namespace-path="childItemFullPath"
         class="@xl/panel:!gl-ml-0"
       />
       <div v-if="displayLabels" class="gl-flex gl-flex-wrap">

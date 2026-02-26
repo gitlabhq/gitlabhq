@@ -212,7 +212,7 @@ module WorkItems
 
         def show_project_selector?
           value = configuration_class.try(:show_project_selector?)
-          value.nil? ? true : value
+          value.nil? || value
         end
 
         def supports_move_action?
@@ -229,17 +229,17 @@ module WorkItems
 
         def configurable?
           value = configuration_class.try(:configurable?)
-          value.nil? ? true : value
+          value.nil? || value
         end
 
         def creatable?
           value = configuration_class.try(:creatable?)
-          value.nil? ? true : value
+          value.nil? || value
         end
 
         def visible_in_settings?
           value = configuration_class.try(:visible_in_settings?)
-          value.nil? ? true : value
+          value.nil? || value
         end
 
         def archived?
@@ -258,6 +258,11 @@ module WorkItems
           true
         end
 
+        def can_be_conversion_target?
+          value = configuration_class.try(:can_be_conversion_target?)
+          value.nil? || value
+        end
+
         private
 
         def licenses_for_parent
@@ -270,7 +275,7 @@ module WorkItems
 
         # resource_parent is used in EE
         def supported_conversion_base_types(_resource_parent, _user)
-          self.class.all.map(&:base_type)
+          self.class.all.select(&:can_be_conversion_target?).map(&:base_type)
         end
 
         # overridden in EE to check for EE-specific restrictions

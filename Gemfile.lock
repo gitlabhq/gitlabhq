@@ -1261,7 +1261,7 @@ GEM
     nio4r (2.7.0)
     nkf (0.2.0)
     no_proxy_fix (0.1.2)
-    nokogiri (1.19.0)
+    nokogiri (1.19.1)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     notiffany (0.1.3)

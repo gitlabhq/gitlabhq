@@ -800,10 +800,10 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
       expect(result.map(&:base_type)).to include('incident')
     end
 
-    it 'includes ticket type for issue conversion' do
+    it 'excludes ticket type for issue conversion' do
       result = issue_type.supported_conversion_types(project, user)
 
-      expect(result.map(&:base_type)).to include('ticket')
+      expect(result.map(&:base_type)).not_to include('ticket')
     end
   end
 

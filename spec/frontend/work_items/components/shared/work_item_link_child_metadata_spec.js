@@ -14,12 +14,16 @@ describe('WorkItemLinkChildMetadata', () => {
 
   const findRolledUpCount = () => wrapper.findComponent(WorkItemRolledUpCount);
 
-  const createComponent = ({ metadataWidgets = workItemObjectiveMetadataWidgets } = {}) => {
+  const createComponent = ({
+    metadataWidgets = workItemObjectiveMetadataWidgets,
+    namespacePath = 'test-project-path',
+  } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinkChildMetadata, {
       propsData: {
         iid: '1',
         reference: 'test-project-path#1',
         metadataWidgets,
+        namespacePath,
       },
       scopedSlots: {
         'weight-metadata': `<div data-testid="weight-metadata-slot">Weight</div>`,

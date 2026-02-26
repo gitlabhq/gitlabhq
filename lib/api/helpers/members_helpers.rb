@@ -6,12 +6,15 @@ module API
       extend Grape::API::Helpers
 
       params :optional_filter_params_ee do
+        # EE-specific filter parameters
       end
 
       params :optional_state_filter_ee do
+        # EE-specific state filter parameters
       end
 
       params :optional_put_params_ee do
+        # EE-specific put parameters
       end
 
       def find_source(source_type, id)

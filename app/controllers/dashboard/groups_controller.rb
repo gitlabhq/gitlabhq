@@ -20,3 +20,5 @@ class Dashboard::GroupsController < Dashboard::ApplicationController
     render_group_tree(groups)
   end
 end
+
+Dashboard::GroupsController.prepend_mod_with('Dashboard::GroupsController')

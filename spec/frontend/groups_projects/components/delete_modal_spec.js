@@ -2,6 +2,7 @@ import { GlFormInput, GlModal } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GroupsProjectsDeleteModal from '~/groups_projects/components/delete_modal.vue';
+import PermanentDeletionConfirmCheckbox from '~/groups_projects/components/permanent_deletion_confirm_checkbox.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { useFakeDate } from 'helpers/fake_date';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
@@ -43,6 +44,8 @@ describe('GroupsProjectsDeleteModal', () => {
   const findGlModal = () => wrapper.findComponent(GlModal);
   const findFormInput = () => wrapper.findComponent(GlFormInput);
   const findModalBodyMessage = () => wrapper.findByTestId('modal-body-message');
+  const findPermanentDeletionCheckbox = () =>
+    wrapper.findComponent(PermanentDeletionConfirmCheckbox);
 
   describe.each`
     resourceType              | expectedDeleteDelayedMessage                                                                                                                                                                   | expectedDeletePermanentlyMessage
@@ -83,12 +86,48 @@ describe('GroupsProjectsDeleteModal', () => {
 
       describe('when markedForDeletion prop is true', () => {
         it('renders message', () => {
-          createComponent({
-            resourceType,
-            markedForDeletion: true,
-          });
+          createComponent({ resourceType, markedForDeletion: true });
 
           expect(findModalBodyMessage().text()).toContain(expectedDeletePermanentlyMessage);
+        });
+
+        it('does not render permanent deletion checkbox', () => {
+          createComponent({ resourceType, markedForDeletion: true });
+
+          expect(findPermanentDeletionCheckbox().exists()).toBe(false);
+        });
+
+        describe.each`
+          description                                                                 | gon
+          ${'groupProjectPermanentDeletionConfirmation saas feature is enabled'}      | ${{ saas_features: { groupProjectPermanentDeletionConfirmation: true } }}
+          ${'groupProjectPermanentDeletionConfirmation dedicated feature is enabled'} | ${{ dedicated_features: { groupProjectPermanentDeletionConfirmation: true } }}
+        `('when $description', ({ gon }) => {
+          beforeEach(() => {
+            window.gon = gon;
+
+            createComponent({ resourceType, markedForDeletion: true });
+          });
+
+          it('renders the permanent deletion checkbox', () => {
+            expect(findPermanentDeletionCheckbox().exists()).toBe(true);
+            expect(findPermanentDeletionCheckbox().props('resourceType')).toBe(resourceType);
+          });
+
+          describe.each`
+            description                                        | confirmPhrase                     | checked  | submitDisabled
+            ${'phrase is correct but checkbox unchecked'}      | ${defaultPropsData.confirmPhrase} | ${false} | ${true}
+            ${'phrase is correct and checkbox is checked'}     | ${defaultPropsData.confirmPhrase} | ${true}  | ${false}
+            ${'phrase is incorrect and checkbox is unchecked'} | ${'wrong-phrase'}                 | ${false} | ${true}
+            ${'phrase is incorrect but checkbox is checked'}   | ${'wrong-phrase'}                 | ${true}  | ${true}
+          `('when %description', ({ confirmPhrase, checked, submitDisabled }) => {
+            it(`primary action's disabled attribute is '${submitDisabled}'`, async () => {
+              findFormInput().vm.$emit('input', confirmPhrase);
+              findPermanentDeletionCheckbox().vm.$emit('change', checked);
+              await nextTick();
+
+              expect(findGlModal().props('actionPrimary').attributes.disabled).toBe(submitDisabled);
+            });
+          });
         });
       });
     },
@@ -159,5 +198,22 @@ describe('GroupsProjectsDeleteModal', () => {
     await nextTick();
 
     expect(wrapper.emitted('change')).toEqual([[false]]);
+  });
+
+  describe('when modal is closed then re-opened', () => {
+    it('resets input fields', () => {
+      window.gon = { saas_features: { groupProjectPermanentDeletionConfirmation: true } };
+      createComponent({ markedForDeletion: true });
+
+      findGlModal().vm.$emit('change', true);
+      findFormInput().vm.$emit('input', defaultPropsData.confirmPhrase);
+      findPermanentDeletionCheckbox().vm.$emit('change', true);
+
+      findGlModal().vm.$emit('change', false);
+      findGlModal().vm.$emit('change', true);
+
+      expect(findFormInput().props('value')).toBeNull();
+      expect(findPermanentDeletionCheckbox().props('checked')).toBe(false);
+    });
   });
 });

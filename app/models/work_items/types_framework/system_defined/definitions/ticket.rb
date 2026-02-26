@@ -60,6 +60,10 @@ module WorkItems
             def filterable?
               true
             end
+
+            def can_be_conversion_target?
+              false
+            end
           end
         end
       end

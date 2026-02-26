@@ -214,8 +214,10 @@ describe('WorkItemLinkChildContents', () => {
       expect(findMetadataComponent().props()).toMatchObject({
         reference: '#12',
         metadataWidgets: workItemObjectiveMetadataWidgets,
+        namespacePath: workItemObjectiveWithoutChild.namespace.fullPath,
       });
     });
+
     it('renders full path when not in the same namespace', () => {
       createComponent({
         childItem: otherNamespaceChild,

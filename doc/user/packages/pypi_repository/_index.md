@@ -356,8 +356,8 @@ install:
 ### Use a `.netrc` file for CI/CD
 
 `.netrc` keeps your `requirements.txt` free of credentials,
-so the same file works both locally and in CI/CD pipelines. pip reads the `.netrc` file 
-automatically to find credentials for a given hostname. For more information, 
+so the same file works both locally and in CI/CD pipelines. pip reads the `.netrc` file
+automatically to find credentials for a given hostname. For more information,
 see [.netrc support](https://pip.pypa.io/en/stable/topics/authentication/#netrc-support).
 
 In your `.gitlab-ci.yml`, create the `.netrc` file in `before_script`:

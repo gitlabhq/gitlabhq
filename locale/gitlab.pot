@@ -34747,6 +34747,9 @@ msgstr ""
 msgid "Groups|There was an error creating the Group README."
 msgstr ""
 
+msgid "Groups|This action permanently deletes this group and all its data. Your administrator cannot restore it. %{linkStart}View data export options.%{linkEnd}"
+msgstr ""
+
 msgid "Groups|This action will place this group, including its subgroups and projects, in a pending deletion state for %{delayedDeletionPeriodInDays} days, and delete it permanently on %{date}."
 msgstr ""
 
@@ -54827,6 +54830,9 @@ msgid "Projects|Projects that are archived or pending deletion will appear here.
 msgstr ""
 
 msgid "Projects|Projects where you contribute code, create issues or epics, or participate in discussions will appear here."
+msgstr ""
+
+msgid "Projects|This action permanently deletes this project and all its data. Your administrator cannot restore it. %{linkStart}View data export options.%{linkEnd}"
 msgstr ""
 
 msgid "Projects|This action will place this project, including all its resources, in a pending deletion state for %{delayedDeletionPeriodInDays} days, and delete it permanently on %{date}."

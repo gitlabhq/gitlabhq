@@ -51,6 +51,9 @@ The table below shows which customization options are available for each analyze
 | Override metadata of default rules  | {{< yes >}}                                                                                                                                                      | {{< yes >}}                | {{< yes >}}                                        |
 | Replace or add to default rules | Supports modifying the behavior of default non-taint, structural rules and the application of file and raw passthroughs. Other passthrough types are ignored. | Supports full passthroughs. | {{< no >}}                                         |
 
+> [!note]
+> The scope of GitLab support is limited to the Semgrep analyzer integration and default rulesets. If you replace or add to the default rules, you must manage compatibility issues that might occur as a result.
+
 ### Disable default rules
 
 You can disable default rules for any SAST analyzer. For example, you might want to exclude a
