@@ -1,8 +1,8 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Bring a demoted primary site back online
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Reintroduce demoted site back into Geo
 ---
 
 {{< details >}}
@@ -12,14 +12,18 @@ title: Bring a demoted primary site back online
 
 {{< /details >}}
 
-After a failover, it is possible to fail back to the demoted **primary** site to
-restore your original configuration. This process consists of two steps:
+After a failover, it is possible to bring back the demoted **primary** site as a new **secondary** site or
+restore your original **primary** site. This process consists of two steps:
 
 1. Making the old **primary** site a **secondary** site.
 1. Promoting a **secondary** site to a **primary** site.
 
 > [!warning]
-> If you have any doubts about the consistency of the data on this site, we recommend setting it up from scratch.
+>
+> - If you have any doubts about the consistency of the data on this site, you should set it up from scratch.
+> - The demoted primary is considered a standalone GitLab server that is not in sync with Geo anymore.
+>
+>   Make sure that any remnant configuration of it as a former primary is removed prior to adding it back as a new secondary site.
 
 ## Configure the former **primary** site to be a **secondary** site
 
@@ -31,15 +35,15 @@ Alternatively, you can [set up a new **secondary** GitLab instance](../setup/_in
 To bring the former **primary** site up to date:
 
 1. SSH into the former **primary** site that has fallen behind.
-1. Remove `/etc/gitlab/gitlab-cluster.json` if it exists.
+1. Remove `/etc/gitlab/gitlab-cluster.json` if it exists. ([What is the `gitlab-cluster.json` file?](https://docs.gitlab.com/omnibus/development/reconfigure_in_detail/#gitlab-clusterjson-file))
 
-   If the site to be re-added as a **secondary** site was promoted with the `gitlab-ctl geo promote` command, then it may contain a `/etc/gitlab/gitlab-cluster.json` file. For example during `gitlab-ctl reconfigure`, you may notice output like:
+   If the site to be re-added as a **secondary** site was promoted with the `gitlab-ctl geo promote` command, then it may contain `/etc/gitlab/gitlab-cluster.json`. For example during `gitlab-ctl reconfigure`, you may notice output like:
 
    ```plaintext
    The 'geo_primary_role' is defined in /etc/gitlab/gitlab-cluster.json as 'true' and overrides the setting in the /etc/gitlab/gitlab.rb
    ```
 
-   If so, then `/etc/gitlab/gitlab-cluster.json` must be deleted from every Sidekiq, PostgreSQL, Gitaly, and Rails node in the site, to make `/etc/gitlab/gitlab.rb` the single source of truth again.
+   If so, then `/etc/gitlab/gitlab-cluster.json` must be deleted from every Sidekiq, PostgreSQL, Gitaly, and Rails node in the site (if using multi-node setup), to make `/etc/gitlab/gitlab.rb` the single source of truth again.
 
 1. Make sure all the services are up:
 
@@ -48,14 +52,12 @@ To bring the former **primary** site up to date:
    ```
 
    > [!note]
-   > Additionally:
-   >
-   > - If you [disabled the **primary** site permanently](_index.md#step-2-permanently-disable-the-primary-site),
+   > - If you [disabled the **primary** site permanently](_index.md#step-1-permanently-disable-the-primary-site),
    >   you need to undo those steps now. For distributions with systemd, such as Debian/Ubuntu/CentOS7+, you must run
    >   `sudo systemctl enable gitlab-runsvdir`. For distributions without systemd, such as CentOS 6, you need to install
    >   the GitLab instance from scratch and set it up as a **secondary** site by
    >   following [Setup instructions](../setup/_index.md). In this case, you don't need to follow the next step.
-   > - If you [changed the DNS records](_index.md#step-4-optional-updating-the-primary-domain-dns-record)
+   > - If you [changed the DNS records](_index.md#optional-updating-the-primary-domain-dns-record)
    >   for this site during disaster recovery procedure you may need to
    >   [block all the writes to this site](planned_failover.md#prevent-updates-to-the-primary-site)
    >   during this procedure.

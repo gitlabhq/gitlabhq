@@ -340,7 +340,7 @@ Searches for labels in a GitLab project or group.
 
 | Parameter    | Type    | Required | Description |
 |--------------|---------|----------|-------------|
-| `full_path`  | string  | Yes      | Full path of the project or group (for example, `namespace/project`). |
+| `full_path`  | string  | Yes      | Full path of the project or group (for example, `group/project`). |
 | `is_project` | boolean | Yes      | Whether to search in a project (`true`) or group (`false`). |
 | `search`     | string  | No       | Search term to filter labels by title. |
 

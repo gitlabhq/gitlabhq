@@ -18,6 +18,7 @@
     - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
     - export GOPATH=$CI_PROJECT_DIR/.go
     - mkdir -p $GOPATH
+    - git config --global http.https://gitlab.com/gitlab-org/gitlab.proactiveAuth basic
     - source scripts/utils.sh
     - log_disk_usage "true"  # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
 

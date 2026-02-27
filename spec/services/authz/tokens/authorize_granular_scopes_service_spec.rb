@@ -115,10 +115,11 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
     end
 
     context 'when the token does not have the required permissions' do
-      let_it_be(:permissions) { [:create_member_role, :delete_member_role, :read_member_role] }
+      let_it_be(:granular_pat) { create(:granular_pat, boundary: boundary, permissions: :read_work_item) }
+      let_it_be(:permissions) { [:read_issue, :read_epic, :read_fork] }
 
       it_behaves_like 'error response', 'Access denied: Your Personal Access Token lacks the required permissions: ' \
-        '[delete_member_role, read_member_role].'
+        '[read_project, read_work_item].'
     end
 
     describe 'boundary prioritization' do

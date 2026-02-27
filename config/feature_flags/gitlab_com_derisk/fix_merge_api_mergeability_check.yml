@@ -1,0 +1,10 @@
+---
+name: fix_merge_api_mergeability_check
+description: Fixes the auto-merge API endpoint to correctly check merge request mergeability
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/547151
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197358
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/588635
+milestone: '18.10'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

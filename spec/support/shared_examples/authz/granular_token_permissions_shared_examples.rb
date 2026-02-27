@@ -32,7 +32,7 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
   context 'when authenticating with a granular personal access token' do
     let(:assignables) do
       Array(permissions).map do |permission|
-        ::Authz::PermissionGroups::Assignable.for_permission(permission).first&.name
+        ::Authz::PermissionGroups::Assignable.for_permission(permission).first.name
       end
     end
 
@@ -56,9 +56,13 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
         pat.granular_scopes.delete_all
       end
 
+      missing_assignable_permissions = Array(permissions).map do |permission|
+        Authz::PermissionGroups::Assignable.for_permission(permission).first.name
+      end.uniq.sort.join(', ')
+
       let(:message) do
         'Access denied: Your Personal Access Token lacks the required permissions: ' \
-          "[#{Array(permissions).join(', ')}]" + (boundary.path ? " for \"#{boundary.path}\"" : '')
+          "[#{missing_assignable_permissions}]" + (boundary.path ? " for \"#{boundary.path}\"" : '')
       end
 
       it_behaves_like 'denying access'

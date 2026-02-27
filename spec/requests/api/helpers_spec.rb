@@ -365,8 +365,9 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
 
         with_them do
           context 'when the granular token scopes are insufficient' do
+            let(:assignable) { Authz::PermissionGroups::Assignable.for_permission(permissions).first.name }
             let(:message) do
-              msg = "Access denied: Your Personal Access Token lacks the required permissions: [#{permissions}]"
+              msg = "Access denied: Your Personal Access Token lacks the required permissions: [#{assignable}]"
               msg << " for \"#{boundary.path}\"" if boundary.path
               msg << "."
             end

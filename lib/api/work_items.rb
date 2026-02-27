@@ -11,6 +11,7 @@ module API
 
     WORK_ITEMS_TAGS = %w[work_items].freeze
     DEFAULT_FIELDS = %i[id iid global_id title].freeze
+    FULL_PATH_ID_REQUIREMENT = %r{[^/]+(?:/[^/]+)*}
     FIELD_NAME_LOOKUP = ::API::Entities::WorkItemBasic.root_exposures.each_with_object({}) do |exposure, hash|
       key = exposure.key
       hash[key.to_s] = key
@@ -123,11 +124,16 @@ module API
       end
 
       def work_items_finder_params(resource_parent)
-        if resource_parent.is_a?(::Project)
-          { project_id: resource_parent.id, exclude_group_work_items: true }
-        else
-          { group_id: resource_parent, exclude_projects: true }
-        end
+        base_params = if resource_parent.is_a?(::Project)
+                        { project_id: resource_parent.id, exclude_group_work_items: true }
+                      else
+                        { group_id: resource_parent, exclude_projects: true }
+                      end
+
+        # TODO: Remove once we allow sorting param as part of the API.
+        # But keep `created_at` as default when no param is present, since sorting by just `id`
+        # is not performant.
+        base_params.merge(sort: 'created_at_desc')
       end
 
       def filter_requested_keys(requested_param, available_keys)
@@ -163,12 +169,12 @@ module API
       end
     end
 
-    resource :namespaces, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :namespaces do
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded full path of the namespace'
       end
 
-      namespace ':id/-/work_items' do
+      namespace ':id/-/work_items', requirements: { id: FULL_PATH_ID_REQUIREMENT } do
         desc 'List work items.' do
           detail <<~DETAIL
             Get a list of work items in a namespace. Project and group namespaces are supported.
@@ -202,12 +208,12 @@ module API
       end
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :projects do
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
 
-      namespace ':id/-/work_items' do
+      namespace ':id/-/work_items', requirements: { id: FULL_PATH_ID_REQUIREMENT } do
         desc 'List work items in a project.' do
           detail <<~DETAIL
             Get a list of work items in a project.
@@ -239,12 +245,12 @@ module API
       end
     end
 
-    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :groups do
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the group'
       end
 
-      namespace ':id/-/work_items' do
+      namespace ':id/-/work_items', requirements: { id: FULL_PATH_ID_REQUIREMENT } do
         desc 'List work items in a group.' do
           detail <<~DETAIL
             Get a list of work items in a group.

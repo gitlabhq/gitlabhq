@@ -39,7 +39,7 @@ and [epic 20110](https://gitlab.com/groups/gitlab-org/-/epics/20110).
 
 - Access to the GitLab-operated [AI Gateway](../../administration/gitlab_duo/gateway.md).
 - These features turned on:
-  - For GitLab.com, experiment features for your top-level namespace.
+  - For GitLab.com, experiment features for your top-level group.
   - For GitLab Self-Managed, GitLab Duo experiment and beta features for the instance.
 - [GitLab Duo](../duo_agent_platform/turn_on_off.md#turn-gitlab-duo-on-or-off) turned on for your project.
 - One of these vector stores configured:

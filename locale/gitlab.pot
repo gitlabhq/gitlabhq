@@ -2996,6 +2996,12 @@ msgstr ""
 msgid "AICatalog|Hypothetical or low risk security flaws that could be exploited."
 msgstr ""
 
+msgid "AICatalog|If a public agent is enabled, you can't delete it or make it private. %{linkStart}Learn more about agent visibility.%{linkEnd}"
+msgstr ""
+
+msgid "AICatalog|If a public flow is enabled, you can't delete it or make it private. %{linkStart}Learn more about flow visibility.%{linkEnd}"
+msgstr ""
+
 msgid "AICatalog|Immediate security threat"
 msgstr ""
 
@@ -65668,7 +65674,7 @@ msgstr ""
 msgid "Show commits in global search results"
 msgstr ""
 
-msgid "Show current status of indexing"
+msgid "Show current status of indexing."
 msgstr ""
 
 msgid "Show details"

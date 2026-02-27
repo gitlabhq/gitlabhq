@@ -39,8 +39,16 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
       let(:secondary_work_item) { project_work_item2 }
       let(:label) { project_label }
       let(:milestone) { project_milestone }
+      let(:expected_work_item_ids) { [primary_work_item.id, secondary_work_item.id].uniq }
 
       it_behaves_like 'work item listing endpoint'
+
+      it 'supports unescaped namespace full paths' do
+        get api("/namespaces/#{namespace_record.full_path}/-/work_items", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.pluck('id')).to match_array(expected_work_item_ids)
+      end
 
       it_behaves_like 'authorizing granular token permissions', :read_work_item do
         let(:boundary_object) { project }
@@ -68,8 +76,17 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
     let(:secondary_work_item) { project_work_item2 }
     let(:label) { project_label }
     let(:milestone) { project_milestone }
+    let(:api_request_path) { "/projects/#{project.id}/-/work_items" }
+    let(:expected_work_item_ids) { [primary_work_item.id, secondary_work_item.id].uniq }
 
     it_behaves_like 'work item listing endpoint'
+
+    it 'supports unescaped project full paths' do
+      get api("/projects/#{project.full_path}/-/work_items", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.pluck('id')).to match_array(expected_work_item_ids)
+    end
 
     it_behaves_like 'authorizing granular token permissions', :read_work_item do
       let(:boundary_object) { project }

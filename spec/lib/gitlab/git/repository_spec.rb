@@ -2193,7 +2193,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       it { is_expected.to have_attributes(key: 'mit') }
     end
 
-    context 'when license is not recognized ' do
+    context 'when license is not recognized' do
       let_it_be(:project) { create(:project, :repository) }
       let(:repository) { project.repository.raw_repository }
 

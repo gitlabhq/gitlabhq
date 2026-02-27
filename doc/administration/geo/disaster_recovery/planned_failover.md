@@ -238,7 +238,7 @@ For pre-maintenance validation while the primary is still operational, use the m
 
 ### DNS TTL
 
-If you plan to [update the primary domain DNS record](_index.md#step-4-optional-updating-the-primary-domain-dns-record),
+If you plan to [update the primary domain DNS record](_index.md#optional-updating-the-primary-domain-dns-record),
 consider setting a low TTL (time-to-live) to ensure fast propagation of DNS changes.
 
 ### Object storage

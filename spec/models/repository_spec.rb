@@ -596,7 +596,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       expect(subject).to all(be_a(Commit))
     end
 
-    context 'when some commits are not found ' do
+    context 'when some commits are not found' do
       let(:oids) do
         ['deadbeef'] + TestEnv::BRANCH_SHA.each_value.first(10)
       end

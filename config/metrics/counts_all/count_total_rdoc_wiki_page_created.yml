@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.count_total_rdoc_wiki_page_created
 description: Count of all Wiki pages written in RDoc created
 product_group: knowledge
+product_categories:
+- wiki
 value_type: number
 status: active
 milestone: "17.3"

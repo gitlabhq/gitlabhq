@@ -102,8 +102,6 @@ Gitlab/JsonSafeParse:
     - 'ee/app/services/geo/base_batch_bulk_update_service.rb'
     - 'ee/app/services/gitlab_subscriptions/fetch_subscription_plans_service.rb'
     - 'ee/app/services/sbom/ingestion/vulnerability_data.rb'
-    - 'ee/app/services/search/zoekt/provisioning_service.rb'
-    - 'ee/app/services/search/zoekt/rollout_service.rb'
     - 'ee/app/services/security/process_scan_events_service.rb'
     - 'ee/app/workers/click_house/rebuild_materialized_view_cron_worker.rb'
     - 'ee/app/workers/observability/alert_query_worker.rb'

@@ -119,8 +119,12 @@ module Authz
         missing_permissions_by_boundary.filter_map do |boundary, missing_permissions|
           next if missing_permissions.empty?
 
+          assignable_permissions = missing_permissions.map do |permission|
+            Authz::PermissionGroups::Assignable.for_permission(permission).first.name
+          end.uniq.sort.join(', ')
+
           format("[%{permissions}]%{path}",
-            permissions: missing_permissions.join(', '),
+            permissions: assignable_permissions,
             path: (" for \"#{boundary.path}\"" if boundary.path)
           )
         end.join(', ')

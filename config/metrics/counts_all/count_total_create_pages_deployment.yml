@@ -2,6 +2,8 @@
 key_path: counts.count_total_create_pages_deployment
 description: Total count of Pages deployments created
 product_group: knowledge
+product_categories:
+- pages
 performance_indicator_type: []
 value_type: number
 status: active

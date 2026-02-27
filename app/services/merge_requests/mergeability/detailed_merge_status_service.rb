@@ -37,6 +37,30 @@ module MergeRequests
 
       attr_reader :merge_request, :checks, :ci_check
 
+      def log_detailed_merge_status_duration?
+        strong_memoize(:log_detailed_merge_status_duration) do
+          Feature.enabled?(:log_detailed_merge_status_duration_enabled, merge_request.project)
+        end
+      end
+
+      def measure_duration(operation)
+        return yield unless log_detailed_merge_status_duration?
+
+        start_time = Gitlab::Metrics::System.monotonic_time
+        result = yield
+        end_time = Gitlab::Metrics::System.monotonic_time
+
+        Gitlab::AppJsonLogger.info(
+          event: 'merge_requests_detailed_merge_status_service_executed',
+          operation: operation,
+          duration_s: end_time - start_time,
+          merge_request_id: merge_request.id,
+          project: merge_request.project.name
+        )
+
+        result
+      end
+
       def preparing?
         merge_request.preparing?
       end
@@ -51,11 +75,13 @@ module MergeRequests
 
       def check_results
         strong_memoize(:check_results) do
-          merge_request
-            .execute_merge_checks(
-              MergeRequest.all_mergeability_checks,
-              params: check_params
-            )
+          measure_duration(:verify_all_mr_mergeability_checks) do
+            merge_request
+              .execute_merge_checks(
+                MergeRequest.all_mergeability_checks,
+                params: check_params
+              )
+          end
         end
       end
 
@@ -65,7 +91,9 @@ module MergeRequests
 
       def check_ci_results
         strong_memoize(:check_ci_results) do
-          ::MergeRequests::Mergeability::CheckCiStatusService.new(merge_request: merge_request, params: {}).execute
+          measure_duration(:check_ci_status) do
+            ::MergeRequests::Mergeability::CheckCiStatusService.new(merge_request: merge_request, params: {}).execute
+          end
         end
       end
 

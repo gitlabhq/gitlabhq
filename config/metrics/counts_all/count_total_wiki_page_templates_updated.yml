@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.count_total_wiki_page_templates_updated
 description: Count of all Wiki page templates updated
 product_group: knowledge
+product_categories:
+- wiki
 value_type: number
 status: active
 time_frame: all

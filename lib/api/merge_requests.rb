@@ -133,6 +133,43 @@ module API
         ::Ci::PipelinesForMergeRequestFinder.new(mr, current_user).execute
       end
 
+      def execute_merge_with_fix(merge_request, auto_merge)
+        merge_params = build_merge_params(merge_request)
+
+        if auto_merge
+          strategy_available =
+            AutoMergeService
+              .new(merge_request.project, current_user)
+              .available_strategies(merge_request)
+              .include?(merge_request.default_auto_merge_strategy)
+
+          if strategy_available
+            AutoMergeService.new(merge_request.target_project, current_user, merge_params)
+              .execute(merge_request, merge_request.default_auto_merge_strategy)
+          elsif merge_request.diff_head_pipeline_success?
+            render_api_error!('Branch cannot be merged', 422) unless merge_request.mergeable?
+
+            ::MergeRequests::MergeService
+              .new(project: merge_request.target_project, current_user: current_user, params: merge_params)
+              .execute(merge_request)
+
+            render_api_error!("Branch cannot be merged", 422) unless merge_request.merged?
+          else
+            not_allowed!
+          end
+        elsif merge_request.mergeable?
+          ::MergeRequests::MergeService
+              .new(project: merge_request.target_project, current_user: current_user, params: merge_params)
+              .execute(merge_request)
+
+          render_api_error!("Branch cannot be merged", 422) unless merge_request.merged?
+        else
+          not_allowed!
+        end
+
+        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+      end
+
       def automatically_mergeable?(auto_merge, merge_request)
         available_strategies = AutoMergeService.new(merge_request.project,
           current_user).available_strategies(merge_request)
@@ -140,12 +177,55 @@ module API
         auto_merge && available_strategies.include?(merge_request.default_auto_merge_strategy)
       end
 
-      def immediately_mergeable?(auto_merge, merge_request)
+      def immediately_mergeable_legacy(auto_merge, merge_request)
         if auto_merge
           merge_request.diff_head_pipeline_success?
         else
           merge_request.mergeable_state?
         end
+      end
+
+      def execute_merge_legacy(merge_request, automatically_mergeable, immediately_mergeable)
+        render_api_error!('Branch cannot be merged', 422) unless automatically_mergeable || merge_request.mergeable?(skip_ci_check: automatically_mergeable)
+
+        check_sha_param!(params, merge_request)
+
+        merge_request.update(squash: params[:squash]) if params[:squash]
+
+        merge_params = HashWithIndifferentAccess.new(
+          commit_message: params[:merge_commit_message],
+          squash_commit_message: params[:squash_commit_message],
+          should_remove_source_branch: params[:should_remove_source_branch],
+          sha: params[:sha] || merge_request.diff_head_sha
+        ).merge(ci_params).compact
+
+        if immediately_mergeable
+          ::MergeRequests::MergeService
+            .new(project: merge_request.target_project, current_user: current_user, params: merge_params)
+            .execute(merge_request)
+        elsif automatically_mergeable
+          AutoMergeService.new(merge_request.target_project, current_user, merge_params)
+            .execute(merge_request, merge_request.default_auto_merge_strategy)
+        end
+
+        if immediately_mergeable && !merge_request.merged?
+          render_api_error!("Branch cannot be merged", 422)
+        else
+          present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+        end
+      end
+
+      def build_merge_params(merge_request)
+        check_sha_param!(params, merge_request)
+
+        merge_request.update(squash: params[:squash]) if params[:squash]
+
+        HashWithIndifferentAccess.new(
+          commit_message: params[:merge_commit_message],
+          squash_commit_message: params[:squash_commit_message],
+          should_remove_source_branch: params[:should_remove_source_branch],
+          sha: params[:sha] || merge_request.diff_head_sha
+        ).merge(ci_params).compact
       end
 
       def serializer_options_for(merge_requests)
@@ -807,37 +887,16 @@ module API
         unauthorized! unless merge_request.can_be_merged_by?(current_user)
 
         auto_merge = to_boolean(params[:merge_when_pipeline_succeeds]) || to_boolean(params[:auto_merge])
-        automatically_mergeable = automatically_mergeable?(auto_merge, merge_request)
-        immediately_mergeable = immediately_mergeable?(auto_merge, merge_request)
 
-        not_allowed! if !immediately_mergeable && !automatically_mergeable
-
-        render_api_error!('Branch cannot be merged', 422) unless automatically_mergeable || merge_request.mergeable?(skip_ci_check: automatically_mergeable)
-
-        check_sha_param!(params, merge_request)
-
-        merge_request.update(squash: params[:squash]) if params[:squash]
-
-        merge_params = HashWithIndifferentAccess.new(
-          commit_message: params[:merge_commit_message],
-          squash_commit_message: params[:squash_commit_message],
-          should_remove_source_branch: params[:should_remove_source_branch],
-          sha: params[:sha] || merge_request.diff_head_sha
-        ).merge(ci_params).compact
-
-        if immediately_mergeable
-          ::MergeRequests::MergeService
-            .new(project: merge_request.target_project, current_user: current_user, params: merge_params)
-            .execute(merge_request)
-        elsif automatically_mergeable
-          AutoMergeService.new(merge_request.target_project, current_user, merge_params)
-            .execute(merge_request, merge_request.default_auto_merge_strategy)
-        end
-
-        if immediately_mergeable && !merge_request.merged?
-          render_api_error!("Branch cannot be merged", 422)
+        if Feature.enabled?(:fix_merge_api_mergeability_check, merge_request.project)
+          execute_merge_with_fix(merge_request, auto_merge)
         else
-          present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+          automatically_mergeable = automatically_mergeable?(auto_merge, merge_request)
+          immediately_mergeable = immediately_mergeable_legacy(auto_merge, merge_request)
+
+          not_allowed! if !immediately_mergeable && !automatically_mergeable
+
+          execute_merge_legacy(merge_request, automatically_mergeable, immediately_mergeable)
         end
       end
 

@@ -26,33 +26,7 @@ You can also specify certain groups that can access only GitLab Duo Agent Platfo
 
 {{< tabs >}}
 
-{{< tab title="GitLab Self-Managed" >}}
-
-Prerequisites:
-
-- Administrator access.
-
-To give access to specific Agent Platform features for an instance:
-
-1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
-1. Select **Change configuration**.
-1. Under **Member access**, select **Add group**.
-1. From the dropdown list, select an existing group.
-
-   >>> [!note]
-   You can select only direct subgroups of the top-level group for access control.
-   You cannot use nested subgroups in this configuration.
-   >>>
-
-1. Select the features that direct group members can access.
-1. Select **Save changes**.
-
-The user can now access these features when they are turned on.
-
-{{< /tab >}}
-
-{{< tab title="GitLab.com" >}}
+{{< tab title="On GitLab.com" >}}
 
 Prerequisites:
 
@@ -78,6 +52,32 @@ These settings apply to:
 > When you configure group-based access controls, you can select only groups
 > that are direct subgroups of the top-level group.
 > You cannot use nested subgroups in access control rules.
+
+{{< /tab >}}
+
+{{< tab title="On GitLab Self-Managed" >}}
+
+Prerequisites:
+
+- Administrator access.
+
+To give access to specific Agent Platform features for an instance:
+
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Member access**, select **Add group**.
+1. From the dropdown list, select an existing group.
+
+   >>> [!note]
+   You can select only direct subgroups of the top-level group for access control.
+   You cannot use nested subgroups in this configuration.
+   >>>
+
+1. Select the features that direct group members can access.
+1. Select **Save changes**.
+
+The user can now access these features when they are turned on.
 
 {{< /tab >}}
 
@@ -135,6 +135,6 @@ To implement a phased rollout of the Agent Platform:
 To test Agent Platform capabilities in a controlled environment:
 
 1. Create a dedicated group for testing (for example, `agent-testers`).
-1. Create a test namespace or project.
+1. Create a test group or project.
 1. Add test users to the `agent-testers` group.
 1. Validate functionality and train users before a broader rollout.

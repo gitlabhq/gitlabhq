@@ -167,7 +167,7 @@ follow these steps to avoid unnecessary data loss:
    > that has not been replicated to the **secondary** site. This data should be treated
    > as lost if you proceed.
 
-   If you plan to [update the **primary** domain DNS record](../_index.md#step-4-optional-updating-the-primary-domain-dns-record),
+   If you plan to [update the **primary** domain DNS record](../_index.md#optional-updating-the-primary-domain-dns-record),
    you may wish to lower the TTL now to speed up propagation.
 
    When performing a failover, we want to avoid a split-brain situation where

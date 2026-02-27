@@ -17,10 +17,13 @@ Geo replicates your database, your Git repositories, and other assets.
 Some [known issues](../_index.md#known-issues) exist.
 
 > [!warning]
-> Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
-> causes downtime.
+>
+> - Multi-secondary configurations require the complete re-synchronization
+>   and re-configuration of all non-promoted secondaries and causes downtime.
+> - After the secondary site is promoted, the primary site is detached entirely.
+>   If you wish to restore the primary site, you must add it as a new secondary site.
 
-## Promoting a **secondary** Geo site in single-secondary configurations
+## Promoting a secondary Geo site in single-secondary configurations
 
 While you can't automatically promote a Geo replica and do a failover,
 you can promote it manually if you have `root` access to the machine.
@@ -29,13 +32,13 @@ This process promotes a **secondary** Geo site to a **primary** site. To regain
 geographic redundancy as quickly as possible, you should add a new **secondary** site
 immediately after following these instructions.
 
-### Step 1. Allow replication to finish if possible
+### Allow replication to finish if possible
 
 If the **secondary** site is still replicating data from the **primary** site, follow
 [the planned failover docs](planned_failover.md) as closely as possible in
 order to avoid unnecessary data loss.
 
-### Step 2. Permanently disable the **primary** site
+### Step 1. Permanently disable the **primary** site
 
 > [!warning]
 > If the **primary** site goes offline, there may be data saved on the **primary** site
@@ -73,13 +76,13 @@ must disable the **primary** site.
   - Revoke object storage permissions from the **primary** site.
   - Physically disconnect a machine.
 
-  If you plan to [update the primary domain DNS record](#step-4-optional-updating-the-primary-domain-dns-record),
+  If you plan to [update the primary domain DNS record](#optional-updating-the-primary-domain-dns-record),
   you may wish to maintain a low TTL to ensure fast propagation of DNS changes.
 
   > [!note]
   > The primary site's `/etc/gitlab/gitlab.rb` file is not copied to the secondary sites automatically during this process. Make sure that you back up the primary's `/etc/gitlab/gitlab.rb` file, so that you can later restore any needed values on your secondary sites.
 
-### Step 3. Promoting a **secondary** site
+### Step 2. Promoting a **secondary** site
 
 Note the following when promoting a secondary:
 
@@ -92,7 +95,7 @@ Note the following when promoting a secondary:
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
   error message during this process, for more information, see this
   [troubleshooting advice](failover_troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
-- If you are using separate URLs, you should [point the primary domain DNS at the newly promoted site](#step-4-optional-updating-the-primary-domain-dns-record). Otherwise, runners must be registered again with the newly promoted site, and all Git remotes, bookmarks, and external integrations must be updated.
+- If you are using separate URLs, you should [point the primary domain DNS at the newly promoted site](#optional-updating-the-primary-domain-dns-record). Otherwise, runners must be registered again with the newly promoted site, and all Git remotes, bookmarks, and external integrations must be updated.
 - If you are using [location-aware DNS](../secondary_proxy/_index.md#configure-location-aware-dns), the runners should automatically connect to the new primary after the old primary is removed from the DNS entry.
 - If you don't expect the runners connected to the previous primary to come back, you should remove them:
   - Through the UI:
@@ -120,7 +123,15 @@ Note the following when promoting a secondary:
    previously for the **secondary** site.
 1. If successful, the **secondary** site is now promoted to the **primary** site.
 
-#### Promoting a **secondary** site with multiple nodes
+### Step 3. (Optional) Removing the former secondary's tracking database
+
+If you have any `geo_secondary[]` configuration options enabled in your `/etc/gitlab/gitlab.rb`
+file, comment them out or remove them, and then [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
+for the changes to take effect.
+
+At this point, your promoted site is the new primary GitLab site. Optionally, if you wish to set up Geo again as a new secondary site, you can [bring the old site back as a secondary](bring_primary_back.md#configure-the-former-primary-site-to-be-a-secondary-site).
+
+### Promoting a **secondary** site with multiple nodes and a **single-secondary** site
 
 1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
 
@@ -253,7 +264,7 @@ with the **secondary** site:
    previously for the **secondary** site.
 1. If successful, the **secondary** site is now promoted to the **primary** site.
 
-### Step 4. (Optional) Updating the primary domain DNS record
+### (Optional) Updating the primary domain DNS record
 
 Update DNS records for the primary domain to point to the **secondary** site.
 This removes the need to update all references to the primary domain, for example
@@ -311,29 +322,9 @@ changing Git remotes and API URLs.
    If you updated the DNS records for the primary domain, these changes may
    not have yet propagated depending on the previous DNS records TTL.
 
-### Step 5. (Optional) Add **secondary** Geo site to a promoted **primary** site
-
-Promoting a **secondary** site to **primary** site using the previous process does not enable
-Geo on the new **primary** site.
+### (Optional) Add **secondary** Geo site to a promoted **primary** site
 
 To bring a new **secondary** site online, follow the [Geo setup instructions](../setup/_index.md).
-
-### Step 6. Removing the former secondary's tracking database
-
-Every **secondary** has a special tracking database that is used to save the status of the synchronization of all the items from the **primary**.
-Because the **secondary** is already promoted, that data in the tracking database is no longer required.
-
-You can remove the data with the following command:
-
-```shell
-sudo rm -rf /var/opt/gitlab/geo-postgresql
-```
-
-If you have any `geo_secondary[]` configuration options enabled in your `gitlab.rb`
-file, comment them out or remove them, and then [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
-for the changes to take effect.
-
-At this point, your promoted site is a normal GitLab site without Geo configured. Optionally, you can [bring the old site back as a secondary](bring_primary_back.md#configure-the-former-primary-site-to-be-a-secondary-site).
 
 ## Promoting secondary Geo replica in multi-secondary configurations
 
