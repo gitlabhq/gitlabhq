@@ -13,32 +13,30 @@ title: Personal access tokens
 
 {{< /details >}}
 
-Personal access tokens can be an alternative to [OAuth2](../../api/oauth2.md) and used to:
+Personal access tokens provide authenticated access to GitLab. They are an alternative to [OAuth2 tokens](../../api/oauth2.md)
+and are similar to group access tokens and project access tokens, but are attached to a user rather than a group or project.
 
-- Authenticate with the GitLab API.
-- Authenticate with Git using HTTP Basic Authentication.
+You can use a personal access token to authenticate:
 
-In both cases, you authenticate with a personal access token in place of your password. Username is not evaluated as part of the authentication process.
-
-Personal access tokens are:
-
-- Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) or
-  [SAML](../../integration/saml.md#password-generation-for-users-created-through-saml) is enabled.
-- Used with a GitLab username to authenticate with GitLab features that require usernames. For example,
-  [GitLab-managed Terraform state backend](../infrastructure/iac/terraform_state.md#use-your-gitlab-backend-as-a-remote-data-source)
-  and [Docker container registry](../packages/container_registry/authenticate_with_container_registry.md),
-- Similar to [project access tokens](../project/settings/project_access_tokens.md) and [group access tokens](../group/settings/group_access_tokens.md), but are attached
-  to a user rather than a project or group.
+- With the [GitLab API](../../api/rest/authentication.md#personal-project-and-group-access-tokens).
+- With Git over HTTPS. Use:
+  - Any non-blank value as a username.
+  - The personal access token as the password.
 
 > [!note]
-> Though required, GitLab usernames are ignored when authenticating with a personal access token.
-> There is an [issue for tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/212953) to make GitLab
-> use the username.
+> You must authenticate with a personal access token if
+> [two-factor authentication (2FA)](account/two_factor_authentication.md) or
+> [SAML](../../integration/saml.md#password-generation-for-users-created-through-saml) is enabled.
 
-For examples of how you can use a personal access token to authenticate with the API, see [REST API authentication](../../api/rest/authentication.md#personal-project-and-group-access-tokens).
+Some GitLab features that require a username, like the
+[GitLab-managed Terraform state backend](../infrastructure/iac/terraform_state.md#use-your-gitlab-backend-as-a-remote-data-source)
+and the [container registry](../packages/container_registry/authenticate_with_container_registry.md),
+use a personal access token with a GitLab username. In these cases, the username is required
+but is not evaluated as part of authentication. For more information, see [issue 212953](https://gitlab.com/gitlab-org/gitlab/-/issues/212953).
 
-Alternately, GitLab administrators can use the API to create impersonation tokens.
-Use impersonation tokens to automate authentication as a specific user.
+On GitLab Self-Managed and GitLab Dedicated instances, administrators can use the
+[user tokens API](../../api/user_tokens.md#create-an-impersonation-token) to create impersonation
+tokens to authenticate as a specific user.
 
 ## Create a personal access token
 
@@ -96,9 +94,13 @@ https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+A
 
 {{< /history >}}
 
-Rotating a token creates a new token with fresh credentials while invalidating the previous version.
-Rotated tokens maintain the same permissions and scope as the original. The old token becomes inactive
-immediately, and both versions remain in the system for audit purposes.
+Rotate a token to create a new token with the same permissions and scope as the original.
+The original token becomes inactive immediately, and GitLab retains both versions for
+audit purposes.
+
+> [!warning]
+> This action cannot be undone. Tools that rely on a rotated access token will stop working until
+> you reference your new token.
 
 To rotate a personal access token:
 
@@ -117,9 +119,13 @@ To rotate a personal access token:
 
 {{< /history >}}
 
-Revoking a token immediately invalidates it, preventing any further use for authentication or
-authorization. Revoked tokens remain in the system to maintain an audit trail of token history.
-You cannot permanently delete tokens, but you can filter token lists to show only active tokens.
+Revoke a token to immediately invalidate it and prevent further use. GitLab retains the token for
+audit purposes. You cannot permanently delete tokens, but you can filter token lists to show only
+active tokens.
+
+> [!warning]
+> This action cannot be undone. Tools that rely on a revoked access token will stop working until
+> you add a new token.
 
 To revoke a personal access token:
 
@@ -129,9 +135,6 @@ To revoke a personal access token:
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Revoke** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Revoke**.
-
-   > [!warning]
-   > These actions cannot be undone. Any tools that rely on a revoked or rotated access token will stop working.
 
 ## Disable access tokens
 
@@ -575,37 +578,6 @@ The `username` in the `clone` command:
 - Must not be an empty string.
 
 Remember this if you set up an automation pipeline that depends on authentication.
-
-## Troubleshooting
-
-### Unrevoke a personal access token
-
-{{< details >}}
-
-- Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-If a personal access token is revoked accidentally by any method, administrators can unrevoke that token. By default, a daily job deletes revoked tokens at 1:00 AM system time.
-
-> [!warning]
-> Running the following commands changes data directly. This could be damaging if not done correctly, or under the right conditions. You should first run these commands in a test environment with a backup of the instance ready to be restored, just in case.
-
-1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Unrevoke the token:
-
-   ```ruby
-   token = PersonalAccessToken.find_by_token('<token_string>')
-   token.update!(revoked:false)
-   ```
-
-   For example, to unrevoke a token of `token-string-here123`:
-
-   ```ruby
-   token = PersonalAccessToken.find_by_token('token-string-here123')
-   token.update!(revoked:false)
-   ```
 
 ## Alternatives to personal access tokens
 

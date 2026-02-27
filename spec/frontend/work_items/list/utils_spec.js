@@ -14,6 +14,8 @@ import {
   savedViewFilterTokens,
   saveSavedViewParams,
   saveSavedViewResponse,
+  saveSavedViewWithSearchParams,
+  saveSavedViewWithSearchResponse,
   editSavedViewParams,
   editSavedViewResponse,
   editSavedViewFormOnlyParams,
@@ -28,6 +30,8 @@ import {
   savedViewFilterTokensWithHierarchyParent,
   savedViewFiltersWithHierarchyParentWildcard,
   savedViewFilterTokensWithHierarchyParentWildcard,
+  savedViewFiltersWithMultipleSearchTokens,
+  savedViewFilterTokensWithMultipleSearchTokens,
 } from 'jest/work_items/list/mock_data';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/work_items/list/constants';
@@ -289,6 +293,12 @@ describe('getSavedViewFilterTokens', () => {
       savedViewFilterTokensWithHierarchyParentWildcard,
     );
   });
+
+  it('splits saved view search string into multiple tokens', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithMultipleSearchTokens)).toEqual(
+      savedViewFilterTokensWithMultipleSearchTokens,
+    );
+  });
 });
 
 describe('handleEnforceSubscriptionLimit', () => {
@@ -460,6 +470,44 @@ describe('saveSavedView', () => {
         }),
       );
       expect(result.data.workItemSavedViewCreate.savedView.id).toBe('gid://gitlab/SavedView/1');
+    });
+
+    it('joins search filters before calling mutate', async () => {
+      const params = {
+        ...saveSavedViewWithSearchParams,
+        apolloClient: mockApolloClient,
+        subscribedSavedViewLimit: 5,
+      };
+
+      mockMutate.mockResolvedValue(saveSavedViewWithSearchResponse);
+
+      mockQuery.mockResolvedValue({
+        data: {
+          namespace: {
+            savedViews: {
+              nodes: [{ id: 'gid://gitlab/SavedView/1', name: 'View 1' }],
+            },
+          },
+        },
+      });
+
+      await saveSavedView(params);
+
+      expect(mockMutate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: {
+            input: {
+              namespacePath: 'my-group',
+              name: 'My View',
+              description: 'A test view',
+              private: false,
+              filters: { in: 'TITLE', search: 'work__SV__items' },
+              sort: 'CREATED_DESC',
+              displaySettings: { groupBy: 'assignee' },
+            },
+          },
+        }),
+      );
     });
 
     it('calls handleEnforceSubscriptionLimit when enforceSubscriptionLimit is true', async () => {

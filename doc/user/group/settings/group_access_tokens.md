@@ -12,24 +12,17 @@ title: Group access tokens
 
 {{< /details >}}
 
-With group access tokens, you can use a single token to:
-
-- Perform actions for groups.
-- Manage the projects within the group.
+Group access tokens provide authenticated access to a group and its projects. They are similar to
+personal access tokens and project access tokens, but are attached to a group rather than a user
+or project. You cannot use group access tokens to create other group, project, or personal
+access tokens.
 
 You can use a group access token to authenticate:
 
-- With the GitLab API.
-- Authenticate with Git over HTTPS. Use:
-
+- With the [GitLab API](../../../api/rest/authentication.md#personal-project-and-group-access-tokens).
+- With Git over HTTPS. Use:
   - Any non-blank value as a username.
   - The group access token as the password.
-
-Group access tokens are similar to [project access tokens](../../project/settings/project_access_tokens.md)
-and [personal access tokens](../../profile/personal_access_tokens.md), except they are
-associated with a group rather than a project or user.
-
-You cannot use group access tokens to create other group, project, or personal access tokens.
 
 Group access tokens inherit the [default prefix setting](../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.
@@ -128,26 +121,57 @@ If you are an administrator, you can create group access tokens in the Rails con
    1. Use the group token to [clone a group's project](../../../topics/git/clone.md#clone-with-https)
       using HTTPS.
 
-## Revoke or rotate a group access token
+## Rotate a group access token
 
 {{< history >}}
 
 - Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
-- Ability to view expired and revoked tokens until they are automatically deleted and [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
+- Ability to view expired and revoked tokens until they are automatically deleted [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
 
 {{< /history >}}
 
-In GitLab 17.9 and later, you can view both active and inactive group
-access tokens on the access tokens page.
+Rotate a token to create a new token with the same permissions and scope as the original.
+The original token becomes inactive immediately, and GitLab retains both versions for
+audit purposes. You can view both active and inactive tokens on the access tokens page.
 
-The inactive group access tokens table displays revoked and expired tokens until they are [automatically deleted](../../project/settings/project_access_tokens.md#inactive-token-retention).
+On GitLab Self-Managed and GitLab Dedicated, you can modify
+[inactive token retention](../../project/settings/project_access_tokens.md#inactive-token-retention).
 
-To revoke or rotate a group access token:
+> [!warning]
+> This action cannot be undone. Tools that rely on a rotated access token will stop working until
+> you reference your new token.
+
+To rotate a group access token:
 
 1. On the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Access tokens**.
-1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}) or **Rotate** ({{< icon name="retry" >}}).
-1. On the confirmation dialog, select **Revoke** or **Rotate**.
+1. For the relevant token, select **Rotate** ({{< icon name="retry" >}}).
+1. In the confirmation dialog, select **Rotate**.
+
+## Revoke a group access token
+
+{{< history >}}
+
+- Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+- Ability to view expired and revoked tokens until they are automatically deleted [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
+
+{{< /history >}}
+
+Revoke a token to immediately invalidate it and prevent further use. Revoked tokens are not
+deleted immediately, but you can filter token lists to show only active tokens. By default,
+GitLab deletes revoked group and project access tokens after 30 days. For more information, see
+[inactive token retention](../../project/settings/project_access_tokens.md#inactive-token-retention).
+
+> [!warning]
+> This action cannot be undone. Tools that rely on a revoked access token will stop working until
+> you add a new token.
+
+To revoke a group access token:
+
+1. On the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **Access tokens**.
+1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}).
+1. In the confirmation dialog, select **Revoke**.
 
 ## Scopes for a group access token
 
@@ -244,7 +268,8 @@ GitLab runs a check every day at 1:00 AM UTC to identify group access tokens tha
   - The [group setting](../manage.md#expiry-emails-for-group-and-project-access-tokens) for the group or any parent group.
   - On GitLab Self-Managed, the [instance setting](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members).
 
-Your expired access tokens are listed in the [inactive group access tokens table](#revoke-or-rotate-a-group-access-token) until they are [automatically deleted](../../project/settings/project_access_tokens.md#inactive-token-retention).
+Your expired access tokens are listed in the inactive group access tokens section until they are
+[automatically deleted](../../project/settings/project_access_tokens.md#inactive-token-retention).
 
 ## Bot users for groups
 

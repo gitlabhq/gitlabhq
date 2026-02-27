@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates Atlassian Bamboo CI', feature_category: :integrations do
+RSpec.describe 'User activates Atlassian Bamboo CI', feature_category: :continuous_integration do
   include_context 'project integration activation'
 
   before do

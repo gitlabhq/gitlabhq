@@ -793,4 +793,6 @@ export const savedViewFilters = {
   },
 };
 
+export const SAVED_VIEW_SEARCH_DELIMITER = '__SV__';
+
 export const NEW_SAVED_VIEWS_GID = 'gid://gitlab/WorkItems::SavedViews::SavedView/new';

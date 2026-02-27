@@ -503,4 +503,33 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
       end
     end
   end
+
+  context 'when authenticated with a token that has the ai_workflows scope' do
+    let(:oauth_token) { create(:oauth_access_token, user: john_doe, scopes: [:ai_workflows]) }
+
+    it 'returns the list of todos' do
+      get api('/todos', oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_an(Array)
+    end
+
+    it 'allows HEAD requests' do
+      head api('/todos', oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'does not allow marking a todo as done' do
+      post api("/todos/#{pending_1.id}/mark_as_done", oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'does not allow marking all todos as done' do
+      post api('/todos/mark_as_done', oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+  end
 end

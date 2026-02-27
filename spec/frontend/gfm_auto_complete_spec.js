@@ -1718,6 +1718,67 @@ describe('GfmAutoComplete', () => {
 
       defaultSorterSpy.mockRestore();
     });
+
+    it('prioritizes commands with alias prefix matches over substring matches', async () => {
+      // Override mockValue to include commands with aliases
+      ajaxSpy.mockReturnValue(
+        Promise.resolve([
+          { name: 'unassign_reviewer', aliases: [], params: [], description: '' },
+          {
+            name: 'request_review',
+            aliases: ['assign_reviewer', 'reviewer'],
+            params: [],
+            description: '',
+          },
+        ]),
+      );
+
+      const defaultSorterSpy = jest
+        .spyOn($.fn.atwho.default.callbacks, 'sorter')
+        .mockImplementation((q, items) => items);
+
+      // Type a query that matches an alias (assign_reviewer) as a prefix
+      triggerDropdown($textarea, '/assign_re');
+      await waitForPromises();
+
+      const items = getCommandsItems();
+      expect(items).toHaveLength(2);
+      // /request_review should be first (has alias /assign_reviewer which matches the query as prefix)
+      expect(items[0]).toContain('/request_review');
+      // /unassign_reviewer follows (substring match, but not an alias prefix match)
+      expect(items[1]).toContain('/unassign_reviewer');
+
+      defaultSorterSpy.mockRestore();
+    });
+
+    it('does not apply custom sorting when no alias prefix matches exist', async () => {
+      // Override mockValue to include commands with NO matching aliases
+      ajaxSpy.mockReturnValue(
+        Promise.resolve([
+          { name: 'label', aliases: ['labels'], params: [], description: '' },
+          { name: 'unlabel', aliases: ['remove_label'], params: [], description: '' },
+          { name: 'relabel', aliases: [], params: [], description: '' },
+        ]),
+      );
+
+      const defaultSorterSpy = jest
+        .spyOn($.fn.atwho.default.callbacks, 'sorter')
+        .mockImplementation((q, items) => items);
+
+      // Type a query that does NOT match any alias as a prefix
+      // 'lab' matches as substring in 'label', 'unlabel', 'relabel' but NOT as alias prefix
+      triggerDropdown($textarea, '/lab');
+      await waitForPromises();
+
+      const items = getCommandsItems();
+      expect(items).toHaveLength(3);
+      // Should preserve source order since hasAliasMatch === false
+      expect(items[0]).toContain('/label');
+      expect(items[1]).toContain('/unlabel');
+      expect(items[2]).toContain('/relabel');
+
+      defaultSorterSpy.mockRestore();
+    });
   });
 
   describe('escape', () => {

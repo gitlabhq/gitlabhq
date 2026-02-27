@@ -19,33 +19,29 @@ Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /history >}}
 
-Project access tokens are similar to passwords, except you can limit access to resources,
-select a limited role, and provide an expiry date.
+Project access tokens provide authenticated access to a specific project. They are similar to
+group access tokens and personal access tokens, but are scoped to the associated project rather
+than a group or user. You cannot use project access tokens to access resources in other projects,
+or to create other group, project, or personal access tokens.
 
-> [!note]
-> Access to a specific project is controlled by a combination of [roles and permissions](../../permissions.md) and token scopes.
+You can use a project access token to authenticate:
 
-Use a project access token to authenticate:
-
-- With the GitLab API.
-- With Git, when using HTTP Basic Authentication, use:
+- With the [GitLab API](../../../api/rest/authentication.md#personal-project-and-group-access-tokens).
+- With Git over HTTPS. Use:
   - Any non-blank value as a username.
   - The project access token as the password.
 
 > [!note]
-> On GitLab SaaS, you can use project access tokens with a Premium or Ultimate subscription. With a
-> [trial license](https://about.gitlab.com/free-trial/) you can also create one project access token.
+> On GitLab.com, you can use project access tokens with a Premium or Ultimate subscription.
+> With a [trial license](https://about.gitlab.com/free-trial/), you can create one project access token.
 >
-> On GitLab Self-Managed instances, you can use project access tokens with any subscription. If
-> you have the Free tier, you can [restrict the creation of project access tokens](#restrict-the-creation-of-project-access-tokens) to limit potential abuse.
+> On GitLab Self-Managed and GitLab Dedicated instances, you can use project access tokens with any
+> subscription. With the Free tier, you can
+> [restrict the creation of project access tokens](#restrict-the-creation-of-project-access-tokens)
+> to limit potential abuse.
 
-Project access tokens are similar to group access tokens and personal access tokens, but are
-scoped only to the associated project. You cannot use project access tokens to access resources
-that belong to other projects.
-
-On GitLab Self-Managed instances, project access tokens are subject to the same maximum lifetime limits as personal access tokens if the limit is set.
-
-You cannot use project access tokens to create other group, project, or personal access tokens.
+On GitLab Self-Managed instances, project access tokens are subject to the same maximum lifetime limits
+as personal access tokens if a limit is set.
 
 Project access tokens inherit the [default prefix setting](../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.
@@ -89,26 +85,57 @@ A project access token is displayed. Save the project access token somewhere saf
 > If an internal user creates a project access token, that token is able to access
 > all projects that have visibility level set to Internal.
 
-## Revoke or rotate a project access token
+## Rotate a project access token
 
 {{< history >}}
 
 - Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
-- Ability to view expired and revoked tokens until they are automatically deleted and [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
+- Ability to view expired and revoked tokens until they are automatically deleted [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
 
 {{< /history >}}
 
-In GitLab 17.9 and later, you can view both active and inactive project
-access tokens on the access tokens page.
+Rotate a token to create a new token with the same permissions and scope as the original.
+The original token becomes inactive immediately, and GitLab retains both versions for
+audit purposes. You can view both active and inactive tokens on the access tokens page.
 
-The inactive project access tokens table displays revoked and expired tokens until they are [automatically deleted](#inactive-token-retention).
+On GitLab Self-Managed and GitLab Dedicated, you can modify
+[inactive token retention](../../project/settings/project_access_tokens.md#inactive-token-retention).
 
-To revoke or rotate a project access token:
+> [!warning]
+> This action cannot be undone. Tools that rely on a rotated access token will stop working until
+> you reference your new token.
+
+To rotate a project access token:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Access tokens**.
-1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}) or **Rotate** ({{< icon name="retry" >}}).
-1. On the confirmation dialog, select **Revoke** or **Rotate**.
+1. For the relevant token, select **Rotate** ({{< icon name="retry" >}}).
+1. In the confirmation dialog, select **Rotate**.
+
+## Revoke a project access token
+
+{{< history >}}
+
+- Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+- Ability to view expired and revoked tokens until they are automatically deleted [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
+
+{{< /history >}}
+
+Revoke a token to immediately invalidate it and prevent further use. Revoked tokens are not
+deleted immediately, but you can filter token lists to show only active tokens. By default,
+GitLab deletes revoked group and project access tokens after 30 days. For more information, see
+[inactive token retention](#inactive-token-retention).
+
+> [!warning]
+> This action cannot be undone. Tools that rely on a revoked access token will stop working until
+> you add a new token.
+
+To revoke a project access token:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Settings** > **Access tokens**.
+1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}).
+1. In the confirmation dialog, select **Revoke**.
 
 ## Scopes for a project access token
 
@@ -203,7 +230,8 @@ GitLab runs a check every day at 1:00 AM UTC to identify project access tokens t
   - The [group setting](../../group/manage.md#expiry-emails-for-group-and-project-access-tokens) in any of the parent groups of the project.
   - On GitLab Self-Managed, the [instance setting](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members).
 
-Your expired access tokens are listed in the [inactive project access tokens table](#revoke-or-rotate-a-project-access-token) until they are [automatically deleted](#inactive-token-retention).
+Your expired access tokens are listed in the inactive project access tokens table until they are
+[automatically deleted](#inactive-token-retention).
 
 ## Bot users for projects
 
@@ -234,7 +262,7 @@ Bot users for projects:
 - Can have a maximum role of Owner for a project. For more information, see
   [Create a project access token](../../../api/project_access_tokens.md#create-a-project-access-token).
 
-When the project access token is [revoked](#revoke-or-rotate-a-project-access-token):
+When the project access token is revoked:
 
 - The bot user is retained as per [inactive token retention setting](#inactive-token-retention).
 - The bot user is deleted 30 days after the token expiration date. This applies even if the token is revoked before the

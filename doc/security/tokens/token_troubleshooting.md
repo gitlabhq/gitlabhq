@@ -161,6 +161,38 @@ total_updated = PersonalAccessToken
 puts "Updated #{total_updated} tokens with new expiry date #{new_expires_at}"
 ```
 
+## Restore a personal access token
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+On GitLab Self-Managed or GitLab Dedicated instances, administrators can restore personal access tokens
+that were revoked accidentally. Restoration is not available on GitLab.com.
+
+> [!warning]
+> Running the following commands changes data directly. This could be damaging if not done
+> correctly, or under the right conditions. You should first run these commands in a test environment
+> with a backup of the instance ready to be restored, just in case.
+
+1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Restore the token:
+
+   ```ruby
+   token = PersonalAccessToken.find_by_token('<token_string>')
+   token.update!(revoked:false)
+   ```
+
+   For example, to restore a token of `token-string-here123`:
+
+   ```ruby
+   token = PersonalAccessToken.find_by_token('token-string-here123')
+   token.update!(revoked:false)
+   ```
+
 ## Identify personal, project, and group access tokens expiring on a certain date
 
 Access tokens that have no expiration date are valid indefinitely, which is a

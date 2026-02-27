@@ -56,7 +56,7 @@ module Gitlab
             event_name_for_copy_metadata(args)
           when 'remove_reviewer'
             'unassign_reviewer'
-          when 'request_review', 'reviewer'
+          when 'request_review', 'assign_reviewer', 'reviewer'
             'assign_reviewer'
           when 'spend', 'spent'
             event_name_for_spend(args)

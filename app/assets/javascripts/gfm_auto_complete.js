@@ -353,6 +353,35 @@ class GfmAutoComplete {
             return $.fn.atwho.default.callbacks.sorter(query, prioritized, searchKey);
           }
 
+          // Custom sorting to prioritize alias prefix matches over other matches
+          // This helps when typing an alias that no longer exists (e.g., /assign_reviewer)
+          // to show the aliased command (e.g., /request_review) higher in the list
+          const lowerQuery = query.toLowerCase();
+
+          // Helper function to check if an item has an alias that starts with the query
+          const hasAliasPrefix = (item) =>
+            (item.aliases || []).some((alias) => alias.toLowerCase().startsWith(lowerQuery));
+
+          // Check if any item has an alias that matches the query as a prefix
+          const hasAliasMatch = items.some(hasAliasPrefix);
+
+          // Only apply custom sorting if the query matches an alias prefix
+          if (hasAliasMatch) {
+            const sorted = items.sort((a, b) => {
+              const aAliasPrefix = hasAliasPrefix(a);
+              const bAliasPrefix = hasAliasPrefix(b);
+
+              // Prioritize items with alias prefix matches
+              if (aAliasPrefix && !bAliasPrefix) return -1;
+              if (!aAliasPrefix && bAliasPrefix) return 1;
+
+              // Otherwise preserve original order
+              return 0;
+            });
+            return $.fn.atwho.default.callbacks.sorter(query, sorted, searchKey);
+          }
+
+          // No alias matches, use default sorter with original order
           return $.fn.atwho.default.callbacks.sorter(query, items, searchKey);
         },
         beforeSave(commands) {

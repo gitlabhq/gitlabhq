@@ -168,9 +168,12 @@ export default {
         data-testid="stage-column-title"
         class="stage-column-title gl-pipeline-job-width gl-relative -gl-mb-2 gl-flex gl-justify-between gl-truncate gl-pl-4 gl-font-bold gl-leading-36"
       >
-        <span :title="name" class="gl-w-17/20 gl-truncate gl-pr-3">
+        <h2
+          :title="name"
+          class="gl-m-0 gl-w-17/20 gl-truncate gl-pr-3 gl-text-base gl-leading-reset"
+        >
           {{ name }}
-        </span>
+        </h2>
         <action-component
           v-if="hasAction && canUpdatePipeline"
           :should-trigger-click="shouldTriggerActionClick"

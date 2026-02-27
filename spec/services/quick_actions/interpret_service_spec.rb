@@ -919,7 +919,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     shared_examples 'assign_reviewer command' do
       it 'assigns a reviewer to a single user' do
         _, updates, message = service.execute(content, issuable)
-        translated_string = _("Assigned %{developer_to_reference} as reviewer.")
+        translated_string = _("Requested a review from %{developer_to_reference}.")
         formatted_message = format(translated_string, developer_to_reference: developer.to_reference.to_s)
 
         expect(updates).to eq(reviewer_ids: [developer.id])
@@ -1145,93 +1145,42 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       let(:issuable) { issue }
     end
 
-    describe 'assign_reviewer command' do
-      let(:content) { "/assign_reviewer @#{developer.username}" }
+    describe 'assign_reviewer command (alias for request_review)' do
       let(:issuable) { merge_request }
 
-      context 'with one user' do
-        it_behaves_like 'assign_reviewer command'
+      it 'works as an alias for request_review' do
+        content = "/assign_reviewer @#{developer.username}"
+        _, updates, message = service.execute(content, issuable)
+        translated_string = _("Requested a review from %{developer_to_reference}.")
+        formatted_message = format(translated_string, developer_to_reference: developer.to_reference.to_s)
+
+        expect(updates).to eq(reviewer_ids: [developer.id])
+        expect(message).to eq(formatted_message)
       end
 
-      context 'with an issue instead of a merge request' do
-        let(:issuable) { issue }
+      it 'supports re-request behavior when user is already a reviewer' do
+        merge_request.update!(reviewers: [developer])
+        content = "/assign_reviewer @#{developer.username}"
 
-        it_behaves_like 'failed command', 'Could not apply assign_reviewer command.'
-      end
-
-      # CE does not have multiple reviewers
-      context 'assign command with multiple assignees' do
-        before do
-          project.add_developer(developer2)
+        expect_next_instance_of(::MergeRequests::RequestReviewService) do |service|
+          expect(service).to receive(:execute).with(merge_request, developer)
         end
 
-        # There's no guarantee that the reference extractor will preserve
-        # the order of the mentioned users since this is dependent on the
-        # order in which rows are returned. We just ensure that at least
-        # one of the mentioned users is assigned.
-        context 'assigns to one of the two users' do
-          let(:content) { "/assign_reviewer @#{developer.username} @#{developer2.username}" }
+        _, _, message = service.execute(content, merge_request)
+        translated_string = _("Requested a review from %{developer_to_reference}.")
+        formatted_message = format(translated_string, developer_to_reference: developer.to_reference.to_s)
 
-          it 'assigns to a single reviewer' do
-            _, updates, message = service.execute(content, issuable)
-
-            expect(updates[:reviewer_ids].count).to eq(1)
-            reviewer = updates[:reviewer_ids].first
-            expect([developer.id, developer2.id]).to include(reviewer)
-
-            user = reviewer == developer.id ? developer : developer2
-
-            expect(message).to match("Assigned #{user.to_reference} as reviewer.")
-          end
-        end
+        expect(message).to eq(formatted_message)
       end
 
-      context 'with "me" alias' do
-        let(:content) { '/assign_reviewer me' }
+      it 'works with the /reviewer alias' do
+        content = "/reviewer @#{developer.username}"
+        _, updates, message = service.execute(content, issuable)
+        translated_string = _("Requested a review from %{developer_to_reference}.")
+        formatted_message = format(translated_string, developer_to_reference: developer.to_reference.to_s)
 
-        it_behaves_like 'assign_reviewer command'
-      end
-
-      context 'with an alias and whitespace' do
-        let(:content) { '/assign_reviewer  me ' }
-
-        it_behaves_like 'assign_reviewer command'
-      end
-
-      context 'with @all' do
-        let(:content) { "/assign_reviewer @all" }
-
-        it_behaves_like 'failed command', 'a parse error' do
-          let(:match_msg) { eq _("Could not apply assign_reviewer command. Failed to find users for '@all'.") }
-        end
-      end
-
-      context 'with an incorrect user' do
-        let(:content) { '/assign_reviewer @abcd1234' }
-
-        it_behaves_like 'failed command', 'a parse error' do
-          let(:match_msg) { eq _("Could not apply assign_reviewer command. Failed to find users for '@abcd1234'.") }
-        end
-      end
-
-      context 'with the "reviewer" alias' do
-        let(:content) { "/reviewer @#{developer.username}" }
-
-        it_behaves_like 'assign_reviewer command'
-      end
-
-      context 'with no user' do
-        let(:content) { '/assign_reviewer' }
-
-        it_behaves_like 'failed command', "Failed to assign a reviewer because no user was specified."
-      end
-
-      context 'with extra text' do
-        let(:content) { "/assign_reviewer #{developer.to_reference} do it!" }
-
-        it_behaves_like 'failed command', 'a parse error' do
-          let(:match_msg) { eq _("Could not apply assign_reviewer command. Failed to find users for 'do' and 'it!'.") }
-        end
+        expect(updates).to eq(reviewer_ids: [developer.id])
+        expect(message).to eq(formatted_message)
       end
     end
 
@@ -1359,7 +1308,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
         it 'adds and then removes a single reviewer in a single step' do
           _, updates, message = service.execute(content, issuable)
-          translated_string = _("Assigned %{developer_to_reference} as reviewer. Removed reviewer %{developer_to_reference}.")
+          translated_string = _("Requested a review from %{developer_to_reference}. Removed reviewer %{developer_to_reference}.")
           formatted_message = format(translated_string, developer_to_reference: developer.to_reference.to_s)
 
           expect(updates).to eq(reviewer_ids: [])
@@ -3857,26 +3806,16 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
       end
     end
 
-    describe 'assign_reviewer command' do
-      let(:content) { "/assign_reviewer #{developer.to_reference}" }
+    describe 'assign_reviewer command (alias for request_review)' do
       let(:merge_request) { create(:merge_request, source_project: project, assignees: [developer]) }
 
-      it 'includes only the user reference' do
+      it 'explains the command' do
+        content = "/assign_reviewer #{developer.to_reference}"
         _, explanations = service.explain(content, merge_request)
-        translated_string = _("Assigns %{developer_to_reference} as reviewer.")
+        translated_string = _("Requests a review from %{developer_to_reference}.")
         formatted_message = format(translated_string, developer_to_reference: developer.to_reference.to_s)
 
         expect(explanations).to eq([formatted_message])
-      end
-
-      context 'when users are not set' do
-        let(:content) { "/assign_reviewer , " }
-
-        it 'returns an error message' do
-          _, explanations = service.explain(content, merge_request)
-
-          expect(explanations).to eq(['Failed to assign a reviewer because no user was specified.'])
-        end
       end
     end
 

@@ -127,14 +127,9 @@ export default {
 
 <template>
   <div>
-    <gl-button
-      class="gl-mb-6"
-      category="secondary"
-      variant="danger"
-      data-testid="drawer-trigger"
-      @click="openDrawer"
-      >{{ $options.i18n.redactText }}</gl-button
-    >
+    <gl-button class="gl-mb-1" variant="danger" data-testid="drawer-trigger" @click="openDrawer">{{
+      $options.i18n.redactText
+    }}</gl-button>
 
     <gl-drawer
       :header-height="getDrawerHeaderHeight"

@@ -3,6 +3,9 @@
 module API
   class Todos < ::API::Base
     include PaginationParams
+    include APIGuard
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     before { authenticate! }
 

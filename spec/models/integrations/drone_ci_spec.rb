@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching, feature_category: :integrations do
+RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching, feature_category: :continuous_integration do
   include ReactiveCachingHelpers
 
   subject(:integration) { described_class.new }

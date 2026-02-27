@@ -132,9 +132,6 @@ Supported attributes:
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
 
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
-
 | Attribute                | Type              | Description |
 |:-------------------------|:------------------|:------------|
 | `id` | integer | ID of the project. |
@@ -343,9 +340,8 @@ following response attributes:
 | `statistics.container_registry_size` | integer | Container registry storage size in bytes. <sup>1</sup> |
 | `forked_from_project` | object | The upstream project this project was forked from. If the upstream project is private, an authentication token is required to view this field. |
 | `mr_default_target_self` | boolean | Whether merge requests target this project by default. If `false`, merge requests target the upstream project. Appears only if the project is a fork. |
+<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
-<!-- markdownlint-enable MD055 -->
-<!-- markdownlint-enable MD056 -->
 
 Example request:
 
@@ -570,8 +566,6 @@ GET /projects
 ```
 
 Supported attributes:
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
 
 | Attribute                     | Type     | Required | Description |
 |:------------------------------|:---------|:---------|:------------|
@@ -607,15 +601,11 @@ Supported attributes:
 | `with_programming_language`   | string   | No       | Limit by projects which use the given programming language. |
 | `marked_for_deletion_on`      | date     | No       | Filter by date when project was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463939) in GitLab 17.1. Premium and Ultimate only. |
 | `active`                      | boolean  | No       | Limit by projects that are not archived and not marked for deletion. |
+<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
-<!-- markdownlint-enable MD055 -->
-<!-- markdownlint-enable MD056 -->
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
-
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -752,9 +742,8 @@ following response attributes:
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
 | `permissions.group_access` | object | Group access permissions for the user. |
+<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
-<!-- markdownlint-enable MD055 -->
-<!-- markdownlint-enable MD056 -->
 
 Example request:
 
@@ -970,9 +959,6 @@ Supported attributes:
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
 
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
-
 | Attribute | Type | Description |
 |-----------|------|-------------|
 | `id` | integer | ID of the project. |
@@ -1123,9 +1109,8 @@ following response attributes:
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
 | `permissions.group_access` | object | Group access permissions for the user. |
+<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
-<!-- markdownlint-enable MD055 -->
-<!-- markdownlint-enable MD056 -->
 
 Example request:
 
@@ -1422,9 +1407,6 @@ Supported attributes:
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
 
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
-
 | Attribute | Type | Description |
 |-----------|------|-------------|
 | `id` | integer | ID of the project. |
@@ -1575,9 +1557,8 @@ following response attributes:
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
 | `permissions.group_access` | object | Group access permissions for the user. |
+<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
-<!-- markdownlint-enable MD055 -->
-<!-- markdownlint-enable MD056 -->
 
 Example request:
 

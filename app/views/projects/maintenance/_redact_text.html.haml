@@ -1,7 +1,15 @@
-%h5.gl-heading-4= s_('ProjectMaintenance|Redact text')
-%p.gl-text-subtle
-  = s_('ProjectMaintenance|Redact known instances of text in the repository. The provided strings will be replaced with %{code_open}***REMOVED***%{code_close}.').html_safe % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-%p.gl-text-subtle
-  = s_('ProjectMaintenance|Afterwards, run housekeeping manually to remove old versions of the string from Git history.')
+- housekeeping_path = edit_project_path(@project, anchor: 'js-project-advanced-settings')
+= render Pajamas::CardComponent.new do |c|
+  - c.with_header do
+    %h4.gl-text-base.gl-leading-24.gl-m-0= s_('ProjectMaintenance|Redact text')
+    %p.gl-text-sm.gl-text-subtle.gl-m-0
+      = s_('ProjectMaintenance|Redact known instances of text in the repository. The provided strings will be replaced with %{code_open}***REMOVED***%{code_close}.').html_safe % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+  - c.with_body do
+    %p.gl-text-subtle
+      - link_start = '<a href="%{url}" rel="noopener noreferrer">'.html_safe
+      - housekeeping_link = link_start % { url: housekeeping_path }
+      - link_end = '</a>'.html_safe
+      = sprite_icon('warning')
+      = s_('ProjectMaintenance|Afterwards, %{link_start}run housekeeping manually%{link_end} to remove old versions of the string from Git history.').html_safe % { link_start: housekeeping_link, link_end: link_end }
 
-.js-maintenance-redact-text{ data: { project_path: @project.full_path, housekeeping_path: edit_project_path(@project, anchor: 'js-project-advanced-settings') } }
+    .js-maintenance-redact-text{ data: { project_path: @project.full_path, housekeeping_path: housekeeping_path } }

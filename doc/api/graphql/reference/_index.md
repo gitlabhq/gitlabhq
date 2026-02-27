@@ -57089,7 +57089,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenum-user_reached_limit_free_plan_alert"></a>`USER_REACHED_LIMIT_FREE_PLAN_ALERT` | Callout feature name for user_reached_limit_free_plan_alert. |
 | <a id="usercalloutfeaturenameenum-verification_reminder"></a>`VERIFICATION_REMINDER` | Callout feature name for verification_reminder. |
 | <a id="usercalloutfeaturenameenum-virtual_registry_permission_change_alert"></a>`VIRTUAL_REGISTRY_PERMISSION_CHANGE_ALERT` | Callout feature name for virtual_registry_permission_change_alert. |
-| <a id="usercalloutfeaturenameenum-vsd_feedback_banner"></a>`VSD_FEEDBACK_BANNER` | Callout feature name for vsd_feedback_banner. |
 | <a id="usercalloutfeaturenameenum-vulnerability_archival"></a>`VULNERABILITY_ARCHIVAL` | Callout feature name for vulnerability_archival. |
 | <a id="usercalloutfeaturenameenum-vulnerability_report_grouping"></a>`VULNERABILITY_REPORT_GROUPING` | Callout feature name for vulnerability_report_grouping. |
 | <a id="usercalloutfeaturenameenum-vulnerability_report_limited_experience"></a>`VULNERABILITY_REPORT_LIMITED_EXPERIENCE` | Callout feature name for vulnerability_report_limited_experience. |

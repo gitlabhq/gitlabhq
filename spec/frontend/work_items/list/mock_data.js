@@ -21,7 +21,7 @@ import {
   TOKEN_TYPE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
-import { CREATED_DESC } from '~/work_items/list/constants';
+import { CREATED_DESC, SAVED_VIEW_SEARCH_DELIMITER } from '~/work_items/list/constants';
 import { singleSavedView } from '../mock_data';
 
 export const setSortPreferenceMutationResponse = {
@@ -498,6 +498,43 @@ export const saveSavedViewResponse = {
   },
 };
 
+export const saveSavedViewWithSearchParams = {
+  isEdit: false,
+  isForm: false,
+  namespacePath: 'my-group',
+  name: 'My View',
+  description: 'A test view',
+  isPrivate: false,
+  filters: { in: 'TITLE', search: ['work', 'items'] },
+  sort: 'CREATED_DESC',
+  displaySettings: { groupBy: 'assignee' },
+  mutationKey: 'workItemSavedViewCreate',
+};
+
+export const saveSavedViewWithSearchResponse = {
+  data: {
+    workItemSavedViewCreate: {
+      errors: [],
+      savedView: {
+        id: 'gid://gitlab/SavedView/1',
+        name: 'My View',
+        description: 'A test view',
+        isPrivate: false,
+        filters: { in: 'TITLE' },
+        sort: 'CREATED_DESC',
+        displaySettings: { groupBy: 'assignee', search: 'work__SV__items' },
+        subscribed: true,
+        userPermissions: {
+          updateSavedView: true,
+          deleteSavedView: true,
+          updateSavedViewVisibility: true,
+          __typename: 'SavedViewPermissions',
+        },
+      },
+    },
+  },
+};
+
 export const editSavedViewParams = {
   isEdit: true,
   isForm: false,
@@ -741,4 +778,13 @@ export const savedViewFiltersWithHierarchyParentWildcard = {
 
 export const savedViewFilterTokensWithHierarchyParentWildcard = [
   { type: TOKEN_TYPE_PARENT, value: { data: 'None', operator: OPERATOR_IS } },
+];
+
+export const savedViewFiltersWithMultipleSearchTokens = {
+  search: `Work${SAVED_VIEW_SEARCH_DELIMITER}Items`,
+};
+
+export const savedViewFilterTokensWithMultipleSearchTokens = [
+  { type: FILTERED_SEARCH_TERM, value: { data: 'Work', operator: undefined } },
+  { type: FILTERED_SEARCH_TERM, value: { data: 'Items', operator: undefined } },
 ];

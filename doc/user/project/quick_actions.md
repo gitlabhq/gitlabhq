@@ -241,7 +241,9 @@ Assign one or more users to the work item.
 
 ### `assign_reviewer`
 
-Assign one or more users as reviewers.
+Assign one or more users as reviewers, or request a new review from existing reviewers.
+
+**Alias for [`/request_review`](#request_review).**
 
 **Availability**:
 
@@ -274,10 +276,13 @@ Assign one or more users as reviewers.
 
 **Additional details**:
 
+- If the user is not already a reviewer, assigns them as a reviewer.
+- If the user is already a reviewer, requests a new review from them (resets their review state and sends notifications).
 - You can assign multiple users in a single command by separating usernames with spaces.
-- `/reviewer` is an alias for `/assign_reviewer`.
+- `/reviewer` is also an alias for this command.
 - To replace reviewers, use [`/reassign_reviewer`](#reassign_reviewer).
 - To remove reviewers, use [`/unassign_reviewer`](#unassign_reviewer).
+- For more information, see [`/request_review`](#request_review).
 
 ### `award`
 
@@ -1830,7 +1835,9 @@ Assign a reviewer or request a new review from one or more users.
 
 **Additional details**:
 
-- Behaves like [`/assign_reviewer`](#assign_reviewer), but also requests a new review from currently assigned reviewers.
+- Can also be invoked using [`/assign_reviewer`](#assign_reviewer) or `/reviewer`.
+- If the user is not already a reviewer, assigns them as a reviewer.
+- If the user is already a reviewer, requests a new review from them (resets their review state and sends notifications).
 - For more information, see [request a review](merge_requests/reviews/_index.md#request-a-review).
 
 ### `run_pipeline`

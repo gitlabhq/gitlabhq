@@ -31,7 +31,6 @@ title: Code Suggestions
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187397) support for Qwen2.5 code completion model in GitLab 17.11.
 - Enabled Fireworks hosted `Codestral` by default via the feature flag `use_fireworks_codestral_code_completion` in GitLab 17.11.
 - Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1.
-- To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for code generation to Claude Sonnet 4 in GitLab 18.2.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
 

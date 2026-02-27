@@ -31,6 +31,9 @@ private project, they cannot access the code.
 
 > [!note]
 > An external user counts as a billable user and consumes a license seat.
+> 
+> If you [created an external providers list](../integration/omniauth.md#create-an-external-providers-list),
+> users who sign in with a listed provider are automatically marked as external.
 
 ## Create an external user
 

@@ -1890,7 +1890,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         get api("/groups/#{group1.id}/releases", admin), params: { sort: 'desc' }
 
         expect(DateTime.parse(json_response[0]["released_at"]))
-          .to be > (DateTime.parse(json_response[1]["released_at"]))
+          .to be > DateTime.parse(json_response[1]["released_at"])
       end
 
       it 'respects the simple parameter' do
@@ -1957,6 +1957,68 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
       it_behaves_like 'avoids N+1 queries'
       it_behaves_like 'avoids N+1 queries', { simple: true }
+    end
+  end
+
+  context 'when authenticated with a token that has the ai_workflows scope' do
+    let(:oauth_token) { create(:oauth_access_token, user: maintainer, scopes: [:ai_workflows]) }
+    let!(:release) { create(:release, project: project, tag: 'v0.1', author: maintainer) }
+
+    it 'returns the project releases' do
+      get api("/projects/#{project.id}/releases", oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_an(Array)
+    end
+
+    it 'returns a single release by tag' do
+      get api("/projects/#{project.id}/releases/v0.1", oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['tag_name']).to eq('v0.1')
+    end
+
+    it 'allows HEAD requests' do
+      head api("/projects/#{project.id}/releases", oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'with group releases' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:group_project) { create(:project, :repository, namespace: group) }
+      let!(:group_release) { create(:release, project: group_project, tag: 'v0.2', author: maintainer) }
+
+      before do
+        group.add_maintainer(maintainer)
+      end
+
+      it 'returns the group releases' do
+        get api("/groups/#{group.id}/releases", oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an(Array)
+      end
+    end
+
+    it 'does not allow creating a release' do
+      post api("/projects/#{project.id}/releases", oauth_access_token: oauth_token),
+        params: { tag_name: 'v1.0', description: 'test' }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'does not allow updating a release' do
+      put api("/projects/#{project.id}/releases/v0.1", oauth_access_token: oauth_token),
+        params: { description: 'updated' }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'does not allow deleting a release' do
+      delete api("/projects/#{project.id}/releases/v0.1", oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
   end
 end

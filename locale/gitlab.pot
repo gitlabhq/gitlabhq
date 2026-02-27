@@ -10316,9 +10316,6 @@ msgstr ""
 msgid "Assigned %{assignee_users_sentence}."
 msgstr ""
 
-msgid "Assigned %{reviewer_users_sentence} as %{reviewer_text}."
-msgstr ""
-
 msgid "Assigned issues"
 msgstr ""
 
@@ -10364,9 +10361,6 @@ msgid "Assignees & reviewers"
 msgstr ""
 
 msgid "Assigns %{assignee_users_sentence}."
-msgstr ""
-
-msgid "Assigns %{reviewer_users_sentence} as %{reviewer_text}."
 msgstr ""
 
 msgid "Associated projects"
@@ -29421,9 +29415,6 @@ msgid "Failed to apply commands."
 msgstr ""
 
 msgid "Failed to approve the current merge request."
-msgstr ""
-
-msgid "Failed to assign a reviewer because no user was specified."
 msgstr ""
 
 msgid "Failed to assign a user because no user was found."
@@ -53399,10 +53390,10 @@ msgstr ""
 msgid "ProjectImport|Project URL"
 msgstr ""
 
-msgid "ProjectMaintenance|Afterwards, run housekeeping manually to remove old versions of the file from Git history."
+msgid "ProjectMaintenance|Afterwards, %{link_start}run housekeeping manually%{link_end} to remove old versions of the file from Git history."
 msgstr ""
 
-msgid "ProjectMaintenance|Afterwards, run housekeeping manually to remove old versions of the string from Git history."
+msgid "ProjectMaintenance|Afterwards, %{link_start}run housekeeping manually%{link_end} to remove old versions of the string from Git history."
 msgstr ""
 
 msgid "ProjectMaintenance|Blob IDs to remove"

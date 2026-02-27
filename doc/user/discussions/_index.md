@@ -66,6 +66,7 @@ When you mention someone, in a work item or merge request, they become a [partic
 {{< history >}}
 
 - [Flag](../../administration/feature_flags/_index.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
+- [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/415280) in GitLab 18.8.5.
 
 {{< /history >}}
 

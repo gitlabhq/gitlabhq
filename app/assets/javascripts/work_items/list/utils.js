@@ -90,6 +90,7 @@ import {
   START_DATE_DESC,
   savedViewFilters,
   NEW_SAVED_VIEWS_GID,
+  SAVED_VIEW_SEARCH_DELIMITER,
 } from '~/work_items/list/constants';
 import createSavedViewMutation from '~/work_items/list/graphql/create_saved_view.mutation.graphql';
 import updateSavedViewMutation from '~/work_items/list/graphql/update_saved_view.mutation.graphql';
@@ -440,6 +441,16 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
         (options.includeStateToken || key !== TOKEN_TYPE_STATE),
     )
     .reduce((acc, [key, value]) => {
+      // Here the delimited search values are again formatted into array for filter tokens
+      if (key === 'search' && value.includes(SAVED_VIEW_SEARCH_DELIMITER)) {
+        const { operator, type } = savedViewFilters[key];
+        const searchTokens = value.split(SAVED_VIEW_SEARCH_DELIMITER);
+        searchTokens.forEach((data) => {
+          acc.push({ type, data, operator });
+        });
+
+        return acc;
+      }
       if (key === 'in') {
         const { operator, type } = savedViewFilters[key];
         // TITLE or DESCRIPTION
@@ -1039,6 +1050,17 @@ export const saveSavedView = async ({
 }) => {
   const mutation = isEdit ? updateSavedViewMutation : createSavedViewMutation;
 
+  // Filter tokens are kept as an array when multiple values are present for search field.
+  // However, saved view filters do not support persisting arrays.
+  // Therefore, we serialize the array into a single string using a delimiter.
+  // A space cannot be used as the delimiter since search terms may contain spaces.
+  const updatedSavedViewFilters = {
+    ...filters,
+    search: Array.isArray(filters.search)
+      ? filters.search.join(SAVED_VIEW_SEARCH_DELIMITER)
+      : filters.search,
+  };
+
   const commonInput =
     isEdit && isForm
       ? {
@@ -1050,7 +1072,7 @@ export const saveSavedView = async ({
           name,
           description,
           private: isPrivate,
-          filters,
+          filters: updatedSavedViewFilters,
           displaySettings,
           sort,
         };
@@ -1066,7 +1088,7 @@ export const saveSavedView = async ({
     name,
     description,
     isPrivate,
-    filters,
+    filters: updatedSavedViewFilters,
     displaySettings,
     sort,
     __typename: 'WorkItemSavedViewType',

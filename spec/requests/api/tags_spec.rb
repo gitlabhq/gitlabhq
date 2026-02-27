@@ -714,4 +714,39 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
       end
     end
   end
+
+  context 'when authenticated with a token that has the ai_workflows scope' do
+    let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+    it 'returns the repository tags' do
+      get api("/projects/#{project.id}/repository/tags", oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'returns a single repository tag' do
+      get api("/projects/#{project.id}/repository/tags/#{tag_name}", oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'allows HEAD requests' do
+      head api("/projects/#{project.id}/repository/tags", oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'does not allow creating a tag' do
+      post api("/projects/#{project.id}/repository/tags", oauth_access_token: oauth_token),
+        params: { tag_name: 'new-tag', ref: 'master' }
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'does not allow deleting a tag' do
+      delete api("/projects/#{project.id}/repository/tags/#{tag_name}", oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+  end
 end
