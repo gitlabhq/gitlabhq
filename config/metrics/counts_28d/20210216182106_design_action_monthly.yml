@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.source_code.design_action_monthly
 description: Removed as duplicate of usage_activity_by_stage_monthly.create.action_monthly_active_users_design_management
 product_group: source_code
+product_categories:
+- design_management
 value_type: number
 status: removed
 time_frame: 28d

@@ -44,7 +44,6 @@ export default {
       required: true,
     },
   },
-  emits: ['hide'],
   data() {
     return {
       view: null,
@@ -98,15 +97,12 @@ export default {
         });
       } catch (error) {
         Sentry.captureException(error);
-      } finally {
-        this.$emit('hide');
       }
     },
     handleHide() {
       if (this.$route.query.sv_limit_id) {
         this.$router.replace({ query: null });
       }
-      this.$emit('hide');
     },
   },
 };

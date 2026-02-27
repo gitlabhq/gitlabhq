@@ -21,7 +21,7 @@ danger-review:
   variables:
     BUNDLE_WITH: "danger"
   before_script:
-    - git config --global http.https://gitlab.com/gitlab-org/gitlab.proactiveAuth basic
+    - (command -v git &> /dev/null && git config --global http.https://gitlab.com/gitlab-org/gitlab.proactiveAuth basic) || true
     - source scripts/utils.sh
     - bundle_install_script
     - yarn_install_script

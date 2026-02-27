@@ -131,9 +131,11 @@ To authenticate with OAuth, you must use the GitLab CLI credential helper.
 > [!note]
 > If you have already used the GitLab Duo CLI configuration screen, you cannot use this method until you delete your authentication settings from the `~/.gitlab/storage.json` file.
 
-### Duo CLI configuration screen
+### GitLab Duo CLI configuration screen
 
-Alternatively, you can configure personal access token authentication directly in the Duo CLI configuration screen. This method only supports personal access tokens, and maintains a separate authentication configuration from `glab`.
+Alternatively, you can configure personal access token authentication directly in the GitLab Duo CLI
+configuration screen. This method only supports personal access tokens, and maintains a separate
+authentication configuration from `glab`.
 
 Prerequisites:
 

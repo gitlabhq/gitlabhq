@@ -37540,15 +37540,6 @@ msgstr ""
 msgid "Invite members"
 msgstr ""
 
-msgid "Invite members to collaborate on changes to the repository."
-msgstr ""
-
-msgid "Invite members to plan and track work."
-msgstr ""
-
-msgid "Invite members to review changes to the repository."
-msgstr ""
-
 msgid "InviteEmail|%{inviter} invited you to join the %{project_or_group_name} %{project_or_group} with the following role: %{role}."
 msgstr ""
 
@@ -46779,6 +46770,9 @@ msgstr ""
 msgid "Observability|Alerts"
 msgstr ""
 
+msgid "Observability|Allocating compute resources"
+msgstr ""
+
 msgid "Observability|Application performance monitoring with p99 latency tracking and real-time metrics visualization"
 msgstr ""
 
@@ -46837,6 +46831,12 @@ msgid "Observability|Configure your o11y service connection settings."
 msgstr ""
 
 msgid "Observability|Configure your observability service connection settings."
+msgstr ""
+
+msgid "Observability|Configuring OpenTelemetry collectors"
+msgstr ""
+
+msgid "Observability|Configuring authentication"
 msgstr ""
 
 msgid "Observability|Copy HTTP endpoint"
@@ -47016,6 +47016,9 @@ msgstr ""
 msgid "Observability|Infrastructure monitoring"
 msgstr ""
 
+msgid "Observability|Initializing your Observability service"
+msgstr ""
+
 msgid "Observability|Invalid iframe provided"
 msgstr ""
 
@@ -47157,6 +47160,9 @@ msgstr ""
 msgid "Observability|Project not found"
 msgstr ""
 
+msgid "Observability|Provisioning databases"
+msgstr ""
+
 msgid "Observability|Provisioning time"
 msgstr ""
 
@@ -47193,6 +47199,9 @@ msgstr ""
 msgid "Observability|Sorry, your filter produced no results"
 msgstr ""
 
+msgid "Observability|Spinning up service containers"
+msgstr ""
+
 msgid "Observability|Superior query performance and data compression with ClickHouse backend"
 msgstr ""
 
@@ -47212,6 +47221,9 @@ msgid "Observability|The name of the group for this o11y service configuration."
 msgstr ""
 
 msgid "Observability|The name of your o11y service instance."
+msgstr ""
+
+msgid "Observability|The observability service is still initializing. Please try again in a few minutes."
 msgstr ""
 
 msgid "Observability|To enable GitLab Observability, please ask your %{strong_start}GitLab administrator%{strong_end} to enable it for this group."
@@ -69387,9 +69399,6 @@ msgstr ""
 msgid "The number of times an upload record could not find its file"
 msgstr ""
 
-msgid "The observability service is initializing. Please try again in a few minutes."
-msgstr ""
-
 msgid "The only thread is resolved"
 msgid_plural "All %{resolvableDiscussionsCount} threads resolved"
 msgstr[0] ""
@@ -72732,9 +72741,6 @@ msgid "Ultimate"
 msgstr ""
 
 msgid "Unable to apply suggestions to a deleted line."
-msgstr ""
-
-msgid "Unable to authenticate with the observability service. Please check your configuration and try again."
 msgstr ""
 
 msgid "Unable to build Slack link."

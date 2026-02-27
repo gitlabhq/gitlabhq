@@ -1,7 +1,10 @@
 ---
 key_path: counts.count_total_e2e_tests_selected_for_execution_gitlab_pipeline
 description: Count of pipelines where specific e2e tests were selected
-product_group: development_analytics
+product_group: test_governance
+product_categories:
+- quality_management
+- code_testing
 performance_indicator_type: []
 value_type: number
 status: active

@@ -314,7 +314,7 @@ export default {
       isNewViewModalVisible: false,
       savedView: null,
       showSavedViewNotFoundModal: false,
-      showLimitWarningModal: false,
+      subscribeFromModal: false,
     };
   },
   apollo: {
@@ -467,7 +467,10 @@ export default {
           }
           if (!savedView.subscribed) {
             if (count >= limit) {
-              this.$router.push({ name: ROUTES.index, query: { sv_limit_id: savedView.id } });
+              this.$router.push({
+                name: ROUTES.index,
+                query: { sv_limit_id: savedView.id, sv_source_modal: this.subscribeFromModal },
+              });
             } else {
               const success = await this.attemptSubscription(savedView);
               if (success) {
@@ -1117,6 +1120,9 @@ export default {
     shouldShowSaveView() {
       return this.canCreateSavedView && this.viewConfigChanged;
     },
+    showLimitWarningModal() {
+      return Boolean(this.$route.query.sv_limit_id && !this.$route.query.sv_source_modal);
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -1201,9 +1207,7 @@ export default {
   },
   mounted() {
     setPageFullWidth();
-    if (this.$route.query.sv_limit_id) {
-      this.showLimitWarningModal = true;
-    }
+
     if (this.$route.query.sv_not_found) {
       this.showSavedViewNotFoundModal = true;
     }
@@ -1858,7 +1862,6 @@ export default {
         :view-id="$route.query.sv_limit_id"
         :full-path="rootPageFullPath"
         data-testid="view-limit-warning-modal"
-        @hide="showLimitWarningModal = false"
       />
     </template>
     <div v-if="showLocalBoard">
@@ -1995,6 +1998,7 @@ export default {
             :filters="apiFilterParams"
             :display-settings="displaySettingsSoT.namespacePreferences"
             @reset-to-default-view="resetToDefaultView"
+            @subscribe-from-modal="subscribeFromModal = true"
             @error="handleError"
           >
             <template #header-area>

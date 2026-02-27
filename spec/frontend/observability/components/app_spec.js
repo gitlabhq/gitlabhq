@@ -1,7 +1,22 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import axios from '~/lib/utils/axios_utils';
+import simplePoll from '~/lib/utils/simple_poll';
 import App from '~/observability/components/app.vue';
+import { MAX_POLLING_ATTEMPTS, POLLING_TIMEOUT } from '~/observability/constants';
 import * as cryptoModule from '~/observability/utils/nonce';
+import { AuthManager } from '~/observability/utils/auth_manager';
+
+jest.mock('~/observability/constants', () => ({
+  ...jest.requireActual('~/observability/constants'),
+  MAX_POLLING_ATTEMPTS: 3,
+  POLLING_TIMEOUT: (3 + 1) * 2000,
+}));
+
+jest.mock('~/lib/utils/simple_poll', () =>
+  jest.fn().mockImplementation(jest.requireActual('~/lib/utils/simple_poll').default),
+);
 
 const mockAuthManager = {
   setCallbacks: jest.fn(),
@@ -31,11 +46,22 @@ const DEFAULTS = {
   PATH: 'traces-explorer',
   TOKENS: { accessJwt: 'access-token-123', refreshJwt: 'refresh-token-456' },
   TITLE: 'Observability',
+  POLLING_ENDPOINT: '/-/observability/traces-explorer.json',
 };
 
 describe('Observability App Component', () => {
   let wrapper;
   let authCallbacks;
+
+  const expectSingleAlert = ({ variant, text }) => {
+    const alerts = wrapper.findAllComponents({ name: 'GlAlert' });
+    expect(alerts).toHaveLength(1);
+
+    const alert = alerts.at(0);
+    expect(alert.props('variant')).toBe(variant);
+    expect(alert.props('dismissible')).toBe(false);
+    expect(alert.text()).toContain(text);
+  };
 
   const createComponent = (props = {}) => {
     return shallowMountExtended(App, {
@@ -44,6 +70,7 @@ describe('Observability App Component', () => {
         path: DEFAULTS.PATH,
         authTokens: DEFAULTS.TOKENS,
         title: DEFAULTS.TITLE,
+        pollingEndpoint: DEFAULTS.POLLING_ENDPOINT,
         ...props,
       },
     });
@@ -58,9 +85,15 @@ describe('Observability App Component', () => {
       onAuthError: mockAuthManager.setCallbacks.mock.calls[0]?.[1],
     };
 
-    const iframe = wrapper.find('iframe').element;
-    const contentWindow = { postMessage: jest.fn() };
-    Object.defineProperty(iframe, 'contentWindow', { value: contentWindow });
+    const iframeWrapper = wrapper.find('iframe');
+    let iframe = null;
+    let contentWindow = null;
+
+    if (iframeWrapper.exists()) {
+      iframe = iframeWrapper.element;
+      contentWindow = { postMessage: jest.fn() };
+      Object.defineProperty(iframe, 'contentWindow', { value: contentWindow });
+    }
 
     return { iframe, contentWindow };
   };
@@ -196,6 +229,11 @@ describe('Observability App Component', () => {
 
       expect(wrapper.findByTestId('o11y-loading-status').exists()).toBe(false);
       expect(wrapper.findByTestId('o11y-error-status').exists()).toBe(true);
+
+      expectSingleAlert({
+        variant: 'danger',
+        text: 'Authentication failed. Please refresh the page.',
+      });
     });
 
     it('can recover from error state with successful authentication', async () => {
@@ -209,6 +247,126 @@ describe('Observability App Component', () => {
       await nextTick();
 
       expect(wrapper.findByTestId('o11y-error-status').exists()).toBe(false);
+    });
+  });
+
+  describe('Polling behavior', () => {
+    let axiosGetSpy;
+
+    beforeEach(() => {
+      axiosGetSpy = jest.spyOn(axios, 'get');
+    });
+
+    afterEach(() => {
+      axiosGetSpy.mockRestore();
+    });
+
+    it('calls simplePoll when tokens are empty', async () => {
+      simplePoll.mockClear();
+      axiosGetSpy.mockResolvedValueOnce({
+        data: { auth_tokens: { access_jwt: 'a', refresh_jwt: 'r' } },
+      });
+
+      await setupComponent({ authTokens: {} });
+      await waitForPromises();
+
+      expect(simplePoll).toHaveBeenCalledWith(expect.any(Function), {
+        timeout: POLLING_TIMEOUT,
+      });
+    });
+
+    it('skips polling when tokens are present', async () => {
+      simplePoll.mockClear();
+      await setupComponent({ authTokens: DEFAULTS.TOKENS });
+
+      expect(simplePoll).not.toHaveBeenCalled();
+    });
+
+    it('initializes auth with tokens on successful poll', async () => {
+      AuthManager.mockClear();
+      axiosGetSpy.mockResolvedValueOnce({
+        data: { auth_tokens: { access_jwt: 'access', refresh_jwt: 'refresh' } },
+      });
+
+      await setupComponent({ authTokens: {} });
+      await waitForPromises();
+
+      expect(AuthManager).toHaveBeenCalledTimes(1);
+      expect(AuthManager).toHaveBeenCalledWith(
+        expect.any(String),
+        { accessJwt: 'access', refreshJwt: 'refresh' },
+        expect.any(String),
+      );
+    });
+
+    it('updates authTokensStatus when status is present in response', async () => {
+      axiosGetSpy
+        .mockResolvedValueOnce({
+          data: { auth_tokens: { status: 'provisioning' } },
+        })
+        .mockResolvedValueOnce({
+          data: { auth_tokens: { access_jwt: 'a', refresh_jwt: 'r' } },
+        });
+
+      await setupComponent({ authTokens: {} });
+      await waitForPromises();
+      await nextTick();
+
+      expect(wrapper.findByTestId('o11y-loading-status').exists()).toBe(true);
+
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
+      await nextTick();
+
+      expect(axiosGetSpy).toHaveBeenCalledTimes(2);
+      expect(AuthManager).toHaveBeenCalled();
+    });
+
+    it('shows error on terminal client error (4xx)', async () => {
+      axiosGetSpy.mockRejectedValueOnce({ response: { status: 401 } });
+
+      await setupComponent({ authTokens: {} });
+      await waitForPromises();
+      await nextTick();
+
+      expect(wrapper.findByTestId('o11y-error-status').exists()).toBe(true);
+    });
+
+    it.each([500, 429])('retries on %s status and continues polling', async (status) => {
+      axiosGetSpy.mockRejectedValueOnce({ response: { status } }).mockResolvedValueOnce({
+        data: { auth_tokens: { access_jwt: 'a', refresh_jwt: 'r' } },
+      });
+
+      await setupComponent({ authTokens: {} });
+      await waitForPromises();
+
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
+
+      expect(axiosGetSpy).toHaveBeenCalledTimes(2);
+      expect(AuthManager).toHaveBeenCalled();
+    });
+
+    it('shows provisioning warning when max attempts reached with provisioning status', async () => {
+      for (let i = 0; i < MAX_POLLING_ATTEMPTS + 1; i += 1) {
+        axiosGetSpy.mockResolvedValueOnce({
+          data: { auth_tokens: { status: 'provisioning' } },
+        });
+      }
+
+      await setupComponent({ authTokens: {} });
+
+      await Array.from({ length: MAX_POLLING_ATTEMPTS }).reduce(
+        (promise) => promise.then(() => waitForPromises()).then(() => jest.runOnlyPendingTimers()),
+        Promise.resolve(),
+      );
+      await waitForPromises();
+      await nextTick();
+
+      expectSingleAlert({
+        variant: 'warning',
+        text: 'The observability service is still initializing. Please try again in a few minutes.',
+      });
     });
   });
 
@@ -268,10 +426,48 @@ describe('Observability App Component', () => {
       expect(() => wrapper.destroy()).not.toThrow();
     });
 
-    it('handles missing authManager during cleanup gracefully', async () => {
-      await setupComponent();
-      wrapper.vm.authManager = null;
+    it('handles missing authManager during cleanup gracefully', () => {
+      const axiosGetSpy = jest.spyOn(axios, 'get');
+      axiosGetSpy.mockResolvedValue({
+        data: { auth_tokens: { status: 'provisioning' } },
+      });
+
+      wrapper = createComponent({ authTokens: {} });
       expect(() => wrapper.destroy()).not.toThrow();
+
+      axiosGetSpy.mockRestore();
+    });
+
+    it('cancels polling on beforeUnmount', async () => {
+      const axiosGetSpy = jest.spyOn(axios, 'get');
+      axiosGetSpy.mockResolvedValue({
+        data: { auth_tokens: { status: 'provisioning' } },
+      });
+
+      await setupComponent({ authTokens: {} });
+      await waitForPromises();
+
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
+
+      const callsBeforeDestroy = axiosGetSpy.mock.calls.length;
+      expect(callsBeforeDestroy).toBeGreaterThanOrEqual(2);
+
+      wrapper.destroy();
+
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
+
+      const callsAfterFirstCycle = axiosGetSpy.mock.calls.length;
+
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
+      jest.runOnlyPendingTimers();
+      await waitForPromises();
+
+      expect(axiosGetSpy.mock.calls).toHaveLength(callsAfterFirstCycle);
+
+      axiosGetSpy.mockRestore();
     });
   });
 });

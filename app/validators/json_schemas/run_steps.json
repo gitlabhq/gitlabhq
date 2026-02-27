@@ -7,15 +7,24 @@
   "type": "array",
   "definitions": {
     "step": {
-      "description": "Any of these step use cases are valid.",
+      "description": "Any of these function use cases are valid.",
       "oneOf": [
         {
-          "description": "Run a referenced step.",
+          "description": "Run a referenced function.",
           "type": "object",
           "additionalProperties": false,
           "required": [
-            "name",
-            "step"
+            "name"
+          ],
+          "oneOf": [
+            {
+              "required": ["step"],
+              "not": {"required": ["func"]}
+            },
+            {
+              "required": ["func"],
+              "not": {"required": ["step"]}
+            }
           ],
           "properties": {
             "name": {
@@ -28,66 +37,10 @@
               "$ref": "#/definitions/namedValues"
             },
             "step": {
-              "oneOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "$ref": "#/definitions/gitReference"
-                },
-                {
-                  "$ref": "#/definitions/ociReference"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "description": "Run a sequence of steps.",
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "run"
-          ],
-          "properties": {
-            "env": {
-              "$ref": "#/definitions/namedStrings"
+              "$ref": "#/definitions/funcReference"
             },
-            "run": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/step"
-              }
-            },
-            "outputs": {
-              "$ref": "#/definitions/namedValues"
-            },
-            "delegate": {
-              "type": "string"
-            }
-          }
-        },
-        {
-          "description": "Run an action.",
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "name",
-            "action"
-          ],
-          "properties": {
-            "name": {
-              "$ref": "#/definitions/name"
-            },
-            "env": {
-              "$ref": "#/definitions/namedStrings"
-            },
-            "inputs": {
-              "$ref": "#/definitions/namedValues"
-            },
-            "action": {
-              "type": "string",
-              "minLength": 1
+            "func": {
+              "$ref": "#/definitions/funcReference"
             }
           }
         },
@@ -109,23 +62,6 @@
             "script": {
               "type": "string",
               "minLength": 1
-            }
-          }
-        },
-        {
-          "description": "Exec a binary.",
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "exec"
-          ],
-          "properties": {
-            "env": {
-              "$ref": "#/definitions/namedStrings"
-            },
-            "exec": {
-              "description": "Exec is a command to run.",
-              "$ref": "#/definitions/exec"
             }
           }
         }
@@ -162,7 +98,7 @@
     },
     "gitReference": {
       "type": "object",
-      "description": "GitReference is a reference to a step in a Git repository.",
+      "description": "GitReference is a reference to a function in a Git repository.",
       "additionalProperties": false,
       "required": [
         "git"
@@ -194,7 +130,7 @@
     },
     "ociReference": {
       "type": "object",
-      "description": "OCIReference is a reference to a step hosted in an OCI repository.",
+      "description": "OCIReference is a reference to a function hosted in an OCI repository.",
       "additionalProperties": false,
       "required": [
         "oci"
@@ -212,65 +148,44 @@
             "registry": {
               "type": "string",
               "description": "The <host>[:<port>] of the container registry server.",
-              "examples": [
-                "registry.gitlab.com"
-              ]
+              "examples": ["registry.gitlab.com"]
             },
             "repository": {
               "type": "string",
               "description": "A path within the registry containing related OCI images. Typically the namespace, project, and image name.",
-              "examples": [
-                "my_group/my_project/image"
-              ]
+              "examples": ["my_group/my_project/image"]
             },
             "tag": {
               "type": "string",
               "description": "A pointer to the image manifest hosted in the OCI repository.",
-              "examples": [
-                "latest",
-                "1",
-                "1.5",
-                "1.5.0"
-              ]
+              "examples": ["latest", "1", "1.5", "1.5.0"]
             },
             "dir": {
               "type": "string",
-              "description": "A directory inside the OCI image where the step can be found.",
-              "examples": [
-                "/my_steps/hello_world"
-              ]
+              "description": "A directory inside the OCI image where the function can be found.",
+              "examples": ["/my_steps/hello_world"]
             },
             "file": {
               "type": "string",
-              "description": "The name of the file that defines the step, defaults to step.yml.",
-              "examples": [
-                "step.yml"
-              ]
+              "description": "The name of the file that defines the function, defaults to func.yml.",
+              "examples": ["func.yml"]
             }
           }
         }
       }
     },
-    "exec": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "command"
-      ],
-      "properties": {
-        "command": {
-          "type": "array",
-          "description": "Command are the parameters to the system exec API. It does not invoke a shell.",
-          "items": {
-            "type": "string"
-          },
-          "minItems": 1
+    "funcReference": {
+      "oneOf": [
+        {
+          "type": "string"
         },
-        "work_dir": {
-          "type": "string",
-          "description": "WorkDir is the working directly in which `command` will be exec'ed."
+        {
+          "$ref": "#/definitions/gitReference"
+        },
+        {
+          "$ref": "#/definitions/ociReference"
         }
-      }
+      ]
     }
   }
 }

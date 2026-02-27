@@ -162,21 +162,21 @@ module Keeps
       file_lines[line].gsub(
         /(it_behaves_like|include_examples) .+/,
         "context 'with quarantine id #{line}-#{Date.current.iso8601}',\n" \
-          "quarantine: { issue: '#{flaky_test_file_issue['web_url']}', type: 'flaky' } do\n  \\0\nend"
+          "quarantine: {\nissue: '#{flaky_test_file_issue['web_url']}',\ntype: 'flaky'\n} do\n  \\0\nend"
       )
     end
 
     def add_quarantine_for_it_example(file_lines, line, flaky_test_file_issue)
       file_lines[line].gsub(
         " do\n",
-        ",\nquarantine: { issue: '#{flaky_test_file_issue['web_url']}', type: 'flaky' } do\n"
+        ",\nquarantine: {\nissue: '#{flaky_test_file_issue['web_url']}',\ntype: 'flaky'\n} do\n"
       )
     end
 
     def add_quarantine_for_it_example_without_name(file_lines, line, flaky_test_file_issue)
       file_lines[line].gsub(
         /it \{ (.+) \}/,
-        "it quarantine: { issue: '#{flaky_test_file_issue['web_url']}', type: 'flaky' } do\n  \\1\nend"
+        "it quarantine: {\nissue: '#{flaky_test_file_issue['web_url']}',\ntype: 'flaky'\n} do\n  \\1\nend"
       )
     end
 

@@ -643,10 +643,9 @@ In this case we have to add async validation before we can add the sharding key.
 
 1. When a table is sharded by `organization_id`, you must also add `organization_transfer_support` to track whether the table is handled during organization transfers (when users or groups move between organizations).
    - Set to `supported` if you've implemented the transfer logic in one of the transfer services:
-     - `app/services/organizations/groups/transfer_service.rb`
-     - `app/services/organizations/users/transfer_service.rb`
-     - `ee/app/services/ee/organizations/groups/transfer_service.rb`
-     - `ee/app/services/ee/organizations/users/transfer_service.rb`
+     - `app/services/organizations/transfer/groups_service.rb`
+     - `app/services/organizations/transfer/users_service.rb`
+     - `ee/app/services/ee/organizations/transfer/groups_service.rb`
    - Set to `todo` if the table needs transfer support but doesn't have it yet (only for existing tables - new tables must be `supported`)
 
    ```yaml
@@ -658,7 +657,7 @@ In this case we have to add async validation before we can add the sharding key.
 1. Add your table to the appropriate transfer service using the `update_organization_id_for` helper:
 
    ```ruby
-   # app/services/organizations/users/transfer_service.rb
+   # app/services/organizations/transfer/users_service.rb
    def update_associated_organization_ids(user_ids)
      update_organization_id_for(PersonalAccessToken) { |relation| relation.for_users(user_ids) }
      update_organization_id_for(YourModel) { |relation| relation.where(user_id: user_ids) }

@@ -1016,7 +1016,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
 
-    describe '.inside_namespace' do
+    describe '.for_group_and_its_subgroups' do
       let_it_be(:parent_group) { create(:group) }
       let_it_be(:child_group) { create(:group, parent: parent_group) }
       let_it_be(:other_group) { create(:group) }
@@ -1025,16 +1025,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let_it_be(:project_in_other) { create(:project, namespace: other_group) }
 
       it 'returns projects in the specified namespace and its descendants' do
-        result = described_class.inside_namespace(parent_group)
+        result = described_class.for_group_and_its_subgroups(parent_group)
 
         expect(result).to include(project_in_parent, project_in_child)
         expect(result).not_to include(project_in_other)
-      end
-
-      it 'returns none when namespace is nil' do
-        result = described_class.inside_namespace(nil)
-
-        expect(result).to be_empty
       end
     end
   end
@@ -5848,31 +5842,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(Namespaces::Descendants).to receive(:expire_for).with([project.namespace.id])
 
       project.update!(archived: true)
-    end
-  end
-
-  context 'with inside_path' do
-    let!(:project1) { create(:project, namespace: create(:namespace, path: 'name_pace')) }
-    let!(:project2) { create(:project) }
-    let!(:project3) { create(:project, namespace: create(:namespace, path: 'namespace')) }
-    let!(:path) { project1.namespace.full_path }
-
-    describe 'inside_path' do
-      it 'returns correct project' do
-        expect(described_class.inside_path(path)).to eq([project1])
-      end
-    end
-
-    describe '.inside_path_preloaded' do
-      it 'preloads the specified associations' do
-        projects = described_class.inside_path_preloaded(path)
-
-        project = projects.first
-
-        expect(project.association(:topics)).to be_loaded
-        expect(project.association(:project_topics)).to be_loaded
-        expect(project.association(:route)).to be_loaded
-      end
     end
   end
 

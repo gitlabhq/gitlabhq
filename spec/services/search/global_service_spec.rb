@@ -208,31 +208,5 @@ RSpec.describe Search::GlobalService, feature_category: :global_search do
         expect(projects).to contain_exactly(public_project, archived_project)
       end
     end
-
-    context 'when search_project_list_lookup is false' do
-      before do
-        stub_feature_flags(search_project_list_lookup: false)
-      end
-
-      it 'returns projects the user has access to' do
-        expect(projects).to contain_exactly(public_project, internal_project, found_project, archived_project)
-      end
-
-      it 'includes route and topic associations for performance' do
-        projects
-
-        expect(projects.first.association(:route)).to be_loaded
-        expect(projects.first.association(:topics)).to be_loaded
-        expect(projects.first.association(:project_topics)).to be_loaded
-      end
-
-      context 'when user is nil (unauthenticated)' do
-        subject(:projects) { described_class.new(nil, search: 'searchable').projects }
-
-        it 'returns only public projects' do
-          expect(projects).to contain_exactly(public_project, archived_project)
-        end
-      end
-    end
   end
 end

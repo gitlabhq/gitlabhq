@@ -36,7 +36,15 @@ module Gitlab
         @context = self.logger.instrument(:config_build_context, once: true) do
           pipeline ||= ::Ci::Pipeline.new(project: project, sha: sha, ref: ref, user: user, source: source)
 
-          build_context(project: project, pipeline: pipeline, sha: sha, user: user, parent_pipeline: parent_pipeline, pipeline_config: pipeline_config, pipeline_policy_context: pipeline_policy_context)
+          build_context(
+            project: project,
+            pipeline: pipeline,
+            sha: sha,
+            user: user,
+            parent_pipeline: parent_pipeline,
+            pipeline_config: pipeline_config,
+            pipeline_policy_context: pipeline_policy_context
+          )
         end
 
         @context.set_deadline(TIMEOUT_SECONDS)
@@ -220,7 +228,8 @@ module Gitlab
         end
       end
 
-      def build_context(project:, pipeline:, sha:, user:, parent_pipeline:, pipeline_config:, pipeline_policy_context:)
+      def build_context(
+        project:, pipeline:, sha:, user:, parent_pipeline:, pipeline_config:, pipeline_policy_context:)
         Config::External::Context.new(
           project: project,
           pipeline: pipeline,

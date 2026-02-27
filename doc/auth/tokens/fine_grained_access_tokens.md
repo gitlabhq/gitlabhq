@@ -1569,6 +1569,7 @@ Grants the ability to approve, reset approvals, and unapprove merge requests.
 | Approve | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/approve` |
 | Approve | Project | `POST` | `/projects/:id/merge_requests/:merge_request_iid/unapprove` |
 | Approve | Project | `PUT` | `/projects/:id/merge_requests/:merge_request_iid/reset_approvals` |
+| Create | Project | `POST` | `/projects/:id/create_ci_config` |
 | Create | Project | `POST` | `/projects/:id/merge_requests` |
 | Create | Project | `POST` | `/projects/:id/merge_requests/:noteable_id/discussions` |
 | Create | Project | `POST` | `/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes` |

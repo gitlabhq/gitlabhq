@@ -22,7 +22,7 @@ class UpdateCodeSuggestionEventsDailyData < ClickHouse::Migration
       ) fresh_data WHERE occurrences <> 0 OR suggestions_size_sum <> 0;
     SQL
            )
-    execute("EXCHANGE TABLES code_suggestion_events_daily AND code_suggestion_events_daily_temp")
+    safe_table_swap('code_suggestion_events_daily', 'code_suggestion_events_daily_temp', '_old')
     execute("DROP TABLE code_suggestion_events_daily_temp")
   end
 

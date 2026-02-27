@@ -54,7 +54,8 @@ module Gitlab
         @config = fallback_config if fallback_config.exists?
       end
 
-      delegate :content, :source, :url, :inputs_for_pipeline_creation, to: :@config, allow_nil: true
+      delegate :content, :source, :url, :inputs_for_pipeline_creation,
+        to: :@config, allow_nil: true
       delegate :internal_include_prepended?, to: :@config
 
       def exists?
@@ -67,20 +68,9 @@ module Gitlab
 
       private
 
-      def find_source(
-        project:, sha:, custom_content:, pipeline_source:, pipeline_source_bridge:, triggered_for_branch:, ref:,
-        inputs:)
+      def find_source(**args)
         standard_sources.each do |source|
-          source_config = source.new(project: project,
-            sha: sha,
-            custom_content: custom_content,
-            pipeline_source: pipeline_source,
-            pipeline_source_bridge: pipeline_source_bridge,
-            triggered_for_branch: triggered_for_branch,
-            ref: ref,
-            inputs: inputs
-          )
-
+          source_config = source.new(**args)
           return source_config if source_config.exists?
         end
 

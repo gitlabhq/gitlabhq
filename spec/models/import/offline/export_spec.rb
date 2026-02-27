@@ -142,4 +142,50 @@ RSpec.describe Import::Offline::Export, feature_category: :importers do
       end
     end
   end
+
+  describe 'included routes methods' do
+    let_it_be(:export) { create(:offline_export) }
+    let_it_be(:included_project_1) { create(:project) }
+    let_it_be(:included_project_2) { create(:project) }
+    let_it_be(:excluded_project) { create(:project) }
+    let_it_be(:included_group_1) { create(:group) }
+    let_it_be(:included_group_2) { create(:group) }
+    let_it_be(:excluded_group) { create(:group) }
+
+    before_all do
+      # Create finished group and project relations belonging to offline_export
+      create(:bulk_import_export, :finished, offline_export: export, project: included_project_1)
+      create(:bulk_import_export, :finished, offline_export: export, project: included_project_2)
+      create(:bulk_import_export, :finished, offline_export: export, group: included_group_1)
+      create(:bulk_import_export, :finished, offline_export: export, group: included_group_2)
+
+      # Create group and project relation exports not in finished status
+      create(:bulk_import_export, :pending, offline_export: export, project: excluded_project, relation: 'milestones')
+      create(:bulk_import_export, :started, offline_export: export, project: excluded_project, relation: 'issues')
+      create(:bulk_import_export, :failed, offline_export: export, project: excluded_project, relation: 'snippets')
+      create(:bulk_import_export, :pending, offline_export: export, group: excluded_group, relation: 'milestones')
+      create(:bulk_import_export, :started, offline_export: export, group: excluded_group, relation: 'badges')
+      create(:bulk_import_export, :failed, offline_export: export, group: excluded_group, relation: 'boards')
+
+      # Create finished group and project relation exports for other offline exports
+      create(:bulk_import_export, :offline, :finished, project: excluded_project)
+      create(:bulk_import_export, :offline, :finished, group: excluded_group)
+    end
+
+    describe '#included_group_routes' do
+      subject(:included_group_routes) { export.included_group_routes }
+
+      it 'returns group routes for finished group relation exports belonging to the offline export' do
+        expect(included_group_routes).to contain_exactly(included_group_1.route, included_group_2.route)
+      end
+    end
+
+    describe '#included_project_routes' do
+      subject(:included_project_routes) { export.included_project_routes }
+
+      it 'returns project routes for finished project relation exports belonging to the offline export' do
+        expect(included_project_routes).to contain_exactly(included_project_1.route, included_project_2.route)
+      end
+    end
+  end
 end

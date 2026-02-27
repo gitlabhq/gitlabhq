@@ -25,12 +25,9 @@ module Search
     end
 
     def projects
-      @projects ||= if Feature.enabled?(:search_project_list_lookup, current_user)
-                      ::ProjectsFinder.new(current_user: current_user).execute.with_route.include_topics.without_order
-                    else
-                      ::ProjectsFinder.new(current_user: current_user).execute.preload(:topics, :project_topics, :route) # rubocop:disable CodeReuse/ActiveRecord -- existing code
-                    end
+      ::ProjectsFinder.new(current_user: current_user).execute.with_route.include_topics.without_order
     end
+    strong_memoize_attr :projects
 
     def allowed_scopes
       Search::Scopes.available_for_context(

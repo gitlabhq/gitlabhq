@@ -123,15 +123,5 @@ RSpec.describe Search::GroupService, feature_category: :global_search do
     it 'returns projects within the group hierarchy' do
       expect(projects).to contain_exactly(child_project, grandchild_project)
     end
-
-    context 'when search_project_list_lookup feature flag is disabled' do
-      before do
-        stub_feature_flags(search_project_list_lookup: false)
-      end
-
-      it 'returns projects within the group hierarchy' do
-        expect(projects).to contain_exactly(child_project, grandchild_project)
-      end
-    end
   end
 end

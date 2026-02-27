@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_jobs_code_quality
 description: ''
 product_group: static_analysis
+product_categories:
+- code_quality
 value_type: number
 status: active
 milestone: '14.3'

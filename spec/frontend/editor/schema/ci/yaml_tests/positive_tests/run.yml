@@ -95,11 +95,45 @@ step_using_oci_reference:
       env:
         env1: value2
 
-step_using_action:
+step_using_function:
   run:
     - name: github_action_step
-      action: mikefarah/yq@master
+      func: github-actions/yq@master
       inputs:
         cmd: yq .name some.yaml
       env:
         env1: value1
+
+step_with_different_steps:
+  run:
+    # Step reference
+    - name: my_step
+      step: my-step-name
+      inputs:
+        param1: value1
+      env:
+        VAR: value
+
+    # Script step
+    - name: my_script
+      script: |
+        echo "Hello"
+        npm test
+      env:
+        NODE_ENV: test
+
+    # Using func instead of step
+    - name: another_step
+      func: namespace/function-name@tag
+
+    # Step with git reference
+    - name: git_reference_step
+      step:
+        git:
+          url: gitlab.com/components/script
+          dir: bash
+          rev: v1
+      inputs:
+        param1: value1
+      env:
+        env1: value2

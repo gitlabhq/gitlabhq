@@ -18,7 +18,7 @@
     - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
     - export GOPATH=$CI_PROJECT_DIR/.go
     - mkdir -p $GOPATH
-    - git config --global http.https://gitlab.com/gitlab-org/gitlab.proactiveAuth basic
+    - (command -v git &> /dev/null && git config --global http.https://gitlab.com/gitlab-org/gitlab.proactiveAuth basic) || true
     - source scripts/utils.sh
     - log_disk_usage "true"  # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
 
@@ -153,7 +153,7 @@
 
 .es8-services:
   services:
-    - name: elasticsearch:8.19.11
+    - name: elasticsearch:8.19.12
 
 .es8-variables:
   variables:

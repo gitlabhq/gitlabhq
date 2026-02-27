@@ -2,6 +2,10 @@
 
 module Oauth
   class DeviceAuthorizationsController < Doorkeeper::DeviceAuthorizationGrant::DeviceAuthorizationsController
+    include RequestPayloadLogger
+
+    alias_method :auth_user, :current_user
+
     layout 'minimal'
 
     def index

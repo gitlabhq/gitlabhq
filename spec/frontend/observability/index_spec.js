@@ -4,7 +4,7 @@ import ObservabilityApp from '~/observability/components/app.vue';
 
 jest.mock('~/observability/components/app.vue', () => ({
   name: 'ObservabilityApp',
-  props: ['o11yUrl', 'path', 'authTokens', 'title'],
+  props: ['o11yUrl', 'path', 'authTokens', 'title', 'pollingEndpoint'],
   data() {
     return {};
   },
@@ -22,6 +22,7 @@ describe('Observability Index', () => {
     appRoot.setAttribute('id', 'js-observability');
     appRoot.dataset.o11yUrl = 'https://o11y.example.com';
     appRoot.dataset.path = 'traces-explorer';
+    appRoot.dataset.pollingEndpoint = '/-/observability/traces-explorer.json';
     document.body.appendChild(appRoot);
 
     wrapper = createWrapper(initObservability());

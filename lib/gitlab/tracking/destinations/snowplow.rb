@@ -123,6 +123,10 @@ module Gitlab
 
           return SnowplowTracker::Emitter if Feature.enabled?(:snowplow_sync_emitter, Feature.current_request)
 
+          if Feature.enabled?(:snowplow_emitter_http_timeout, Feature.current_request)
+            return ::Gitlab::Tracking::SnowplowTimeoutEmitter
+          end
+
           # snowplow_enabled? is true for gitlab.com and customers that configured their own Snowplow collector
           # In both bases we do not want to log the events being sent as the instance is controlled by the same company
           # controlling the Snowplow collector.
@@ -140,6 +144,8 @@ module Gitlab
             method: 'post',
             buffer_size: 1
           }
+
+          options[:thread_count] = 5 if Feature.enabled?(:snowplow_emitter_thread_count, Feature.current_request)
 
           return options if Feature.disabled?(:track_struct_event_logger, Feature.current_request)
 

@@ -44,9 +44,7 @@ class FixTimestampInconsistencyForDuoChatEvents < ClickHouse::Migration
       DROP VIEW IF EXISTS duo_chat_daily_events_mv
     SQL
 
-    execute <<~SQL
-      EXCHANGE TABLES duo_chat_events_backup AND duo_chat_events
-    SQL
+    safe_table_swap('duo_chat_events', 'duo_chat_events_backup', '_temp')
 
     execute <<~SQL
       INSERT INTO duo_chat_events(user_id, event, timestamp, namespace_path)
@@ -66,9 +64,7 @@ class FixTimestampInconsistencyForDuoChatEvents < ClickHouse::Migration
 
   def down
     # swap back and remove backup
-    execute <<~SQL
-      EXCHANGE TABLES duo_chat_events_backup AND duo_chat_events
-    SQL
+    safe_table_swap('duo_chat_events', 'duo_chat_events_backup', '_temp')
 
     execute <<~SQL
       DROP VIEW IF EXISTS duo_chat_events_daily_mv

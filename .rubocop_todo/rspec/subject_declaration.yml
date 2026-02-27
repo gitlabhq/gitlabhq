@@ -53,7 +53,6 @@ RSpec/SubjectDeclaration:
     - 'spec/lib/gitlab/diff/file_collection/merge_request_diff_spec.rb'
     - 'spec/lib/gitlab/diff/highlight_spec.rb'
     - 'spec/lib/gitlab/diff/inline_diff_markdown_marker_spec.rb'
-    - 'spec/lib/gitlab/git/commit_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/events/cross_referenced_spec.rb'
     - 'spec/lib/gitlab/import_export/import_failure_service_spec.rb'
     - 'spec/lib/gitlab/jira_import/base_importer_spec.rb'

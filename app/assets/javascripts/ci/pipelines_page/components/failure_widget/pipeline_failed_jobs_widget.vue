@@ -123,7 +123,7 @@ export default {
   <crud-component
     :id="$options.ariaControlsId"
     class="expandable-card"
-    :class="{ 'is-collapsed gl-border-transparent hover:gl-border-default': !isExpanded }"
+    :class="{ 'is-collapsed': !isExpanded }"
     data-testid="failed-jobs-card"
     @click="toggleWidget"
   >

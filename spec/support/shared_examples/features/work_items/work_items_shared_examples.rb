@@ -367,7 +367,7 @@ RSpec.shared_examples 'work items invite members' do
   it 'shows modal to invite members' do
     within_testid 'work-item-assignees' do
       click_button 'Edit'
-      click_button('Invite members')
+      click_link('Invite members')
     end
 
     page.within invite_modal_selector do

@@ -111,9 +111,9 @@ module RapidDiffs
     private
 
     def highlight?
-      return true if @current_user.nil?
+      return @highlight if defined?(@highlight)
 
-      Gitlab::ColorSchemes.for_user(@current_user).css_class != 'none'
+      @highlight = @current_user.nil? || Gitlab::ColorSchemes.for_user(@current_user).css_class != 'none'
     end
 
     def transform_file_collection(diff_files)

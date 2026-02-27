@@ -2,6 +2,8 @@
 key_path: counts.slack_app_installations_gbp
 description: Count of Slack app installations using the new GBP version
 product_group: import
+product_categories:
+- integrations
 value_type: number
 status: active
 milestone: "15.1"

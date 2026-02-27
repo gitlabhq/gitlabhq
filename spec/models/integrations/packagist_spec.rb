@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Packagist, feature_category: :integrations do
+RSpec.describe Integrations::Packagist, feature_category: :package_registry do
   let_it_be(:project) { create(:project) }
   let(:integration) { build(:packagist_integration, project: project) }
 

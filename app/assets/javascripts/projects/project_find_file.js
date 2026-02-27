@@ -1,7 +1,6 @@
-/* eslint-disable func-names, consistent-return, no-return-assign */
+/* eslint-disable func-names, no-return-assign */
 
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import $ from 'jquery';
 import { createAlert } from '~/alert';
 import { sanitize } from '~/lib/dompurify';
 import axios from '~/lib/utils/axios_utils';
@@ -9,20 +8,23 @@ import { spriteIcon } from '~/lib/utils/common_utils';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 
+export const appendBoldText = (element, text) => {
+  const b = document.createElement('b');
+  b.textContent = text;
+  element.append(b);
+};
+
 // highlight text(awefwbwgtc -> <b>a</b>wefw<b>b</b>wgt<b>c</b> )
-const highlighter = function (element, text, matches) {
-  let j = 0;
-  let len = 0;
+export const highlighter = function (element, text, matches) {
   let lastIndex = 0;
   let matchedChars = [];
-  let matchIndex = matches[j];
-  let unmatched = text.substring(lastIndex, matchIndex);
-  for (j = 0, len = matches.length; j < len; j += 1) {
-    matchIndex = matches[j];
-    unmatched = text.substring(lastIndex, matchIndex);
+
+  for (let j = 0; j < matches.length; j += 1) {
+    const matchIndex = matches[j];
+    const unmatched = text.substring(lastIndex, matchIndex);
     if (unmatched) {
       if (matchedChars.length) {
-        element.append(matchedChars.join('').bold());
+        appendBoldText(element, matchedChars.join(''));
       }
       matchedChars = [];
       element.append(document.createTextNode(unmatched));
@@ -31,49 +33,52 @@ const highlighter = function (element, text, matches) {
     lastIndex = matchIndex + 1;
   }
   if (matchedChars.length) {
-    element.append(matchedChars.join('').bold());
+    appendBoldText(element, matchedChars.join(''));
   }
   return element.append(document.createTextNode(text.substring(lastIndex)));
 };
 
 export default class ProjectFindFile {
-  constructor(element1, options) {
-    this.element = element1;
+  constructor(element, options) {
+    this.element = element;
     this.options = options;
     this.goToBlob = this.goToBlob.bind(this);
     this.goToTree = this.goToTree.bind(this);
     this.selectRowDown = this.selectRowDown.bind(this);
     this.selectRowUp = this.selectRowUp.bind(this);
     this.filePaths = {};
-    this.inputElement = this.element.find('.file-finder-input');
-    // init event
+    this.inputElement = this.element.querySelector('.file-finder-input');
+    this.inputKeyupHandler = null;
     this.initEvent();
     // focus text input box
     this.inputElement.focus();
   }
 
   initEvent() {
-    // eslint-disable-next-line @gitlab/no-global-event-off
-    this.inputElement.off('keyup');
-    this.inputElement.on('keyup', (event) => {
-      const target = $(event.target);
-      const value = target.val();
-      const ref = target.data('oldValue');
-      const oldValue = ref != null ? ref : '';
+    if (this.inputKeyupHandler) {
+      this.inputElement.removeEventListener('keyup', this.inputKeyupHandler);
+    }
+    this.inputKeyupHandler = ({ target }) => {
+      const { value, dataset } = target;
+      const oldValue = dataset.oldValue ?? '';
       if (value !== oldValue) {
-        target.data('oldValue', value);
+        dataset.oldValue = value;
         this.findFile();
-        return this.element.find('tr.tree-item').eq(0).addClass('selected').focus();
+        const firstRow = this.element.querySelector('tr.tree-item');
+        if (firstRow) {
+          firstRow.classList.add('selected');
+          firstRow.focus();
+        }
       }
-    });
+    };
+    this.inputElement.addEventListener('keyup', this.inputKeyupHandler);
   }
 
   findFile() {
-    const searchText = sanitize(this.inputElement.val());
+    const searchText = sanitize(this.inputElement.value);
     const result =
       searchText.length > 0 ? fuzzaldrinPlus.filter(this.filePaths, searchText) : this.filePaths;
     return this.renderList(result, searchText);
-    // find file
   }
 
   // files paths load
@@ -81,10 +86,17 @@ export default class ProjectFindFile {
     axios
       .get(url)
       .then(({ data }) => {
-        this.element.find('.loading').hide();
+        const loadingEl = this.element.querySelector('.loading');
+        if (loadingEl) {
+          loadingEl.classList.add('!gl-hidden');
+        }
         this.filePaths = data;
         this.findFile();
-        this.element.find('.files-slider tr.tree-item').eq(0).addClass('selected').focus();
+        const firstRow = this.element.querySelector('.files-slider tr.tree-item');
+        if (firstRow) {
+          firstRow.classList.add('selected');
+          firstRow.focus();
+        }
       })
       .catch(() =>
         createAlert({
@@ -99,7 +111,8 @@ export default class ProjectFindFile {
     let len = 0;
     let matches = [];
     const results = [];
-    this.element.find('.tree-table > tbody').empty();
+    const tbody = this.element.querySelector('.tree-table > tbody');
+    tbody.replaceChildren();
     for (i = 0, len = filePaths.length; i < len; i += 1) {
       const filePath = filePaths[i];
       if (i === 20) {
@@ -109,61 +122,84 @@ export default class ProjectFindFile {
         matches = fuzzaldrinPlus.match(filePath, searchText);
       }
 
-      let blobItemUrl = joinPaths(this.options.blobUrlTemplate, escapeFileUrl(filePath));
+      const { blobUrlTemplate, refType } = this.options;
+      let blobItemUrl = joinPaths(blobUrlTemplate, escapeFileUrl(filePath));
 
-      if (this.options.refType) {
+      if (refType) {
         const blobUrlObject = new URL(blobItemUrl, window.location.origin);
-        blobUrlObject.searchParams.append('ref_type', this.options.refType);
+        blobUrlObject.searchParams.append('ref_type', refType);
         blobItemUrl = blobUrlObject.toString();
       }
-      const html = ProjectFindFile.makeHtml(filePath, matches, blobItemUrl);
-      results.push(this.element.find('.tree-table > tbody').append(html));
+      const row = ProjectFindFile.makeHtml(filePath, matches, blobItemUrl);
+      tbody.appendChild(row);
+      results.push(row);
     }
 
-    this.element.find('.empty-state').toggleClass('hidden', Boolean(results.length));
+    const emptyState = this.element.querySelector('.empty-state');
+    if (emptyState) {
+      emptyState.classList.toggle('hidden', Boolean(results.length));
+    }
 
     return results;
   }
 
   // make tbody row html
   static makeHtml(filePath, matches, blobItemUrl) {
-    const $tr = $(
-      `<tr class='tree-item'><td class='tree-item-file-name link-container'><a>${spriteIcon(
-        'doc-text',
-        's16 vertical-align-middle gl-mr-1',
-      )}<span class='str-truncated'></span></a></td></tr>`,
-    );
-    if (matches) {
-      $tr
-        .find('a')
-        .replaceWith(highlighter($tr.find('a'), filePath, matches).attr('href', blobItemUrl));
+    const tr = document.createElement('tr');
+    tr.classList.add('tree-item');
+
+    const td = document.createElement('td');
+    td.classList.add('tree-item-file-name', 'link-container');
+
+    const a = document.createElement('a');
+    a.innerHTML = sanitize(spriteIcon('doc-text', 's16 vertical-align-middle gl-mr-1'));
+    a.href = blobItemUrl;
+
+    const span = document.createElement('span');
+    span.classList.add('str-truncated');
+
+    a.appendChild(span);
+
+    if (matches && matches.length) {
+      highlighter(a, filePath, matches);
     } else {
-      $tr.find('a').attr('href', blobItemUrl);
-      $tr.find('.str-truncated').text(filePath);
+      span.textContent = filePath;
     }
-    return $tr;
+
+    td.appendChild(a);
+    tr.appendChild(td);
+
+    return tr;
   }
 
   selectRow(type) {
-    const rows = this.element.find('.files-slider tr.tree-item');
-    let selectedRow = this.element.find('.files-slider tr.tree-item.selected');
-    let next = selectedRow.prev();
-    if (rows && rows.length > 0) {
-      if (selectedRow && selectedRow.length > 0) {
+    const filesSlider = this.element.querySelector('.files-slider');
+    if (!filesSlider) {
+      return undefined;
+    }
+    const [firstRow] = filesSlider.querySelectorAll('tr.tree-item');
+    let selectedRow = filesSlider.querySelector('tr.tree-item.selected');
+    let next = null;
+    if (firstRow) {
+      if (selectedRow) {
+        const { previousElementSibling, nextElementSibling } = selectedRow;
         if (type === 'UP') {
-          next = selectedRow.prev();
+          next = previousElementSibling;
         } else if (type === 'DOWN') {
-          next = selectedRow.next();
+          next = nextElementSibling;
         }
-        if (next.length > 0) {
-          selectedRow.removeClass('selected');
+        if (next) {
+          selectedRow.classList.remove('selected');
           selectedRow = next;
         }
       } else {
-        selectedRow = rows.eq(0);
+        selectedRow = firstRow;
       }
-      return selectedRow.addClass('selected').focus();
+      selectedRow.classList.add('selected');
+      selectedRow.focus();
+      return selectedRow;
     }
+    return undefined;
   }
 
   selectRowUp() {
@@ -179,10 +215,10 @@ export default class ProjectFindFile {
   }
 
   goToBlob() {
-    const $link = this.element.find('.tree-item.selected .tree-item-file-name a');
+    const link = this.element.querySelector('.tree-item.selected .tree-item-file-name a');
 
-    if ($link.length) {
-      $link.get(0).click();
+    if (link) {
+      link.click();
     }
   }
 }

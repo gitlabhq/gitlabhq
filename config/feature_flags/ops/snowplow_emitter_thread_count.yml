@@ -1,0 +1,10 @@
+---
+name: snowplow_emitter_thread_count
+description: Increases the thread count for Snowplow AsyncEmitter to debug staging event emission issues
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/562794
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225136
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/591637
+milestone: '18.10'
+group: 'group::analytics instrumentation'
+type: ops
+default_enabled: false

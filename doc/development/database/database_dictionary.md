@@ -186,6 +186,10 @@ The value must be either `supported` or `todo`.
 
 - **`supported`**: The table is properly handled in the organization transfer services.
   - Required for all **new** tables sharded by `organization_id`.
-  - The table must be referenced in `app/services/organizations/users/transfer_service.rb` or `app/services/organizations/groups/transfer_service.rb`.
+  - The table must be referenced in one of the transfer services:
+    - `app/services/organizations/transfer/groups_service.rb`
+    - `app/services/organizations/transfer/users_service.rb`
+    - `ee/app/services/ee/organizations/transfer/groups_service.rb`
+
 - **`todo`**: The table needs organization transfer support but doesn't have it yet.
   - Used for **existing** tables that were sharded by `organization_id` previously.

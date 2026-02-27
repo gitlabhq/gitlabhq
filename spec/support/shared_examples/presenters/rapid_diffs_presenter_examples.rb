@@ -64,6 +64,14 @@ RSpec.shared_examples 'rapid diffs presenter syntax highlighting' do
 
         presenter.diff_files_for_streaming
       end
+
+      it 'caches the highlight? result' do
+        allow(diff_file).to receive(:prevent_syntax_highlighting!)
+
+        presenter.diff_files_for_streaming
+
+        expect(Gitlab::ColorSchemes).to have_received(:for_user).once
+      end
     end
   end
 end

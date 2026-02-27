@@ -115,16 +115,6 @@ describe('WorkItemsSavedViewsLimitWarningModal', () => {
   });
 
   describe('closing the modal', () => {
-    it('emits the hide event when the modal is closed', async () => {
-      await createComponent();
-
-      expect(wrapper.emitted('hide')).toBeUndefined();
-
-      findModal().vm.$emit('hide');
-
-      expect(wrapper.emitted('hide')).toBeDefined();
-    });
-
     it('resets the route query when closed', async () => {
       await createComponent();
       await router.replace({

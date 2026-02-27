@@ -58,6 +58,11 @@ export const SHORT_DATE_TIME_FORMAT = `mmm dd yyyy HH:MM:ss Z`;
 
 export const ISSUE_PATH_ID_SEPARATOR = '#';
 
+export const MAX_POLLING_ATTEMPTS = 60;
+export const POLLING_INTERVAL = 2000;
+export const POLLING_TIMEOUT = (MAX_POLLING_ATTEMPTS + 1) * POLLING_INTERVAL;
+export const PROVISIONING_MESSAGE_INTERVAL = 12000;
+
 export const MESSAGE_TYPES = {
   // eslint-disable-next-line @gitlab/require-i18n-strings
   AUTH_STATUS: 'O11Y_AUTH_STATUS',

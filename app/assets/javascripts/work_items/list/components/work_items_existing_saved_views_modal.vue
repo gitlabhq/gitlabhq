@@ -11,7 +11,7 @@ import {
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { ROUTES } from '~/work_items/constants';
-import { subscribeToSavedView } from 'ee_else_ce/work_items/list/utils';
+import { subscribeWithLimitEnforce } from 'ee_else_ce/work_items/list/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -49,7 +49,7 @@ export default {
   savedViewLimitsHelpPath: helpPagePath('user/work_items/saved_views.md', {
     anchor: 'saved-view-limits',
   }),
-  inject: ['canCreateSavedView'],
+  inject: ['canCreateSavedView', 'subscribedSavedViewLimit'],
   model: {
     prop: 'show',
     event: 'hide',
@@ -71,7 +71,7 @@ export default {
   },
   // TODO: Add 'view-subscribed' emit once subscribe functionality is implemented
   // See: https://gitlab.com/gitlab-org/gitlab/-/work_items/588295
-  emits: ['hide', 'show-new-view-modal'],
+  emits: ['hide', 'show-new-view-modal', 'subscribe-from-modal'],
   data() {
     return {
       searchInput: '',
@@ -134,12 +134,14 @@ export default {
       const viewId = getIdFromGraphQLId(view.id).toString();
 
       if (!view.subscribed) {
+        this.$emit('subscribe-from-modal');
         const mutationKey = 'workItemSavedViewSubscribe';
         try {
-          const { data } = await subscribeToSavedView({
+          const { data } = await subscribeWithLimitEnforce({
             view,
-            cache: this.$apollo,
-            fullPath: this.fullPath,
+            apolloClient: this.$apollo,
+            namespacePath: this.fullPath,
+            subscribedSavedViewLimit: this.subscribedSavedViewLimit,
           });
 
           if (data[mutationKey].errors?.length) {
@@ -148,15 +150,26 @@ export default {
             );
             return;
           }
+
+          this.$router.push({
+            name: ROUTES.savedView,
+            params: { view_id: viewId },
+            query: undefined,
+          });
         } catch (e) {
           this.error = s__(
             'WorkItem|An error occurred while subscribing to the view. Please try again.',
           );
           return;
         }
+      } else {
+        this.$router.push({
+          name: ROUTES.savedView,
+          params: { view_id: viewId },
+          query: undefined,
+        });
       }
 
-      this.$router.push({ name: ROUTES.savedView, params: { view_id: viewId }, query: undefined });
       this.hideModal();
     },
   },

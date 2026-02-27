@@ -62,6 +62,7 @@ export default {
       default: false,
     },
   },
+  emits: ['subscribe-from-modal'],
   data() {
     return {
       isNewViewModalVisible: false,
@@ -139,6 +140,7 @@ export default {
       :full-path="fullPath"
       :show-subscription-limit-warning="showSubscriptionLimitWarning"
       @show-new-view-modal="isNewViewModalVisible = true"
+      @subscribe-from-modal="$emit('subscribe-from-modal')"
     />
   </div>
 </template>

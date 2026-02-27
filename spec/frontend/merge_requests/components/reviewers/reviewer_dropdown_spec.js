@@ -8,7 +8,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import ReviewerDropdown from '~/merge_requests/components/reviewers/reviewer_dropdown.vue';
 import userPermissionsQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
 import userAutocompleteWithMRPermissionsQuery from 'ee_else_ce/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
@@ -111,7 +110,6 @@ function createComponent({
 }
 
 const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-const findInviteMembersTrigger = () => wrapper.findComponent(InviteMembersTrigger);
 
 describe('Reviewer dropdown component', () => {
   describe('when user does not have permission', () => {
@@ -1001,21 +999,6 @@ describe('Reviewer dropdown component', () => {
           }),
         );
       });
-    });
-  });
-
-  describe('invite members footer', () => {
-    beforeEach(async () => {
-      createComponent();
-      await waitForPromises();
-    });
-
-    it('renders invite members trigger with help text', () => {
-      expect(findInviteMembersTrigger().exists()).toBe(true);
-      expect(findInviteMembersTrigger().props('triggerSource')).toBe(
-        'merge_request_reviewers_dropdown',
-      );
-      expect(wrapper.find('p').text()).toBe('Invite members to review changes to the repository.');
     });
   });
 });

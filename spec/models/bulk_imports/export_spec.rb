@@ -60,6 +60,9 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
   end
 
   describe 'scopes' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project) }
+
     describe '.for_status' do
       let(:export_1) { create(:bulk_import_export, :finished, relation: 'labels') }
       let(:export_2) { create(:bulk_import_export, :started, relation: 'user_contributions') }
@@ -93,6 +96,24 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
         result = described_class.for_offline_export_and_relation(offline_export, 'milestones')
 
         expect(result).to contain_exactly(export_1)
+      end
+    end
+
+    describe '.group_exports' do
+      let_it_be(:group_export) { create(:bulk_import_export, group: group, project: nil) }
+      let_it_be(:project_export) { create(:bulk_import_export, group: nil, project: project) }
+
+      it 'returns only exports associated with a group' do
+        expect(described_class.group_exports).to contain_exactly(group_export)
+      end
+    end
+
+    describe '.project_exports' do
+      let_it_be(:group_export) { create(:bulk_import_export, group: group, project: nil) }
+      let_it_be(:project_export) { create(:bulk_import_export, group: nil, project: project) }
+
+      it 'returns only exports associated with a project' do
+        expect(described_class.project_exports).to contain_exactly(project_export)
       end
     end
   end

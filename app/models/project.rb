@@ -935,24 +935,6 @@ class Project < ApplicationRecord
   scope :with_slack_slash_commands_integration, -> { joins(:slack_slash_commands_integration) }
 
   scope :include_topics, -> { includes(:topics, :project_topics) }
-  scope :inside_namespace, ->(namespace) do
-    return none unless namespace
-
-    in_namespace(namespace.self_and_descendants_ids)
-  end
-
-  # deprecated, use inside_namespace
-  scope :inside_path, ->(path) do
-    # We need routes alias rs for JOIN so it does not conflict with
-    # includes(:route) which we use in ProjectsFinder.
-    joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'")
-      .where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
-      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
-  end
-  scope :inside_path_preloaded, ->(path) do
-    preload(:topics, :project_topics, :route)
-      .inside_path(path)
-  end
 
   scope :with_jira_installation, ->(installation_id) do
     joins(namespace: :jira_connect_subscriptions)

@@ -53,7 +53,7 @@ export default {
       default: () => {},
     },
   },
-  emits: ['reset-to-default-view', 'error'],
+  emits: ['reset-to-default-view', 'error', 'subscribe-from-modal'],
   data() {
     return {
       visibleViews: [],
@@ -470,6 +470,7 @@ export default {
         :display-settings="displaySettings"
         :show-subscription-limit-warning="isSubscriptionLimitReached"
         class="gl-ml-2"
+        @subscribe-from-modal="$emit('subscribe-from-modal')"
       />
     </div>
 

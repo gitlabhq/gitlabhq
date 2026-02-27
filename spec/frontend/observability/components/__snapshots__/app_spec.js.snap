@@ -19,12 +19,20 @@ exports[`Observability App Component Snapshots matches snapshot on error state 1
 <div
   class="gl-border-1 gl-border-default gl-border-solid gl-grow gl-h-full gl-overflow-hidden gl-rounded-base"
 >
-  <div
-    class="o11y-status"
+  <gl-alert-stub
+    class="gl-m-5"
     data-testid="o11y-error-status"
+    dismisslabel="Dismiss"
+    politeness="polite"
+    primarybuttonlink=""
+    primarybuttontext=""
+    secondarybuttonlink=""
+    secondarybuttontext=""
+    title=""
+    variant="danger"
   >
     Authentication failed. Please refresh the page.
-  </div>
+  </gl-alert-stub>
   <iframe
     class="gl-h-full gl-w-full"
     frameborder="0"
@@ -40,9 +48,32 @@ exports[`Observability App Component Snapshots matches snapshot while loading 1`
 <div
   class="gl-border-1 gl-border-default gl-border-solid gl-grow gl-h-full gl-overflow-hidden gl-rounded-base"
 >
-  <observability-loading-stub
-    data-testid="o11y-loading-status"
-  />
+  <div
+    class="gl-flex gl-flex-col gl-font-semibold gl-h-full gl-items-center gl-justify-center gl-leading-36 gl-mb-0 gl-mt-0 gl-text-size-h-display"
+  >
+    <observability-loading-stub
+      data-testid="o11y-loading-status"
+    />
+    <div
+      class="gl-invisible gl-max-w-lg gl-mb-2 gl-mt-4 gl-mx-auto gl-text-center o11y-status"
+    >
+      <p
+        class="gl-mb-0 gl-mt-4"
+      >
+        <span
+          class="gl-font-semibold gl-leading-36 gl-text-size-h-display"
+        >
+          Initializing your Observability service
+        </span>
+        <br />
+        <span
+          class="gl-text-md gl-text-subtle"
+        >
+          Configuring authentication
+        </span>
+      </p>
+    </div>
+  </div>
   <iframe
     class="gl-h-full gl-w-full"
     frameborder="0"

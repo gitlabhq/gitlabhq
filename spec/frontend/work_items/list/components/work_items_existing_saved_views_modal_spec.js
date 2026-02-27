@@ -6,10 +6,21 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
-import subscribeToViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
+import { subscribeWithLimitEnforce } from 'ee_else_ce/work_items/list/utils';
 import WorkItemsExistingSavedViewsModal from '~/work_items/list/components/work_items_existing_saved_views_modal.vue';
 import { CREATED_DESC } from '~/work_items/list/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
+
+jest.mock('ee_else_ce/work_items/list/utils', () => ({
+  ...jest.requireActual('ee_else_ce/work_items/list/utils'),
+  subscribeWithLimitEnforce: jest.fn().mockResolvedValue({
+    data: {
+      workItemSavedViewSubscribe: {
+        errors: [],
+      },
+    },
+  }),
+}));
 
 describe('WorkItemsExistingSavedViewsModal', () => {
   let wrapper;
@@ -54,19 +65,6 @@ describe('WorkItemsExistingSavedViewsModal', () => {
     },
   ];
 
-  const mockSubscribeResponse = {
-    data: {
-      workItemSavedViewSubscribe: {
-        __typename: 'WorkItemSavedViewSubscribePayload',
-        errors: [],
-        savedView: {
-          __typename: 'WorkItemSavedViewType',
-          id: 'gid://gitlab/WorkItems::SavedViews::SavedView/2',
-        },
-      },
-    },
-  };
-
   const savedViewsHandler = jest.fn().mockResolvedValue({
     data: {
       namespace: {
@@ -90,20 +88,14 @@ describe('WorkItemsExistingSavedViewsModal', () => {
     },
   });
 
-  const successSubscribeMutationHandler = jest.fn().mockResolvedValue(mockSubscribeResponse);
-
   const simulatedErrorHandler = jest.fn().mockRejectedValue(new Error('this is fine'));
 
   const createComponent = async ({
     props,
     provide = {},
     mockSavedViewsHandler = savedViewsHandler,
-    subscribeMutationHandler = successSubscribeMutationHandler,
   } = {}) => {
-    const apolloProvider = createMockApollo([
-      [getNamespaceSavedViewsQuery, mockSavedViewsHandler],
-      [subscribeToViewMutation, subscribeMutationHandler],
-    ]);
+    const apolloProvider = createMockApollo([[getNamespaceSavedViewsQuery, mockSavedViewsHandler]]);
 
     wrapper = shallowMountExtended(WorkItemsExistingSavedViewsModal, {
       apolloProvider,
@@ -114,6 +106,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       },
       provide: {
         canCreateSavedView: true,
+        subscribedSavedViewLimit: 10,
         ...provide,
       },
       mocks: {
@@ -194,7 +187,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       await firstView.trigger('click');
       await nextTick();
 
-      expect(successSubscribeMutationHandler).not.toHaveBeenCalled();
+      expect(subscribeWithLimitEnforce).not.toHaveBeenCalled();
 
       expect(mockPush).toHaveBeenCalledWith({
         name: 'savedView',
@@ -208,7 +201,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       await secondView.trigger('click');
       await nextTick();
 
-      expect(successSubscribeMutationHandler).toHaveBeenCalled();
+      expect(subscribeWithLimitEnforce).toHaveBeenCalled();
       await waitForPromises();
 
       expect(mockPush).toHaveBeenCalledWith({

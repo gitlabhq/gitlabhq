@@ -31645,6 +31645,7 @@ The currently authenticated GitLab user.
 | <a id="currentuser-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
 | <a id="currentuser-duochatavailable"></a>`duoChatAvailable` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.8. **Status**: Experiment. User access to AI chat feature. |
 | <a id="currentuser-duochatavailablefeatures"></a>`duoChatAvailableFeatures` {{< icon name="warning-solid" >}} | [`[String!]!`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. List of available features for AI chat. |
+| <a id="currentuser-duoclassicchatavailable"></a>`duoClassicChatAvailable` | [`Boolean!`](#boolean) | User access to Duo classic chat feature. |
 | <a id="currentuser-duocodesuggestionsavailable"></a>`duoCodeSuggestionsAvailable` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.8. **Status**: Experiment. User access to code suggestions feature. |
 | <a id="currentuser-email"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#user-publicemail). |
 | <a id="currentuser-emails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |

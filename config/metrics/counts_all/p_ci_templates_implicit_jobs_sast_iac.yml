@@ -3,6 +3,8 @@ key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_jobs_sast_iac
 description: Count of pipelines with implicit SAST jobs using the stable SAST IaC
   template
 product_group: static_analysis
+product_categories:
+- static_application_security_testing
 value_type: number
 status: removed
 milestone: '15.4'

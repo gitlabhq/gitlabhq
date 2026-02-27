@@ -700,7 +700,9 @@ export default {
         <li v-else-if="detailLoading" class="!gl-mr-0">
           <gl-skeleton-loader :width="45" :lines="1" equal-width-lines />
         </li>
-        <slot name="custom-status"></slot>
+        <li class="!gl-mr-0 empty:gl-hidden">
+          <slot name="custom-status"></slot>
+        </li>
       </ul>
       <div
         class="gl-hidden @sm/panel:gl-flex @sm/panel:gl-flex-col @sm/panel:gl-items-end @md/panel:gl-flex-row @md/panel:gl-items-center"

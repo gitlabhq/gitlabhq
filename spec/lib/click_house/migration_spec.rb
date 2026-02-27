@@ -62,4 +62,70 @@ RSpec.describe ClickHouse::Migration, :click_house, feature_category: :database 
       end
     end
   end
+
+  describe '#safe_table_swap' do
+    let(:connection) { ClickHouse::Connection.new(:main) }
+    let(:migration) { described_class.new(connection) }
+
+    before do
+      connection.execute('CREATE TABLE IF NOT EXISTS table_a (id UInt64) ENGINE = MergeTree() ORDER BY id')
+      connection.execute('CREATE TABLE IF NOT EXISTS table_b (id UInt64) ENGINE = MergeTree() ORDER BY id')
+    end
+
+    after do
+      connection.execute('DROP TABLE IF EXISTS table_a')
+      connection.execute('DROP TABLE IF EXISTS table_b')
+      connection.execute('DROP TABLE IF EXISTS table_a_temp')
+    end
+
+    context 'when running in CI' do
+      before do
+        stub_env('CI', 'true')
+      end
+
+      it 'uses RENAME TABLE for swapping' do
+        expected_sql = 'RENAME TABLE table_a TO table_a_temp, table_b TO table_a, ' \
+          'table_a_temp TO table_b'
+        expect(migration).to receive(:execute).with(expected_sql)
+
+        migration.safe_table_swap('table_a', 'table_b', '_temp')
+      end
+
+      it 'validates tables exist before swapping' do
+        expect { migration.safe_table_swap('nonexistent', 'table_b', '_temp') }
+          .to raise_error(ClickHouse::MigrationSupport::Errors::Base, /Table nonexistent does not exist/)
+
+        expect { migration.safe_table_swap('table_a', 'nonexistent', '_temp') }
+          .to raise_error(ClickHouse::MigrationSupport::Errors::Base, /Table nonexistent does not exist/)
+      end
+
+      it 'validates temporary table does not exist' do
+        connection.execute('CREATE TABLE table_a_temp (id UInt64) ENGINE = MergeTree() ORDER BY id')
+
+        expect { migration.safe_table_swap('table_a', 'table_b', '_temp') }
+          .to raise_error(ClickHouse::MigrationSupport::Errors::Base, /Temporary table table_a_temp already exists/)
+
+        connection.execute('DROP TABLE table_a_temp')
+      end
+    end
+
+    context 'when running outside CI' do
+      before do
+        stub_env('CI', nil)
+      end
+
+      it 'uses EXCHANGE TABLES for swapping' do
+        expect(migration).to receive(:execute).with('EXCHANGE TABLES table_a AND table_b')
+
+        migration.safe_table_swap('table_a', 'table_b', '_temp')
+      end
+
+      it 'does not perform pre-flight validation' do
+        expect(connection).not_to receive(:table_exists?)
+        expect(migration).to receive(:execute).with('EXCHANGE TABLES table_a AND table_b')
+
+        migration.safe_table_swap('table_a', 'table_b', '_temp')
+      end
+    end
+  end
 end

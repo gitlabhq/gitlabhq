@@ -265,8 +265,9 @@ You can filter results at two levels:
 
 Available dashboard filters include:
 
-- **Report type:** Filter by scanner, including SAST, DAST, dependency scanning, and others.
-- **Project:** Limit results to specific projects. Available only for group security dashboards.
+- **Report type**: Filter by scanner, including SAST, DAST, dependency scanning, and others.
+- **Project**: Limit results to specific projects. Available only for group security dashboards.
+- **Security attributes**: Filter by the security attributes applied to your projects, which include categories for business impact, application, business unit, internet exposure, and location. These filters can be inclusive (using the **is one of** operator) or exclusive (using the **is not one of** operator). To configure your security attributes and apply them to projects, see [security attributes](../attributes/_index.md).
 
 Dashboard filter behavior:
 

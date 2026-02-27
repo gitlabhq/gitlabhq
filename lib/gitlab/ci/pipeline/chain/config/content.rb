@@ -26,18 +26,23 @@ module Gitlab
             private
 
             def pipeline_config
-              strong_memoize(:pipeline_config) do
-                ::Gitlab::Ci::ProjectConfig.new(
-                  project: project, sha: @pipeline.sha,
-                  custom_content: @command.content,
-                  pipeline_source: @command.source, pipeline_source_bridge: @command.bridge,
-                  triggered_for_branch: @pipeline.branch?,
-                  ref: @pipeline.ref,
-                  source_branch: @command.merge_request&.source_branch || @pipeline.ref,
-                  pipeline_policy_context: @command.pipeline_policy_context,
-                  inputs: @command.inputs
-                )
-              end
+              ::Gitlab::Ci::ProjectConfig.new(**pipeline_config_params)
+            end
+            strong_memoize_attr :pipeline_config
+
+            def pipeline_config_params
+              {
+                project: project,
+                sha: @pipeline.sha,
+                custom_content: @command.content,
+                pipeline_source: @command.source,
+                pipeline_source_bridge: @command.bridge,
+                triggered_for_branch: @pipeline.branch?,
+                ref: @pipeline.ref,
+                source_branch: @command.merge_request&.source_branch || @pipeline.ref,
+                pipeline_policy_context: @command.pipeline_policy_context,
+                inputs: @command.inputs
+              }
             end
           end
         end

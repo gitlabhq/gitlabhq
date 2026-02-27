@@ -16,7 +16,11 @@ module Import
           return unless offline_export
           return if offline_export.completed?
           return offline_export.fail_op! if all_relation_exports_failed?
-          return offline_export.finish! if offline_export.started? && all_relation_exports_finished?
+
+          if offline_export.started? && all_relation_exports_finished?
+            WriteMetadataService.new(offline_export).execute
+            return offline_export.finish!
+          end
 
           process_offline_export
           re_enqueue

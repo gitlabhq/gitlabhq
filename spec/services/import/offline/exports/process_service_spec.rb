@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Import::Offline::Exports::ProcessService, feature_category: :importers do
   describe '#execute' do
-    let_it_be_with_reload(:offline_export) { create(:offline_export) }
+    let_it_be_with_reload(:offline_export) { create(:offline_export, :with_configuration) }
     let_it_be(:group_1) { create(:group) }
     let_it_be(:subgroup_1) { create(:group, parent: group_1) }
     let_it_be(:project_1) { create(:project, group: subgroup_1) }
@@ -177,6 +177,17 @@ RSpec.describe Import::Offline::Exports::ProcessService, feature_category: :impo
 
         it 'finishes the offline export' do
           expect { service.execute }.to change { offline_export.reload.status_name }.to(:finished)
+        end
+
+        it 'generates metadata.json' do
+          write_metadata_service_double = instance_double(Import::Offline::Exports::WriteMetadataService)
+
+          expect(Import::Offline::Exports::WriteMetadataService).to receive(:new)
+            .with(offline_export).and_return(write_metadata_service_double)
+
+          expect(write_metadata_service_double).to receive(:execute)
+
+          service.execute
         end
       end
 

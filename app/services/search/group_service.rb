@@ -24,14 +24,10 @@ module Search
 
     def projects
       return Project.none unless group
-      return @projects if defined? @projects
 
-      @projects = if Feature.enabled?(:search_project_list_lookup, current_user)
-                    super.inside_namespace(group)
-                  else
-                    super.inside_path(group.full_path)
-                  end
+      super.for_group_and_its_subgroups(group)
     end
+    strong_memoize_attr :projects
 
     private
 

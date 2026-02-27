@@ -34,6 +34,9 @@ module BulkImports
       where(offline_export: offline_export, relation: relation)
     end
 
+    scope :group_exports, -> { where.not(group_id: nil) }
+    scope :project_exports, -> { where.not(project_id: nil) }
+
     state_machine :status, initial: :started do
       state :pending, value: PENDING
       state :started, value: STARTED
