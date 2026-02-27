@@ -15,7 +15,7 @@ module Gitlab
       'fil_PH' => 'Filipino',
       'fr' => 'French - français',
       'gl_ES' => 'Galician - galego',
-      'ga_IE' => 'Irish',
+      'ga_IE' => 'Irish - Gaeilge',
       'id_ID' => 'Indonesian - Bahasa Indonesia',
       'it' => 'Italian - italiano',
       'ja' => 'Japanese - 日本語',

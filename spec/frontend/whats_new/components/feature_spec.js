@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import timezoneMock from 'timezone-mock';
-import { GlTruncate, GlDrawer, GlButton } from '@gitlab/ui';
+import { GlDrawer, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Feature from '~/whats_new/components/feature.vue';
 import { DOCS_URL } from '~/constants';
 import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
@@ -25,17 +25,19 @@ describe("What's new single feature", () => {
     release: '13.11',
   };
 
-  const findFeatureNameLink = () => wrapper.find('[data-testid="whats-new-item-link"]');
-  const findReleaseDate = () => wrapper.find('[data-testid="release-date"]');
-  const findBodyAnchor = () => wrapper.find('[data-testid="body-content"] a');
-  const findImageLink = () => wrapper.find('[data-testid="whats-new-image-link"]');
-  const findTruncatedDescription = () => wrapper.findComponent(GlTruncate);
-  const findDrawerToggle = () => wrapper.find('[data-testid="whats-new-article-toggle"]');
-  const findDrawerCloseButton = () => wrapper.find('[data-testid="whats-new-article-close"]');
-  const findUnreadArticleIcon = () => wrapper.find('[data-testid="unread-article-icon"]');
+  const findFeatureNameLink = () => wrapper.findByTestId('whats-new-item-link');
+  const findReleaseHeading = () => wrapper.findByTestId('whats-new-release-heading');
+  const findReleaseDate = () => wrapper.findByTestId('release-date');
+  const findBodyAnchor = () => wrapper.findByTestId('body-content').find('a');
+  const findImageLink = () => wrapper.findByTestId('whats-new-image-link');
+  const findTruncatedDescription = () => wrapper.findByTestId('feature-description');
+  const findDrawerToggle = () => wrapper.findByTestId('whats-new-article-toggle');
+  const findDrawerBackButton = () => wrapper.findByTestId('whats-new-article-close');
+  const findDrawerCloseButton = () => wrapper.find('[aria-label="Close drawer"]');
+  const findUnreadArticleIcon = () => wrapper.findByTestId('unread-article-icon');
 
   const createWrapper = ({ feature, showUnread = false } = {}) => {
-    wrapper = shallowMount(Feature, {
+    wrapper = shallowMountExtended(Feature, {
       propsData: { feature, showUnread },
       stubs: { GlDrawer, GlButton },
     });
@@ -127,19 +129,22 @@ describe("What's new single feature", () => {
     it('renders the first major release correctly', () => {
       createWrapper({ feature: { releaseHeading: true, release: 18 } });
 
-      expect(wrapper.find('h5').text()).toBe('18.0 Release');
+      expect(findReleaseHeading().text()).toBe('18.0 Release');
+      expect(findReleaseHeading().element.tagName).toBe('H4');
     });
 
     it('renders other release correctly', () => {
       createWrapper({ feature: { releaseHeading: true, release: 18.11 } });
 
-      expect(wrapper.find('h5').text()).toBe('18.11 Release');
+      expect(findReleaseHeading().text()).toBe('18.11 Release');
+      expect(findReleaseHeading().element.tagName).toBe('H4');
     });
 
     it('renders "Other updates" when no release is provided', () => {
       createWrapper({ feature: { releaseHeading: true, release: undefined } });
 
-      expect(wrapper.find('h5').text()).toBe('Other updates');
+      expect(findReleaseHeading().text()).toBe('Other updates');
+      expect(findReleaseHeading().element.tagName).toBe('H4');
     });
   });
 
@@ -190,10 +195,24 @@ describe("What's new single feature", () => {
 
     expect(findImageLink().exists()).toBe(true);
 
-    findDrawerCloseButton().trigger('click');
+    findDrawerBackButton().trigger('click');
 
     await nextTick();
 
     expect(findImageLink().exists()).toBe(false);
+  });
+
+  it('emits close-drawer event when the drawer is closed', async () => {
+    createWrapper({ feature: exampleFeature });
+
+    findDrawerToggle().trigger('click');
+
+    await nextTick();
+
+    findDrawerCloseButton().trigger('click');
+
+    await nextTick();
+
+    expect(wrapper.emitted('close-drawer')).toHaveLength(1);
   });
 });

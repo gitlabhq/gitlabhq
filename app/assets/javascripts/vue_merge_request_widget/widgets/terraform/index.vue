@@ -207,7 +207,5 @@ export default {
     :summary="summary"
     :content="terraformData.expanded"
     :fetch-collapsed-data="fetchCollapsedData"
-    :label="__('Terraform')"
-    path="terraform"
   />
 </template>

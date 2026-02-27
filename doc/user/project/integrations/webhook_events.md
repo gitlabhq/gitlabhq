@@ -962,12 +962,19 @@ The following fields are deprecated and included for backward compatibility only
 
 ### `object_attributes` field
 
+{{< history >}}
+
+- `actioned_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224849) in GitLab 18.10.
+
+{{< /history >}}
+
 The `object_attributes` field contains the current state of the merge request.
 It includes the following fields:
 
 | Field                           | Type    | Description |
 |---------------------------------|---------|-------------|
 | `action`                        | String  | The action that triggered the webhook. For example, `open`, `update`, or `merge`. |
+| `actioned_at`                   | String  | When the action that triggered the webhook occurred. |
 | `approval_rules`                | Array   | Array of approval rule objects (EE only). |
 | `assignee_ids`                  | Array   | Array of assignee IDs. |
 | `author_id`                     | Integer | The ID of the merge request author. |
@@ -1348,7 +1355,8 @@ recommended alternatives, see [deprecated fields](#deprecated-fields).
         "created_at": "2026-01-16 05:56:22 UTC"
       }
     ],
-    "action": "open"
+    "action": "open",
+    "actioned_at": "2026-01-16 05:56:26 UTC"
   },
   "labels": [
     {

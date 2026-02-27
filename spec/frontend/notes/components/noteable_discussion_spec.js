@@ -308,6 +308,65 @@ describe('noteable_discussion component', () => {
   });
 
   describe('save reply', () => {
+    describe('when noteable is a merge request', () => {
+      beforeEach(() => {
+        useNotes().noteableData = {
+          ...noteableDataMock,
+          noteableType: 'MergeRequest',
+          diff_head_sha: 'abc123def456',
+        };
+      });
+
+      it('includes merge_request_diff_head_sha in the request', async () => {
+        createComponent();
+
+        wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
+        await nextTick();
+
+        wrapper
+          .findComponent(NoteForm)
+          .vm.$emit('handleFormUpdate', 'test reply with /merge', null, () => {});
+
+        await waitForPromises();
+
+        expect(useNotes().saveNote).toHaveBeenCalledWith(
+          expect.objectContaining({
+            data: expect.objectContaining({
+              merge_request_diff_head_sha: 'abc123def456',
+            }),
+          }),
+        );
+      });
+    });
+
+    describe('when noteable is an issue', () => {
+      beforeEach(() => {
+        useNotes().noteableData = {
+          ...noteableDataMock,
+          noteableType: 'Issue',
+        };
+      });
+
+      it('does not include merge_request_diff_head_sha in the request', async () => {
+        createComponent();
+
+        wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
+        await nextTick();
+
+        wrapper.findComponent(NoteForm).vm.$emit('handleFormUpdate', 'test reply', null, () => {});
+
+        await waitForPromises();
+
+        expect(useNotes().saveNote).toHaveBeenCalledWith(
+          expect.objectContaining({
+            data: expect.not.objectContaining({
+              merge_request_diff_head_sha: expect.anything(),
+            }),
+          }),
+        );
+      });
+    });
+
     describe('if response contains validation errors', () => {
       beforeEach(async () => {
         useNotes().saveNote.mockRejectedValue({

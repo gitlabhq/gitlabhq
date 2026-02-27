@@ -84,6 +84,8 @@ RUN npm cache clean --force && \
     srt --version
 ```
 
+For more information about SRT and how to install it on a custom image, see [remote execution environment sandbox](../environment_sandbox.md).
+
 To change the default Docker image, add the following to your `agent-config.yml` file:
 
 ```yaml
@@ -128,7 +130,8 @@ setup_script:
 
 > [!note]
 > When you use a custom Docker image, the
-> [environment sandbox](../environment_sandbox.md) is not applied. Your flow
+> [environment sandbox](../environment_sandbox.md) is only applied when Anthropic Sandbox Runtime (SRT)
+is included in your custom image. If SRT is not included, your flow
 > can access any domain reachable from the runner and the full filesystem.
 > If you require network isolation with custom images, configure network-level
 > controls on your runner (for example, firewall rules or network policies).
@@ -295,16 +298,18 @@ from sandboxing you must:
 
 1. Enable [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers)
    mode by setting `privileged = true` in your [runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
-1. Use GitLab Duo Agent Platform default base [image](#change-the-default-docker-image).
+1. Use either:
+   - The default Docker base image for GitLab Duo Agent Platform
+   - A [custom image with SRT installed](../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image)
 
 ### Runner privileged mode
 
-Privileged mode is required only when you use the default GitLab-provided image
-with [environment sandbox](../environment_sandbox.md) protection. If you use a
-custom Docker image, privileged mode is not required because the sandbox is not
-applied.
+Privileged mode is required when you want to use the [environment sandbox](../environment_sandbox.md) protection.
+This applies when you use either the default GitLab-provided image or a custom image with SRT installed.
+If you use a custom Docker image without SRT, privileged mode is not required because the sandbox cannot be applied.
 
 | Configuration | Privileged mode required | Sandbox active |
 |---------------|------------------------|----------------|
 | Default image | Yes | Yes |
-| Custom image | No | No |
+| [Custom image with SRT](../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image) | Yes | Yes |
+| Custom image without SRT | No | No |

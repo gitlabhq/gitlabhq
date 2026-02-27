@@ -1,20 +1,17 @@
+$whats-new-drawer-size: 500px;
+
 .whats-new-drawer {
   box-shadow: none;
   overflow-y: hidden;
 
   // setting custom width above mobile breakpoint
   @include gl-media-breakpoint-up(md) {
-    width: 500px;
+    width: $whats-new-drawer-size;
   }
 
   /* stylelint-disable gitlab/no-gl-class */
   .gl-infinite-scroll-legend {
     display: none;
-  }
-
-  .gl-drawer-header {
-    position: sticky;
-    top: 0;
   }
 
   .gl-tabs {
@@ -42,16 +39,11 @@
     top: 50%;
     transform: translateY(-50%);
   }
-
-  .gl-drawer-close-button {
-    margin-top: $gl-spacing-scale-3
-  }
   /* stylelint-enable gitlab/no-gl-class */
 }
 
-.other-updates {
-  height: calc(100vh - 120px);
-  overflow-y: hidden;
+h4.whats-new-release-heading:not(:first-of-type) {
+  @apply gl-mt-6;
 }
 
 .whats-new-modal-backdrop {
@@ -60,6 +52,6 @@
 
 .whats-new-article-drawer {
   @include gl-media-breakpoint-up(md) {
-    width: 500px;
+    width: $whats-new-drawer-size;
   }
 }

@@ -44,11 +44,7 @@ module WorkItems
       # We use the base types in cases where we know an item needs to have a certain type
       # which doesn't apply to custom types.
       def unfiltered_base_types
-        if use_system_defined_types?
-          type_class.all.map(&:base_type)
-        else
-          type_class.base_types.keys
-        end
+        type_class.all.map(&:base_type)
       end
 
       # This method exists here because we want to have full control in this class
@@ -72,13 +68,7 @@ module WorkItems
       end
 
       def ids_by_base_types(types)
-        if use_system_defined_types?
-          by_base_types(types).map(&:id)
-        else
-          Array(types).filter_map do |type|
-            type_class::BASE_TYPES.dig(type.to_sym, :id)
-          end
-        end
+        by_base_types(types).map(&:id)
       end
 
       def type_exists?(type)
@@ -130,31 +120,17 @@ module WorkItems
       end
 
       def by_ids_ordered_by_name(ids)
-        if use_system_defined_types?
-          type_class.by_ids_ordered_by_name(ids)
-        else
-          by_ids(ids).order_by_name_asc
-        end
+        type_class.by_ids_ordered_by_name(ids)
       end
 
       def by_base_types_ordered_by_name(names)
-        if use_system_defined_types?
-          type_class.by_base_type_ordered_by_name(names)
-        else
-          by_base_types(names).order_by_name_asc
-        end
+        type_class.by_base_type_ordered_by_name(names)
       end
 
       private
 
       def type_class
-        return WorkItems::TypesFramework::SystemDefined::Type if use_system_defined_types?
-
-        WorkItems::Type
-      end
-
-      def use_system_defined_types?
-        Feature.enabled?(:work_item_system_defined_type, :instance)
+        WorkItems::TypesFramework::SystemDefined::Type
       end
     end
   end

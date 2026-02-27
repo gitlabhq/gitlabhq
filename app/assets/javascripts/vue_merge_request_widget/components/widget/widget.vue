@@ -53,14 +53,12 @@ export default {
     DynamicScroller,
     DynamicScrollerItem,
     HelpPopover,
-    ReportListItem: () => import('~/merge_requests/reports/components/report_list_item.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: { reportsTabContent: { default: false }, reportsTabSidebar: { default: false } },
   props: {
     loadingText: {
       type: String,
@@ -182,21 +180,11 @@ export default {
       required: false,
       default: false,
     },
-    label: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    path: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {
       isExpandedForTheFirstTime: true,
-      isCollapsed: !this.reportsTabContent,
+      isCollapsed: true,
       isLoadingCollapsedContent: true,
       isLoadingExpandedContent: false,
       summaryError: null,
@@ -247,14 +235,6 @@ export default {
         },
       ];
     },
-    routeParams() {
-      if (!this.path) return {};
-
-      return { report: this.path };
-    },
-    routeName() {
-      return this.path || 'report';
-    },
   },
   watch: {
     hasError: {
@@ -274,10 +254,6 @@ export default {
   },
   async mounted() {
     this.telemetryHub?.viewed();
-
-    if (this.reportsTabContent) {
-      this.fetchExpandedContent();
-    }
 
     try {
       if (this.fetchCollapsedData) {
@@ -378,24 +354,8 @@ export default {
 </script>
 
 <template>
-  <report-list-item
-    v-if="reportsTabSidebar"
-    :to="routeName"
-    :params="routeParams"
-    :status-icon="summaryStatusIcon"
-    :is-loading="shouldShowLoadingIcon"
-    class="gl-mb-3"
-  >
-    {{ label }}
-  </report-list-item>
-  <section v-else class="media-section" data-testid="widget-extension">
-    <div
-      v-if="!reportsTabContent"
-      :class="{
-        'gl-pl-9': glFeatures.mrReportsTab,
-        'gl-flex gl-px-5 gl-py-4 gl-pr-4': !reportsTabContent,
-      }"
-    >
+  <section class="media-section" data-testid="widget-extension">
+    <div class="gl-flex gl-px-5 gl-py-4 gl-pr-4" :class="{ 'gl-pl-9': glFeatures.mrReportsTab }">
       <status-icon
         :level="glFeatures.mrReportsTab ? 2 : 1"
         :name="widgetName"
@@ -472,14 +432,10 @@ export default {
     </div>
     <div
       v-if="!isCollapsed || contentError"
-      :class="{ 'gl-border-t gl-relative gl-border-t-section gl-bg-subtle': !reportsTabContent }"
+      class="gl-border-t gl-relative gl-border-t-section gl-bg-subtle"
       data-testid="widget-extension-collapsed-section"
     >
-      <div
-        v-if="isLoadingExpandedContent"
-        class="gl-text-center"
-        :class="{ 'report-block-container': !reportsTabContent, 'gl-py-5': reportsTabContent }"
-      >
+      <div v-if="isLoadingExpandedContent" class="report-block-container gl-text-center">
         <gl-loading-icon size="sm" inline /> {{ loadingText }}
       </div>
       <div v-else class="gl-flex gl-pl-5" :class="{ 'gl-pr-5': $scopedSlots.content }">
@@ -499,8 +455,7 @@ export default {
               v-if="contentWithKeyField"
               :items="contentWithKeyField"
               :min-item-size="32"
-              :style="{ maxHeight: reportsTabContent ? null : '170px' }"
-              :page-mode="glFeatures.mrReportsTab && reportsTabContent"
+              style="max-height: 170px"
               data-testid="dynamic-content-scroller"
               class="gl-pr-5"
             >

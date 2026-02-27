@@ -39,22 +39,6 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
   end
 
   describe '#fetch_work_item_type' do
-    context "when work_item_system_defined_type is disabled" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      context 'when given a WorkItems::Type object' do
-        let_it_be(:issue_type) { create(:work_item_type, :issue) }
-
-        it 'returns the work item type' do
-          result = provider.fetch_work_item_type(issue_type)
-
-          expect(result).to eq(issue_type)
-        end
-      end
-    end
-
     context 'when given a WorkItems::Type object' do
       let_it_be(:issue_type_from_db) { create(:work_item_type, :issue) }
 
@@ -112,14 +96,6 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
     it { is_expected.to match_array(WorkItems::TypesFramework::SystemDefined::Type.all.map(&:base_type)) }
 
     it { is_expected.to all(be_a(String)) }
-
-    context "when work_item_system_defined_type is disabled" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it { is_expected.to match_array(WorkItems::Type.base_types.keys) }
-    end
   end
 
   describe '#unfiltered_base_types_for_issue_type' do
@@ -221,14 +197,6 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
     subject { provider.filtered_types }
 
     it { is_expected.to match_array(WorkItems::TypesFramework::SystemDefined::Type.all) }
-
-    context "when work_item_system_defined_type is disabled" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it { is_expected.to match_array(WorkItems::Type.all) }
-    end
   end
 
   describe '#by_base_types' do
@@ -298,18 +266,6 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
         expect(result).to contain_exactly(issue_type.id)
       end
     end
-
-    context 'when work_item_system_defined_type is disabled' do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it 'returns IDs by querying the database' do
-        result = provider.ids_by_base_types([:issue, :task])
-
-        expect(result).to match_array([issue_type.id, task_type.id])
-      end
-    end
   end
 
   describe '#find_by_gid' do
@@ -336,20 +292,6 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
 
   describe '#find_by_id' do
     subject { provider.find_by_id(id) }
-
-    context "when work_item_system_defined_type is disabled" do
-      let(:issue_type) { create(:work_item_type, :issue) }
-
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      context 'with existing id' do
-        let(:id) { issue_type.id }
-
-        it { is_expected.to eq(issue_type) }
-      end
-    end
 
     context 'with existing id' do
       let(:id) { issue_type.id }
@@ -463,17 +405,6 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
     let(:ids) { [task_type.id, issue_type.id] }
 
     it { is_expected.to contain_exactly(task_type, issue_type) }
-
-    context 'when work_item_system_defined_type is disabled' do
-      let_it_be(:issue_type) { build(:work_item_type, :issue) }
-      let_it_be(:task_type) { build(:work_item_type, :task) }
-
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it { is_expected.to contain_exactly(task_type, issue_type) }
-    end
   end
 
   describe '#by_base_types_ordered_by_name' do
@@ -481,49 +412,12 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
 
     let(:names) { [:task, :issue] }
 
-    context 'when work_item_system_defined_type is disabled' do
-      let_it_be(:issue_type) { build(:work_item_type, :issue) }
-      let_it_be(:task_type) { build(:work_item_type, :task) }
-
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it { is_expected.to contain_exactly(task_type, issue_type) }
-    end
+    it { is_expected.to contain_exactly(task_type, issue_type) }
   end
 
-  describe 'feature flag behavior' do
-    describe '#use_system_defined_types?' do
-      it 'returns true' do
-        expect(provider.send(:use_system_defined_types?)).to be(true)
-      end
-
-      context 'when work_item_system_defined_type is disabled' do
-        before do
-          stub_feature_flags(work_item_system_defined_type: false)
-        end
-
-        it 'returns false' do
-          expect(provider.send(:use_system_defined_types?)).to be(false)
-        end
-      end
-    end
-
-    describe '#type_class' do
-      it 'returns SystemDefined::Type class' do
-        expect(provider.send(:type_class)).to eq(WorkItems::TypesFramework::SystemDefined::Type)
-      end
-
-      context 'when work_item_system_defined_type is disabled' do
-        before do
-          stub_feature_flags(work_item_system_defined_type: false)
-        end
-
-        it 'returns WorkItems::Type class' do
-          expect(provider.send(:type_class)).to eq(WorkItems::Type)
-        end
-      end
+  describe '#type_class' do
+    it 'returns SystemDefined::Type class' do
+      expect(provider.send(:type_class)).to eq(WorkItems::TypesFramework::SystemDefined::Type)
     end
   end
 end

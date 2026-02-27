@@ -129,7 +129,7 @@ export default {
       @close="close"
     >
       <template #title>
-        <h3 id="whats-new-drawer-heading" class="gl-heading-3-fixed gl-my-3 gl-ml-3">
+        <h3 id="whats-new-drawer-heading" class="gl-heading-3-fixed gl-m-0">
           {{ __("What's new at GitLab") }}
         </h3>
       </template>
@@ -142,8 +142,9 @@ export default {
           :mark-as-read-path="markAsReadPath"
           :fetching="fetching"
           :drawer-body-height="drawerBodyHeight"
-          class="other-updates gl-pt-3"
+          class="other-updates"
           @bottom-reached="bottomReached"
+          @close-drawer="closeDrawer"
         />
       </div>
     </gl-drawer>

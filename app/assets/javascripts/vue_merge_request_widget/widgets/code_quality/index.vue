@@ -158,7 +158,5 @@ export default {
     :widget-name="$options.name"
     :status-icon-name="statusIcon"
     :is-collapsible="shouldCollapse"
-    :label="$options.i18n.label"
-    path="code-quality"
   />
 </template>

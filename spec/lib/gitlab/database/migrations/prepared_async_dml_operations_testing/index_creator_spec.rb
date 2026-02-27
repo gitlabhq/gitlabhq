@@ -12,6 +12,9 @@ RSpec.describe Gitlab::Database::Migrations::PreparedAsyncDmlOperationsTesting::
     let(:connection) { model.connection }
     let(:lease_key) { "gitlab/database/asyncddl/actions/#{connection_name}" }
     let(:lease_timeout) { 3.minutes }
+    let(:delete_statement) do
+      "DELETE FROM \"postgres_async_indexes\" WHERE id = #{async_index.id} /* SYNC_TESTING_EXECUTION */"
+    end
 
     let!(:lease) { stub_exclusive_lease(lease_key, :uuid, timeout: lease_timeout) }
 
@@ -32,7 +35,7 @@ RSpec.describe Gitlab::Database::Migrations::PreparedAsyncDmlOperationsTesting::
 
         expect(Gitlab::AppLogger).to receive(:info).with(message: error, index: async_index.name)
 
-        expect(async_index).to receive(:destroy!).and_call_original
+        expect(connection).to receive(:execute).with(delete_statement)
 
         expect { index_creator.perform }.not_to raise_error
       end
@@ -40,10 +43,11 @@ RSpec.describe Gitlab::Database::Migrations::PreparedAsyncDmlOperationsTesting::
 
     context 'when index creation succeeds' do
       it 'executes the index definition within a transaction' do
-        allow(connection).to receive(:execute)
+        allow(connection).to receive(:execute).and_call_original
         expect(connection).to receive(:execute).with("SET statement_timeout TO '30s'").ordered.and_call_original
         expect(connection).to receive(:execute).with(async_index.definition).ordered.and_call_original
         expect(connection).to receive(:execute).with('RESET statement_timeout').ordered.and_call_original
+        expect(connection).to receive(:execute).with(delete_statement)
 
         expect { index_creator.perform }.to change { Gitlab::Database::AsyncIndexes::PostgresAsyncIndex.count }.by(-1)
       end
@@ -77,12 +81,13 @@ RSpec.describe Gitlab::Database::Migrations::PreparedAsyncDmlOperationsTesting::
       let(:async_index) { create(:postgres_async_index, definition: 'CREATE INDEX idx_t ON missing_table (id)') }
 
       it 'logs the error and destroys the record' do
+        allow(connection).to receive(:execute).and_call_original
         allow(connection).to receive(:transaction).and_yield
         allow(connection).to receive(:execute).with("SET statement_timeout TO '30s'")
         allow(connection).to receive(:execute).with(async_index.definition).and_call_original
         allow(connection).to receive(:execute).with('RESET statement_timeout')
 
-        expect(async_index).to receive(:destroy!).and_call_original
+        expect(connection).to receive(:execute).with(delete_statement)
 
         expect { index_creator.perform }.to raise_error(ActiveRecord::StatementInvalid)
       end

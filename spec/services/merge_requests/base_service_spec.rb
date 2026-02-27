@@ -182,6 +182,14 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
       expect(hook_data[:object_attributes][:system]).to be false
       expect(hook_data[:object_attributes]).not_to have_key(:system_action)
     end
+
+    it 'includes actioned_at with current time' do
+      freeze_time do
+        hook_data = service.send(:hook_data, merge_request, 'test_action')
+
+        expect(hook_data[:object_attributes][:actioned_at]).to eq(Time.current)
+      end
+    end
   end
 
   describe '#constructor_container_arg' do

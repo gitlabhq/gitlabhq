@@ -43,7 +43,7 @@ export default {
       required: true,
     },
   },
-  emits: ['bottom-reached'],
+  emits: ['bottom-reached', 'close-drawer'],
   data() {
     return {
       initialListPopulated: false,
@@ -85,6 +85,9 @@ export default {
           .catch((error) => Sentry.captureException(error));
       }
     },
+    closeDrawer() {
+      this.$emit('close-drawer');
+    },
   },
 };
 </script>
@@ -107,6 +110,7 @@ export default {
             :feature="feature"
             :show-unread="showUnread(index)"
             @mark-article-as-read="markAsRead(index)"
+            @close-drawer="closeDrawer"
           />
         </template>
       </gl-infinite-scroll>

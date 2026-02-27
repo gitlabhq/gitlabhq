@@ -163,7 +163,7 @@ export default {
       data-testid="note-emoji-button"
       @click="$emit('award', $event)"
     />
-    <reply-button v-if="showReply" ref="replyButton" @start-replying="$emit('start-replying')" />
+    <reply-button v-if="showReply" ref="replyButton" @start-replying="$emit('startReplying')" />
     <gl-button
       v-if="canEdit"
       v-gl-tooltip

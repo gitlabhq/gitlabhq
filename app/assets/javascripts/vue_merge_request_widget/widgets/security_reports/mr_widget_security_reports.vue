@@ -134,8 +134,6 @@ export default {
     :is-collapsible="false"
     :help-popover="$options.widgetHelpPopover"
     :summary="summary"
-    :label="$options.i18n.label"
-    path="security-reports"
     @is-loading="handleIsLoading"
   >
     <template #action-buttons>

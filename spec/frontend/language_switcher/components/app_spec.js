@@ -3,7 +3,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import LanguageSwitcherApp from '~/language_switcher/components/app.vue';
 import { PREFERRED_LANGUAGE_COOKIE_KEY, EN } from '~/language_switcher/constants';
 import * as utils from '~/lib/utils/common_utils';
-import { locales, ES } from '../mock_data';
+import { locales, ES, ZH_HK } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 
@@ -29,6 +29,13 @@ describe('<LanguageSwitcher />', () => {
 
   it('sets English as preferred language by default', () => {
     expect(getPreferredLanguage()).toBe(EN.text);
+  });
+
+  it('sets valid lang attribute on dropdown items', () => {
+    const es = findLanguageDropdownItem(ES.value);
+    const hk = findLanguageDropdownItem(ZH_HK.value);
+    expect(es.attributes('lang')).toBe('es');
+    expect(hk.attributes('lang')).toBe('zh-HK');
   });
 
   it('sets preferred locale when provided', () => {

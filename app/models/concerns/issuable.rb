@@ -586,7 +586,7 @@ module Issuable
     changes
   end
 
-  def to_hook_data(user, old_associations: {}, action: nil)
+  def to_hook_data(user, old_associations: {}, action: nil, actioned_at: nil)
     changes = reportable_changes
 
     if old_associations.present?
@@ -594,7 +594,11 @@ module Issuable
       changes.merge!(hook_reviewer_changes(old_associations)) if allows_reviewers?
     end
 
-    Gitlab::DataBuilder::Issuable.new(self).build(user: user, changes: changes, action: action)
+    Gitlab::DataBuilder::Issuable.new(self).build(
+      user: user,
+      changes: changes,
+      action: action,
+      actioned_at: actioned_at)
   end
 
   def labels_array

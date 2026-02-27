@@ -9,7 +9,6 @@ import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon
 import ActionButtons from '~/vue_merge_request_widget/components/widget/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
-import ReportListItem from '~/merge_requests/reports/components/report_list_item.vue';
 import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -581,49 +580,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
       expect(window.mrTabs.tabShown).toHaveBeenCalledWith('reports');
       expect(window.history.replaceState).toHaveBeenCalledWith(null, null, 'reportsTabPath/test');
-    });
-  });
-
-  describe('when reportsTabSidebar is true', () => {
-    it('renders ReportListItem', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-        },
-        provide: { reportsTabSidebar: true },
-      });
-
-      expect(wrapper.findComponent(ReportListItem).exists()).toBe(true);
-    });
-
-    it('passes path as route name when path is provided', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-          path: 'security-reports',
-        },
-        provide: { reportsTabSidebar: true },
-      });
-
-      const reportListItem = wrapper.findComponent(ReportListItem);
-      expect(reportListItem.props('to') || reportListItem.attributes('to')).toBe(
-        'security-reports',
-      );
-    });
-
-    it('falls back to report route when path is not provided', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-        },
-        provide: { reportsTabSidebar: true },
-      });
-
-      const reportListItem = wrapper.findComponent(ReportListItem);
-      expect(reportListItem.props('to') || reportListItem.attributes('to')).toBe('report');
     });
   });
 

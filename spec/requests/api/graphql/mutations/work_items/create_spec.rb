@@ -233,17 +233,6 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
 
         it_behaves_like 'a mutation that returns top-level errors',
           errors: ['Following widget keys are not supported by Issue type: [:hierarchy_widget]']
-
-        context "when FF for system defined types is disabled" do
-          let(:work_item_type) { create(:work_item_type, :test_case) }
-
-          before do
-            stub_feature_flags(work_item_system_defined_type: false)
-          end
-
-          it_behaves_like 'a mutation that returns top-level errors',
-            errors: ['Following widget keys are not supported by Test Case type: [:hierarchy_widget]']
-        end
       end
     end
 

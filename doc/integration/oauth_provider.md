@@ -54,7 +54,7 @@ To create a new application for your user:
 
    - The OAuth 2 Client ID in the **Application ID** field.
    - The OAuth 2 Client Secret, accessible by selecting **Copy** in the **Secret** field.
-   - The **Renew secret** function in [GitLab 15.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/338243). Use this function to generate and copy a new secret for this application. Renewing a secret prevents the existing application from functioning until the credentials are updated.
+   - The **Renew secret** function. Use this function to generate and copy a new secret for this application. Renewing a secret prevents the existing application from functioning until the credentials are updated.
 
 ## Create a group-owned application
 
@@ -69,7 +69,7 @@ To create a new application for a group:
 
    - The OAuth 2 Client ID in the **Application ID** field.
    - The OAuth 2 Client Secret, accessible by selecting **Copy** in the **Secret** field.
-   - The **Renew secret** function in [GitLab 15.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/338243). Use this function to generate and copy a new secret for this application. Renewing a secret prevents the existing application from functioning until the credentials are updated.
+   - The **Renew secret** function. Use this function to generate and copy a new secret for this application. Renewing a secret prevents the existing application from functioning until the credentials are updated.
 
 ## Create an instance-wide application
 
@@ -139,17 +139,6 @@ At any time you can revoke any access by selecting **Revoke**.
 
 ## Access token expiration
 
-{{< history >}}
-
-- Database validation on `expires_in` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112765) in GitLab 15.10. If your GitLab instance has any remaining OAuth access tokens without `expires_in` set when you are upgrading to 15.10 or later, the database migration will raise an error. For workaround instructions, see the [GitLab 15.10.0 upgrade documentation](../update/versions/gitlab_15_changes.md#15100).
-
-{{< /history >}}
-
-> [!warning]
-> The ability to opt out of expiring access tokens was
-> [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/340848) in GitLab 15.0. All
-> existing integrations must be updated to support access token refresh.
-
 Access tokens expire after two hours. Integrations that use access tokens must
 generate new ones using the `refresh_token` attribute. Refresh tokens may be
 used even after the `access_token` itself expires.
@@ -166,15 +155,6 @@ When applications are deleted, all grants and tokens associated with the
 application are also deleted.
 
 ## Hashed OAuth application secrets
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374588) in GitLab 15.4 [with a flag](../administration/feature_flags/_index.md) named `hash_oauth_secrets`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/374588) in GitLab 15.8.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/374588) in GitLab 15.9.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113892) in GitLab 15.10. Feature flag `hash_oauth_secrets` removed.
-
-{{< /history >}}
 
 By default, GitLab stores OAuth application secrets in the database in hashed format. These secrets are only available to users immediately after creating OAuth applications. In
 earlier versions of GitLab, application secrets are stored as plain text in the database.

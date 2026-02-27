@@ -4657,9 +4657,6 @@ msgstr ""
 msgid "AccessTokens|Your token"
 msgstr ""
 
-msgid "Accessibility"
-msgstr ""
-
 msgid "AccessibilityReport|Message: %{message}"
 msgstr ""
 
@@ -68549,9 +68546,6 @@ msgid "Terms of Service and Privacy Policy"
 msgstr ""
 
 msgid "Terms of service"
-msgstr ""
-
-msgid "Terraform"
 msgstr ""
 
 msgid "Terraform Module Registry"
