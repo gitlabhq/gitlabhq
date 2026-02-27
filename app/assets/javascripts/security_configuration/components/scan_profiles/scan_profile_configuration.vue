@@ -11,5 +11,5 @@ export default {
 };
 </script>
 <template>
-  <scan-profile-table :table-items="$options.tableItems" />
+  <scan-profile-table :table-items="$options.tableItems" :loading="false" />
 </template>

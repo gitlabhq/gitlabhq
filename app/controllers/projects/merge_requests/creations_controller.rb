@@ -118,6 +118,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       project: project,
       diff_view: diff_view,
       diff_options: diff_options,
+      current_user: current_user,
       request_params: {
         merge_request: merge_request_params,
         file_path: params[:file_path],

@@ -69,8 +69,10 @@ To install the app in Jira:
    If the install was successful, you should see the **GitLab for Jira Cloud** app under **Manage apps**.
    You can also select **Getting Started** to open the configuration page rendered from your GitLab instance.
 
-   _Note that any changes to the app descriptor requires you to uninstall then reinstall the app._
-1. If the _Installed and ready to go!_ dialog opens asking you to **Get started**, do not get started yet
+   > [!note]
+   > any changes to the app descriptor requires you to uninstall then reinstall the app.
+
+1. If the **Installed and ready to go!** dialog opens asking you to **Get started**, do not get started yet
    and instead select **Close**.
 1. You must now [set up the OAuth authentication flow](#set-up-the-gitlab-oauth-authentication-flow).
 

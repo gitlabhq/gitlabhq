@@ -1,5 +1,12 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import renderIframes from '~/behaviors/markdown/render_iframe';
+import {
+  YOUTUBE_EMBED_URL,
+  fixtureWithoutAssetProxy,
+  fixtureWithAssetProxy,
+  fixtureWithDimensions,
+  fixtureWithWidthOnly,
+} from './mock_data';
 
 describe('Embedded iframe renderer', () => {
   const findEmbeddedIframes = (src = null) => {
@@ -28,52 +35,6 @@ describe('Embedded iframe renderer', () => {
     resetHTMLFixture();
   });
 
-  const target = 'https://www.youtube.com/embed/FIWD2qvNQHM';
-
-  // The fixtures are exactly what we get handed by the backend and need to transform.
-  const fixtureWithoutAssetProxy = `
-    <p data-sourcepos="1:1-1:59" dir="auto">
-      <span class="media-container img-container">
-        <a class="gl-text-sm gl-text-subtle gl-mb-1"
-           href="https://www.youtube.com/embed/FIWD2qvNQHM"
-           target="_blank" rel="nofollow noreferrer noopener" title="Download 'YouTube embed'">
-          YouTube embed
-        </a>
-        <a class="no-attachment-icon"
-           href="https://www.youtube.com/embed/FIWD2qvNQHM"
-           target="_blank" rel="nofollow noreferrer noopener">
-          <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-               controls="true" data-setup="{}" data-title="YouTube embed" class="js-render-iframe lazy"
-               decoding="async"
-               data-src="https://www.youtube.com/embed/FIWD2qvNQHM">
-        </a>
-      </span>
-    </p>
-  `;
-
-  const fixtureWithAssetProxy = `
-    <p data-sourcepos="1:1-1:60" dir="auto">
-      <span class="media-container img-container">
-        <a class="gl-text-sm gl-text-subtle gl-mb-1"
-           href="https://asset-proxy.example/fcba328ee7b6bfdfcc765f7dc8bef47249729c9b/68747470733a2f2f7777772e796f75747562652e636f6d2f656d6265642f464957443271764e51484d"
-           target="_blank" rel="nofollow noreferrer noopener" title="Download 'YouTube iframe'"
-           data-canonical-src="https://www.youtube.com/embed/FIWD2qvNQHM">
-          YouTube iframe
-        </a>
-        <a class="no-attachment-icon"
-           href="https://asset-proxy.example/fcba328ee7b6bfdfcc765f7dc8bef47249729c9b/68747470733a2f2f7777772e796f75747562652e636f6d2f656d6265642f464957443271764e51484d"
-           target="_blank" rel="nofollow noreferrer noopener"
-           data-canonical-src="https://www.youtube.com/embed/FIWD2qvNQHM">
-          <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-               controls="true" data-setup="{}" data-title="YouTube iframe" class="js-render-iframe lazy"
-               data-canonical-src="https://www.youtube.com/embed/FIWD2qvNQHM"
-               decoding="async"
-               data-src="https://asset-proxy.example/fcba328ee7b6bfdfcc765f7dc8bef47249729c9b/68747470733a2f2f7777772e796f75747562652e636f6d2f656d6265642f464957443271764e51484d">
-        </a>
-      </span>
-    </p>
-  `;
-
   it('renders an embedded iframe when the asset proxy is disabled', () => {
     setHTMLFixture(fixtureWithoutAssetProxy);
 
@@ -81,7 +42,7 @@ describe('Embedded iframe renderer', () => {
 
     renderAllIframes();
 
-    expect(findEmbeddedIframes(target)).toHaveLength(1);
+    expect(findEmbeddedIframes(YOUTUBE_EMBED_URL)).toHaveLength(1);
   });
 
   it('renders an embedded iframe when the asset proxy is enabled', () => {
@@ -91,13 +52,12 @@ describe('Embedded iframe renderer', () => {
 
     renderAllIframes();
 
-    expect(findEmbeddedIframes(target)).toHaveLength(1);
+    expect(findEmbeddedIframes(YOUTUBE_EMBED_URL)).toHaveLength(1);
   });
 
   it('does not render an embedded iframe when the allowlist has no match', () => {
     setHTMLFixture(fixtureWithAssetProxy);
 
-    // No YouTube.
     window.gon.iframe_rendering_allowlist = ['embed.figma.com'];
 
     renderAllIframes();
@@ -123,5 +83,64 @@ describe('Embedded iframe renderer', () => {
     renderAllIframes();
 
     expect(findEmbeddedIframes()).toHaveLength(0);
+  });
+
+  describe('dimensions', () => {
+    it('applies explicit width and height attributes when provided', () => {
+      setHTMLFixture(fixtureWithDimensions);
+
+      renderAllIframes();
+
+      const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
+      expect(iframe).toBeDefined();
+      expect(iframe.getAttribute('width')).toBe('560');
+      expect(iframe.getAttribute('height')).toBe('315');
+    });
+
+    it('caps width to container with aspect-ratio when both dimensions are provided', () => {
+      setHTMLFixture(fixtureWithDimensions);
+
+      renderAllIframes();
+
+      const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
+      expect(iframe.style.maxWidth).toBe('100%');
+      expect(iframe.style.aspectRatio).toBe('560 / 315');
+      expect(iframe.style.height).toBe('auto');
+    });
+
+    it('caps width to container without aspect-ratio when only width is provided', () => {
+      setHTMLFixture(fixtureWithWidthOnly);
+
+      renderAllIframes();
+
+      const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
+      expect(iframe.getAttribute('width')).toBe('560');
+      expect(iframe.getAttribute('height')).toBeNull();
+      expect(iframe.style.maxWidth).toBe('100%');
+      expect(iframe.style.aspectRatio).toBeUndefined();
+      expect(iframe.style.height).toBe('');
+    });
+
+    it('does not add full-width/height styles when explicit dimensions are provided', () => {
+      setHTMLFixture(fixtureWithDimensions);
+
+      renderAllIframes();
+
+      const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
+      expect(iframe.classList.contains('gl-w-full')).toBe(false);
+      expect(iframe.classList.contains('gl-h-full')).toBe(false);
+    });
+
+    it('uses full-width/height when no dimensions are provided', () => {
+      setHTMLFixture(fixtureWithoutAssetProxy);
+
+      renderAllIframes();
+
+      const iframe = findEmbeddedIframes(YOUTUBE_EMBED_URL)[0];
+      expect(iframe.classList.contains('gl-w-full')).toBe(true);
+      expect(iframe.classList.contains('gl-h-full')).toBe(true);
+      expect(iframe.getAttribute('width')).toBeNull();
+      expect(iframe.getAttribute('height')).toBeNull();
+    });
   });
 });

@@ -113,15 +113,15 @@ sequenceDiagram
 ```
 
 - [Sidekiq-cron](https://github.com/ondrejbartas/sidekiq-cron) enqueues a `Geo::RegistrySyncWorker` job every minute.
-As long as it is actively doing work, this job loops for up to an hour scheduling sync jobs. This job uses an exclusive
-lease to prevent multiple instances of itself from running simultaneously.
+  As long as it is actively doing work, this job loops for up to an hour scheduling sync jobs. This job uses an exclusive
+  lease to prevent multiple instances of itself from running simultaneously.
 - [Sidekiq](../architecture.md#sidekiq) picks up `Geo::RegistrySyncWorker` job
   - Sidekiq queries all `registry` tables in the [PostgreSQL Geo Tracking Database](../geo.md#tracking-database) for
-  "never attempted sync" rows. It interleaves rows from each table and adds them to an in-memory queue.
+    "never attempted sync" rows. It interleaves rows from each table and adds them to an in-memory queue.
   - If the previous step yielded less than 1000 rows, then Sidekiq queries all `registry` tables for
-  "failed sync and ready to retry" rows and interleaves those and adds them to the in-memory queue.
+    "failed sync and ready to retry" rows and interleaves those and adds them to the in-memory queue.
   - Sidekiq enqueues `Geo::EventWorker` jobs with arguments like "Job Artifact with ID 123 was updated" for
-  each item in the queue, and tracks the enqueued Sidekiq job IDs.
+    each item in the queue, and tracks the enqueued Sidekiq job IDs.
   - Sidekiq stops enqueuing `Geo::EventWorker` jobs when "maximum concurrency limit" settings are reached
   - Sidekiq loops doing this kind of work until it has no more to do
 - Sidekiq picks up `Geo::EventWorker` job
@@ -163,9 +163,9 @@ sequenceDiagram
 - [Sidekiq-cron](https://github.com/ondrejbartas/sidekiq-cron) enqueues a `Geo::VerificationCronWorker` job every minute
 - [Sidekiq](../architecture.md#sidekiq) picks up the `Geo::VerificationCronWorker` job
   - Sidekiq queries `ci_job_artifact_states` for the number of rows marked "pending verification" or
-  "failed verification and ready to retry"
+    "failed verification and ready to retry"
   - Sidekiq enqueues one or more `Geo::VerificationBatchWorker` jobs, limited by the "maximum verification concurrency"
-  setting
+    setting
 - Sidekiq picks up `Geo::VerificationBatchWorker` job
   - Sidekiq queries `ci_job_artifact_states` for rows marked "pending verification"
   - If the previous step yielded less than 10 rows, then Sidekiq queries `ci_job_artifact_states` for rows marked
@@ -202,17 +202,17 @@ sequenceDiagram
 - [Sidekiq-cron](https://github.com/ondrejbartas/sidekiq-cron) enqueues a `Geo::VerificationCronWorker` job every minute
 - [Sidekiq](../architecture.md#sidekiq) picks up the `Geo::VerificationCronWorker` job
   - Sidekiq queries `job_artifact_registry` in the [PostgreSQL Geo Tracking Database](../geo.md#tracking-database)
-  for the number of rows marked "pending verification" or "failed verification and ready to retry"
+    for the number of rows marked "pending verification" or "failed verification and ready to retry"
     - Sidekiq enqueues one or more `Geo::VerificationBatchWorker` jobs, limited by the "maximum verification concurrency"
-    setting
+      setting
 - Sidekiq picks up `Geo::VerificationBatchWorker` job
   - Sidekiq queries `job_artifact_registry` in the PostgreSQL Geo Tracking Database for rows marked "pending verification"
   - If the previous step yielded less than 10 rows, then Sidekiq queries `job_artifact_registry` for rows marked
-  "failed verification and ready to retry"
+    "failed verification and ready to retry"
   - For each row
     - Sidekiq marks it "started verification"
     - Sidekiq gets the SHA256 checksum of the file
     - Sidekiq saves the checksum in the row
     - Sidekiq compares the checksum against the checksum in the `ci_job_artifact_states` row which was replicated
-    by PostgreSQL
+      by PostgreSQL
     - If the checksum matches, then Sidekiq marks the `job_artifact_registry` row "succeeded verification"

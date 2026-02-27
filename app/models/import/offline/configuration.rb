@@ -8,7 +8,8 @@ module Import
       S3_BUCKET_REGEXP = %r{\A[a-z0-9.\-]*\z}
 
       belongs_to :organization, class_name: 'Organizations::Organization'
-      belongs_to :offline_export, class_name: 'Import::Offline::Export'
+      belongs_to :offline_export, class_name: 'Import::Offline::Export', optional: true
+      belongs_to :bulk_import, optional: true
 
       encrypts :object_storage_credentials
 
@@ -22,6 +23,9 @@ module Import
         filename: 'import_offline_configuration_s3_compatible_credentials', size_limit: 64.kilobytes
       }, if: :s3_compatible?
       validates :endpoint, addressable_url: true, length: { maximum: 255 }, if: :s3_compatible?
+
+      validates_with ExactlyOnePresentValidator, fields: [:offline_export, :bulk_import],
+        message: ->(_fields) { _('must belong to either an offline export or bulk import') }
 
       enum :provider, {
         aws: 0,

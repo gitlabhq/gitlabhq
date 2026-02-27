@@ -1082,7 +1082,7 @@ For configuration instructions, see [Load balancer](../gitaly/praefect/configure
 
 #### Service discovery DNS
 
-Service discovery uses DNS to retrieve Praefect node addresses, allowing clients to distribute 
+Service discovery uses DNS to retrieve Praefect node addresses, allowing clients to distribute
 requests evenly across all available nodes. This approach:
 
 - Distributes traffic evenly across all Praefect nodes

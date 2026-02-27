@@ -11,11 +11,12 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
   let(:diffs_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/merge_requests/#{merge_request.to_param}" }
   let(:request_params) { {} }
+  let(:current_user) { build_stubbed(:user) }
   let(:resource) { merge_request }
 
   subject(:presenter) do
     described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
-      request_params: request_params)
+      request_params: request_params, current_user: current_user)
   end
 
   before do
@@ -46,6 +47,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
   end
 
   it_behaves_like 'rapid diffs presenter diffs methods', sorted: true
+  it_behaves_like 'rapid diffs presenter syntax highlighting'
 
   shared_examples_for 'endpoint method with diff version support' do
     context 'when diff_id is set' do

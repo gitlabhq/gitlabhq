@@ -169,19 +169,19 @@ To use the GitLab Duo CLI in interactive mode, use the command `duo`:
    ```
 
 1. `Duo` appears in your terminal window. After the prompt, enter your question or request and press
-  <kbd>Enter</kbd>.
+   <kbd>Enter</kbd>.
 
-    For example:
+   For example:
 
-    ```plaintext
-    What is this repository about?
+   ```plaintext
+   What is this repository about?
 
-    Which issues need my attention?
+   Which issues need my attention?
 
-    Help me implement issue 15.
+   Help me implement issue 15.
 
-    The pipelines in MR 23 are failing. Please help me fix them.
-    ```
+   The pipelines in MR 23 are failing. Please help me fix them.
+   ```
 
 ### Use the GitLab Duo CLI in headless mode
 

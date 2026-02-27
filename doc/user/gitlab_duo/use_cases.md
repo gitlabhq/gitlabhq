@@ -371,7 +371,7 @@ fun main() {
 
       ...
      }
-    ```
+   ```
 
 After you ensure that everything is tested, ask Chat to refactor the selected code:
 

@@ -299,7 +299,7 @@ You can configure GitLab to use the hosted AI Gateway on AWS.
    sudo gitlab-rails console
    ```
 
-1.To view the currently assigned service URL, run:
+1. To view the currently assigned service URL, run:
 
    ```ruby
    Ai::Setting.instance.ai_gateway_url

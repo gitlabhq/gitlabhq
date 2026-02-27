@@ -1682,6 +1682,27 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
     end
 
+    context 'when render_quick_actions is true' do
+      let_it_be(:issue) { create(:issue, project: public_project) }
+
+      before do
+        public_project.add_maintainer(user)
+      end
+
+      it 'keeps quick actions in the rendered output' do
+        post :preview_markdown, params: {
+          namespace_id: public_project.namespace,
+          project_id: public_project,
+          text: "Some text\n/assign #{user.to_reference}",
+          target_type: 'Issue',
+          target_id: issue.iid,
+          render_quick_actions: 'true'
+        }
+
+        expect(json_response['body']).to include('/assign')
+      end
+    end
+
     context 'when Markdown is previewed on commit' do
       let(:preview_markdown_params) do
         {

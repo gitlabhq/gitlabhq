@@ -2,10 +2,11 @@
 
 module RapidDiffs
   class BasePresenter < Gitlab::View::Presenter::Delegated
-    def initialize(subject, diff_view:, diff_options:, request_params: nil, environment: nil)
+    def initialize(subject, diff_view:, diff_options:, current_user: nil, request_params: nil, environment: nil)
       super(subject)
       @diff_view = diff_view
       @diff_options = diff_options
+      @current_user = current_user
       @request_params = request_params
       @environment = environment
     end
@@ -103,10 +104,17 @@ module RapidDiffs
     end
 
     def transform_file(diff_file)
+      diff_file.prevent_syntax_highlighting! unless highlight?
       diff_file
     end
 
     private
+
+    def highlight?
+      return true if @current_user.nil?
+
+      Gitlab::ColorSchemes.for_user(@current_user).css_class != 'none'
+    end
 
     def transform_file_collection(diff_files)
       diff_files.decorate! { |file| transform_file(file) }

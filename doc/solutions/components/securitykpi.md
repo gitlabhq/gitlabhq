@@ -183,9 +183,9 @@ To set up the dashboard:
 1. **Business Unit Mapping**:
    1. Create a CSV file with two columns:
 
-     ```shell
-     project_url,business_unit
-     ```
+      ```shell
+      project_url,business_unit
+      ```
 
    1. Map each GitLab project URL to its corresponding business unit.
    1. Upload the file to Splunk as a lookup table:

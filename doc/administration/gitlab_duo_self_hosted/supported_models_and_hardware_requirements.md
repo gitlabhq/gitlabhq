@@ -45,7 +45,7 @@ depending on the specific model and feature combination.
 <!-- vale gitlab_base.Spelling = NO -->
 
 | Model family | Model | Code completion | Code generation | GitLab Duo Chat (Classic) | GitLab Duo Agent Platform |
-|-------------|-------|---------------------|-----------------|-----------------|-----------------|-----------------|
+|--------------|-------|-----------------|-----------------|---------------------------|---------------------------|
 | Claude 4 | [Claude 4 Sonnet](https://www.anthropic.com/news/claude-4) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | Claude 4 | [Claude 4.5 Sonnet](https://www.anthropic.com/news/claude-sonnet-4-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | Claude 4 | [Claude 4.5 Haiku](https://www.anthropic.com/news/claude-haiku-4-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
@@ -60,7 +60,7 @@ depending on the specific model and feature combination.
 | GPT | [GPT-5.2](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/concepts/models-sold-directly-by-azure?view=foundry-classic&pivots=azure-openai&tabs=global-standard-aoai%2Cglobal-standard#gpt-52) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | GPT | [GPT-oss-120B](https://huggingface.co/openai/gpt-oss-120b) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | GPT | [GPT-oss-20B](https://huggingface.co/openai/gpt-oss-20b) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
-| Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality |  {{< icon name="dash-circle" >}} Limited functionality |
+| Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | Mistral | [Mistral Small 24B Instruct 2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | Llama | [Llama 3 8B](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality | {{< icon name="dash-circle" >}} Limited functionality |
 | Llama | [Llama 3.1 8B](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="dash-circle" >}} Limited functionality |
@@ -94,7 +94,7 @@ This feature is in beta and is therefore subject to change as we gather feedback
 - Response quality, speed, and performance overall might vary significantly based on your model choice.
 
 | Model family | Model requirements | Supported platforms |
-|-------------|-------|---------------------|
+|--------------|--------------------|---------------------|
 | General | Any model compatible with the [OpenAI API specification](https://platform.openai.com/docs/api-reference) | Any platform that provides OpenAI-compatible API endpoints |
 | CodeGemma      | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
 | CodeGemma      | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |

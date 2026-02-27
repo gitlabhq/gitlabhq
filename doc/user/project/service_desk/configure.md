@@ -920,34 +920,34 @@ Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
    the values you want:
 
-  ```ruby
-  gitlab_rails['service_desk_email_enabled'] = true
-  gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@example.onmicrosoft.com"
-  gitlab_rails['service_desk_email_email'] = "project_contact@example.onmicrosoft.com"
-  gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
-  gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
-  gitlab_rails['service_desk_email_inbox_method'] = 'microsoft_graph'
-  gitlab_rails['service_desk_email_inbox_options'] = {
-    'tenant_id': '<YOUR-TENANT-ID>',
-    'client_id': '<YOUR-CLIENT-ID>',
-    'client_secret': '<YOUR-CLIENT-SECRET>',
-    'poll_interval': 60  # Optional
-  }
-  ```
+   ```ruby
+   gitlab_rails['service_desk_email_enabled'] = true
+   gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@example.onmicrosoft.com"
+   gitlab_rails['service_desk_email_email'] = "project_contact@example.onmicrosoft.com"
+   gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
+   gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
+   gitlab_rails['service_desk_email_inbox_method'] = 'microsoft_graph'
+   gitlab_rails['service_desk_email_inbox_options'] = {
+      'tenant_id': '<YOUR-TENANT-ID>',
+      'client_id': '<YOUR-CLIENT-ID>',
+      'client_secret': '<YOUR-CLIENT-SECRET>',
+      'poll_interval': 60  # Optional
+   }
+   ```
 
-  For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
-  configure the `azure_ad_endpoint` and `graph_endpoint` settings. For example:
+   For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
+   configure the `azure_ad_endpoint` and `graph_endpoint` settings. For example:
 
-  ```ruby
-  gitlab_rails['service_desk_email_inbox_options'] = {
-    'azure_ad_endpoint': 'https://login.microsoftonline.us',
-    'graph_endpoint': 'https://graph.microsoft.us',
-    'tenant_id': '<YOUR-TENANT-ID>',
-    'client_id': '<YOUR-CLIENT-ID>',
-    'client_secret': '<YOUR-CLIENT-SECRET>',
-    'poll_interval': 60  # Optional
-  }
-  ```
+   ```ruby
+   gitlab_rails['service_desk_email_inbox_options'] = {
+      'azure_ad_endpoint': 'https://login.microsoftonline.us',
+      'graph_endpoint': 'https://graph.microsoft.us',
+      'tenant_id': '<YOUR-TENANT-ID>',
+      'client_id': '<YOUR-CLIENT-ID>',
+      'client_secret': '<YOUR-CLIENT-SECRET>',
+      'poll_interval': 60  # Optional
+   }
+   ```
 
 {{< /tab >}}
 
@@ -996,8 +996,8 @@ Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
          key: authToken
    ```
 
-    For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
-configure the `azureAdEndpoint` and `graphEndpoint` settings. These fields are case-sensitive:
+   For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
+   configure the `azureAdEndpoint` and `graphEndpoint` settings. These fields are case-sensitive:
 
    ```yaml
    global:

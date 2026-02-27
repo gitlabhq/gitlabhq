@@ -85,49 +85,49 @@ To create a user through the Rails console:
 1. Start a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Run the command according to your GitLab version:
 
-  {{< tabs >}}
+   {{< tabs >}}
 
-  {{< tab title="16.10 and earlier" >}}
+   {{< tab title="16.10 and earlier" >}}
 
-  ```ruby
-  u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
-  # u.assign_personal_namespace
-  u.skip_confirmation! # Use only if you want the user to be automatically confirmed. If you do not use this, the user receives a confirmation email.
-  u.save!
-  ```
+   ```ruby
+   u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
+   # u.assign_personal_namespace
+   u.skip_confirmation! # Use only if you want the user to be automatically confirmed. If you do not use this, the user receives a confirmation email.
+   u.save!
+   ```
 
-  {{< /tab >}}
+   {{< /tab >}}
 
-  {{< tab title="16.11 through 17.6" >}}
+   {{< tab title="16.11 through 17.6" >}}
 
-  ```ruby
-  u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
-  u.assign_personal_namespace(Organizations::Organization.default_organization)
-  u.skip_confirmation! # Use only if you want the user to be automatically confirmed. If you do not use this, the user receives a confirmation email.
-  u.save!
-  ```
+   ```ruby
+   u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
+   u.assign_personal_namespace(Organizations::Organization.default_organization)
+   u.skip_confirmation! # Use only if you want the user to be automatically confirmed. If you do not use this, the user receives a confirmation email.
+   u.save!
+   ```
 
-  {{< /tab >}}
+   {{< /tab >}}
 
-  {{< tab title="17.7 and later" >}}
+   {{< tab title="17.7 and later" >}}
 
-  ```ruby
-  u = Users::CreateService.new(nil,
-    username: 'test_user',
-    email: 'test@example.com',
-    name: 'Test User',
-    password: '123password',
-    password_confirmation: '123password',
-    organization_id: Organizations::Organization.first.id,
-    skip_confirmation: true
-  ).execute
-  ```
+   ```ruby
+   u = Users::CreateService.new(nil,
+     username: 'test_user',
+     email: 'test@example.com',
+     name: 'Test User',
+     password: '123password',
+     password_confirmation: '123password',
+     organization_id: Organizations::Organization.first.id,
+     skip_confirmation: true
+   ).execute
+   ```
 
-> [!note]
-> If you have [disabled new sign-ups](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups),
-> you must run this command as an administrator. In the previous command, replace `Users::CreateService.new(nil,`
-> with `Users::CreateService.new(User.find_by(admin: true),`
+   > [!note]
+   > If you have [disabled new sign-ups](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups),
+   > you must run this command as an administrator. In the previous command, replace `Users::CreateService.new(nil,`
+   > with `Users::CreateService.new(User.find_by(admin: true),`
 
-  {{< /tab >}}
+   {{< /tab >}}
 
-  {{< /tabs >}}
+   {{< /tabs >}}

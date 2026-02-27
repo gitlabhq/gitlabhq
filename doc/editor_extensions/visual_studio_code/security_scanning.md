@@ -72,8 +72,6 @@ Prerequisites:
 
 To perform SAST scanning of a file in VS Code:
 
-<!-- markdownlint-disable MD044 -->
-
 1. Open the file.
 1. Trigger the SAST scan by either:
    - Saving the file (if you have enabled [scanning on file save](setup.md#code-security)).
@@ -87,5 +85,3 @@ To perform SAST scanning of a file in VS Code:
    1. Expand the GitLab remote scan (SAST) section. The results of the SAST scan are listed in
       descending order by severity.
    1. Select a finding to review the details.
-
-<!-- markdownlint-enable MD044 -->

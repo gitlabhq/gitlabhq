@@ -28,18 +28,28 @@ Use the GraphQL API to retrieve and export GitLab Duo data.
 - Feature flag `move_ai_tracking_to_instrumentation_layer` [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167415) in GitLab 17.7. Disabled by default.
 - Dependency on `move_ai_tracking_to_instrumentation_layer` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179527) in GitLab 17.8.
 - Feature flag `code_suggestions_usage_events_in_pg` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/486469) in GitLab 17.8.
+- GitLab Duo Enterprise add-on requirement for `AiUsageData` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/580174) in GitLab 18.7.
 
 {{< /history >}}
 
 The `AiUsageData` endpoint provides raw event data. It exposes Code Suggestions-specific events through `codeSuggestionEvents` and all raw event data through `all`.
 
+> [!note]
+> On earlier versions with GitLab Duo Pro, the `AiUsageData` endpoint returns `null` without an error message.
+
 You can use this endpoint to import events into a BI tool or write scripts that aggregate the data, acceptance rates, and per-user metrics for all GitLab Duo events.
 
 Data is retained for three months for customers without ClickHouse installed. For customers with ClickHouse configured, there is currently no data retention policy.
 
+The `all` and `codeSuggestionEvents` attributes have a maximum date range of one month. If you need data spanning multiple months, run separate queries for each month.
+
 The `all` attribute is filterable by `startDate`, `endDate`, `events`, `userIds`, and standard pagination values.
 
 To see which events are being tracked, you can examine the events declared in the [`ai_tracking.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/tracking/ai_tracking.rb) file.
+
+GitLab Duo Chat events (`request_duo_chat_response`) do not populate the `extras` field.
+Unlike Code Suggestions events, Chat interactions do not carry language or suggestion metadata.
+An empty `extras` object on Chat events is expected behavior.
 
 ### For projects and groups
 
@@ -241,7 +251,7 @@ The query returns the following output:
 
 {{< details >}}
 
-- Offering: GitLab.com, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -469,7 +479,7 @@ The query returns the following output:
 
 {{< details >}}
 
-- Offering: GitLab.com, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

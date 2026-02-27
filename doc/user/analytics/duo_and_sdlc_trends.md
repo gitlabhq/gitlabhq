@@ -234,6 +234,8 @@ The user metrics tables display usage of different GitLab Duo features by indivi
 
 Prerequisites:
 
+- You must have at least the Reporter role for the group.
+- The group must be a top-level group.
 - [GitLab Duo Code Suggestions](../duo_agent_platform/code_suggestions/_index.md) or [GitLab Duo Code Suggestions (Classic)](../project/repository/code_suggestions/_index.md) must be enabled.
 - For GitLab Self-Managed, [ClickHouse for contribution analytics](../group/contribution_analytics/_index.md#contribution-analytics-with-clickhouse) must be configured.
 

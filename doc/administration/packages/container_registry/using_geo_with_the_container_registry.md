@@ -5,6 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Use the GitLab container registry metadata database with Geo
 description: Use the GitLab container registry metadata database with Geo
 ---
+
 Use the GitLab container registry with Geo to replicate container images. Each site's container registry metadata database is
 independent and does not use Postgres replication.
 

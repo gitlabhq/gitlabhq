@@ -229,4 +229,4 @@ specific file extensions. You can also use this approach to fix misidentified fi
    *.txt linguist-language=Text
    ```
 
-  `*.txt` files have an entry in the heuristics file. This example prevents parsing of these files.
+   `*.txt` files have an entry in the heuristics file. This example prevents parsing of these files.

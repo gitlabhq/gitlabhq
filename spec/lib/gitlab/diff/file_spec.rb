@@ -204,9 +204,22 @@ RSpec.describe Gitlab::Diff::File, feature_category: :source_code_management do
   describe '#highlighted_diff_lines' do
     it 'highlights the diff and memoises the result' do
       expect(Gitlab::Diff::Highlight).to receive(:new)
-                                           .with(diff_file, repository: project.repository)
-                                           .once
-                                           .and_call_original
+                                            .with(diff_file, repository: project.repository, plain: false)
+                                            .once
+                                            .and_call_original
+
+      diff_file.highlighted_diff_lines
+    end
+  end
+
+  describe '#prevent_syntax_highlighting!' do
+    it 'causes highlighted_diff_lines to use plain highlighting' do
+      diff_file.prevent_syntax_highlighting!
+
+      expect(Gitlab::Diff::Highlight).to receive(:new)
+                                            .with(diff_file, repository: project.repository, plain: true)
+                                            .once
+                                            .and_call_original
 
       diff_file.highlighted_diff_lines
     end

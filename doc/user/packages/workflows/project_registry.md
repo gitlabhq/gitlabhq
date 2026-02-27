@@ -179,6 +179,7 @@ Publish with:
 
 ```shell
 mvn deploy
+```
 
 {{< /tab >}}
 
@@ -208,6 +209,7 @@ For local publishing, configure authentication:
 ```shell
 npm config set @company:registry https://gitlab.example.com/api/v4/projects/NODE_PACKAGES_PROJECT_ID/packages/npm/
 npm config set //gitlab.example.com/api/v4/projects/NODE_PACKAGES_PROJECT_ID/packages/npm/:_authToken ${PERSONAL_ACCESS_TOKEN}
+```
 
 {{< /tab >}}
 
@@ -227,6 +229,7 @@ For local publishing:
 
 ```shell
 twine upload --repository-url https://gitlab.example.com/api/v4/projects/PYTHON_PACKAGES_PROJECT_ID/packages/pypi --username __token__ --password ${PERSONAL_ACCESS_TOKEN} dist/*
+```
 
 {{< /tab >}}
 
@@ -246,6 +249,7 @@ For local development:
 ```shell
 docker login gitlab.example.com -u ${USERNAME} -p ${PERSONAL_ACCESS_TOKEN}
 docker push gitlab.example.com/artifact-management/docker-images/my-app:latest
+```
 
 {{< /tab >}}
 
@@ -277,6 +281,7 @@ For local publishing:
 
 ```shell
 dotnet nuget push package.nupkg --source https://gitlab.example.com/api/v4/projects/NUGET_PACKAGES_PROJECT_ID/packages/nuget/index.json --api-key ${PERSONAL_ACCESS_TOKEN}
+```
 
 {{< /tab >}}
 
@@ -429,6 +434,7 @@ Or use environment variables:
 
 ```shell
 pip install --index-url https://deploy-token-username:deploy-token-password@gitlab.example.com/api/v4/groups/artifact-management/-/packages/pypi/simple/ --no-index my-package
+```
 
 {{< /tab >}}
 
@@ -439,6 +445,7 @@ Pull images from the group registry:
 ```shell
 docker login gitlab.example.com -u deploy-token-username -p deploy-token-password
 docker pull gitlab.example.com/artifact-management/docker-images/my-app:latest
+```
 
 {{< /tab >}}
 
@@ -448,6 +455,7 @@ Configure Terraform to use GitLab credentials with environment variables:
 
 ```shell
 export TF_TOKEN_gitlab_example_com="deploy-token-password"
+```
 
 Then reference modules in your Terraform configuration:
 
@@ -485,6 +493,7 @@ Configure NuGet to use the group registry:
     </GitLab>
   </packageSourceCredentials>
 </configuration>
+```
 
 {{< /tab >}}
 
@@ -494,6 +503,7 @@ Download generic packages:
 
 ```shell
 curl --header "DEPLOY-TOKEN: ${DEPLOY_TOKEN}" "https://gitlab.example.com/api/v4/groups/artifact-management/-/packages/generic/my-package/1.0.0/my-package.zip" --output my-package.zip
+```
 
 {{< /tab >}}
 

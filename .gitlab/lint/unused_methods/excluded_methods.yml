@@ -46,3 +46,6 @@ ee/app/models/ci/secrets/integration.rb:
   - gitlab_secrets_manager?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
 app/helpers/groups_helper.rb:
   - group_more_action_data: Will be used once the frontend implementation is added
+app/models/work_items/types_framework/provider.rb:
+  - by_ids_with_widget_definition_preload: Deprecated method for old WorkItems::Type model; scheduled for removal in https://gitlab.com/gitlab-org/gitlab/-/issues/581931
+

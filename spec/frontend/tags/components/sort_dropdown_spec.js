@@ -83,7 +83,7 @@ describe('SortDropdown', () => {
 
   describe('on sort changes', () => {
     it('calls visitUrl when sortBy changes', async () => {
-      await findSorting().vm.$emit('sort-by-change', 'version');
+      await findSorting().vm.$emit('sortByChange', 'version');
 
       expect(visitUrl).toHaveBeenCalledWith(`${defaultPath}?sort=version_desc`);
     });
@@ -91,7 +91,7 @@ describe('SortDropdown', () => {
 
   describe('when sortDirection changes', () => {
     it('calls visitUrl when sort direction changes', async () => {
-      await findSorting().vm.$emit('sort-direction-change', true); // ascending
+      await findSorting().vm.$emit('sortDirectionChange', true); // ascending
 
       expect(visitUrl).toHaveBeenCalledWith(`${defaultPath}?sort=updated_asc`);
     });

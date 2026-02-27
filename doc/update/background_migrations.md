@@ -539,14 +539,14 @@ use the information in the failure error logs or the database:
    - `column_name`: `id`
    - `job_arguments`: `[["id"], ["id_convert_to_bigint"]]`
 
- When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
- comma between each argument with a backslash ` \ ` to prevent an invalid character error.
- Every comma in the `job_arguments` parameter value must be escaped with a backslash.
+   When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
+   comma between each argument with a backslash ` \ ` to prevent an invalid character error.
+   Every comma in the `job_arguments` parameter value must be escaped with a backslash.
 
- For example:
+   For example:
 
- ```shell
- sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,ci_builds,id,'[["id"\, "stage_id"]\,["id_convert_to_bigint"\,"stage_id_convert_to_bigint"]]']
+   ```shell
+   sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,ci_builds,id,'[["id"\, "stage_id"]\,["id_convert_to_bigint"\,"stage_id_convert_to_bigint"]]']
    ```
 
 {{< /tab >}}

@@ -79,7 +79,7 @@ To implement it for your tracking system, you need to:
           description: The type of the processor
    ```
 
-  `protected_properties` contains properties to be sent exclusively to the specified tracking class.
+   `protected_properties` contains properties to be sent exclusively to the specified tracking class.
 
 1. [Trigger the event](internal_event_instrumentation/quick_start.md#trigger-events) in your code using Internal Events framework
 

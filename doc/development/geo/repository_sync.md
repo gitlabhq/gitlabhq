@@ -52,10 +52,10 @@ runs periodically in the background on secondary sites. Specifically, this worke
   - Unsynced: Projects that have never been synced on the **secondary**
     site and so do not exist yet.
   - Updated recently: Projects that have a `last_repository_updated_at`
-  timestamp that is more recent than the `last_repository_successful_sync_at`
-  timestamp in the `Geo::ProjectRepositoryRegistry` model.
+    timestamp that is more recent than the `last_repository_successful_sync_at`
+    timestamp in the `Geo::ProjectRepositoryRegistry` model.
   - Manually resynced: The administrator can manually flag a repository to resync in the
-  [Geo **Admin** area](../../administration/geo_sites.md).
+    [Geo **Admin** area](../../administration/geo_sites.md).
 - Enqueues `Geo::SyncWorker` jobs for each repository that needs updating.
 - Provides baseline synchronization for all repositories.
 

@@ -94,8 +94,8 @@ To create a project access token:
    - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set
      to 365 days later than the current date.
-   - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
-
+   - By default, this date can be a maximum of 365 days later than the current date.
+     In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
    - An instance-wide [maximum lifetime](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens)
      setting can limit the maximum allowable lifetime on GitLab Self-Managed instances.
 1. From the **Select a role** dropdown list:

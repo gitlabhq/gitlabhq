@@ -37,6 +37,37 @@ RSpec.shared_examples 'rapid diffs presenter base diffs_resource' do
   end
 end
 
+RSpec.shared_examples 'rapid diffs presenter syntax highlighting' do
+  describe 'syntax highlighting' do
+    let(:diff_file) { build(:diff_file) }
+
+    context 'when user has none color scheme' do
+      before do
+        allow(Gitlab::ColorSchemes).to receive(:for_user).with(current_user).and_return(
+          Gitlab::ColorSchemes::Scheme.new(6, 'None', 'none')
+        )
+        allow(resource).to receive(:diffs_for_streaming).and_return(
+          instance_double(Gitlab::Diff::FileCollection::Base, diff_files: diff_files_collection)
+        )
+      end
+
+      let(:diff_files_collection) do
+        instance_double(Gitlab::Git::DiffCollection).tap do |collection|
+          allow(collection).to receive(:decorate!) do |&block|
+            [diff_file].map!(&block)
+          end
+        end
+      end
+
+      it 'calls prevent_syntax_highlighting! on diff files' do
+        expect(diff_file).to receive(:prevent_syntax_highlighting!)
+
+        presenter.diff_files_for_streaming
+      end
+    end
+  end
+end
+
 RSpec.shared_examples 'rapid diffs presenter diffs methods' do |sorted:|
   describe '#diff_files' do
     let(:diffs) { instance_double(Gitlab::Diff::FileCollection::Base) }

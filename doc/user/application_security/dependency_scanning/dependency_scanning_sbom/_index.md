@@ -58,8 +58,8 @@ If you are new to dependency scanning, follow these steps to turn it on for your
   - A [supported lock file or dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files),
     either in the repository or created in the CI/CD pipeline and passed as an artifact to the `dependency-scanning` job.
   - For self-managed runners, GitLab Runner with the
-  [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
+    [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
+    [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
   - For hosted runners on GitLab.com, this configuration is enabled by default.
 
 - Additional prerequisites for GitLab Self-Managed only:

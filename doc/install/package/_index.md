@@ -270,6 +270,6 @@ Before you upgrade:
    1. Upgrade to GitLab 18.4 or later.
    1. Allow sufficient time for active OAuth access tokens to be automatically rehashed during normal usage.
    1. Rotate OAuth application secrets to ensure all newly issued tokens use the FIPS-compliant
-   hashing algorithm.
+      hashing algorithm.
    1. Notify users that they may need to re-authenticate with OAuth-integrated applications
-   if their tokens have not been used recently.
+      if their tokens have not been used recently.

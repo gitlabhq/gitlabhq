@@ -63,8 +63,8 @@ work it needs to perform and how long it takes to complete:
    - Creating a new table, example: `create_table`.
    - Adding a new column to an existing table, example: `add_column`.
 
-    > [!note]
-    > Post-deployment migration is often abbreviated as PDM.
+   > [!note]
+   > Post-deployment migration is often abbreviated as PDM.
 
 1. [**Batched background migrations.**](database/batched_background_migrations.md) These aren't regular Rails migrations, but application code that is
    executed via Sidekiq jobs, although a post-deployment migration is used to schedule them. Use them only for data migrations that

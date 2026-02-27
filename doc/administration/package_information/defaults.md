@@ -19,47 +19,54 @@ the package assumes the defaults as noted below.
 
 See the table below for the list of ports that the Linux package assigns by default:
 
-|      Component       | On by default | Communicates via | Alternative |              Connection port               |
-|:--------------------:|:-------------:|:----------------:|:-----------:|:------------------------------------------:|
-|     GitLab Rails     |      Yes      |       Port       |      X      |                 80 or 443                  |
-|     GitLab Shell     |      Yes      |       Port       |      X      |                     22                     |
-|      PostgreSQL      |      Yes      |      Socket      | Port (5432) |                     X                      |
-|        Redis         |      Yes      |      Socket      | Port (6379) |                     X                      |
-|         Puma         |      Yes      |      Socket      | Port (8080) |                     X                      |
-|   GitLab Workhorse   |      Yes      |      Socket      | Port (8181) |                     X                      |
-|     NGINX status     |      Yes      |       Port       |      X      |                    8060                    |
-|      Prometheus      |      Yes      |       Port       |      X      |                    9090                    |
-|    Node exporter     |      Yes      |       Port       |      X      |                    9100                    |
-|    Redis exporter    |      Yes      |       Port       |      X      |                    9121                    |
-| PostgreSQL exporter  |      Yes      |       Port       |      X      |                    9187                    |
-|  PgBouncer exporter  |      No       |       Port       |      X      |                    9188                    |
-|   GitLab Exporter    |      Yes      |       Port       |      X      |                    9168                    |
-|   Sidekiq exporter   |      Yes      |       Port       |      X      |                    8082                    |
-| Sidekiq health check |      Yes      |       Port       |      X      |                    8092[^Sidekiq-health]   |
-|    Web exporter      |      No       |       Port       |      X      |                    8083                    |
-|    Geo PostgreSQL    |      No       |      Socket      | Port (5431) |                     X                      |
-|    Redis Sentinel    |      No       |       Port       |      X      |                   26379                    |
-|    Incoming email    |      No       |       Port       |      X      |                    143                     |
-|    Elastic search    |      No       |       Port       |      X      |                    9200                    |
-|     GitLab Pages     |      No       |       Port       |      X      |                 80 or 443                  |
-|   GitLab Registry    |      No*      |       Port       |      X      |              80, 443 or 5050               |
-|   GitLab Registry    |      No       |       Port       |      X      |                    5000                    |
-|         LDAP         |      No       |       Port       |      X      |   Depends on the component configuration   |
-|       Kerberos       |      No       |       Port       |      X      |                8443 or 8088                |
-|       OmniAuth       |      Yes      |       Port       |      X      |   Depends on the component configuration   |
-|         SMTP         |      No       |       Port       |      X      |                    465                     |
-|    Remote syslog     |      No       |       Port       |      X      |                    514                     |
-|      Mattermost      |      No       |       Port       |      X      |                    8065                    |
-|      Mattermost      |      No       |       Port       |      X      |                 80 or 443                  |
-|      PgBouncer       |      No       |       Port       |      X      |                    6432                    |
-|        Consul        |      No       |       Port       |      X      | 8300, 8301(TCP and UDP), 8500, 8600[^Consul-notes] |
-|       Patroni        |      No       |       Port       |      X      |                    8008                    |
-|      GitLab KAS      |      Yes      |       Port       |      X      |                    8150                    |
-|        Gitaly        |      Yes      |      Socket      | Port (8075) |                8075 or 9999 (TLS)          |
-|   Gitaly exporter    |      Yes      |       Port       |      X      |                    9236                    |
-|       Praefect       |      No       |       Port       |      X      |                2305 or 3305 (TLS)          |
-| GitLab Workhorse exporter |      Yes      |       Port       |      X      |                     9229                   |
-|  Registry exporter   |      No       |       Port       |      X      |                     5001                   |
+| Component                 | On by default | Communicates via | Alternative   | Connection port |
+|:-------------------------:|:-------------:|:----------------:|:-------------:|:----------------|
+| GitLab Rails              | Yes           | Port             |               | `80` or `443`   |
+| GitLab Shell              | Yes           | Port             |               | `22`            |
+| PostgreSQL                | Yes           | Socket           | Port (`5432`) |                 |
+| Redis                     | Yes           | Socket           | Port (`6379`) |                 |
+| Puma                      | Yes           | Socket           | Port (`8080`) |                 |
+| GitLab Workhorse          | Yes           | Socket           | Port (`8181`) |                 |
+| NGINX status              | Yes           | Port             |               | `8060`          |
+| Prometheus                | Yes           | Port             |               | `9090`          |
+| Node exporter             | Yes           | Port             |               | `9100`          |
+| Redis exporter            | Yes           | Port             |               | `9121`          |
+| PostgreSQL exporter       | Yes           | Port             |               | `9187`          |
+| PgBouncer exporter        | No            | Port             |               | `9188`          |
+| GitLab Exporter           | Yes           | Port             |               | `9168`          |
+| Sidekiq exporter          | Yes           | Port             |               | `8082`          |
+| Sidekiq health check      | Yes           | Port             |               | `8092` <sup>1</sup> |
+| Web exporter              | No            | Port             |               | `8083`          |
+| Geo PostgreSQL            | No            | Socket           | Port (`5431`) |                 |
+| Redis Sentinel            | No            | Port             |               | `26379`         |
+| Incoming email            | No            | Port             |               | `143`           |
+| Elastic search            | No            | Port             |               | `9200`          |
+| GitLab Pages              | No            | Port             |               | `80` or `443`   |
+| GitLab Registry           | No*           | Port             |               | `80`, `443` or `5050` |
+| GitLab Registry           | No            | Port             |               | `5000`          |
+| LDAP                      | No            | Port             |               | Depends on the component configuration |
+| Kerberos                  | No            | Port             |               | `8443` or `8088` |
+| OmniAuth                  | Yes           | Port             |               | Depends on the component configuration |
+| SMTP                      | No            | Port             |               | `465`           |
+| Remote syslog             | No            | Port             |               | `514`           |
+| Mattermost                | No            | Port             |               | `8065`          |
+| Mattermost                | No            | Port             |               | `80` or `443`   |
+| PgBouncer                 | No            | Port             |               | `6432`          |
+| Consul                    | No            | Port             |               | `8300`, `8301`(TCP and UDP), `8500`, `8600` <sup>2</sup> |
+| Patroni                   | No            | Port             |               | `8008`          |
+| GitLab KAS                | Yes           | Port             |               | `8150`          |
+| Gitaly                    | Yes           | Socket           | Port (`8075`) | `8075` or `9999` (TLS) |
+| Gitaly exporter           | Yes           | Port             |               | `9236`          |
+| Praefect                  | No            | Port             |               | `2305` or `3305` (TLS) |
+| GitLab Workhorse exporter | Yes           | Port             |               | `9229`          |
+| Registry exporter         | No            | Port             |               | `5001`          |
+
+**Footnotes**:
+
+1. If Sidekiq health check settings are not set, they default to the Sidekiq metrics exporter settings.
+   This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).
+1. If using additional Consul functionality, more ports may need to be opened. See the
+   [official documentation](https://developer.hashicorp.com/consul/docs/install/ports#ports-table) for the list.
 
 Legend:
 
@@ -78,7 +85,3 @@ over a network which requires, based on implementation, ports `111` and
 
 > [!note]
 > In some cases, the GitLab Registry is automatically enabled by default. For more information, see [GitLab container registry administration](../packages/container_registry.md).
-
- [^Consul-notes]: If using additional Consul functionality, more ports may need to be opened. See the [official documentation](https://developer.hashicorp.com/consul/docs/install/ports#ports-table) for the list.
-
- [^Sidekiq-health]: If Sidekiq health check settings are not set, they default to the Sidekiq metrics exporter settings. This default is deprecated and is set to be removed in [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/347509).

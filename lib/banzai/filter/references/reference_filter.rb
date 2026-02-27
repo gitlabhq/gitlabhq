@@ -338,6 +338,7 @@ module Banzai
           {
             **attrs,
             original: link_content_html || CGI.escapeHTML(match_text),
+            link: link_content_html ? true : nil,
             original_href: link_content_html ? match_text : nil
           }.compact
         end

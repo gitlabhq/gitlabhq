@@ -18,24 +18,29 @@ function renderIframeEl(el) {
   const allowed = allowlistUrls.some((allowlistUrl) => allowlistUrl.origin === srcUrl.origin);
   if (!allowed) return;
 
+  const width = el.getAttribute('width');
+  const height = el.getAttribute('height');
+  const hasExplicitDimensions = width || height;
+
   const iframeEl = document.createElement('iframe');
   setAttributes(iframeEl, {
     src,
     sandbox: IFRAME_SANDBOX_RESTRICTIONS,
     frameBorder: 0,
-    class: 'gl-inset-0 gl-h-full gl-w-full',
     allowfullscreen: 'true',
     referrerpolicy: 'strict-origin-when-cross-origin',
   });
 
-  // We propagate these attributes, but currently the gl-h-full/gl-w-full above override them,
-  // as they can easily overrun the container and break the layout.
-  // For potential later use with some frontend design help.
-  if (el.getAttribute('width')) {
-    iframeEl.setAttribute('width', el.getAttribute('width'));
-  }
-  if (el.getAttribute('height')) {
-    iframeEl.setAttribute('height', el.getAttribute('height'));
+  if (hasExplicitDimensions) {
+    if (width) iframeEl.setAttribute('width', width);
+    if (height) iframeEl.setAttribute('height', height);
+    iframeEl.style.maxWidth = '100%';
+    if (width && height) {
+      iframeEl.style.aspectRatio = `${width} / ${height}`;
+      iframeEl.style.height = 'auto';
+    }
+  } else {
+    iframeEl.classList.add('gl-inset-0', 'gl-h-full', 'gl-w-full');
   }
 
   const wrapper = document.createElement('div');

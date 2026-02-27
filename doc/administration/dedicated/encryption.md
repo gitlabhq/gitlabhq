@@ -117,8 +117,8 @@ To create your own encryption keys:
    - For **Key type**, select **Symmetric**.
    - For **Key usage**, select **Encrypt and decrypt**.
    - Under **Advanced options**:
-      - For **Key material origin**, select **AWS_KMS**.
-      - For **Regionality**, select **Multi-Region key**.
+     - For **Key material origin**, select **AWS_KMS**.
+     - For **Regionality**, select **Multi-Region key**.
 1. Enter an alias, description, and tags for your key.
 1. Select the IAM users and roles that can administer the key.
 1. Optional. Clear **Allow key administrators to delete this key** to prevent accidental deletion.

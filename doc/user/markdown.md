@@ -77,7 +77,7 @@ The following features are not found in standard Markdown:
 - [Emoji](#emoji)
 - [Footnotes](#footnotes)
 - [Front matter](#front-matter)
-- [GitLab-specific references](#gitlab-specific-references)
+- [GitLab-specific references](#gitlab-specific-references) (Not supported in Markdown snippet files.)
 - [Includes](#includes)
 - [Placeholders](#placeholders)
 - [Inline diffs](#inline-diff)
@@ -770,6 +770,9 @@ that reference into a link so you can navigate between them. All references to p
 
 Additionally, GitLab Flavored Markdown recognizes certain cross-project references and also has a shorthand
 version to reference other projects from the same namespace.
+
+> [!note]
+> GitLab-specific references are not supported in Markdown snippet files.
 
 GitLab Flavored Markdown recognizes the following:
 

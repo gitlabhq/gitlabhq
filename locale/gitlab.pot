@@ -83669,6 +83669,9 @@ msgstr ""
 msgid "must belong to either a project or an organization"
 msgstr ""
 
+msgid "must belong to either an offline export or bulk import"
+msgstr ""
+
 msgid "must belong to either an organization or a project"
 msgstr ""
 

@@ -1797,7 +1797,7 @@ To create a diagram for GitLab documentation with Mermaid:
 1. Copy the content of the **Code** pane and paste it in the Markdown file, wrapped in a `mermaid` code block. For more
    details, see [GitLab Flavored Markdown for Mermaid](../../../user/markdown.md#mermaid).
 1. On the next line after declaring the type of diagram
-  (like `flowchart` or `sequenceDiagram`), add the following lines for accessibility:
+   (like `flowchart` or `sequenceDiagram`), add the following lines for accessibility:
 
    ```yaml
    accTitle: your diagram title here

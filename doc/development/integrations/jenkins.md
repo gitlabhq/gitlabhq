@@ -30,7 +30,7 @@ GitLab does not allow requests to localhost or the local network by default. Whe
    - **Allow requests to the local network from webhooks and integrations**
    - **Allow requests to the local network from system hooks**
 
-  For more details about GitLab webhooks, see [Webhooks and insecure internal web services](../../security/webhooks.md).
+   For more details about GitLab webhooks, see [Webhooks and insecure internal web services](../../security/webhooks.md).
 
 Jenkins uses the GitLab API and needs an access token.
 

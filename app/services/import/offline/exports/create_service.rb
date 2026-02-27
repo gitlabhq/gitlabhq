@@ -37,15 +37,8 @@ module Import
           return insufficient_permissions_error unless user_can_export_all_portables?
 
           validate_object_storage!
-
-          offline_export = Import::Offline::Export.create!(
-            user: current_user,
-            organization_id: organization_id,
-            source_hostname: source_hostname,
-            configuration: configuration
-          )
-
-          create_self_relation_exports(offline_export)
+          offline_export.save!
+          create_self_relation_exports!
 
           Import::Offline::ExportWorker.perform_async(offline_export.id)
 
@@ -85,12 +78,12 @@ module Import
         end
 
         def validate_object_storage!
-          configuration.validate! # Validate before attempting to connect using this configuration
+          offline_export.configuration.validate! # Validate before attempting to connect using this configuration
 
           client.test_connection!
         end
 
-        def create_self_relation_exports(offline_export)
+        def create_self_relation_exports!
           portable_self_relations = []
           self_relation_params = {
             offline_export_id: offline_export.id,
@@ -112,17 +105,24 @@ module Import
           ::BulkImports::Export.insert_all(portable_self_relations)
         end
 
-        def configuration
-          Import::Offline::Configuration.new(
-            provider: storage_config[:provider],
-            bucket: storage_config[:bucket],
-            object_storage_credentials: storage_config[:credentials],
-            organization_id: organization_id
+        def offline_export
+          Import::Offline::Export.new(
+            user: current_user,
+            organization_id: organization_id,
+            source_hostname: source_hostname,
+            configuration: Import::Offline::Configuration.new(
+              provider: storage_config[:provider],
+              bucket: storage_config[:bucket],
+              object_storage_credentials: storage_config[:credentials],
+              organization_id: organization_id
+            )
           )
         end
-        strong_memoize_attr :configuration
+        strong_memoize_attr :offline_export
 
         def client
+          configuration = offline_export.configuration
+
           Import::Clients::ObjectStorage.new(
             provider: configuration.provider,
             bucket: configuration.bucket,

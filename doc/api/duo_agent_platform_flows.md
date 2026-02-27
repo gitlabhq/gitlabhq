@@ -80,7 +80,7 @@ attributes:
 
 ### Look up the consumer ID
 
-Before you can use `ai_catalog_item_consumer_id`, you must use the GraphQL API to retrieve the ID from the [AI Catalog](../user/duo_agent_platform/ai_catalog.md). 
+Before you can use `ai_catalog_item_consumer_id`, you must use the GraphQL API to retrieve the ID from the [AI Catalog](../user/duo_agent_platform/ai_catalog.md).
 The item must already be enabled for the project.
 
 ```graphql

@@ -343,9 +343,9 @@ To configure the GitLab MCP server in OpenAI Codex:
      - On GitLab Self-Managed, your GitLab instance URL.
      - On GitLab.com, `gitlab.com`.
 
-  ```shell
-  codex mcp add --url "https://<gitlab.example.com>/api/v4/mcp" GitLab
-  ```
+   ```shell
+   codex mcp add --url "https://<gitlab.example.com>/api/v4/mcp" GitLab
+   ```
 
 1. Edit `~/.codex/config.toml` and, in the `[features]` section,
    enable the `rmcp_client` feature flag.

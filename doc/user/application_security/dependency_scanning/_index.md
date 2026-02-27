@@ -511,17 +511,19 @@ Detection of development dependencies is supported for the following languages a
 
 <!-- vale gitlab_base.Substitutions = NO -->
 <!-- markdownlint-disable MD044 -->
-| Language                  | Package manager | Files                                                                                          |
-|---------------------------|-----------------|------------------------------------------------------------------------------------------------|
-| C/C++/Fortran/Go/Python/R | conda           | conda-lock.yml                                                                                 |
-| Java                      | Maven           | maven.graph.json                                                                               |
-| Java/Kotlin               | Gradle          | dependencies.lock, dependencies.direct.lock, gradle-html-dependency-report.js, gradle.lockfile |
-| JavaScript/TypeScript     | npm             | package-lock.json, npm-shrinkwrap.json                                                         |
-| JavaScript/TypeScript     | pnpm            | pnpm-lock.yaml                                                                                 |
-| PHP                       | Composer        | composer.lock                                                                                  |
-| Python                    | Pipenv          | Pipfile.lock                                                                                   |
-| Python                    | Poetry          | poetry.lock                                                                                    |
-| Python                    | uv              | uv.lock                                                                                        |
+
+| Language                  | Package manager | Files |
+|---------------------------|-----------------|-------|
+| C/C++/Fortran/Go/Python/R | conda           | `conda-lock.yml` |
+| Java                      | Maven           | `maven.graph.json` |
+| Java/Kotlin               | Gradle          | `dependencies.lock`, `dependencies.direct.lock`, `gradle-html-dependency-report.js`, `gradle.lockfile` |
+| JavaScript/TypeScript     | npm             | `package-lock.json`, `npm-shrinkwrap.json` |
+| JavaScript/TypeScript     | pnpm            | `pnpm-lock.yaml` |
+| PHP                       | Composer        | `composer.lock` |
+| Python                    | Pipenv          | `Pipfile.lock` |
+| Python                    | Poetry          | `poetry.lock` |
+| Python                    | uv              | `uv.lock` |
+
 <!-- markdownlint-enable MD044 -->
 <!-- vale gitlab_base.Substitutions = YES -->
 

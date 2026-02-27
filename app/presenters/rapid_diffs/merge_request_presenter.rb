@@ -8,8 +8,10 @@ module RapidDiffs
 
     attr_reader :conflicts
 
-    def initialize(subject, diff_view:, diff_options:, request_params: nil, environment: nil, conflicts: nil)
-      super(subject, diff_view:, diff_options:, request_params:, environment:)
+    def initialize(
+      subject, diff_view:, diff_options:, current_user: nil, request_params: nil, environment: nil,
+      conflicts: nil)
+      super(subject, diff_view:, diff_options:, current_user:, request_params:, environment:)
       @conflicts = conflicts
     end
 

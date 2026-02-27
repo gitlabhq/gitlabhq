@@ -168,6 +168,30 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter, feature_categ
     end
   end
 
+  describe 'redaction of link references to private projects' do
+    let_it_be(:private_project) { create(:project, :private) }
+    let(:current_user) { create(:user) }
+    let(:project_ref) { private_project.to_reference }
+
+    it 'restores the original link when a reference inside a link href is redacted' do
+      markdown = "[my text](#{project_ref})"
+      doc = reference_pipeline(redact: true, current_user: current_user).to_document(markdown)
+
+      expect(doc.css('a').length).to eq(1)
+      link = doc.css('a').first
+      expect(link.inner_html).to eq('my text')
+      expect(link.attr('href')).to eq(project_ref)
+    end
+
+    it 'replaces a plain text reference with the original text' do
+      markdown = "Hey #{project_ref}"
+      doc = reference_pipeline(redact: true, current_user: current_user).to_document(markdown)
+
+      expect(doc.css('a').length).to eq(0)
+      expect(doc.text).to include(project_ref)
+    end
+  end
+
   it_behaves_like 'limits the number of filtered items' do
     let(:text) { "#{reference} #{reference} #{reference}" }
     let(:ends_with) { "</a> #{CGI.escapeHTML(reference)}" }

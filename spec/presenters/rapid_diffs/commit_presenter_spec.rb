@@ -38,6 +38,7 @@ RSpec.describe ::RapidDiffs::CommitPresenter, feature_category: :source_code_man
 
   it_behaves_like 'rapid diffs presenter base diffs_resource'
   it_behaves_like 'rapid diffs presenter diffs methods', sorted: false
+  it_behaves_like 'rapid diffs presenter syntax highlighting'
 
   describe '#diffs_stats_endpoint' do
     subject(:url) { presenter.diffs_stats_endpoint }

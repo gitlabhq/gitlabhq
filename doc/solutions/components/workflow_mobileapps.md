@@ -46,16 +46,16 @@ Follow the steps below on how to use this React Native Mobile App sample project
   - `build-android.yml` in the pipelines directory. You will need to update the file path in `.gitlab-ci.yml` if the `build-android.yml` file is put in a different location other than /pipeline because the main `.gitlab-ci.yml` file references the `build-android.yml` file for the build job.
   - `build-ios.yml` in the pipelines directory. You will need to update the file path in `.gitlab-ci.yml` if the `build-ios.yml` file is put in a different location other than /pipeline because the main `.gitlab-ci.yml` file references the `build-ios.yml` file for the build job.
 
-   ```yaml
-   include:
-  - local: "pipelines/build-ios.yml"
-    inputs:
-      image: macos-15-xcode-16
-      tag: saas-macos-medium-m1
-  - local: "pipelines/build-android.yml"
-    inputs:
-      image: reactnativecommunity/react-native-android
-   ```
+  ```yaml
+  include:
+    - local: "pipelines/build-ios.yml"
+      inputs:
+        image: macos-15-xcode-16
+        tag: saas-macos-medium-m1
+    - local: "pipelines/build-android.yml"
+      inputs:
+        image: reactnativecommunity/react-native-android
+  ```
 
 - Configure the required CI/CD variables in your project settings. See the following section to learn how the pipeline works.
 

@@ -5861,7 +5861,7 @@ Input type: `CreateCustomDashboardInput`
 | <a id="mutation-createcustomdashboard-description"></a>`description` | [`String`](#string) | Dashboard description. |
 | <a id="mutation-createcustomdashboard-name"></a>`name` | [`String!`](#string) | Dashboard name. |
 | <a id="mutation-createcustomdashboard-namespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Namespace to scope the dashboard to. |
-| <a id="mutation-createcustomdashboard-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | Organization the dashboard belongs to. |
+| <a id="mutation-createcustomdashboard-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID`](#organizationsorganizationid) | Organization the dashboard belongs to. Defaults to the current organization if not provided. |
 
 #### Fields
 

@@ -15,7 +15,13 @@ module Gitlab
 
         def perform
           try_obtain_lease do
-            if preconditions_met?
+            if !table_exists?
+              log_index_info(
+                "Skipping async index #{action_type} since the table does not exist. " \
+                  "The queuing entry will be deleted"
+              )
+              async_index.destroy!
+            elsif preconditions_met?
               log_index_info("Starting async index #{action_type}")
               execute_action_with_error_handling
               log_index_info("Finished async index #{action_type}")
@@ -56,6 +62,10 @@ module Gitlab
         def execute_action
           connection.execute(async_index.definition)
           async_index.destroy!
+        end
+
+        def table_exists?
+          connection.table_exists?(async_index.table_name)
         end
 
         def index_exists?

@@ -21103,7 +21103,7 @@ ALTER SEQUENCE import_failures_id_seq OWNED BY import_failures.id;
 
 CREATE TABLE import_offline_configurations (
     id bigint NOT NULL,
-    offline_export_id bigint NOT NULL,
+    offline_export_id bigint,
     organization_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -21111,7 +21111,9 @@ CREATE TABLE import_offline_configurations (
     bucket text NOT NULL,
     export_prefix text NOT NULL,
     object_storage_credentials jsonb NOT NULL,
+    bulk_import_id bigint,
     CONSTRAINT check_94d334d71c CHECK ((char_length(bucket) <= 256)),
+    CONSTRAINT check_9c4751c29c CHECK ((num_nonnulls(bulk_import_id, offline_export_id) = 1)),
     CONSTRAINT check_f28fa120fe CHECK ((char_length(export_prefix) <= 255))
 );
 
@@ -43695,6 +43697,8 @@ CREATE UNIQUE INDEX idx_unique_ai_code_repository_connection_namespace_id ON ONL
 
 CREATE UNIQUE INDEX idx_unique_ai_code_repository_connection_project_id ON ONLY p_ai_active_context_code_repositories USING btree (connection_id, project_id);
 
+CREATE UNIQUE INDEX idx_unique_dashboard_name_org_namespace ON custom_dashboards USING btree (organization_id, namespace_id, name) NULLS NOT DISTINCT;
+
 CREATE UNIQUE INDEX idx_unique_slack_api_scopes_on_organization_id_and_name ON slack_api_scopes USING btree (organization_id, name);
 
 CREATE UNIQUE INDEX idx_usages_on_cmpt_used_by_project_cmpt_and_last_used_date ON catalog_resource_component_last_usages USING btree (component_id, used_by_project_id, last_used_date);
@@ -43880,6 +43884,8 @@ CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_sub_url ON act
 CREATE UNIQUE INDEX index_add_on_purchases_on_add_on_id_and_namespace_id_not_null ON subscription_add_on_purchases USING btree (subscription_add_on_id, namespace_id) WHERE (namespace_id IS NOT NULL);
 
 CREATE UNIQUE INDEX index_add_on_purchases_on_add_on_id_and_namespace_id_null ON subscription_add_on_purchases USING btree (subscription_add_on_id) WHERE (namespace_id IS NULL);
+
+CREATE UNIQUE INDEX index_add_on_purchases_on_add_on_uid_and_namespace_id_not_null ON subscription_add_on_purchases USING btree (subscription_add_on_uid, namespace_id) NULLS NOT DISTINCT WHERE (subscription_add_on_uid IS NOT NULL);
 
 CREATE INDEX index_add_on_purchases_on_organization_id ON subscription_add_on_purchases USING btree (organization_id);
 
@@ -44977,8 +44983,6 @@ CREATE INDEX index_custom_dashboards_on_created_by_id ON custom_dashboards USING
 
 CREATE INDEX index_custom_dashboards_on_namespace_id ON custom_dashboards USING btree (namespace_id);
 
-CREATE INDEX index_custom_dashboards_on_organization_id ON custom_dashboards USING btree (organization_id);
-
 CREATE INDEX index_custom_dashboards_on_updated_by_id ON custom_dashboards USING btree (updated_by_id);
 
 CREATE INDEX index_custom_emoji_on_creator_id ON custom_emoji USING btree (creator_id);
@@ -45730,6 +45734,8 @@ CREATE INDEX index_import_failures_on_project_id_and_correlation_id_value ON imp
 CREATE INDEX index_import_failures_on_project_id_not_null ON import_failures USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_import_failures_on_user_id_not_null ON import_failures USING btree (user_id) WHERE (user_id IS NOT NULL);
+
+CREATE INDEX index_import_offline_configurations_on_bulk_import_id ON import_offline_configurations USING btree (bulk_import_id);
 
 CREATE INDEX index_import_offline_configurations_on_offline_export_id ON import_offline_configurations USING btree (offline_export_id);
 
@@ -55721,6 +55727,9 @@ ALTER TABLE ONLY dast_site_profiles_builds
 
 ALTER TABLE ONLY milestones
     ADD CONSTRAINT fk_95650a40d4 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_offline_configurations
+    ADD CONSTRAINT fk_9571901b7c FOREIGN KEY (bulk_import_id) REFERENCES bulk_imports(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards_epic_list_user_preferences
     ADD CONSTRAINT fk_95eac55851 FOREIGN KEY (epic_list_id) REFERENCES boards_epic_lists(id) ON DELETE CASCADE;

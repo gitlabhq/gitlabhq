@@ -46,12 +46,14 @@ table_size: small
 | `milestone`                     | String        | yes         | The milestone that introduced this table. |
 | `gitlab_schema`                 | String        | yes         | GitLab schema name. |
 | `notes`                         | String        | no          | Use for comments, as Psych cannot parse YAML comments. |
-| `table_size`                    | String        | yes         | Classification of current table size on GitLab.com[^1]. The size includes indexes. For partitioned tables, the size is the size of the largest partition. Valid options are `unknown`, `small` (< 10 GB), `medium` (< 50 GB), `large` (< 100 GB), `over_limit` (above 100 GB). |
+| `table_size`                    | String        | yes         | Classification of current table size on GitLab.com. <sup>1</sup> The size includes indexes. For partitioned tables, the size is the size of the largest partition. Valid options are `unknown`, `small` (< 10 GB), `medium` (< 50 GB), `large` (< 100 GB), `over_limit` (above 100 GB). |
 | `organization_transfer_support` | String        | conditional | Required when `sharding_key` includes `organization_id`. See [Organization transfer support](#organization-transfer-support). |
 | `sharding_key`                  | Hash          | conditional | Identifies the column used to relate the table to an organization. Only set when the column has a `NOT NULL` constraint. See [Sharding key fields](#sharding-key-fields). |
 | `desired_sharding_key`          | Hash          | conditional | Identifies the intended sharding key column when it exists but doesn't have a `NOT NULL` constraint yet. See [Sharding key fields](#sharding-key-fields). |
 
-[^1] New tables are usually `small` by default as they contain no data. This attribute is updated automatically monthly.
+**Footnotes**:
+
+1. New tables are usually `small` by default as they contain no data. This attribute is updated automatically monthly.
 
 ### Process
 
