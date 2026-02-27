@@ -9,7 +9,7 @@ module Types
         terraform_module: 'Terraform Module'
       }.freeze
 
-      ::Packages::Package.package_types.keys.each do |package_type|
+      ::Packages::Package.package_types.each_key do |package_type|
         type_name = PACKAGE_TYPE_NAMES.fetch(package_type.to_sym, package_type.capitalize)
         value package_type.to_s.upcase,
           description: "Packages from the #{type_name} package manager",

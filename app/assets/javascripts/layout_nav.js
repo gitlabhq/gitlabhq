@@ -1,19 +1,16 @@
-import $ from 'jquery';
-
-function hideEndFade($scrollingTabs) {
-  $scrollingTabs.each(function scrollTabsLoop() {
-    const $this = $(this);
-    $this
-      .siblings('.fade-right')
-      .toggleClass('scrolling', Math.round($this.width()) < $this.prop('scrollWidth'));
+function hideEndFade(scrollingTabs) {
+  scrollingTabs.forEach((el) => {
+    el.parentNode
+      ?.querySelector('.fade-right')
+      ?.classList.toggle('scrolling', Math.round(el.offsetWidth) < el.scrollWidth);
   });
 }
 
 export function initScrollingTabs() {
-  const $scrollingTabs = $('.scrolling-tabs').not('.is-initialized');
-  $scrollingTabs.addClass('is-initialized');
+  const scrollingTabs = [...document.querySelectorAll('.scrolling-tabs:not(.is-initialized)')];
+  scrollingTabs.forEach((el) => el.classList.add('is-initialized'));
 
-  const el = $scrollingTabs.get(0);
+  const el = scrollingTabs[0];
   const parentElement = el?.parentNode;
   if (el && parentElement) {
     parentElement.querySelector('button.fade-left')?.addEventListener('click', () => {
@@ -24,34 +21,41 @@ export function initScrollingTabs() {
     });
   }
 
-  $(window)
-    .on('resize.nav', () => {
-      hideEndFade($scrollingTabs);
-    })
-    .trigger('resize.nav');
+  const resizeObserver = new ResizeObserver(() => {
+    hideEndFade(scrollingTabs);
+  });
+  scrollingTabs.forEach((scrollTab) => resizeObserver.observe(scrollTab));
+  hideEndFade(scrollingTabs);
 
-  $scrollingTabs.on('scroll', function tabsScrollEvent() {
-    const $this = $(this);
-    const currentPosition = $this.scrollLeft();
-    const maxPosition = $this.prop('scrollWidth') - $this.outerWidth();
+  scrollingTabs.forEach((scrollTab) => {
+    scrollTab.addEventListener('scroll', () => {
+      const currentPosition = scrollTab.scrollLeft;
+      const maxPosition = scrollTab.scrollWidth - scrollTab.offsetWidth;
 
-    $this.siblings('.fade-left').toggleClass('scrolling', currentPosition > 0);
-    $this.siblings('.fade-right').toggleClass('scrolling', currentPosition < maxPosition - 1);
+      scrollTab.parentNode
+        ?.querySelector('.fade-left')
+        ?.classList.toggle('scrolling', currentPosition > 0);
+      scrollTab.parentNode
+        ?.querySelector('.fade-right')
+        ?.classList.toggle('scrolling', currentPosition < maxPosition - 1);
+    });
   });
 
-  $scrollingTabs.each(function scrollTabsEachLoop() {
-    const $this = $(this);
-    const scrollingTabWidth = $this.width();
-    const $active = $this.find('.active');
-    const activeWidth = $active.width();
+  scrollingTabs.forEach((scrollTab) => {
+    const scrollingTabWidth = scrollTab.offsetWidth;
+    const activeEl = scrollTab.querySelector('.active');
 
-    if ($active.length) {
-      const offset = $active.offset().left + activeWidth;
+    if (activeEl) {
+      const activeWidth = activeEl.offsetWidth;
+      const offset =
+        activeEl.getBoundingClientRect().left -
+        scrollTab.getBoundingClientRect().left +
+        activeWidth;
 
       if (offset > scrollingTabWidth - 30) {
-        const scrollLeft = offset - scrollingTabWidth / 2 - activeWidth / 2;
+        const scrollLeftValue = offset - scrollingTabWidth / 2 - activeWidth / 2;
 
-        $this.scrollLeft(scrollLeft);
+        scrollTab.scrollTo({ left: scrollLeftValue });
       }
     }
   });

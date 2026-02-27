@@ -84,55 +84,68 @@ The following languages and package managers are supported by Libbehave:
 
 The previous files are analyzed for new dependencies only if the files have been modified in the source branch.
 
-## Configuration
+## Enable Libbehave
 
 Prerequisites:
 
+- The Developer, Maintainer, or Owner role for the project.
 - Pipeline is part of an active [merge request pipeline](../../../ci/pipelines/merge_request_pipelines.md) that has a defined source and target Git branch.
 - Project includes one of the [supported languages](#supported-languages-and-package-managers).
 - Project is adding new dependencies to the source or feature branch.
-- For merge request (MR) comments, ensure a Guest level [project access token](../../project/settings/project_access_tokens.md),
-  and the source branch is either a protected branch or the **Protect variable** CI/CD variable
-  [option is unchecked](../../../ci/variables/_index.md#for-a-project).
 
-Libbehave is exposed through [CI/CD components](../../../ci/components/_index.md). To enable it, configure your project's
-`.gitlab-ci.yml` file as follows:
+To enable Libbehave:
 
-```yaml
-include:
-  - component: $CI_SERVER_FQDN/security-products/experiments/libbehave/libbehave@v0.1.0
-    inputs:
-      stage: test
-```
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Code** > **Repository**.
+1. Select the `.gitlab-ci.yml` file.
+1. Select **Edit** > **Edit single file**.
+1. Add the Libbehave [CI/CD components](../../../ci/components/_index.md):
 
-The previous configuration enables the Libbehave CI component for the test stage. This will create a new job called `libbehave-experiment`.
+   ```yaml
+   include:
+     - component: $CI_SERVER_FQDN/security-products/experiments/libbehave/libbehave@v0.1.0
+       inputs:
+         stage: test
+   ```
 
-### Configuring MR comments
+1. Select **Commit changes**.
 
-To configure MR comments for Libbehave:
+This configuration creates a new job called `libbehave-experiment` in the test stage.
 
-1. Create a [project access token](../../project/settings/project_access_tokens.md) with the following attributes:
-   - Guest level access
-     - Enter name for the token, for example, `libbehave-bot`.
-     - Select the scope `api`.
+### Configure merge request comments
+
+To configure merge request comments for Libbehave, configure a project access token.
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+- Libbehave enabled for the project.
+
+To configure merge request comments:
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Settings** > **Access tokens**.
+1. Select **Add new token** and complete the fields:
+   - **Token name**: Enter a name, for example, `libbehave-bot`.
+   - **Role**: Select **Guest**.
+   - **Select scopes**: Select the **API** checkbox.
+1. Select [**Create project access token**](../../project/settings/project_access_tokens.md).
 
    Copy the project access token to your clipboard. It's required in the next step.
-1. Add the token as a [project CI/CD variable](../../../ci/variables/_index.md):
-   - Set **Visibility** to "Masked".
-   - Uncheck the "Protect variable" option under **Flags**, to allow access from non-protected branches.
-   - Set the key variable name to `BEHAVE_TOKEN`.
-   - Set the value to your newly created project access token.
-1. The CI/CD component automatically uses the `BEHAVE_TOKEN` so you do not need to specify it in the
-   component inputs.
+1. Select **Settings** > **CI/CD**.
+1. Expand **Variables**.
+1. Select **Add variable** and complete the fields:
+   - **Key**: Enter `BEHAVE_TOKEN`.
+   - **Value**: Paste the project access token.
+   - **Visibility**: Select **Masked**.
+   - **Flags**: Clear the **Protect variable** checkbox.
+1. Select **Add variable**.
 
-```yaml
-include:
-  - component: gitlab.com/security-products/experiments/libbehave/libbehave@v0.1.0
-    inputs:
-      stage: test
-```
+The CI/CD component automatically uses the `BEHAVE_TOKEN` so you do not need to specify it in the
+component inputs.
 
-With this configuration, Libbehave can create MR comments with the analysis results.
+> [!note]
+> Merge request comments appear only when the source branch is either a protected branch or when the **Protect variable** option is unchecked for the `BEHAVE_TOKEN` variable.
 
 ### Available CI/CD inputs and variables
 
@@ -140,14 +153,14 @@ You can use CI/CD variables to customize the [CI component](https://gitlab.com/s
 
 The following variables configure the behavior of how Libbehave runs.
 
-| CI/CD variable                        | CLI argument | Default | Description                                                          |
-|---------------------------------------|--------------|---------|----------------------------------------------------------------------|
-| `CI_MERGE_REQUEST_SOURCE_BRANCH_NAME` | `-source`    | `""`    | Source branch to diff against (for example, feature-branch)          |
-| `CI_MERGE_REQUEST_TARGET_BRANCH_NAME` | `-target`    | `""`    | Target branch to diff against (for example, main)                    |
-| `BEHAVE_TIMEOUT`                      | `-timeout`   | `"30m"` | Maximum time allowed to analyze and download packages (example: 30m) |
-| `BEHAVE_TOKEN`                        | `-token`     | `""`    | Optional. Access token (required to create an MR comment)            |
-| `CI_PROJECT_ID`                       | `-project`   | `""`    | Optional. Project ID to create MR note with results                  |
-| `CI_MERGE_REQUEST_IID`                | `-mrid`      | `""`    | Optional. Merge request ID to create MR note with results            |
+| CI/CD variable                        | CLI argument | Default | Description                                                            |
+|---------------------------------------|--------------|---------|------------------------------------------------------------------------|
+| `CI_MERGE_REQUEST_SOURCE_BRANCH_NAME` | `-source`    | `""`    | Source branch to diff against (for example, feature-branch)            |
+| `CI_MERGE_REQUEST_TARGET_BRANCH_NAME` | `-target`    | `""`    | Target branch to diff against (for example, main)                      |
+| `BEHAVE_TIMEOUT`                      | `-timeout`   | `"30m"` | Maximum time allowed to analyze and download packages (example: 30m)   |
+| `BEHAVE_TOKEN`                        | `-token`     | `""`    | Optional. Access token (required to create a merge request comment)    |
+| `CI_PROJECT_ID`                       | `-project`   | `""`    | Optional. Project ID to create a merge request note with results       |
+| `CI_MERGE_REQUEST_IID`                | `-mrid`      | `""`    | Optional. Merge request ID to create a merge request note with results |
 
 The following flags are available, but are untested and should be left at their default values:
 
@@ -216,7 +229,7 @@ Libbehave produces the following output:
 
 - **Job summary**: The summary of findings are output directly into the CI/CD output job console for
   a quick view of which features a dependency detected.
-- **MR comment summary**: The summary of findings are output as an MR comment note for easier
+- **MR comment summary**: The summary of findings are output as a merge request comment note for easier
   review. This requires an access token to be configured to give the job access to write to the MR
   note section.
 - **HTML artifact**: An HTML artifact that contains a searchable set of libraries and identified
@@ -261,11 +274,11 @@ The https://mvnrepository.com/artifact/org.jmockit/jmockit package was found to 
 
 ### MR comment summary
 
-The MR Comment Summary output requires an access token with Guest level access be created for the
+The **MR comment summary** output requires an access token with Guest level access be created for the
 project that the Libbehave component has been configured for. The access token should then be
 [configured for the project](../../../ci/variables/_index.md#for-a-project). Because feature branches
-are not protected by default, ensure the **Protect variable** setting is unchecked, otherwise the
-Libbehave job will not be able to read the access token's value.
+are not protected by default, ensure the **Protect variable** setting is cleared. Otherwise the
+Libbehave job cannot read the access token's value.
 
 ![Example MR Comment Summary output](img/libbehave_mr_comment_v17_4.png)
 
@@ -288,7 +301,7 @@ various package managers.
 If the Libbehave job is not run, ensure your project is configured to run
 [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md).
 
-### MR comment is not being added
+### Merge request comment is not being added
 
 This is usually due to the `BEHAVE_TOKEN` not being set. Ensure the access token has Guest level
 access and the **Protect variable** option is unchecked in the **Settings** > **CI/CD** variables

@@ -842,9 +842,11 @@ start the failover procedure.
 >   This is to ensure Redis Sentinel can take votes as part of a quorum. This does
 >   not apply when configuring Redis externally, such as a cloud provider service.
 > - Redis is primarily single threaded and doesn't significantly benefit from an
->   increase in CPU cores. For this size of architecture it's strongly recommended
->   having separate Cache and Persistent instances as specified to achieve optimum performance.
->   Refer to the [scaling documentation](_index.md#scaling-an-environment) for more information.
+>   increase in CPU cores. This architecture uses a single combined Redis cluster (3 nodes),
+>   but for optimum performance you can split Redis into separate Cache and Persistent
+>   instances (6 nodes total). This is strongly recommended if Redis CPU is
+>   becoming saturated. Refer to the [scaling documentation](_index.md#scaling-an-environment)
+>   for more information.
 
 Redis requires authentication if used with Sentinel. See
 [Redis Security](https://redis.io/docs/latest/operate/rc/security/) documentation for more
@@ -863,7 +865,7 @@ The requirements for a Redis setup are the following:
    Redis nodes.
 1. Protect the nodes from access from external networks (Internet), using options such as a firewall.
 
-In this section, you'll be guided through configuring two external Redis clusters
+In this section, you'll be guided through configuring an external Redis cluster
 to be used with GitLab. The following IPs will be used as an example:
 
 - `10.6.0.61`: Redis Primary

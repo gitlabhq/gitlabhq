@@ -568,13 +568,12 @@ Each reference architecture is tested against specific throughput targets based 
 
 The listed RPS targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads.
 
-<!-- Disable lists should be surrounded by blank lines rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
-<!-- markdownlint-disable MD032 -->
->>> [!note]
-- These RPS breakdowns represent test targets based on typical workload patterns. Your actual workload composition may vary. For guidance on assessing your specific RPS composition and when adjustments are needed, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
-- Network latency between components in test environments was observed at <5 ms but note this is not intended as a hard requirement.
->>>
-<!-- markdownlint-enable MD029 -->
+> [!note]
+>
+> - These RPS breakdowns represent test targets based on typical workload patterns. Your actual workload composition may
+>   vary. For guidance on assessing your specific RPS composition and when adjustments are needed, see
+>   [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
+> - Network latency between components in test environments was observed at <5 ms but note this is not intended as a hard requirement.
 
 ### Test coverage and results
 

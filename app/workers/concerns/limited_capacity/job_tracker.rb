@@ -4,7 +4,7 @@ module LimitedCapacity
   class JobTracker # rubocop:disable Scalability/IdempotentWorker
     include Gitlab::Utils::StrongMemoize
 
-    LUA_REGISTER_SCRIPT = <<~EOS
+    LUA_REGISTER_SCRIPT = <<~LUA
       local set_key, element, max_elements = KEYS[1], ARGV[1], ARGV[2]
 
       if redis.call("scard", set_key) < tonumber(max_elements) then
@@ -13,7 +13,7 @@ module LimitedCapacity
       end
 
       return false
-    EOS
+    LUA
 
     def initialize(namespace)
       @namespace = namespace

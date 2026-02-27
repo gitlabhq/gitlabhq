@@ -20,7 +20,7 @@ class TrendingProject < ApplicationRecord
 
       timestamp = connection.quote(MONTHS_TO_INCLUDE.months.ago)
 
-      connection.execute <<-EOF.strip_heredoc
+      connection.execute <<~SQL
         INSERT INTO #{table_name} (project_id)
         SELECT project_id
         FROM notes
@@ -31,7 +31,7 @@ class TrendingProject < ApplicationRecord
         GROUP BY project_id
         ORDER BY count(*) DESC
         LIMIT #{PROJECTS_LIMIT};
-      EOF
+      SQL
     end
   end
 end

@@ -281,8 +281,8 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
     it 'returns the correct refspecs' do
       is_expected.to contain_exactly(
-        "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}",
-        "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
+        pipeline.sha,
+        "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}"
       )
     end
 
@@ -291,8 +291,8 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
       it 'returns the correct refspecs' do
         is_expected.to contain_exactly(
-          "+refs/tags/#{build.ref}:refs/tags/#{build.ref}",
-          "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
+          pipeline.sha,
+          "+refs/tags/#{build.ref}:refs/tags/#{build.ref}"
         )
       end
 
@@ -303,9 +303,9 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
         it 'returns the correct refspecs' do
           is_expected.to contain_exactly(
+            pipeline.sha,
             '+refs/tags/*:refs/tags/*',
-            '+refs/heads/*:refs/remotes/origin/*',
-            "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
+            '+refs/heads/*:refs/remotes/origin/*'
           )
         end
       end
@@ -316,13 +316,8 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
       let(:pipeline) { merge_request.all_pipelines.first }
       let(:build) { create(:ci_build, ref: pipeline.ref, pipeline: pipeline) }
 
-      before do
-        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang
-      end
-
       it 'returns the correct refspecs' do
-        is_expected
-          .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
+        is_expected.to contain_exactly(pipeline.sha)
       end
 
       context 'when GIT_DEPTH is zero' do
@@ -332,7 +327,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
         it 'returns the correct refspecs' do
           is_expected.to contain_exactly(
-            "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+            pipeline.sha,
             '+refs/heads/*:refs/remotes/origin/*',
             '+refs/tags/*:refs/tags/*'
           )
@@ -344,7 +339,7 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
 
         it 'returns the correct refspecs' do
           is_expected.to contain_exactly(
-            "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+            pipeline.sha,
             "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}"
           )
         end
@@ -356,27 +351,92 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
       let(:build) { create(:ci_build, ref: workload_ref, tag: false) }
 
       it 'returns the correct refspecs' do
-        is_expected.to contain_exactly(
-          "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
-        )
+        is_expected.to contain_exactly(pipeline.sha)
       end
     end
 
-    context 'when persistent pipeline ref exists' do
-      let(:project) { create(:project, :repository) }
-      let(:sha) { project.repository.commit.sha }
-      let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
-      let(:build) { create(:ci_build, pipeline: pipeline) }
-
+    context 'when runner_refspec_use_sha_instead_of_persistent_ref is disabled' do
       before do
-        pipeline.persistent_ref.create # rubocop:disable Rails/SaveBang
+        stub_feature_flags(runner_refspec_use_sha_instead_of_persistent_ref: false)
       end
 
-      it 'exposes the persistent pipeline ref' do
+      it 'returns the correct refspecs' do
         is_expected.to contain_exactly(
-          "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
-          "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}"
+          "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}",
+          "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
         )
+      end
+
+      context 'when ref is tag' do
+        let(:build) { create(:ci_build, :tag) }
+
+        it 'returns the correct refspecs' do
+          is_expected.to contain_exactly(
+            "+refs/tags/#{build.ref}:refs/tags/#{build.ref}",
+            "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
+          )
+        end
+
+        context 'when GIT_DEPTH is zero' do
+          before do
+            create_or_replace_pipeline_variables(build.pipeline, { key: 'GIT_DEPTH', value: 0 })
+          end
+
+          it 'returns the correct refspecs' do
+            is_expected.to contain_exactly(
+              '+refs/tags/*:refs/tags/*',
+              '+refs/heads/*:refs/remotes/origin/*',
+              "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
+            )
+          end
+        end
+      end
+
+      context 'when pipeline is detached merge request pipeline' do
+        let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
+        let(:pipeline) { merge_request.all_pipelines.first }
+        let(:build) { create(:ci_build, ref: pipeline.ref, pipeline: pipeline) }
+
+        it 'returns the correct refspecs' do
+          is_expected
+            .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}")
+        end
+
+        context 'when GIT_DEPTH is zero' do
+          before do
+            create_or_replace_pipeline_variables(build.pipeline, { key: 'GIT_DEPTH', value: 0 })
+          end
+
+          it 'returns the correct refspecs' do
+            is_expected.to contain_exactly(
+              "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+              '+refs/heads/*:refs/remotes/origin/*',
+              '+refs/tags/*:refs/tags/*'
+            )
+          end
+        end
+
+        context 'when pipeline is legacy detached merge request pipeline' do
+          let(:merge_request) { create(:merge_request, :with_legacy_detached_merge_request_pipeline) }
+
+          it 'returns the correct refspecs' do
+            is_expected.to contain_exactly(
+              "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+              "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}"
+            )
+          end
+        end
+      end
+
+      context 'when pipeline is a workload pipeline' do
+        let_it_be(:workload_ref) { 'refs/workloads/abc123' }
+        let(:build) { create(:ci_build, ref: workload_ref, tag: false) }
+
+        it 'returns the correct refspecs' do
+          is_expected.to contain_exactly(
+            "+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}"
+          )
+        end
       end
     end
   end

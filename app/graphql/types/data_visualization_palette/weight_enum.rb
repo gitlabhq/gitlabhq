@@ -6,7 +6,7 @@ module Types
       graphql_name 'DataVisualizationWeightEnum'
       description 'Weight of the data visualization palette'
 
-      ::Enums::DataVisualizationPalette.weights.keys.each do |unit|
+      ::Enums::DataVisualizationPalette.weights.each_key do |unit|
         value "weight_#{unit}".upcase, value: unit, description: "#{unit.to_s.titleize} weight"
       end
     end

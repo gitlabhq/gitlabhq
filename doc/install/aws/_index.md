@@ -209,6 +209,7 @@ Instances deployed in our private subnets must connect to the internet for updat
 
 1. Go to the VPC dashboard and select **NAT Gateways** in the left menu bar.
 1. Select **Create NAT Gateway** and complete the following:
+   1. **Availability mode**: Select `Zonal`.
    1. **Subnet**: Select `gitlab-public-10.0.0.0` from the dropdown list.
    1. **Elastic IP Allocation ID**: Enter an existing Elastic IP or select **Allocate Elastic IP address** to allocate a new IP to your NAT gateway.
    1. Add tags if needed.
@@ -257,53 +258,284 @@ We also must create two private route tables so that instances in each private s
 
 ## Load Balancer
 
-We create a load balancer to evenly distribute inbound traffic on ports `80` and `443` across our GitLab application servers. Based on the [scaling policies](#create-an-auto-scaling-group) we create later, instances are added to or removed from our load balancer as needed. Additionally, the load balancer performs health checks on our instances. While there are [different ways](../../administration/load_balancer.md#ssl) to handle SSL/TLS in our environment, for this POC we terminate SSL in the load balancer without backend SSL.
+We create a load balancer to evenly distribute inbound traffic across our GitLab application servers. Based on the [scaling policies](#create-an-auto-scaling-group) we create later, instances are added to or removed from our load balancer as needed. Additionally, the load balancer performs health checks on our instances.
 
-On the EC2 dashboard, look for **Load Balancers** in the left navigation bar:
+AWS offers two approaches for this architecture:
 
-1. Select **Create Load Balancer**.
-1. Choose the **Network Load Balancer** and select **Create**.
-1. Set the Load Balancer name to `gitlab-loadbalancer`. Set the following additional options:
-   - Scheme: Select **Internet-facing**
-   - IP address type: Select **IPv4**
-   - VPC: Select the `gitlab-vpc` from the dropdown list.
-   - Mapping: Select both public subnets from the list so that the load balancer can route traffic to both availability zones.
-1. We add a security group for our load balancer to act as a firewall to control what traffic is allowed through. Under the Security Group section, select the **create a new security group**, give it a name
-   (we use `gitlab-loadbalancer-sec-group`) and description, and allow both HTTP and HTTPS traffic
-   from anywhere (`0.0.0.0/0, ::/0`). Also allow SSH traffic, select a custom source, and add a single trusted IP address, or an IP address range in CIDR notation. This allows users to perform Git actions over SSH.
-1. In the **Listeners and routing** section, set up listeners for port `22`, `80`, and `443` with the following target groups in mind.
+- **Network Load Balancer (NLB) only**: A simpler setup suitable for smaller deployments. The NLB handles all traffic (SSH on port 22, HTTP on port 80, and HTTPS on port 443) directly to the Rails nodes, with SSL/TLS termination at the NLB.
+- **Hybrid NLB->ALB approach**: A more scalable setup that separates concerns. The NLB handles TCP traffic (SSH on port 22), while an Application Load Balancer (ALB) handles HTTP/HTTPS traffic with SSL/TLS termination. This approach enables AWS WAF integration and better traffic management.
+
+Choose the approach that best fits your deployment.
+
+{{< tabs >}}
+
+{{< tab title="Network Load Balancer (NLB) Only" >}}
+
+```mermaid
+graph TB
+    Users["Users"]
+    NLB["Network Load Balancer<br/>(Port 22, 80, 443)"]
+    Rails1["Rails Node 1<br/>(Port 22, 80)"]
+    Rails2["Rails Node 2<br/>(Port 22, 80)"]
+    
+    Users -->|SSH| NLB
+    Users -->|HTTP| NLB
+    Users -->|HTTPS| NLB
+    NLB -->|Port 22| Rails1
+    NLB -->|Port 22| Rails2
+    NLB -->|Port 80, 443| Rails1
+    NLB -->|Port 80, 443| Rails2
+```
+
+This section describes the simpler NLB-only approach where a single Network Load Balancer handles all traffic types, routing SSH, HTTP, and HTTPS directly to Rails nodes.
+
+We need a security group for this architecture:
+
+1. **NLB Security Group** (`gitlab-nlb-sec-group`):
+   - Inbound: TCP port 22 from anywhere (or restrict to trusted IP ranges for SSH)
+   - Inbound: TCP port 80 from anywhere
+   - Inbound: TCP port 443 from anywhere
+   - Outbound: All traffic
+
+To create this security group:
+
+1. From the EC2 dashboard, select **Security Groups** from the left menu bar.
+1. Select **Create security group**.
+1. Give it a descriptive name and description, and select the `gitlab-vpc` from the **VPC** dropdown list.
+1. Add the inbound rules as specified above.
+1. When done, select **Create security group**.
+
+Create the target groups:
+
+1. On the EC2 dashboard, select **Target Groups** from the left menu bar.
+1. Select **Create target group** for the **SSH Target Group**:
+
+   | Setting | Value |
+   |---------|-------|
+   | Target type | Instances |
+   | Target group name | `gitlab-nlb-ssh-target` |
+   | Protocol | TCP |
+   | Port | 22 |
+   | VPC | `gitlab-vpc` |
+   | Health check protocol | TCP |
+
+   Select **Next** twice, then **Create target group**. You will register targets later.
+
+1. Select **Create target group** again for the **HTTP Target Group**:
+
+   | Setting | Value |
+   |---------|-------|
+   | Target type | Instances |
+   | Target group name | `gitlab-nlb-http-target` |
+   | Protocol | TCP |
+   | Port | 80 |
+   | VPC | `gitlab-vpc` |
+   | Health check protocol | HTTP |
+   | Health check path | `/-/readiness` |
+
+   > [!note]
+   > You must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-security-groups.html) to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health check endpoints](../../administration/monitoring/health_check.md).
+
+   Select **Next**, choose **Register Later**, then **Next** twice and **Create target group**.
+
+Create the network load balancer:
+
+1. On the EC2 dashboard, look for **Load Balancers** in the left navigation bar and select **Create Load Balancer**.
+1. Choose **Network Load Balancer** and select **Create**.
+1. Configure the load balancer with the following settings:
+
+   | Setting | Value |
+   |---------|-------|
+   | Load Balancer name | `gitlab-nlb` |
+   | Scheme | Internet-facing |
+   | IP address type | IPv4 |
+   | VPC | `gitlab-vpc` |
+   | Mapping | Select both public subnets |
+   | Security group | `gitlab-nlb-sec-group` |
+
+1. In the **Listeners and routing** section, configure:
 
    | Protocol | Port | Target group |
-   | ------ | ------ | ------ |
-   | TCP | 22 | `gitlab-loadbalancer-ssh-target` |
-   | TCP | 80 | `gitlab-loadbalancer-http-target` |
-   | TLS | 443 | `gitlab-loadbalancer-http-target` |
+   |----------|------|--------------|
+   | TCP | 22 | `gitlab-nlb-ssh-target` |
+   | TCP | 80 | `gitlab-nlb-http-target` |
+   | TLS | 443 | `gitlab-nlb-http-target` |
 
-   1. For the TLS listener on port `443`, under **Security Policy** settings:
-      1. **Policy name**: Pick a predefined security policy from the dropdown list. You can see a breakdown of [Predefined SSL Security Policies for Network Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-tls-listener.html#describe-ssl-policies) in the AWS documentation. Check the GitLab codebase for a list of [supported SSL ciphers and protocols](https://gitlab.com/gitlab-org/gitlab/-/blob/9ee7ad433269b37251e0dd5b5e00a0f00d8126b4/lib/support/nginx/gitlab-ssl#L97-99).
-      1. **Default SSL/TLS server certificate**: Select an SSL/TLS certificate from ACM or upload a certificate to IAM.
-
-1. For each listener we created, we need to create a target group and assign them based on the table earlier. We haven't created any EC2 instances yet so you don't need to register targets. The EC2 instances are created and assigned as part of the [auto scaling group setup](#create-an-auto-scaling-group) later on.
-   1. Select `Create target group`.on. Select **Instances** as the target type.
-   1. Select an appropriate `Target group name` for each listener:
-      - `gitlab-loadbalancer-http-target` - TCP Protocol for port 80
-      - `gitlab-loadbalancer-ssh-target` - TCP Protocol for port 22
-   1. Select **IPv4** as the IP address type.
-   1. Select `gitlab-vpc` from the VPC dropdown list.
-   1. For `gitlab-loadbalancer-http-target` Health checks, you should [use the Readiness check endpoint](../../administration/load_balancer.md#readiness-check). You must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-security-groups.html) to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health check endpoints](../../administration/monitoring/health_check.md)
-   1. For `gitlab-loadbalancer-ssh-target` Health checks, select **TCP**.
-      - Assign `gitlab-loadbalancer-http-target` to both port 80 and 443 listener.
-      - Assign `gitlab-loadbalancer-ssh-target` to port 22 listener.
-   1. Some attributes can only be configured after the target groups have already been created. Here are a couple of features you might configure based on your requirements.
-      - [Client IP preservation](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation) is enabled for the target groups by default. This allows the IP of the client connected in the Load Balancer to be preserved in the GitLab application. You can make enable/disable this based on your requirements.
-
-      - [Proxy Protocol](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#proxy-protocol) is disabled for the target groups by default. This allows the Load Balancer to send additional information in the proxy protocol headers. If you want to enable this, make sure that other environment components like internal load balancers, NGINX, etc. are configured as well. For this POC we only need to enable it in the [GitLab node later](#proxy-protocol).
+   For the TLS listener on port 443, under **Security Policy** settings:
+   - **Policy name**: Select a predefined security policy from the dropdown list. See [Predefined SSL Security Policies for Network Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-tls-listener.html#describe-ssl-policies) in the AWS documentation. Check the GitLab codebase for a list of [supported SSL ciphers and protocols](https://gitlab.com/gitlab-org/gitlab/-/blob/9ee7ad433269b37251e0dd5b5e00a0f00d8126b4/lib/support/nginx/gitlab-ssl#L97-99).
+   - **Default SSL/TLS server certificate**: Select an SSL/TLS certificate from ACM or upload a certificate to IAM.
 
 1. Select **Create load balancer**.
 
-After the Load Balancer is up and running, you can revisit your Security
-Groups to refine the access only through the NLB and any other requirements
-you might have.
+> [!note]
+> Targets for the `gitlab-nlb-ssh-target` and `gitlab-nlb-http-target` target groups are automatically registered when instances launch in the [auto scaling group](#create-an-auto-scaling-group) created later in this guide.
+
+{{< /tab >}}
+
+{{< tab title="Hybrid NLB->ALB Approach" >}}
+
+```mermaid
+graph TB
+    Users["Users"]
+    NLB["Network Load Balancer<br/>(Port 22, 443)"]
+    ALB["Application Load Balancer<br/>(Port 443)"]
+    Rails1["Rails Node 1<br/>(Port 22, 80)"]
+    Rails2["Rails Node 2<br/>(Port 22, 80)"]
+    
+    Users -->|SSH| NLB
+    Users -->|HTTPS| NLB
+    NLB -->|Port 22| Rails1
+    NLB -->|Port 22| Rails2
+    NLB -->|Port 443| ALB
+    ALB -->|Port 80| Rails1
+    ALB -->|Port 80| Rails2
+```
+
+This section describes a hybrid approach where a Network Load Balancer handles SSH traffic and an Application Load Balancer handles HTTP/HTTPS traffic. The NLB routes TCP port 22 (SSH) directly to Rails nodes and TCP port 443 (HTTPS) to the ALB, and the ALB terminates SSL/TLS and routes HTTP traffic to Rails nodes on port 80. This approach enables AWS WAF integration and better separation of concerns.
+
+We need three security groups for this architecture:
+
+1. **NLB Security Group** (`gitlab-nlb-sec-group`):
+   - Inbound: TCP port 22 from anywhere (or restrict to trusted IP ranges for SSH)
+   - Inbound: TCP port 443 from anywhere (or restrict to trusted IP ranges for HTTPS)
+   - Outbound: TCP port 22 to `gitlab-rails-sec-group`
+   - Outbound: TCP port 443 to `gitlab-alb-sec-group` 
+
+1. **ALB Security Group** (`gitlab-alb-sec-group`):
+   - Inbound: TCP port 443 from `gitlab-nlb-sec-group`
+   - Inbound: TCP port 80 from `gitlab-rails-sec-group`
+   - Outbound: TCP port 80 to `gitlab-rails-sec-group`
+
+1. **Rails Security Group** (`gitlab-rails-sec-group`):
+   - Inbound: TCP port 22 from `gitlab-nlb-sec-group`
+   - Inbound: TCP port 80 from `gitlab-alb-sec-group`
+
+To create these security groups:
+
+1. From the EC2 dashboard, select **Security Groups** from the left menu bar.
+1. Select **Create security group** for the **SSH Target Group**:
+1. Give each a descriptive name and description, and select the `gitlab-vpc` from the **VPC** dropdown list.
+1. Add the inbound rules as specified above. When selecting a source, choose **Security group** and select the appropriate security group from the dropdown.
+1. When done, select **Create security group**.
+
+Create the target groups:
+
+1. On the EC2 dashboard, select **Target Groups** from the left menu bar.
+1. Create the **NLB SSH Target Group** with the following settings:
+
+   | Setting | Value |
+   |---------|-------|
+   | Target type | Instances |
+   | Target group name | `gitlab-nlb-ssh-target` |
+   | Protocol | TCP |
+   | Port | 22 |
+   | VPC | `gitlab-vpc` |
+   | Health check protocol | TCP |
+
+   Select **Next** twice, then **Create target group**. You will register targets later.
+
+1. Select **Create target group** again for the **NLB to ALB Target Group**:
+
+   | Setting | Value |
+   |---------|-------|
+   | Target type | Application Load Balancer |
+   | Target group name | `gitlab-nlb-alb-target` |
+   | Protocol | TCP |
+   | Port | 443 |
+   | VPC | `gitlab-vpc` |
+   | Health check protocol | HTTPS |
+   | Health check path | `/-/readiness` |
+
+   Select **Next**, choose **Register Later** for the Application Load Balancer, then **Next** and **Create target group**.
+
+1. Select **Create target group** again for the **ALB HTTP Target Group**:
+
+   | Setting | Value |
+   |---------|-------|
+   | Target type | Instance |
+   | Target group name | `gitlab-alb-http-target` |
+   | Protocol | HTTP |
+   | Port | 80 |
+   | VPC | `gitlab-vpc` |
+   | Protocol version | HTTP1.1 |
+   | Health check protocol | HTTP |
+   | Health check path | `/-/readiness` |
+
+   > [!note]
+   > You must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-security-groups.html) to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health check endpoints](../../administration/monitoring/health_check.md).
+
+   Select **Next**, choose **Register Later**, then **Next** twice and **Create target group**.
+
+Create the application load balancer:
+
+1. On the EC2 dashboard, look for **Load Balancers** in the left navigation bar and select **Create Load Balancer**.
+1. Choose **Application Load Balancer** and select **Create**.
+1. Configure the load balancer with the following settings:
+
+   | Setting | Value |
+   |---------|-------|
+   | Load Balancer name | `gitlab-alb` |
+   | Scheme | Internet-facing |
+   | IP address type | IPv4 |
+   | VPC | `gitlab-vpc` |
+   | Mapping | Select both public subnets `gitlab-public-10.0.0.0` and `gitlab-public-10.0.2.0`|
+   | Security group | `gitlab-alb-sec-group` |
+
+1. In the **Listeners and routing** section, configure:
+
+   | Protocol | Port | Action | Target group |
+   |----------|------|--------|--------------|
+   | HTTPS | 443 | Forward to | `gitlab-alb-http-target` |
+
+   For the HTTPS listener, select your ACM certificate and choose an appropriate security policy (see [Predefined SSL Security Policies for Application Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html)).
+
+1. Select **Create load balancer**.
+
+Create the network load balancer:
+
+1. On the EC2 dashboard, look for **Load Balancers** in the left navigation bar and select **Create Load Balancer**.
+1. Choose **Network Load Balancer** and select **Create**.
+1. Configure the load balancer with the following settings:
+
+   | Setting | Value |
+   |---------|-------|
+   | Load Balancer name | `gitlab-nlb` |
+   | Scheme | Internet-facing |
+   | IP address type | IPv4 |
+   | VPC | `gitlab-vpc` |
+   | Mapping | Select both public subnets `gitlab-public-10.0.0.0` and `gitlab-public-10.0.2.0`|
+   | Security group | `gitlab-nlb-sec-group` |
+
+1. In the **Listeners and routing** section, configure:
+
+   | Protocol | Port | Target group |
+   |----------|------|--------------|
+   | TCP | 22 | `gitlab-nlb-ssh-target` |
+   | TCP | 443 | `gitlab-nlb-alb-target` |
+
+1. Select **Create load balancer**.
+
+Register the ALB as a target for the NLB:
+
+1. On the EC2 dashboard, select **Target Groups** from the left menu bar.
+1. Select the `gitlab-nlb-alb-target` target group.
+1. On the **Targets** tab, select **Register targets**.
+1. Select the `gitlab-alb` Application Load Balancer and select **Register pending targets**.
+1. Select **Save**.
+
+> [!note]
+> Targets for the `gitlab-nlb-ssh-target` and `gitlab-alb-http-target` target groups are automatically registered when instances launch in the [auto scaling group](#create-an-auto-scaling-group) created later in this guide.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+After the NLB load balancer is up and running, you can revisit your Security Groups to refine the access only through the NLB and any other requirements you might have.
+
+Some attributes can only be configured after the load balancer has been created. Here are a couple of features you might configure based on your requirements:
+
+- [Client IP preservation](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#client-ip-preservation) is enabled for the target groups by default. This allows the IP of the client connected in the Load Balancer to be preserved in the GitLab application. You can enable/disable this based on your requirements.
+- [Proxy Protocol](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-target-groups.html#proxy-protocol) is disabled for the target groups by default. This allows the Load Balancer to send additional information in the proxy protocol headers. If you want to enable this, make sure that other environment components like internal load balancers, NGINX, etc. are configured as well. For this POC we only need to enable it in the [GitLab node later](#proxy-protocol).
 
 ### Configure DNS for Load Balancer
 
@@ -334,7 +566,7 @@ create the actual RDS instance.
 
 ### RDS Security Group
 
-We need a security group for our database that allows inbound traffic from the instances we deploy in our `gitlab-loadbalancer-sec-group` later on:
+We need a security group for our database that allows inbound traffic from the instances we deploy in our `gitlab-nlb-sec-group` later on:
 
 1. From the EC2 dashboard, select **Security Groups** from the left menu bar.
 1. Select **Create security group**.
@@ -342,7 +574,9 @@ We need a security group for our database that allows inbound traffic from the i
 1. In the **Inbound rules** section, select **Add rule** and set the following:
    1. **Type**: search for and select the **PostgreSQL** rule.
    1. **Source type**: set as "Custom".
-   1. **Source**: select the `gitlab-loadbalancer-sec-group` we created earlier.
+   1. **Source**: select the appropriate security group based on your load balancer approach:
+      - **NLB only**: `gitlab-nlb-sec-group`
+      - **Hybrid NLB->ALB**: `gitlab-rails-sec-group`
 1. When done, select **Create security group**.
 
 ### RDS Subnet Group
@@ -350,7 +584,7 @@ We need a security group for our database that allows inbound traffic from the i
 1. Go to the RDS dashboard and select **Subnet Groups** from the left menu.
 1. Select **Create DB Subnet Group**.
 1. Under **Subnet group details**, enter a name (we use `gitlab-rds-group`), a description, and choose the `gitlab-vpc` from the VPC dropdown list.
-1. From the **Availability Zones** dropdown list, select the Availability Zones that include the subnets you've configured. In our case, we add `eu-west-2a` and `eu-west-2b`.
+1. From the **Availability Zones** dropdown list, select the Availability Zones that include the subnets you've configured. In our case, we add `us-west-2a` and `us-west-2b`.
 1. From the **Subnets** dropdown list, select the two private subnets (`10.0.1.0/24` and `10.0.3.0/24`) as we defined them in the [subnets section](#subnets).
 1. Select **Create** when ready.
 
@@ -405,7 +639,9 @@ persistence and is used to store session data, temporary cache information, and 
 1. Select **Security Groups** from the left menu.
 1. Select **Create security group** and fill in the details. Give it a name (we use `gitlab-redis-sec-group`),
    add a description, and choose the VPC we created earlier (`gitlab-vpc`).
-1. In the **Inbound rules** section, select **Add rule** and add a **Custom TCP** rule, set port `6379`, and set the "Custom" source as the `gitlab-loadbalancer-sec-group` we created earlier.
+1. In the **Inbound rules** section, select **Add rule** and add a **Custom TCP** rule, set port `6379`, and set the "Custom" source based on your load balancer approach:
+   - **NLB only**: `gitlab-nlb-sec-group`
+   - **Hybrid NLB->ALB**: `gitlab-rails-sec-group`
 1. When done, select **Create security group**.
 
 ### Redis Subnet Group
@@ -530,7 +766,11 @@ From the EC2 dashboard:
    1. **VPC**: Select `gitlab-vpc`, the VPC we created earlier.
    1. **Subnet**: Select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.
    1. **Auto-assign Public IP**: Select `Disable`.
-   1. **Firewall**: Chose **Select existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
+   1. **Firewall**: Choose **Select existing security group** and select the appropriate security group based on your load balancer approach:
+      - **NLB only**: `gitlab-nlb-sec-group` and `bastion-sec-group`
+      - **Hybrid NLB->ALB**: `gitlab-rails-sec-group` and `bastion-sec-group`
+
+      The `bastion-sec-group` allows SSH access from the bastion hosts for management and configuration tasks using [SSH Agent Forwarding](#use-ssh-agent-forwarding).
 1. For storage, the root volume is 8 GiB by default and should be enough given that we do not store any data there.
 1. Review all your settings and, if you're happy, select **Launch Instance**.
 
@@ -556,26 +796,27 @@ Because we're adding our SSL certificate at the load balancer, we do not need th
 
 #### Install the required extensions for PostgreSQL
 
-From your GitLab instance, connect to the RDS instance to verify access and to install the required `pg_trgm` and `btree_gist` extensions.
+> [!note]
+> If the `gitlab` user has the [`rds_superuser`](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.html#Appendix.PostgreSQL.CommonDBATasks.Roles) role, GitLab can install the required extensions automatically. In that case, the manual steps below are not needed.
+
+From your GitLab instance, connect to the RDS instance to verify access and to install the [required PostgreSQL extensions](../postgresql_extensions.md).
 
 To find the host or endpoint, go to **Amazon RDS** > **Databases** and select the database you created earlier. Look for the endpoint under the **Connectivity & security** tab.
 
-Do not to include the colon and port number:
+For `-h`, use only the RDS endpoint hostname - omit the trailing colon and port number:
 
 ```shell
 sudo /opt/gitlab/embedded/bin/psql -U gitlab -h <rds-endpoint> -d gitlabhq_production
 ```
 
-At the `psql` prompt create the extension and then quit the session:
+Then install each [required extension](../postgresql_extensions.md) using `CREATE EXTENSION`:
 
-```shell
-psql (10.9)
-Type "help" for help.
-
-gitlab=# CREATE EXTENSION pg_trgm;
-gitlab=# CREATE EXTENSION btree_gist;
-gitlab=# \q
+```sql
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+CREATE EXTENSION IF NOT EXISTS ...;
 ```
+
+Verify the installed extensions with `\dx`.
 
 #### Configure GitLab to connect to PostgreSQL and Redis
 
@@ -609,6 +850,9 @@ gitlab=# \q
    # Fill in the connection details
    gitlab_rails['redis_host'] = "<redis-endpoint>"
    gitlab_rails['redis_port'] = 6379
+
+   # Adjust based on your Redis setting
+   gitlab_rails['redis_ssl'] = true
    ```
 
 1. Finally, reconfigure GitLab for the changes to take effect:
@@ -648,7 +892,9 @@ Let's create an EC2 instance where we install Gitaly:
    1. Under **Subnet**, select the private subnet we created earlier (`gitlab-private-10.0.1.0`).
    1. Check that under **Auto-assign Public IP** you have **Disable** selected.
    1. Under **Firewall** select **Create security group**, enter a **Security group name** (we use `gitlab-gitaly-sec-group`), and add a description.
-      1. Create a **Custom TCP** rule and add port `8075` to the **Port Range**. For the **Source**, select the `gitlab-loadbalancer-sec-group`.
+      1. Create a **Custom TCP** rule and add port `8075` to the **Port Range**. For the **Source**, select the appropriate security group based on your load balancer approach:
+         - **NLB only**: `gitlab-nlb-sec-group`
+         - **Hybrid NLB->ALB**: `gitlab-rails-sec-group`
       1. Also add an inbound rule for SSH from the `bastion-sec-group` so that we can connect using [SSH Agent Forwarding](#use-ssh-agent-forwarding) from the Bastion hosts.
 1. Increase the Root volume size to `20 GiB` and change the **Volume Type** to `Provisioned IOPS SSD (io1)`. (The volume size is an arbitrary value. Create a volume big enough for your repository storage requirements.)
    1. For **IOPS** set `1000` (20 GiB x 50 IOPS). You can provision up to 50 IOPS per GiB. If you select a larger volume, increase the IOPS accordingly. Workloads where many small files are written in a serialized manner, like `git`, requires performant storage, hence the choice of `Provisioned IOPS SSD (io1)`.
@@ -814,9 +1060,11 @@ From the EC2 dashboard:
 1. In the **Key pair** section, select **Create new key pair**.
    1. Give the key pair a name (we use `gitlab-launch-template`) and save the `gitlab-launch-template.pem` file for later use.
 1. The root volume is 8 GiB by default and should be enough given that we do not store any data there. Select **Configure Security Group**.
-1. Check **Select and existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
-1. In the **Network settings** section:
-   1. **Firewall**: Choose **Select existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
+1. Check **Select existing security group** and select the appropriate security group based on your load balancer approach:
+   - **NLB only**: `gitlab-nlb-sec-group` and `bastion-sec-group`
+   - **Hybrid NLB->ALB**: `gitlab-rails-sec-group` and `bastion-sec-group`
+
+   The `bastion-sec-group` allows SSH access from the bastion hosts for management and configuration tasks using [SSH Agent Forwarding](#use-ssh-agent-forwarding).
 1. In the **Advanced details** section:
    1. **IAM instance profile**: Select the `GitLabS3Access` role we [created earlier](#create-an-iam-role).
 1. Review all your settings and, if you're happy, select **Create launch template**.
@@ -834,12 +1082,15 @@ From the EC2 dashboard:
    1. Select **Next**.
 1. In the Load Balancing settings section:
    1. Select **Attach to an existing load balancer**.
-   1. Select the target groups we created earlier in the **Existing load balancer target groups** dropdown list.
+   1. In the **Existing load balancer target groups** dropdown list, select the appropriate target groups based on your load balancer approach:
+      - **NLB only**: Select `gitlab-nlb-ssh-target` and `gitlab-nlb-http-target`
+      - **Hybrid NLB->ALB**: Select `gitlab-nlb-ssh-target` and `gitlab-alb-http-target`
+      The auto scaling group will automatically register all launched instances to these target groups.
    1. For **Health Check Type**, check the **Turn on Elastic Load Balancing health checks** option. We leave our **Health Check Grace Period** as the default `300` seconds.
    1. Select **Next**.
 1. For **Group size**, set **Desired capacity** to `2`.
 1. In the Scaling settings section:
-   1. Select **No scaling policies**. The policies are configured later one.
+   1. Select **No scaling policies**. The policies are configured later on.
    1. **Min desired capacity**: Set to `2`.
    1. **Max desired capacity**: Set to `4`.
    1. Select **Next**.

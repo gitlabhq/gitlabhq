@@ -75908,6 +75908,9 @@ msgstr ""
 msgid "VirtualRegistry|Add upstream"
 msgstr ""
 
+msgid "VirtualRegistry|An error occurred while fetching virtual registries. Please try again."
+msgstr ""
+
 msgid "VirtualRegistry|Are you sure you want to delete %{name}?"
 msgstr ""
 
@@ -75980,9 +75983,6 @@ msgid "VirtualRegistry|Container virtual registry not available"
 msgstr ""
 
 msgid "VirtualRegistry|Copy virtual registry ID: %{id}"
-msgstr ""
-
-msgid "VirtualRegistry|Create Maven registry"
 msgstr ""
 
 msgid "VirtualRegistry|Create new upstream"
@@ -76108,7 +76108,7 @@ msgstr ""
 msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows using virtual registries."
 msgstr ""
 
-msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows. %{learn_more_link}"
+msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "VirtualRegistry|Maven"

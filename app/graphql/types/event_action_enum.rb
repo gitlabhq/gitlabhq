@@ -5,7 +5,7 @@ module Types
     graphql_name 'EventAction'
     description 'Event action'
 
-    ::Event.actions.keys.each do |target_type|
+    ::Event.actions.each_key do |target_type|
       value target_type.upcase, value: target_type, description: "#{target_type.titleize} action"
     end
   end

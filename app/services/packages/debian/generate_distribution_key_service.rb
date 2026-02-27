@@ -59,18 +59,18 @@ module Packages
       def pinentry_script_content
         escaped_passphrase = Shellwords.escape(passphrase)
 
-        <<~EOF
-        #!/bin/sh
+        <<~SHELL
+          #!/bin/sh
 
-        echo OK Pleased to meet you
+          echo OK Pleased to meet you
 
-        while read -r cmd; do
-          case "$cmd" in
-            GETPIN) echo D #{escaped_passphrase}; echo OK;;
-            *) echo OK;;
-          esac
-        done
-        EOF
+          while read -r cmd; do
+            case "$cmd" in
+              GETPIN) echo D #{escaped_passphrase}; echo OK;;
+              *) echo OK;;
+            esac
+          done
+        SHELL
       end
 
       def using_pinentry

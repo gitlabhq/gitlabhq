@@ -1,0 +1,10 @@
+---
+name: runner_refspec_use_sha_instead_of_persistent_ref
+description: 'Use pipeline SHA directly in runner refspecs instead of the persistent ref'
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/591477
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224953
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591509
+milestone: '18.10'
+group: group::pipeline execution
+type: beta
+default_enabled: false

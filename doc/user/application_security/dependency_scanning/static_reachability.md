@@ -50,15 +50,16 @@ packages. This metadata is maintained with weekly updates.
 
 Share feedback in [issue 535498](https://gitlab.com/gitlab-org/gitlab/-/issues/535498).
 
-## Enable static reachability analysis
+## Turn on static reachability analysis
 
 Prerequisites:
 
-- Ensure the project uses
+- The Developer, Maintainer, or Owner role for the project.
+- The project uses
   [supported languages and package managers](#supported-languages-and-package-managers).
 - [Dependency scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning)
-  version 0.39.0 or later (earlier versions may support specific languages - see `History` above)
-- Turn on [dependency scanning by using SBOM](dependency_scanning_sbom/_index.md#turn-on-dependency-scanning).
+  version 0.39.0 or later (earlier versions may support specific languages - see `History` above).
+- [Dependency scanning by using SBOM](dependency_scanning_sbom/_index.md#turn-on-dependency-scanning) turned on for the project.
   [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) analyzers are not
   supported.
 - Language-specific prerequisites:
@@ -80,21 +81,25 @@ Prerequisites:
 > [!warning]
 > Static reachability analysis increases job duration.
 
-To enable static reachability analysis in your project:
+To turn on static reachability analysis in your project:
 
-- On the top bar, select **Search or go to** and find your project.
-- Edit the `.gitlab-ci.yml` file, and add the following.
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Code** > **Repository**.
+1. Select the `.gitlab-ci.yml` file.
+1. Select **Edit** > **Edit single file**.
+1. Add the following configuration:
 
-```yaml
-include:
-- template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+   ```yaml
+   include:
+   - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
 
-variables:
-  DS_STATIC_REACHABILITY_ENABLED: true
-```
+   variables:
+     DS_STATIC_REACHABILITY_ENABLED: true
+   ```
 
-At this point, static reachability analysis is enabled in your pipeline. When dependency scanning
-runs and outputs an SBOM, the results are supplemented by static reachability analysis.
+1. Select **Commit changes**.
+
+When dependency scanning runs and outputs an SBOM, the results are supplemented by static reachability analysis.
 
 ## Reachability values
 

@@ -86,6 +86,12 @@ License scanning is supported for the following languages and package managers:
       <td>No</td>
     </tr>
     <tr>
+      <td>Dart</td>
+      <td><a href="https://pub.dev/">pub</a></td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
       <td>Go<sup>1</sup></td>
       <td><a href="https://go.dev/">Go</a></td>
       <td>Yes</td>
@@ -200,6 +206,7 @@ license names.
 | npm             | <https://deps.dev/>                                              |
 | NuGet           | <https://api.nuget.org/v3/catalog0/index.json>                   |
 | Packagist       | <https://packagist.org/packages/list.json>                       |
+| pub             | <https://pub.dev/>                                               |
 | PyPI            | <https://warehouse.pypa.io/api-reference/bigquery-datasets.html> |
 | RubyGems        | <https://rubygems.org/versions>                                  |
 

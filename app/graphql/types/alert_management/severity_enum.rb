@@ -6,7 +6,7 @@ module Types
       graphql_name 'AlertManagementSeverity'
       description 'Alert severity values'
 
-      ::AlertManagement::Alert.severities.keys.each do |severity|
+      ::AlertManagement::Alert.severities.each_key do |severity|
         value severity.upcase, value: severity, description: "#{severity.titleize} severity"
       end
     end

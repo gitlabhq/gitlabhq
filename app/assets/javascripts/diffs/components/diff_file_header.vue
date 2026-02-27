@@ -470,6 +470,7 @@ export default {
           right
           toggle-class="btn-icon js-diff-more-actions"
           data-testid="options-dropdown-button"
+          :text-sr-only="$options.i18n.optionsDropdownTitle"
         >
           <gl-disclosure-dropdown-item ref="viewButton" :item="viewFileDropdownItem" />
           <template v-if="showEditButton">
