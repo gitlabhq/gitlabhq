@@ -50334,6 +50334,7 @@ Returns [`String`](#string).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="userpreferences-duodefaultnamespace"></a>`duoDefaultNamespace` | [`Namespace`](#namespace) | Default namespace context for Duo features when namespace cannot be inferred. |
 | <a id="userpreferences-extensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus!`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
 | <a id="userpreferences-issuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
 | <a id="userpreferences-mergerequestdashboardlisttype"></a>`mergeRequestDashboardListType` | [`MergeRequestsDashboardListType`](#mergerequestsdashboardlisttype) | Merge request dashboard list rendering type. |

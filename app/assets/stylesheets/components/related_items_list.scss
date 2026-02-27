@@ -22,8 +22,8 @@ $item-remove-button-space: 42px;
 
   &:hover,
   &:focus-within {
-    background-color: var(--gl-background-color-section);
-    border-color: var(--gl-border-color-section);
+    background-color: var(--gl-background-color-subtle);
+    border-color: var(--gl-border-color-subtle);
   }
 
   .issue-token-state-icon,

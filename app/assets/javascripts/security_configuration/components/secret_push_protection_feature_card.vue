@@ -219,6 +219,7 @@ export default {
           icon="settings"
           category="secondary"
           :href="secretDetectionConfigurationPath"
+          :aria-label="$options.i18n.settingsButtonTooltip"
         />
       </div>
     </template>

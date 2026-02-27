@@ -2,7 +2,7 @@
 // to avoid a 1px flickering between
 // expanded/collapsed mode
 // and with/without actions
-$crud-header-min-height: px-to-rem(49px);
+$crud-header-min-height: px-to-rem(40px);
 
 .crud-header {
   min-height: $crud-header-min-height;
@@ -11,11 +11,14 @@ $crud-header-min-height: px-to-rem(49px);
 .crud-count .gl-badge {
   @apply -gl-ml-2;
   @apply -gl-my-1;
+  @apply gl-px-2;
+  @apply gl-text-subtle;
+  @apply gl-bg-transparent;
 }
 
 .crud-body:has(.gl-table) {
-  margin-block: -1px;
-  margin-inline: 0;
+  margin: 0;
+  padding: 0;
 
   // Table adjustments
   @mixin new-card-table-adjustments {
@@ -119,9 +122,10 @@ $crud-header-min-height: px-to-rem(49px);
 
 .crud-body:has(.content-list) {
   margin: 0;
+  padding: 0;
 
   .content-list > li {
-    @apply gl-mx-3;
+    @apply gl-mx-2;
     @apply gl-px-3;
   }
 }

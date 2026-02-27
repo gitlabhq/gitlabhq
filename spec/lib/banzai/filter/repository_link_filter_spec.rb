@@ -205,6 +205,14 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :markdown
         .to eq "/#{project_path}/-/blob/#{ref}/missing-file"
     end
 
+    it 'rebuilds relative URL for a missing file with ../ components' do
+      relative_link = link('../../README.MD')
+      doc = filter(relative_link, requested_path: '.gitlab/merge_request_templates/Default.md')
+
+      expect(doc.at_css('a')['href'])
+        .to eq "/#{project_path}/-/blob/#{ref}/README.MD"
+    end
+
     it 'rebuilds relative URL for a file in the repo with leading ./' do
       doc = filter(link('./doc/api/README.md'))
       expect(doc.at_css('a')['href'])

@@ -326,7 +326,7 @@ export default {
     </dashboard-header>
     <gl-skeleton-loader v-if="loading" :lines="5" />
     <statistics-list v-else :counts="formattedCounts" />
-    <h4>{{ __('Pipelines charts') }}</h4>
+    <h3 class="gl-heading-3">{{ __('Pipelines charts') }}</h3>
     <ci-cd-analytics-charts
       :charts="areaCharts"
       :chart-options="$options.areaChartOptions"
@@ -346,7 +346,7 @@ export default {
         </div>
       </template>
     </ci-cd-analytics-charts>
-    <h4 class="gl-mt-6">{{ __('Pipeline durations for the last 30 commits') }}</h4>
+    <h3 class="gl-heading-3 gl-mt-6">{{ __('Pipeline durations for the last 30 commits') }}</h3>
     <gl-column-chart
       :height="$options.chartContainerHeight"
       :option="chartOptions"

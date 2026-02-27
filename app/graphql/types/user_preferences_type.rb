@@ -84,3 +84,5 @@ module Types
     end
   end
 end
+
+Types::UserPreferencesType.prepend_mod

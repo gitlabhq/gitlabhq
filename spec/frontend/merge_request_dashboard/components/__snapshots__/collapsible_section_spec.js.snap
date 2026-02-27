@@ -6,34 +6,34 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
   storagekey="mr_list_list"
 >
   <section
-    class="crud gl-bg-subtle gl-border gl-border-section gl-mt-5 gl-rounded-lg"
+    class="contrast-more:gl-border-strong crud gl-bg-strong gl-border gl-border-transparent gl-mt-3 gl-pb-2 gl-px-2 gl-rounded-xl"
     id="reference-0"
   >
     <header
-      class="@md/panel:gl-flex-nowrap crud-header gl-bg-section gl-border-b gl-border-section gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-p-4 gl-pl-5 gl-pr-10 gl-relative gl-rounded-t-lg"
+      class="@md/panel:gl-flex-nowrap crud-header gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-pl-3 gl-pr-2 gl-pr-9 gl-py-0 gl-relative gl-rounded-t-lg"
     >
       <div
-        class="gl-flex gl-flex-col gl-grow gl-self-center"
+        class="gl-flex gl-flex-col gl-grow gl-py-3 gl-self-center"
       >
         <h2
-          class="gl-font-bold gl-gap-3 gl-inline-flex gl-items-center gl-leading-normal gl-m-0 gl-text-base"
+          class="gl-font-bold gl-gap-3 gl-inline-flex gl-items-center gl-leading-normal gl-mx-0 gl-my-2 gl-text-base gl-text-heading"
           data-testid="crud-title"
         >
           Approved
-          <gl-badge-stub
-            data-testid="merge-request-list-count"
-            iconsize="md"
-            size="sm"
-            tag="span"
-            target="_self"
-            variant="neutral"
+          <span
+            class="crud-count gl-font-normal gl-gap-2 gl-inline-flex gl-items-center gl-self-start gl-text-sm gl-text-subtle"
+            data-testid="crud-count"
           >
-            3
-          </gl-badge-stub>
+            <span
+              data-testid="merge-request-list-count"
+            >
+              3
+            </span>
+          </span>
         </h2>
       </div>
       <div
-        class="gl-flex gl-gap-3 gl-items-center"
+        class="gl-flex gl-gap-3 gl-items-start gl-my-3"
         data-testid="crud-actions"
       >
         <gl-button-stub
@@ -49,7 +49,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
           variant="link"
         />
         <div
-          class="gl-absolute gl-border-l gl-border-l-section gl-h-6 gl-pl-3 gl-right-5 gl-top-4"
+          class="-gl-translate-y-1/2 gl-absolute gl-border-l gl-border-strong gl-flex gl-h-5 gl-items-center gl-pl-3 gl-right-3 gl-top-1/2"
         >
           <gl-button-stub
             aria-controls=""
@@ -57,7 +57,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
             aria-label="Collapse"
             buttontextclasses=""
             category="tertiary"
-            class="-gl-mr-2 btn-icon gl-self-start"
+            class="-gl-mr-2 btn-icon"
             data-testid="crud-collapse-toggle"
             icon=""
             size="small"
@@ -74,17 +74,15 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
         </div>
       </div>
     </header>
-    <div>
+    <div
+      class="!gl-mx-0 contrast-more:gl-border crud-body forced-colors:gl-border gl-bg-default gl-grow gl-mb-0 gl-p-3 gl-rounded-lg"
+      data-testid="crud-body"
+    >
+      content
       <div
-        class="!gl-mx-0 crud-body gl-mb-0 gl-mx-5 gl-my-4 gl-rounded-b-lg"
-        data-testid="crud-body"
-      >
-        content
-        <div
-          class="crud-pagination gl-border-t gl-border-t-section gl-flex gl-justify-center gl-p-5"
-          data-testid="crud-pagination"
-        />
-      </div>
+        class="crud-pagination gl-border-t gl-border-t-section gl-flex gl-justify-center gl-p-5"
+        data-testid="crud-pagination"
+      />
     </div>
   </section>
 </local-storage-sync-stub>

@@ -97,6 +97,7 @@ describe('SecretPushProtectionFeatureCard component', () => {
       expect(button.exists()).toBe(true);
       expect(button.props('icon')).toBe('settings');
       expect(button.attributes('href')).toBe(secretDetectionConfigurationPath);
+      expect(button.attributes('aria-label')).toBe('Configure Secret Detection');
     });
 
     it('hides the settings button when not licensed', () => {

@@ -248,7 +248,7 @@ export default {
     <h3
       v-if="heading"
       data-testid="work-items-list-heading"
-      class="gl-mb-0 gl-mt-0 gl-block gl-rounded-base gl-bg-strong gl-px-3 gl-py-2 gl-text-sm gl-font-semibold gl-text-subtle"
+      class="gl-mb-0 gl-mt-0 gl-block gl-rounded-base gl-bg-strong gl-px-3 gl-py-2 gl-text-sm gl-font-semibold gl-text-heading"
     >
       {{ heading }}
     </h3>

@@ -52,6 +52,7 @@ The table below shows which customization options are available for each analyze
 
 > [!note]
 > The scope of GitLab support is limited to the Semgrep analyzer integration and default rulesets. If you replace or add to the default rules, you must manage compatibility issues that might occur as a result.
+> For more details, see the [Semgrep analyzer compatibility documentation](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/COMPATIBILITY.md).
 
 ### Disable default rules
 

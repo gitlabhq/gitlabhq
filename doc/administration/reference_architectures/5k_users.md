@@ -397,14 +397,6 @@ frontend internal-pgbouncer-tcp-in
 
     default_backend pgbouncer
 
-frontend internal-praefect-tcp-in
-    bind *:2305
-    mode tcp
-    option tcplog
-    option clitcpka
-
-    default_backend praefect
-
 backend pgbouncer
     mode tcp
     option tcp-check
@@ -412,6 +404,16 @@ backend pgbouncer
     server pgbouncer1 10.6.0.31:6432 check
     server pgbouncer2 10.6.0.32:6432 check
     server pgbouncer3 10.6.0.33:6432 check
+
+# Praefect load balancing (skip both sections below if using DNS service discovery for Praefect)
+# For more information, see https://docs.gitlab.com/ee/administration/gitaly/praefect/configure.html#service-discovery
+frontend internal-praefect-tcp-in
+    bind *:2305
+    mode tcp
+    option tcplog
+    option clitcpka
+
+    default_backend praefect
 
 backend praefect
     mode tcp
@@ -1050,29 +1052,44 @@ The recommended cluster setup includes the following components:
 - 3 Praefect nodes: Router and transaction manager for Gitaly Cluster (Praefect).
 - 1 Praefect PostgreSQL node: Database server for Praefect. A third-party solution
   is required for Praefect database connections to be made highly available.
-- [Service discovery](../gitaly/praefect/configure.md#configure-service-discovery):
-  Even distribution of traffic to Praefect nodes. For more information, see
-  [service discovery vs a TCP load balancer](#service-discovery-vs-tcp-load-balancer).
+- Load balancing: Even distribution of traffic to Praefect nodes. You can use a
+  [TCP load balancer](../gitaly/praefect/configure.md#load-balancer) (recommended for most setups)
+  or [service discovery DNS](../gitaly/praefect/configure.md#service-discovery) for advanced configurations.
+  For more information, see [load balancing for Praefect](#load-balancing-for-praefect).
 
 This section details how to configure the recommended standard setup in order.
 For more advanced setups refer to the
 [standalone Gitaly Cluster (Praefect) documentation](../gitaly/praefect/_index.md).
 
-### Service discovery vs TCP load balancer
+### Load balancing for Praefect
 
-A TCP load balancer is **not recommended** because TCP load balancers balance
-at the connection level, not the request level. With gRPP HTTP/2 connections,
-multiple requests are multiplexed over long-lived connections. The
-load balancer's routing decision, made once when the connection is established,
-applies to all subsequent requests on that connection, which can lead:
+You can distribute traffic to Praefect nodes using either a TCP load balancer or service discovery DNS.
+A TCP load balancer is recommended for most setups as it works in all deployment scenarios.
 
-- To imbalanced traffic if some connections serve more requests than others.
-- To a situation where if a Praefect node goes down, clients
-  re-establish connections with the other Praefect nodes. Even if the downed node
-  comes back up, it won't receive as much traffic as the others.
+#### TCP load balancer
 
-Service discovery enables gRPC request-level round-robin balancing across
-Praefect nodes, ensuring even traffic distribution.
+A traditional TCP load balancer (such as HAProxy or AWS ELB) distributes traffic across Praefect nodes. This approach:
+
+- Works in all deployment scenarios (Omnibus, Cloud Native Hybrid)
+- Provides straightforward setup and operational management
+- Supports both TLS and non-TLS configurations
+- May experience uneven traffic distribution as connections can bunch on certain nodes
+- May take longer to rebalance traffic after a node restarts
+
+For configuration instructions, see [Load balancer](../gitaly/praefect/configure.md#load-balancer).
+
+#### Service discovery DNS
+
+Service discovery uses DNS to retrieve Praefect node addresses, allowing clients to distribute 
+requests evenly across all available nodes. This approach:
+
+- Distributes traffic evenly across all Praefect nodes
+- Automatically rebalances traffic when nodes are added or restarted
+- Requires DNS infrastructure (such as Consul, CoreDNS, or similar)
+- Requires GitLab 18.9 or later when using TLS
+- Only available for Linux package (Omnibus) installations
+
+For configuration instructions, see [Service discovery](../gitaly/praefect/configure.md#service-discovery).
 
 ### Configure Praefect PostgreSQL
 
@@ -1262,8 +1279,9 @@ To configure the Praefect nodes, on each one:
 
    <!--
    Updates to example must be made at:
-   - https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect/_index.md
-   - all reference architecture pages
+
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect/configure.md#praefect>
+   - All reference architecture pages
    -->
 
    ```ruby
@@ -1416,9 +1434,10 @@ On each node:
 
    <!--
    Updates to example must be made at:
-   - https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
-   - https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
-   - all reference architecture pages
+
+   - <https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-linux-package-installation>
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/configure_gitaly.md#configure-gitaly-server>
+   - All reference architecture pages
    -->
 
    ```ruby
@@ -1666,14 +1685,21 @@ To configure the Sidekiq nodes, on each one:
 
    # Gitaly Cluster
    ## gitlab_rails['repositories_storages'] gets configured for the Praefect virtual storage
-   ## Address is the Internal Load Balancer for Praefect
-   ## Token is the praefect_external_token
+   ## TCP load balancer (recommended for most setups):
    gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => "tcp://10.6.0.40:2305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
    }
+
+   ## Alternatively, use service discovery DNS (requires DNS infrastructure):
+   # gitlab_rails['repositories_storages'] = {
+   #   "default" => {
+   #     "gitaly_address" => "dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305",
+   #     "gitaly_token" => '<praefect_external_token>'
+   #   }
+   # }
 
    # PostgreSQL
    gitlab_rails['db_host'] = '10.6.0.40' # internal load balancer IP
@@ -1801,14 +1827,21 @@ On each node perform the following:
    external_url 'https://gitlab.example.com'
 
    # gitlab_rails['repositories_storages'] gets configured for the Praefect virtual storage
-   # Address is the Internal Load Balancer for Praefect
-   # Token is the praefect_external_token
+   # TCP load balancer (recommended for most setups):
    gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => "tcp://10.6.0.40:2305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
    }
+
+   # Alternatively, use service discovery DNS (requires DNS infrastructure):
+   # gitlab_rails['repositories_storages'] = {
+   #   "default" => {
+   #     "gitaly_address" => "dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305",
+   #     "gitaly_token" => '<praefect_external_token>'
+   #   }
+   # }
 
    ## Disable components that will not be on the GitLab application server
    roles(['application_role'])
@@ -1917,12 +1950,21 @@ On each node perform the following:
    `gitlab_rails['repositories_storages']` entry is configured with `tls` instead of `tcp`:
 
    ```ruby
+   # TCP load balancer with TLS (recommended for most setups):
    gitlab_rails['repositories_storages'] = {
      "default" => {
-       "gitaly_address" => "tls://10.6.0.40:2305", # internal load balancer IP
+       "gitaly_address" => "tls://10.6.0.40:3305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
    }
+
+   # Alternatively, use service discovery DNS with TLS (requires DNS infrastructure and GitLab 18.9+):
+   # gitlab_rails['repositories_storages'] = {
+   #   "default" => {
+   #     "gitaly_address" => "dns+tls://PRAEFECT_SERVICE_DISCOVERY_ADDRESS:3305",
+   #     "gitaly_token" => '<praefect_external_token>'
+   #   }
+   # }
    ```
 
    1. Copy the cert into `/etc/gitlab/trusted-certs`:

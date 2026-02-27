@@ -313,6 +313,53 @@ specific to container scanning. You can also use any of the [predefined CI/CD va
    the availability of a fixed package for a vulnerability, using `CS_IGNORE_STATUSES` can lead to
    false positive or false negative filtering of findings when this setting is enabled.
 
+#### Configure Trivy directly with native environment variables
+
+In addition to the GitLab-specific `CS_*` variables listed above, you can configure Trivy directly
+by setting any of its [native environment variables](https://trivy.dev/docs/v0.69/guide/configuration/#environment-variables)
+in your `container_scanning` job. The GitLab container scanning analyzer passes all environment
+variables through to Trivy automatically.
+
+For example, to manually specify the OS distribution for a container image where Trivy cannot
+auto-detect it (such as a customized base image):
+
+```yaml
+include:
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    GIT_STRATEGY: fetch
+    TRIVY_DISTRO: "alma/10"
+```
+
+> [!note]
+> The `--distro` flag used by `TRIVY_DISTRO` is [experimental in Trivy](https://trivy.dev/docs/v0.69/guide/references/configuration/cli/trivy_image/).
+> Results may vary depending on the Trivy version and the distribution specified.
+
+##### Variables managed by the GitLab wrapper
+
+The following `TRIVY_*` variables are set internally by the GitLab container scanning analyzer.
+They are controlled by the corresponding GitLab CI/CD variables and cannot be overridden directly:
+
+| Trivy variable      | GitLab CI/CD variable    |
+|---------------------|--------------------------|
+| `TRIVY_CACHE_DIR`   | (internal, not exposed)  |
+| `TRIVY_USERNAME`    | `CS_REGISTRY_USER`       |
+| `TRIVY_PASSWORD`    | `CS_REGISTRY_PASSWORD`   |
+| `TRIVY_DEBUG`       | `SECURE_LOG_LEVEL`       |
+| `TRIVY_INSECURE`    | `CS_DOCKER_INSECURE`     |
+| `TRIVY_NON_SSL`     | `CS_REGISTRY_INSECURE`   |
+
+##### Known issue with `TRIVY_DB_REPOSITORY`
+
+Setting `TRIVY_DB_REPOSITORY` to point Trivy to a custom vulnerability database has no effect.
+The GitLab container scanning analyzer bundles the vulnerability database inside the analyzer
+image and passes `--skip-db-update` to Trivy at runtime, so Trivy never downloads a database
+regardless of this variable. To use a custom database location, see
+[Use a Trivy Java database mirror](#use-a-trivy-java-database-mirror) for the Java database,
+or [offline environment](#offline-environment) for general offline setups.
+
 ### Overriding the container scanning template
 
 If you want to override the job definition (for example, to change properties like `variables`), you

@@ -132,7 +132,7 @@ module Banzai
         path = cleaned_file_path(uri)
         nested_path = relative_file_path(uri)
 
-        path_exists?(nested_path) ? nested_path : path
+        nested_path.presence || path
       end
 
       def cleaned_file_path(uri)
@@ -191,10 +191,6 @@ module Banzai
         end
 
         parts.push(path).join('/')
-      end
-
-      def path_exists?(path)
-        path.present? && @uri_types[path] != :unknown
       end
 
       def uri_type(path)

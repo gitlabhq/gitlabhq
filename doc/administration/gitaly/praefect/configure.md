@@ -525,8 +525,9 @@ On the Praefect node:
 
 <!--
 Updates to example must be made at:
-- https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect.md
-- all reference architecture pages
+
+- <https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/configure_gitaly.md#configure-gitaly-server>
+- All reference architecture pages
 -->
 
    ```ruby

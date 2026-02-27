@@ -2,7 +2,6 @@
 import {
   GlButton,
   GlIcon,
-  GlBadge,
   GlSkeletonLoader,
   GlLink,
   GlTooltipDirective,
@@ -14,7 +13,6 @@ export default {
   components: {
     GlButton,
     GlIcon,
-    GlBadge,
     GlSkeletonLoader,
     GlLink,
     GlAnimatedChevronLgDownUpIcon,
@@ -233,22 +231,21 @@ export default {
     :is="containerTag"
     :id="anchorId"
     ref="crudComponent"
-    class="crud gl-border gl-rounded-lg gl-border-section gl-bg-subtle"
-    :class="{ 'gl-mt-5': isCollapsible }"
+    class="crud gl-border gl-rounded-xl gl-border-transparent gl-bg-strong gl-px-2 contrast-more:gl-border-strong"
+    :class="{ 'gl-mt-3': isCollapsible, 'gl-pb-2': isContentVisible }"
   >
     <header
-      class="crud-header gl-border-b gl-relative gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-rounded-t-lg gl-border-section gl-bg-section gl-p-4 gl-pl-5 @md/panel:gl-flex-nowrap"
+      class="crud-header gl-relative gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-rounded-t-lg gl-py-0 gl-pl-3 gl-pr-2 @md/panel:gl-flex-nowrap"
       :class="[
         headerClass,
         {
-          'gl-rounded-lg gl-border-b-transparent': !isContentVisible,
-          'gl-relative gl-pr-10': isCollapsible,
+          'gl-relative gl-pr-9': isCollapsible,
         },
       ]"
     >
-      <div class="gl-flex gl-grow gl-flex-col gl-self-center">
+      <div class="gl-flex gl-grow gl-flex-col gl-self-center gl-py-3">
         <h2
-          class="gl-m-0 gl-inline-flex gl-items-center gl-gap-3 gl-text-base gl-font-bold gl-leading-normal"
+          class="gl-mx-0 gl-my-2 gl-inline-flex gl-items-center gl-gap-3 gl-text-base gl-font-bold gl-leading-normal gl-text-heading"
           :class="titleClass"
           data-testid="crud-title"
         >
@@ -264,20 +261,19 @@ export default {
 
           <span
             v-if="displayedCount || $scopedSlots.count"
-            class="crud-count gl-inline-flex gl-items-center gl-gap-2 gl-self-start gl-text-sm gl-text-subtle"
+            class="crud-count gl-inline-flex gl-items-center gl-gap-2 gl-self-start gl-text-sm gl-font-normal gl-text-subtle"
             data-testid="crud-count"
           >
             <template v-if="displayedCount">
               <gl-icon v-if="icon" :name="icon" variant="subtle" data-testid="crud-icon" />
-              <template v-if="icon">{{ displayedCount }}</template>
-              <gl-badge v-else class="gl-self-baseline">{{ displayedCount }}</gl-badge>
+              {{ displayedCount }}
             </template>
             <slot v-if="$scopedSlots.count" name="count"></slot>
           </span>
         </h2>
         <p
           v-if="description || $scopedSlots.description"
-          class="!gl-mb-0 !gl-mt-2 !gl-text-sm !gl-leading-normal !gl-text-subtle"
+          class="!gl-mb-0 !gl-text-sm !gl-leading-normal !gl-text-subtle"
           data-testid="crud-description"
         >
           <slot name="description">
@@ -285,7 +281,7 @@ export default {
           </slot>
         </p>
       </div>
-      <div class="gl-flex gl-items-center gl-gap-3" data-testid="crud-actions">
+      <div class="gl-my-3 gl-flex gl-items-start gl-gap-3" data-testid="crud-actions">
         <slot name="actions" :show-form="showForm" :is-form-visible="isFormVisible"></slot>
         <gl-button
           v-if="toggleText && !isFormUsedAndVisible"
@@ -297,7 +293,7 @@ export default {
         >
         <div
           v-if="isCollapsible"
-          class="gl-border-l gl-absolute gl-right-5 gl-top-4 gl-h-6 gl-border-l-section gl-pl-3"
+          class="gl-border-l gl-absolute gl-right-3 gl-top-1/2 gl-flex gl-h-5 -gl-translate-y-1/2 gl-items-center gl-border-strong gl-pl-3"
         >
           <gl-button
             v-gl-tooltip
@@ -307,7 +303,7 @@ export default {
             :aria-label="toggleLabel"
             :aria-expanded="ariaExpandedAttr"
             :aria-controls="anchorId"
-            class="btn-icon -gl-mr-2 gl-self-start"
+            class="btn-icon -gl-mr-2"
             data-testid="crud-collapse-toggle"
             @click="toggleCollapse"
           >
@@ -319,16 +315,17 @@ export default {
 
     <div
       v-if="isFormUsedAndVisible"
-      class="gl-border-b gl-border-section gl-bg-subtle gl-p-5 gl-pt-4"
+      class="gl-mx-4 gl-mb-4 gl-rounded-lg gl-bg-default gl-p-4 gl-shadow-sm"
       data-testid="crud-form"
     >
       <slot name="form" :hide-form="hideForm"></slot>
     </div>
 
-    <div v-if="isContentVisible || keepAliveCollapsedContent" v-show="isContentVisible">
+    <template v-if="isContentVisible || keepAliveCollapsedContent">
       <div
-        class="crud-body gl-mx-5 gl-my-4"
-        :class="[bodyClass, { 'gl-rounded-b-lg': !$scopedSlots.footer }]"
+        v-show="isContentVisible"
+        class="crud-body gl-grow gl-rounded-lg gl-bg-default gl-p-3 contrast-more:gl-border forced-colors:gl-border"
+        :class="[bodyClass, { 'gl-px-3 gl-pt-3': isLoading }]"
         data-testid="crud-body"
       >
         <gl-skeleton-loader v-if="isLoading" :width="400" :lines="3" data-testid="crud-loading" />
@@ -348,13 +345,14 @@ export default {
       </div>
 
       <footer
+        v-show="isContentVisible"
         v-if="$scopedSlots.footer"
-        class="gl-border-t gl-rounded-b-lg gl-border-section gl-bg-section gl-px-5 gl-py-4"
+        class="gl-rounded-b-lg gl-px-3 gl-pb-2 gl-pt-3"
         :class="footerClass"
         data-testid="crud-footer"
       >
         <slot name="footer"></slot>
       </footer>
-    </div>
+    </template>
   </component>
 </template>
