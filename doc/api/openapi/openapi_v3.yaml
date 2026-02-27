@@ -6250,6 +6250,7 @@ paths:
           - push_events
           - releases_events
           - resource_access_token_events
+          - resource_deploy_token_events
           - tag_push_events
           - wiki_page_events
           - vulnerability_events
@@ -29415,7 +29416,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_0c45bff82c7b"
+              "$ref": "#/components/schemas/RequestBody_6895d958fb0c"
   "/api/v4/projects/{id}/hooks/{hook_id}":
     get:
       operationId: getApiV4ProjectsIdHooksHookId
@@ -29486,7 +29487,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_8afdcf34a0ac"
+              "$ref": "#/components/schemas/RequestBody_2af95486733a"
     delete:
       operationId: deleteApiV4ProjectsIdHooksHookId
       summary: Delete a project hook
@@ -29605,6 +29606,7 @@ paths:
           - push_events
           - releases_events
           - resource_access_token_events
+          - resource_deploy_token_events
           - tag_push_events
           - wiki_page_events
           - vulnerability_events
@@ -73374,6 +73376,8 @@ components:
           type: boolean
         resource_access_token_events:
           type: boolean
+        resource_deploy_token_events:
+          type: boolean
         vulnerability_events:
           type: boolean
     APIEntitiesImpersonationToken:
@@ -88705,7 +88709,7 @@ components:
       - access_key_id
       - secret_access_key
       - path
-    RequestBody_0c45bff82c7b:
+    RequestBody_6895d958fb0c:
       type: object
       properties:
         url:
@@ -88766,6 +88770,9 @@ components:
         resource_access_token_events:
           type: boolean
           description: Trigger hook on project access token expiry events
+        resource_deploy_token_events:
+          type: boolean
+          description: Trigger hook on deploy token expiry events
         enable_ssl_verification:
           type: boolean
           description: Do SSL verification when triggering the hook
@@ -88826,7 +88833,7 @@ components:
             - value
       required:
       - url
-    RequestBody_8afdcf34a0ac:
+    RequestBody_2af95486733a:
       type: object
       properties:
         url:
@@ -88886,6 +88893,9 @@ components:
         resource_access_token_events:
           type: boolean
           description: Trigger hook on project access token expiry events
+        resource_deploy_token_events:
+          type: boolean
+          description: Trigger hook on deploy token expiry events
         enable_ssl_verification:
           type: boolean
           description: Do SSL verification when triggering the hook

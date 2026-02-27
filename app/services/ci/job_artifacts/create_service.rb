@@ -25,18 +25,13 @@ module Ci
         result = validate_requirements(artifact_type: artifact_type, filesize: filesize)
         return result unless result[:status] == :success
 
-        authorize_params = {
+        headers = JobArtifactUploader.workhorse_authorize(
           has_length: false,
           maximum_size: max_size(artifact_type),
           use_final_store_path: true,
-          final_store_path_config: { root_hash: project.id }
-        }
-
-        if Feature.enabled?(:skip_unused_job_artifact_hash_calculation, project)
-          authorize_params[:upload_hash_functions] = ARTIFACT_HASH_FUNCTIONS
-        end
-
-        headers = JobArtifactUploader.workhorse_authorize(**authorize_params)
+          final_store_path_config: { root_hash: project.id },
+          upload_hash_functions: ARTIFACT_HASH_FUNCTIONS
+        )
 
         if lsif?(artifact_type) || scip?(artifact_type)
           headers[:ProcessLsif] = true

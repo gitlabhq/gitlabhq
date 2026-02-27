@@ -7631,6 +7631,30 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
       end
     end
+
+    context 'when resource deploy token hooks for expiry notification' do
+      let_it_be_with_reload(:project) { create(:project) }
+      let!(:hook) { create(:project_hook, project: project, resource_deploy_token_events: true) }
+      let!(:hook_scope) { :resource_deploy_token_hooks }
+
+      context 'when interval is seven days' do
+        let(:data) { { interval: :seven_days } }
+
+        it_behaves_like 'webhook is added to execution list'
+      end
+
+      context 'when interval is thirty days' do
+        let(:data) { { interval: :thirty_days } }
+
+        it_behaves_like 'webhook is added to execution list'
+      end
+
+      context 'when interval is sixty days' do
+        let(:data) { { interval: :sixty_days } }
+
+        it_behaves_like 'webhook is added to execution list'
+      end
+    end
   end
 
   describe '#execute_integrations' do

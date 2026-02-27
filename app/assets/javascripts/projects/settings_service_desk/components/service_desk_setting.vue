@@ -434,6 +434,7 @@ export default {
         <gl-button
           variant="confirm"
           class="gl-mt-5"
+          :aria-label="__('Save changes for Service Desk')"
           data-testid="save_service_desk_settings_button"
           :disabled="isTemplateSaving || !isIssueTrackerEnabled"
           @click="onSaveTemplate"

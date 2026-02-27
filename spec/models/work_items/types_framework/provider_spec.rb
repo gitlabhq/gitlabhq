@@ -398,56 +398,6 @@ RSpec.describe WorkItems::TypesFramework::Provider, feature_category: :team_plan
     end
   end
 
-  describe '#by_ids_with_widget_definition_preload' do
-    let(:issue_type) { build(:work_item_system_defined_type, :issue) }
-    let(:task_type) { build(:work_item_system_defined_type, :task) }
-
-    it 'returns work item types without preloading' do
-      ids = [issue_type.id, task_type.id]
-
-      result = provider.by_ids_with_widget_definition_preload(ids)
-
-      expect(result).to match_array([issue_type, task_type])
-    end
-
-    it 'does not calls with_widget_definition_preload' do
-      ids = [issue_type.id]
-      relation = WorkItems::TypesFramework::SystemDefined::Type.where(id: ids)
-
-      allow(WorkItems::TypesFramework::SystemDefined::Type).to receive(:where).with(id: ids).and_return(relation)
-      expect(relation).not_to receive(:with_widget_definition_preload).and_call_original
-
-      provider.by_ids_with_widget_definition_preload(ids)
-    end
-
-    context 'when work_item_system_defined_type is disabled' do
-      let(:issue_type) { create(:work_item_type, :issue) }
-      let(:task_type) { create(:work_item_type, :task) }
-
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it 'returns work item types with widget definitions preloaded' do
-        ids = [issue_type.id, task_type.id]
-
-        result = provider.by_ids_with_widget_definition_preload(ids)
-
-        expect(result).to match_array([issue_type, task_type])
-      end
-
-      it 'calls with_widget_definition_preload on the relation' do
-        ids = [issue_type.id]
-        relation = WorkItems::Type.where(id: ids)
-
-        allow(WorkItems::Type).to receive(:where).with(id: ids).and_return(relation)
-        expect(relation).to receive(:with_widget_definition_preload).and_call_original
-
-        provider.by_ids_with_widget_definition_preload(ids)
-      end
-    end
-  end
-
   describe '#base_types_by_ids' do
     let_it_be(:incident_type) { create(:work_item_type, :incident) }
     let_it_be(:another_issue_type) { create(:work_item_type, :issue) }

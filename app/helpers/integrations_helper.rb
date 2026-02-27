@@ -209,6 +209,7 @@ module IntegrationsHelper
       milestone_events: s_('Webhooks|Milestone events'),
       repository_update_events: _('Repository update events'),
       resource_access_token_events: s_('Webhooks|Project or group access token events'),
+      resource_deploy_token_events: s_('Webhooks|Project deploy token events'),
       subgroup_events: s_('Webhooks|Subgroup events'),
       tag_push_events: s_('Webhooks|Tag push events'),
       wiki_page_events: s_('Webhooks|Wiki page events'),

@@ -117,6 +117,69 @@ RSpec.describe Integration, feature_category: :integrations do
       end
     end
 
+    context 'when event_filters is set' do
+      let(:event_filters) do
+        {
+          actions: {
+            merge_request: %w[open close],
+            issue: %w[update]
+          },
+          users: {
+            global: { user_ids: [1, 2], mode: 'include' },
+            issue: { user_ids: [3], mode: 'exclude' }
+          }
+        }
+      end
+
+      before do
+        integration.event_filters = event_filters
+      end
+
+      it { is_expected.to be_valid }
+
+      context 'with invalid schema' do
+        context 'when action names are not recognized' do
+          before do
+            event_filters[:actions][:bad_action] = %w[open close]
+          end
+
+          it { is_expected.not_to be_valid }
+        end
+
+        context 'when action values are not strings' do
+          before do
+            event_filters[:actions][:merge_request] = [1, 2]
+          end
+
+          it { is_expected.not_to be_valid }
+        end
+
+        context 'when users objects do not have both user_ids and mode properties' do
+          before do
+            event_filters[:users][:global] = { user_ids: [1, 2] }
+          end
+
+          it { is_expected.not_to be_valid }
+        end
+
+        context 'when users object mode is not an allowed enum value' do
+          before do
+            event_filters[:users][:global][:mode] = 'bad_value'
+          end
+
+          it { is_expected.not_to be_valid }
+        end
+
+        context 'when users object user_ids values are not integers' do
+          before do
+            event_filters[:users][:global][:user_ids] = [1, '2']
+          end
+
+          it { is_expected.not_to be_valid }
+        end
+      end
+    end
+
     context 'when encrypted_properties is over the limit but unchanged' do
       before do
         allow(described_class).to receive(:encrypted_properties_max_size).and_return(10.bytes)

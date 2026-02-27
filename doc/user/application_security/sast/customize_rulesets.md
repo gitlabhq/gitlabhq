@@ -32,10 +32,9 @@ Ruleset
 : A collection of rules and their configuration, defined in the `sast-ruleset.toml` file.
 
 Passthrough
-
 : A passthrough is a configuration source that pulls ruleset customizations from a file, Git
-repository, URL, or inline configuration. You can combine multiple passthroughs into a chain, where
-each one can overwrite or append to the previous configuration.
+  repository, URL, or inline configuration. You can combine multiple passthroughs into a chain, where
+  each one can overwrite or append to the previous configuration.
 
 ## Rule customization options
 

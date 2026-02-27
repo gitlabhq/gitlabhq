@@ -30,15 +30,15 @@ For information about configuring security scanners, see [Security configuration
 Key terminology for understanding security scan results:
 
 Finding
-: - A finding is a potential vulnerability identified in a development branch. A finding becomes a
-    vulnerability when the branch is merged into the default branch.
-: - Findings expire, either when the related CI/CD job artifact expires, or 90 days after the
-    pipeline is created, even if the related job artifacts are locked.
+: A finding is a potential vulnerability identified in a development branch. A finding becomes a
+  vulnerability when the branch is merged into the default branch.
+: Findings expire, either when the related CI/CD job artifact expires, or 90 days after the
+  pipeline is created, even if the related job artifacts are locked.
 
 Vulnerability
-: - A vulnerability is a software security weakness identified in the default branch.
-: - Vulnerability records persist until they are [archived](../vulnerability_archival/_index.md),
-    even if the vulnerability is no longer detected in the default branch.
+: A vulnerability is a software security weakness identified in the default branch.
+: Vulnerability records persist until they are [archived](../vulnerability_archival/_index.md),
+  even if the vulnerability is no longer detected in the default branch.
 
 Vulnerabilities identified in the default branch are listed in the [vulnerability report](../vulnerability_report/_index.md).
 

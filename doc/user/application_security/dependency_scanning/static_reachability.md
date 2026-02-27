@@ -103,7 +103,7 @@ dependencies marked as **Yes**, because these are confirmed to be used in your c
 
 Yes
 : The package linked to this vulnerability is confirmed reachable in code. When a direct dependency
-is marked as reachable, its transitive dependencies are also marked as reachable.
+  is marked as reachable, its transitive dependencies are also marked as reachable.
 
 Not Found
 : Static reachability analysis ran successfully but did not detect usage of the vulnerable package.

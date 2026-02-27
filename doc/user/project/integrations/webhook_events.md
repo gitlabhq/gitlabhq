@@ -2725,6 +2725,66 @@ Payload example for group:
 }
 ```
 
+## Project and group deploy token events
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196804) in GitLab 18.4 [with a flag](../../../administration/feature_flags/_index.md) named `project_deploy_token_expiring_notifications`. Disabled by default.
+
+{{< /history >}}
+
+Deploy token expiry events trigger before a [deploy token](../../../security/tokens/_index.md) expires.
+These events trigger:
+
+- 7 days before the token expires.
+- 30 days before the token expires.
+- 60 days before the token expires.
+
+The available values for `event_name` in the payload are:
+
+- `expiring_deploy_token`
+
+Request header:
+
+```plaintext
+X-Gitlab-Event: Resource Deploy Token Hook
+```
+
+Payload example for project:
+
+```json
+{
+  "object_kind": "deploy_token",
+  "project": {
+    "id": 2,
+    "name": "Gitlab Test",
+    "description": "Voluptates sit architecto quos distinctio.",
+    "web_url": "https://gitlab.example.com/gitlab-org/gitlab-test",
+    "avatar_url": null,
+    "git_ssh_url": "ssh://git@gitlab.example.com:2222/gitlab-org/gitlab-test.git",
+    "git_http_url": "https://gitlab.example.com/gitlab-org/gitlab-test.git",
+    "namespace": "Gitlab Org",
+    "visibility_level": 10,
+    "path_with_namespace": "gitlab-org/gitlab-test",
+    "default_branch": "master",
+    "ci_config_path": null,
+    "homepage": "https://gitlab.example.com/gitlab-org/gitlab-test",
+    "url": "ssh://git@gitlab.example.com:2222/gitlab-org/gitlab-test.git",
+    "ssh_url": "ssh://git@gitlab.example.com:2222/gitlab-org/gitlab-test.git",
+    "http_url": "https://gitlab.example.com/gitlab-org/gitlab-test.git"
+  },
+  "object_attributes": {
+    "id": 79,
+    "name": "seven-days-6days",
+    "expires_at": "2025-08-03 07:57:25 UTC",
+    "created_at": "2025-07-28 07:57:25 UTC",
+    "revoked": false,
+    "deploy_token_type": "project_type"
+  },
+  "event_name": "expiring_deploy_token"
+}
+```
+
 ## Vulnerability events
 
 {{< history >}}

@@ -75,17 +75,15 @@ module DeployTokens
     end
 
     def notify_users_of_deploy_token(deploy_token, interval)
-      all_succeeded = true
-
-      # every deploy token is mapped to one project, but a project can have multiple deploy tokens
       project = deploy_token.projects.first
-      return false unless project
-      return false unless Feature.enabled?(:project_deploy_token_expiring_notifications, project)
+      return false unless project && Feature.enabled?(:project_deploy_token_expiring_notifications, project)
 
       users = project.owners_and_maintainers
+
       return false if users.empty?
 
       interval_days = DeployToken.notification_interval(interval)
+      all_succeeded = true
 
       users.each do |user|
         with_context(user: user) do
@@ -98,17 +96,49 @@ module DeployTokens
         end
       rescue StandardError => e
         all_succeeded = false
-        Gitlab::ErrorTracking.track_exception(
-          e,
-          message: 'Failed to send notification about expiring project deploy tokens',
-          exception_message: e.message,
-          deploy_token_id: deploy_token.id,
-          project_id: project.id,
-          user_id: user.id
-        )
+        log_error(e, 'Failed to send notification about expiring project deploy tokens',
+          deploy_token, project, user_id: user.id)
+      end
+
+      # Execute webhooks
+      begin
+        execute_resource_deploy_token_web_hooks(deploy_token, interval)
+      rescue StandardError => e
+        all_succeeded = false
+        log_error(e, 'Failed to execute webhooks for expiring project deploy token',
+          deploy_token, project)
       end
 
       all_succeeded
+    end
+
+    def execute_resource_deploy_token_web_hooks(deploy_token, interval)
+      resources = deploy_token.project_type? ? deploy_token.projects : deploy_token.groups
+
+      resources.each do |resource|
+        next unless resource.has_active_hooks?(:resource_deploy_token_hooks)
+
+        hook_data = Gitlab::DataBuilder::ResourceDeployTokenPayload.build(
+          deploy_token,
+          :expiring,
+          resource,
+          { interval: interval }
+        )
+
+        resource.execute_hooks(hook_data, :resource_deploy_token_hooks)
+      end
+    end
+
+    def log_error(exception, message, deploy_token, project, additional_data = {})
+      Gitlab::ErrorTracking.track_exception(
+        exception,
+        {
+          message: message,
+          exception_message: exception.message,
+          deploy_token_id: deploy_token.id,
+          project_id: project.id
+        }.merge(additional_data)
+      )
     end
 
     def notification_service

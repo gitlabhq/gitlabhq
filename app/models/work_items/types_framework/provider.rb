@@ -121,19 +121,6 @@ module WorkItems
         type_class.where(id: integer_ids)
       end
 
-      # This method should be removed as it's only used in the old WorkItems::Type model
-      # and not in the new WorkItems::TypesFramework::SystemDefined::Type model.
-      # The `with_widget_definition_preload` method is specific to the old model
-      # and is not needed when using system-defined types.
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/581931
-      def by_ids_with_widget_definition_preload(ids)
-        if use_system_defined_types?
-          by_ids(ids)
-        else
-          by_ids(ids).with_widget_definition_preload
-        end
-      end
-
       def base_types_by_ids(ids)
         type_class.where(id: ids).map(&:base_type).uniq
       end

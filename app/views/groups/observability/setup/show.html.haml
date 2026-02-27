@@ -29,10 +29,16 @@
                       = s_('Observability|Built on ClickHouse for superior performance, GitLab Observability makes observability accessible within GitLab.')
 
                   .gl-text-center.gl-mb-8
-                    .gl-flex.gl-justify-center.gl-gap-4
-                      = render Pajamas::ButtonComponent.new(href: group_observability_access_requests_path(@group), method: :post, category: :primary, variant: :confirm, size: :large) do
-                        = sprite_icon('rocket-launch', css_class: 'gl-mr-2', size: 16)
-                        = s_('Observability|Enable Observability')
+                    - if Gitlab.com?
+                      .gl-flex.gl-justify-center.gl-gap-4
+                        = render Pajamas::ButtonComponent.new(href: group_observability_access_requests_path(@group), method: :post, category: :primary, variant: :confirm, size: :large) do
+                          = sprite_icon('rocket-launch', css_class: 'gl-mr-2', size: 16)
+                          = s_('Observability|Enable Observability')
+                    - else
+                      %p.gl-text-lg.gl-text-subtle
+                        = sprite_icon('admin', css_class: 'gl-mr-2', size: 16)
+                        - strong_tag = content_tag(:strong, '')
+                        = safe_format(s_('Observability|To enable GitLab Observability, please ask your %{strong_start}GitLab administrator%{strong_end} to enable it for this group.'), tag_pair(strong_tag, :strong_start, :strong_end))
 
                   .gl-grid.gl-grid-cols-1.gl-gap-6.gl-mb-8{ class: "@md/panel:gl-grid-cols-2 @lg/panel:gl-grid-cols-3" }
                     .gl-bg-subtle.gl-rounded-lg.gl-p-6.gl-text-center

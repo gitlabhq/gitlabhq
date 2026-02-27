@@ -70,6 +70,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
         'milestone_events' => false,
         'emoji_events' => false,
         'resource_access_token_events' => false,
+        'resource_deploy_token_events' => false,
         'token' => token
       }
     end

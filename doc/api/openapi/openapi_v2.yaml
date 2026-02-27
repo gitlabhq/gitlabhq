@@ -31610,6 +31610,7 @@ paths:
         - push_events
         - releases_events
         - resource_access_token_events
+        - resource_deploy_token_events
         - tag_push_events
         - wiki_page_events
         - vulnerability_events
@@ -66157,6 +66158,8 @@ definitions:
         type: boolean
       resource_access_token_events:
         type: boolean
+      resource_deploy_token_events:
+        type: boolean
       vulnerability_events:
         type: boolean
     required:
@@ -66189,6 +66192,7 @@ definitions:
     - milestone_events
     - emoji_events
     - resource_access_token_events
+    - resource_deploy_token_events
     - vulnerability_events
     description: API_Entities_ProjectHook model
   putApiV4ProjectsIdHooksHookId:
@@ -66251,6 +66255,9 @@ definitions:
       resource_access_token_events:
         type: boolean
         description: Trigger hook on project access token expiry events
+      resource_deploy_token_events:
+        type: boolean
+        description: Trigger hook on deploy token expiry events
       enable_ssl_verification:
         type: boolean
         description: Do SSL verification when triggering the hook
@@ -66371,6 +66378,9 @@ definitions:
       resource_access_token_events:
         type: boolean
         description: Trigger hook on project access token expiry events
+      resource_deploy_token_events:
+        type: boolean
+        description: Trigger hook on deploy token expiry events
       enable_ssl_verification:
         type: boolean
         description: Do SSL verification when triggering the hook

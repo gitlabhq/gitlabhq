@@ -166,6 +166,7 @@ export default {
   duoFlowHelpPath,
   i18n: {
     saveChanges: __('Save changes'),
+    saveChangesAriaLabel: __('Save changes for GitLab Duo'),
   },
 };
 </script>
@@ -371,6 +372,7 @@ export default {
       variant="confirm"
       type="submit"
       class="gl-mt-6"
+      :aria-label="$options.i18n.saveChangesAriaLabel"
       data-testid="gitlab-duo-save-button"
       :disabled="duoFeaturesLocked"
     >

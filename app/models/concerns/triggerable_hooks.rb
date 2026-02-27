@@ -40,6 +40,7 @@ module TriggerableHooks
         release_hooks: :releases_events,
         repository_update_hooks: :repository_update_events,
         resource_access_token_hooks: :resource_access_token_events,
+        resource_deploy_token_hooks: :resource_deploy_token_events,
         subgroup_hooks: :subgroup_events,
         tag_push_hooks: :tag_push_events,
         wiki_page_hooks: :wiki_page_events,

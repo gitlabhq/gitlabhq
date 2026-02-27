@@ -381,7 +381,7 @@ describe('Pipeline variables form group', () => {
       expect(findRemoveButtonDesktopAt(0).props('disabled')).toBe(false);
       expect(findRemoveButtonDesktopAt(0).props('category')).toBe('tertiary');
 
-      expect(findRemoveButtonDesktopAt(0).attributes('aria-label')).toBe('Remove variable');
+      expect(findRemoveButtonDesktopAt(0).attributes('aria-label')).toBe('Remove variable 1');
     });
   });
 

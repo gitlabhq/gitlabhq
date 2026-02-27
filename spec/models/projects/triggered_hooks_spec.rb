@@ -51,6 +51,16 @@ RSpec.describe Projects::TriggeredHooks, feature_category: :webhooks do
     end
   end
 
+  context 'with deploy token hooks' do
+    let_it_be(:resource_deploy_token_hook) { create(:project_hook, project: project, resource_deploy_token_events: true) }
+
+    it 'executes hook' do
+      expect_hook_execution(resource_deploy_token_hook, data, 'resource_deploy_token_hooks')
+
+      run_hooks(:resource_deploy_token_hooks, data)
+    end
+  end
+
   context 'with emoji hooks' do
     let_it_be(:emoji_hook) { create(:project_hook, project: project, emoji_events: true) }
 

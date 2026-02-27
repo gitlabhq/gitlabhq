@@ -158,7 +158,8 @@ Term 1
 : Definition of Term 1
 
 Term 2
-: Definition of Term 2
+: Definition of Term 2 is much longer, but we can use
+  multiple lines.
 ```
 
 These lists render like this:
@@ -167,7 +168,8 @@ Term 1
 : Definition of Term 1
 
 Term 2
-: Definition of Term 2
+: Definition of Term 2 is much longer, but we can use
+  multiple lines.
 
 ### Shortcodes
 
@@ -2219,23 +2221,23 @@ documentation site (`https://docs.gitlab.com`). In all other cases and in
 Use the `glossary-tooltip` shortcode to provide a short definition that appears as a tooltip on hover. For example:
 
 ```markdown
-To do this thing, use {{</* glossary-tooltip text="my term" */>}}.
+To do this thing, use {{</* glossary-tooltip text="the term" */>}}.
 ```
 
-When the user hovers on `my term`, a tooltip is displayed.
+When the user hovers on {{< glossary-tooltip text="the term" >}}, a tooltip is displayed.
 
-If the user selects the tooltip, a related glossary page opens.
+If a glossary page is configured for the tooltip and the user selects the tooltip, a related glossary page opens.
 
 ### Create a glossary term
 
 A [`glossary.yaml` file](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/glossary-tooltips/glossary.yaml)
-exists in the `docs-gitlab-com` repo.
+exists in the `docs-gitlab-com` repository.
 
 - Add definitions to this file. Each definition should be short and not contain links.
-- If the term specified in the `text` field matches a value in `glossary.yaml`,
+- If the term specified in the `text` field matches the `display_name` value in `glossary.yaml`,
   the definition is displayed on hover.
-- If no value matches, no definition or underline is displayed.
-  Values are case insensitive.
+- If no `display_name` value matches, no definition or underline is displayed.
+  Values are case-insensitive.
 - If a related glossary page is not specified, the tooltip is displayed but does not change when selected.
 
 ### Usage guidance

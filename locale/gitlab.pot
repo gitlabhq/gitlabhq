@@ -2609,6 +2609,9 @@ msgstr ""
 msgid "AICatalog|All project members will be able to use it."
 msgstr ""
 
+msgid "AICatalog|An agent or flow can only be enabled once per organization, group, or project"
+msgstr ""
+
 msgid "AICatalog|Anyone can see your prompts and settings. Don't include sensitive data or reference internal systems."
 msgstr ""
 
@@ -3239,9 +3242,6 @@ msgstr ""
 msgid "AICatalog|That the user who runs it has access to."
 msgstr ""
 
-msgid "AICatalog|The item consumer must belong to only one organization, group, or project"
-msgstr ""
-
 msgid "AICatalog|The service account is part of a composite identity that runs the agent. This identity combines the user's role with the service account's role and uses the more restrictive of the two."
 msgstr ""
 
@@ -3443,19 +3443,19 @@ msgstr ""
 msgid "AICatalog|agents"
 msgstr ""
 
-msgid "AICatalog|can be set only for project consumers"
+msgid "AICatalog|can only be set when enabling an agent or flow for a project"
 msgstr ""
 
-msgid "AICatalog|can be set only for top-level group consumers"
+msgid "AICatalog|can only be set when enabling an agent or flow for a top-level group"
 msgstr ""
 
-msgid "AICatalog|cannot be changed as it has been released"
+msgid "AICatalog|can't be changed because it is released"
 msgstr ""
 
-msgid "AICatalog|cannot be changed from public to private as it has catalog consumers"
+msgid "AICatalog|can't be made private because it is enabled in a project or group"
 msgstr ""
 
-msgid "AICatalog|cannot be changed from public to private as it is used by other flows"
+msgid "AICatalog|can't be made private because it is used by at least one flow"
 msgstr ""
 
 msgid "AICatalog|flow"
@@ -3464,22 +3464,22 @@ msgstr ""
 msgid "AICatalog|flows"
 msgstr ""
 
-msgid "AICatalog|is private to another project"
+msgid "AICatalog|is private in another project"
 msgstr ""
 
 msgid "AICatalog|must be a service account"
 msgstr ""
 
-msgid "AICatalog|must be provisioned by the group"
+msgid "AICatalog|must be enabled in the same organization"
+msgstr ""
+
+msgid "AICatalog|must be the same service account as the top-level group"
 msgstr ""
 
 msgid "AICatalog|must belong to this project's top-level group"
 msgstr ""
 
 msgid "AICatalog|must have at least one node"
-msgstr ""
-
-msgid "AICatalog|organization must match the item consumer's organization"
 msgstr ""
 
 msgid "AICatalog|unable to validate definition"
@@ -7245,6 +7245,9 @@ msgid "Agent Information"
 msgstr ""
 
 msgid "Agent not found for provided id."
+msgstr ""
+
+msgid "Agent or flow already enabled"
 msgstr ""
 
 msgid "Agents|Explore other agents"
@@ -15170,9 +15173,6 @@ msgstr ""
 msgid "CiVariables|Hidden"
 msgstr ""
 
-msgid "CiVariables|Hidden variable value"
-msgstr ""
-
 msgid "CiVariables|In all projects that do not use pipeline variables, change the %{strongStart}Minimum role to use pipeline variables%{strongEnd} setting to %{strongStart}No one allowed%{strongEnd}. Project owners can later choose a different setting if needed."
 msgstr ""
 
@@ -15315,6 +15315,15 @@ msgid "CiVariables|Value"
 msgstr ""
 
 msgid "CiVariables|Value might contain a variable reference"
+msgstr ""
+
+msgid "CiVariables|Variable key"
+msgstr ""
+
+msgid "CiVariables|Variable type"
+msgstr ""
+
+msgid "CiVariables|Variable value"
 msgstr ""
 
 msgid "CiVariables|Variable value will be evaluated as raw string."
@@ -30039,6 +30048,12 @@ msgstr ""
 msgid "FeatureFlags|You've reached your %{docLinkStart}feature flag limit%{docLinkEnd} (%{featureFlagsLimit}). To add more, delete at least one feature flag, or %{pricingLinkStart}upgrade to a higher tier%{pricingLinkEnd}."
 msgstr ""
 
+msgid "FeatureFlag|Feature flag environment documentation"
+msgstr ""
+
+msgid "FeatureFlag|Feature flag strategy documentation"
+msgstr ""
+
 msgid "FeatureFlag|Percentage"
 msgstr ""
 
@@ -39309,6 +39324,9 @@ msgstr ""
 msgid "Job|Are you sure you want to force cancel this job? This will immediately mark the job as canceled, even if the job is still running."
 msgstr ""
 
+msgid "Job|Artifacts help"
+msgstr ""
+
 msgid "Job|Browse"
 msgstr ""
 
@@ -39337,6 +39355,9 @@ msgid "Job|Erase job log and artifacts"
 msgstr ""
 
 msgid "Job|Exit full screen"
+msgstr ""
+
+msgid "Job|Expired artifact help"
 msgstr ""
 
 msgid "Job|External links"
@@ -39373,6 +39394,9 @@ msgid "Job|Job has been erased"
 msgstr ""
 
 msgid "Job|Job has been erased by %{userLink}"
+msgstr ""
+
+msgid "Job|Job help"
 msgstr ""
 
 msgid "Job|Keep"
@@ -47187,6 +47211,9 @@ msgstr ""
 msgid "Observability|The name of your o11y service instance."
 msgstr ""
 
+msgid "Observability|To enable GitLab Observability, please ask your %{strong_start}GitLab administrator%{strong_end} to enable it for this group."
+msgstr ""
+
 msgid "Observability|To enable Observability for CI/CD, set the %{variable_name} CI/CD variable in your group's %{settings_link_start}CI/CD settings%{settings_link_end} to a comma-separated list of data types to export: metrics, logs, and/or traces (e.g., %{metrics_logs} or %{all_data_types})."
 msgstr ""
 
@@ -51169,9 +51196,6 @@ msgid "Pipeline|To see the remaining jobs, go to the %{boldStart}Jobs%{boldEnd} 
 msgstr ""
 
 msgid "Pipeline|Trigger author"
-msgstr ""
-
-msgid "Pipeline|Variable"
 msgstr ""
 
 msgid "Pipeline|Variables"
@@ -59215,6 +59239,21 @@ msgid "Save changes"
 msgstr ""
 
 msgid "Save changes before testing"
+msgstr ""
+
+msgid "Save changes for GitLab Duo"
+msgstr ""
+
+msgid "Save changes for Service Desk"
+msgstr ""
+
+msgid "Save changes for default description template for issues"
+msgstr ""
+
+msgid "Save changes for naming, description, topics"
+msgstr ""
+
+msgid "Save changes for visibility, project features, permissions"
 msgstr ""
 
 msgid "Save comment"
@@ -77521,6 +77560,9 @@ msgstr ""
 msgid "Webhooks|A URL is required."
 msgstr ""
 
+msgid "Webhooks|A deploy token is expiring soon. %{help_link}?"
+msgstr ""
+
 msgid "Webhooks|A webhook in this group was automatically disabled after it was retried multiple times."
 msgstr ""
 
@@ -77528,6 +77570,9 @@ msgid "Webhooks|A webhook in this project was automatically disabled after it wa
 msgstr ""
 
 msgid "Webhooks|Add custom header"
+msgstr ""
+
+msgid "Webhooks|Additional Triggers"
 msgstr ""
 
 msgid "Webhooks|Are you sure you want to delete this group hook?"
@@ -77630,6 +77675,9 @@ msgid "Webhooks|Only alphanumeric characters, periods, dashes, and underscores a
 msgstr ""
 
 msgid "Webhooks|Pipeline events"
+msgstr ""
+
+msgid "Webhooks|Project deploy token events"
 msgstr ""
 
 msgid "Webhooks|Project events"
@@ -77901,6 +77949,9 @@ msgid "Whether to enforce minimum language server version."
 msgstr ""
 
 msgid "Which API requests are affected?"
+msgstr ""
+
+msgid "Which project deploy token events trigger webhooks"
 msgstr ""
 
 msgid "Who can approve?"
@@ -83798,7 +83849,7 @@ msgstr ""
 msgid "or sign in with"
 msgstr ""
 
-msgid "organization must match the item's organization"
+msgid "organization must match the agent or flow's organization"
 msgstr ""
 
 msgid "organizations can only be added to root groups and groups configured as CRM targets"

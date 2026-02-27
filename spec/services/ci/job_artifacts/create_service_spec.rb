@@ -136,18 +136,6 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
       context 'when FIPS is enabled', :fips_mode do
         it { expect(authorize[:headers][:UploadHashFunctions]).to eq(described_class::ARTIFACT_HASH_FUNCTIONS) }
       end
-
-      context 'when the skip_unused_job_artifact_hash_calculation feature flag is disabled' do
-        before do
-          stub_feature_flags(skip_unused_job_artifact_hash_calculation: false)
-        end
-
-        it { expect(authorize[:headers]).not_to have_key(:UploadHashFunctions) }
-
-        context 'when FIPS is enabled', :fips_mode do
-          it { expect(authorize[:headers][:UploadHashFunctions]).to match_array(%w[sha1 sha256 sha512]) }
-        end
-      end
     end
 
     context 'when object storage is enabled' do

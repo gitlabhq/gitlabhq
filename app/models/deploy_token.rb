@@ -127,6 +127,10 @@ class DeployToken < ApplicationRecord
     holder.has_access_to?(requested_project)
   end
 
+  def hook_attrs
+    Gitlab::HookData::ResourceDeployTokenBuilder.new(self).build
+  end
+
   def has_access_to_group?(requested_group)
     return false unless active?
     return false unless group_type?
