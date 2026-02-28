@@ -1,0 +1,5 @@
+description: Permissions that are disabled when a group is archived
+permissions:
+  - activate_group_member
+  - add_cluster
+  - admin_achievement

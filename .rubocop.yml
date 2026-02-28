@@ -708,6 +708,12 @@ Gitlab/PolicyRuleBoolean:
     - 'app/policies/**/*'
     - 'ee/app/policies/**/*'
 
+Gitlab/Authz/UsePolicyHelpers:
+  Enabled: true
+  Include:
+    - 'spec/policies/**/*'
+    - 'ee/spec/policies/**/*'
+
 Gitlab/PolicyConditionScope:
   Include:
     - '{,ee/,jh/}app/policies/**/*.rb'
@@ -1549,3 +1555,10 @@ Gitlab/AvoidConstDefaultOrganizationId:
 Gitlab/UsersInternalOrganization:
   Description: 'Enforce using Users::Internal.in_organization(organization) for bot methods'
   Enabled: true
+
+Gitlab/Authz/PermissionCheck:
+  Enabled: true
+  Description: 'Enforce using granular permissions when checking access'
+  Exclude:
+    - '{,ee/}app/policies/**/*.rb'
+    - '{,ee/}spec/**/*.rb'

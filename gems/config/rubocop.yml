@@ -27,6 +27,10 @@ AllCops:
   NewCops: disable
 
 # This cop doesn't make sense in the context of gems
+Gitlab/Authz/PermissionCheck:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
 CodeReuse/ActiveRecord:
   Enabled: false
 
@@ -179,4 +183,8 @@ Gitlab/NoHelpersInPresenters:
 
 # This cop doesn't make sense in the context of gems
 Gitlab/Authz/DisallowAbilityAllowed:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
+Gitlab/Authz/UsePolicyHelpers:
   Enabled: false
