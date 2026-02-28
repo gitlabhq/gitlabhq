@@ -153,6 +153,22 @@ export const SCAN_PROFILE_CATEGORIES = {
     helpLink: helpPagePath(
       '/user/application_security/configuration/security_configuration_profiles',
     ),
+    triggers: [
+      {
+        anchor: 'secret-push-protection',
+        icon: 'push-rules',
+        title: s__('ScanProfiles|Secret push protection'),
+        subtitle: s__(
+          'ScanProfiles|Scan all Git push events and block pushes with detected secrets.',
+        ),
+        description: s__(
+          'ScanProfiles|Block secrets such as keys and API tokens from being pushed to your repositories. Secret detection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked.',
+        ),
+        helpLink: helpPagePath(
+          '/user/application_security/secret_detection/secret_push_protection/_index.md',
+        ),
+      },
+    ],
   },
 };
 export const SCAN_PROFILE_PROMO_ITEMS = [
