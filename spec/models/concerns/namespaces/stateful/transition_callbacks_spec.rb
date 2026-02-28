@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :groups_and_projects do
-  include Namespaces::StatefulHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
@@ -23,7 +22,7 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
 
     with_them do
       before do
-        set_state(namespace, initial_state)
+        namespace.update!(state: initial_state)
       end
 
       it "updates state_metadata on successful transition" do
@@ -51,7 +50,7 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
 
     with_them do
       before do
-        set_state(namespace, initial_state)
+        namespace.update!(state: initial_state)
       end
 
       it 'sets deletion schedule data on successful transition' do
@@ -71,7 +70,7 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
 
     with_them do
       before do
-        set_state(namespace, initial_state)
+        namespace.update!(state: initial_state)
         namespace.update!(deletion_scheduled_at: 1.day.ago)
         namespace.state_metadata.merge!(
           deletion_scheduled_at: 1.day.ago.as_json,
@@ -94,7 +93,7 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
 
   describe '#update_state_metadata_on_failure' do
     before do
-      set_state(namespace, :archived)
+      namespace.update!(state: :archived)
     end
 
     it 'includes state errors when present' do

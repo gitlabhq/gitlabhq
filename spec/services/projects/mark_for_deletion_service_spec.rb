@@ -77,7 +77,7 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
 
     it 'changes the state of the project' do
       expect { result }.to change { project.project_namespace.state }
-        .from(Namespaces::Stateful::STATES[:ancestor_inherited]).to(Namespaces::Stateful::STATES[:deletion_scheduled])
+        .from('ancestor_inherited').to('deletion_scheduled')
     end
 
     context 'when deletion schedule creation fails' do

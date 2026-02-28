@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::GroupsFinder, feature_category: :groups_and_projects do
-  include Namespaces::StatefulHelpers
-
   describe '#execute' do
     let_it_be(:organization_user) { create(:organization_user) }
     let_it_be(:organization) { organization_user.organization }
@@ -72,7 +70,7 @@ RSpec.describe Organizations::GroupsFinder, feature_category: :groups_and_projec
     end
 
     it 'filters deleted groups' do
-      set_state(public_group, :deletion_in_progress)
+      public_group.update!(state: :deletion_in_progress)
 
       expect(result).not_to include(public_group)
     end

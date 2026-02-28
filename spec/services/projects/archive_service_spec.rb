@@ -120,7 +120,7 @@ RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects 
 
           it 'updates the project_namespace state' do
             expect { service.execute }.to change { project.project_namespace.state }
-              .from(Namespaces::Stateful::STATES[:ancestor_inherited]).to(Namespaces::Stateful::STATES[:archived])
+              .from('ancestor_inherited').to('archived')
           end
 
           it 'updates the project archived status to true' do

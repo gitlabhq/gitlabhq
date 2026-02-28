@@ -8,8 +8,8 @@ function addReactiveDiscussionProps(discussion) {
     isReplying: false,
     hidden: false,
     ...discussion,
-    notes: discussion.notes.map((note) => {
-      return { ...note, isEditing: false, editedNote: null };
+    notes: discussion.notes?.map((note) => {
+      return { isEditing: undefined, editedNote: null, ...note };
     }),
   };
 }

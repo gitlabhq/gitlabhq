@@ -1,0 +1,19 @@
+---
+Gitlab/Authz/DisallowAbilityAllowed:
+  Details: grace period
+  Exclude:
+    - 'app/policies/ci/runner_project_policy.rb'
+    - 'app/policies/clusters/agent_policy.rb'
+    - 'app/policies/concerns/policy_actor.rb'
+    - 'app/policies/issue_policy.rb'
+    - 'app/policies/todo_policy.rb'
+    - 'ee/app/policies/ai/setting_policy.rb'
+    - 'ee/app/policies/analytics/custom_dashboards/dashboard_policy.rb'
+    - 'ee/app/policies/compliance_management/compliance_framework/project_control_compliance_status_policy.rb'
+    - 'ee/app/policies/compliance_management/framework_policy.rb'
+    - 'ee/app/policies/compliance_management/projects/compliance_violation_policy.rb'
+    - 'ee/app/policies/ee/group_policy.rb'
+    - 'ee/app/policies/ee/project_policy.rb'
+    - 'ee/app/policies/merge_requests/compliance_violation_policy.rb'
+    - 'ee/app/policies/projects/compliance_standards/adherence_policy.rb'
+    - 'ee/app/policies/vulnerabilities/merge_request_link_policy.rb'

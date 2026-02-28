@@ -3,15 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_projects do
-  include Namespaces::StatefulHelpers
-
   let_it_be_with_reload(:record) { create(:group) }
 
   describe '#self_deletion_in_progress?' do
     it 'delegates to deletion_in_progress?' do
       expect(record.self_deletion_in_progress?).to be_falsy
 
-      set_state(record, :deletion_in_progress)
+      record.update!(state: :deletion_in_progress)
 
       expect(record.self_deletion_in_progress?).to be_truthy
     end
@@ -165,7 +163,7 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
 
       context 'when state is deletion_in_progress' do
         before do
-          set_state(namespace, :deletion_in_progress)
+          namespace.update!(state: :deletion_in_progress)
         end
 
         it 'returns true' do

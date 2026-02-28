@@ -1751,6 +1751,61 @@ PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE siphon_security_findings
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `scan_id` Int64,
+    `scanner_id` Int64,
+    `severity` Int16,
+    `deduplicated` Bool DEFAULT false CODEC(ZSTD(1)),
+    `uuid` UUID,
+    `overridden_uuid` Nullable(UUID),
+    `partition_number` Int64 DEFAULT 1,
+    `finding_data` String DEFAULT '{}',
+    `project_id` Int64 DEFAULT 0,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY
+            id,
+            partition_number
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id, partition_number)
+ORDER BY (traversal_path, id, partition_number)
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_security_scans
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `build_id` Int64,
+    `scan_type` Int16,
+    `info` String DEFAULT '{}',
+    `project_id` Int64,
+    `pipeline_id` Nullable(Int64),
+    `latest` Bool DEFAULT true CODEC(ZSTD(1)),
+    `status` Int16 DEFAULT 0,
+    `findings_partition_number` Int64 DEFAULT 1,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
 CREATE TABLE siphon_users
 (
     `id` Int64,
@@ -1818,6 +1873,185 @@ ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 8192;
+
+CREATE TABLE siphon_vulnerabilities
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `project_id` Int64,
+    `author_id` Int64,
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `title` String CODEC(ZSTD(1)),
+    `description` String DEFAULT '' CODEC(ZSTD(3)),
+    `state` Int16 DEFAULT 1,
+    `severity` Int16,
+    `severity_overridden` Nullable(Bool) DEFAULT false CODEC(ZSTD(1)),
+    `resolved_by_id` Nullable(Int64),
+    `resolved_at` Nullable(DateTime64(6, 'UTC')),
+    `report_type` Int16,
+    `confirmed_by_id` Nullable(Int64),
+    `confirmed_at` Nullable(DateTime64(6, 'UTC')),
+    `dismissed_at` Nullable(DateTime64(6, 'UTC')),
+    `dismissed_by_id` Nullable(Int64),
+    `resolved_on_default_branch` Bool DEFAULT false CODEC(ZSTD(1)),
+    `present_on_default_branch` Bool DEFAULT true CODEC(ZSTD(1)),
+    `detected_at` Nullable(DateTime64(6, 'UTC')) DEFAULT now(),
+    `finding_id` Int64,
+    `cvss` Nullable(String) DEFAULT '[]',
+    `auto_resolved` Bool DEFAULT false CODEC(ZSTD(1)),
+    `uuid` Nullable(UUID),
+    `solution` Nullable(String),
+    `partition_id` Nullable(Int64) DEFAULT 1,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_vulnerability_identifiers
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `project_id` Int64,
+    `fingerprint` String,
+    `external_type` LowCardinality(String),
+    `external_id` String,
+    `name` String CODEC(ZSTD(1)),
+    `url` Nullable(String) CODEC(ZSTD(1)),
+    `partition_id` Int64 DEFAULT 1,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_vulnerability_merge_request_links
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `vulnerability_id` Int64,
+    `merge_request_id` Int64,
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `project_id` Int64,
+    `vulnerability_occurrence_id` Nullable(Int64),
+    `readiness_score` Nullable(Float64),
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_vulnerability_occurrence_identifiers
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `occurrence_id` Int64,
+    `identifier_id` Int64,
+    `project_id` Int64,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_vulnerability_occurrences
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `severity` Int16,
+    `report_type` Int16,
+    `project_id` Int64,
+    `scanner_id` Int64,
+    `primary_identifier_id` Int64,
+    `location_fingerprint` String,
+    `name` String CODEC(ZSTD(1)),
+    `metadata_version` String,
+    `raw_metadata` Nullable(String),
+    `vulnerability_id` Nullable(Int64),
+    `details` String DEFAULT '{}',
+    `description` String DEFAULT '' CODEC(ZSTD(3)),
+    `solution` String DEFAULT '' CODEC(ZSTD(3)),
+    `cve` Nullable(String),
+    `location` Nullable(String),
+    `detection_method` Int16 DEFAULT 0,
+    `uuid` UUID DEFAULT '00000000-0000-0000-0000-000000000000',
+    `initial_pipeline_id` Nullable(Int64),
+    `latest_pipeline_id` Nullable(Int64),
+    `security_project_tracked_context_id` Nullable(Int64),
+    `detected_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(Delta(8), ZSTD(1)),
+    `new_uuid` Nullable(UUID),
+    `partition_id` Nullable(Int64) DEFAULT 1,
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
+
+CREATE TABLE siphon_vulnerability_scanners
+(
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `project_id` Int64,
+    `external_id` String,
+    `name` LowCardinality(String) CODEC(ZSTD(1)),
+    `vendor` LowCardinality(String) DEFAULT 'GitLab',
+    `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (traversal_path, id)
+ORDER BY (traversal_path, id)
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
 
 CREATE TABLE siphon_work_item_current_statuses
 (

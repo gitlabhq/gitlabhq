@@ -95,7 +95,7 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
       it 'updates the namespace state' do
         service_response
 
-        expect(group.state).to be(Namespaces::Stateful::STATES[:archived])
+        expect(group.state).to eq('archived')
       end
 
       it 'unarchives all descendant groups', :aggregate_failures do

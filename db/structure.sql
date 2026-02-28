@@ -23942,7 +23942,8 @@ CREATE TABLE note_diff_files (
     new_path text NOT NULL,
     old_path text NOT NULL,
     diff_note_id bigint NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_ebb23d73d7 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE note_diff_files_id_seq
@@ -37814,11 +37815,14 @@ ALTER TABLE packages_packages
 ALTER TABLE vulnerabilities
     ADD CONSTRAINT check_d7634b42b6 CHECK ((char_length(solution) <= 7000)) NOT VALID;
 
+ALTER TABLE packages_debian_group_component_files
+    ADD CONSTRAINT check_debian_group_component_files_file_sha256_max_length CHECK ((octet_length(file_sha256) <= 64)) NOT VALID;
+
+ALTER TABLE packages_debian_project_component_files
+    ADD CONSTRAINT check_debian_project_component_files_file_sha256_max_length CHECK ((octet_length(file_sha256) <= 64)) NOT VALID;
+
 ALTER TABLE sprints
     ADD CONSTRAINT check_df3816aed7 CHECK ((due_date IS NOT NULL)) NOT VALID;
-
-ALTER TABLE note_diff_files
-    ADD CONSTRAINT check_ebb23d73d7 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE packages_composer_metadata
     ADD CONSTRAINT check_packages_composer_metadata_target_sha_max_length CHECK ((octet_length(target_sha) <= 64)) NOT VALID;

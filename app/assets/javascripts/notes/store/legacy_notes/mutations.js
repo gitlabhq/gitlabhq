@@ -42,7 +42,7 @@ export default {
       const notes = [{ ...note }];
       delete notes[0].base_discussion;
 
-      useDiscussions().discussions.push({ ...discussion, notes });
+      useDiscussions().addDiscussion({ ...discussion, notes });
     }
   },
 
@@ -152,30 +152,22 @@ export default {
           );
 
           if (oldDiscussion) {
-            useDiscussions().discussions.splice(
-              useDiscussions().discussions.indexOf(oldDiscussion),
-              1,
-              newDiscussion,
-            );
+            useDiscussions().replaceDiscussion(oldDiscussion, newDiscussion);
           } else {
-            useDiscussions().discussions.push(newDiscussion);
+            useDiscussions().addDiscussion(newDiscussion);
           }
         });
       } else {
         const oldDiscussion = utils.findNoteObjectById(useDiscussions().discussions, discussion.id);
 
         if (oldDiscussion) {
-          useDiscussions().discussions.splice(
-            useDiscussions().discussions.indexOf(oldDiscussion),
-            1,
-            {
-              ...discussion,
-              ...diffData,
-              expanded: oldDiscussion.expanded,
-            },
-          );
+          useDiscussions().replaceDiscussion(oldDiscussion, {
+            ...discussion,
+            ...diffData,
+            expanded: oldDiscussion.expanded,
+          });
         } else {
-          useDiscussions().discussions.push({ ...discussion, ...diffData });
+          useDiscussions().addDiscussion({ ...discussion, ...diffData });
         }
       }
     });
@@ -206,7 +198,7 @@ export default {
     if (existingDiscussion) {
       existingDiscussion.notes = [...existingDiscussion.notes, placeholder];
     } else {
-      useDiscussions().discussions.push(placeholder);
+      useDiscussions().addDiscussion(placeholder);
     }
   },
 

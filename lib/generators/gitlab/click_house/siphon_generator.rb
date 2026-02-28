@@ -49,6 +49,7 @@ module Gitlab
         1082 => 'Date32',
         1114 => "DateTime64(6, 'UTC')",
         1184 => "DateTime64(6, 'UTC')",
+        2950 => 'UUID',
         3802 => "String" # JSONB
       }.freeze
 

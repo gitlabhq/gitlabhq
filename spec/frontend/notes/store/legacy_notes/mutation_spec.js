@@ -44,8 +44,8 @@ describe('Notes Store mutations', () => {
 
     it('should add a new note to an array of notes', () => {
       store[types.ADD_NEW_NOTE](note);
-      expect(store.discussions).toStrictEqual([noteData]);
       expect(store.discussions).toHaveLength(1);
+      expect(store.discussions[0]).toMatchObject(noteData);
     });
 
     it('should not add the same note to the notes array', () => {

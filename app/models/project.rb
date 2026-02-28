@@ -686,15 +686,14 @@ class Project < ApplicationRecord
 
   # Scopes
   scope :deletion_in_progress, -> {
-    joins(:project_namespace).where(namespaces: { state: Namespaces::Stateful::STATES[:deletion_in_progress] })
+    joins(:project_namespace).where(namespaces: { state: :deletion_in_progress })
   }
 
   scope :not_deletion_in_progress, -> {
-    deletion_in_progress_state = Namespaces::Stateful::STATES[:deletion_in_progress]
     where(
       Namespace.select(1)
         .where(Namespace.arel_table[:id].eq(arel_table[:project_namespace_id]))
-        .where(state: deletion_in_progress_state)
+        .where(state: :deletion_in_progress)
         .arel.exists.not
     )
   }
@@ -1226,7 +1225,7 @@ class Project < ApplicationRecord
     last_activity_cutoff = ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months.months.ago
 
     joins(:statistics)
-      .where((project_statistics[:storage_size]).gt(minimum_size_mb))
+      .where(project_statistics[:storage_size].gt(minimum_size_mb))
       .where('last_activity_at < ?', last_activity_cutoff)
   end
 

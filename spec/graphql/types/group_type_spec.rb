@@ -475,9 +475,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
   describe 'group deletion in progress field' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group, developers: user) }
-    let_it_be(:group_being_deleted) do
-      create(:group, state: Namespaces::Stateful::STATES[:deletion_in_progress], developers: user)
-    end
+    let_it_be(:group_being_deleted) { create(:group, state: :deletion_in_progress, developers: user) }
 
     let(:group_full_path) { group_being_deleted.full_path }
     let(:query) do

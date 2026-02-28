@@ -24,7 +24,7 @@ module Namespaces
         forbidden_states = FORBIDDEN_ANCESTOR_STATES[transition.event]
         return true if forbidden_states.blank?
 
-        state_values = forbidden_states.map { |s| STATES[s] }
+        state_values = forbidden_states.map { |s| self.class.states[s] }
         ancestor_in_forbidden_state = ancestors.where(state: state_values).first
         return true unless ancestor_in_forbidden_state
 

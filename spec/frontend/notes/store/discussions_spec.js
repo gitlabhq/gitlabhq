@@ -14,7 +14,7 @@ describe('discussions store', () => {
       expect(useDiscussions().discussions[0].repliesExpanded).toBe(true);
       expect(useDiscussions().discussions[0].isReplying).toBe(false);
       expect(useDiscussions().discussions[0].hidden).toBe(false);
-      expect(useDiscussions().discussions[0].notes[0].isEditing).toBe(false);
+      expect(useDiscussions().discussions[0].notes[0].isEditing).toBeUndefined();
       expect(useDiscussions().discussions[0].notes[0].editedNote).toBeNull();
     });
 
@@ -37,7 +37,7 @@ describe('discussions store', () => {
       expect(store.discussions).toHaveLength(2);
       expect(store.discussions[0].id).toBe('new');
       expect(store.discussions[0].repliesExpanded).toBe(true);
-      expect(store.discussions[0].notes[0].isEditing).toBe(false);
+      expect(store.discussions[0].notes[0].isEditing).toBeUndefined();
       expect(store.discussions[1].id).toBe('other');
     });
   });

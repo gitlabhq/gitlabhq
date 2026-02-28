@@ -62,7 +62,7 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
 
     it 'changes the state of the group' do
       expect { result }.to change { group.state }
-        .from(Namespaces::Stateful::STATES[:ancestor_inherited]).to(Namespaces::Stateful::STATES[:deletion_scheduled])
+        .from('ancestor_inherited').to('deletion_scheduled')
 
       result
     end

@@ -696,6 +696,12 @@ Gitlab/HardDeleteCalls:
     - 'app/services/namespaces/groups/adjourned_deletion_service.rb'
     - 'app/services/projects/adjourned_deletion_service.rb'
 
+Gitlab/Authz/DisallowAbilityAllowed:
+  Enabled: true
+  Include:
+    - 'app/policies/**/*.rb'
+    - 'ee/app/policies/**/*.rb'
+
 Gitlab/PolicyRuleBoolean:
   Enabled: true
   Include:

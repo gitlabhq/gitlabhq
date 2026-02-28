@@ -47,7 +47,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/lib/gitlab/auth/smartcard/ldap_certificate_spec.rb'
     - 'ee/spec/lib/gitlab/auth/smartcard/san_extension_spec.rb'
     - 'ee/spec/lib/gitlab/ci/parsers/license_compliance/license_scanning_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/pipeline/chain/config/content_spec.rb'
     - 'ee/spec/lib/gitlab/epic_work_item_sync/diff_spec.rb'
     - 'ee/spec/lib/gitlab/license_scanning/branch_components_spec.rb'
     - 'ee/spec/lib/gitlab/package_metadata/connector/base_data_file_spec.rb'

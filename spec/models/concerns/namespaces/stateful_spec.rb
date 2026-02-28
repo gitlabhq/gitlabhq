@@ -4,27 +4,15 @@ require 'spec_helper'
 
 RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
-  include Namespaces::StatefulHelpers
 
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:namespace) { create(:namespace) }
+  let_it_be(:states) { Namespace.states }
 
-  describe 'STATES constant' do
-    it 'defines all expected states with integer values' do
-      expect(described_class::STATES).to eq({
-        'ancestor_inherited' => 0,
-        'archived' => 1,
-        'deletion_scheduled' => 2,
-        'creation_in_progress' => 3,
-        'deletion_in_progress' => 4,
-        'transfer_in_progress' => 5,
-        'maintenance' => 6
-      })
-    end
+  describe 'enums' do
+    subject { namespace }
 
-    it 'is frozen' do
-      expect(described_class::STATES).to be_frozen
-    end
+    it { is_expected.to define_enum_for(:state).with_values(**states).without_instance_methods }
   end
 
   describe 'NULL and zero handling during migration' do
@@ -38,7 +26,7 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
           namespace.update_column(:state, db_value)
           namespace.reload
 
-          expect(namespace.state).to eq(described_class::STATES[:ancestor_inherited])
+          expect(namespace.state).to eq('ancestor_inherited')
           expect(namespace.state_name).to eq(:ancestor_inherited)
         end
       end
@@ -71,12 +59,11 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
 
     describe 'transitions back to ancestor_inherited write 0 instead of NULL' do
       it 'writes 0 to the database when transitioning to ancestor_inherited' do
-        set_state(namespace, :archived)
+        namespace.update!(state: :archived)
 
         namespace.unarchive
-        namespace.save!
 
-        raw_state = Namespace.where(id: namespace.id).pick(:state)
+        raw_state = Namespace.where(id: namespace.id).first.state_before_type_cast
         expect(raw_state).to eq(0)
       end
     end
@@ -96,8 +83,8 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
     end
 
     describe 'state values' do
-      described_class::STATES.each do |state_name, state_value|
-        it { is_expected.to have_state state_name.to_sym, value: state_value }
+      Namespace.states.each_key do |state_name|
+        it { is_expected.to have_state state_name.to_sym, value: state_name }
       end
     end
 
@@ -134,7 +121,7 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
 
       with_them do
         before do
-          namespace.state = described_class::STATES[from_state.to_s]
+          namespace.state = from_state
         end
 
         it "transitions from #{params[:from_state]} to #{params[:to_state]} on #{params[:event]}" do
@@ -171,7 +158,7 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
 
         with_them do
           before do
-            set_state(namespace, from_state)
+            namespace.update!(state: from_state)
             namespace.namespace_details.update!(
               state_metadata: {
                 preserved_states: {
@@ -241,7 +228,7 @@ RSpec.describe Namespaces::Stateful, feature_category: :groups_and_projects do
 
       with_them do
         it "does not transition from #{params[:current_state]} on #{params[:event]}" do
-          namespace.state = described_class::STATES[current_state.to_s]
+          namespace.state = current_state
 
           expect { namespace.public_send(event, transition_user: user) }
             .not_to change { namespace.state_name }

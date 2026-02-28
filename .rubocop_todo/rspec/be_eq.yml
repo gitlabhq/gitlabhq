@@ -109,7 +109,6 @@ RSpec/BeEq:
     - 'ee/spec/lib/gitlab/auth/saml/config_spec.rb'
     - 'ee/spec/lib/gitlab/checks/diff_check_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/cached_quota_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/pipeline/chain/config/content_spec.rb'
     - 'ee/spec/lib/gitlab/ci/pipeline/pipeline_execution_policies/pipeline_context_spec.rb'
     - 'ee/spec/lib/gitlab/ci/runners_availability/allowed_plans_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners/file_spec.rb'

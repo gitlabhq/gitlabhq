@@ -6,7 +6,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
   include ContainerRegistryHelpers
   include ProjectForksHelper
   include BatchDestroyDependentAssociationsHelper
-  include Namespaces::StatefulHelpers
 
   let_it_be(:user) { create(:user) }
 
@@ -188,7 +187,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
     before do
       project.update!(pending_delete: true)
-      set_state(project.project_namespace, :deletion_scheduled)
+      project.project_namespace.update!(state: :deletion_scheduled)
     end
 
     it 'unsets the pending_delete on project' do
@@ -204,8 +203,8 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
         expect(project).to receive(:cancel_deletion!).with(transition_user: unauthorized_user).and_call_original
 
         expect { destroy_project(project, unauthorized_user) }.to change { project.reload.state }
-         .from(Namespaces::Stateful::STATES[:deletion_scheduled])
-         .to(Namespaces::Stateful::STATES[:ancestor_inherited])
+         .from('deletion_scheduled')
+         .to('ancestor_inherited')
       end
     end
   end
@@ -939,7 +938,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
     context 'when project state is deletion_scheduled' do
       before do
-        set_state(project.project_namespace, :deletion_scheduled)
+        project.project_namespace.update!(state: :deletion_scheduled)
         allow(project).to receive(:destroy!).and_raise(StandardError)
       end
 
@@ -948,7 +947,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
         destroy_project(project, user, {})
 
-        expect(project.reload.state).to eq(Namespaces::Stateful::STATES[:deletion_scheduled])
+        expect(project.reload.state).to eq('deletion_scheduled')
       end
     end
   end

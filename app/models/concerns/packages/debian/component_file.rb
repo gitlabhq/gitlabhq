@@ -5,6 +5,8 @@ module Packages
     module ComponentFile
       extend ActiveSupport::Concern
 
+      FILE_SHA256_MAX_LENGTH = 64.bytes
+
       included do
         include Sortable
         include FileStoreMounter
@@ -32,7 +34,7 @@ module Packages
         validates :file, length: { minimum: 0, allow_nil: false }
         validates :size, presence: true
         validates :file_store, presence: true
-        validates :file_sha256, presence: true
+        validates :file_sha256, presence: true, bytesize: { maximum: -> { FILE_SHA256_MAX_LENGTH } }
 
         scope :with_container, ->(container) do
           joins(component: :distribution)

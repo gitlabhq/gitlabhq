@@ -23,6 +23,39 @@ RSpec.describe Admin::UsersController, :enable_admin_mode, feature_category: :us
   describe 'PATCH #update' do
     let(:user) { create(:user) }
 
+    context 'with passwords' do
+      it 'sanitizes malicious password inputs' do
+        original_password = user.encrypted_password
+
+        patch admin_user_path(user),
+          params: { user: { password: %w[malicious array], password_confirmation: %w[malicious array] } }
+
+        expect(user.reload.encrypted_password).to eq(original_password)
+      end
+
+      it 'sets `:password_expires_at` when admin changes a user`s password', :freeze_time do
+        new_password = 'newpassword123'
+
+        expect do
+          patch admin_user_path(user), params: { user: { password: new_password } }
+        end.to change { user.reload.password_expires_at }.from(nil).to(Time.current)
+
+        expect(user.reload.valid_password?(new_password)).to be_truthy
+        expect(response).to redirect_to(admin_user_path(user))
+      end
+
+      it 'allows the admin to change their own password without setting `:password_expires_at`' do
+        new_password = 'newpassword123'
+
+        expect do
+          patch admin_user_path(admin), params: { user: { password: new_password } }
+        end.to not_change { admin.reload.password_expires_at }
+
+        expect(admin.reload.valid_password?(new_password)).to be_truthy
+        expect(response).to redirect_to(admin_user_path(admin))
+      end
+    end
+
     context "when admin changes user email" do
       let(:new_email) { 'new-email@example.com' }
 

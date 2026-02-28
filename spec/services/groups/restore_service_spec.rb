@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
-  include Namespaces::StatefulHelpers
-
   let(:user) { create(:user) }
   let(:group) do
     create(:group_with_deletion_schedule,
@@ -92,13 +90,13 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
 
         context 'when group state is deletion_scheduled' do
           before do
-            set_state(group, :deletion_scheduled)
+            group.update!(state: :deletion_scheduled)
           end
 
           it 'changes the state of the group' do
             expect { execute }.to change { group.state }
-              .from(Namespaces::Stateful::STATES[:deletion_scheduled])
-              .to(Namespaces::Stateful::STATES[:ancestor_inherited])
+              .from('deletion_scheduled')
+              .to('ancestor_inherited')
           end
         end
 
@@ -136,7 +134,7 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
 
       context 'when the group is deletion is in progress' do
         before do
-          set_state(group, :deletion_in_progress)
+          group.update!(state: :deletion_in_progress)
         end
 
         it 'returns error' do

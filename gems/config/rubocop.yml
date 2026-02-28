@@ -177,3 +177,6 @@ Gitlab/NoHelpersInPresenters:
   Include:
     - '{,ee/,jh/}app/presenters/**/*.rb'
 
+# This cop doesn't make sense in the context of gems
+Gitlab/Authz/DisallowAbilityAllowed:
+  Enabled: false

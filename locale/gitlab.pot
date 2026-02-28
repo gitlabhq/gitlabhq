@@ -3152,10 +3152,10 @@ msgstr ""
 msgid "AICatalog|Project is required."
 msgstr ""
 
-msgid "AICatalog|Project members can use this agent. You must have at least the Maintainer role to add an agent to a project."
+msgid "AICatalog|Project members can use this agent. You must have the Maintainer or Owner role to enable an agent in a project."
 msgstr ""
 
-msgid "AICatalog|Project members can use this flow. You must have at least the Maintainer role to add a flow to a project."
+msgid "AICatalog|Project members can use this flow. You must have the Maintainer or Owner role to enable a flow in a project."
 msgstr ""
 
 msgid "AICatalog|Project-specific automation."
@@ -3437,10 +3437,10 @@ msgstr ""
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr ""
 
-msgid "AICatalog|You must have the Owner role to add a flow to a group. Only top-level groups are shown."
+msgid "AICatalog|You must have the Maintainer or Owner role to enable a flow in a group. Only top-level groups are shown."
 msgstr ""
 
-msgid "AICatalog|You must have the Owner role to add an agent to a group. Only top-level groups are shown."
+msgid "AICatalog|You must have the Maintainer or Owner role to enable an agent in a group. Only top-level groups are shown."
 msgstr ""
 
 msgid "AICatalog|agent"
@@ -26000,6 +26000,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Activity"
 msgstr ""
 
+msgid "DuoAgentPlatform|Activity deleted after 30 days of inactivity. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "DuoAgentPlatform|Agent reasoning"
 msgstr ""
 
@@ -26016,6 +26019,12 @@ msgid "DuoAgentPlatform|Allow flow execution"
 msgstr ""
 
 msgid "DuoAgentPlatform|Allow foundational flows"
+msgstr ""
+
+msgid "DuoAgentPlatform|Created session"
+msgstr ""
+
+msgid "DuoAgentPlatform|Creating session"
 msgstr ""
 
 msgid "DuoAgentPlatform|Details"
@@ -26042,6 +26051,9 @@ msgstr ""
 msgid "DuoAgentPlatform|Session ID"
 msgstr ""
 
+msgid "DuoAgentPlatform|Session failed"
+msgstr ""
+
 msgid "DuoAgentPlatform|Session information"
 msgstr ""
 
@@ -26049,6 +26061,15 @@ msgid "DuoAgentPlatform|Session triggered"
 msgstr ""
 
 msgid "DuoAgentPlatform|Show tool details"
+msgstr ""
+
+msgid "DuoAgentPlatform|Starting job"
+msgstr ""
+
+msgid "DuoAgentPlatform|Takes a few minutes..."
+msgstr ""
+
+msgid "DuoAgentPlatform|Takes a few seconds..."
 msgstr ""
 
 msgid "DuoAgentPlatform|User messaged agent"
@@ -26394,12 +26415,6 @@ msgid "DuoAgentsPlatform|The trigger could not be created. Try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|The trigger could not be updated. Try again."
-msgstr ""
-
-msgid "DuoAgentsPlatform|This session has no activity"
-msgstr ""
-
-msgid "DuoAgentsPlatform|To learn more about this session, view the %{boldStart}Details%{boldEnd} tab."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Trigger created successfully."
