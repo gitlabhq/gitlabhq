@@ -109,6 +109,22 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
         end
       end
     end
+
+    context 'with a non-existent commit' do
+      let(:params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: '0000000000000000000000000000000000000000'
+        }
+      end
+
+      it 'returns 404' do
+        send_request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'POST #create_discussions' do
@@ -153,6 +169,24 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
 
       it 'does not allow note creation' do
         expect { send_request }.not_to change { Note.count }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with a non-existent commit' do
+      let(:params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          id: '0000000000000000000000000000000000000000'
+        }
+      end
+
+      let(:request_params) { { note: { note: 'Test note' } } }
+
+      it 'returns 404' do
+        send_request
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
