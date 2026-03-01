@@ -193,12 +193,34 @@
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 
+.pgvector17-services:
+  services:
+    - name: pgvector/pgvector:pg17
+      alias: pgvector
+      variables:
+        POSTGRES_PASSWORD: password
+
 .use-pg17-opensearch-latest-ee:
   extends:
     - .use-pg17
   services:
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.opensearch-latest-services, services]
+
+.use-pg17-pgvector17-es8-ee:
+  extends:
+    - .use-pg17
+    - .es8-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.pgvector17-services, services]
+    - !reference [.es8-services, services]
+  variables:
+    PGVECTOR_HOST: pgvector
+    PGVECTOR_PORT: "5432"
+    PGVECTOR_DATABASE: postgres
+    PGVECTOR_USER: postgres
+    PGVECTOR_PASSWORD: password
 
 .os1-services:
   services:

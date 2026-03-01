@@ -311,6 +311,11 @@ include:
     - .rspec-base
     - .use-pg17-opensearch-latest-ee
 
+.rspec-ee-base-pg17-pgvector17-es8:
+  extends:
+    - .rspec-base
+    - .use-pg17-pgvector17-es8-ee
+
 .rspec-ee-base-pg17-opensearch1:
   extends:
     - .rspec-base

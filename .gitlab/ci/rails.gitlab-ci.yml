@@ -1357,6 +1357,38 @@ rspec-ee system pg17 opensearch-latest:
   rules:
     - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
 
+rspec-ee unit pg17 pgvector17 es8:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
+  extends:
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-pgvector17-es8
+    - .rspec-ee-unit-parallel
+  rules:
+    - !reference [".rails:rules:run-search-tests", rules]
+    - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
+
+rspec-ee integration pg17 pgvector17 es8:
+  extends:
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-pgvector17-es8
+    - .rspec-ee-integration-parallel
+  rules:
+    - !reference [".rails:rules:run-search-tests", rules]
+    - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
+
+rspec-ee system pg17 pgvector17 es8:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
+  extends:
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-pgvector17-es8
+    - .rspec-ee-system-parallel
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:run-search-tests", rules]
+    - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
+
 # EE: default branch weekly scheduled jobs #
 ##################################################
 
