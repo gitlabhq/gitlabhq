@@ -41346,6 +41346,9 @@ msgstr ""
 msgid "Manage security policy settings in your GitLab instance"
 msgstr ""
 
+msgid "Manage security scan data retention settings"
+msgstr ""
+
 msgid "Manage statuses"
 msgstr ""
 
@@ -46528,6 +46531,9 @@ msgid "Number of commits"
 msgstr ""
 
 msgid "Number of commits per MR"
+msgstr ""
+
+msgid "Number of days to retain security scan data before purging. This controls when scan findings are considered stale and eligible for cleanup. Must be between 7 and 90 days."
 msgstr ""
 
 msgid "Number of files touched"
@@ -60915,6 +60921,12 @@ msgid "Security policy project is already assigned."
 msgstr ""
 
 msgid "Security reports last updated"
+msgstr ""
+
+msgid "Security scan retention period (days)"
+msgstr ""
+
+msgid "Security scans"
 msgstr ""
 
 msgid "SecurityApprovals|A merge request approval is required when test coverage declines."
@@ -83622,6 +83634,9 @@ msgid "must be between 1 day and %{limit}"
 msgstr ""
 
 msgid "must be between 10 and 60 minutes"
+msgstr ""
+
+msgid "must be between 7 and 90 days"
 msgstr ""
 
 msgid "must be enabled."
