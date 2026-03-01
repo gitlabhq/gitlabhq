@@ -497,6 +497,27 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
         .to be true
     end
 
+    describe 'port range validation' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:url, :description) do
+        'https://example.com:65536/path'                        | 'port slightly over max (65536)'
+        'https://example.com:99999/path'                        | 'port over max (99999)'
+        'https://example.com:800000000000000000000000000/path'  | 'very large port number'
+      end
+
+      with_them do
+        it "returns true for #{params[:description]}" do
+          expect(described_class.blocked_url?(url, schemes: schemes)).to be true
+        end
+      end
+
+      it 'allows maximum valid port (65535)' do
+        stub_dns('https://example.com:65535', ip_address: '93.184.216.34')
+        expect(described_class.blocked_url?('https://example.com:65535/path', schemes: schemes)).to be false
+      end
+    end
+
     it 'returns true for bad scheme' do
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', schemes: ['https'])).to be false
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', schemes: ['http'])).to be true

@@ -8,6 +8,7 @@ module Gitlab
   module HTTP_V2
     class UrlBlocker
       GETADDRINFO_TIMEOUT_SECONDS = 15
+      MAX_VALID_PORT = 65535
       BlockedUrlError = Class.new(StandardError)
       HTTP_PROXY_ENV_VARS = %w[http_proxy https_proxy HTTP_PROXY HTTPS_PROXY].freeze
 
@@ -189,7 +190,7 @@ module Gitlab
           return if internal?(uri)
 
           validate_scheme(uri.scheme, schemes)
-          validate_port(get_port(uri), ports) if ports.any?
+          validate_port(get_port(uri), ports)
           validate_user(uri.user) if enforce_user
           validate_hostname(uri.hostname)
           validate_unicode_restriction(uri) if ascii_only
@@ -301,6 +302,13 @@ module Gitlab
 
         def validate_port(port, ports)
           return if port.blank?
+
+          # TCP ports must be within valid range (0-65535)
+          raise BlockedUrlError, "Port is invalid" if port > MAX_VALID_PORT
+
+          # Only validate restricted ports when specific ports are configured
+          return unless ports.any?
+
           # Only ports under 1024 are restricted
           return if port >= 1024
           return if ports.include?(port)

@@ -296,6 +296,18 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
       expect(reply_address).to eq(expected_reply_address)
     end
+
+    context 'when namespace name contains non-ASCII characters' do
+      before do
+        item.namespace.update!(name: 'Ünïcödé Pröjëct')
+      end
+
+      it 'RFC 2047 encodes the Reply-To display name' do
+        reply_to = subject.header[:reply_to].addrs[0]
+        expect(reply_to.display_name).to include('Ünïcödé Pröjëct')
+        expect(subject.header[:reply_to].encoded).to include('=?UTF-8?')
+      end
+    end
   end
 
   describe '.service_desk_thank_you_email' do

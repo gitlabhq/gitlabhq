@@ -1021,6 +1021,17 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           end
         end
 
+        context 'when custom outgoing name contains non-ASCII characters' do
+          let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: 'José García') }
+
+          it 'RFC 2047 encodes the display name in "from" header' do
+            sender = subject.header[:from].addrs[0]
+            expect(sender.display_name).to eq('José García')
+            expect(sender.address).to eq(gitlab_sender)
+            expect(subject.header[:from].encoded).to include('=?UTF-8?')
+          end
+        end
+
         context 'when custom outgoing name is empty' do
           let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: '') }
 
@@ -1176,6 +1187,17 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
             sender = subject.header[:from].addrs[0]
             expect(sender.display_name).to eq('some custom name')
             expect(sender.address).to eq(gitlab_sender)
+          end
+        end
+
+        context 'when custom outgoing name contains non-ASCII characters' do
+          let_it_be(:settings) { create(:service_desk_setting, project: project, outgoing_name: 'José García') }
+
+          it 'RFC 2047 encodes the display name in "from" header' do
+            sender = subject.header[:from].addrs[0]
+            expect(sender.display_name).to eq('José García')
+            expect(sender.address).to eq(gitlab_sender)
+            expect(subject.header[:from].encoded).to include('=?UTF-8?')
           end
         end
 

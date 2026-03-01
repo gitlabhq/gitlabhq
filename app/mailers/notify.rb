@@ -84,7 +84,7 @@ class Notify < ApplicationMailer
     return unless sender = User.find(sender_id)
 
     address = default_sender_address
-    address.display_name = sender_name.presence || "#{sender.name} (#{sender.to_reference})"
+    address.display_name = encode_display_name(sender_name.presence || "#{sender.name} (#{sender.to_reference})")
 
     if sender_email
       address.address = sender_email
@@ -146,7 +146,7 @@ class Notify < ApplicationMailer
 
     if Gitlab::Email::IncomingEmail.enabled? && @sent_notification
       headers['Reply-To'] = Mail::Address.new(Gitlab::Email::IncomingEmail.reply_address(reply_key)).tap do |address|
-        address.display_name = reply_display_name(model)
+        address.display_name = encode_display_name(reply_display_name(model))
       end
 
       fallback_reply_message_id = "<reply-#{reply_key}@#{Gitlab.config.gitlab.host}>"

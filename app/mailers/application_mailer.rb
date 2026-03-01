@@ -62,14 +62,20 @@ class ApplicationMailer < ActionMailer::Base
 
   def default_sender_address
     address = Mail::Address.new(Gitlab.config.gitlab.email_from)
-    address.display_name = Gitlab.config.gitlab.email_display_name
+    address.display_name = encode_display_name(Gitlab.config.gitlab.email_display_name)
     address
   end
 
   def default_reply_to_address
     address = Mail::Address.new(Gitlab.config.gitlab.email_reply_to)
-    address.display_name = Gitlab.config.gitlab.email_display_name
+    address.display_name = encode_display_name(Gitlab.config.gitlab.email_display_name)
     address
+  end
+
+  def encode_display_name(name)
+    return name if name.blank? || name.ascii_only?
+
+    Mail::Encodings.encode_non_usascii(name, 'UTF-8')
   end
 
   def mail_with_locale(headers = {}, &block)

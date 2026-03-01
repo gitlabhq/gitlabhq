@@ -1,0 +1,10 @@
+---
+name: git_ref_validator_custom_validation
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/430709
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223368
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590000
+milestone: '18.10'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false
