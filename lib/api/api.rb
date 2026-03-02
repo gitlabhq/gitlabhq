@@ -423,6 +423,7 @@ module API
     mount ::API::Internal::MailRoom
     mount ::API::Internal::Workhorse
     mount ::API::Internal::Shellhorse
+    mount ::API::Internal::Gitaly
 
     route :any, '*path', feature_category: :not_owned do
       error!('404 Not Found', 404)

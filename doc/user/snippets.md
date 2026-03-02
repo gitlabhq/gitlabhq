@@ -23,7 +23,7 @@ and you can maintain your snippets with the [snippets API](../api/snippets.md).
 You can create and manage your snippets with:
 
 - The GitLab user interface.
-- The [GitLab for VS Code extension](../editor_extensions/visual_studio_code/_index.md#create-a-snippet).
+- The [GitLab for VS Code extension](../editor_extensions/visual_studio_code/projects.md#create-a-snippet).
 - The [`glab` CLI](../editor_extensions/gitlab_cli/_index.md).
 
 ![A code snippet showing sample content in GitLab.](img/snippet_sample_v16_6.png)

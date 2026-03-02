@@ -52,7 +52,7 @@ module Gitlab
       def initialize(repository, extra_namespace: nil, expires_in: 2.weeks)
         @repository = repository
         @namespace = repository.full_path.to_s
-        @namespace += ":#{repository.project.id}" if repository.project
+        @namespace += ":{#{repository.project.id}}" if repository.project
         @namespace = "#{@namespace}:#{extra_namespace}" if extra_namespace
         @expires_in = expires_in
       end
@@ -90,8 +90,7 @@ module Gitlab
         ref_name = Gitlab::Git.ref_name(ref)
 
         if rebuilding?(key)
-          # TODO: Implement dual_write in next MR
-          nil
+          dual_write(key, ref_name, deleted)
         else
           simple_update(key, ref_name, deleted)
         end
@@ -172,6 +171,38 @@ module Gitlab
         raise
       end
 
+      # Update cache and enqueue event during rebuild
+      # Ensures no events are lost during cache reconstruction
+      # @param key [String] Cache key
+      # @param ref_name [String] Short ref name (e.g., "main")
+      # @param deleted [Boolean] Whether to remove (true) or add (false)
+      def dual_write(key, ref_name, deleted)
+        full_key = cache_key(key)
+        pending = pending_key(key)
+        event = encode_event(ref_name, deleted)
+
+        with do |redis|
+          # Enqueue event first for rebuild process to reconcile.
+          # This ensures no events are lost even if a failure occurs
+          # between operations - cache updates self-heal naturally,
+          # but lost events cannot be recovered.
+          redis.pipelined do |pipeline|
+            pipeline.lpush(pending, event)
+            pipeline.expire(pending, PENDING_EVENT_TTL)
+          end
+
+          if deleted
+            redis.eval(SREM_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
+          else
+            redis.eval(SADD_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
+          end
+        end
+      rescue ::Redis::BaseError => e
+        log_error(:dual_write_failed, key, e)
+        mark_untrusted(key)
+        raise
+      end
+
       def suffixed_cache_key(type, suffix)
         "#{cache_namespace}:#{type}:#{suffix}:#{namespace}"
       end
@@ -180,6 +211,14 @@ module Gitlab
         with { |redis| redis.exists?(redis_key) } # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
       rescue ::Redis::BaseError
         false
+      end
+
+      # Encode event for pending queue
+      # @param ref_name [String] Short ref name
+      # @param deleted [Boolean] Whether ref was deleted
+      # @return [String] Encoded event (e.g., "+main" or "-feature")
+      def encode_event(ref_name, deleted)
+        "#{deleted ? '-' : '+'}#{ref_name}"
       end
 
       def mark_trusted(key)

@@ -173,6 +173,7 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
       before do
         project.merge_method = :ff
         project.save!
+        project.project_setting.update!(automatic_rebase_enabled: true)
       end
 
       context 'when it requires a rebase' do
@@ -194,6 +195,19 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
 
           expect(strategy.execute_git_merge!).to eq({ commit_sha: '1234' })
         end
+
+        context 'when automatic_rebase_enabled is false' do
+          before do
+            project.project_setting.update!(automatic_rebase_enabled: false)
+          end
+
+          it 'performs a fast-forward merge without create ref service' do
+            expect(MergeRequests::CreateRefService).not_to receive(:new)
+            expect(merge_request.target_project.repository).to receive(:ff_merge).and_return('1234')
+
+            expect(strategy.execute_git_merge!).to eq({ commit_sha: '1234' })
+          end
+        end
       end
 
       context 'when it does not require a rebase' do
@@ -214,6 +228,7 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
       before do
         project.merge_method = :rebase_merge
         project.save!
+        project.project_setting.update!(automatic_rebase_enabled: true)
       end
 
       it 'fast forward merges with the commit sha from the create ref service' do
@@ -229,6 +244,19 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
         expect(merge_request).to receive(:schedule_cleanup_refs).with(only: [:rebase_on_merge_path])
 
         expect(strategy.execute_git_merge!).to eq({ commit_sha: '1234' })
+      end
+
+      context 'when automatic_rebase_enabled is false' do
+        before do
+          project.project_setting.update!(automatic_rebase_enabled: false)
+        end
+
+        it 'performs standard merge without create ref service' do
+          expect(MergeRequests::CreateRefService).not_to receive(:new)
+          expect(merge_request.target_project.repository).to receive(:merge).and_return('1234')
+
+          expect(strategy.execute_git_merge!).to eq({ commit_sha: '1234', merge_commit_sha: '1234' })
+        end
       end
     end
 

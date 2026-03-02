@@ -126,8 +126,8 @@ To add a self-hosted model:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
-1. Select **Configure GitLab Duo Self-Hosted**.
-   - If **Configure GitLab Duo Self-Hosted** is not available, synchronize your
+1. Select **Configure models for GitLab Duo**.
+   - If **Configure models for GitLab Duo** is not available, synchronize your
      subscription after purchase:
      1. In the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
@@ -188,8 +188,8 @@ To enable self-hosted beta models and features:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
-1. Select **Configure GitLab Duo Self-Hosted**.
-   - If **Configure GitLab Duo Self-Hosted** is not available, synchronize your
+1. Select **Configure models for GitLab Duo**.
+   - If **Configure models for GitLab Duo** is not available, synchronize your
      subscription after purchase:
      1. In the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
@@ -202,7 +202,7 @@ Configure a GitLab Duo feature and sub-feature to send queries to the self-hoste
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
-1. Select **Configure GitLab Duo Self-Hosted**.
+1. Select **Configure models for GitLab Duo**.
 1. Select the **AI-native features** tab.
 1. For the feature and sub-feature you want to configure, from the dropdown list, choose the self-hosted model you want to use.
 
@@ -228,7 +228,7 @@ You can configure a GitLab Duo feature to use the GitLab-managed model, even if 
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
-1. Select **Configure GitLab Duo Self-Hosted**.
+1. Select **Configure models for GitLab Duo**.
 1. Select the **AI-native features** tab.
 1. For the feature and sub-feature you want to configure, from the dropdown list, select **GitLab-managed model**.
 
@@ -270,7 +270,7 @@ To disable a GitLab Duo feature or sub-feature:
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
-1. Select **Configure GitLab Duo Self-Hosted**.
+1. Select **Configure models for GitLab Duo**.
 1. Select the **AI-native features** tab.
 1. For the feature or sub-feature you want to disable, from the dropdown list, select **Disabled**.
 

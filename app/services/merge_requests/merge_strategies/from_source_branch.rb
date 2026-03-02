@@ -78,6 +78,7 @@ module MergeRequests
       # and when ff merge must be possible
       def use_create_ref_service?
         Feature.enabled?(:rebase_on_merge_automatic, project) &&
+          project.project_setting.automatic_rebase_enabled &&
           project.ff_merge_must_be_possible? &&
           merge_request.should_be_rebased?
       end

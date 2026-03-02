@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_repository_cache, feature_category: :source_code_management do
   let_it_be(:project) { create(:project) }
   let(:repository) { project.repository }
-  let(:namespace) { "#{repository.full_path}:#{project.id}" }
+  let(:namespace) { "#{repository.full_path}:{#{project.id}}" }
   let(:gitlab_cache_namespace) { Gitlab::Redis::Cache::CACHE_NAMESPACE }
   let(:cache) { described_class.new(repository) }
 
@@ -151,6 +151,41 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       end
     end
 
+    context 'when rebuild is in progress but cache does not exist' do
+      before do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.rebuild_flag_key(:branch_names), '1', ex: 60)
+          redis.del(cache.cache_key(:branch_names))
+        end
+      end
+
+      it 'does not create cache key' do
+        cache.handle_ref_change(:branch_names, 'refs/heads/feature', false)
+
+        expect(cache.exist?(:branch_names)).to be false
+      end
+
+      it 'still queues event to pending list' do
+        cache.handle_ref_change(:branch_names, 'refs/heads/feature', false)
+
+        pending_events = Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.lrange(cache.pending_key(:branch_names), 0, -1)
+        end
+
+        expect(pending_events).to contain_exactly('+feature')
+      end
+
+      it 'queues deletion event even when cache does not exist' do
+        cache.handle_ref_change(:branch_names, 'refs/heads/old-branch', true)
+
+        pending_events = Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.lrange(cache.pending_key(:branch_names), 0, -1)
+        end
+
+        expect(pending_events).to contain_exactly('-old-branch')
+      end
+    end
+
     context 'when rebuild is in progress' do
       before do
         cache.write(:branch_names, %w[main])
@@ -159,12 +194,51 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
         end
       end
 
-      it 'does not update the cache directly' do
-        # TODO: Will be updated in dual_write MR to enqueue event
+      it 'updates the cache and enqueues event' do
         cache.handle_ref_change(:branch_names, branch_ref, false)
 
-        # For now, no change happens during rebuild
+        # Cache is updated immediately
+        expect(cache.read(:branch_names)).to contain_exactly('main', 'feature-branch')
+
+        # Event is enqueued for rebuild reconciliation
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          events = redis.lrange(cache.pending_key(:branch_names), 0, -1)
+          expect(events).to contain_exactly('+feature-branch')
+        end
+      end
+
+      it 'enqueues delete events with minus prefix' do
+        cache.write(:branch_names, %w[main feature-branch])
+
+        cache.handle_ref_change(:branch_names, branch_ref, true)
+
         expect(cache.read(:branch_names)).to contain_exactly('main')
+
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          events = redis.lrange(cache.pending_key(:branch_names), 0, -1)
+          expect(events).to contain_exactly('-feature-branch')
+        end
+      end
+
+      it 'sets TTL on pending queue' do
+        cache.handle_ref_change(:branch_names, branch_ref, false)
+
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          ttl = redis.ttl(cache.pending_key(:branch_names))
+          expect(ttl).to be_within(10).of(1.hour.to_i)
+        end
+      end
+
+      it 'accumulates multiple events in order' do
+        cache.handle_ref_change(:branch_names, 'refs/heads/branch-1', false)
+        cache.handle_ref_change(:branch_names, 'refs/heads/branch-2', false)
+        cache.handle_ref_change(:branch_names, 'refs/heads/branch-1', true)
+
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          # LPUSH adds to head, so order is reversed when reading
+          events = redis.lrange(cache.pending_key(:branch_names), 0, -1)
+          expect(events).to eq(['-branch-1', '+branch-2', '+branch-1'])
+        end
       end
     end
 
@@ -193,6 +267,39 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
           hash_including(
             message: 'RebuildableSetCache error',
             event: :simple_update_failed,
+            cache_key: :branch_names
+          )
+        )
+
+        expect(cache.trusted?(:branch_names)).to be true
+
+        expect { cache.handle_ref_change(:branch_names, branch_ref, false) }.to raise_error(::Redis::ConnectionError)
+
+        expect(cache.trusted?(:branch_names)).to be false
+      end
+    end
+
+    context 'when Redis error occurs during dual_write' do
+      before do
+        cache.write(:branch_names, %w[main])
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.rebuild_flag_key(:branch_names), "1")
+          redis.set(cache.trust_key(:branch_names), '1')
+        end
+      end
+
+      it 'marks cache as untrusted and logs error' do
+        allow(Gitlab::Redis::RepositoryCache).to receive(:with).and_wrap_original do |original, &block|
+          original.call do |redis|
+            allow(redis).to receive(:pipelined).and_raise(::Redis::ConnectionError, 'Connection refused')
+            block.call(redis)
+          end
+        end
+
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            message: 'RebuildableSetCache error',
+            event: :dual_write_failed,
             cache_key: :branch_names
           )
         )

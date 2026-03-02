@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 class Timelog < ApplicationRecord
-  # Gitlab::TimeTrackingFormatter.parse("1y") == 31557600 seconds
-  # 31557600 slightly deviates from (365 days * 24 hours/day * 60 minutes/hour * 60 seconds/minute)
-  MAX_TOTAL_TIME_SPENT = 31557600.seconds.to_i # a year
-
   include Importable
   include Sortable
   include EachBatch
+
+  # Gitlab::TimeTrackingFormatter.parse("4y")
+  # Approx. 4 years * 365.25 days/y * 24 hours/d * 60 minutes/h * 60 seconds/m
+  # We need to stay below 2^31 seconds here to avoid IntegerEncodingError in GraphQL:
+  # https://gitlab.com/gitlab-org/gitlab/-/work_items/418226
+  MAX_TOTAL_TIME_SPENT = 126230400
 
   before_validation :ensure_namespace_id
   before_save :set_project
@@ -72,7 +74,7 @@ class Timelog < ApplicationRecord
     total_time_spent = issuable.timelogs.sum(:time_spent) + time_spent
 
     errors.add(:base, _("Total time spent cannot be negative.")) if total_time_spent < 0
-    errors.add(:base, _("Total time spent cannot exceed a year.")) if total_time_spent > MAX_TOTAL_TIME_SPENT
+    errors.add(:base, _("Total time spent cannot exceed 4 years.")) if total_time_spent > MAX_TOTAL_TIME_SPENT
   end
 
   def set_project

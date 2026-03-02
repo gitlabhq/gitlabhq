@@ -453,7 +453,7 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
 
     context 'for an internal user' do
       it 'does not deactivate the user' do
-        internal_user = Users::Internal.alert_bot
+        internal_user = Users::Internal.in_organization(user.organization).alert_bot
 
         put :deactivate, params: { id: internal_user.username }
 

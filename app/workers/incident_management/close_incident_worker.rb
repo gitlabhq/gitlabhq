@@ -24,20 +24,25 @@ module IncidentManagement
 
     private
 
-    def user
-      @user ||= Users::Internal.alert_bot
+    def user(incident)
+      alert_bot_for_organization_id(incident.project.organization_id)
+    end
+
+    def alert_bot_for_organization_id(organization_id)
+      @alert_bots ||= {}
+      @alert_bots[organization_id] ||= Users::Internal.in_organization(organization_id).alert_bot
     end
 
     def close_incident(incident)
       ::Issues::CloseService
-        .new(container: incident.project, current_user: user)
+        .new(container: incident.project, current_user: user(incident))
         .execute(incident, system_note: false)
     end
 
     def add_system_note(incident)
       return unless incident.reset.closed?
 
-      SystemNoteService.auto_resolve_prometheus_alert(incident, incident.project, user)
+      SystemNoteService.auto_resolve_prometheus_alert(incident, incident.project, user(incident))
     end
   end
 end

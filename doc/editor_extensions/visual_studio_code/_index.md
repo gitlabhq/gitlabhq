@@ -12,23 +12,17 @@ integrates GitLab Duo and other GitLab features directly into your IDE.
 To get started, [install and configure the extension](setup.md). For added security, you can set up
 the extension in a Visual Studio Code Dev Container.
 
-When configured, this extension brings the GitLab features you use every day directly into your VS Code environment:
+When configured, this extension brings the GitLab features you use every day directly into your
+VS Code environment:
 
-- Create and view issues.
-- Create, view, and review merge requests.
-- [Run common commands](settings.md#command-palette-commands) from the Visual Studio Code Command Palette.
-- [Test your GitLab CI/CD configuration](cicd.md#test-gitlab-cicd-configuration).
-- [View pipeline status](cicd.md) and [job outputs](cicd.md#view-cicd-job-output).
-- Create and manage snippets.
-- [Browse repositories](remote_urls.md#browse-a-repository-in-read-only-mode) without cloning them.
-- [Secure your application](security_scanning.md) with security findings and SAST scanning.
-
-The GitLab for VS Code extension also streamlines your VS Code workflow with AI-assisted features:
-
-- [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md) including GitLab Duo
-  Chat (Agentic), agents, the Software Development Flow, and GitLab Duo Code Suggestions.
-- [GitLab Duo (Classic)](../../user/gitlab_duo/feature_summary.md) including GitLab
-  Duo Chat (Classic) and GitLab Duo Code Suggestions (Classic).
+- [Work with projects](projects.md): Plan and track work with issues, review and discuss changes
+  with merge requests, and share code snippets. Use GitLab Duo for AI-native planning and coding.
+- [Monitor and test CI/CD pipelines](cicd.md): Test your pipeline configuration. View pipeline
+  status and job outputs.
+- [Secure your application](security_scanning.md): Review security findings and perform SAST
+  scanning for your project.
+- [Browse repositories](remote_urls.md#browse-a-repository-in-read-only-mode): Access a GitLab
+  repository in read-only mode without cloning it.
 
 When you view a GitLab project in VS Code, the extension shows you information about your current branch:
 
@@ -114,217 +108,6 @@ To change your project selection:
 1. Select the project.
 1. Next to the project name, select **Clear Selected Project** ({{< icon name="close-xs" >}}).
 
-## Use slash commands
-
-Issues and merge requests support [GitLab slash commands](../../user/project/integrations/gitlab_slack_application.md#slash-commands) to perform actions directly in VS Code.
-
-## Create a snippet
-
-Create a [snippet](../../user/snippets.md) to store and share bits of code and text with other users.
-Snippets can be a selection or an entire file.
-
-To create a snippet in VS Code:
-
-1. Choose the content for your snippet:
-   - For a **Snippet from file**, open the file.
-   - For a **Snippet from selection**, open the file and select the lines you want to include.
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-1. In the Command Palette, run the command `GitLab: Create Snippet`.
-1. Select the snippet's privacy level:
-   - **Private** snippets are visible only to project members.
-   - **Public** snippets are visible to everyone.
-1. Select the snippet's scope:
-   - **Snippet from file** uses the entire contents of the active file.
-   - **Snippet from selection** uses the lines you selected in the active file.
-
-GitLab opens the new snippet's page in a new browser tab.
-
-### Create a patch file
-
-When you review a merge request, create a snippet patch when you want to suggest multi-file changes.
-
-1. On your local machine, check out the branch you want to propose changes to.
-1. In VS Code, edit all files you want to change. Do not commit your changes.
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-1. In the Command Palette, enter `GitLab: Create snippet patch`, and select it. This command runs a
-   `git diff` command and creates a GitLab snippet in your project.
-1. Enter a **Patch name** and press <kbd>Enter</kbd>. GitLab uses this name as the
-   snippet title, and converts it into a filename appended with `.patch`.
-1. Select the snippet's privacy level:
-   - **Private** snippets are visible only to project members.
-   - **Public** snippets are visible to everyone.
-
-VS Code opens the snippet patch in a new browser tab. The snippet patch's
-description contains instructions on how to apply the patch.
-
-### Insert a snippet
-
-To insert an existing single-file or [multi-file](../../user/snippets.md#add-or-remove-multiple-files) snippet from a project you are a member of:
-
-1. Place your cursor where you want to insert the snippet.
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-1. Type `GitLab: Insert Snippet` and select it.
-1. Select the project containing your snippet.
-1. Select the snippet to apply.
-1. For a multi-file snippet, select the file to apply.
-
-## View issues and merge requests
-
-To view issues and merge requests for a specific project:
-
-1. On the menu bar, select **GitLab** ({{< icon name="tanuki" >}}) to display the extension sidebar.
-1. On the sidebar, expand **Issues and merge requests**.
-1. Select your desired project to expand it.
-1. Choose one of the following result types:
-   - **Issues assigned to me**
-   - **Issues created by me**
-   - **Merge requests assigned to me**
-   - **Merge requests I'm reviewing**
-   - **Merge requests created by me**
-   - **All project merge requests**
-   - Your [custom queries](custom_queries.md)
-
-Select an issue or merge request to open it in a new VS Code tab.
-
-## Create an issue
-
-To create an issue in the current project:
-
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-1. In the Command Palette, search for **GitLab: Create new issue on current project**
-   and press <kbd>Enter</kbd>.
-
-GitLab opens the **New issue** page in your default browser.
-
-## Create a merge request
-
-To create a merge request in the current project, on the bottom status bar, select
-**Create MR** ({{< icon name="merge-request-open" >}}) or:
-
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-1. In the Command Palette, search for **GitLab: Create new merge request from current project**
-   and press <kbd>Enter</kbd>.
-
-GitLab opens the **New merge request** page in your default browser.
-
-## Review a merge request
-
-Use this extension to review, comment on, and approve merge requests without leaving VS Code:
-
-1. On the **GitLab** sidebar, expand **Issues and Merge Requests**, and select your project.
-1. Select the merge request you want to review. Its sidebar entry expands with more information.
-1. Under the merge request's number and title, select **Description** to read more about the merge request.
-1. To review the proposed changes to a file, select the file from the list to show it in a VS Code tab.
-   GitLab shows diff comments inline in the tab. In the list, deleted files are marked in red:
-
-   ![An alphabetical list of files changed in this merge request, including the change types.](img/vscode_view_changed_file_v17_6.png)
-
-Use the diff to:
-
-- Review and create discussions.
-- Resolve and reopen these discussions.
-- Delete and edit individual comments.
-
-### Compare with default branch
-
-<!-- vale gitlab_base.InclusiveLanguage = NO -->
-
-To compare your branch with your project's default branch, without creating a merge request:
-
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-1. In the Command Palette, search for **GitLab: Compare current branch with master** and press <kbd>Enter</kbd>.
-
-The extension opens a new browser tab. It shows a diff between the most recent commit on your branch, and
-the most recent commit on your project's default branch.
-
-<!-- vale gitlab_base.InclusiveLanguage = YES -->
-
-### Open current file in GitLab UI
-
-To open a file from your current GitLab project in the GitLab UI, with specific lines highlighted:
-
-1. Open your desired file in VS Code.
-1. Select the lines you want to highlight.
-1. Open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-1. In the Command Palette, search for **GitLab: Open active file on GitLab** and press <kbd>Enter</kbd>.
-
-## Search issues and merge requests
-
-To search your project's issues and merge requests directly from VS Code, use filtered search or
-[Advanced Search](../../integration/advanced_search/elasticsearch.md). With filtered search,
-you use predefined tokens to refine your search results.
-Advanced Search provides faster, more efficient search across the entire GitLab instance.
-
-Prerequisites:
-
-- You're a member of a GitLab project.
-- You've installed [GitLab for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-- You've signed in to your GitLab instance, as described in [Authenticate with GitLab](setup.md#authenticate-with-gitlab).
-
-To search the titles and description fields in your project:
-
-1. In VS Code, open the Command Palette:
-   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-1. Select your desired search type: `GitLab: Search project merge requests` or `GitLab: Search project issues`.
-1. Enter your text, using filter tokens as needed.
-1. To confirm your search text, press <kbd>Enter</kbd>. To cancel, press <kbd>Escape</kbd>.
-
-GitLab opens the results in a browser tab.
-
-### Filter searches with tokens
-
-Searches in large projects return better results when you add filters. The extension supports these tokens
-for filtering merge requests and issues:
-
-| Token     | Example                                                            | Description |
-|-----------|--------------------------------------------------------------------|-------------|
-| assignee  | `assignee: timzallmann`                                            | Username of the assignee, without `@`. |
-| author    | `author: fatihacet`                                                | Username of the author, without `@`. |
-| label     | `label: frontend` or `label:frontend label: Discussion`            | A single label. Usable more than once, and can be used in the same query as `labels`. |
-| labels    | `labels: frontend, Discussion, performance`                        | Multiple labels in a comma-separated list. Can be used in the same query as `label`. |
-| milestone | `milestone: 18.1`                                                  | Milestone title without `%`. |
-| scope     | `scope: created-by-me` or `scope: assigned-to-me` or `scope: all`. | Issues and merge requests matching the given scope. Values: `created-by-me` (default), `assigned-to-me` or `all`. |
-| title     | `title: discussions refactor`                                             | Issues and merge requests with title or description matching these words. Don't add quotation marks around phrases. |
-
-Token syntax and guidelines:
-
-- Each token name requires a colon (`:`) after it, like `label:`.
-  - A leading space for the colon (`label :`) is invalid and returns a parse error.
-  - A space after the token name is optional. Both `label: frontend` and `label:frontend` are valid.
-- You can use the `label` and `labels` tokens multiple times and together. These queries return the same results:
-  - `labels: frontend discussion label: performance`
-  - `label: frontend label: discussion label: performance`
-  - `labels: frontend discussion performance` (the resulting, combined query)
-
-You can combine multiple tokens in a single search query. For example:
-
-```plaintext
-title: new merge request widget author: fatihacet assignee: jschatz1 labels: frontend, performance milestone: 17.5
-```
-
-This search query looks for:
-
-- Title: `new merge request widget`
-- Author: `fatihacet`
-- Assignee: `jschatz1`
-- Labels: `frontend` and `performance`
-- Milestone: `17.5`
-
 ## Customize keyboard shortcuts
 
 You can assign different keyboard shortcuts for **Accept Inline Suggestion**, **Accept Next Word Of Inline Suggestion**,
@@ -371,6 +154,7 @@ information to GitLab. To enable or customize telemetry in Visual Studio Code:
 ## Related topics
 
 - [Security considerations for editor extensions](../security_considerations.md)
+- [Command Palette commands](settings.md#command-palette-commands)
 - [Troubleshooting the GitLab for VS Code extension](troubleshooting.md)
 - [Download the GitLab for VS Code extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 - Extension [source code](https://gitlab.com/gitlab-org/gitlab-vscode-extension/)

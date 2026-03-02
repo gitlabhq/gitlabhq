@@ -29,7 +29,7 @@ Prerequisites:
 
 To view security findings:
 
-1. In VS Code, on the left sidebar, select **GitLab** ({{< icon name="tanuki" >}}).
+1. In VS Code, in the left sidebar, select **GitLab** ({{< icon name="tanuki" >}}).
 1. In the current branch section, expand **Security scanning**.
 1. Select either **New findings** or **Fixed findings**.
 1. Select a severity level.
@@ -81,7 +81,7 @@ To perform SAST scanning of a file in VS Code:
         - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
      1. Search for **GitLab: Run Remote Scan (SAST)** and press <kbd>Enter</kbd>.
 1. View the results of the SAST scan.
-   1. In VS Code, on the left sidebar, select **GitLab** ({{< icon name="tanuki" >}}).
+   1. In VS Code, in the left sidebar, select **GitLab** ({{< icon name="tanuki" >}}).
    1. Expand the GitLab remote scan (SAST) section. The results of the SAST scan are listed in
       descending order by severity.
    1. Select a finding to review the details.

@@ -532,57 +532,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     });
   });
 
-  describe('when mrReportsTab is enabled', () => {
-    beforeEach(() => {
-      window.gl = { mrWidgetData: { reportsTabPath: 'reportsTabPath' } };
-      window.mrTabs = { tabShown: jest.fn() };
-      jest.spyOn(window.history, 'replaceState');
-    });
-
-    it('does not render toggle button', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-        },
-        provide: { glFeatures: { mrReportsTab: true } },
-      });
-
-      expect(findToggleButton().exists()).toBe(false);
-    });
-
-    it('renders view reports action button', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-        },
-        provide: { glFeatures: { mrReportsTab: true } },
-      });
-
-      expect(findActionButtons().props('tertiaryButtons')).toEqual([
-        expect.objectContaining({ href: 'reportsTabPath/test', text: 'View report' }),
-      ]);
-    });
-
-    it('calls mrTabs.tabShown when clicking action button', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-        },
-        provide: { glFeatures: { mrReportsTab: true } },
-      });
-
-      wrapper.findByTestId('extension-actions-button').vm.$emit('click', { preventDefault() {} });
-
-      await nextTick();
-
-      expect(window.mrTabs.tabShown).toHaveBeenCalledWith('reports');
-      expect(window.history.replaceState).toHaveBeenCalledWith(null, null, 'reportsTabPath/test');
-    });
-  });
-
   describe('loading states', () => {
     it('shows loading icon when loadingState is status_icon', async () => {
       await createComponent({

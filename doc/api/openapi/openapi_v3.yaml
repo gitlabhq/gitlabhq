@@ -11704,6 +11704,31 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_3b1a317383c7"
+  "/api/v4/internal/gitaly/object_pool_members":
+    get:
+      operationId: getApiV4InternalGitalyObjectPoolMembers
+      responses:
+        '200':
+          description: OK
+      parameters:
+      - name: disk_path
+        required: true
+        description: The on-disk path of the pool repository
+        schema:
+          type: string
+        in: query
+      - name: storage
+        required: true
+        description: The storage shard name
+        schema:
+          type: string
+        in: query
+      - name: upstream_only
+        required: false
+        description: Return only the upstream repository
+        schema:
+          type: boolean
+        in: query
   "/api/v4/projects/{id}/ml/mlflow/api/2.0/mlflow-artifacts/artifacts":
     get:
       operationId: getApiV4ProjectsIdMlMlflowApi20MlflowArtifactsArtifacts

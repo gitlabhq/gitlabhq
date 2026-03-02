@@ -19,6 +19,7 @@ description: Estimates, time spent, and reporting.
 - Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. [The new look for epics](../group/epics/_index.md#epics-as-work-items) must be enabled.
 - Minimum role to add, edit, and remove estimate [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 - Time tracking for epics [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1.
+- The supported total amount of time spent was raised from 1 year to 4 years in GitLab 18.10.
 
 {{< /history >}}
 
@@ -89,7 +90,7 @@ As you work, you can log the time you've spent.
 Every new time spent entry is added to the current total time spent for the
 issue, task, or the merge request.
 
-The total amount of time spent on an issue, task, or merge request cannot exceed a year.
+The total amount of time spent on an issue, task, or merge request cannot exceed 4 years.
 
 ### Add time spent
 

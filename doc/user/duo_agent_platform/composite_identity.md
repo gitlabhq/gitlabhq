@@ -9,17 +9,15 @@ title: Composite identity
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554156) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `duo_workflow_use_composite_identity`.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
-
+- Composite identity automatically included in GitLab Duo Agent Platform and setting to turn composite identity on or off [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/588629) in GitLab 18.9. 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Composite identity is an authentication and authorization mechanism that combines two identities into a single token:
 
 - A service account. The machine user that performs the actual actions.
 - A human user. The person who initiated the request.
+
+Composite identity is automatically included in GitLab Duo Agent Platform.
 
 This dual-identity approach solves a critical challenge:
 agents need to act with access that does not exceed the access of the user who triggered them, or the access that the service account was granted,

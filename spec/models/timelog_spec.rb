@@ -77,13 +77,17 @@ RSpec.describe Timelog, feature_category: :team_planning do
       end
 
       context 'when total time spent is outside the allowed range' do
-        it 'adds an error if total time spent would exceed a year' do
+        it 'is does not allow too high values for the constant' do
+          expect(described_class::MAX_TOTAL_TIME_SPENT).to be < 2**31
+        end
+
+        it 'adds an error if total time spent would exceed the maximum' do
           time_to_spend = described_class::MAX_TOTAL_TIME_SPENT - time_already_spent + 1.second.to_i
           timelog = build(:issue_timelog, issue: issue, time_spent: time_to_spend)
 
           expect { timelog.save! }
             .to raise_error(ActiveRecord::RecordInvalid,
-              _('Validation failed: Total time spent cannot exceed a year.'))
+              _('Validation failed: Total time spent cannot exceed 4 years.'))
         end
 
         it 'adds an error if total time spent would be negative' do

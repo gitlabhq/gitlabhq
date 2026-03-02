@@ -13,7 +13,7 @@ title: Group push rules API
 
 {{< /details >}}
 
-Use this API to manage [group push rules](../user/group/access_and_permissions.md#group-push-rules)
+Use this API to manage [group push rules](../user/project/repository/push_rules.md#group-push-rules)
 for newly created projects in a group.
 
 Prerequisites:

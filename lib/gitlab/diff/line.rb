@@ -96,11 +96,7 @@ module Gitlab
       end
 
       def match?
-        if Feature.enabled?(:diff_line_match, Feature.current_request)
-          type.to_s == 'match'
-        else
-          type == :match
-        end
+        type.to_s == 'match'
       end
 
       def discussable?

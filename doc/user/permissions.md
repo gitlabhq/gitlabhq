@@ -270,10 +270,10 @@ Group permissions for [wikis](project/wiki/group.md):
 Group permissions for [repository](project/repository/_index.md) features including merge requests, push rules, and deploy tokens.
 
 | Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner |
-| -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
+|----------------------------------------------------------------------------------------|:-----:|:-------:|:--------:|:---------:|:----------:|:-----:|
 | Manage [deploy tokens](project/deploy_tokens/_index.md)                                |       |         |          |           |            |   ✓   |
 | Manage [merge request settings](group/manage.md#group-merge-request-approval-settings) |       |         |          |           |            |   ✓   |
-| Manage [push rules](group/access_and_permissions.md#group-push-rules)                  |       |         |          |           |            |   ✓   |
+| Manage [push rules](project/repository/push_rules.md#group-push-rules)         |       |         |          |           |            |   ✓   |
 
 ### Group user management
 

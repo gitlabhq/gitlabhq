@@ -818,7 +818,8 @@ CREATE TABLE siphon_ci_runners
     `organization_id` Nullable(Int64),
     `allowed_plan_name_uids` Array(Int16) DEFAULT [],
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
-    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1))
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `token_rotation_deadline` DateTime64(6, 'UTC') DEFAULT toDateTime64('9999-12-31 23:59:59.999999', 6, 'UTC')
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY (id, runner_type)

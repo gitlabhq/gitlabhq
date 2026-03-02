@@ -23314,6 +23314,43 @@ The edge type for [`PackageTag`](#packagetag).
 | <a id="packagetagedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="packagetagedge-node"></a>`node` | [`PackageTag`](#packagetag) | The item at the end of the edge. |
 
+#### `PackagesHelmMetadataCacheRegistryConnection`
+
+The connection type for [`PackagesHelmMetadataCacheRegistry`](#packageshelmmetadatacacheregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packageshelmmetadatacacheregistryconnection-edges"></a>`edges` | [`[PackagesHelmMetadataCacheRegistryEdge]`](#packageshelmmetadatacacheregistryedge) | A list of edges. |
+| <a id="packageshelmmetadatacacheregistryconnection-nodes"></a>`nodes` | [`[PackagesHelmMetadataCacheRegistry]`](#packageshelmmetadatacacheregistry) | A list of nodes. |
+| <a id="packageshelmmetadatacacheregistryconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+##### Fields with arguments
+
+###### `PackagesHelmMetadataCacheRegistryConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+Arguments:
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packageshelmmetadatacacheregistryconnection-count-limit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
+
+#### `PackagesHelmMetadataCacheRegistryEdge`
+
+The edge type for [`PackagesHelmMetadataCacheRegistry`](#packageshelmmetadatacacheregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packageshelmmetadatacacheregistryedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="packageshelmmetadatacacheregistryedge-node"></a>`node` | [`PackagesHelmMetadataCacheRegistry`](#packageshelmmetadatacacheregistry) | The item at the end of the edge. |
+
 #### `PackagesNugetSymbolRegistryConnection`
 
 The connection type for [`PackagesNugetSymbolRegistry`](#packagesnugetsymbolregistry).
@@ -34859,6 +34896,31 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="geonode-packagefileregistries-sort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
 | <a id="geonode-packagefileregistries-verificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
+##### `GeoNode.packagesHelmMetadataCacheRegistries`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Find Helm Metadata Cache registries on this Geo node. Ignored if `geo_packages_helm_metadata_cache_replication` feature flag is disabled.
+
+Returns [`PackagesHelmMetadataCacheRegistryConnection`](#packageshelmmetadatacacheregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonode-packageshelmmetadatacacheregistries-ids"></a>`ids` | [`[GeoPackagesHelmMetadataCacheRegistryID!]`](#geopackageshelmmetadatacacheregistryid) | Filters registries by their ID. |
+| <a id="geonode-packageshelmmetadatacacheregistries-keyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
+| <a id="geonode-packageshelmmetadatacacheregistries-replicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
+| <a id="geonode-packageshelmmetadatacacheregistries-sort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
+| <a id="geonode-packageshelmmetadatacacheregistries-verificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
+
 ##### `GeoNode.packagesNugetSymbolRegistries`
 
 {{< details >}}
@@ -43120,6 +43182,36 @@ A packages cleanup policy designed to keep only packages and packages assets tha
 | <a id="packagescleanuppolicy-keepnduplicatedpackagefiles"></a>`keepNDuplicatedPackageFiles` | [`PackagesCleanupKeepDuplicatedPackageFilesEnum!`](#packagescleanupkeepduplicatedpackagefilesenum) | Number of duplicated package files to retain. |
 | <a id="packagescleanuppolicy-nextrunat"></a>`nextRunAt` | [`Time`](#time) | Next time that the packages cleanup policy will be executed. |
 
+### `PackagesHelmMetadataCacheRegistry`
+
+Represents the Geo replication and verification state of a packages_helm_metadata_cache.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="packageshelmmetadatacacheregistry-checksummismatch"></a>`checksumMismatch` | [`Boolean`](#boolean) | Indicate if the checksums of the PackagesHelmMetadataCacheRegistry do not match on the primary and secondary. |
+| <a id="packageshelmmetadatacacheregistry-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp when the PackagesHelmMetadataCacheRegistry was created. |
+| <a id="packageshelmmetadatacacheregistry-datamanagementdetailspath"></a>`dataManagementDetailsPath` | [`String`](#string) | Path to the data management view for this PackagesHelmMetadataCacheRegistry. |
+| <a id="packageshelmmetadatacacheregistry-forcetoredownload"></a>`forceToRedownload` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.10. Removed from registry tables in the database in favor of the newer reusable framework. |
+| <a id="packageshelmmetadatacacheregistry-id"></a>`id` | [`ID!`](#id) | ID of the PackagesHelmMetadataCacheRegistry. |
+| <a id="packageshelmmetadatacacheregistry-lastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the PackagesHelmMetadataCacheRegistry. |
+| <a id="packageshelmmetadatacacheregistry-lastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the PackagesHelmMetadataCacheRegistry. |
+| <a id="packageshelmmetadatacacheregistry-missingonprimary"></a>`missingOnPrimary` | [`Boolean`](#boolean) | Indicate if the PackagesHelmMetadataCacheRegistry is missing on primary. |
+| <a id="packageshelmmetadatacacheregistry-modelrecordid"></a>`modelRecordId` | [`Int`](#int) | ID of the PackagesHelmMetadataCacheRegistry's model record. |
+| <a id="packageshelmmetadatacacheregistry-packageshelmmetadatacacheid"></a>`packagesHelmMetadataCacheId` | [`ID!`](#id) | ID of the Helm Metadata Cache. |
+| <a id="packageshelmmetadatacacheregistry-retryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the PackagesHelmMetadataCacheRegistry is resynced. |
+| <a id="packageshelmmetadatacacheregistry-retrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the PackagesHelmMetadataCacheRegistry. |
+| <a id="packageshelmmetadatacacheregistry-state"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the PackagesHelmMetadataCacheRegistry. |
+| <a id="packageshelmmetadatacacheregistry-verificationchecksum"></a>`verificationChecksum` | [`String`](#string) | The local checksum of the PackagesHelmMetadataCacheRegistry. |
+| <a id="packageshelmmetadatacacheregistry-verificationchecksummismatched"></a>`verificationChecksumMismatched` | [`String`](#string) | The expected checksum of the PackagesHelmMetadataCacheRegistry in case of mismatch. |
+| <a id="packageshelmmetadatacacheregistry-verificationfailure"></a>`verificationFailure` | [`String`](#string) | Error message during verification of the PackagesHelmMetadataCacheRegistry. |
+| <a id="packageshelmmetadatacacheregistry-verificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the PackagesHelmMetadataCacheRegistry is reverified. |
+| <a id="packageshelmmetadatacacheregistry-verificationretrycount"></a>`verificationRetryCount` | [`Int`](#int) | Number of consecutive failed verification attempts of the PackagesHelmMetadataCacheRegistry. |
+| <a id="packageshelmmetadatacacheregistry-verificationstartedat"></a>`verificationStartedAt` | [`Time`](#time) | Timestamp when the verification of PackagesHelmMetadataCacheRegistry started. |
+| <a id="packageshelmmetadatacacheregistry-verificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Verification state of the PackagesHelmMetadataCacheRegistry. |
+| <a id="packageshelmmetadatacacheregistry-verifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the PackagesHelmMetadataCacheRegistry. |
+
 ### `PackagesNugetSymbolRegistry`
 
 Represents the Geo replication and verification state of a packages_nuget_symbol.
@@ -47606,7 +47698,19 @@ Represents rules that commit pushes must follow.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pushrules-rejectunsignedcommits"></a>`rejectUnsignedCommits` | [`Boolean!`](#boolean) | Indicates whether commits not signed through GPG will be rejected. |
+| <a id="pushrules-authoremailregex"></a>`authorEmailRegex` | [`String`](#string) | All commit author emails must match the regular expression. |
+| <a id="pushrules-branchnameregex"></a>`branchNameRegex` | [`String`](#string) | All branch names must match the regular expression. |
+| <a id="pushrules-commitcommittercheck"></a>`commitCommitterCheck` | [`Boolean!`](#boolean) | Only allow commits where the committer email matches a verified GitLab user email. |
+| <a id="pushrules-commitcommitternamecheck"></a>`commitCommitterNameCheck` | [`Boolean!`](#boolean) | Only allow commits where the author name matches the GitLab user name. |
+| <a id="pushrules-commitmessagenegativeregex"></a>`commitMessageNegativeRegex` | [`String`](#string) | No commit message is allowed to match the regular expression. |
+| <a id="pushrules-commitmessageregex"></a>`commitMessageRegex` | [`String`](#string) | All commit messages must match the regular expression. |
+| <a id="pushrules-denydeletetag"></a>`denyDeleteTag` | [`Boolean`](#boolean) | Deny deleting a tag with `git push`. |
+| <a id="pushrules-filenameregex"></a>`fileNameRegex` | [`String`](#string) | All committed filenames must not match the regular expression. |
+| <a id="pushrules-maxfilesize"></a>`maxFileSize` | [`Int`](#int) | Maximum file size (MB). |
+| <a id="pushrules-membercheck"></a>`memberCheck` | [`Boolean`](#boolean) | Restrict commits by author (email) to existing GitLab users. |
+| <a id="pushrules-preventsecrets"></a>`preventSecrets` | [`Boolean`](#boolean) | GitLab rejects any files that are likely to contain secrets. |
+| <a id="pushrules-rejectnondcocommits"></a>`rejectNonDcoCommits` | [`Boolean!`](#boolean) | Reject commit when it is not DCO certified. |
+| <a id="pushrules-rejectunsignedcommits"></a>`rejectUnsignedCommits` | [`Boolean!`](#boolean) | Reject commit when it is not signed through GPG. |
 
 ### `PypiMetadata`
 
@@ -58519,6 +58623,12 @@ A `GeoPackageFileRegistryID` is a global ID. It is encoded as a string.
 
 An example `GeoPackageFileRegistryID` is: `"gid://gitlab/Geo::PackageFileRegistry/1"`.
 
+### `GeoPackagesHelmMetadataCacheRegistryID`
+
+A `GeoPackagesHelmMetadataCacheRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoPackagesHelmMetadataCacheRegistryID` is: `"gid://gitlab/Geo::PackagesHelmMetadataCacheRegistry/1"`.
+
 ### `GeoPackagesNugetSymbolRegistryID`
 
 A `GeoPackagesNugetSymbolRegistryID` is a global ID. It is encoded as a string.
@@ -59486,6 +59596,7 @@ One of:
 - [`LfsObjectRegistry`](#lfsobjectregistry)
 - [`MergeRequestDiffRegistry`](#mergerequestdiffregistry)
 - [`PackageFileRegistry`](#packagefileregistry)
+- [`PackagesHelmMetadataCacheRegistry`](#packageshelmmetadatacacheregistry)
 - [`PackagesNugetSymbolRegistry`](#packagesnugetsymbolregistry)
 - [`PagesDeploymentRegistry`](#pagesdeploymentregistry)
 - [`PipelineArtifactRegistry`](#pipelineartifactregistry)

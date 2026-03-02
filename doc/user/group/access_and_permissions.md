@@ -16,35 +16,6 @@ title: Group access and permissions
 Configure your groups to control group permissions and access.
 For more information, see also [Sharing projects and groups](../project/members/sharing_projects_groups.md).
 
-## Group push rules
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-Group push rules allow group maintainers to set
-[push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
-
-To configure push rules for a group:
-
-1. On the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Repository**.
-1. Expand the **Pre-defined push rules** section.
-1. Select the settings you want.
-1. Select **Save push rules**.
-
-New projects inherit push rules from:
-
-- The closest parent group with push rules defined.
-- Push rules set for the entire instance, if no parent groups have push rules defined.
-
-Only projects inherit push rules. Subgroups don't inherit push
-rules from parent groups. To verify which push rules apply to new projects,
-create a project in the subgroup and check the project's push rules.
-
 ## Restrict Git access protocols
 
 {{< history >}}

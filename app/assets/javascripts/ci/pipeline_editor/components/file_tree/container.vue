@@ -1,16 +1,13 @@
 <script>
-import { GlAlert, GlTooltipDirective } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import { FILE_TREE_TIP_DISMISSED_KEY } from '../../constants';
 import FileItem from './file_item.vue';
 
 const i18n = {
-  tipBtn: __('Learn more'),
-  tipDescription: s__(
-    'PipelineEditorFileTree|When you use the include keyword to add pipeline configuration from files in the project, those files will be listed here.',
+  emptyStateText: s__(
+    'PipelineEditorFileTree|When you add configuration files by using %{codeStart}include%{codeEnd}, they appear in this list.',
   ),
-  tipTitle: s__('PipelineEditorFileTree|Configuration files added with the include keyword'),
 };
 
 export default {
@@ -19,32 +16,16 @@ export default {
   components: {
     FileIcon,
     FileItem,
-    GlAlert,
+    GlSprintf,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['ciConfigPath', 'includesHelpPagePath'],
+  inject: ['ciConfigPath'],
   props: {
     includes: {
       type: Array,
       required: true,
-    },
-  },
-  data() {
-    return {
-      canShowTip: localStorage.getItem(FILE_TREE_TIP_DISMISSED_KEY) !== 'true',
-    };
-  },
-  computed: {
-    showTip() {
-      return this.includes.length === 0 && this.canShowTip;
-    },
-  },
-  methods: {
-    dismissTip() {
-      this.canShowTip = false;
-      localStorage.setItem(FILE_TREE_TIP_DISMISSED_KEY, 'true');
     },
   },
 };
@@ -61,16 +42,13 @@ export default {
         <span data-testid="current-config-filename">{{ ciConfigPath }}</span>
       </span>
     </div>
-    <gl-alert
-      v-if="showTip"
-      variant="tip"
-      :title="$options.i18n.tipTitle"
-      :secondary-button-text="$options.i18n.tipBtn"
-      :secondary-button-link="includesHelpPagePath"
-      @dismiss="dismissTip"
-    >
-      {{ $options.i18n.tipDescription }}
-    </gl-alert>
+    <div v-if="includes.length === 0" class="gl-py-3 gl-text-subtle" data-testid="empty-state-text">
+      <gl-sprintf :message="$options.i18n.emptyStateText">
+        <template #code="{ content }">
+          <code>{{ content }}</code>
+        </template>
+      </gl-sprintf>
+    </div>
     <div class="gl-overflow-y-auto">
       <file-item v-for="file in includes" :key="file.location" :file="file" />
     </div>

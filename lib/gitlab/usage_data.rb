@@ -89,7 +89,7 @@ module Gitlab
             issues_with_associated_zoom_link: count(ZoomMeeting.added_to_issue),
             issues_using_zoom_quick_actions: distinct_count(ZoomMeeting, :issue_id),
             incident_issues: count(::Issue.with_issue_type(:incident), start: minimum_id(Issue), finish: maximum_id(Issue)),
-            alert_bot_incident_issues: count(::Issue.authored(::Users::Internal.alert_bot), start: minimum_id(Issue), finish: maximum_id(Issue)),
+            alert_bot_incident_issues: count(::Issue.authored(::User.with_user_types(:alert_bot)), start: minimum_id(Issue), finish: maximum_id(Issue)),
             keys: count(Key),
             label_lists: count(List.label),
             lfs_objects: count(LfsObject),

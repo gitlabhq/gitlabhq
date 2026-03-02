@@ -1025,6 +1025,17 @@ Grants the ability to create, delete, read, and update badges.
 | Update | Project | `PUT` | `/projects/:id/badges/:badge_id` |
 | Update | Group | `PUT` | `/groups/:id/badges/:badge_id` |
 
+#### Project Alias
+
+Grants the ability to create, delete, and read project aliases.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Instance | `POST` | `/project_aliases` |
+| Delete | Instance | `DELETE` | `/project_aliases/:name` |
+| Read | Instance | `GET` | `/project_aliases` |
+| Read | Instance | `GET` | `/project_aliases/:name` |
+
 #### Release
 
 Grants the ability to create, delete, read, and update releases.

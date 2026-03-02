@@ -1109,7 +1109,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'alert bot' do
-    let(:current_user) { Users::Internal.alert_bot }
+    let(:current_user) { Users::Internal.in_organization(project.organization).alert_bot }
 
     it { is_expected.to be_allowed(:reporter_access) }
 

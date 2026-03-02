@@ -5043,6 +5043,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       context 'when rebase_on_merge_automatic is true' do
+        before do
+          subject.project.project_setting.update!(automatic_rebase_enabled: true)
+        end
+
         where(:should_be_rebased, :skip_rebase_check) do
           false | false
           false | true

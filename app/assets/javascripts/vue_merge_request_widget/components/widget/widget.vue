@@ -7,16 +7,13 @@ import {
   GlLoadingIcon,
   GlAnimatedChevronLgDownUpIcon,
 } from '@gitlab/ui';
-import { kebabCase } from 'lodash';
 import { markRaw } from 'vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
-import { joinPaths } from '~/lib/utils/url_utility';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { EXTENSION_ICONS } from '../../constants';
@@ -58,7 +55,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
+
   props: {
     loadingText: {
       type: String,
@@ -218,23 +215,6 @@ export default {
     contentWithKeyField() {
       return this.content?.map((item, index) => ({ ...item, id: item.id || index }));
     },
-    reportsTabActionButtons() {
-      return [
-        {
-          text: __('View report'),
-          href: joinPaths(
-            window.gl?.mrWidgetData?.reportsTabPath || '',
-            kebabCase(this.widgetName.replace(WIDGET_PREFIX, '')),
-          ),
-          onClick(action, e) {
-            e.preventDefault();
-
-            window.history.replaceState(null, null, action.href);
-            window.mrTabs.tabShown('reports');
-          },
-        },
-      ];
-    },
   },
   watch: {
     hasError: {
@@ -355,9 +335,8 @@ export default {
 
 <template>
   <section class="media-section" data-testid="widget-extension">
-    <div class="gl-flex gl-px-5 gl-py-4 gl-pr-4" :class="{ 'gl-pl-9': glFeatures.mrReportsTab }">
+    <div class="gl-flex gl-px-5 gl-py-4 gl-pr-4">
       <status-icon
-        :level="glFeatures.mrReportsTab ? 2 : 1"
         :name="widgetName"
         :is-loading="shouldShowLoadingIcon"
         :icon-name="summaryStatusIcon"
@@ -399,10 +378,7 @@ export default {
               >
             </template>
           </help-popover>
-          <div v-if="glFeatures.mrReportsTab">
-            <action-buttons :tertiary-buttons="reportsTabActionButtons" />
-          </div>
-          <slot v-else name="action-buttons">
+          <slot name="action-buttons">
             <action-buttons
               v-if="actionButtons.length > 0"
               :tertiary-buttons="actionButtons"
@@ -411,7 +387,7 @@ export default {
           </slot>
         </div>
         <div
-          v-if="!glFeatures.mrReportsTab && isCollapsible && !isSummaryLoading"
+          v-if="isCollapsible && !isSummaryLoading"
           class="gl-border-l gl-ml-3 gl-h-6 gl-border-l-section gl-pl-3"
         >
           <gl-button

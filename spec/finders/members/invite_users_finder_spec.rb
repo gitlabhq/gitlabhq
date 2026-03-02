@@ -14,7 +14,7 @@ RSpec.describe Members::InviteUsersFinder, feature_category: :groups_and_project
   let_it_be(:external_user) { create(:user, :external) }
   let_it_be(:unconfirmed_user) { create(:user, confirmed_at: nil) }
   let_it_be(:omniauth_user) { create(:omniauth_user) }
-  let_it_be(:internal_user) { Users::Internal.alert_bot }
+  let_it_be(:internal_user) { Users::Internal.in_organization(current_user.organization).alert_bot }
   let_it_be(:project_bot_user) { create(:user, :project_bot) }
   let_it_be(:service_account_user) { create(:user, :service_account) }
   let(:organization) { current_user.organization }

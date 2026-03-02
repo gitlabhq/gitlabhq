@@ -291,11 +291,6 @@ msgid_plural "%d findings must be resolved"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d findings"
-msgid_plural "%d findings"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d group"
 msgid_plural "%d groups"
 msgstr[0] ""
@@ -408,11 +403,6 @@ msgstr[1] ""
 
 msgid "%d pending comment"
 msgid_plural "%d pending comments"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d policy violations"
-msgid_plural "%d policy violations"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1477,9 +1467,6 @@ msgid "%{strongStart}%{selectedCount}%{strongEnd} item selected"
 msgid_plural "%{strongStart}%{selectedCount}%{strongEnd} items selected"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "%{strongStart}Merge reports (%{reportsCount}):%{strongEnd} %{summaryText}"
-msgstr ""
 
 msgid "%{strongStart}Tip:%{strongEnd} You can also %{linkStart}check out with merge request ID%{linkEnd}."
 msgstr ""
@@ -17112,9 +17099,6 @@ msgstr ""
 msgid "Collapse merge details"
 msgstr ""
 
-msgid "Collapse merge request reports"
-msgstr ""
-
 msgid "Collapse milestones"
 msgstr ""
 
@@ -17994,6 +17978,9 @@ msgid "ComplianceFrameworks|Requirement removed."
 msgstr ""
 
 msgid "ComplianceFrameworks|Requirements"
+msgstr ""
+
+msgid "ComplianceFrameworks|Requirements are only available on Ultimate plans"
 msgstr ""
 
 msgid "ComplianceFrameworks|Requires Ultimate subscription"
@@ -29055,9 +29042,6 @@ msgid "Expand merge checks"
 msgstr ""
 
 msgid "Expand merge details"
-msgstr ""
-
-msgid "Expand merge request reports"
 msgstr ""
 
 msgid "Expand milestones"
@@ -50028,10 +50012,7 @@ msgstr ""
 msgid "PipelineCharts|Try ClickHouse for advanced analytics"
 msgstr ""
 
-msgid "PipelineEditorFileTree|Configuration files added with the include keyword"
-msgstr ""
-
-msgid "PipelineEditorFileTree|When you use the include keyword to add pipeline configuration from files in the project, those files will be listed here."
+msgid "PipelineEditorFileTree|When you add configuration files by using %{codeStart}include%{codeEnd}, they appear in this list."
 msgstr ""
 
 msgid "PipelineEditorTutorial|Browse %{linkStart}CI/CD examples and templates%{linkEnd}"
@@ -62502,6 +62483,9 @@ msgstr ""
 msgid "SecurityOrchestration|No policies in the security policy project will be enforced until the invalid policies are fixed."
 msgstr ""
 
+msgid "SecurityOrchestration|No policy.yml file found"
+msgstr ""
+
 msgid "SecurityOrchestration|No rules defined - policy will not run."
 msgstr ""
 
@@ -62982,6 +62966,9 @@ msgid "SecurityOrchestration|The current YAML syntax is invalid so you cannot ed
 msgstr ""
 
 msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."
+msgstr ""
+
+msgid "SecurityOrchestration|The linked security policy project does not contain a %{linkStart}policy.yml%{linkEnd} file. Merge the policy changes to create the file, or add it manually."
 msgstr ""
 
 msgid "SecurityOrchestration|The schedule is snoozed until %{until} for reason: %{reason}."
@@ -72046,7 +72033,7 @@ msgstr ""
 msgid "Total time spent cannot be negative."
 msgstr ""
 
-msgid "Total time spent cannot exceed a year."
+msgid "Total time spent cannot exceed 4 years."
 msgstr ""
 
 msgid "Total users"
@@ -75664,9 +75651,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "View replaced file @ "
-msgstr ""
-
-msgid "View report"
 msgstr ""
 
 msgid "View seat usage"

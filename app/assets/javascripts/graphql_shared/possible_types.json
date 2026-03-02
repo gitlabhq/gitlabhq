@@ -256,6 +256,7 @@
     "LfsObjectRegistry",
     "MergeRequestDiffRegistry",
     "PackageFileRegistry",
+    "PackagesHelmMetadataCacheRegistry",
     "PackagesNugetSymbolRegistry",
     "PagesDeploymentRegistry",
     "PipelineArtifactRegistry",

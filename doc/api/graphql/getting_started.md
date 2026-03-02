@@ -309,11 +309,16 @@ mutation DisableCI_JOB_TOKENscope {
 ### Introspection queries
 
 Clients can query the GraphQL endpoint for information about its schema
-by making an [introspection query](https://graphql.org/learn/introspection/).
+by making an [introspection query](https://graphql.org/learn/introspection/). These queries are
+intended for use as a discovery and diagnostic tool.
 
 - In development and test environments, introspection queries execute against the live
   schema.
 - In production environments, introspection queries return a static schema.
+  - Introspection queries should not be used to fetch data in production environments.
+    For more information, see:
+    - [GraphQL Introspection in Production](https://graphql.org/learn/introspection/#introspection-in-production)
+    - [Apollo Introspection in Production](https://www.apollographql.com/blog/why-you-should-disable-graphql-introspection-in-production#what-do-we-need-introspection-for)
   - All introspection queries return the same static response, regardless of the request
     method or parameters.
   - The static schema is updated automatically to match the current schema.

@@ -1431,8 +1431,24 @@ RSpec.shared_examples 'GET package references metadata endpoint' do |with_recipe
     context 'when recipe revision does not exist' do
       let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
 
-      it_behaves_like 'returning response status with message', status: :not_found,
-        message: '404 Revision Not Found'
+      it 'returns package references metadata', :aggregate_failures do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          reference1.reference => reference1.info,
+          reference2.reference => reference2.info
+        )
+      end
+
+      context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
+        before do
+          stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
+        end
+
+        it_behaves_like 'returning response status with message', status: :not_found,
+          message: '404 Revision Not Found'
+      end
     end
 
     context 'with different recipe revisions' do

@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Custom queries in the VS Code extension
 ---
 
-The GitLab for VS Code extension adds a [sidebar](_index.md#view-issues-and-merge-requests)
+The GitLab for VS Code extension adds a [sidebar](projects.md#view-issues-and-merge-requests)
 to VS Code. This sidebar displays default search queries for each of your projects:
 
 - Issues assigned to me
@@ -39,7 +39,7 @@ To see search results from your project:
 ## Create a custom query
 
 Any custom queries you define override the default queries shown in the
-[VS Code sidebar](_index.md#view-issues-and-merge-requests),
+[VS Code sidebar](projects.md#view-issues-and-merge-requests),
 under **Issues and Merge requests**.
 
 To override the extension's default queries and replace them with your own:

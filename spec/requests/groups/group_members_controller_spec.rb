@@ -74,7 +74,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
     let_it_be(:external_user) { create(:user, :external) }
     let_it_be(:unconfirmed_user) { create(:user, confirmed_at: nil) }
     let_it_be(:omniauth_user) { create(:omniauth_user) }
-    let_it_be(:internal_user) { Users::Internal.alert_bot }
+    let_it_be(:internal_user) { Users::Internal.in_organization(membershipable.organization).alert_bot }
     let_it_be(:project_bot_user) { create(:user, :project_bot) }
     let_it_be(:service_account_user) { create(:user, :service_account) }
     let_it_be(:other_organization) { create(:organization) }
