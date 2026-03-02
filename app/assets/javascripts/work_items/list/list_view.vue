@@ -128,14 +128,9 @@ import { initWorkItemsFeedback } from '~/work_items_feedback';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
-import HealthStatus from '../list/components/health_status.vue';
-import WorkItemUserPreferences from '../list/components/work_item_user_preferences.vue';
-import WorkItemListActions from '../list/components/work_item_list_actions.vue';
-import WorkItemsNewSavedViewModal from '../list/components/work_items_new_saved_view_modal.vue';
 import WorkItemsOnboardingModal from '../components/work_items_onboarding_modal/work_items_onboarding_modal.vue';
-import WorkItemsSavedViewsSelectors from '../list/components/work_items_saved_views_selectors.vue';
-import WorkItemsSavedViewsNotFoundModal from '../list/components/work_items_saved_views_not_found_modal.vue';
-import WorkItemsSavedViewsLimitWarningModal from '../list/components/work_items_saved_views_limit_warning_modal.vue';
+import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
+import getUserWorkItemsPreferences from '../graphql/get_user_preferences.query.graphql';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -148,13 +143,19 @@ import {
   WORK_ITEM_CREATE_SOURCES,
   ROUTES,
 } from '../constants';
-import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
-import EmptyStateWithAnyIssues from '../list/components/empty_state_with_any_issues.vue';
-import EmptyStateWithoutAnyIssues from '../list/components/empty_state_without_any_issues.vue';
-import searchProjectsQuery from '../list/graphql/search_projects.query.graphql';
 import { combineWorkItemLists, findHierarchyWidget } from '../utils';
-import getUserWorkItemsPreferences from '../graphql/get_user_preferences.query.graphql';
 import { initPlanningViewFeedbackBadge } from '../init_feedback_badge';
+
+import HealthStatus from './components/health_status.vue';
+import WorkItemUserPreferences from './components/work_item_user_preferences.vue';
+import WorkItemListActions from './components/work_item_list_actions.vue';
+import WorkItemsNewSavedViewModal from './components/work_items_new_saved_view_modal.vue';
+import WorkItemsSavedViewsSelectors from './components/work_items_saved_views_selectors.vue';
+import WorkItemsSavedViewsNotFoundModal from './components/work_items_saved_views_not_found_modal.vue';
+import WorkItemsSavedViewsLimitWarningModal from './components/work_items_saved_views_limit_warning_modal.vue';
+import EmptyStateWithAnyIssues from './components/empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyIssues from './components/empty_state_without_any_issues.vue';
+import searchProjectsQuery from './graphql/search_projects.query.graphql';
 
 const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
 const EmojiToken = () =>
@@ -168,7 +169,7 @@ const MilestoneToken = () =>
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 const ReleaseToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/release_token.vue');
-const LocalBoard = () => import('./local_board/local_board.vue');
+const LocalBoard = () => import('../pages/local_board/local_board.vue');
 const CrmOrganizationToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/crm_organization_token.vue');
 const CrmContactToken = () =>
@@ -182,6 +183,7 @@ const CONSOLIDATED_LIST_FEEDBACK_PROMPT_EXPIRY = '2026-01-01';
 const FEATURE_NAME = 'work_item_consolidated_list_feedback';
 
 export default {
+  name: 'ListView',
   CREATION_CONTEXT_LIST_ROUTE,
   issuableListTabs,
   searchProjectsQuery,
@@ -1879,8 +1881,8 @@ export default {
         :issuable-type="activeWorkItemType"
         click-outside-exclude-selector=".issuable-list"
         @close="activeItem = null"
-        @addChild="refetchItems"
-        @workItemDeleted="deleteItem"
+        @add-child="refetchItems"
+        @work-item-deleted="deleteItem"
         @work-item-updated="handleStatusChange"
       />
       <info-banner v-if="isInfoBannerVisible" />
@@ -1965,7 +1967,7 @@ export default {
               :preselected-work-item-type="preselectedWorkItemType"
               :is-epics-list="isEpicsList"
               :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
-              @workItemCreated="handleWorkItemCreated"
+              @work-item-created="handleWorkItemCreated"
             />
             <new-resource-dropdown
               v-if="showGroupNewWorkItem"
@@ -2025,7 +2027,7 @@ export default {
                 :preselected-work-item-type="preselectedWorkItemType"
                 :is-epics-list="isEpicsList"
                 :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
-                @workItemCreated="handleWorkItemCreated"
+                @work-item-created="handleWorkItemCreated"
               />
             </template>
           </work-items-saved-views-selectors>
@@ -2156,7 +2158,7 @@ export default {
                   :preselected-work-item-type="preselectedWorkItemType"
                   :is-epics-list="isEpicsList"
                   :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
-                  @workItemCreated="handleWorkItemCreated"
+                  @work-item-created="handleWorkItemCreated"
                 />
                 <new-resource-dropdown
                   v-if="showGroupNewWorkItem"
@@ -2182,7 +2184,7 @@ export default {
                   :preselected-work-item-type="preselectedWorkItemType"
                   :show-project-selector="!hasEpicsFeature"
                   :create-source="$options.WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST"
-                  @workItemCreated="handleWorkItemCreated"
+                  @work-item-created="handleWorkItemCreated"
                 />
               </template>
             </empty-state-without-any-issues>

@@ -11,6 +11,7 @@ import {
   getNewWorkItemWidgetsAutoSaveKey,
   newWorkItemFullPath,
   getWorkItemWidgets,
+  getWorkItemFeatures,
 } from '../utils';
 import {
   WIDGET_TYPE_ASSIGNEES,
@@ -32,6 +33,24 @@ import {
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
+// Explicit mapping of widget type constants to feature attribute names
+// This ensures the transformation from WIDGET_TYPE_* constants to camelCase feature keys is intentional
+// and prevents silent failures if widget type constant formats change in the future
+const WIDGET_TYPE_TO_FEATURE_ATTRIBUTE = {
+  [WIDGET_TYPE_ASSIGNEES]: 'assignees',
+  [WIDGET_TYPE_LABELS]: 'labels',
+  [WIDGET_TYPE_COLOR]: 'color',
+  [WIDGET_TYPE_CRM_CONTACTS]: 'crmContacts',
+  [WIDGET_TYPE_DESCRIPTION]: 'description',
+  [WIDGET_TYPE_HEALTH_STATUS]: 'healthStatus',
+  [WIDGET_TYPE_ITERATION]: 'iteration',
+  [WIDGET_TYPE_WEIGHT]: 'weight',
+  [WIDGET_TYPE_MILESTONE]: 'milestone',
+  [WIDGET_TYPE_HIERARCHY]: 'hierarchy',
+  [WIDGET_TYPE_STATUS]: 'status',
+  [WIDGET_TYPE_CUSTOM_FIELDS]: 'customFields',
+};
+
 // eslint-disable-next-line max-params
 const updateWidget = (draftData, widgetType, newData, nodePath) => {
   /** set all other values other than when it is undefined including null/0 or empty array as well */
@@ -41,6 +60,19 @@ const updateWidget = (draftData, widgetType, newData, nodePath) => {
   if (draftData.namespace) {
     const widget = findWidget(widgetType, draftData.namespace.workItem);
     set(widget, nodePath, newData);
+  }
+};
+
+// eslint-disable-next-line max-params
+const updateFeatures = (draftData, widgetType, newData, nodePath) => {
+  if (newData === undefined) return;
+
+  if (draftData.namespace) {
+    const type = WIDGET_TYPE_TO_FEATURE_ATTRIBUTE[widgetType];
+    if (type) {
+      const keyToUpdate = draftData.namespace.workItem.features[type];
+      set(keyToUpdate, nodePath, newData);
+    }
   }
 };
 
@@ -100,6 +132,7 @@ export const updateNewWorkItemCache = (input, cache) => {
     healthStatus,
     fullPath,
     workItemType,
+    useWorkItemFeatures = false,
     assignees,
     color,
     title,
@@ -121,6 +154,7 @@ export const updateNewWorkItemCache = (input, cache) => {
     const variables = {
       fullPath: newWorkItemFullPath(fullPath, workItemType),
       iid: NEW_WORK_ITEM_IID,
+      useWorkItemFeatures,
     };
 
     cache.updateQuery({ query, variables }, (sourceData) =>
@@ -184,7 +218,9 @@ export const updateNewWorkItemCache = (input, cache) => {
         ];
 
         widgetUpdates.forEach(({ widgetType, newData, nodePath }) => {
-          updateWidget(draftData, widgetType, newData, nodePath);
+          const updateFn = useWorkItemFeatures ? updateFeatures : updateWidget;
+
+          updateFn(draftData, widgetType, newData, nodePath);
         });
 
         updateDatesWidget(draftData, rolledUpDates);
@@ -210,10 +246,15 @@ export const updateNewWorkItemCache = (input, cache) => {
     const isQueryDataValid = !isEmpty(newData) && newData?.namespace?.workItem;
 
     if (isQueryDataValid && autosaveKey) {
+      const cacheFn = newData?.namespace?.workItem?.features
+        ? getWorkItemFeatures
+        : getWorkItemWidgets;
+      const featuresData = JSON.stringify(cacheFn(newData));
+
       updateDraft(autosaveKey, JSON.stringify(newData));
       updateDraft(
         getNewWorkItemWidgetsAutoSaveKey({ fullPath, context, relatedItemId }),
-        JSON.stringify(getWorkItemWidgets(newData)),
+        featuresData,
       );
     }
   } catch (e) {

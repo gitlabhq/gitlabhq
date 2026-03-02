@@ -51,7 +51,7 @@ If you have an offline license, GitLab Duo Core is not available on
 GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab AI Gateway.
 
 If you have an online license, you can use GitLab Duo Core in combination with
-GitLab Duo Self-Hosted. To use GitLab Duo Core, you must select the GitLab AI vendor model
+GitLab Duo Self-Hosted. To use GitLab Duo Core, you must select the GitLab-managed model
 for GitLab Duo Chat (Classic) and Code Suggestions for the instance.
 
 ### GitLab Duo Core limits

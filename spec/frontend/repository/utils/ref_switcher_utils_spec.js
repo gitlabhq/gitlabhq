@@ -77,25 +77,20 @@ describe('generateRouterParams', () => {
   };
 
   it.each`
-    selectedRef               | expectedPath                                          | expectedQuery
-    ${'feature-branch'}       | ${'/feature-branch/src/components'}                   | ${{ search: 'test' }}
-    ${'refs/heads/feature-branch'} | ${'/feature-branch/src/components'} | ${{
-  search: 'test',
-  ref_type: 'heads',
-}}
-    ${'refs/tags/v1.0.0'} | ${'/v1.0.0/src/components'} | ${{
-  search: 'test',
-  ref_type: 'tags',
-}}
-    ${refWithSpecialCharMock} | ${`/${encodedRefWithSpecialCharMock}/src/components`} | ${{ search: 'test' }}
+    selectedRef                    | expectedPath                                          | expectedQuery                            | expectedRef
+    ${'feature-branch'}            | ${'/feature-branch/src/components'}                   | ${{ search: 'test' }}                    | ${'feature-branch'}
+    ${'refs/heads/feature-branch'} | ${'/feature-branch/src/components'}                   | ${{ search: 'test', ref_type: 'heads' }} | ${'feature-branch'}
+    ${'refs/tags/v1.0.0'}          | ${'/v1.0.0/src/components'}                           | ${{ search: 'test', ref_type: 'tags' }}  | ${'v1.0.0'}
+    ${refWithSpecialCharMock}      | ${`/${encodedRefWithSpecialCharMock}/src/components`} | ${{ search: 'test' }}                    | ${refWithSpecialCharMock}
   `(
     'with $selectedRef generates correct router params',
-    ({ selectedRef, expectedPath, expectedQuery }) => {
+    ({ selectedRef, expectedPath, expectedQuery, expectedRef }) => {
       const result = generateRouterParams(selectedRef, mockRoute);
 
       expect(result).toEqual({
         path: expectedPath,
         query: expectedQuery,
+        ref: expectedRef,
       });
     },
   );
@@ -107,6 +102,7 @@ describe('generateRouterParams', () => {
     expect(result).toEqual({
       path: '/main/',
       query: { search: 'test' },
+      ref: 'main',
     });
   });
 
@@ -120,6 +116,7 @@ describe('generateRouterParams', () => {
     expect(result).toEqual({
       path: '/main/src',
       query: { search: 'test' },
+      ref: 'main',
     });
   });
 
@@ -133,6 +130,7 @@ describe('generateRouterParams', () => {
     expect(result).toEqual({
       path: '/feature/src',
       query: { search: 'test', sort: 'name', filter: 'js', ref_type: 'heads' },
+      ref: 'feature',
     });
   });
 });

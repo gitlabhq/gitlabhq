@@ -87,7 +87,7 @@ export default {
           id="profile-info-icon"
           name="information-o"
           variant="info"
-          class="gl-ml-2 gl-text-secondary"
+          class="gl-ml-2 gl-text-subtle"
         />
         <gl-popover
           target="profile-info-icon"
@@ -144,7 +144,7 @@ export default {
     <template #cell(name)="{ item }">
       <slot v-if="$scopedSlots['cell(name)']" name="cell(name)" v-bind="{ item }"></slot>
       <div v-else class="gl-flex gl-items-center">
-        <span class="gl-text-secondary">
+        <span class="gl-text-subtle">
           {{ $options.SCAN_PROFILE_I18N.noProfile }}
         </span>
       </div>
@@ -156,7 +156,7 @@ export default {
         <span class="gl-font-weight-bold">
           {{ __('Available with Ultimate') }}
         </span>
-        <span class="gl-mt-1 gl-text-sm gl-text-secondary">
+        <span class="gl-mt-1 gl-text-sm gl-text-subtle">
           <gl-link
             :href="$options.LEARN_MORE_LINK"
             target="_blank"
@@ -178,11 +178,11 @@ export default {
       <div v-else>
         <gl-button-group>
           <!-- Apply button -->
-          <gl-button variant="confirm" category="secondary" disabled>
+          <gl-button disabled>
             {{ $options.SCAN_PROFILE_I18N.applyDefault }}
           </gl-button>
           <!-- Preview button -->
-          <gl-button variant="confirm" category="secondary" icon="eye" disabled />
+          <gl-button icon="eye" disabled />
         </gl-button-group>
       </div>
     </template>

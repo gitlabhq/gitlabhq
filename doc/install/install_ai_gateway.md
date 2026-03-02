@@ -100,7 +100,7 @@ Newer features are available from nightly builds, but backwards compatibility is
      - For Linux package installations: In `gitlab_rails['env']`, set `'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`.
      - For self-compiled installations: In `/etc/default/gitlab`, set `export DUO_AGENT_PLATFORM_SERVICE_SECURE=false`.
 
-   - If you are using a [GitLab AI vendor model](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#gitlab-ai-vendor-models), do not set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable.
+   - If you are using a [GitLab-managed model](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#gitlab-managed-models), do not set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable.
 
 ## Set up Docker with NGINX and SSL
 

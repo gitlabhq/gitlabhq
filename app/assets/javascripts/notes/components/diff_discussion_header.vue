@@ -125,12 +125,14 @@ export default {
         :action-text="resolvedText"
         class-name="discussion-headline-light js-discussion-headline gl-mt-1 gl-pl-3"
       />
-      <toggle-replies-widget
-        :collapsed="!discussion.expanded"
-        :replies="replies"
-        class="gl-border-t -gl-mx-3 -gl-mb-3 gl-mt-4 !gl-border-x-0 !gl-border-b-0 gl-border-t-subtle dark:gl-border-t-section"
-        @toggle="toggleDiscussionHandler"
-      />
+      <ul class="gl-border-t -gl-mx-3 -gl-mb-3 gl-mt-4 gl-p-0 dark:gl-border-t-section">
+        <toggle-replies-widget
+          :collapsed="!discussion.expanded"
+          :replies="replies"
+          class="!gl-border-x-0"
+          @toggle="toggleDiscussionHandler"
+        />
+      </ul>
     </div>
   </div>
 </template>

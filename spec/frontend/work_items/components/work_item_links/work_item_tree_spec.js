@@ -310,9 +310,9 @@ describe('WorkItemTree', () => {
 
     wrapper.vm.showAddForm(FORM_TYPES.create, WORK_ITEM_TYPE_NAME_OBJECTIVE);
     await nextTick();
-    findForm().vm.$emit('addChild');
+    findForm().vm.$emit('add-child');
 
-    expect(wrapper.emitted('addChild')).toEqual([[]]);
+    expect(wrapper.emitted('add-child')).toEqual([[]]);
   });
 
   describe('more actions', () => {

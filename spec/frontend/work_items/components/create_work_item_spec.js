@@ -225,6 +225,7 @@ describe('Create work item component', () => {
         mutation: updateNewWorkItemMutation,
         variables: {
           input: {
+            useWorkItemFeatures: false,
             fullPath: 'full-path',
             context: CREATION_CONTEXT_LIST_ROUTE,
             workItemType: 'Epic',
@@ -312,15 +313,17 @@ describe('Create work item component', () => {
         findCancelButton().vm.$emit('click');
         await nextTick();
 
-        expect(setNewWorkItemCache).toHaveBeenCalledWith({
-          fullPath: 'full-path',
-          context: CREATION_CONTEXT_LIST_ROUTE,
-          widgetDefinitions: expect.any(Array),
-          workItemType: expectedWorkItemTypeData.name,
-          workItemTypeId: expectedWorkItemTypeData.id,
-          workItemTypeIconName: expectedWorkItemTypeData.iconName,
-          relatedItemId: mockRelatedItem.id,
-        });
+        expect(setNewWorkItemCache).toHaveBeenCalledWith(
+          expect.objectContaining({
+            fullPath: 'full-path',
+            context: CREATION_CONTEXT_LIST_ROUTE,
+            widgetDefinitions: expect.any(Array),
+            workItemType: expectedWorkItemTypeData.name,
+            workItemTypeId: expectedWorkItemTypeData.id,
+            workItemTypeIconName: expectedWorkItemTypeData.iconName,
+            relatedItemId: mockRelatedItem.id,
+          }),
+        );
       },
     );
   });
@@ -493,15 +496,17 @@ describe('Create work item component', () => {
       findSelect().vm.$emit('change', mockId);
       await nextTick();
 
-      expect(setNewWorkItemCache).toHaveBeenCalledWith({
-        fullPath: 'full-path',
-        context: CREATION_CONTEXT_LIST_ROUTE,
-        widgetDefinitions: expect.any(Array),
-        workItemType: mockId,
-        workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
-        workItemTypeIconName: 'work-item-issue',
-        relatedItemId: mockRelatedItem.id,
-      });
+      expect(setNewWorkItemCache).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fullPath: 'full-path',
+          context: CREATION_CONTEXT_LIST_ROUTE,
+          widgetDefinitions: expect.any(Array),
+          workItemType: mockId,
+          workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
+          workItemTypeIconName: 'work-item-issue',
+          relatedItemId: mockRelatedItem.id,
+        }),
+      );
 
       expect(wrapper.emitted('changeType')).toBeDefined();
     });
@@ -559,7 +564,7 @@ describe('Create work item component', () => {
   });
 
   describe('Create work item', () => {
-    it('emits workItemCreated on successful mutation', async () => {
+    it('emits work-item-created on successful mutation', async () => {
       setWindowLocation(
         '?discussion_to_resolve=f20989738bfe845f73a77a7109b1588852901befJD9I3FGU&merge_request_id=13',
       );
@@ -575,7 +580,7 @@ describe('Create work item component', () => {
       await waitForPromises();
       await submitCreateForm();
 
-      expect(wrapper.emitted('workItemCreated')).toEqual([
+      expect(wrapper.emitted('work-item-created')).toEqual([
         [
           {
             workItem: expect.objectContaining(workItem),
@@ -606,7 +611,7 @@ describe('Create work item component', () => {
       expect(clearDraft).toHaveBeenNthCalledWith(2, sharedWidgetsAutosaveKey);
     });
 
-    it('emits workItemCreated for confidential work item', async () => {
+    it('emits work-item-created for confidential work item', async () => {
       createComponent();
       await waitForPromises();
 
@@ -680,7 +685,7 @@ describe('Create work item component', () => {
       await waitForPromises();
 
       expect(findTitleInput().props('isValid')).toBe(false);
-      expect(wrapper.emitted('workItemCreated')).toBeUndefined();
+      expect(wrapper.emitted('work-item-created')).toBeUndefined();
     });
 
     it('updates work item title on update mutation', async () => {
@@ -715,7 +720,7 @@ describe('Create work item component', () => {
 
       expect(findTitleInput().props('title')).toBe('');
       expect(findTitleInput().props('isValid')).toBe(false);
-      expect(wrapper.emitted('workItemCreated')).toBeUndefined();
+      expect(wrapper.emitted('work-item-created')).toBeUndefined();
     });
 
     it('shows an alert on mutation top-level error', async () => {
@@ -1218,21 +1223,23 @@ describe('Create work item component', () => {
       });
       await waitForPromises();
 
-      expect(setNewWorkItemCache).toHaveBeenCalledWith({
-        fullPath: expect.anything(),
-        context: CREATION_CONTEXT_LIST_ROUTE,
-        widgetDefinitions: expect.anything(),
-        workItemType: expect.anything(),
-        workItemTypeId: expect.anything(),
-        workItemTypeIconName: expect.anything(),
-        workItemTitle: 'i am a title',
-        workItemDescription: `i
+      expect(setNewWorkItemCache).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fullPath: expect.anything(),
+          context: CREATION_CONTEXT_LIST_ROUTE,
+          widgetDefinitions: expect.anything(),
+          workItemType: expect.anything(),
+          workItemTypeId: expect.anything(),
+          workItemTypeIconName: expect.anything(),
+          workItemTitle: 'i am a title',
+          workItemDescription: `i
             am
             a
             description!`,
-        confidential: false,
-        relatedItemId: mockRelatedItem.id,
-      });
+          confidential: false,
+          relatedItemId: mockRelatedItem.id,
+        }),
+      );
     });
   });
 

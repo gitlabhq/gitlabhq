@@ -181,7 +181,7 @@ export default {
       @updateType="updateWorkItemType($event)"
       @confirmCancel="handleConfirmCancellation"
       @discardDraft="handleDiscardDraft('createPage')"
-      @workItemCreated="workItemCreated"
+      @work-item-created="workItemCreated"
     />
     <create-work-item-cancel-confirmation-modal
       v-if="workItemType"

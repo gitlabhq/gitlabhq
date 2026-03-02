@@ -30,7 +30,7 @@ You can use:
 
 - Supported models to match your specific performance needs and use cases.
 - In GitLab 18.3 and later, your own compatible model to experiment with models beyond the officially supported options.
-- GitLab AI vendor models to connect to AI models without the need to host your own infrastructure. These models are managed entirely by GitLab.
+- GitLab-managed models to connect to AI models without the need to host your own infrastructure. These models are managed entirely by GitLab.
 
 ## Supported models
 
@@ -105,7 +105,7 @@ This feature is in beta and is therefore subject to change as we gather feedback
 
 <!-- vale gitlab_base.Spelling = YES -->
 
-## GitLab AI vendor models
+## GitLab-managed models
 
 {{< history >}}
 
@@ -115,13 +115,13 @@ This feature is in beta and is therefore subject to change as we gather feedback
 
 {{< /history >}}
 
-GitLab AI vendor models integrate with GitLab-hosted AI Gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab AI vendor models for specific GitLab Duo features.
+GitLab-managed models integrate with GitLab-hosted AI Gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab-managed models for specific GitLab Duo features.
 
-To choose which features use GitLab AI vendor models, see [Configure GitLab AI vendor models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-ai-vendor-model).
+To choose which features use GitLab-managed models, see [Configure GitLab-managed models](configure_duo_features.md#configure-a-feature-to-use-a-gitlab-managed-model).
 
 When enabled for a specific feature:
 
-- All calls to those features configured with a GitLab AI vendor model use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
+- All calls to those features configured with a GitLab-managed model use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
 - No detailed logs are generated in the GitLab-hosted AI Gateway, even when [AI logs are enabled](logging.md#enable-logging). This prevents unintended leaks of sensitive information.
 
 ## Hardware requirements

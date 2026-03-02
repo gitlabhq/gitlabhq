@@ -57,6 +57,8 @@ control the pagination of results.
 | `username`       | string         | No       | The username of the user who triggered pipelines |
 | `yaml_errors`    | boolean        | No       | Returns pipelines with invalid configurations |
 
+When `scope` is set to `branches` or `tags`, the API returns only the latest pipeline for each branch or tag ref.
+
 ```shell
 curl \
   --header "PRIVATE-TOKEN: <your_access_token>" \

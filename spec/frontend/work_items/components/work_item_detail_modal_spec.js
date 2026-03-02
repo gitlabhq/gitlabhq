@@ -161,7 +161,7 @@ describe('WorkItemDetailModal component', () => {
       findWorkItemDetail().vm.$emit('deleteWorkItem');
       await waitForPromises();
 
-      expect(wrapper.emitted('workItemDeleted')).toEqual([[workItemId]]);
+      expect(wrapper.emitted('work-item-deleted')).toEqual([[workItemId]]);
       expect(hideModal).toHaveBeenCalled();
       expect(mutationMock).toHaveBeenCalledWith({ input: { id: workItemId } });
     });
@@ -176,7 +176,7 @@ describe('WorkItemDetailModal component', () => {
       findWorkItemDetail().vm.$emit('deleteWorkItem');
       await waitForPromises();
 
-      expect(wrapper.emitted('workItemDeleted')).toBeUndefined();
+      expect(wrapper.emitted('work-item-deleted')).toBeUndefined();
       expect(hideModal).not.toHaveBeenCalled();
       expect(findAlert().text()).toBe(errorMessage);
     });

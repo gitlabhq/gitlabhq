@@ -12,6 +12,7 @@ import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   findDescriptionWidget,
   newWorkItemId,
@@ -49,7 +50,7 @@ export default {
     WorkItemDescriptionRendered,
     WorkItemDescriptionTemplateListbox,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [glFeatureFlagsMixin(), Tracking.mixin()],
   props: {
     description: {
       type: String,
@@ -162,6 +163,7 @@ export default {
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: this.useWorkItemFeaturesField,
         };
       },
       update(data) {
@@ -284,8 +286,13 @@ export default {
         property: `type_${this.workItemType}`,
       };
     },
+    useWorkItemFeaturesField() {
+      return Boolean(this.glFeatures.workItemFeaturesField);
+    },
     workItemDescription() {
-      const descriptionWidget = findDescriptionWidget(this.workItem);
+      const descriptionWidget = this.useWorkItemFeaturesField
+        ? this.workItem?.features?.description
+        : findDescriptionWidget(this.workItem);
       return {
         ...descriptionWidget,
         description: descriptionWidget?.description || '',

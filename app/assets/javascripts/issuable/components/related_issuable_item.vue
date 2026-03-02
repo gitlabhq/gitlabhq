@@ -244,7 +244,7 @@ export default {
       :work-item-id="workItemId"
       :work-item-iid="workItemIid"
       @close="updateQueryParam"
-      @workItemDeleted="handleWorkItemDeleted"
+      @work-item-deleted="handleWorkItemDeleted"
       @openReportAbuse="openReportAbuseDrawer"
     />
     <abuse-category-selector

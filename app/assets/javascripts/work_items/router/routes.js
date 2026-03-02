@@ -1,5 +1,5 @@
 import { getParameterByName } from '~/lib/utils/url_utility';
-import WorkItemList from 'ee_else_ce/work_items/pages/work_items_list_app.vue';
+import PlanningView from '../pages/planning_view.vue';
 import CreateWorkItem from '../pages/create_work_item.vue';
 import WorkItemDetail from '../pages/work_item_root.vue';
 import DesignDetail from '../components/design_management/design_preview/design_details.vue';
@@ -41,12 +41,12 @@ function getRoutes(fullPath) {
     {
       path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})`,
       name: ROUTES.index,
-      component: WorkItemList,
+      component: PlanningView,
     },
     {
       path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/views/:view_id`,
       name: ROUTES.savedView,
-      component: WorkItemList,
+      component: PlanningView,
     },
     {
       path: `/:type(${generateTypeRegex(WORK_ITEM_BASE_ROUTE_MAP)})/new`,

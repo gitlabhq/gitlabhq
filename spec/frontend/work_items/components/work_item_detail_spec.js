@@ -810,14 +810,14 @@ describe('WorkItemDetail component', () => {
       expect(findWorkItemRelationships().exists()).toBe(false);
     });
 
-    it('re-fetches workItem query when `WorkItemActions` emits `workItemCreated` event', async () => {
+    it('re-fetches workItem query when `WorkItemActions` emits `work-item-created` event', async () => {
       createComponent();
 
       await waitForPromises();
 
       expect(successHandler).toHaveBeenCalledTimes(1);
 
-      findWorkItemActions().vm.$emit('workItemCreated');
+      findWorkItemActions().vm.$emit('work-item-created');
 
       await waitForPromises();
 

@@ -30,6 +30,10 @@ class Group < Namespace
 
   README_PROJECT_PATH = 'gitlab-profile'
 
+  # TODO: Needs to be renamed for semantic accuracy or removed once we shift to LocalStorage
+  #  under https://gitlab.com/gitlab-org/gitlab/-/work_items/591706
+  SORTING_PREFERENCE_FIELD = :projects_sort
+
   def self.sti_name
     'Group'
   end

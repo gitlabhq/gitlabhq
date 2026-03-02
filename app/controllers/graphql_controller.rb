@@ -68,7 +68,7 @@ class GraphqlController < ApplicationController
     getWorkItemsSlimEE
   ].to_set.freeze
 
-  EXTENDED_MAX_QUERY_SIZE = 11_425
+  EXTENDED_MAX_QUERY_SIZE = 11_750
 
   # The query string of a standard IntrospectionQuery, used to compare incoming requests for caching
   CACHED_INTROSPECTION_QUERY_STRING = CachedIntrospectionQuery.query_string

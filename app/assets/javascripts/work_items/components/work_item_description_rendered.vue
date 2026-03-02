@@ -424,7 +424,7 @@ export default {
       :visible="visible"
       :preselected-work-item-type="childItemType"
       @hideModal="visible = false"
-      @workItemCreated="handleWorkItemCreated"
+      @work-item-created="handleWorkItemCreated"
     />
   </div>
 </template>

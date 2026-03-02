@@ -23,6 +23,14 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
       end
     end
 
+    it "is set on the dashboard_groups_path" do
+      visit(dashboard_groups_path)
+
+      within '[data-testid=groups-projects-sort]' do
+        expect(find_dropdown_toggle).to have_content(sort_label)
+      end
+    end
+
     it "is set on the explore_projects_path" do
       visit(explore_projects_path)
 
@@ -74,5 +82,19 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
     end
 
     it_behaves_like "sort order persists across all views", "Created"
+  end
+
+  context 'from dashboard groups', :js do
+    before do
+      sign_in(user)
+      visit(dashboard_groups_path)
+      within '[data-testid=groups-projects-sort]' do
+        find_dropdown_toggle.click
+        find('li', text: 'Name').click
+        wait_for_requests
+      end
+    end
+
+    it_behaves_like "sort order persists across all views", "Name"
   end
 end

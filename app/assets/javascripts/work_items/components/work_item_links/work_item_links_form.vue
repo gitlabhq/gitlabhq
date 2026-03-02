@@ -373,7 +373,7 @@ export default {
             [this.error] = data.workItemCreate.errors;
           } else {
             this.unsetError();
-            this.$emit('addChild');
+            this.$emit('add-child');
           }
         })
         .catch(() => {

@@ -862,7 +862,7 @@ export default {
       :namespace-full-name="namespaceFullName"
       :is-group="isGroup"
       hide-button
-      @workItemCreated="$emit('workItemCreated')"
+      @work-item-created="$emit('work-item-created')"
       @hideModal="isCreateWorkItemModalVisible = false"
     />
     <work-item-change-type-modal

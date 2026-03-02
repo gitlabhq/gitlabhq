@@ -76,6 +76,26 @@ describe('CommitListApp', () => {
     });
   });
 
+  describe('escapedRef decoding', () => {
+    it('decodes percent-encoded escapedRef for the initial query', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponse);
+      wrapper = shallowMountExtended(CommitListApp, {
+        apolloProvider: createMockApollo([[commitsQuery, handler]]),
+        provide: {
+          ...defaultProvide,
+          escapedRef: 'feature%2Fmy-branch',
+        },
+      });
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ref: 'feature/my-branch',
+        }),
+      );
+    });
+  });
+
   describe('commit header', () => {
     beforeEach(async () => {
       createComponent();
@@ -196,6 +216,46 @@ describe('CommitListApp', () => {
         expect.objectContaining({
           message: 'Something went wrong while loading commits. Please try again.',
           captureError: true,
+        }),
+      );
+    });
+  });
+
+  describe('ref change', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('refetches commits with new ref when ref-change is emitted', async () => {
+      commitsQueryHandler.mockClear();
+
+      findCommitHeader().vm.$emit('ref-change', 'feature-branch');
+      await waitForPromises();
+
+      expect(commitsQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ref: 'feature-branch',
+        }),
+      );
+    });
+
+    it('resets pagination when ref changes', async () => {
+      const handler = jest.fn().mockResolvedValue(mockCommitsQueryResponseWithNextPage);
+      createComponent(handler);
+      await waitForPromises();
+
+      findPagination().vm.$emit('next');
+      await waitForPromises();
+
+      handler.mockClear();
+      findCommitHeader().vm.$emit('ref-change', 'other-branch');
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ref: 'other-branch',
+          after: null,
         }),
       );
     });

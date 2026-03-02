@@ -284,31 +284,6 @@ class NotificationService
   end
 
   NEW_COMMIT_EMAIL_DISPLAY_LIMIT = 20
-  def push_to_merge_request(merge_request, current_user, new_commits: [], existing_commits: [])
-    total_new_commits_count = new_commits.count
-    truncated_new_commits = new_commits.first(NEW_COMMIT_EMAIL_DISPLAY_LIMIT).map do |commit|
-      { short_id: commit.short_id, title: commit.title }
-    end
-
-    # We don't need the list of all existing commits. We need the first, the
-    # last, and the total number of existing commits only.
-    total_existing_commits_count = existing_commits.count
-    existing_commits = [existing_commits.first, existing_commits.last] if total_existing_commits_count > 2
-    existing_commits = existing_commits.map do |commit|
-      { short_id: commit.short_id, title: commit.title }
-    end
-
-    recipients = NotificationRecipients::BuildService.build_recipients(merge_request, current_user, action: "push_to")
-
-    recipients.each do |recipient|
-      mailer.send(
-        :push_to_merge_request_email,
-        recipient.user.id, merge_request.id, current_user.id, recipient.reason,
-        new_commits: truncated_new_commits, total_new_commits_count: total_new_commits_count,
-        existing_commits: existing_commits, total_existing_commits_count: total_existing_commits_count
-      ).deliver_later
-    end
-  end
 
   # Sends push notification emails using pre-computed commit data.
   # This method is designed for async workers that need to avoid large Sidekiq payloads.

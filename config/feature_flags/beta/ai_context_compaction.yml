@@ -1,0 +1,10 @@
+---
+name: ai_context_compaction
+description: Enable context compaction to optimize context management, prevent context window overflow, and reduce token costs for Duo Agent Platform workflows
+feature_issue_url: https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1863
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224075
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590815
+milestone: '18.10'
+group: group::agent foundations
+type: beta
+default_enabled: false

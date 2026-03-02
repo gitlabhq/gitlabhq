@@ -241,7 +241,7 @@ export const NO_WORK_ITEM_IID = 'no-work-item-iid';
 export const DETAIL_VIEW_QUERY_PARAM_NAME = 'show';
 export const DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME = 'version';
 export const ROUTES = {
-  index: 'workItemList',
+  index: 'planningView',
   workItem: 'workItem',
   new: 'new',
   design: 'design',

@@ -88,8 +88,9 @@ module TwCodeowners
     CodeOwnerRule.new('Testing', '@eread'),
     CodeOwnerRule.new('Tutorials', '@gl-docsteam'),
     CodeOwnerRule.new('US Public Sector Services', '@lyspin'),
-    CodeOwnerRule.new('Utilization', '@lciutacu')
+    CodeOwnerRule.new('Utilization', '@lciutacu'),
     # CodeOwnerRule.new('Vulnerability Research', '')
+    CodeOwnerRule.new('Workflow Catalog', '@jglassman1')
   ].freeze
 
   CONTRIBUTOR_DOCS_PATH = '/doc/development/'

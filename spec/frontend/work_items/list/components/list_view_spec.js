@@ -68,7 +68,7 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemUserPreferences from '~/work_items/list/components/work_item_user_preferences.vue';
-import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
+import ListView from '~/work_items/list/list_view.vue';
 import WorkItemsNewSavedViewModal from '~/work_items/list/components/work_items_new_saved_view_modal.vue';
 import WorkItemListActions from '~/work_items/list/components/work_item_list_actions.vue';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/list/graphql/get_work_item_state_counts.query.graphql';
@@ -313,7 +313,7 @@ const mountComponent = ({
     ...additionalHandlers,
   ]);
 
-  wrapper = shallowMountExtended(WorkItemsListApp, {
+  wrapper = shallowMountExtended(ListView, {
     router,
     apolloProvider,
     provide: {
@@ -428,7 +428,7 @@ describe('when work items are fetched', () => {
       namespace: 'full/path',
       recentSearchesStorageKey: 'issues',
       showWorkItemTypeIcon: true,
-      tabs: WorkItemsListApp.issuableListTabs,
+      tabs: ListView.issuableListTabs,
     });
   });
 
@@ -1591,7 +1591,7 @@ describe('work item drawer', () => {
       it('refetches counts and resets when work item is deleted', async () => {
         expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(1);
 
-        findDrawer().vm.$emit('workItemDeleted');
+        findDrawer().vm.$emit('work-item-deleted');
 
         await nextTick();
 

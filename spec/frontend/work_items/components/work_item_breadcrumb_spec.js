@@ -1,7 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlBreadcrumb } from '@gitlab/ui';
 import WorkItemBreadcrumb from '~/work_items/components/work_item_breadcrumb.vue';
-import { WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_TICKET } from '~/work_items/constants';
+import {
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_TICKET,
+  ROUTES,
+} from '~/work_items/constants';
 
 describe('WorkItemBreadcrumb', () => {
   let wrapper;
@@ -40,7 +44,7 @@ describe('WorkItemBreadcrumb', () => {
         {
           text: 'Work items',
           to: {
-            name: 'workItemList',
+            name: ROUTES.index,
             query: undefined,
             params: { type: 'work_items' },
           },
@@ -55,7 +59,7 @@ describe('WorkItemBreadcrumb', () => {
         {
           text: 'Issues',
           to: {
-            name: 'workItemList',
+            name: ROUTES.index,
             query: undefined,
             params: { type: 'issues' },
           },
@@ -70,7 +74,7 @@ describe('WorkItemBreadcrumb', () => {
         {
           text: 'Epics',
           to: {
-            name: 'workItemList',
+            name: ROUTES.index,
             query: undefined,
             params: { type: 'epics' },
           },
@@ -85,7 +89,7 @@ describe('WorkItemBreadcrumb', () => {
         {
           text: 'Service Desk',
           to: {
-            name: 'workItemList',
+            name: ROUTES.index,
             query: undefined,
             params: { type: 'service_desk' },
           },
@@ -103,7 +107,7 @@ describe('WorkItemBreadcrumb', () => {
           {
             text: 'Issues',
             to: {
-              name: 'workItemList',
+              name: ROUTES.index,
               query: undefined,
               params: { type: 'issues' },
             },
@@ -151,7 +155,7 @@ describe('WorkItemBreadcrumb', () => {
       { text: 'Static', href: '/static' },
       {
         text: 'Issues',
-        to: { name: 'workItemList', query: undefined, params: { type: 'issues' } },
+        to: { name: ROUTES.index, query: undefined, params: { type: 'issues' } },
       },
       { text: '#1', to: { name: 'workItem', params: { type: 'issues', iid: '1' } } },
     ]);

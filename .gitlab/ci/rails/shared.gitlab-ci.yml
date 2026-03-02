@@ -399,7 +399,7 @@ include:
 
 # https://app.snowflake.com/ys68254/gitlab/w20QT8KSVZAi/chart
 .rspec-ee-background-migration-parallel:
-  parallel: 3
+  parallel: 6
 
 # https://app.snowflake.com/ys68254/gitlab/w1tkkoZAXSsZ/chart
 .rspec-unit-parallel:

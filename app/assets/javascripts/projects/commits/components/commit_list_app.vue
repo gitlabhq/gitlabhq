@@ -36,6 +36,7 @@ export default {
       pageSize: DEFAULT_PAGE_SIZE,
       cursors: [],
       currentCursor: null,
+      currentRef: decodeURIComponent(this.escapedRef),
     };
   },
   apollo: {
@@ -44,7 +45,7 @@ export default {
       variables() {
         return {
           projectPath: this.projectFullPath,
-          ref: this.escapedRef,
+          ref: this.currentRef,
           first: this.pageSize,
           after: this.currentCursor,
           author: this.authorFilter,
@@ -86,6 +87,10 @@ export default {
     getFormattedDate(dateTime) {
       return localeDateFormat.asDate.format(new Date(dateTime));
     },
+    handleRefChange(newRef) {
+      this.currentRef = newRef;
+      this.resetPagination();
+    },
     handleFilter(filters) {
       const filterMap = {
         [TOKEN_TYPE_AUTHOR]: 'authorFilter',
@@ -126,7 +131,7 @@ export default {
 
 <template>
   <div class="gl-mt-5">
-    <commit-list-header @filter="handleFilter" />
+    <commit-list-header @filter="handleFilter" @ref-change="handleRefChange" />
 
     <gl-loading-icon v-if="isLoading" size="md" class="gl-mt-5" />
 

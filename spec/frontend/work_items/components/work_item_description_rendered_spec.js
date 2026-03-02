@@ -298,7 +298,7 @@ and even more`,
           fromGlobalMenu: false,
         });
 
-        findCreateWorkItemModal().vm.$emit('workItemCreated');
+        findCreateWorkItemModal().vm.$emit('work-item-created');
 
         expect(wrapper.emitted('descriptionUpdated')).toEqual([[newDescription]]);
 

@@ -373,7 +373,7 @@ export default {
             $emit('drawer-closed');
           "
           @work-item-updated="updateBoardCard($event, activeIssuable)"
-          @workItemDeleted="onIssuableDeleted(activeIssuable)"
+          @work-item-deleted="onIssuableDeleted(activeIssuable)"
           @attributesUpdated="onAttributeUpdated"
           @workItemStateUpdated="onStateUpdated"
           @workItemTypeChanged="updateBoardCard($event, activeIssuable)"

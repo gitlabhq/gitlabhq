@@ -680,6 +680,7 @@ lib/gitlab/checks/
 /doc/administration/pages/ @brendan777
 /doc/administration/polling.md @axil @eread
 /doc/administration/raketasks/ @axil @eread
+/doc/administration/raketasks/ai_catalog.md @jglassman1
 /doc/administration/raketasks/keep_around.md @eread
 /doc/administration/raketasks/ldap.md @idurham
 /doc/administration/raketasks/praefect.md @eread
@@ -741,6 +742,7 @@ lib/gitlab/checks/
 /doc/administration/user_settings.md @idurham
 /doc/administration/wikis/ @brendan777
 /doc/api/access_requests.md @idurham
+/doc/api/admin/ai_catalog.md @jglassman1
 /doc/api/admin/data_management.md @axil
 /doc/api/admin/token.md @idurham
 /doc/api/admin_sidekiq_queues.md @axil @eread
@@ -769,6 +771,7 @@ lib/gitlab/checks/
 /doc/api/discussions.md @brendan777
 /doc/api/dora/ @lciutacu
 /doc/api/draft_notes.md @brendan777
+/doc/api/duo_agent_platform_flows.md @fneill
 /doc/api/environments.md @rsarangadharan
 /doc/api/feature_flag_user_lists.md @rsarangadharan
 /doc/api/feature_flags.md @rsarangadharan
@@ -1093,12 +1096,17 @@ lib/gitlab/checks/
 /doc/user/custom_roles/ @idurham
 /doc/user/discussions/ @brendan777
 /doc/user/duo_agent_platform/ @fneill
+/doc/user/duo_agent_platform/agents/ @jglassman1
+/doc/user/duo_agent_platform/agents/external.md @fneill
+/doc/user/duo_agent_platform/agents/external_examples.md @fneill
+/doc/user/duo_agent_platform/ai_catalog.md @jglassman1
 /doc/user/duo_agent_platform/code_suggestions/ @uchandran
 /doc/user/duo_agent_platform/context.md @ashrafkhamis
 /doc/user/duo_agent_platform/customize/_index.md @jglassman1
 /doc/user/duo_agent_platform/customize/agents_md.md @uchandran
 /doc/user/duo_agent_platform/customize/custom_rules.md @jglassman1
 /doc/user/duo_agent_platform/customize/review_instructions.md @uchandran
+/doc/user/duo_agent_platform/flows/custom.md @jglassman1
 /doc/user/duo_agent_platform/flows/foundational_flows/code_review.md @uchandran
 /doc/user/duo_agent_platform/turn_on_off.md @ashrafkhamis
 /doc/user/duo_amazon_q/ @ashrafkhamis

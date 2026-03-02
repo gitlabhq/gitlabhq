@@ -1069,7 +1069,7 @@ export default {
                   @workItemStateUpdated="$emit('workItemStateUpdated')"
                   @workItemTypeChanged="workItemTypeChanged"
                   @toggleReportAbuseModal="toggleReportAbuseModal"
-                  @workItemCreated="handleWorkItemCreated"
+                  @work-item-created="handleWorkItemCreated"
                   @toggleSidebar="handleToggleSidebar"
                   @toggleTruncationEnabled="handleTruncationEnabled"
                 />
@@ -1157,7 +1157,7 @@ export default {
                   @workItemStateUpdated="$emit('workItemStateUpdated')"
                   @workItemTypeChanged="workItemTypeChanged"
                   @toggleReportAbuseModal="toggleReportAbuseModal"
-                  @workItemCreated="handleWorkItemCreated"
+                  @work-item-created="handleWorkItemCreated"
                   @toggleSidebar="handleToggleSidebar"
                   @toggleTruncationEnabled="handleTruncationEnabled"
                 />
@@ -1325,7 +1325,7 @@ export default {
                 :is-drawer="isDrawer"
                 contextual-view-enabled
                 @show-modal="openContextualView"
-                @addChild="$emit('addChild')"
+                @add-child="$emit('add-child')"
               />
               <work-item-relationships
                 v-if="workItemLinkedItems"
@@ -1395,7 +1395,7 @@ export default {
         :issuable-type="activeChildItemType"
         click-outside-exclude-selector=".issuable-list"
         @close="activeChildItem = null"
-        @workItemDeleted="deleteChildItem"
+        @work-item-deleted="deleteChildItem"
       />
       <work-item-abuse-modal
         v-if="isReportModalOpen"

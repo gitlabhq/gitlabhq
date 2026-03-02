@@ -11,3 +11,6 @@ tiers:
 - free
 - premium
 - ultimate
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224208
+milestone_removed: "18.10"

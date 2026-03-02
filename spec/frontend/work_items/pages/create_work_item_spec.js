@@ -106,7 +106,7 @@ describe('Create work item page component', () => {
   it('visits work item detail page after create if router is not present', () => {
     createComponent();
 
-    findCreateWorkItem().vm.$emit('workItemCreated', {
+    findCreateWorkItem().vm.$emit('work-item-created', {
       workItem: { webUrl: '/work_items/1234' },
       numberOfDiscussionsResolved: '',
     });
@@ -117,7 +117,7 @@ describe('Create work item page component', () => {
   it('reloads the page after create if work item created is an incident', () => {
     createComponent();
 
-    findCreateWorkItem().vm.$emit('workItemCreated', {
+    findCreateWorkItem().vm.$emit('work-item-created', {
       workItem: { webUrl: '/work_items/1234', workItemType: { name: 'Incident' } },
       numberOfDiscussionsResolved: '',
     });
@@ -129,7 +129,7 @@ describe('Create work item page component', () => {
     const pushMock = jest.fn();
     createComponent({ $router: { push: pushMock } });
 
-    wrapper.findComponent(CreateWorkItem).vm.$emit('workItemCreated', {
+    wrapper.findComponent(CreateWorkItem).vm.$emit('work-item-created', {
       workItem: { webUrl: '/work_items/1234', iid: '1234' },
       numberOfDiscussionsResolved: 1,
     });

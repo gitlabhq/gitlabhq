@@ -155,5 +155,29 @@ describe('CommitListHeader', () => {
         query: {},
       });
     });
+
+    it('emits ref-change event with the actual ref name', async () => {
+      findRefSelector().vm.$emit('input', 'refs/heads/new-branch');
+      await nextTick();
+
+      expect(wrapper.emitted('ref-change')).toEqual([['new-branch']]);
+    });
+
+    it('emits ref-change event with non-symbolic ref name', async () => {
+      findRefSelector().vm.$emit('input', 'dev');
+      await nextTick();
+
+      expect(wrapper.emitted('ref-change')).toEqual([['dev']]);
+    });
+
+    it('properly encodes special characters in ref when updating router', async () => {
+      findRefSelector().vm.$emit('input', 'feat/selected-#-ref-#');
+      await nextTick();
+
+      expect(mockRouter.push).toHaveBeenCalledWith({
+        path: '/feat/selected-%23-ref-%23/README.md',
+        query: {},
+      });
+    });
   });
 });

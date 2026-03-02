@@ -1,4 +1,4 @@
-import { escapeRegExp, kebabCase, isEmpty, unionBy, union } from 'lodash';
+import { escapeRegExp, kebabCase, snakeCase, isEmpty, unionBy, union } from 'lodash';
 import { ref } from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { joinPaths, queryToObject } from '~/lib/utils/url_utility';
@@ -364,6 +364,21 @@ export const getNewWorkItemWidgetsAutoSaveKey = ({ fullPath, context, relatedIte
 
   const baseKey = getBaseNewWorkItemAutoSaveKey({ fullPath, context, relatedItemId });
   return `${baseKey}-widgets-draft`;
+};
+
+export const getWorkItemFeatures = (draftData) => {
+  if (!draftData?.namespace?.workItem?.features) return {};
+
+  const workItemFeatures = draftData.namespace.workItem.features;
+  const features = Object.keys(workItemFeatures).reduce((acc, featureName) => {
+    return { ...acc, [snakeCase(featureName).toUpperCase()]: workItemFeatures[featureName] };
+  }, {});
+
+  return {
+    ...features,
+    TITLE: draftData.namespace.workItem.title,
+    TYPE: draftData.namespace.workItem.workItemType,
+  };
 };
 
 export const getWorkItemWidgets = (draftData) => {

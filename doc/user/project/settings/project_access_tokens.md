@@ -262,15 +262,6 @@ Bot users for projects:
 - Can have a maximum role of Owner for a project. For more information, see
   [Create a project access token](../../../api/project_access_tokens.md#create-a-project-access-token).
 
-When the project access token is revoked:
-
-- The bot user is retained as per [inactive token retention setting](#inactive-token-retention).
-- The bot user is deleted 30 days after the token expiration date. This applies even if the token is revoked before the
-  expiration date. After deletion, all existing user records are associated to [a ghost user](../../profile/account/delete_account.md#associated-records).
-
-> [!note]
-> The original expiration date of the token always defines when the bot user is deleted. For example, if a token is revoked on April 5 but expires on April 20, the bot user will be deleted around May 20 (30 days after the expiration date).
-
 For more information, see [bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).
 
 ## Inactive token retention

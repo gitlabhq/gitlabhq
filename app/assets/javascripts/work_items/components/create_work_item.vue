@@ -10,7 +10,7 @@ import {
   GlSprintf,
   GlIcon,
 } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { clearDraft } from '~/lib/utils/autosave';
 import { isMetaEnterKeyPair, parseBoolean } from '~/lib/utils/common_utils';
@@ -119,7 +119,7 @@ export default {
     PageHeading,
     WorkItemMetadataProvider,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     contributionGuidePath: {
       default: '',
@@ -266,6 +266,7 @@ export default {
         return {
           fullPath: this.newWorkItemPath,
           iid: NEW_WORK_ITEM_IID,
+          useWorkItemFeatures: this.useWorkItemFeatures,
         };
       },
       skip() {
@@ -321,6 +322,7 @@ export default {
             workItemTitle,
             workItemDescription,
             confidential: this.isConfidential,
+            useWorkItemFeatures: this.useWorkItemFeatures,
           });
         }
 
@@ -369,6 +371,9 @@ export default {
     },
   },
   computed: {
+    useWorkItemFeatures() {
+      return Boolean(this.glFeatures.workItemFeaturesField);
+    },
     workItemTypeConfiguration() {
       return this.getWorkItemTypeConfiguration?.(this.selectedWorkItemTypeName);
     },
@@ -398,7 +403,10 @@ export default {
       return !this.selectedProjectFullPath || !this.selectedWorkItemTypeName;
     },
     hasWidgets() {
-      return this.workItem?.widgets?.length > 0;
+      return (
+        this.workItem?.widgets?.length > 0 ||
+        (this.useWorkItemFeatures && Object.keys(this.workItem?.feautures || {}))
+      );
     },
     relatedItemId() {
       return this.relatedItem?.id;
@@ -410,7 +418,9 @@ export default {
       return NAME_TO_TEXT_LOWERCASE_MAP[this.relatedItem?.type];
     },
     workItemAssignees() {
-      return findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
+      return this.useWorkItemFeatures
+        ? this.workItem?.features?.assignees
+        : findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
     },
     workItemMilestone() {
       return findWidget(WIDGET_TYPE_MILESTONE, this.workItem);
@@ -557,7 +567,9 @@ export default {
       return this.localTitle || this.workItem?.title || this.title;
     },
     workItemDescription() {
-      const descriptionWidget = findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
+      const descriptionWidget = this.useWorkItemFeatures
+        ? this.workItem?.features?.description
+        : findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
       return descriptionWidget?.description || this.description;
     },
     workItemStartAndDueDate() {
@@ -786,6 +798,7 @@ export default {
         workItemTypeId: this.selectedWorkItemTypeId,
         workItemTypeIconName: this.selectedWorkItemTypeIconName,
         relatedItemId: this.relatedItemId,
+        useWorkItemFeatures: this.useWorkItemFeatures,
       });
 
       updateDraftWorkItemType({
@@ -986,7 +999,7 @@ export default {
 
         setLastUsedWorkItemTypeIdForNamespace(this.selectedWorkItemTypeId, this.inputNamespacePath);
 
-        this.$emit('workItemCreated', {
+        this.$emit('work-item-created', {
           workItem: data.workItemCreate.workItem,
           numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
         });
@@ -1008,6 +1021,7 @@ export default {
               context: this.creationContext,
               workItemType: this.selectedWorkItemTypeName,
               relatedItemId: this.relatedItemId,
+              useWorkItemFeatures: this.useWorkItemFeatures,
               ...input,
             },
           },
@@ -1042,6 +1056,7 @@ export default {
         workItemTypeId: this.selectedWorkItemTypeId,
         workItemTypeIconName: this.selectedWorkItemTypeIconName,
         relatedItemId: this.relatedItemId,
+        useWorkItemFeatures: this.useWorkItemFeatures,
       });
     },
     onParentMilestone(parentMilestone) {

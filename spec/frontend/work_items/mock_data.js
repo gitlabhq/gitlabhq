@@ -6918,6 +6918,60 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
   },
 });
 
+export const createWorkItemQueryResponseWithFeatures = (widgets = []) => {
+  const base = createWorkItemQueryResponse(widgets);
+  base.data.namespace.workItem.features = {
+    description: {
+      description: '',
+      descriptionHtml: '',
+      lastEditedAt: '2024-05-09T05:57:04Z',
+      lastEditedBy: {
+        name: 'Administrator',
+        webPath: '/root',
+        __typename: 'UserCore',
+      },
+      taskCompletionStatus: {
+        completedCount: 0,
+        count: 0,
+        __typename: 'TaskCompletionStatus',
+      },
+    },
+    assignees: {
+      allowsMultipleAssignees: true,
+      assignees: {
+        nodes: [],
+        __typename: 'UserCoreConnection',
+      },
+    },
+    awardEmoji: {
+      upvotes: 0,
+      downvotes: 0,
+    },
+    milestone: {
+      milestone: null,
+    },
+    startAndDueDate: {
+      startDate: null,
+      dueDate: null,
+    },
+    timeTracking: {
+      humanReadableAttributes: {
+        timeEstimate: '',
+      },
+    },
+    development: {
+      closingMergeRequests: {
+        count: 0,
+      },
+    },
+    hierarchy: {
+      parent: null,
+    },
+    __typename: 'WorkItemFeatures',
+  };
+  return base;
+};
+
 export const mockToggleResolveDiscussionResponse = {
   data: {
     discussionToggleResolve: {

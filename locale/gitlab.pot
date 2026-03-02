@@ -81484,9 +81484,6 @@ msgstr ""
 msgid "Your GitLab account request has been approved!"
 msgstr ""
 
-msgid "Your GitLab group"
-msgstr ""
-
 msgid "Your GitLab instance allows anyone to register for an account, which is a security risk on public-facing GitLab instances. You should deactivate new sign ups if public users aren't expected to register for an account."
 msgstr ""
 

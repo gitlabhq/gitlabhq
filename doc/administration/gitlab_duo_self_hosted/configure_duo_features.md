@@ -144,6 +144,8 @@ To add a self-hosted model:
      |-------------|---------|---------|
      | [vLLM](supported_llm_serving_platforms.md#find-the-model-name)        | `custom_openai/<name of the model served through vLLM>` | `custom_openai/Mixtral-8x7B-Instruct-v0.1` |
      | [Amazon Bedrock](#set-the-model-identifier-for-amazon-bedrock-models) | `bedrock/<model ID of the model>`                       | `bedrock/mistral.mixtral-8x7b-instruct-v0:1` |
+     | [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)                                                             | `anthropic/<model ID of the model>`                     | `anthropic/claude-opus-4-6` |
+     | [OpenAI](https://developers.openai.com/api/docs/models)                                                                | `openai/<model ID of the model>`                        | `openai/gpt-5` |
      | Azure OpenAI                                                          | `azure/<model ID of the model>`                         | `azure/gpt-35-turbo` |
 
 1. Select **Add self-hosted model**.
@@ -212,7 +214,7 @@ Configure a GitLab Duo feature and sub-feature to send queries to the self-hoste
 > If you don't specify a model for a GitLab Duo Chat sub-feature, it automatically uses the model configured for **General Chat**.
 > This ensures all Chat functionality works without requiring individual model configuration for each sub-feature.
 
-### Configure a feature to use a GitLab AI vendor model
+### Configure a feature to use a GitLab-managed model
 
 {{< history >}}
 
@@ -222,15 +224,15 @@ Configure a GitLab Duo feature and sub-feature to send queries to the self-hoste
 
 {{< /history >}}
 
-You can configure a GitLab Duo feature to use the GitLab AI vendor model, even if you use a self-hosted AI Gateway and models.
+You can configure a GitLab Duo feature to use the GitLab-managed model, even if you use a self-hosted AI Gateway and models.
 
 1. In the upper-right corner, select **Admin**.
 1. In the left sidebar, select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
 1. Select the **AI-native features** tab.
-1. For the feature and sub-feature you want to configure, from the dropdown list, select **GitLab AI vendor model**.
+1. For the feature and sub-feature you want to configure, from the dropdown list, select **GitLab-managed model**.
 
-![GitLab Duo Self-Hosted feature configuration using GitLab AI vendor model](img/gitlab_duo_self_hosted_feature_configuration_with_vendored_model_v18_3.png)
+![GitLab Duo Self-Hosted feature configuration using GitLab-managed model](img/gitlab_duo_self_hosted_feature_configuration_with_vendored_model_v18_3.png)
 
 ### Enable extended logging for debugging
 

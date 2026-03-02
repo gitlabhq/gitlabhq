@@ -582,7 +582,7 @@ rspec:artifact-collector ee remainder:
   needs:
     - job: rspec-ee migration pg17  # 2 jobs
       optional: true
-    - job: rspec-ee background_migration pg17  # 3 jobs
+    - job: rspec-ee background_migration pg17  # 6 jobs
       optional: true
     - job: rspec-ee unit clickhouse23  # 2 jobs
       optional: true

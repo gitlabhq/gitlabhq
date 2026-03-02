@@ -14,7 +14,7 @@ import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vu
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { workItemByIidResponseFactory, mockAssignees } from 'ee_else_ce_jest/work_items/mock_data';
 
-describe('WorkItemCreatedUpdated component', () => {
+describe('work-item-createdUpdated component', () => {
   let wrapper;
   let successHandler;
 

@@ -131,17 +131,12 @@ module ApplicationHelper
     sanitize(str, tags: %w[a span])
   end
 
-  def project_studio_enabled?
-    true
-  end
-
   def body_data
     {
       page: body_data_page,
       page_type_id: controller.params[:id],
       group: @group&.path,
-      group_full_path: @group&.full_path,
-      project_studio_enabled: project_studio_enabled?.to_s
+      group_full_path: @group&.full_path
     }.merge(project_data)
   end
 
@@ -316,10 +311,10 @@ module ApplicationHelper
     class_names << 'issue-boards-page gl-overflow-auto' if current_controller?(:boards)
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
-    class_names << 'with-header' if @with_header || !current_user || project_studio_enabled?
-    class_names << 'application-chrome' if project_studio_enabled?
-    class_names << 'page-with-panels' if project_studio_enabled?
-    class_names << 'with-gl-container-queries' if project_studio_enabled?
+    class_names << 'with-header'
+    class_names << 'application-chrome'
+    class_names << 'page-with-panels'
+    class_names << 'with-gl-container-queries'
     class_names << system_message_class
 
     class_names

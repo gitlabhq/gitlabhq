@@ -216,7 +216,7 @@ describe('WorkItemLinksForm', () => {
             },
           }),
         );
-        expect(wrapper.emitted('addChild')).toEqual([[]]);
+        expect(wrapper.emitted('add-child')).toEqual([[]]);
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
 
@@ -285,7 +285,7 @@ describe('WorkItemLinksForm', () => {
             },
           }),
         );
-        expect(wrapper.emitted('addChild')).toEqual([[]]);
+        expect(wrapper.emitted('add-child')).toEqual([[]]);
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
 

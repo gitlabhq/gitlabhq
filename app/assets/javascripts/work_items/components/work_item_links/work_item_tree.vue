@@ -471,7 +471,7 @@ export default {
         @error="error = $event"
         @success="hideAddForm"
         @cancel="hideAddForm"
-        @addChild="$emit('addChild')"
+        @add-child="$emit('add-child')"
         @update-in-progress="disableContent = $event"
       />
     </template>

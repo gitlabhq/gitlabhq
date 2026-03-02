@@ -394,7 +394,7 @@ export default {
         :work-item-iid="activeChild.iid"
         :work-item-full-path="activeChildNamespaceFullPath"
         @close="closeModal"
-        @workItemDeleted="handleWorkItemDeleted(activeChild)"
+        @work-item-deleted="handleWorkItemDeleted(activeChild)"
         @openReportAbuse="openReportAbuseModal"
       />
       <work-item-abuse-modal
