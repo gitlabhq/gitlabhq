@@ -3,9 +3,7 @@ import { createMockDirective } from 'helpers/vue_mock_directive';
 import CanaryIngress from '~/environments/components/canary_ingress.vue';
 import { rolloutStatus } from './graphql/mock_data';
 
-jest.mock('lodash/uniqueId', () => {
-  return jest.fn((input) => input);
-});
+jest.mock('lodash', () => ({ ...jest.requireActual('lodash'), uniqueId: (input) => input }));
 
 describe('/environments/components/canary_ingress.vue', () => {
   let wrapper;

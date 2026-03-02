@@ -11,8 +11,6 @@ jest.mock('~/vue_shared/components/color_picker/constants.js', () => ({
   BORDER_COLOR_DEFAULT: BORDER_COLOR_DEFAULT_MOCK,
 }));
 
-jest.mock('lodash/uniqueId', () => (prefix) => (prefix ? `${prefix}1` : 1));
-
 describe('ColorPicker', () => {
   let wrapper;
 

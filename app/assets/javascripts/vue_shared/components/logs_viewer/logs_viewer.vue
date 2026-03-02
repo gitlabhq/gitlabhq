@@ -1,6 +1,5 @@
 <script>
-import { isNumber } from 'lodash';
-import throttle from 'lodash/throttle';
+import { isNumber, throttle } from 'lodash';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import LogLine from './log_line.vue';
 import LogsTopBar from './logs_top_bar.vue';

@@ -1,6 +1,6 @@
 <script>
 import { GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
-import uniqueId from 'lodash/uniqueId';
+import { uniqueId } from 'lodash';
 import { __, s__, sprintf } from '~/locale';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 import { getCurrentUtcDate, getDayDifference, newDate } from '~/lib/utils/datetime_utility';

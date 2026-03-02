@@ -1,6 +1,6 @@
 <script>
 import { GlModal, GlAlert, GlFormInput } from '@gitlab/ui';
-import uniqueId from 'lodash/uniqueId';
+import { uniqueId } from 'lodash';
 import { __, s__ } from '~/locale';
 
 export default {

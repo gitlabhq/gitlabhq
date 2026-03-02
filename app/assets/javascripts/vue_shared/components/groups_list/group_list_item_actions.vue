@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import uniqueId from 'lodash/uniqueId';
+import { uniqueId } from 'lodash';
 import { s__, __, sprintf } from '~/locale';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';

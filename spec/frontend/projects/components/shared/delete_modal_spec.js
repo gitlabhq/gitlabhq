@@ -7,8 +7,6 @@ import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.
 import { stubComponent } from 'helpers/stub_component';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 
-jest.mock('lodash/uniqueId', () => () => 'fake-id');
-
 describe('DeleteModal', () => {
   let wrapper;
 

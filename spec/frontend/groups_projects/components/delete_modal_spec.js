@@ -7,7 +7,10 @@ import { stubComponent } from 'helpers/stub_component';
 import { useFakeDate } from 'helpers/fake_date';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 
-jest.mock('lodash/uniqueId', () => (prefix) => `${prefix}fake-id`);
+jest.mock('lodash', () => ({
+  ...jest.requireActual('lodash'),
+  uniqueId: (prefix) => `${prefix}fake-id`,
+}));
 
 describe('GroupsProjectsDeleteModal', () => {
   useFakeDate(2025, 9, 29);

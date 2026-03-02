@@ -7,6 +7,8 @@ module QA
         class Show < QA::Page::Base
           include Component::CiIcon
 
+          JOB_LOG_LOAD_TIMEOUT = 180
+
           view 'app/assets/javascripts/ci/job_details/components/log/log.vue' do
             element 'job-log-content'
           end
@@ -26,7 +28,9 @@ module QA
           end
 
           def successful?(timeout: 60)
-            raise "Timed out waiting for the build trace to load" unless loaded?
+            unless loaded?(wait: [timeout, JOB_LOG_LOAD_TIMEOUT].max)
+              raise "Timed out waiting for the build trace to load"
+            end
 
             QA::Runtime::Logger.debug(" \n\n ------- Job log: ------- \n\n #{job_log} \n -------")
             output(wait: timeout).include?('Job succeeded') || passed?
@@ -56,6 +60,7 @@ module QA
           end
 
           def retry!
+            wait_for_requests
             click_element 'retry-button'
           end
 
@@ -86,7 +91,7 @@ module QA
             click_element('pipeline-path')
           end
 
-          def loaded?(wait: 180)
+          def loaded?(wait: JOB_LOG_LOAD_TIMEOUT)
             wait_until(reload: true, max_duration: wait, sleep_interval: 1) do
               has_job_log?
             end

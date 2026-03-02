@@ -3,7 +3,7 @@
  * This component displays topic badges for projects and catalog resources.
  */
 import { GlBadge, GlPopover, GlTooltipDirective } from '@gitlab/ui';
-import uniqueId from 'lodash/uniqueId';
+import { uniqueId } from 'lodash';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';

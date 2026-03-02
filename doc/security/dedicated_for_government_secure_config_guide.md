@@ -130,11 +130,11 @@ administrative activities occurring through your standard identity provider.
 
 ## Requirement 2
 
-FedRAMP Requirement: **Provide explanations of security-related settings that can be operated only by top-level administrative accounts and their security implications.**
+FedRAMP requirement: Provide explanations of security-related settings that can be operated only by top-level administrative accounts and their security implications.
 
-This section of the Secure Configuration Guide will enumerate configuration settings specifically available to Dedicated for Government and point customers to the broad documentation already available for [administering GitLab](../administration/_index.md). 
+This section enumerates configuration settings specifically available to Dedicated for Government and point customers to the broad documentation already available for [administering GitLab](../administration/_index.md). 
 
-### Dedicated for Government infrastructure configurations by top-Level administrators
+### Infrastructure configurations by top-Level administrators
 
 GitLab Dedicated for Government allows for specific infrastructure-level security and architecture configurations to be requested by top-level customer administrators, triggered through requests to the GitLab Support team. 
 
@@ -154,7 +154,7 @@ These configurations include:
 
 ## Recommendation 1
 
-FedRAMP Recommendation: **Provide explanations of security-related settings that can be operated only by privileged accounts and their security implications.**
+FedRAMP recommendation: Provide explanations of security-related settings that can be operated only by privileged accounts and their security implications.
 
 ## Requirement 2: Security settings for top-level administrator accounts
 

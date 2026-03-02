@@ -135,11 +135,7 @@ module QA
           end
 
           it 'prevents users from publishing duplicates',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565163',
-            quarantine: {
-              issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/29323',
-              type: :investigating
-            } do
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565163' do
             create_package(package_project)
             package_project.visit_job('deploy')
 
@@ -159,11 +155,7 @@ module QA
           end
 
           it 'allows users to publish duplicates',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565164',
-            quarantine: {
-              issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/29324',
-              type: :investigating
-            } do
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565164' do
             create_package(package_project)
             package_project.visit_job('deploy')
 

@@ -1,6 +1,6 @@
 import jsYaml from 'js-yaml';
 import { glql } from '@gitlab/query-language-rust';
-import omit from 'lodash/omit';
+import { omit } from 'lodash';
 import { DEFAULT_DISPLAY_FIELDS, DEFAULT_DISPLAY_TYPE } from '../constants';
 import { extractGroupOrProject } from '../utils/common';
 import { glqlAggregationEnabled, glqlFeatureFlags } from '../utils/feature_flags';

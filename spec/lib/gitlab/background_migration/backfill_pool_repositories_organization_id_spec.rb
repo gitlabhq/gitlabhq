@@ -110,9 +110,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPoolRepositoriesOrganization
 
     context 'when pool_repository has no source_project_id but has member projects' do
       it 'backfills organization_id from member projects' do
-        # Temporarily disable the trigger for this test
-        connection.execute('DROP TRIGGER IF EXISTS trigger_pool_repositories_sharding_key ON pool_repositories')
-
         pool_repo = pool_repositories_table.create!(
           source_project_id: nil,
           organization_id: nil,
@@ -128,14 +125,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPoolRepositoriesOrganization
         connection.execute(
           "UPDATE projects SET pool_repository_id = #{pool_repo.id} WHERE id = #{project2.id}"
         )
-
-        # Re-enable the trigger
-        connection.execute(<<~SQL)
-      CREATE TRIGGER trigger_pool_repositories_sharding_key
-      BEFORE INSERT OR UPDATE ON pool_repositories
-      FOR EACH ROW
-      EXECUTE FUNCTION pool_repositories_sharding_key()
-        SQL
 
         described_class.new(**migration_args).perform
 
@@ -183,7 +172,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPoolRepositoriesOrganization
 
     context 'with mixed scenarios' do
       it 'handles all cases correctly in priority order' do
-        # Case 1b: Has source_project_id (trigger handles this correctly)
+        # Case 1b: Has source_project_id
         pool_repo1 = pool_repositories_table.create!(
           source_project_id: project1.id,
           organization_id: nil,
@@ -191,9 +180,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPoolRepositoriesOrganization
           state: 'ready',
           shard_id: shard.id
         )
-
-        # Temporarily disable the trigger for this test
-        connection.execute('DROP TRIGGER IF EXISTS trigger_pool_repositories_sharding_key ON pool_repositories')
 
         pool_repositories_table.create!(
           source_project_id: nil,
@@ -203,7 +189,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPoolRepositoriesOrganization
           shard_id: shard.id
         )
 
-        # Case 2: No source_project_id but has member projects (bypass trigger)
+        # Case 2: No source_project_id but has member projects
         pool_repo2_id = connection.execute(<<~SQL).first['id']
       INSERT INTO pool_repositories (source_project_id, organization_id, disk_path, state, shard_id)
       VALUES (NULL, NULL, 'pool/path6', 'ready', #{shard.id})
@@ -215,21 +201,13 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPoolRepositoriesOrganization
           "UPDATE projects SET pool_repository_id = #{pool_repo2.id} WHERE id = #{project2.id}"
         )
 
-        # Case 3: No source_project_id and no member projects (bypass trigger)
+        # Case 3: No source_project_id and no member projects
         pool_repo3_id = connection.execute(<<~SQL).first['id']
       INSERT INTO pool_repositories (source_project_id, organization_id, disk_path, state, shard_id)
       VALUES (NULL, NULL, 'pool/path7', 'ready', #{shard.id})
       RETURNING id
         SQL
         pool_repo3 = pool_repositories_table.find(pool_repo3_id)
-
-        # Re-enable the trigger
-        connection.execute(<<~SQL)
-      CREATE TRIGGER trigger_pool_repositories_sharding_key
-      BEFORE INSERT OR UPDATE ON pool_repositories
-      FOR EACH ROW
-      EXECUTE FUNCTION pool_repositories_sharding_key()
-        SQL
 
         described_class.new(**migration_args).perform
 

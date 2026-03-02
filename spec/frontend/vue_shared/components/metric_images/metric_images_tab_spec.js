@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
-import merge from 'lodash/merge';
+import { merge } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import MetricImagesTable from '~/vue_shared/components/metric_images/metric_images_table.vue';

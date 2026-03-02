@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import uniqueId from 'lodash/uniqueId';
+import { uniqueId } from 'lodash';
 import { s__ } from '~/locale';
 import { CANARY_UPDATE_MODAL } from '../constants';
 

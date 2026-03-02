@@ -29,11 +29,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) do
     [
-      *%w[
-        bulk_import_batch_trackers.organization_id
-        bulk_import_batch_trackers.namespace_id
-        bulk_import_batch_trackers.project_id
-      ], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933
       'keys.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/577246
       'spam_logs.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/553470
       *%w[
@@ -242,7 +237,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "authentication_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/561359",
       "cluster_platforms_kubernetes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/582113",
       "snippet_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517825",
-      "bulk_import_batch_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933",
       "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
       "push_rules" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476212',
       "topics" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/463254',

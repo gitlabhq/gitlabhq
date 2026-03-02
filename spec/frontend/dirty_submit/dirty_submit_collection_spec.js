@@ -1,8 +1,6 @@
 import DirtySubmitCollection from '~/dirty_submit/dirty_submit_collection';
 import { setInputValue, createForm } from './helper';
 
-jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
-
 describe('DirtySubmitCollection', () => {
   const testElementsCollection = [createForm(), createForm()];
   const forms = testElementsCollection.map((testElements) => testElements.form);

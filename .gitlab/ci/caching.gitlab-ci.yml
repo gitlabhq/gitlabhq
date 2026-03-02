@@ -57,6 +57,7 @@ cache:e2e-ruby-gems:
     - .cache-pull-push-base
     - .qa-cache-pull-push
   before_script:
+    - (command -v git &> /dev/null && git config --global http.https://gitlab.com/gitlab-org/gitlab.proactiveAuth basic) || true
     - source scripts/utils.sh
     - cd qa
     # e2e tests do not have alternative Gemfile but it could be set by rails-next pipeline

@@ -6,7 +6,10 @@ import { PRESETS } from '../mock_data';
 
 // NOTE: Somewhere in the implementation, both the named import and deep
 // default are used. So both must be mocked.
-jest.mock('lodash', () => ({ ...jest.requireActual('lodash'), uniqueId: (x) => `${x}uniqueId` }));
+jest.mock('lodash', () => ({
+  ...jest.requireActual('lodash'),
+  uniqueId: (x) => `${x}uniqueId`,
+}));
 jest.mock('lodash/uniqueId', () => (x) => `${x}uniqueId`);
 
 const TEST_FORM_ID = 'extension-marketplace-settings-form-uniqueId';
