@@ -26527,6 +26527,7 @@ A user with add-on data.
 | <a id="addonuser-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="addonuser-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="addonuser-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
+| <a id="addonuser-duostatus"></a>`duoStatus` | [`UserDuoStatus`](#userduostatus) | Duo status for the user. |
 | <a id="addonuser-email"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#user-publicemail). |
 | <a id="addonuser-emails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="addonuser-github"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
@@ -28391,6 +28392,7 @@ Core representation of a GitLab user.
 | <a id="autocompleteduser-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="autocompleteduser-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="autocompleteduser-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
+| <a id="autocompleteduser-duostatus"></a>`duoStatus` | [`UserDuoStatus`](#userduostatus) | Duo status for the user. |
 | <a id="autocompleteduser-email"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#user-publicemail). |
 | <a id="autocompleteduser-emails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="autocompleteduser-github"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
@@ -31810,6 +31812,7 @@ The currently authenticated GitLab user.
 | <a id="currentuser-duochatavailablefeatures"></a>`duoChatAvailableFeatures` {{< icon name="warning-solid" >}} | [`[String!]!`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. List of available features for AI chat. |
 | <a id="currentuser-duoclassicchatavailable"></a>`duoClassicChatAvailable` | [`Boolean!`](#boolean) | User access to Duo classic chat feature. |
 | <a id="currentuser-duocodesuggestionsavailable"></a>`duoCodeSuggestionsAvailable` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.8. **Status**: Experiment. User access to code suggestions feature. |
+| <a id="currentuser-duostatus"></a>`duoStatus` | [`UserDuoStatus`](#userduostatus) | Duo status for the user. |
 | <a id="currentuser-email"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#user-publicemail). |
 | <a id="currentuser-emails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="currentuser-github"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
@@ -39566,6 +39569,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassignee-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestassignee-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestassignee-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
+| <a id="mergerequestassignee-duostatus"></a>`duoStatus` | [`UserDuoStatus`](#userduostatus) | Duo status for the user. |
 | <a id="mergerequestassignee-email"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#user-publicemail). |
 | <a id="mergerequestassignee-emails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestassignee-github"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
@@ -40028,6 +40032,7 @@ The author of the merge request.
 | <a id="mergerequestauthor-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestauthor-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestauthor-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
+| <a id="mergerequestauthor-duostatus"></a>`duoStatus` | [`UserDuoStatus`](#userduostatus) | Duo status for the user. |
 | <a id="mergerequestauthor-email"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#user-publicemail). |
 | <a id="mergerequestauthor-emails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestauthor-github"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
@@ -40542,6 +40547,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipant-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestparticipant-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestparticipant-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
+| <a id="mergerequestparticipant-duostatus"></a>`duoStatus` | [`UserDuoStatus`](#userduostatus) | Duo status for the user. |
 | <a id="mergerequestparticipant-email"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#user-publicemail). |
 | <a id="mergerequestparticipant-emails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestparticipant-github"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
@@ -41023,6 +41029,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewer-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestreviewer-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="mergerequestreviewer-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
+| <a id="mergerequestreviewer-duostatus"></a>`duoStatus` | [`UserDuoStatus`](#userduostatus) | Duo status for the user. |
 | <a id="mergerequestreviewer-email"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#user-publicemail). |
 | <a id="mergerequestreviewer-emails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestreviewer-github"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
@@ -50033,6 +50040,7 @@ Core representation of a GitLab user.
 | <a id="usercore-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="usercore-customattributes"></a>`customAttributes` | [`[CustomAttribute!]`](#customattribute) | Custom attributes of the user. Only available to admins. |
 | <a id="usercore-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
+| <a id="usercore-duostatus"></a>`duoStatus` | [`UserDuoStatus`](#userduostatus) | Duo status for the user. |
 | <a id="usercore-email"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#user-publicemail). |
 | <a id="usercore-emails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="usercore-github"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
@@ -50475,6 +50483,18 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercore-workspaces-ids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="usercore-workspaces-includeactualstates"></a>`includeActualStates` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="usercore-workspaces-projectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
+
+### `UserDuoStatus`
+
+Represents the Duo status for a user.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="userduostatus-disabled"></a>`disabled` | [`Boolean!`](#boolean) | Indicates if the user is disabled for assignment in Duo features. |
+| <a id="userduostatus-disabledreason"></a>`disabledReason` | [`String`](#string) | Reason why the user is disabled for assignment in Duo features. |
+| <a id="userduostatus-flowtriggerevents"></a>`flowTriggerEvents` | [`[AiFlowTriggerEventType!]!`](#aiflowtriggereventtype) | List of available flow trigger events for the user in Duo features. |
 
 ### `UserGroupCallout`
 
@@ -60759,6 +60779,7 @@ Implementations:
 | <a id="user-compositeidentityenforced"></a>`compositeIdentityEnforced` | [`Boolean`](#boolean) | Indicates if composite identity is enforced for the user. |
 | <a id="user-createdat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="user-discord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
+| <a id="user-duostatus"></a>`duoStatus` | [`UserDuoStatus`](#userduostatus) | Duo status for the user. |
 | <a id="user-email"></a>`email` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#user-publicemail). |
 | <a id="user-emails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="user-github"></a>`github` | [`String`](#string) | GitHub profile name of the user. |

@@ -848,7 +848,8 @@ module Types
     field :autocomplete_users,
       null: true,
       resolver: Resolvers::AutocompleteUsersResolver,
-      description: 'Search users for autocompletion'
+      description: 'Search users for autocompletion',
+      extras: [:lookahead]
 
     field :detailed_import_status,
       ::Types::Projects::DetailedImportStatusType,

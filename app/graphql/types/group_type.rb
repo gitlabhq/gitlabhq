@@ -363,7 +363,8 @@ module Types
     field :autocomplete_users,
       null: true,
       resolver: Resolvers::AutocompleteUsersResolver,
-      description: 'Search users for autocompletion'
+      description: 'Search users for autocompletion',
+      extras: [:lookahead]
 
     field :lock_math_rendering_limits_enabled,
       GraphQL::Types::Boolean,

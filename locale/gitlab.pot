@@ -72981,6 +72981,9 @@ msgstr ""
 msgid "Unauthorized to update the environment"
 msgstr ""
 
+msgid "Unavailable - no credits"
+msgstr ""
+
 msgid "Unban"
 msgstr ""
 
