@@ -950,6 +950,7 @@ Grants the ability to create, read, update, and delete virtual registries.
 | Create | Group | `POST` | `/virtual_registries/packages/maven/registries/:id/upstreams` |
 | Create | Group | `POST` | `/virtual_registries/packages/maven/registry_upstreams` |
 | Create | Group | `POST` | `/groups/:id/-/virtual_registries/packages/npm/registries` |
+| Create | Group | `POST` | `/virtual_registries/packages/npm/registry_upstreams` |
 | Delete | Group | `DELETE` | `/virtual_registries/container/registries/:id` |
 | Delete | Group | `DELETE` | `/virtual_registries/container/registries/:id/cache` |
 | Delete | Group | `DELETE` | `/virtual_registries/container/registry_upstreams/:id` |
@@ -965,6 +966,7 @@ Grants the ability to create, read, update, and delete virtual registries.
 | Delete | Group | `DELETE` | `/virtual_registries/packages/npm/remote/cache_entries/*id` |
 | Delete | Group | `DELETE` | `/virtual_registries/packages/npm/registries/:id` |
 | Delete | Group | `DELETE` | `/virtual_registries/packages/npm/registries/:id/cache` |
+| Delete | Group | `DELETE` | `/virtual_registries/packages/npm/registry_upstreams/:id` |
 | Read | Group | `GET` | `/virtual_registries/packages/npm/registries/:id` |
 | Read | Group | `GET` | `/groups/:id/-/virtual_registries/packages/npm/registries` |
 | Read | Group | `GET` | `/virtual_registries/packages/npm/remote/upstreams/:id/cache_entries` |
@@ -992,6 +994,7 @@ Grants the ability to create, read, update, and delete virtual registries.
 | Update | Group | `PATCH` | `/virtual_registries/packages/maven/upstreams/:id` |
 | Update | Group | `PATCH` | `/virtual_registries/packages/maven/registry_upstreams/:id` |
 | Update | Group | `PATCH` | `/virtual_registries/packages/npm/registries/:id` |
+| Update | Group | `PATCH` | `/virtual_registries/packages/npm/registry_upstreams/:id` |
 
 #### Virtual Registry Cleanup Policy
 

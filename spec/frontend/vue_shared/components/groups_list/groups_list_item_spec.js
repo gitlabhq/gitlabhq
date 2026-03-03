@@ -379,9 +379,9 @@ describe('GroupsListItem', () => {
       expect(findGroupListItemActions().props()).toMatchObject({ group });
     });
 
-    describe('when list item actions emits refetch', () => {
+    describe('when list item actions emits action', () => {
       it('emits refetch', () => {
-        findGroupListItemActions().vm.$emit('refetch');
+        findGroupListItemActions().vm.$emit('action');
 
         expect(wrapper.emitted('refetch')).toEqual([[]]);
       });

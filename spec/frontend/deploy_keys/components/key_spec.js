@@ -86,7 +86,7 @@ describe('Deploy keys key', () => {
       const tooltip = getBinding(expiryComponent.element, 'gl-tooltip');
       expect(tooltip).toBeDefined();
       expect(expiryComponent.attributes('title')).toBe(
-        `${localeDateFormat.asDateTimeFull.format(expiresAt)}`,
+        `${localeDateFormat.asDateTimeFullWithWeekday.format(expiresAt)}`,
       );
     });
     it('renders never when no expiration date', async () => {

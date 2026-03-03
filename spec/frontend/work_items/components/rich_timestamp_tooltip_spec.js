@@ -5,7 +5,7 @@ import RichTimestampTooltip from '~/work_items/components/rich_timestamp_tooltip
 describe('RichTimestampTooltip', () => {
   const currentDate = new Date();
   const mockRawTimestamp = currentDate.toISOString();
-  const mockTimestamp = localeDateFormat.asDateTimeFull.format(newDate(currentDate));
+  const mockTimestamp = localeDateFormat.asDateTimeFullWithWeekday.format(newDate(currentDate));
   let wrapper;
 
   const createComponent = ({

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe BackfillProjectIssueTrackerDataOrganizationId, feature_category: :integrations do
+RSpec.describe BackfillProjectIssueTrackerDataOrganizationId, feature_category: :team_planning do
   let(:organizations) { table(:organizations) }
   let(:issue_tracker_data) { table(:issue_tracker_data) }
   let(:namespaces) { table(:namespaces) }

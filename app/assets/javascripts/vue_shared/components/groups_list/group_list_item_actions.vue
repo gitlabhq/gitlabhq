@@ -49,6 +49,7 @@ export default {
       required: true,
     },
   },
+  emits: ['action'],
   data() {
     return {
       actionsLoading: false,
@@ -152,12 +153,9 @@ export default {
     },
   },
   methods: {
-    refetch() {
-      this.$emit('refetch');
-    },
     async archive() {
       await archiveGroup(this.group.id);
-      this.refetch();
+      this.$emit('action', ACTION_ARCHIVE);
       renderArchiveSuccessToast(this.group);
 
       this.trackEvent('archive_namespace_in_quick_action', {
@@ -167,7 +165,7 @@ export default {
     },
     async unarchive() {
       await unarchiveGroup(this.group.id);
-      this.refetch();
+      this.$emit('action', ACTION_UNARCHIVE);
       renderUnarchiveSuccessToast(this.group);
 
       this.trackEvent('archive_namespace_in_quick_action', {
@@ -177,7 +175,7 @@ export default {
     },
     async restore() {
       await restoreGroup(this.group.id);
-      this.refetch();
+      this.$emit('action', ACTION_RESTORE);
       renderRestoreSuccessToast(this.group);
     },
     async onActionWithLoading({ action, errorMessage }) {
@@ -207,6 +205,9 @@ export default {
     onDeleteModalChange(isVisible) {
       this.isDeleteModalVisible = isVisible;
     },
+    onLeaveSuccess() {
+      this.$emit('action', ACTION_LEAVE);
+    },
     async onDeleteModalPrimary() {
       this.isDeleteModalLoading = true;
 
@@ -214,7 +215,11 @@ export default {
         await axios.delete(this.group.relativeWebUrl, {
           params: deleteParams(this.group),
         });
-        this.refetch();
+
+        this.$emit(
+          'action',
+          this.group.markedForDeletion ? ACTION_DELETE_IMMEDIATELY : ACTION_DELETE,
+        );
         renderDeleteSuccessToast(this.group);
       } catch (error) {
         createAlert({
@@ -270,7 +275,7 @@ export default {
         v-model="isLeaveModalVisible"
         :modal-id="leaveModalId"
         :group="group"
-        @success="refetch"
+        @success="onLeaveSuccess"
       />
     </template>
   </div>

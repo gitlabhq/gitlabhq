@@ -17,7 +17,7 @@ export default {
     },
 
     tooltipTitle(time) {
-      return localeDateFormat.asDateTimeFull.format(newDate(time));
+      return localeDateFormat.asDateTimeFullWithWeekday.format(newDate(time));
     },
   },
 };

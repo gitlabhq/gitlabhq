@@ -19,6 +19,7 @@ import {
   ACTION_EDIT,
   ACTION_RESTORE,
   ACTION_DELETE,
+  ACTION_DELETE_IMMEDIATELY,
   ACTION_ARCHIVE,
   ACTION_UNARCHIVE,
   ACTION_REQUEST_ACCESS,
@@ -187,7 +188,7 @@ describe('ProjectListItemActions', () => {
     });
 
     describe('when API call is successful', () => {
-      it('calls archiveProject, properly sets loading state, and emits refetch event', async () => {
+      it('calls archiveProject, properly sets loading state, and emits action event', async () => {
         createComponent();
         archiveProject.mockResolvedValueOnce();
 
@@ -202,7 +203,7 @@ describe('ProjectListItemActions', () => {
         expect(findListActionsLoadingIcon().exists()).toBe(false);
         expect(findListActions().exists()).toBe(true);
 
-        expect(wrapper.emitted('refetch')).toEqual([[]]);
+        expect(wrapper.emitted('action')).toEqual([[ACTION_ARCHIVE]]);
         expect(renderArchiveSuccessToast).toHaveBeenCalledWith(projectWithActions);
         expect(createAlert).not.toHaveBeenCalled();
       });
@@ -226,7 +227,7 @@ describe('ProjectListItemActions', () => {
         expect(findListActionsLoadingIcon().exists()).toBe(false);
         expect(findListActions().exists()).toBe(true);
 
-        expect(wrapper.emitted('refetch')).toBeUndefined();
+        expect(wrapper.emitted('action')).toBeUndefined();
         expect(createAlert).toHaveBeenCalledWith({
           message: 'An error occurred archiving the project. Please refresh the page to try again.',
           error,
@@ -258,7 +259,7 @@ describe('ProjectListItemActions', () => {
     });
 
     describe('when API call is successful', () => {
-      it('calls unarchiveProject, properly sets loading state, and emits refetch event', async () => {
+      it('calls unarchiveProject, properly sets loading state, and emits action event', async () => {
         createComponent();
         unarchiveProject.mockResolvedValueOnce();
 
@@ -273,7 +274,7 @@ describe('ProjectListItemActions', () => {
         expect(findListActionsLoadingIcon().exists()).toBe(false);
         expect(findListActions().exists()).toBe(true);
 
-        expect(wrapper.emitted('refetch')).toEqual([[]]);
+        expect(wrapper.emitted('action')).toEqual([[ACTION_UNARCHIVE]]);
         expect(renderUnarchiveSuccessToast).toHaveBeenCalledWith(projectWithActions);
         expect(createAlert).not.toHaveBeenCalled();
       });
@@ -297,7 +298,7 @@ describe('ProjectListItemActions', () => {
         expect(findListActionsLoadingIcon().exists()).toBe(false);
         expect(findListActions().exists()).toBe(true);
 
-        expect(wrapper.emitted('refetch')).toBeUndefined();
+        expect(wrapper.emitted('action')).toBeUndefined();
         expect(createAlert).toHaveBeenCalledWith({
           message:
             'An error occurred unarchiving the project. Please refresh the page to try again.',
@@ -311,7 +312,7 @@ describe('ProjectListItemActions', () => {
 
   describe('when restore action is fired', () => {
     describe('when API call is successful', () => {
-      it('calls restoreProject, properly sets loading state, and emits refetch event', async () => {
+      it('calls restoreProject, properly sets loading state, and emits action event', async () => {
         createComponent();
         restoreProject.mockResolvedValueOnce();
 
@@ -326,7 +327,7 @@ describe('ProjectListItemActions', () => {
         expect(findListActionsLoadingIcon().exists()).toBe(false);
         expect(findListActions().exists()).toBe(true);
 
-        expect(wrapper.emitted('refetch')).toEqual([[]]);
+        expect(wrapper.emitted('action')).toEqual([[ACTION_RESTORE]]);
         expect(renderRestoreSuccessToast).toHaveBeenCalledWith(projectWithActions);
         expect(createAlert).not.toHaveBeenCalled();
       });
@@ -350,7 +351,7 @@ describe('ProjectListItemActions', () => {
         expect(findListActionsLoadingIcon().exists()).toBe(false);
         expect(findListActions().exists()).toBe(true);
 
-        expect(wrapper.emitted('refetch')).toBeUndefined();
+        expect(wrapper.emitted('action')).toBeUndefined();
         expect(createAlert).toHaveBeenCalledWith({
           message: 'An error occurred restoring the project. Please refresh the page to try again.',
           error,
@@ -384,7 +385,7 @@ describe('ProjectListItemActions', () => {
 
     describe('when deletion is confirmed', () => {
       describe('when API call is successful', () => {
-        it('calls deleteProject, properly sets loading state, and emits refetch event', async () => {
+        it('calls deleteProject, properly sets loading state, and emits action event', async () => {
           createComponent();
           deleteProject.mockResolvedValueOnce();
 
@@ -396,9 +397,26 @@ describe('ProjectListItemActions', () => {
           await waitForPromises();
 
           expect(findDeleteModal().props('confirmLoading')).toBe(false);
-          expect(wrapper.emitted('refetch')).toEqual([[]]);
+          expect(wrapper.emitted('action')).toEqual([[ACTION_DELETE]]);
           expect(renderDeleteSuccessToast).toHaveBeenCalledWith(projectWithActions);
           expect(createAlert).not.toHaveBeenCalled();
+        });
+
+        describe('when project is marked for deletion', () => {
+          it('emits action event with ACTION_DELETE_IMMEDIATELY', async () => {
+            createComponent({
+              props: {
+                project: { ...projectWithActions, markedForDeletion: true },
+              },
+            });
+
+            deleteProject.mockResolvedValueOnce();
+
+            await deleteModalFirePrimaryEvent();
+            await waitForPromises();
+
+            expect(wrapper.emitted('action')).toEqual([[ACTION_DELETE_IMMEDIATELY]]);
+          });
         });
       });
 
@@ -418,7 +436,7 @@ describe('ProjectListItemActions', () => {
 
           expect(findDeleteModal().props('confirmLoading')).toBe(false);
 
-          expect(wrapper.emitted('refetch')).toBeUndefined();
+          expect(wrapper.emitted('action')).toBeUndefined();
           expect(createAlert).toHaveBeenCalledWith({
             message:
               'An error occurred deleting the project. Please refresh the page to try again.',
@@ -452,10 +470,10 @@ describe('ProjectListItemActions', () => {
     });
 
     describe('when leave modal emits success event', () => {
-      it('emits refetch event', () => {
+      it('emits action event', () => {
         findLeaveModal().vm.$emit('success');
 
-        expect(wrapper.emitted('refetch')).toEqual([[]]);
+        expect(wrapper.emitted('action')).toEqual([[ACTION_LEAVE]]);
       });
     });
   });

@@ -204,7 +204,7 @@ export default {
     </template>
 
     <template v-if="hasActions" #actions>
-      <group-list-item-actions :group="group" @refetch="refetch" />
+      <group-list-item-actions :group="group" @action="refetch" />
     </template>
 
     <template #children>

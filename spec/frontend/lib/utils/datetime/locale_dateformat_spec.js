@@ -91,6 +91,43 @@ describe('localeDateFormat (en-US)', () => {
     });
   });
 
+  describe('#asDateTimeFullWithWeekday', () => {
+    it('exposes a working date formatter', () => {
+      expectDateString(localeDateFormat.asDateTimeFullWithWeekday.format(date)).toBe(
+        'Saturday, July 9, 1983 at 2:15:23 PM GMT',
+      );
+      expectDateString(localeDateFormat.asDateTimeFullWithWeekday.format(nextYear)).toBe(
+        'Tuesday, January 10, 1984 at 7:47:54 AM GMT',
+      );
+    });
+
+    it('exposes a working date range formatter', () => {
+      expectDateString(localeDateFormat.asDateTimeFullWithWeekday.formatRange(date, nextYear)).toBe(
+        'Saturday, July 9, 1983 at 2:15:23 PM GMT – Tuesday, January 10, 1984 at 7:47:54 AM GMT',
+      );
+      expectDateString(
+        localeDateFormat.asDateTimeFullWithWeekday.formatRange(date, sameMonth),
+      ).toBe(
+        'Saturday, July 9, 1983 at 2:15:23 PM GMT – Tuesday, July 12, 1983 at 12:36:02 PM GMT',
+      );
+      expectDateString(localeDateFormat.asDateTimeFullWithWeekday.formatRange(date, sameDay)).toBe(
+        'Saturday, July 9, 1983, 2:15:23 PM GMT – 6:27:09 PM GMT',
+      );
+    });
+
+    it.each([
+      ['automatic', 0, '2:15:23 PM'],
+      ['h12 preference', 1, '2:15:23 PM'],
+      ['h24 preference', 2, '14:15:23'],
+    ])("respects user's hourCycle preference: %s", (_, timeDisplayFormat, result) => {
+      window.gon.time_display_format = timeDisplayFormat;
+      expectDateString(localeDateFormat.asDateTimeFullWithWeekday.format(date)).toContain(result);
+      expectDateString(
+        localeDateFormat.asDateTimeFullWithWeekday.formatRange(date, nextYear),
+      ).toContain(result);
+    });
+  });
+
   describe('#asDate', () => {
     it('exposes a working date formatter', () => {
       expectDateString(localeDateFormat.asDate.format(date)).toBe('Jul 9, 1983');

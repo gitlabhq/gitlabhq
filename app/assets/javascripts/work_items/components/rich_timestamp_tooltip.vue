@@ -29,7 +29,7 @@ export default {
     },
     timestamp() {
       return this.rawTimestamp
-        ? localeDateFormat.asDateTimeFull.format(newDate(this.rawTimestamp))
+        ? localeDateFormat.asDateTimeFullWithWeekday.format(newDate(this.rawTimestamp))
         : '';
     },
   },

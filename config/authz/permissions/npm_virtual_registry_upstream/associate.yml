@@ -1,0 +1,2 @@
+name: associate_npm_virtual_registry_upstream
+description: Grants the ability to associate an existing upstream registry with a npm virtual registry.

@@ -6,6 +6,7 @@ boundaries:
 permissions:
   - associate_container_virtual_registry_upstream
   - associate_maven_virtual_registry_upstream
+  - associate_npm_virtual_registry_upstream
   - create_container_virtual_registry
   - create_container_virtual_registry_upstream
   - create_maven_virtual_registry

@@ -136,7 +136,9 @@ describe('MRWidgetPipeline', () => {
 
     it('should render pipeline finished timestamp', () => {
       expect(findPipelineFinishedAt().attributes()).toMatchObject({
-        title: localeDateFormat.asDateTimeFull.format(mockData.pipeline.details.finished_at),
+        title: localeDateFormat.asDateTimeFullWithWeekday.format(
+          mockData.pipeline.details.finished_at,
+        ),
         datetime: mockData.pipeline.details.finished_at,
       });
     });

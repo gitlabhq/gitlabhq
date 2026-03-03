@@ -211,7 +211,7 @@ describe('IssuableItem', () => {
         wrapper = createComponent();
 
         expect(findTimestampWrapper().attributes('title')).toBe(
-          localeDateFormat.asDateTimeFull.format(mockIssuable.updatedAt),
+          localeDateFormat.asDateTimeFullWithWeekday.format(mockIssuable.updatedAt),
         );
       });
 
@@ -222,7 +222,7 @@ describe('IssuableItem', () => {
         });
 
         expect(findTimestampWrapper().attributes('title')).toBe(
-          localeDateFormat.asDateTimeFull.format(closedAt),
+          localeDateFormat.asDateTimeFullWithWeekday.format(closedAt),
         );
       });
 
@@ -232,7 +232,7 @@ describe('IssuableItem', () => {
         });
 
         expect(findTimestampWrapper().attributes('title')).toBe(
-          localeDateFormat.asDateTimeFull.format(mockIssuable.updatedAt),
+          localeDateFormat.asDateTimeFullWithWeekday.format(mockIssuable.updatedAt),
         );
       });
     });
@@ -472,7 +472,7 @@ describe('IssuableItem', () => {
 
       expect(createdAtEl.exists()).toBe(true);
       expect(createdAtEl.attributes('title')).toBe(
-        localeDateFormat.asDateTimeFull.format(mockIssuable.createdAt),
+        localeDateFormat.asDateTimeFullWithWeekday.format(mockIssuable.createdAt),
       );
       expect(createdAtEl.text()).toBe(wrapper.vm.createdAt);
     });
@@ -600,7 +600,9 @@ describe('IssuableItem', () => {
         const statusBadgeWrapper = statusEl.find('button');
 
         expect(statusBadge.exists()).toBe(true);
-        expect(statusBadgeWrapper.attributes('title')).toBe('January 1, 2000 at 12:00:00 AM GMT');
+        expect(statusBadgeWrapper.attributes('title')).toBe(
+          'Saturday, January 1, 2000 at 12:00:00 AM GMT',
+        );
       });
 
       it('does not render a tooltip if the issuable doesn\t have a mergedAt value', () => {
@@ -677,7 +679,7 @@ describe('IssuableItem', () => {
       const timestampEl = wrapper.findByTestId('issuable-timestamp');
 
       expect(timestampEl.attributes('title')).toBe(
-        localeDateFormat.asDateTimeFull.format(mockIssuable.updatedAt),
+        localeDateFormat.asDateTimeFullWithWeekday.format(mockIssuable.updatedAt),
       );
       expect(timestampEl.text()).toBe(wrapper.vm.formattedTimestamp);
     });
@@ -700,7 +702,7 @@ describe('IssuableItem', () => {
         const timestampEl = wrapper.findByTestId('issuable-timestamp');
 
         expect(timestampEl.attributes('title')).toBe(
-          localeDateFormat.asDateTimeFull.format(closedAt),
+          localeDateFormat.asDateTimeFullWithWeekday.format(closedAt),
         );
         expect(timestampEl.text()).toBe(wrapper.vm.formattedTimestamp);
       });

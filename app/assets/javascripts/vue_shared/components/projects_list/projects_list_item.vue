@@ -333,7 +333,7 @@ export default {
     </template>
 
     <template v-if="hasActions" #actions>
-      <project-list-item-actions :project="project" @refetch="$emit('refetch')" />
+      <project-list-item-actions :project="project" @action="$emit('refetch')" />
     </template>
   </list-item>
 </template>

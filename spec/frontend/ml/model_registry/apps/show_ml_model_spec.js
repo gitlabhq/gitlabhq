@@ -138,7 +138,9 @@ describe('ml/model_registry/apps/show_ml_model', () => {
 
       expect(findTimeAgoTooltip().props('time')).toBe(model.createdAt);
       expect(findTimeAgoTooltip().props('tooltipPlacement')).toBe('top');
-      expect(findTimeAgoTooltip().vm.tooltipText).toBe('December 6, 2023 at 12:41:48 PM GMT');
+      expect(findTimeAgoTooltip().vm.tooltipText).toBe(
+        'Wednesday, December 6, 2023 at 12:41:48 PM GMT',
+      );
 
       expect(findModelMetadata().findComponent(GlLink).attributes('href')).toBe('path/to/user');
       expect(findModelMetadata().findComponent(GlLink).text()).toBe('Root');

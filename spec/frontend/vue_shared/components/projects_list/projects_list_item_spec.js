@@ -540,6 +540,14 @@ describe('ProjectsListItem', () => {
     it('displays actions dropdown', () => {
       expect(findListActions().props('project')).toBe(projectWithActions);
     });
+
+    describe('when list item actions emits action', () => {
+      it('emits refetch', () => {
+        findListActions().vm.$emit('action');
+
+        expect(wrapper.emitted('refetch')).toEqual([[]]);
+      });
+    });
   });
 
   describe('CI Catalog Badge', () => {

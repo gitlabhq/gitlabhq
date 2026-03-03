@@ -78297,6 +78297,28 @@ components:
       required:
       - started_on
       - expires_on
+    RequestBody_930d45d60e90:
+      type: object
+      properties:
+        registry_id:
+          type: integer
+          description: The ID of the npm registry
+        upstream_id:
+          type: integer
+          description: The ID of the npm upstream
+      required:
+      - registry_id
+      - upstream_id
+    RequestBody_bdc1fb756724:
+      type: object
+      properties:
+        position:
+          type: integer
+          minimum: 1
+          maximum: 20
+          description: The priority order of an upstream within a npm virtual registry
+      required:
+      - position
     RequestBody_848276031a2a:
       type: object
       properties:
