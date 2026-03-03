@@ -17,6 +17,9 @@ module Projects
       # Assumes that the relations implement TriggerableHooks
       @relations.each do |hooks|
         hooks.hooks_for(@scope).select_active(@scope, @data).each do |hook|
+          filter = hook.filter[@scope.to_s]
+          next if filter.present? && !::Gitlab::FilterEvaluator.evaluate(filter, @data)
+
           hook.async_execute(@data, @scope.to_s)
         end
       end

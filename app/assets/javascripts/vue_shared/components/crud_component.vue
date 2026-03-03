@@ -98,6 +98,12 @@ export default {
       required: false,
       default: null,
     },
+    titleTag: {
+      type: String,
+      required: false,
+      default: 'h2',
+      validator: (value) => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div'].includes(value),
+    },
     bodyClass: {
       type: [String, Object],
       required: false,
@@ -244,7 +250,8 @@ export default {
       ]"
     >
       <div class="gl-flex gl-grow gl-flex-col gl-self-center gl-py-3">
-        <h2
+        <component
+          :is="titleTag"
           class="gl-mx-0 gl-my-2 gl-inline-flex gl-items-center gl-gap-3 gl-text-base gl-font-bold gl-leading-normal gl-text-heading"
           :class="titleClass"
           data-testid="crud-title"
@@ -270,7 +277,7 @@ export default {
             </template>
             <slot v-if="$scopedSlots.count" name="count"></slot>
           </span>
-        </h2>
+        </component>
         <p
           v-if="description || $scopedSlots.description"
           class="!gl-mb-0 !gl-text-sm !gl-leading-normal !gl-text-subtle"

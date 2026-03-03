@@ -9,6 +9,16 @@ import {
   FILTERED_SEARCH_TERM,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
+import { performanceMarkAndMeasure } from '~/performance/utils';
+import {
+  COMMIT_LIST_MARK_APP_MOUNTED,
+  COMMIT_LIST_MARK_FETCHING_DATA,
+  COMMIT_LIST_MARK_RENDERING_DATA,
+  COMMIT_LIST_MARK_DATA_RENDERED,
+  COMMIT_LIST_MEASURE_TIME_TO_MOUNT,
+  COMMIT_LIST_MEASURE_DATA_FETCH,
+  COMMIT_LIST_MEASURE_RENDER,
+} from '~/performance/constants';
 import commitsQuery from '../graphql/queries/commits.query.graphql';
 import { groupCommitsByDay } from '../utils';
 import CommitListHeader from './commit_list_header.vue';
@@ -52,11 +62,44 @@ export default {
           query: this.messageFilter,
         };
       },
+      watchLoading(isLoading) {
+        if (isLoading) {
+          performanceMarkAndMeasure({
+            mark: COMMIT_LIST_MARK_FETCHING_DATA,
+          });
+        }
+      },
       update(data) {
         return data.project?.repository?.commits?.nodes || [];
       },
       result({ data }) {
         this.pageInfo = data?.project?.repository?.commits?.pageInfo || {};
+
+        if (performance.getEntriesByName(COMMIT_LIST_MARK_RENDERING_DATA).length) return;
+
+        // Use performance.mark/measure directly instead of performanceMarkAndMeasure
+        // because the utility defers execution via requestAnimationFrame. The mark must
+        // exist synchronously so the measure on the next line can reference it, and so
+        // the $nextTick callback below can reliably compute the render duration from it.
+        performance.mark(COMMIT_LIST_MARK_RENDERING_DATA);
+        performance.measure(
+          COMMIT_LIST_MEASURE_DATA_FETCH,
+          COMMIT_LIST_MARK_FETCHING_DATA,
+          COMMIT_LIST_MARK_RENDERING_DATA,
+        );
+
+        this.$nextTick(() => {
+          performanceMarkAndMeasure({
+            mark: COMMIT_LIST_MARK_DATA_RENDERED,
+            measures: [
+              {
+                name: COMMIT_LIST_MEASURE_RENDER,
+                start: COMMIT_LIST_MARK_RENDERING_DATA,
+                end: COMMIT_LIST_MARK_DATA_RENDERED,
+              },
+            ],
+          });
+        });
       },
       error(error) {
         createAlert({
@@ -82,6 +125,16 @@ export default {
     hasPreviousPage() {
       return this.cursors.length > 0;
     },
+  },
+  mounted() {
+    performanceMarkAndMeasure({
+      mark: COMMIT_LIST_MARK_APP_MOUNTED,
+      measures: [
+        {
+          name: COMMIT_LIST_MEASURE_TIME_TO_MOUNT,
+        },
+      ],
+    });
   },
   methods: {
     getFormattedDate(dateTime) {

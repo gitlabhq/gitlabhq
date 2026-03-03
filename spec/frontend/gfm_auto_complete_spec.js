@@ -1779,6 +1779,37 @@ describe('GfmAutoComplete', () => {
 
       defaultSorterSpy.mockRestore();
     });
+
+    it('uses 3-tier scoring: name prefix > alias prefix > substring match', async () => {
+      // Ensures that when typing /assign_rev, /request_review appears before /unassign_reviewer
+      ajaxSpy.mockReturnValue(
+        Promise.resolve([
+          { name: 'reassign', aliases: [], params: [], description: '' },
+          { name: 'unassign_reviewer', aliases: [], params: [], description: '' },
+          {
+            name: 'request_review',
+            aliases: ['assign_reviewer', 'reviewer'],
+            params: [],
+            description: '',
+          },
+          { name: 'assign', aliases: [], params: [], description: '' },
+        ]),
+      );
+
+      // Type a query that tests all three scoring tiers
+      triggerDropdown($textarea, '/assign');
+      await waitForPromises();
+
+      const items = getCommandsItems();
+      expect(items).toHaveLength(4);
+      // Tier 1: Name prefix match should be first
+      expect(items[0]).toContain('/assign');
+      // Tier 2: Alias prefix match should be second (assign_reviewer alias)
+      expect(items[1]).toContain('/request_review');
+      // Tier 3: Substring matches follow (preserving source order)
+      expect(items[2]).toContain('/reassign');
+      expect(items[3]).toContain('/unassign_reviewer');
+    });
   });
 
   describe('escape', () => {

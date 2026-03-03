@@ -257,30 +257,35 @@ To view the last time a token was used, and the IP addresses from where the toke
 
 {{< /history >}}
 
-A personal access token can perform actions based on the assigned scopes.
+Scopes define the actions available when you authenticate with a personal access token. The following scopes are available:
 
-| Scope              | Access                                                                                                                                                                                                                                                                                                             |
-|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry. Also grants complete read/write access to the registry and repository using Git over HTTP.                                                                                                                                                           |
-| `read_user`        | Grants read-only access to the authenticated user's profile through the `/user` API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under [`/users`](../../api/users.md).                                                                            |
-| `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry.                    |
-| `read_repository`  | Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API.                                                                                                                                                                                                       |
-| `write_repository` | Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).                                                                                                                                                                                                              |
-| `read_registry`    | Grants read-only (pull) access to [container registry](../packages/container_registry/_index.md) images if a project is private and authorization is required. Available only when the container registry is enabled.                                                                                               |
-| `write_registry`   | Grants read-write (push) access to [container registry](../packages/container_registry/_index.md) images if a project is private and authorization is required. Available only when the container registry is enabled.  |
-| `read_virtual_registry`  | If a project is private and authorization is required, grants read-only (pull) access to container images through the [dependency proxy](../packages/dependency_proxy/_index.md). Available only when the dependency proxy is enabled. |
-| `write_virtual_registry` | If a project is private and authorization is required, grants read (pull), write (push), and delete access to container images through the [dependency proxy](../packages/dependency_proxy/_index.md). Available only when the dependency proxy is enabled. |
-| `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator.                                                                                                                                                                                                        |
-| `admin_mode`       | Grants permission to perform API actions when [Admin Mode](../../administration/settings/sign_in_restrictions.md#admin-mode) is enabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8. Available only to administrators on GitLab Self-Managed instances. |
-| `create_runner`    | Grants permission to create runners.                                                                                                                                                                                                                                                                               |
-| `manage_runner`    | Grants permission to manage runners.                                                                    |
-| `ai_features`      | This scope:<br>- Grants permission to perform API actions for features like GitLab Duo, Code Suggestions API and GitLab Duo Chat API.<br>- Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7.<br>For GitLab Duo plugin for JetBrains, this scope:<br>- Supports users with AI features enabled in the GitLab Duo plugin for JetBrains.<br>- Addresses a security vulnerability in JetBrains IDE plugins that could expose personal access tokens.<br>- Is designed to minimize potential risks for GitLab Duo plugin users by limiting the impact of compromised tokens.<br>For all other extensions, see the individual scope requirements in their documentation.                                                                                                                                |
-| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes.                                                                                                                                                                                                                                  |
-| `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
-| `read_service_ping`| Grant access to download Service Ping payload through the API when authenticated as an admin use. |
+> [!note]
+> [Fine-grained personal access tokens](../../auth/tokens/fine_grained_access_tokens.md) use different scopes.
+
+| Scope                    | Description |
+| ------------------------ | ----------- |
+| `api`                    | Grants complete read and write access to the API, including all groups and projects, the [container registry](../packages/container_registry/_index.md), the [dependency proxy](../packages/dependency_proxy/_index.md), and the [package registry](../packages/package_registry/_index.md). Also grants complete read and write access to the registry and repository using Git-over-HTTP. |
+| `read_api`               | Grants read access to the API, including all groups and projects, the container registry, and the package registry. |
+| `read_registry`          | Grants read access (pull) to [container registry](../packages/container_registry/_index.md) images if a project is private and authorization is required. Available only when the container registry is enabled. |
+| `write_registry`         | Grants write access (push) to [container registry](../packages/container_registry/_index.md) images if a project is private and authorization is required. Available only when the container registry is enabled. |
+| `read_virtual_registry`  | Grants read access (pull) to container images through the [dependency proxy](../packages/dependency_proxy/_index.md) if a project is private and authorization is required. Available only when the dependency proxy is enabled. |
+| `write_virtual_registry` | Grants read and write access (pull, push, and delete) to container images through the [dependency proxy](../packages/dependency_proxy/_index.md) if a project is private and authorization is required. Available only when the dependency proxy is enabled. |
+| `read_repository`        | Grants read access (pull) to repositories on private projects using Git-over-HTTP or the [repository files API](../../api/repository_files.md). |
+| `write_repository`       | Grants read and write access (pull and push) to repositories on private projects using Git-over-HTTP. Does not support API authentication. |
+| `create_runner`          | Grants permission to create runners. |
+| `manage_runner`          | Grants permission to manage runners. |
+| `admin_mode`             | Grants permission to perform API actions when [Admin Mode](../../administration/settings/sign_in_restrictions.md#admin-mode) is enabled. Available only to administrators on GitLab Self-Managed instances. |
+| `ai_features`            | Grants permission to perform API actions for GitLab Duo, the Code Suggestions API, and the GitLab Duo Chat API. Designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see the individual extension documentation. Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7. |
+| `k8s_proxy`              | Grants permission to perform Kubernetes API calls using the agent for Kubernetes. |
+| `self_rotate`            | Grants permission to rotate this token using the [personal access token API](../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
+| `read_service_ping`      | Grants access to download the Service Ping payloads through the API when authenticated as an administrator. |
+| `sudo`                   | Grants permission to perform API actions as any user in the system, when authenticated as an administrator. |
+| `read_user`              | Grants read-only access to the authenticated user's profile through the `/user` API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under [`/users`](../../api/users.md). |
 
 > [!warning]
-> If you enabled [external authorization](../../administration/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
+> If you have enabled [external authorization](../../administration/settings/external_authorization.md),
+> personal access tokens cannot access container or package registries. To restore access,
+> turn off external authorization.
 
 ## Access token expiration
 

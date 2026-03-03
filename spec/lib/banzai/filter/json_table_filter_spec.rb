@@ -210,4 +210,24 @@ RSpec.describe Banzai::Filter::JsonTableFilter, feature_category: :markdown do
       expect(filter(table_json_not_hash).to_html).to eq table_json_not_hash
     end
   end
+
+  context 'when json violates safe parsing limits' do
+    let(:deep_json) do
+      nested = '"value"'
+      33.times { nested = %({ "a": #{nested} }) }
+
+      <<~TEXT
+        <pre data-canonical-lang="json" data-lang-params="table">
+          <code>
+            #{nested}
+          </code>
+        </pre>
+      TEXT
+    end
+
+    it 'does not raise and does not change the HTML' do
+      expect { filter(deep_json).to_html }.not_to raise_error
+      expect(filter(deep_json).to_html).to eq deep_json
+    end
+  end
 end

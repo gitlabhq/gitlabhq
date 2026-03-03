@@ -2149,6 +2149,17 @@ Grants the ability to create, read, and delete user SSH keys.
 
 ### System Migration And Integration resources
 
+#### Batched Background Migration
+
+Grants the ability to read and run batched background migrations.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Instance | `GET` | `/admin/batched_background_migrations/:id` |
+| Read | Instance | `GET` | `/admin/batched_background_migrations` |
+| Run | Instance | `PUT` | `/admin/batched_background_migrations/:id/resume` |
+| Run | Instance | `PUT` | `/admin/batched_background_migrations/:id/pause` |
+
 #### Bitbucket Import
 
 Grants the ability to create Bitbucket imports.

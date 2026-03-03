@@ -107,6 +107,15 @@ Depending on your npm version, you might need to make changes to the URL:
 - On npm version 7 or earlier, use the full URL to the endpoint.
 - On version 8 and later, for the `_authToken` parameter, you can use a URI fragment instead of a full URL. For more information, see [Auth related configuration](https://docs.npmjs.com/cli/v8/configuring-npm/npmrc/?v=true#auth-related-configuration).
 
+> [!note]
+> If you use Yarn Classic 1.x, you must specify the full endpoint path when
+> setting authentication tokens. Yarn Classic does not support hierarchical
+> authentication matching, so a token set on a parent path like
+> `//gitlab.com/api/v4/` is not applied to sub-paths like
+> `//gitlab.com/api/v4/groups/<group_id>/-/packages/npm/`. Always use the full
+> group or project path. For more information, see
+> [Yarn Classic returns `401 Unauthorized` with shortened authentication paths](../yarn_repository/_index.md#yarn-classic-returns-401-unauthorized-with-shortened-authentication-paths).
+
 For example:
 
 {{< tabs >}}
@@ -719,6 +728,21 @@ The npm log is copied to `/root/.npm/_logs/` as an artifact.
 ### `404 Not Found` errors are happening on `npm install` or `yarn`
 
 Using `CI_JOB_TOKEN` to install npm packages with dependencies in another project gives you 404 Not Found errors. You need to authenticate with a token that has access to the package and all its dependencies.
+
+When you install a package from a group registry with Yarn Classic,
+the package resolution might succeed but the tarball download can fail with
+a `404 Not Found` error. This error occurs because the package metadata returned
+by the group endpoint contains tarball URLs that point to the project
+endpoint. You must configure authentication tokens for both the group and
+project endpoints:
+
+```ini
+//gitlab.example.com/api/v4/groups/<group_id>/-/packages/npm/:_authToken=<token>
+//gitlab.example.com/api/v4/projects/<project_id>/packages/npm/:_authToken=<token>
+```
+
+For more information, see
+[Yarn Classic returns `404 Not Found` when fetching a tarball from a group install](../yarn_repository/_index.md#yarn-classic-returns-404-not-found-when-fetching-a-tarball-from-a-group-install).
 
 If the package and its dependencies are in separate projects but in the same group, you can use a
 [group deploy token](../../project/deploy_tokens/_index.md#create-a-deploy-token):

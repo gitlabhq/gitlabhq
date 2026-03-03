@@ -31,6 +31,7 @@ module API
               type: Integer,
               desc: 'The batched background migration id'
           end
+          route_setting :authorization, permissions: :read_batched_background_migration, boundary_type: :instance
           get do
             Gitlab::Database::SharedModel.using_connection(base_model.connection) do
               present_entity(batched_background_migration)
@@ -58,6 +59,7 @@ module API
               type: String,
               desc: 'Filter migrations by job class name.'
           end
+          route_setting :authorization, permissions: :read_batched_background_migration, boundary_type: :instance
           get do
             Gitlab::Database::SharedModel.using_connection(base_model.connection) do
               migrations = Database::BatchedBackgroundMigrationsFinder.new(params: params).execute
@@ -87,6 +89,7 @@ module API
               type: Integer,
               desc: 'The batched background migration id'
           end
+          route_setting :authorization, permissions: :resume_batched_background_migration, boundary_type: :instance
           put do
             Gitlab::Database::SharedModel.using_connection(base_model.connection) do
               unless batched_background_migration.paused?
@@ -121,6 +124,7 @@ module API
               type: Integer,
               desc: 'The batched background migration id'
           end
+          route_setting :authorization, permissions: :pause_batched_background_migration, boundary_type: :instance
           put do
             Gitlab::Database::SharedModel.using_connection(base_model.connection) do
               unless batched_background_migration.active?

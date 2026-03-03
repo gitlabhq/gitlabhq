@@ -7,6 +7,7 @@ FactoryBot.define do
     description { "Description of #{name}" }
     enable_ssl_verification { false }
     project
+    filter { {} }
 
     trait :url_variables do
       url_variables { { 'abc' => 'supers3cret', 'def' => 'foobar' } }

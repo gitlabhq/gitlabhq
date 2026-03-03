@@ -69,8 +69,8 @@ To verify that Code Suggestions is turned on in VS Code:
 To verify that Code Suggestions is turned on in Visual Studio:
 
 1. In Visual Studio, on the bottom status bar, point to the GitLab icon.
-1. When Code Suggestions is enabled, the icon tooltip shows `GitLab code suggestions are enabled.`
-1. If Code Suggestions are not enabled, on the top bar select **Extensions** > **GitLab** > **Toggle Code Suggestions** to enable it.
+1. Check the icon tooltip to confirm that the feature is enabled.
+1. If Code Suggestions is not enabled, on the top bar select **Extensions** > **GitLab** > **Toggle Code Suggestions** to enable it.
 
 ### JetBrains IDEs
 

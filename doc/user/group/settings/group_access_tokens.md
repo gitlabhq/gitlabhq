@@ -168,7 +168,7 @@ To revoke a group access token:
 1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}).
 1. In the confirmation dialog, select **Revoke**.
 
-## Scopes for a group access token
+## Group access token scopes
 
 {{< history >}}
 
@@ -178,23 +178,23 @@ To revoke a group access token:
 
 {{< /history >}}
 
-The scope determines the actions you can perform when you authenticate with a group access token.
+Scopes define the actions available when you authenticate with a group access token.
 
-| Scope              | Description                                                                                                                                                                                                                                                                                                |
-|:-------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `api`              | Grants complete read and write access to the scoped group and related project API, including the [container registry](../../packages/container_registry/_index.md), the [dependency proxy](../../packages/dependency_proxy/_index.md), and the [package registry](../../packages/package_registry/_index.md). |
-| `read_api`         | Grants read access to the scoped group and related project API, including the [package registry](../../packages/package_registry/_index.md).                                                                                                                                                                |
-| `read_registry`    | Grants read access (pull) to the [container registry](../../packages/container_registry/_index.md) images if any project within a group is private and authorization is required.                                                                                                                           |
-| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/_index.md). You need both read and write access to push images.                                                                                                                                                |
-| `read_virtual_registry`  | If a project is private and authorization is required, grants read-only (pull) access to container images through the [dependency proxy](../../packages/dependency_proxy/_index.md). Available only when the dependency proxy is enabled. |
-| `write_virtual_registry` | If a project is private and authorization is required, grants read (pull), write (push), and delete access to container images through the [dependency proxy](../../packages/dependency_proxy/_index.md). Available only when the dependency proxy is enabled. |
-| `read_repository`  | Grants read access (pull) to all repositories within a group.                                                                                                                                                                                                                                              |
-| `write_repository` | Grants read and write access (pull and push) to all repositories within a group.                                                                                                                                                                                                                           |
-| `create_runner`    | Grants permission to create runners in a group.                                                                                                                                                                                                                                                            |
-| `manage_runner`    | Grants permission to manage runners in a group.                                                                                                                                                                                                                                                            |
-| `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                          |
-| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.                                                                                                                                                                                                               |
-| `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
+| Scope                    | Description |
+| ------------------------ | ----------- |
+| `api`                    | Grants complete read and write access to the scoped group and related project API, including the [container registry](../../packages/container_registry/_index.md), the [dependency proxy](../../packages/dependency_proxy/_index.md), and the [package registry](../../packages/package_registry/_index.md). |
+| `read_api`               | Grants read access to the scoped group and related project API, including the [package registry](../../packages/package_registry/_index.md). |
+| `read_repository`        | Grants read access (pull) to all repositories in the group. |
+| `write_repository`       | Grants read and write access (pull and push) to all repositories in the group. |
+| `read_registry`          | Grants read access (pull) to [container registry](../../packages/container_registry/_index.md) images if any project in the group is private and authorization is required. Available only when the container registry is enabled. |
+| `write_registry`         | Grants write access (push) to the [container registry](../../packages/container_registry/_index.md). To push images, you must include the `read_registry` scope. Available only when the container registry is enabled. |
+| `read_virtual_registry`  | Grants read access (pull) to container images through the [dependency proxy](../../packages/dependency_proxy/_index.md). Available only when the dependency proxy is enabled. |
+| `write_virtual_registry` | Grants read and write access (pull, push, and delete) to container images through the [dependency proxy](../../packages/dependency_proxy/_index.md). Available only when the dependency proxy is enabled. |
+| `create_runner`          | Grants permission to create runners in the group. |
+| `manage_runner`          | Grants permission to manage runners in the group. |
+| `ai_features`            | Grants permission to perform API actions for GitLab Duo, the Code Suggestions API, and the GitLab Duo Chat API. Designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see the individual extension documentation. Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7. |
+| `k8s_proxy`              | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the group. |
+| `self_rotate`            | Grants permission to rotate this token using the [personal access token API](../../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
 
 ## Restrict the creation of group access tokens
 

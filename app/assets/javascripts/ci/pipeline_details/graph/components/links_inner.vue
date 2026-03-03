@@ -2,13 +2,15 @@
 import { isEmpty } from 'lodash';
 import { STAGE_VIEW } from '~/ci/pipeline_details/graph/constants';
 import { createJobsHash, generateJobNeedsDict } from '~/ci/pipeline_details/utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { reportToSentry } from '~/ci/utils';
 import { DRAW_FAILURE } from '../../constants';
-import { generateLinksData } from '../../utils/drawing_utils';
+import { generateLinksData, generateQuadraticLinksData } from '../../utils/drawing_utils';
 
 export default {
   name: 'LinksInner',
   STROKE_WIDTH: 2,
+  mixins: [glFeatureFlagsMixin()],
   props: {
     containerId: {
       type: String,
@@ -117,7 +119,15 @@ export default {
     },
     calculateLinkData() {
       try {
-        this.links = generateLinksData(this.linksData, this.containerId, `-${this.pipelineId}`);
+        if (!this.glFeatures.updateVisualLanguage) {
+          this.links = generateLinksData(this.linksData, this.containerId, `-${this.pipelineId}`);
+        } else {
+          this.links = generateQuadraticLinksData(
+            this.linksData,
+            this.containerId,
+            `${this.pipelineId}`,
+          );
+        }
       } catch (err) {
         this.$emit('error', { type: DRAW_FAILURE, reportToSentry: false });
         reportToSentry(this.$options.name, err);

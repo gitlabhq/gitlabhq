@@ -108,3 +108,112 @@ exports[`Links Inner component with same stage needs matches snapshot and has ex
   </svg>
 </div>
 `;
+
+exports[`Links Inner component with updateVisualLanguage feature flag turned on with a large number of needs matches snapshot and has expected path 1`] = `
+<div
+  class="gl-flex gl-relative"
+  totalgroups="10"
+>
+  <svg
+    class="gl-absolute gl-pointer-events-none"
+    height="445px"
+    id="reference-0"
+    viewBox="0,0,1019,445"
+    width="1019px"
+  >
+    <path
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      d="M212,128L156,128Q162,128,162,134L162,142Q162,148,168,148L112,148"
+      stroke-width="2"
+    />
+    <path
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      d="M212,128L161,128Q167,128,167,134L167,152Q167,158,173,158L122,158"
+      stroke-width="2"
+    />
+    <path
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      d="M232,148L176,148Q182,148,182,154L182,162Q182,168,188,168L132,168"
+      stroke-width="2"
+    />
+    <path
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      d="M222,138L176,138Q182,138,182,144L182,172Q182,178,188,178L142,178"
+      stroke-width="2"
+    />
+    <path
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      d="M242,158L191,158Q197,158,197,164L197,182Q197,188,203,188L152,188"
+      stroke-width="2"
+    />
+  </svg>
+</div>
+`;
+
+exports[`Links Inner component with updateVisualLanguage feature flag turned on with a parallel need matches snapshot and has expected path 1`] = `
+<div
+  class="gl-flex gl-relative"
+  totalgroups="10"
+>
+  <svg
+    class="gl-absolute gl-pointer-events-none"
+    height="445px"
+    id="reference-0"
+    viewBox="0,0,1019,445"
+    width="1019px"
+  >
+    <path
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      d="M222,138L166,138Q172,138,172,144L172,152Q172,158,178,158L122,158"
+      stroke-width="2"
+    />
+  </svg>
+</div>
+`;
+
+exports[`Links Inner component with updateVisualLanguage feature flag turned on with one need matches snapshot and has expected path 1`] = `
+<div
+  class="gl-flex gl-relative"
+  totalgroups="10"
+>
+  <svg
+    class="gl-absolute gl-pointer-events-none"
+    height="445px"
+    id="reference-0"
+    viewBox="0,0,1019,445"
+    width="1019px"
+  >
+    <path
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      d="M212,128L156,128Q162,128,162,134L162,142Q162,148,168,148L112,148"
+      stroke-width="2"
+    />
+  </svg>
+</div>
+`;
+
+exports[`Links Inner component with updateVisualLanguage feature flag turned on with same stage needs matches snapshot and has expected path 1`] = `
+<div
+  class="gl-flex gl-relative"
+  totalgroups="10"
+>
+  <svg
+    class="gl-absolute gl-pointer-events-none"
+    height="445px"
+    id="reference-0"
+    viewBox="0,0,1019,445"
+    width="1019px"
+  >
+    <path
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      d="M192,108L136,108Q142,108,142,114L142,122Q142,128,148,128L92,128"
+      stroke-width="2"
+    />
+    <path
+      class="gl-duration-slow gl-ease-ease gl-fill-transparent gl-stroke-gray-200"
+      d="M212,128L151,128Q157,128,157,134L157,132Q157,138,163,138L102,138"
+      stroke-width="2"
+    />
+  </svg>
+</div>
+`;

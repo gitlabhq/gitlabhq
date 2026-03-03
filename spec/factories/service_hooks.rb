@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :service_hook do
     url { generate(:url) }
     integration
+    filter { {} }
 
     trait :url_variables do
       url_variables { { 'abc' => 'supers3cret', 'def' => 'foobar' } }

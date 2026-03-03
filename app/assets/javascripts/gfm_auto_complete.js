@@ -353,10 +353,13 @@ class GfmAutoComplete {
             return $.fn.atwho.default.callbacks.sorter(query, prioritized, searchKey);
           }
 
-          // Custom sorting to prioritize alias prefix matches over other matches
+          // Custom sorting to prioritize prefix matches over substring matches
           // This helps when typing an alias that no longer exists (e.g., /assign_reviewer)
           // to show the aliased command (e.g., /request_review) higher in the list
           const lowerQuery = query.toLowerCase();
+
+          // Helper function to check if an item's name starts with the query
+          const hasNamePrefix = (item) => (item.name || '').toLowerCase().startsWith(lowerQuery);
 
           // Helper function to check if an item has an alias that starts with the query
           const hasAliasPrefix = (item) =>
@@ -368,17 +371,23 @@ class GfmAutoComplete {
           // Only apply custom sorting if the query matches an alias prefix
           if (hasAliasMatch) {
             const sorted = items.sort((a, b) => {
-              const aAliasPrefix = hasAliasPrefix(a);
-              const bAliasPrefix = hasAliasPrefix(b);
+              // Score items: name prefix (3) > alias prefix (2) > substring match (1)
+              let aScore = 1;
+              if (hasNamePrefix(a)) aScore = 3;
+              else if (hasAliasPrefix(a)) aScore = 2;
 
-              // Prioritize items with alias prefix matches
-              if (aAliasPrefix && !bAliasPrefix) return -1;
-              if (!aAliasPrefix && bAliasPrefix) return 1;
+              let bScore = 1;
+              if (hasNamePrefix(b)) bScore = 3;
+              else if (hasAliasPrefix(b)) bScore = 2;
 
-              // Otherwise preserve original order
+              if (aScore !== bScore) {
+                return bScore - aScore; // Higher score first
+              }
+
+              // Same score - preserve original order
               return 0;
             });
-            return $.fn.atwho.default.callbacks.sorter(query, sorted, searchKey);
+            return sorted;
           }
 
           // No alias matches, use default sorter with original order

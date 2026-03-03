@@ -1,0 +1,10 @@
+---
+name: update_visual_language
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/588933
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224124
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590044
+milestone: '18.9'
+group: group::pipeline authoring
+type: beta
+default_enabled: false

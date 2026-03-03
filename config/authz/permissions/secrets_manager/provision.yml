@@ -1,0 +1,3 @@
+---
+name: provision_secrets_manager
+description: Grants the ability to provision a secrets manager.

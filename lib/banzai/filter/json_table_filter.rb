@@ -37,7 +37,7 @@ module Banzai
         return if code_node.parent&.parent.nil?
 
         json = begin
-          Gitlab::Json.parse(code_node.text)
+          Gitlab::Json.safe_parse(code_node.text)
         rescue JSON::ParserError
           nil
         end

@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Custom Models
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLab Duo Self-Hostedのトラブルシューティングのヒント
 title: GitLab Duo Self-Hostedサポートエンジニアプレイブック
 ---
@@ -95,7 +95,7 @@ docker logs <ai-gateway-container> 2>&1 | grep "model_endpoint"
 
 ## 一般的な設定の問題と解決策 {#common-configuration-issues-and-solutions}
 
-### モデルエンドポイントに`/v1`サフィックスが欠落している {#missing-v1-suffix-in-model-endpoint}
+### モデルエンドポイントに`/v1`サフィックスが欠落 {#missing-v1-suffix-in-model-endpoint}
 
 **現象**: vLLMまたはOpenAI互換モデルにリクエストを行う際の404エラー
 
@@ -122,11 +122,11 @@ docker logs <ai-gateway-container> | grep "404"
 sudo cat /var/log/gitlab/gitlab-rails/llm.log | grep -i "ssl\|certificate\|tls"
 ```
 
-**検証**: 証明書のステータスを検証する - GitLabサーバーは信頼された証明書を使用する必要があります。自己署名証明書はサポートされていません。
+**検証**: 証明書のステータスを検証する - GitLabサーバーは信頼できる証明書を使用する必要があります。自己署名証明書はサポートされていません。
 
 **解決策**: 
 
-- GitLabインスタンスに信頼された証明書を使用する
+- GitLabインスタンスに信頼できる証明書を使用する
 - 自己署名証明書を使用する場合は、AIゲートウェイコンテナで適切な証明書パスを設定する
 
 ### ネットワーク接続の問題 {#network-connectivity-issues}
@@ -183,7 +183,8 @@ docker logs <ai-gateway-container> | grep -E "(model_name|model_endpoint|litellm
 ```shell
 # Test model directly from AI Gateway container
 docker exec -it <ai-gateway-container> sh
-curl --request POST "<model_endpoint>/v1/chat/completions" \
+curl --request POST \
+     --url "<model_endpoint>/v1/chat/completions" \
      --header 'Content-Type: application/json' \
      --data '{"model": "<model_name>", "messages": [{"role": "user", "content": "Hello"}]}'
 ```
@@ -192,7 +193,7 @@ curl --request POST "<model_endpoint>/v1/chat/completions" \
 
 ### ステップ1: 詳細ログの有効化 {#step-1-enable-verbose-logging}
 
-**管理者 > GitLab Duo > Change Configuration**で、**AIログの有効化**にチェックが入っているか確認します。このインスタンスレベルの設定は、GitLab Railsコンソールで`enabled_instance_verbose_ai_logs`をtrueに設定するのと同じです:
+**管理者 > GitLab Duo > 設定の変更**で、**AIログの有効化**にチェックが入っているか確認します。このインスタンスレベルの設定は、GitLab Railsコンソールで`enabled_instance_verbose_ai_logs`をtrueに設定するのと同じです:
 
 ```ruby
 ::Ai::Setting.instance.enabled_instance_verbose_ai_logs
@@ -204,7 +205,8 @@ curl --request POST "<model_endpoint>/v1/chat/completions" \
 ::Ai::Setting.instance.update!(enabled_instance_verbose_ai_logs: true)
 ```
 
-> [!note]ロギングを有効にするには、`enabled_instance_verbose_ai_logs`UIまたはRailsコンソールでインスタンス設定を使用します。`expanded_ai_logging`機能フラグは使用しないでください。`expanded_ai_logging`機能フラグは、デバッグ目的でGitLab.comでのみ使用してください。GitLab Self-Managedインスタンス（GitLab Duo Self-Hostedを実行しているインスタンスを含む）では、`expanded_ai_logging`を使用しないでください。
+> [!note] 
+> ログの生成を有効にするには、UIまたはRailsコンソールで`enabled_instance_verbose_ai_logs`インスタンス設定を使用します。`expanded_ai_logging`機能フラグは使用しないでください。`expanded_ai_logging`機能フラグは、デバッグ目的でGitLab.comでのみ使用してください。GitLab Duo Self-Hostedを実行しているインスタンスを含む、GitLab Self-Managedインスタンスでは、`expanded_ai_logging`を使用しないでください。
 
 ### ステップ2: 問題の再現 {#step-2-reproduce-the-issue}
 
@@ -241,7 +243,11 @@ docker logs -f <ai-gateway-container>
 **1. AIゲートウェイのヘルスをテストする:**
 
 ```shell
-curl --silent --output /dev/null --write-out "%{http_code}" "<ai-gateway-url>/monitoring/healthz"
+curl --request GET \
+     --silent \
+     --output /dev/null \
+     --write-out "%{http_code}" \
+     --url "<ai-gateway-url>/monitoring/healthz"
 ```
 
 **2. AIゲートウェイの環境変数を確認する:**
@@ -258,7 +264,7 @@ docker logs <ai-gateway-container> 2>&1 | grep --ignore-case error | tail --line
 
 ## **GitLab Self-Managedインスタンスコマンド:** {#gitlab-self-managed-instance-commands}
 
-**4. ユーザー権限を確認します（GitLab Railsコンソール）:**
+**4. ユーザー権限を確認する（GitLab Railsコンソール）:**
 
 ```shell
 sudo gitlab-rails console
@@ -270,13 +276,13 @@ sudo gitlab-rails console
 User.find_by_id('<user_id>').can?(:access_code_suggestions)
 ```
 
-**5. GitLab LLMログでエラーを確認します:**
+**5. GitLab LLMログでエラーを確認する:**
 
 ```shell
 sudo tail --lines=100 /var/log/gitlab/gitlab-rails/llm.log | grep --ignore-case error
 ```
 
-**6. 機能フラグを確認します:**
+**6. 機能フラグを確認する:**
 
 ```shell
 sudo gitlab-rails console
@@ -291,7 +297,9 @@ Feature.enabled?(:expanded_ai_logging)
 **7. GitLabからAIゲートウェイへの接続をテストする:**
 
 ```shell
-curl --verbose "<ai-gateway-url>/monitoring/healthz"
+curl --request GET \
+     --verbose \
+     --url "<ai-gateway-url>/monitoring/healthz"
 ```
 
 ### 緊急診断ワンライナー {#emergency-diagnostic-one-liner}
@@ -301,7 +309,7 @@ curl --verbose "<ai-gateway-url>/monitoring/healthz"
 ```shell
 # Check all critical components at once
 docker exec <ai-gateway-container> env | grep AIGW_CUSTOM_MODELS__ENABLED && \
-curl --silent "<ai-gateway-url>/monitoring/healthz" && \
+curl --request GET --silent --url "<ai-gateway-url>/monitoring/healthz" && \
 sudo tail --lines=10 /var/log/gitlab/gitlab-rails/llm.log | jq '.level'
 ```
 

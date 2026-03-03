@@ -111,3 +111,18 @@ export const DESIGN_MARK_APP_START = 'design-app-start';
 // Measures
 export const DESIGN_MEASURE_BEFORE_APP = 'Design Management: Before the Vue app';
 export const DESIGN_MAIN_IMAGE_OUTPUT = 'Design Management: Single image preview';
+
+//
+// Commit List namespace
+//
+
+// Marks
+export const COMMIT_LIST_MARK_APP_MOUNTED = 'commit-list-app-mounted';
+export const COMMIT_LIST_MARK_FETCHING_DATA = 'commit-list-fetching-data';
+export const COMMIT_LIST_MARK_RENDERING_DATA = 'commit-list-rendering-data';
+export const COMMIT_LIST_MARK_DATA_RENDERED = 'commit-list-data-rendered';
+
+// Measures
+export const COMMIT_LIST_MEASURE_TIME_TO_MOUNT = 'Commit List: Time to mount';
+export const COMMIT_LIST_MEASURE_DATA_FETCH = 'Commit List: Data fetch';
+export const COMMIT_LIST_MEASURE_RENDER = 'Commit List: Render';

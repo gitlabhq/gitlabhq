@@ -1012,6 +1012,11 @@ msgstr ""
 msgid "%{jobName} job is being retried"
 msgstr ""
 
+msgid "%{jobsLength} job"
+msgid_plural "%{jobsLength} jobs"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{jobs} job"
 msgid_plural "%{jobs} jobs"
 msgstr[0] ""
@@ -59326,6 +59331,9 @@ msgstr ""
 msgid "SbomErrors|Error parsing SBOM reports"
 msgstr ""
 
+msgid "SbomErrors|Learn more"
+msgstr ""
+
 msgid "SbomErrors|Please investigate the provided reports and ensure they conform to %{helpPageLinkStart}the requirements for SBOM documents%{helpPageLinkEnd}."
 msgstr ""
 
@@ -61946,6 +61954,9 @@ msgstr ""
 msgid "SecurityOrchestration|Applies policy evaluations to all projects in this instance."
 msgstr ""
 
+msgid "SecurityOrchestration|Apply recommended selections"
+msgstr ""
+
 msgid "SecurityOrchestration|Apply this policy to %{projectScopeType} %{projectSelector}"
 msgstr ""
 
@@ -61988,6 +61999,12 @@ msgstr ""
 msgid "SecurityOrchestration|Automate %{strongStart}vulnerability management%{strongEnd} workflows."
 msgstr ""
 
+msgid "SecurityOrchestration|Automatically %{boldStart}dismiss%{boldEnd} these vulnerabilities with the %{reason} reason."
+msgstr ""
+
+msgid "SecurityOrchestration|Automatically %{boldStart}override severity%{boldEnd} of these vulnerabilities to:"
+msgstr ""
+
 msgid "SecurityOrchestration|Automatically dismiss vulnerabilities when they match all of the following criteria:"
 msgstr ""
 
@@ -61995,6 +62012,9 @@ msgid "SecurityOrchestration|Automatically dismiss vulnerabilities with a risk l
 msgstr ""
 
 msgid "SecurityOrchestration|Automatically selected runners"
+msgstr ""
+
+msgid "SecurityOrchestration|Automatically set the status of these vulnerabilities to %{type}."
 msgstr ""
 
 msgid "SecurityOrchestration|Back to standard editor"
@@ -62235,6 +62255,9 @@ msgid "SecurityOrchestration|Enforce policy on all groups, subgroups, and projec
 msgstr ""
 
 msgid "SecurityOrchestration|Enforce the following pipeline execution policy:"
+msgstr ""
+
+msgid "SecurityOrchestration|Enter up to %{maxBranches} branch names, separated by commas."
 msgstr ""
 
 msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}%{pipelineSource}%{branchExceptionsString}"
@@ -62659,6 +62682,9 @@ msgstr ""
 msgid "SecurityOrchestration|Reason for snoozing policy (optional)"
 msgstr ""
 
+msgid "SecurityOrchestration|Recommended selection"
+msgstr ""
+
 msgid "SecurityOrchestration|Release Security"
 msgstr ""
 
@@ -62998,15 +63024,6 @@ msgstr ""
 msgid "SecurityOrchestration|The security findings remain in their current status and are still visible, but will no longer block the merge request."
 msgstr ""
 
-msgid "SecurityOrchestration|Then automatically %{boldStart}dismiss%{boldEnd} these vulnerabilities with the %{reason} reason."
-msgstr ""
-
-msgid "SecurityOrchestration|Then automatically %{boldStart}override severity%{boldEnd} these vulnerabilities to:"
-msgstr ""
-
-msgid "SecurityOrchestration|Then automatically set the status of these vulnerabilities to %{type}."
-msgstr ""
-
 msgid "SecurityOrchestration|There are no exception branches yet."
 msgstr ""
 
@@ -63304,6 +63321,9 @@ msgstr ""
 msgid "SecurityOrchestration|You've reached the maximum limit of %{max} %{type} policies allowed. Policies are disabled when added."
 msgstr ""
 
+msgid "SecurityOrchestration|Your policy is using GitLab's recommended settings for this scanner and optimized for industry best practices."
+msgstr ""
+
 msgid "SecurityOrchestration|a license scanner found license violations"
 msgstr ""
 
@@ -63379,6 +63399,9 @@ msgstr ""
 msgid "SecurityOrchestration|branches"
 msgstr ""
 
+msgid "SecurityOrchestration|branches input"
+msgstr ""
+
 msgid "SecurityOrchestration|by the agent named %{agents} %{cadence}%{timeWindowInfo}%{branchExceptionsString}"
 msgstr ""
 
@@ -63395,6 +63418,9 @@ msgid "SecurityOrchestration|denylist"
 msgstr ""
 
 msgid "SecurityOrchestration|directory"
+msgstr ""
+
+msgid "SecurityOrchestration|e.g. main, develop, release"
 msgstr ""
 
 msgid "SecurityOrchestration|except for:"

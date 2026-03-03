@@ -1,0 +1,3 @@
+---
+name: update_secrets_permission
+description: Grants the ability to update a group's secrets permission.

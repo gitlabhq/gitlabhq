@@ -1,0 +1,3 @@
+---
+name: resume_batched_background_migration
+description: Grants the ability to resume batched background migrations

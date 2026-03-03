@@ -22,6 +22,7 @@ import {
 Vue.use(VueApollo);
 
 jest.mock('~/alert');
+jest.mock('~/performance/utils');
 jest.mock('~/projects/commits/utils');
 
 describe('CommitListApp', () => {
@@ -42,6 +43,9 @@ describe('CommitListApp', () => {
   };
 
   beforeEach(() => {
+    window.performance.mark = jest.fn();
+    window.performance.measure = jest.fn();
+    window.performance.getEntriesByName = jest.fn().mockReturnValue([]);
     groupCommitsByDay.mockReturnValue([
       {
         day: '2025-06-23',

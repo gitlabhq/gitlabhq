@@ -662,8 +662,7 @@ module QA
           :snippets_enabled,
           :shared_runners_enabled,
           :request_access_enabled,
-          :avatar_url,
-          :created_at
+          :avatar_url
         )
       end
 

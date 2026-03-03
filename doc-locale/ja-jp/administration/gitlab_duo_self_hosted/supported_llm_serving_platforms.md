@@ -1,9 +1,9 @@
 ---
 stage: AI-powered
 group: Custom Models
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: サポートされているLLMサービスプラットフォーム。
-title: GitLab Duo Self-Hostedのサポート対象プラットフォーム
+title: セルフホストモデルでサポートされているプラットフォーム
 ---
 
 {{< details >}}
@@ -18,7 +18,7 @@ title: GitLab Duo Self-Hostedのサポート対象プラットフォーム
 
 - GitLab 17.1で`ai_custom_model`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/groups/gitlab-org/-/epics/12972)されました。デフォルトでは無効になっています。
 - GitLab 17.6の[GitLab Self-Managedで有効](https://gitlab.com/groups/gitlab-org/-/epics/15176)になりました。
-- GitLab 17.6以降、GitLab Duoアドオンが必須となりました。
+- GitLab 17.6以降、GitLab Duoアドオンが必須になりました。
 - 機能フラグ`ai_custom_model`は、GitLab 17.8で削除されました。
 - GitLab 17.9で一般提供になりました。
 - GitLab 18.0でPremiumを含むように変更されました。
@@ -134,7 +134,8 @@ curl \
 
 本番環境でvLLMを実行する場合、`--disable-log-requests`フラグを使用してリクエストログを無効にすると、レイテンシーを大幅に削減できます。
 
-> [!note] このフラグは、詳細なリクエストログを必要としない場合にのみ使用してください。
+> [!note] 
+> このフラグは、詳細なリクエストログを必要としない場合にのみ使用してください。
 
 リクエストログを無効にすると、特に高負荷時に冗長なログによって発生するオーバーヘッドが最小限に抑えられ、パフォーマンスレベルの向上に役立ちます。
 
@@ -156,19 +157,19 @@ AWS Bedrockモデルにアクセスするには:
 
 1. 適切なAWS IAM権限でBedrockにアクセスするようにIAM認証情報を設定します:
 
-   - IAMロールに`AmazonBedrockFullAccess`ポリシーがあることを確認し、[Amazon Web Services Bedrockへのアクセス](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess)を許可します。これは、GitLab Duo Self-Hosted UIでは実行できません。
+   - IAMロールに`AmazonBedrockFullAccess`ポリシーがあることを確認し、[Amazon Web Services Bedrockへのアクセス](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess)を許可します。これはGitLab UIでは実行できません。
 
    - 使用する[モデルへのアクセスをAmazon Web Servicesコンソールを使用してリクエストします](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html)。
 
-1. Dockerコンテナを起動する際に、[`AWS_ACCESS_KEY_ID`、`AWS_SECRET_ACCESS_KEY`、`AWS_REGION_NAME`](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)などの適切なAWS SDK環境変数をエクスポートして、AIゲートウェイインスタンスを認証してください。
+1. Dockerコンテナの起動時に、適切なAWS SDK環境変数をエクスポートして、AIゲートウェイインスタンスを認証します。次のいずれかを使用できます。
+
+   - `AWS_BEARER_TOKEN_BEDROCK` ( [API keys](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys-use.html)を参照)
+   - `AWS_ACCESS_KEY_ID`、`AWS_SECRET_ACCESS_KEY`、`AWS_REGION_NAME` ( [IAM認証情報](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)を参照)
 
    詳細については、[AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html)を参照してください。
 
-   {{< alert type="note" >}}
-
-   一時的な認証情報は、現時点ではAIゲートウェイでサポートされていません。インスタンスプロファイルまたは一時的な認証情報を使用するためにBedrockのサポートを追加する方法については、[イシュー542389](https://gitlab.com/gitlab-org/gitlab/-/issues/542389)を参照してください。
-
-   {{< /alert >}}
+   > [!note]
+   > 一時的な認証情報は、現時点ではAIゲートウェイではサポートされていません。インスタンスプロファイルまたは一時的な認証情報を使用するためにBedrockのサポートを追加する方法については、[イシュー542389](https://gitlab.com/gitlab-org/gitlab/-/issues/542389)を参照してください。
 
 1. オプション。Virtual Private Cloud（VPC）で動作するプライベートBedrockエンドポイントをセットアップするには、AIゲートウェイコンテナを起動する際に、`AWS_BEDROCK_RUNTIME_ENDPOINT`環境変数が内部URLで設定されていることを確認してください。
 
@@ -189,13 +190,10 @@ AWS Bedrockモデルにアクセスするには:
 
 ## 複数のモデルとプラットフォームを使用する {#use-multiple-models-and-platforms}
 
-GitLab Duo Self-Hostedを使用すると、同じGitLabインスタンスで複数のモデルとプラットフォームを使用できます。
+同じGitLabインスタンスで複数のモデルとプラットフォームを使用できます。
 
-たとえば、ある機能については、Azure OpenAIを使用するように設定し、別の機能では、AWS BedrockまたはvLLMで提供されるセルフホストモデルを使用するように設定できます。
+たとえば、ある機能がAzure OpenAIを使用するように設定し、別の機能がAWS BedrockまたはvLLMで提供されるセルフホストモデルを使用するように設定できます。
 
 このセットアップにより、各ユースケースに最適なモデルとプラットフォームを柔軟に選択できます。使用するモデルは、サポート対象かつ互換性のあるプラットフォームで提供されている必要があります。
 
-異なるプロバイダーのセットアップの詳細については、以下を参照してください:
-
-- [GitLab Duo Self-Hosted機能を設定する](configure_duo_features.md)
-- [サポートされているGitLab Duo Self-Hostedのモデルとハードウェア要件](supported_models_and_hardware_requirements.md)
+さまざまなプロバイダーの設定の詳細については、[サポートされているモデルとハードウェアの要件](supported_models_and_hardware_requirements.md)を参照してください。

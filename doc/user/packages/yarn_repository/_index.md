@@ -387,6 +387,74 @@ yarn config set '//gitlab.example.com/api/v4/projects/<project_id>/packages/npm/
 yarn config set '//gitlab.example.com/api/v4/packages/npm/:_authToken' '<token>'
 ```
 
+### Yarn Classic returns `404 Not Found` when fetching a tarball from a group install
+
+When you install a package from a registry in a group with Yarn Classic, package resolution might succeed but the tarball download fails with a `404 Not Found` error:
+
+```shell
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+error Error: https://gitlab.example.com/api/v4/projects/<project_id>/packages/npm/@scope/my-package/-/@scope/my-package-1.0.0.tgz: Request failed "404 Not Found"
+```
+
+This error occurs because the package metadata returned by the group
+registry contains tarball download URLs that point to the project
+endpoint. If your `.npmrc` file only has an authentication token for the
+group endpoint, the request to the project endpoint is
+unauthenticated and returns a `404`.
+
+To resolve this issue, add authentication tokens for both the group
+and project endpoints in your `.npmrc` file:
+
+```ini
+# .npmrc
+//gitlab.example.com/api/v4/groups/<group_id>/-/packages/npm/:_authToken='<token>'
+//gitlab.example.com/api/v4/projects/<project_id>/packages/npm/:_authToken='<token>'
+```
+
+### Yarn Classic returns `401 Unauthorized` with shortened authentication paths
+
+When using Yarn Classic with the GitLab package registry, you might receive
+a `401 Unauthorized` error even though your authentication token is valid.
+The error message might look like:
+
+```shell
+error Couldn't find package "@scope/my-package" on the "npm" registry.
+```
+
+With the `--verbose` flag, the log shows a `401` status code:
+
+```shell
+verbose Performing "GET" request to "https://gitlab.com/api/v4/groups/<group_id>/-/packages/npm/..."
+verbose Request "https://gitlab.com/api/v4/groups/<group_id>/-/packages/npm/..." finished with status code 401.
+```
+
+This issue occurs when the `_authToken` entry in `.npmrc` uses a shortened
+parent path instead of the full endpoint path. For example:
+
+```ini
+# Does NOT work with Yarn Classic
+//gitlab.com/api/v4/:_authToken='<token>'
+```
+
+While npm version 8 and later supports hierarchical authentication matching
+(a token set on a parent path applies to all sub-paths), Yarn Classic requires
+an exact path match between the `_authToken` entry and the registry URL.
+
+To resolve this issue, use the full endpoint path for each registry you
+authenticate with in your `.npmrc` file. For example, when installing from a
+group registry where the package is hosted in a specific project:
+
+```ini
+# .npmrc
+//gitlab.com/api/v4/groups/<group_id>/-/packages/npm/:_authToken='<token>'
+//gitlab.com/api/v4/projects/<project_id>/packages/npm/:_authToken='<token>'
+```
+
+The project entry is required because the package metadata returned by
+the group endpoint contains tarball download URLs that point to the
+project endpoint.
+
 ### `yarn install` fails to clone repository as a dependency
 
 If you use `yarn install` from a Dockerfile, when you build the Dockerfile you might get an error like this:
