@@ -657,6 +657,37 @@ Or:
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd>+<kbd>i</kbd>.
 - In the upper-right corner, select **Assigned issues** ({{< icon name="issues" >}}).
 
+## Configure child item display preferences
+
+{{< history >}}
+
+- Display options for child items [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/551231) in GitLab 18.10.
+
+{{< /history >}}
+
+You can configure what information is displayed in the **Child items** section, so that you can focus on what matters most for your workflow.
+
+> [!note]
+> When you change the information displayed in one issue, you change it for all work items in your groups and projects.
+
+1. At the top-right corner of the **Child items** section header, select **Display options** ({{< icon name="preferences" >}}).
+
+   By default, all options and fields are visible.
+1. To change the displayed information, turn the following toggles on or off:
+
+   - For display options:
+     - **Show closed items**
+   - For fields displayed:
+     - **Status**
+     - **Assignee**
+     - **Labels**
+     - **Weight**
+     - **Milestone**
+     - **Iteration**
+     - **Dates**
+     - **Health**
+     - **Blocked/Blocking**
+
 ## Issue list
 
 The issue list shows all issues in your project or group.

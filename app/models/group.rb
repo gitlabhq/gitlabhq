@@ -1165,7 +1165,7 @@ class Group < Namespace
 
   def work_items_consolidated_list_enabled?(user = nil)
     # work_item_planning_view is the feature flag used to determine whether the consolidated list is enabled or not
-    return true if feature_flag_enabled_for_self_or_ancestor?(:work_item_planning_view, type: :wip)
+    return true if feature_flag_enabled_for_self_or_ancestor?(:work_item_planning_view, type: :beta)
 
     user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end

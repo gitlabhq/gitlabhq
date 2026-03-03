@@ -150,6 +150,37 @@ The bi-directional relationship is removed from both items.
 
 Alternatively, you can remove a linked item using the [`/unlink` quick action](../project/quick_actions.md#unlink).
 
+### Configure linked item display preferences
+
+{{< history >}}
+
+- Display options for linked items [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/551231) in GitLab 18.10.
+
+{{< /history >}}
+
+You can configure what information is displayed in the **Linked items** section, so that you can focus on what matters most for your workflow.
+
+> [!note]
+> When you change the information displayed in a work item, you change it for all work items in your projects and groups.
+
+1. At the top-right corner of the **Linked items** section header, select **Display options** ({{< icon name="preferences" >}}).
+
+   By default, all options and fields are visible.
+1. To change the displayed information, turn the following toggles on or off:
+
+   - For display options:
+     - **Show closed items**
+   - For fields displayed:
+     - **Status**
+     - **Assignee**
+     - **Labels**
+     - **Weight**
+     - **Milestone**
+     - **Iteration**
+     - **Dates**
+     - **Health**
+     - **Blocked/Blocking**
+
 ## Related topics
 
 - [Work items](_index.md)

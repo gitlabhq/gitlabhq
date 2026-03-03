@@ -49,6 +49,13 @@ Gitlab::GrapeOpenapi.configure do |config|
     )
   ]
 
+  # key: `route_setting` value
+  # value: rendered annotation key
+  # e.g. route_setting :lifecycle, "experimental" => YAML: `x-gitlab-lifecycle: experimental`
+  config.annotations = {
+    lifecycle: 'x-gitlab-lifecycle'
+  }
+
   config.tag_overrides = {
     'Ai catalog' => 'AI Catalog',
     'Api' => 'API',

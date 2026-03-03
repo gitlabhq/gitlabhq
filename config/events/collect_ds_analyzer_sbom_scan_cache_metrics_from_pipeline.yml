@@ -1,0 +1,24 @@
+---
+description: Tracks cache utilization during SBOM scans for Dependency Scanning analyzer
+internal_events: true
+status: active
+action: collect_ds_analyzer_sbom_scan_cache_metrics_from_pipeline
+identifiers:
+- project
+- namespace
+additional_properties:
+  property:
+    description: Scan UUID
+  label:
+    description: Cache check result (cache_hit, cache_miss, cache_stale)
+  input_file_path:
+    description: Path of input file for SBOM
+product_group: composition_analysis
+product_categories:
+- software_composition_analysis
+milestone: '18.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225150
+tiers:
+- free
+- premium
+- ultimate

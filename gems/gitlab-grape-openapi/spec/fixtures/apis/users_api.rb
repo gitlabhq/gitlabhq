@@ -3,6 +3,7 @@
 # rubocop:disable API/Base -- Test fixture
 module TestApis
   class UsersApi < Grape::API
+    route_setting :test_annotation, 'test value'
     desc 'Get all users' do
       detail 'Returns a list of all users'
       success TestEntities::UserEntity

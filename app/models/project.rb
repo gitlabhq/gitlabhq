@@ -3624,7 +3624,7 @@ class Project < ApplicationRecord
   def work_items_consolidated_list_enabled?(user = nil)
     # work_item_planning_view is the feature flag used to determine whether the consolidated list is enabled or not
     # The global check is required for projects which do not have an associated group (i.e. from a user namespace)
-    return true if group&.work_items_consolidated_list_enabled?(user) || Feature.enabled?(:work_item_planning_view, type: :wip)
+    return true if group&.work_items_consolidated_list_enabled?(user) || Feature.enabled?(:work_item_planning_view, type: :beta)
 
     user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end

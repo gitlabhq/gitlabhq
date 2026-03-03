@@ -27,7 +27,7 @@ module QA
 
           index.click_export_as_csv_button
 
-          expect(index.export_issues_modal).to have_content('2 issues selected')
+          expect(index.export_issues_modal).to have_content(/2 (issues|work items) selected/)
 
           index.click_export_issues_button
 

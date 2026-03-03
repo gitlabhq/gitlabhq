@@ -5,5 +5,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180972
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520452
 milestone: '17.10'
 group: group::product planning
-type: wip
+type: beta
 default_enabled: false

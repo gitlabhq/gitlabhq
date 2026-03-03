@@ -4,6 +4,7 @@ module Import
   module BulkImports
     module ExportUploadable
       include Gitlab::ImportExport::CommandLineUtil
+      include ::Import::Offline::ExportUploadable
 
       delegate :export_path, to: :config
       delegate :exported_filename, to: :export_service
@@ -26,6 +27,8 @@ module Import
       end
 
       def upload_compressed_file
+        return upload_directly_to_object_storage if export.offline?
+
         File.open(compressed_filename) { |file| upload.export_file = file }
         upload.save!
       end

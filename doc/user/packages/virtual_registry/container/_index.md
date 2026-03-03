@@ -18,6 +18,7 @@ description: Use the container virtual registry to cache container images from u
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/548794) in GitLab 18.5 [with a flag](../../../../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631) from experiment to beta in GitLab 18.9.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224250) in GitLab 18.10.
 
 {{< /history >}}
 

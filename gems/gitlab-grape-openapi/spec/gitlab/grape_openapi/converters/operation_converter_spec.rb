@@ -9,6 +9,11 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
 
   subject(:operation) { described_class.convert(route, schema_registry, request_body_registry) }
 
+  before do
+    allow_any_instance_of(Gitlab::GrapeOpenapi::Configuration)
+      .to receive(:annotations).and_return({ test_annotation: 'x-test-annotation' })
+  end
+
   describe '.convert' do
     context 'with simple routes' do
       let(:api_classes) { [TestApis::UsersApi] }
@@ -47,6 +52,10 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::OperationConverter do
 
         it 'extracts hidden default' do
           expect(operation.hidden).to be false
+        end
+
+        it 'extracts test annotation' do
+          expect(operation.annotations).to eq({ 'x-test-annotation' => 'test value' })
         end
 
         it 'verifies parameter content' do

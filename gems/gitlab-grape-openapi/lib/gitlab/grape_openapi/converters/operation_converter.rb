@@ -33,6 +33,7 @@ module Gitlab
             operation.parameters = extract_parameters
             operation.responses = ResponseConverter.new(@route, @schema_registry).convert
             operation.request_body = extract_request_body || {}
+            operation.annotations = extract_annotations
           end
         end
 
@@ -43,6 +44,18 @@ module Gitlab
         def route_method
           options = @route.instance_variable_get(:@options)
           options[:method]
+        end
+
+        def extract_annotations
+          return {} unless options[:settings]
+
+          selected_keys = options[:settings].keys.select do |k|
+            config.annotations.key?(k)
+          end
+
+          selected_keys.to_h do |key|
+            [config.annotations[key], options[:settings][key].to_s]
+          end
         end
 
         def extract_parameters

@@ -139,7 +139,15 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
     end
 
     context 'with offline_export_id' do
-      let_it_be(:offline_export) { create(:offline_export, user: user) }
+      before do
+        stub_application_setting(allow_s3_compatible_storage_for_offline_transfer: true)
+
+        allow_next_instance_of(Import::Clients::ObjectStorage) do |object_storage_client|
+          allow(object_storage_client).to receive(:store_file)
+        end
+      end
+
+      let_it_be(:offline_export) { create(:offline_export, :with_configuration, user: user) }
 
       subject(:service) { described_class.new(user, group, relation, jid, offline_export_id: offline_export.id) }
 
@@ -162,6 +170,14 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
         )
 
         expect { service.execute }.not_to change { group.bulk_import_exports.count }
+      end
+
+      it 'uploads file directly to object storage' do
+        expect_next_instance_of(Import::Clients::ObjectStorage) do |object_storage_client|
+          expect(object_storage_client).to receive(:store_file)
+        end
+
+        expect { service.execute }.not_to change { ::Upload.count }
       end
     end
   end

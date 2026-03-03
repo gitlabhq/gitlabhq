@@ -89,8 +89,12 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
       end
 
       context 'when offline export is provided' do
-        let_it_be(:export) { create(:offline_export) }
+        let_it_be(:export) { create(:offline_export, :with_configuration) }
         let(:offline_export_id) { export.id }
+
+        before do
+          stub_offline_import_object_storage(export.configuration)
+        end
 
         include_examples 'export service', BulkImports::RelationExportService
 
