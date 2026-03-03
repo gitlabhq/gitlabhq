@@ -11,10 +11,11 @@ module Resolvers
 
       argument :id,
         Types::GlobalIDType[::Organizations::Organization],
-        required: true,
+        required: false,
         description: 'ID of the organization.'
 
-      def resolve(id:)
+      def resolve(id: nil)
+        id = current_organization.to_gid if id.nil?
         authorized_find!(id: id)
       end
     end

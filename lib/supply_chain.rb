@@ -6,11 +6,14 @@ module SupplyChain
 
   class << self
     def publish_provenance_for_build?(build)
-      Feature.enabled?(:slsa_provenance_statement, build.project) &&
-        build.project.public? &&
-        build.stage_name == ATTEST_BUILD_STAGE_NAME &&
-        build.yaml_variables.any? { |variable| variable[:key] == ATTEST_BUILD_CI_VARIABLE } &&
-        build.artifacts?
+      Feature.enabled?(:slsa_provenance_statement, build.project) && build.project.public? &&
+        build.stage_name == ATTEST_BUILD_STAGE_NAME && publish_artifact_provenance?(build)
+    end
+
+    def publish_artifact_provenance?(build)
+      return false unless build.yaml_variables
+
+      build.yaml_variables.any? { |variable| variable[:key] == ATTEST_BUILD_CI_VARIABLE } && build.artifacts?
     end
   end
 end

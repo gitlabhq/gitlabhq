@@ -221,7 +221,6 @@ export default {
     'ee/app/assets/javascripts/members/components/table/drawer/role_updater.vue',
     'ee/app/assets/javascripts/notes/components/note_actions/ai_summarize_notes.vue',
     'ee/app/assets/javascripts/on_demand_scans/router.js',
-    'ee/app/assets/javascripts/pages/admin/gitlab_duo/self_hosted/router.js',
     'ee/app/assets/javascripts/product_analytics/onboarding/constants.js',
     'ee/app/assets/javascripts/project_quality_summary/app.vue',
     'ee/app/assets/javascripts/roadmap/mixins/filtered_search_mixin.js',

@@ -7,7 +7,8 @@ RSpec.describe 'getting organization information', feature_category: :organizati
   using RSpec::Parameterized::TableSyntax
 
   let(:object) { organization }
-  let(:query) { graphql_query_for(:organization, { id: organization.to_global_id }, organization_fields) }
+  let(:query_param) { { 'id' => organization.to_gid } }
+  let(:query) { graphql_query_for(:organization, query_param, organization_fields) }
   let(:current_user) { user }
   let(:organization_fields) do
     <<~FIELDS
@@ -59,6 +60,40 @@ RSpec.describe 'getting organization information', feature_category: :organizati
     it_behaves_like 'a working graphql query' do
       before do
         request_organization
+      end
+    end
+
+    context 'when organization id parameter is not provided' do
+      let(:query_param) { {} }
+
+      context 'when user has access to current_organization' do
+        it 'returns current organization' do
+          request_organization
+
+          expect(graphql_data_at(:organization, :id)).to eq(current_organization.to_gid.to_s)
+        end
+      end
+
+      context 'when user does not have access to current_organization' do
+        let(:current_organization) { create(:organization, :private) }
+        let(:current_user) { create(:user) }
+
+        it 'returns nil' do
+          request_organization
+
+          expect(graphql_data_at(:organization, :id)).to be_nil
+        end
+      end
+
+      context 'when current_organization is public and user has no explicit access' do
+        let(:current_organization) { create(:organization, :public) }
+        let(:current_user) { create(:user) }
+
+        it 'returns the public organization' do
+          request_organization
+
+          expect(graphql_data_at(:organization, :id)).to eq(current_organization.to_gid.to_s)
+        end
       end
     end
 

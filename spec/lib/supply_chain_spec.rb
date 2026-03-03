@@ -49,5 +49,31 @@ RSpec.describe SupplyChain, feature_category: :artifact_security do
 
       it { is_expected.to be_falsy }
     end
+
+    context 'with nil yaml_variables' do
+      let(:yaml_variables) { nil }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '.publish_artifact_provenance?' do
+    subject(:query) { described_class.publish_artifact_provenance?(build) }
+
+    context 'when a valid build that requires attestation is passed' do
+      include_context 'with build, pipeline and artifacts'
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'with nil yaml_variables' do
+      let(:build) do
+        build = instance_double(Ci::Build)
+        allow(build).to receive(:yaml_variables).and_return(nil)
+        build
+      end
+
+      it { is_expected.to be_falsy }
+    end
   end
 end

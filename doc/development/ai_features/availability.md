@@ -285,7 +285,8 @@ The following settings pages are available for configuring GitLab Duo on self-ma
   - Enable beta AI models for self-hosted deployments
   - Configure AI logging settings
   - Set AI Gateway URL for self-hosted deployments
-- `/admin/gitlab_duo/self_hosted`
+- `/admin/gitlab_duo/model_selection`
+  - Configure instance-level model selection
   - Configure self-hosted AI model integrations
   - Select specific self-hosted models for different GitLab Duo features
 

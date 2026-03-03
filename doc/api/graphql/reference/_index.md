@@ -1603,7 +1603,7 @@ Returns [`Organization`](#organization).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="query-organization-id"></a>`id` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | ID of the organization. |
+| <a id="query-organization-id"></a>`id` | [`OrganizationsOrganizationID`](#organizationsorganizationid) | ID of the organization. |
 
 ### `Query.organizations`
 
@@ -42805,6 +42805,28 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organization-projects-withduoeligible"></a>`withDuoEligible` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Include only projects that are eligible for GitLab Duo and have Duo features enabled. |
 | <a id="organization-projects-withissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="organization-projects-withmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
+
+##### `Organization.workItemTypes`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Work item types available to the organization.
+
+Returns [`WorkItemTypeConnection`](#workitemtypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organization-workitemtypes-name"></a>`name` | [`IssueType`](#issuetype) | Filter work item types by the given name. |
+| <a id="organization-workitemtypes-onlyavailable"></a>`onlyAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. When true, returns only the available work item types for the current user. |
 
 ##### `Organization.workspacesClusterAgents`
 

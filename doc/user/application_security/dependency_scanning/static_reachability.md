@@ -172,23 +172,18 @@ language.
 1. For Python `pipenv`, static reachability analysis doesn't support `Pipfile.lock` files. Support
    is available only for `pipenv.graph.json` because it supports a dependency graph.
 1. No support for frontend frameworks.
-1. Java's dynamic nature causes [known issues](#known-issues-for-java) with higher false negatives.
+1. Java's dynamic nature causes the following issues which can result in higher false negative
+   rates for projects using modern frameworks:
+   - Static reachability analysis detects explicit usage through direct imports, Java reflection
+     patterns, and Java Database Connectivity connection strings in source code. It cannot identify
+     dependencies loaded dynamically at runtime, such as those using dependency injection frameworks
+     like Spring Boot.
+   - Coverage is limited to packages in the GitLab advisory database and the most
+     widely-depended-upon packages in Maven Central.
 1. Use `maven.graph.json` files as described in the
    [Maven](dependency_scanning_sbom/_index.md#maven) instructions.
-1. Use dependency lock files as described in the
-   [Gradle](dependency_scanning_sbom/_index.md#gradle) instructions.
-
-### Known issues for Java
-
-Static reachability analysis for Java has the following known issues:
-
-- It detects explicit usage through direct imports, Java reflection patterns, and JDBC connection
-  strings in source code. It cannot identify dependencies loaded dynamically at runtime, such as
-  those using dependency injection frameworks like Spring Boot.
-- Coverage is limited to packages in the GitLab advisory database and the most widely-depended-upon
-  packages in Maven Central.
-
-These issues might result in higher false negative rates for projects using modern frameworks.
+1. Use dependency lock files as described in the [Gradle](dependency_scanning_sbom/_index.md#gradle)
+   instructions.
 
 ## Offline environment
 
