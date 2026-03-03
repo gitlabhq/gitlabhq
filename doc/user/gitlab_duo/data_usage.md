@@ -169,10 +169,10 @@ Prerequisites:
 
 To turn on data collection for your group:
 
-1. On top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings** > **General**.
-1. Expand **GitLab Duo features**.
-1. Select the **Collect usage data** checkbox.
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Data collection**, select the **Collect usage data** checkbox.
 1. Select **Save changes**.
 
 After you turn on data collection, AI interactions from all projects and subgroups in your namespace are logged with GitLab.

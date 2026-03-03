@@ -194,7 +194,7 @@ To add an SSH key to your GitLab account:
 1. Sign in to GitLab.
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **SSH Keys**.
+1. On the left sidebar, select **Access** > **SSH keys**.
 1. Select **Add new key**.
 1. In the **Key** box, paste the contents of your public key.
    If you manually copied the key, make sure you copy the entire key,
@@ -247,7 +247,7 @@ To view the SSH keys for your account:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **SSH Keys**.
+1. On the left sidebar, select **Access** > **SSH keys**.
 
 Your existing SSH keys are listed at the bottom of the page. The information includes:
 
@@ -282,7 +282,7 @@ To revoke an SSH key:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **SSH Keys**.
+1. On the left sidebar, select **Access** > **SSH keys**.
 1. Next to the SSH key you want to revoke, select **Revoke**.
 1. Select **Revoke**.
 
@@ -292,7 +292,7 @@ To delete an SSH key:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **SSH Keys**.
+1. On the left sidebar, select **Access** > **SSH keys**.
 1. Next to the key you want to delete, select **Remove** ({{< icon name="remove" >}}).
 1. Select **Delete**.
 

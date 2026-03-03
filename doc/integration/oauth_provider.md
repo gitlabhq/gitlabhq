@@ -45,7 +45,7 @@ To create a new application for your user:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Applications**.
+1. On the left sidebar, select **Access** > **Applications**.
 1. Select **Add new application**.
 1. Enter a **Name** and **Redirect URI**.
 1. Select OAuth 2 **Scopes** as defined in [Authorized Applications](#view-all-authorized-applications).
@@ -105,7 +105,8 @@ The user authorization step is automatically skipped for this application.
 To see all the application you've authorized with your GitLab credentials:
 
 1. In the upper-right corner, select your avatar.
-1. Select **Edit profile** and then select **Applications**.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Access** > **Applications**.
 1. See the **Authorized applications** section.
 
 The GitLab OAuth 2 applications support scopes, which allow application to perform

@@ -7,7 +7,7 @@ module QA
         include SubMenus::CreateNewMenu
 
         def click_ssh_keys
-          click_element('nav-item-link', submenu_item: 'SSH Keys')
+          open_access_submenu('SSH keys')
         end
 
         def click_account
@@ -19,11 +19,17 @@ module QA
         end
 
         def click_password
-          click_element('nav-item-link', submenu_item: 'Password')
+          open_access_submenu('Password')
         end
 
         def click_personal_access_tokens
-          click_element('nav-item-link', submenu_item: 'Personal access tokens')
+          open_access_submenu('Personal access tokens')
+        end
+
+        private
+
+        def open_access_submenu(sub_menu)
+          open_submenu('Access', sub_menu)
         end
       end
     end

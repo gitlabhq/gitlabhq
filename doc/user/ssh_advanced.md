@@ -89,7 +89,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 1. Sign in to GitLab.
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **SSH Keys**.
+1. On the left sidebar, select **Access** > **SSH keys**.
 1. Select **Add new key**.
 1. Select **Key**, and you should see the 1Password helper appear.
 1. Select the 1Password icon and unlock 1Password.

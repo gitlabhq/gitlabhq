@@ -35,7 +35,7 @@ must delete the package and republish it.
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role.
+- The Maintainer or Owner role for the project.
 
 To delete a package:
 
@@ -61,7 +61,7 @@ Delete assets associated with a package to reduce storage.
 
 Prerequisites:
 
-- You must have the Developer, Maintainer, or Owner role.
+- The Maintainer or Owner role for the project.
 
 To delete package assets:
 

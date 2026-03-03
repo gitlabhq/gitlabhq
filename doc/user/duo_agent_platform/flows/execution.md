@@ -116,7 +116,12 @@ might require you to install them explicitly. If needed, you can install missing
 [setup script configuration](#configure-setup-scripts).
 
 > [!note]
-> There is [an issue (587996)](https://gitlab.com/gitlab-org/gitlab/-/work_items/587996) with the latest version of `git` in custom images. Use Git version `2.43.7` or earlier in your custom image.
+> In GitLab 18.9 and earlier, there is [a known issue (587996)](https://gitlab.com/gitlab-org/gitlab/-/work_items/587996) where flows might fail with newer versions of `git` in custom images. This issue is resolved in `@gitlab/duo-cli` version 8.71.0.
+>
+> If you are on `@gitlab/duo-cli` version 8.71.0 or earlier, to avoid flows failing with newer Git versions, you can do either following:
+>
+> - Use Git version `2.43.7` or earlier in your custom image
+> - Use `@gitlab/duo-cli` version 8.71.0.
 
 Additionally, depending on the tool calls made by agents during flow execution, other common utilities may be required.
 

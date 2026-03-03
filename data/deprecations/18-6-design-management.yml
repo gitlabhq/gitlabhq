@@ -4,7 +4,7 @@
   breaking_change: true
   reporter: mmacfarlane
   stage: plan
-  issue_url: https://gitlab.com/gitlab-com/Product/-/issues/14413
+  issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20375
   check_impact: https://docs.gitlab.com/user/project/issues/design_management/
   impact: [low]
   impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=edge_case&migration_complexity=minor_manual&scope=project&identification_complexity=manual&additional_complexity=no&base_impact=minor&pipeline_impact=none&compliance_impact=none&availability_impact=none&authorization_impact=none&API_impact=none

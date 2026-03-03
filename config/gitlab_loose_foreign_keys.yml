@@ -1156,6 +1156,9 @@ vulnerability_severity_overrides:
   - table: projects
     column: project_id
     on_delete: async_delete
+  - table: security_policies
+    column: security_policy_id
+    on_delete: async_nullify
   - table: users
     column: author_id
     on_delete: async_nullify

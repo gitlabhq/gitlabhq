@@ -225,7 +225,7 @@ RSpec.describe 'Database schema',
       vulnerability_external_issue_links: %w[project_id],
       vulnerability_issue_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_merge_request_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
-      vulnerability_severity_overrides: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
+      vulnerability_severity_overrides: %w[vulnerability_occurrence_id security_policy_id], # vulnerability_occurrence_id: foreign key will be added at a later date, security_policy_id: cross-database (gitlab_sec vs gitlab_main_org)
       sbom_occurrences_vulnerabilities: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_representation_information: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_user_mentions: %w[vulnerability_occurrence_id], # foreign key will be added at a later date

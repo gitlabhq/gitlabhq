@@ -47,10 +47,15 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
       allow(API::API).to receive(:endpoints).and_return(
         [instance_double(Grape::Endpoint, routes: mock_routes)]
       )
+      allow(described_class::TODO_FILE).to receive_messages(exist?: true, readlines: [])
     end
 
-    context 'when routes have no authorization settings' do
+    context 'when routes have no authorization settings but are listed in the TODO file' do
       let(:route_settings) { {} }
+
+      before do
+        allow(described_class::TODO_FILE).to receive(:readlines).and_return(["GET /projects/:id/test\n"])
+      end
 
       it 'completes successfully' do
         expect { run }.to output(/API route permissions are valid/).to_stdout
@@ -290,7 +295,6 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #    - GET /projects/:id/test: read_something
           #        Route boundaries: user
-          #        Missing boundaries: user
           #        Assignable boundaries: project, group
           #
           #######################################################################
@@ -329,7 +333,6 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #    - GET /projects/:id/test: read_something
           #        Route boundaries: group, user
-          #        Missing boundaries: user
           #        Assignable boundaries: group
           #
           #######################################################################
@@ -397,6 +400,120 @@ RSpec.describe Tasks::Gitlab::Permissions::Routes::ValidateTask, feature_categor
           #
           #######################################################################
         OUTPUT
+      end
+    end
+
+    context 'when a route has no authorization and is not in the TODO file' do
+      let(:route_settings) { {} }
+
+      before do
+        allow(described_class::TODO_FILE).to receive(:readlines).and_return([])
+      end
+
+      it 'returns an error' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following API routes are missing route_setting :authorization metadata.
+          #  Add authorization metadata to the endpoint.
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md
+          #
+          #    - GET /projects/:id/test
+          #
+          #######################################################################
+        OUTPUT
+      end
+    end
+
+    context 'when multiple routes have no authorization and only some are in the TODO file' do
+      let(:mock_route_1) do
+        instance_double(
+          Grape::Router::Route,
+          settings: {},
+          request_method: 'GET',
+          origin: '/api/:version/projects/:id/first'
+        )
+      end
+
+      let(:mock_route_2) do
+        instance_double(
+          Grape::Router::Route,
+          settings: {},
+          request_method: 'POST',
+          origin: '/api/:version/projects/:id/second'
+        )
+      end
+
+      let(:mock_routes) { [mock_route_1, mock_route_2] }
+
+      before do
+        allow(described_class::TODO_FILE).to receive(:readlines)
+          .and_return(["GET /projects/:id/first\n"])
+      end
+
+      it 'returns an error only for the unlisted route' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following API routes are missing route_setting :authorization metadata.
+          #  Add authorization metadata to the endpoint.
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md
+          #
+          #    - POST /projects/:id/second
+          #
+          #######################################################################
+        OUTPUT
+      end
+    end
+
+    context 'when a route has skip_granular_token_authorization' do
+      let(:route_settings) { { authorization: { skip_granular_token_authorization: true } } }
+
+      before do
+        allow(described_class::TODO_FILE).to receive(:readlines).and_return([])
+      end
+
+      it 'is treated as tagged and completes successfully' do
+        expect { run }.to output(/API route permissions are valid/).to_stdout
+      end
+    end
+
+    context 'when the TODO file does not exist' do
+      let(:route_settings) { {} }
+
+      before do
+        allow(described_class::TODO_FILE).to receive(:exist?).and_return(false)
+      end
+
+      it 'treats all untagged routes as violations' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following API routes are missing route_setting :authorization metadata.
+          #  Add authorization metadata to the endpoint.
+          #  Learn more: http://localhost/help/development/permissions/granular_access/rest_api_implementation_guide.md
+          #
+          #    - GET /projects/:id/test
+          #
+          #######################################################################
+        OUTPUT
+      end
+    end
+
+    context 'when the TODO file has comments and blank lines' do
+      let(:route_settings) { {} }
+
+      before do
+        allow(described_class::TODO_FILE).to receive(:readlines).and_return([
+          "# This is a comment\n",
+          "\n",
+          "GET /projects/:id/test\n",
+          "  \n"
+        ])
+      end
+
+      it 'ignores comments and blank lines and completes successfully' do
+        expect { run }.to output(/API route permissions are valid/).to_stdout
       end
     end
   end

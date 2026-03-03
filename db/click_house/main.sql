@@ -142,10 +142,22 @@ CREATE TABLE ci_finished_builds
     `retries_count` UInt16 DEFAULT 0,
     `runner_tags` Array(String) DEFAULT [],
     `job_definition_id` UInt64 DEFAULT 0,
-    PROJECTION by_project_pipeline_finished_at_name
+    PROJECTION by_project_pipeline_finished_at_name_v2
     (
         SELECT
-            *,
+            id,
+            project_id,
+            pipeline_id,
+            status,
+            created_at,
+            finished_at,
+            started_at,
+            name,
+            stage_name,
+            version,
+            deleted,
+            group_name,
+            namespace_path,
             duration,
             queueing_duration
         ORDER BY

@@ -5,12 +5,15 @@ module Tasks
     module Permissions
       module Routes
         class ValidateTask < ::Tasks::Gitlab::Permissions::BaseValidateTask
+          TODO_FILE = Rails.root.join('config/authz/routes/authorization_todo.txt')
+
           def initialize
             @violations = {
               undefined_permission: [],
               missing_boundary: [],
               missing_assignable: [],
-              boundary_mismatch: []
+              boundary_mismatch: [],
+              missing_authorization: []
             }
           end
 
@@ -19,6 +22,8 @@ module Tasks
           attr_reader :violations
 
           def validate!
+            @todo_entries = load_todo_entries
+
             routes.each { |route| validate_route(route) }
 
             super
@@ -30,8 +35,15 @@ module Tasks
 
           def validate_route(route)
             authorization = route.settings[:authorization]
-            return unless authorization
 
+            if has_authorization?(authorization)
+              validate_authorization(route, authorization)
+            else
+              violations[:missing_authorization] << base_error(route) unless @todo_entries.include?(route_id(route))
+            end
+          end
+
+          def validate_authorization(route, authorization)
             permissions = Array(authorization[:permissions])
             boundary_types = extract_boundary_types(authorization)
 
@@ -40,6 +52,25 @@ module Tasks
               validate_boundary_defined(route, permission, boundary_types)
               validate_assignable_permission(route, permission, boundary_types)
             end
+          end
+
+          def has_authorization?(authorization)
+            return false unless authorization
+
+            Array(authorization[:permissions]).any? || authorization[:skip_granular_token_authorization]
+          end
+
+          def load_todo_entries
+            return Set.new unless TODO_FILE.exist?
+
+            TODO_FILE.readlines.each_with_object(Set.new) do |line, set|
+              stripped = line.strip
+              set << stripped unless stripped.empty? || stripped.start_with?('#')
+            end
+          end
+
+          def route_id(route)
+            "#{route.request_method} #{route.origin.delete_prefix('/api/:version')}"
           end
 
           def extract_boundary_types(authorization)
@@ -94,7 +125,8 @@ module Tasks
             out = format_route_errors(:undefined_permission)
             out += format_route_errors(:missing_boundary)
             out += format_route_errors(:missing_assignable)
-            out + format_boundary_mismatch_errors
+            out += format_boundary_mismatch_errors
+            out + format_missing_authorization_errors
           end
 
           def format_route_errors(kind)
@@ -109,6 +141,18 @@ module Tasks
             "#{out}\n"
           end
 
+          def format_missing_authorization_errors
+            return '' if violations[:missing_authorization].empty?
+
+            out = "#{error_messages[:missing_authorization]}\n\n"
+
+            violations[:missing_authorization].each do |violation|
+              out += "  - #{violation[:method]} #{violation[:path]}\n"
+            end
+
+            "#{out}\n"
+          end
+
           def format_boundary_mismatch_errors
             return '' if violations[:boundary_mismatch].empty?
 
@@ -117,7 +161,6 @@ module Tasks
             violations[:boundary_mismatch].each do |violation|
               out += "  - #{violation[:method]} #{violation[:path]}: #{violation[:permission]}\n"
               out += "      Route boundaries: #{violation[:route_boundaries].join(', ')}\n"
-              out += "      Missing boundaries: #{violation[:missing_boundaries].join(', ')}\n"
               out += "      Assignable boundaries: #{violation[:assignable_boundaries].join(', ')}\n"
             end
 
@@ -141,10 +184,15 @@ module Tasks
                 Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/
                 #{implementation_guide_link(anchor: 'step-4-assign-permissions-to-assignable-permissions')}
               MSG
-              boundary_mismatch: <<~MSG.chomp
+              boundary_mismatch: <<~MSG.chomp,
                 The following API routes have a boundary_type that doesn't match the assignable permission boundaries.
                 Update the assignable permission to include the route's boundary_type, or fix the route's boundary_type.
                 #{implementation_guide_link(anchor: 'determining-boundaries')}
+              MSG
+              missing_authorization: <<~MSG.chomp
+                The following API routes are missing route_setting :authorization metadata.
+                Add authorization metadata to the endpoint.
+                #{implementation_guide_link}
               MSG
             }
           end

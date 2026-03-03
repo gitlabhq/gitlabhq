@@ -716,6 +716,17 @@ Grants the ability to manage vulnerability notes.
 
 ### Packages And Registry resources
 
+#### Container Registry Protection Tag Rule
+
+Grants the ability to create, read, update, and delete container repository protection tag rules.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Project | `POST` | `/projects/:id/registry/protection/tag/rules` |
+| Delete | Project | `DELETE` | `/projects/:id/registry/protection/tag/rules/:protection_rule_id` |
+| Read | Project | `GET` | `/projects/:id/registry/protection/tag/rules` |
+| Update | Project | `PATCH` | `/projects/:id/registry/protection/tag/rules/:protection_rule_id` |
+
 #### Container Repository
 
 Grants the ability to read and delete container repositories.

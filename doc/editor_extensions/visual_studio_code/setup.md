@@ -118,7 +118,7 @@ If you are on GitLab Self-Managed or GitLab Dedicated, create a personal access 
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Personal access tokens**.
+1. On the left sidebar, select **Access** > **Personal access tokens**.
 1. Select **Add new token**.
 1. Enter a name, description, and expiration date.
 1. Select the `api` scope.

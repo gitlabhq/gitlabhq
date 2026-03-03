@@ -33,26 +33,21 @@ RSpec.describe 'gitlab:workhorse namespace rake task', :silence_stdout, feature_
       end
     end
 
-    it 'clones the origin and creates a gitlab-workhorse binary' do
-      FileUtils.rm_rf(clone_path)
+    it 'clones the repo and compiles workhorse' do
+      expect(main_object)
+        .to receive(:checkout_or_clone_version)
+        .with(
+          version: 'workhorse-move-notice',
+          repo: 'https://gitlab.com/gitlab-org/gitlab-workhorse.git',
+          target_dir: clone_path,
+          clone_opts: %w[--depth 1]
+        )
 
-      Dir.mktmpdir('fake-workhorse-origin') do |workhorse_origin|
-        [
-          %W[git init -q #{workhorse_origin}],
-          %W[git -C #{workhorse_origin} checkout -q -b workhorse-move-notice],
-          %W[touch #{workhorse_origin}/proof-that-repo-got-cloned],
-          %W[git -C #{workhorse_origin} add .],
-          %W[git -C #{workhorse_origin} commit -q -m init],
-          %W[git -C #{workhorse_origin} checkout -q -b master]
-        ].each do |cmd|
-          raise "#{cmd.join(' ')} failed" unless system(*cmd)
-        end
+      expect(Gitlab::SetupHelper::Workhorse)
+        .to receive(:compile_into)
+        .with(clone_path)
 
-        run_rake_task('gitlab:workhorse:install', clone_path, File.join(workhorse_origin, '.git'))
-      end
-
-      expect(File.exist?(File.join(clone_path, 'proof-that-repo-got-cloned'))).to be true
-      expect(File.executable?(File.join(clone_path, 'gitlab-workhorse'))).to be true
+      run_rake_task('gitlab:workhorse:install', clone_path)
     end
   end
 end

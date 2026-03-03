@@ -42,8 +42,7 @@ tokens to authenticate as a specific user.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
-- Ability to create non-expiring personal access tokens was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
+- Ability to create non-expiring personal access tokens was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../administration/feature_flags/list.md) named `buffered_token_expiration_limit`. Disabled by default.
 - Personal access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
@@ -53,24 +52,28 @@ tokens to authenticate as a specific user.
 > The availability of the extended maximum allowable lifetime limit is controlled by a feature flag.
 > For more information, see the history.
 
-You can create as many personal access tokens as you like.
+To create a personal access token:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Personal access tokens**.
+1. On the left sidebar, select **Access** > **Personal access tokens**.
 1. Select **Add new token**.
 1. In **Token name**, enter a name for the token.
 1. Optional. In **Token description**, enter a description for the token.
-1. In **Expiration date**, enter an expiration date for the token.
-   - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
-   - If you do not enter an expiry date, the expiry date is automatically set to 365 days later than the current date.
-   - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can extend this limit to 400 days.
-
-1. Select the [desired scopes](#personal-access-token-scopes).
+1. In **Expiration date**, enter an expiry date for the token.
+   - The token expires at midnight UTC on that date.
+   - If you do not enter a date, the expiry date is set to 365 days from today.
+   - By default, the expiry date cannot be more than 365 days from today. On GitLab 17.6 and later,
+   administrators can [modify the maximum lifetime of access tokens](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
+1. Select one or more [scopes](#personal-access-token-scopes).
 1. Select **Create personal access token**.
 
-Save the personal access token somewhere safe. After you leave the page,
-you no longer have access to the token.
+A personal access token is displayed. Save the personal access token somewhere safe. After you leave
+or refresh the page, you cannot view it again.
+
+All access tokens inherit the
+[default prefix setting](../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
+configured for personal access tokens.
 
 ### Prefill personal access token details
 
@@ -81,9 +84,9 @@ list of scopes to the URL. For example:
 https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+Access+token&description=My+description&scopes=api,read_user
 ```
 
-> [!warning]
-> Personal access tokens must be treated carefully. Read our [token security considerations](../../security/tokens/_index.md#security-considerations)
-> for guidance on managing personal access tokens (for example, setting a short expiry and using minimal scopes).
+> [!note]
+> Personal access tokens must be treated carefully. For guidance on managing personal access tokens,
+see [token security considerations](../../security/tokens/_index.md#security-considerations).
 
 ## Rotate a personal access token
 
@@ -106,7 +109,7 @@ To rotate a personal access token:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Personal access tokens**.
+1. On the left sidebar, select **Access** > **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Rotate** ({{< icon name="retry" >}}).
 1. On the confirmation dialog, select **Rotate**.
@@ -131,7 +134,7 @@ To revoke a personal access token:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Personal access tokens**.
+1. On the left sidebar, select **Access** > **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Revoke** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Revoke**.
@@ -237,7 +240,7 @@ To view the last time a token was used, and the IP addresses from where the toke
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Personal access tokens**.
+1. On the left sidebar, select **Access** > **Personal access tokens**.
 1. In the **Active personal access tokens** area, view the **Last Used** date and **Last Used IPs** for
    the relevant token. **Last Used IPs** shows the last five distinct IP addresses.
 
@@ -426,7 +429,7 @@ To require DPoP on all calls to the REST and GraphQL APIs:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Personal access tokens**.
+1. On the left sidebar, select **Access** > **Personal access tokens**.
 1. Go to the **Use Demonstrating Proof of Possession (DPoP)** section, and select **Enable DPoP**.
 1. Select **Save changes**.
 1. To generate a DPoP header with the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md),

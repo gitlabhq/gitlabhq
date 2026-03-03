@@ -6356,6 +6356,7 @@ CREATE TABLE security_findings (
     partition_number integer DEFAULT 1 NOT NULL,
     finding_data jsonb DEFAULT '{}'::jsonb NOT NULL,
     project_id bigint,
+    scanner_reported_severity smallint,
     CONSTRAINT check_6c2851a8c9 CHECK ((uuid IS NOT NULL))
 )
 PARTITION BY LIST (partition_number);
@@ -22715,7 +22716,8 @@ CREATE TABLE merge_request_context_commit_diff_files (
     merge_request_context_commit_id bigint NOT NULL,
     generated boolean,
     encoded_file_path boolean DEFAULT false NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL))
 );
 
 CREATE TABLE merge_request_context_commits (
@@ -32392,7 +32394,9 @@ CREATE TABLE vulnerability_severity_overrides (
     project_id bigint NOT NULL,
     original_severity smallint NOT NULL,
     new_severity smallint NOT NULL,
-    vulnerability_occurrence_id bigint
+    vulnerability_occurrence_id bigint,
+    security_policy_id bigint,
+    triggered_by_policy boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_severity_overrides_id_seq
@@ -37767,9 +37771,6 @@ ALTER TABLE ONLY group_type_ci_runners
 
 ALTER TABLE clusters_kubernetes_namespaces
     ADD CONSTRAINT check_8556b17a2a CHECK ((num_nonnulls(group_id, organization_id, sharding_project_id) = 1)) NOT VALID;
-
-ALTER TABLE merge_request_context_commit_diff_files
-    ADD CONSTRAINT check_90390c308c CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE abuse_reports
     ADD CONSTRAINT check_95e5f0c300 CHECK ((char_length(message) <= 2048)) NOT VALID;
@@ -48522,6 +48523,8 @@ CREATE INDEX index_vuln_reads_on_project_id_state_severity_and_vuln_id ON vulner
 
 CREATE INDEX index_vuln_rep_info_on_project_id ON vulnerability_representation_information USING btree (project_id);
 
+CREATE INDEX index_vuln_severity_overrides_on_security_policy_id ON vulnerability_severity_overrides USING btree (security_policy_id) WHERE (security_policy_id IS NOT NULL);
+
 CREATE INDEX index_vulnerabilities_common_finder_query_on_default_branch ON vulnerabilities USING btree (project_id, state, report_type, present_on_default_branch, severity, id);
 
 CREATE INDEX index_vulnerabilities_on_author_id ON vulnerabilities USING btree (author_id);
@@ -53481,6 +53484,8 @@ CREATE TRIGGER project_wiki_repositories_loose_fk_trigger AFTER DELETE ON projec
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER security_policies_loose_fk_trigger AFTER DELETE ON security_policies REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER set_namespace_for_system_note_metadata_on_insert BEFORE INSERT ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION sync_sharding_key_with_notes_table();
 

@@ -1,4 +1,3 @@
----
 Gitlab/BoundedContexts:
   Exclude:
     - 'app/events/groups/group_deleted_event.rb'
@@ -3497,7 +3496,6 @@ Gitlab/BoundedContexts:
     - 'ee/lib/ee/sidebars/projects/menus/work_items_menu.rb'
     - 'ee/lib/ee/sidebars/projects/panel.rb'
     - 'ee/lib/ee/sidebars/projects/super_sidebar_panel.rb'
-    - 'ee/lib/ee/sidebars/user_settings/menus/access_tokens_menu.rb'
     - 'ee/lib/ee/sidebars/user_settings/panel.rb'
     - 'ee/lib/ee/sidebars/your_work/panel.rb'
     - 'ee/lib/ee/system_check/rake_task/app_task.rb'
@@ -3931,20 +3929,13 @@ Gitlab/BoundedContexts:
     - 'lib/sidebars/user_profile/menus/snippets_menu.rb'
     - 'lib/sidebars/user_profile/menus/starred_projects_menu.rb'
     - 'lib/sidebars/user_profile/panel.rb'
-    - 'lib/sidebars/user_settings/menus/access_tokens_menu.rb'
     - 'lib/sidebars/user_settings/menus/account_menu.rb'
-    - 'lib/sidebars/user_settings/menus/active_sessions_menu.rb'
-    - 'lib/sidebars/user_settings/menus/applications_menu.rb'
-    - 'lib/sidebars/user_settings/menus/authentication_log_menu.rb'
     - 'lib/sidebars/user_settings/menus/chat_menu.rb'
     - 'lib/sidebars/user_settings/menus/comment_templates_menu.rb'
     - 'lib/sidebars/user_settings/menus/emails_menu.rb'
-    - 'lib/sidebars/user_settings/menus/gpg_keys_menu.rb'
     - 'lib/sidebars/user_settings/menus/notifications_menu.rb'
-    - 'lib/sidebars/user_settings/menus/password_menu.rb'
     - 'lib/sidebars/user_settings/menus/preferences_menu.rb'
     - 'lib/sidebars/user_settings/menus/profile_menu.rb'
-    - 'lib/sidebars/user_settings/menus/ssh_keys_menu.rb'
     - 'lib/sidebars/user_settings/menus/usage_quotas_menu.rb'
     - 'lib/sidebars/user_settings/panel.rb'
     - 'lib/sidebars/your_work/menus/activity_menu.rb'

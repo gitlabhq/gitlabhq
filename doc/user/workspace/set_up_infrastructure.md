@@ -166,9 +166,9 @@ Next, set up OAuth authentication to securely access workspaces.
 
 To configure GitLab OAuth:
 
-1. Go to **User settings**:
-   1. Select your profile picture, then select **Preferences**.
-1. On the left sidebar, select **Applications**.
+1. In the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Access** > **Applications**.
 1. Scroll down to **OAuth applications**.
 1. Select **Add new application**.
 1. Update the following settings:

@@ -125,6 +125,6 @@ for GitLab Pages:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. Select **Applications**.
+1. On the left sidebar, select **Access** > **Applications**.
 1. In the **Authorized applications** section, find the **GitLab Pages**
    entry, and select **Revoke**.

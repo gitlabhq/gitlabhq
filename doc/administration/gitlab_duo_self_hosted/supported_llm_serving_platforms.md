@@ -163,44 +163,233 @@ For configuration information, see the following provider documentation:
 
 ### Configure authentication with AWS Bedrock
 
-To access AWS Bedrock models:
+You can use several methods to authenticate AWS Bedrock with your AI Gateway.
 
-1. Configure IAM credentials to access Bedrock with the appropriate AWS IAM
-   permissions:
+Prerequisites:
 
-   - Make sure that the IAM role has the `AmazonBedrockFullAccess` policy to allow
-     [access to Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess). You cannot do this in
-     the GitLab UI.
+- Models are automatically enabled in Bedrock when first invoked. For more information,
+see [Bedrock model access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html).
+- Have AWS credentials configured with appropriate IAM permissions.
 
-   - [Use the AWS console to request access to the models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html) that you want to use.
+#### Amazon EKS with Helm Chart (Recommended)
 
-1. Authenticate your AI Gateway instance by exporting the appropriate AWS SDK
-   environment variables when starting the Docker container. You can use either:
+Use IRSA (IAM Roles for Service Accounts) for your AI Gateway pods to authenticate
+to AWS Bedrock, without storing static credentials.
 
-   - `AWS_BEARER_TOKEN_BEDROCK` (see [API keys](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys-use.html))
-   - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION_NAME` (see [IAM credentials](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html))
+After you authenticate Amazon EKS with IRSA,
+the AI Gateway automatically obtains temporary credentials from the IRSA role.
 
-   For more information, see the [AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
+To use IRSA to authenticate Amazon EKS:
 
-   > [!note]
-   > Temporary credentials are not supported by AI Gateway at this time. For more information on adding support for Bedrock to use instance profile or temporary credentials, see [issue 542389](https://gitlab.com/gitlab-org/gitlab/-/issues/542389).
+1. Create an IAM policy that grants access to Bedrock models. You can scope this to specific models if you require more security:
 
-1. Optional. To set up a private Bedrock endpoint operating in a virtual private cloud (VPC),
-   make sure the `AWS_BEDROCK_RUNTIME_ENDPOINT` environment variable is configured
-   with your internal URL when launching the AI Gateway container.
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": [
+           "bedrock:InvokeModel",
+           "bedrock:InvokeModelWithResponseStream"
+         ],
+         "Resource": "arn:aws:bedrock:*:*:foundation-model/*"
+       }
+     ]
+   }
+   ```
 
-   An example configuration: `AWS_BEDROCK_RUNTIME_ENDPOINT = https://bedrock-runtime.{aws_region_name}.amazonaws.com`
+   ```shell
+   aws iam create-policy \
+     --policy-name bedrock-ai-gateway-access \
+     --policy-document file://bedrock-policy.json \
+     --description "Bedrock access for AI Gateway"
+   ```
 
-   For VPC endpoints, the URL format may be different, such as `https://vpce-{vpc-endpoint-id}-{service-name}.{aws_region_name}.vpce.amazonaws.com`
+1. Optional. For stricter access control, replace the wildcard resource with specific model Amazon Resource Name (ARN).
+   This ensures only approved models can be accessed, even if GitLab configuration changes. For
+   available model ARNs, see [Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html).
 
-For more information, see [supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
+  ```json
+  "Resource": [
+    "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0",
+    "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-haiku-20240307-v1:0"
+  ]
+  ```
+
+  > [!note]
+  Some models might use different ARN formats. For example, newer models might
+  require inference profile ARNs in addition to foundation model ARNs. To check the
+  the ARN format for your specific model, see the [Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html).
+
+1. Create an IAM role with a trust policy for your Amazon EKS service account to use. Replace the following values:
+
+   - `YOUR_ACCOUNT_ID`: Your AWS account ID.
+   - `REGION`: Your Amazon EKS cluster region (for example, `us-east-1`).
+   - `YOUR_OIDC_ID`: Your Amazon EKS cluster's OIDC provider ID.
+   - `NAMESPACE`: Kubernetes namespace where AI Gateway is deployed.
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Principal": {
+           "Federated": "arn:aws:iam::YOUR_ACCOUNT_ID:oidc-provider/oidc.eks.REGION.amazonaws.com/id/YOUR_OIDC_ID"
+         },
+         "Action": "sts:AssumeRoleWithWebIdentity",
+         "Condition": {
+           "StringEquals": {
+             "oidc.eks.REGION.amazonaws.com/id/YOUR_OIDC_ID:sub": "system:serviceaccount:NAMESPACE:ai-gateway",
+             "oidc.eks.REGION.amazonaws.com/id/YOUR_OIDC_ID:aud": "sts.amazonaws.com"
+           }
+         }
+       }
+     ]
+   }
+   ```
+
+   ```shell
+   # Create the role
+   aws iam create-role \
+     --role-name eks-ai-gateway-bedrock \
+     --assume-role-policy-document file://trust-policy.json \
+     --description "EKS IRSA role for AI Gateway to access Bedrock"
+   ```
+
+1. Attach the Bedrock IAM policy to this role.
+
+   ```shell
+   # Attach the role
+   aws iam attach-role-policy \
+     --role-name eks-ai-gateway-bedrock \
+     --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/bedrock-ai-gateway-access
+   ```
+
+1. To configure the Helm chart, install the AI Gateway with the IAM role annotation:
+
+   ```yaml
+   serviceAccount:
+     create: true
+     name: ai-gateway
+     annotations:
+       eks.amazonaws.com/role-arn: arn:aws:iam::YOUR_ACCOUNT_ID:role/YOUR_ROLE_NAME
+   extraEnvironmentVariables:
+     - name: AWS_REGION
+       value: us-east-1
+   ```
+
+For more information, see [IAM roles for service accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).
+
+#### Docker deployments
+
+Configure IAM credentials through environment variables when starting the AI Gateway container:
+
+```shell
+docker run -d \
+  -e AWS_ACCESS_KEY_ID=your-access-key \
+  -e AWS_SECRET_ACCESS_KEY=your-secret-key \
+  -e AWS_REGION=us-east-1 \
+  -p 5052:5052 \
+  registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/ai-gateway:vX.Y.Z-ee
+```
+
+The IAM user or role must have a policy similar to the one you would set in Amazon EKS with Helm Chart.
+
+#### Kubernetes deployments
+
+For Kubernetes clusters other than Amazon EKS, you can use Kubernetes secrets to store AWS credentials:
+
+1. Create a Kubernetes secret:
+
+   ```shell
+   kubectl create secret generic aws-credentials \
+     --from-literal=access-key-id=YOUR_ACCESS_KEY_ID \
+     --from-literal=secret-access-key=YOUR_SECRET_ACCESS_KEY \
+     -n YOUR_NAMESPACE
+   ```
+
+1. Configure the Helm chart to reference the secret:
+
+   ```yaml
+   extraEnvironmentVariables:
+     - name: AWS_ACCESS_KEY_ID
+       valueFrom:
+         secretKeyRef:
+           name: aws-credentials
+           key: access-key-id
+     - name: AWS_SECRET_ACCESS_KEY
+       valueFrom:
+         secretKeyRef:
+           name: aws-credentials
+           key: secret-access-key
+     - name: AWS_REGION
+       value: us-east-1
+   ```
+
+#### AWS Bedrock API keys
+
+To use AWS Bedrock API keys as an alternative to IAM credentials:
+
+1. [Create a Bedrock API key](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys-generate.html)
+
+1. Create a Kubernetes secret with the API key:
+
+   ```shell
+   kubectl create secret generic bedrock-api-key \
+     --from-literal=token=YOUR_BEDROCK_API_KEY \
+     -n YOUR_NAMESPACE
+   ```
+
+1. Configure the AI Gateway (add to your `values.yaml`):
+
+   ```yaml
+   extraEnvironmentVariables:
+     - name: AWS_BEARER_TOKEN_BEDROCK
+       valueFrom:
+         secretKeyRef:
+           name: bedrock-api-key
+           key: token
+     - name: AWS_REGION
+       value: us-east-1
+   ```
+
+#### Private VPC endpoints
+
+To use a private Bedrock endpoint in a VPC, set the `AWS_BEDROCK_RUNTIME_ENDPOINT` environment variable.
+
+For Helm deployments:
+
+```yaml
+extraEnvironmentVariables:
+  - name: AWS_BEDROCK_RUNTIME_ENDPOINT
+    value: https://bedrock-runtime.us-east-1.amazonaws.com
+```
+
+For Docker deployments:
+
+```shell
+docker run -d \
+  -e AWS_BEDROCK_RUNTIME_ENDPOINT=https://bedrock-runtime.us-east-1.amazonaws.com \
+  -e AWS_REGION=us-east-1 \
+  # ... other configuration
+```
+
+For VPC endpoints, use the format: `https://vpce-{vpc-endpoint-id}-{service-name}.{region}.vpce.amazonaws.com`
 
 ## Use multiple models and platforms
 
 You can use multiple models and platforms in the same GitLab instance.
 
-For example, you can configure one feature to use Azure OpenAI, and another feature to use AWS Bedrock or self-hosted models served with vLLM.
+For example, you can configure one feature to use Azure OpenAI, and another feature to use AWS Bedrock, or self-hosted models served with vLLM.
 
 This setup gives you flexibility to choose the best model and platform for each use case. Models must be supported and served through a compatible platform.
 
 For more information on setting up different providers, see [Supported models and hardware requirements](supported_models_and_hardware_requirements.md).
+
+## Related topics
+
+- [Amazon Bedrock supported foundation models](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+- [AWS IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html)
+- [Amazon Bedrock Security](https://docs.aws.amazon.com/bedrock/latest/userguide/security.html)

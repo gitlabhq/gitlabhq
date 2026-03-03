@@ -421,8 +421,9 @@ Returns [`AvailableModels`](#availablemodels).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="query-aichatavailablemodels-namespaceid"></a>`namespaceId` | [`GroupID`](#groupid) | Global ID of the namespace the user is acting on. |
 | <a id="query-aichatavailablemodels-projectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
-| <a id="query-aichatavailablemodels-rootnamespaceid"></a>`rootNamespaceId` | [`GroupID`](#groupid) | Global ID of the namespace the user is acting on. |
+| <a id="query-aichatavailablemodels-rootnamespaceid"></a>`rootNamespaceId` | [`GroupID`](#groupid) | Global ID of the top-level namespace the user is acting on. |
 
 ### `Query.aiChatContextPresets`
 

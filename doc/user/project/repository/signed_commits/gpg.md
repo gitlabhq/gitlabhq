@@ -123,7 +123,7 @@ To add a GPG key to your user settings:
 1. Sign in to GitLab.
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. Select **GPG keys** ({{< icon name="key" >}}).
+1. On the left sidebar, select **Access** > **GPG keys**.
 1. Select **Add new key**.
 1. In **Key**, paste your public key.
 1. To add the key to your account, select **Add key**.
@@ -234,7 +234,7 @@ To revoke a GPG key:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. Select **GPG keys** ({{< icon name="key" >}}).
+1. On the left sidebar, select **Access** > **GPG keys**.
 1. Select **Revoke** next to the GPG key you want to delete.
 
 ## Remove a GPG key
@@ -249,7 +249,7 @@ To remove a GPG key from your account:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. Select **GPG keys** ({{< icon name="key" >}}).
+1. On the left sidebar, select **Access** > **GPG keys**.
 1. Select **Remove** ({{< icon name="remove" >}}) next to the GPG key you want to delete.
 
 If you must unverify both future and past commits,

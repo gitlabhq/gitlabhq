@@ -25,18 +25,12 @@ module Sidebars
 
         add_menu(Sidebars::UserSettings::Menus::ProfileMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::AccountMenu.new(context))
-        add_menu(Sidebars::UserSettings::Menus::ApplicationsMenu.new(context))
+        add_menu(Sidebars::UserSettings::Menus::AccessMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::ChatMenu.new(context))
-        add_menu(Sidebars::UserSettings::Menus::AccessTokensMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::EmailsMenu.new(context))
-        add_menu(Sidebars::UserSettings::Menus::PasswordMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::NotificationsMenu.new(context))
-        add_menu(Sidebars::UserSettings::Menus::SshKeysMenu.new(context))
-        add_menu(Sidebars::UserSettings::Menus::GpgKeysMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::PreferencesMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::CommentTemplatesMenu.new(context))
-        add_menu(Sidebars::UserSettings::Menus::ActiveSessionsMenu.new(context))
-        add_menu(Sidebars::UserSettings::Menus::AuthenticationLogMenu.new(context))
         add_menu(Sidebars::UserSettings::Menus::UsageQuotasMenu.new(context))
       end
     end

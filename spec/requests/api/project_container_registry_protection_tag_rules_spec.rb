@@ -95,6 +95,14 @@ RSpec.describe API::ProjectContainerRegistryProtectionTagRules, :aggregate_failu
 
       it_behaves_like 'returning response status', :unauthorized
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_container_registry_protection_tag_rule do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        get api(url, personal_access_token: pat)
+      end
+    end
   end
 
   describe 'POST /projects/:id/registry/protection/tag/rules' do
@@ -206,6 +214,14 @@ RSpec.describe API::ProjectContainerRegistryProtectionTagRules, :aggregate_failu
       subject(:post_tag_rule) { post(api(url), headers: headers_with_invalid_token, params: params) }
 
       it_behaves_like 'returning response status', :unauthorized
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_container_registry_protection_tag_rule do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        post api(url, personal_access_token: pat), params: params
+      end
     end
   end
 
@@ -331,6 +347,14 @@ RSpec.describe API::ProjectContainerRegistryProtectionTagRules, :aggregate_failu
 
       it_behaves_like 'returning response status', :unauthorized
     end
+
+    it_behaves_like 'authorizing granular token permissions', :update_container_registry_protection_tag_rule do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        patch api(url, personal_access_token: pat), params: params
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/registry/protection/tag/rules/:tag_rule_id' do
@@ -415,6 +439,14 @@ RSpec.describe API::ProjectContainerRegistryProtectionTagRules, :aggregate_failu
       subject(:delete_tag_rule) { delete(api(url), headers: { 'PRIVATE-TOKEN' => invalid_token }) }
 
       it_behaves_like 'returning response status', :unauthorized
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_container_registry_protection_tag_rule do
+      let(:boundary_object) { project }
+      let(:user) { maintainer }
+      let(:request) do
+        delete api(url, personal_access_token: pat)
+      end
     end
   end
 end

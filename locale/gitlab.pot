@@ -4089,6 +4089,9 @@ msgstr ""
 msgid "Acceptable for use in this project"
 msgstr ""
 
+msgid "Access"
+msgstr ""
+
 msgid "Access Denied"
 msgstr ""
 
@@ -9422,6 +9425,15 @@ msgstr ""
 msgid "Application: %{name}"
 msgstr ""
 
+msgid "ApplicationSettings|%{ldapSyncConfiguredStart}LDAP sync%{ldapSyncConfiguredEnd} and %{samlConfiguredStart}SAML%{samlConfiguredEnd}/%{scimConfiguredStart}SCIM%{scimConfiguredEnd} provisioning are active. With restricted access turned on and no seats available, new users provisioned through any of these methods are assigned the non-billable Minimal Access role."
+msgstr ""
+
+msgid "ApplicationSettings|%{ldapSyncConfiguredStart}LDAP sync%{ldapSyncConfiguredEnd} is active. With restricted access turned on and no seats available, new users provisioned through LDAP are assigned the non-billable Minimal Access role."
+msgstr ""
+
+msgid "ApplicationSettings|%{samlConfiguredStart}SAML%{samlConfiguredEnd}/%{scimConfiguredStart}SCIM%{scimConfiguredEnd} is active. With restricted access turned on and no seats available, new users provisioned through SAML/SCIM are assigned the non-billable Minimal Access role."
+msgstr ""
+
 msgid "ApplicationSettings|A Metrics Dashboard menu item appears in the Monitoring section of the Admin area."
 msgstr ""
 
@@ -12855,7 +12867,7 @@ msgstr ""
 msgid "BranchRules|Edit allowed to push and merge"
 msgstr ""
 
-msgid "BranchRules|Edit branch protections, approval rules, and status checks from a single page. %{docs_link_start} How to use branch rules?%{docs_link_end}"
+msgid "BranchRules|Edit branch protections, approval rules, and status checks from a single page. %{docs_link_start} How do I use branch rules?%{docs_link_end}"
 msgstr ""
 
 msgid "BranchRules|Edit status check"
@@ -62283,6 +62295,9 @@ msgid "SecurityOrchestration|Fetching the scope information."
 msgstr ""
 
 msgid "SecurityOrchestration|Filter and search projects"
+msgstr ""
+
+msgid "SecurityOrchestration|Finds %{vulnerabilitiesNumber} vulnerability type that matches all the following criteria:"
 msgstr ""
 
 msgid "SecurityOrchestration|For any merge request on %{branches}%{commitType}%{branchExceptionsString}"

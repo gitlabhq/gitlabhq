@@ -8,7 +8,7 @@ description: Authentication, create, revoke, and token expiration.
 
 {{< details >}}
 
-Tier: Premium, Ultimate
+Tier: Free, Premium, Ultimate
 Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -32,27 +32,17 @@ You can use a project access token to authenticate:
   - The project access token as the password.
 
 > [!note]
-> On GitLab.com, you can use project access tokens with a Premium or Ultimate subscription.
-> With a [trial license](https://about.gitlab.com/free-trial/), you can create one project access token.
+> On GitLab.com, project access tokens require a Premium or Ultimate subscription. During a
+> [trial](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded),
+> you are limited to one project access token.
 >
-> On GitLab Self-Managed and GitLab Dedicated instances, you can use project access tokens with any
-> subscription. With the Free tier, you can
-> [restrict the creation of project access tokens](#restrict-the-creation-of-project-access-tokens)
-> to limit potential abuse.
-
-On GitLab Self-Managed instances, project access tokens are subject to the same maximum lifetime limits
-as personal access tokens if a limit is set.
-
-Project access tokens inherit the [default prefix setting](../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
-configured for personal access tokens.
+> On GitLab Self-Managed and GitLab Dedicated, project access tokens are available with any license.
 
 ## Create a project access token
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89114) in GitLab 15.1, Owners can select Owner role for project access tokens.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days and default role of Guest is populated in the UI.
-- Ability to create non-expiring project access tokens was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
+- Ability to create non-expiring project access tokens was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../../administration/feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
 - Project access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
@@ -70,19 +60,24 @@ To create a project access token:
 1. In **Token name**, enter a name. The token name is visible to any user with permissions to view the project.
 1. Optional. In **Token description**, enter a description for the token.
 1. In **Expiration date**, enter an expiry date for the token.
-   - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
-   - If you do not enter an expiry date, the expiry date is automatically set to 30 days later than the current date.
-   - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can extend this limit to 400 days.
-   - An instance-wide maximum lifetime setting can limit the maximum allowable lifetime in GitLab Self-Managed instances.
+   - The token expires at midnight UTC on that date.
+   - If you do not enter a date, the expiry date is set to 365 days from today.
+   - By default, the expiry date cannot be more than 365 days from today. On GitLab 17.6 and later,
+   administrators can [modify the maximum lifetime of access tokens](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
 1. Select a role for the token.
-1. Select the desired scopes.
+1. Select one or more scopes for the token.
 1. Select **Create project access token**.
 
-A project access token is displayed. Save the project access token somewhere safe. After you leave or refresh the page, you can't view it again.
+A project access token is displayed. Save the project access token somewhere safe. After you leave
+or refresh the page, you cannot view it again.
+
+All project access tokens inherit the
+[default prefix setting](../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
+configured for personal access tokens.
 
 > [!warning]
 > Project access tokens are treated as internal users.
-> If an internal user creates a project access token, that token is able to access
+> If an internal user creates a project access token, that token can access
 > all projects that have visibility level set to Internal.
 
 ## Rotate a project access token
@@ -283,10 +278,6 @@ To modify the retention period for inactive tokens:
 1. Select **Save changes**.
 
 You can also use the [application settings API](../../../api/settings.md) to modify the `inactive_resource_access_tokens_delete_after_days` attribute.
-
-## Token availability
-
-More than one project access token is only available in paid subscriptions. In Premium and Ultimate trial subscriptions, only one project access token is included. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).
 
 ## Related topics
 

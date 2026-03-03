@@ -6,7 +6,6 @@ fragment WorkItemTypesConfiguration on WorkItemType {
   canPromoteToObjective
   canUserCreateItems
   isConfigurable
-  isFilterable
   isGroupWorkItemType
   isIncidentManagement
   isServiceDesk
