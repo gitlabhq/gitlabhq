@@ -13,6 +13,24 @@ module RapidDiffs
       @plain_view = plain_view
     end
 
+    def extra_file_data
+      { code_review_id: @diff_file.code_review_id }
+    end
+
+    def extra_options
+      return {} unless show_viewed_toggle?
+
+      { data: { code_review_id: @diff_file.code_review_id } }
+    end
+
+    def show_viewed_toggle?
+      @diff_file.code_review_id.present?
+    end
+
+    def viewed_checkbox_id
+      "code-review-#{@diff_file.code_review_id[0..8]}"
+    end
+
     def additional_menu_items
       [edit_in_sfe].compact
     end

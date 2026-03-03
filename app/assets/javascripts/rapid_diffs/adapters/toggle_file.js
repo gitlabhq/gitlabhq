@@ -1,4 +1,9 @@
-import { COLLAPSE_FILE, EXPAND_FILE, MOUNTED } from '~/rapid_diffs/adapter_events';
+import {
+  COLLAPSE_FILE,
+  COLLAPSE_FILE_BY_USER,
+  EXPAND_FILE,
+  MOUNTED,
+} from '~/rapid_diffs/adapter_events';
 import { scrollPastCoveringElements } from '~/lib/utils/sticky';
 
 function getDetails(root) {
@@ -59,6 +64,9 @@ export const toggleFileAdapter = {
   },
   [COLLAPSE_FILE]() {
     collapse.call(this);
+  },
+  [COLLAPSE_FILE_BY_USER]() {
+    collapseByUser.call(this);
   },
   [MOUNTED](onUnmounted) {
     const details = getDetails(this.diffElement);

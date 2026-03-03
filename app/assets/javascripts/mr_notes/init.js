@@ -45,9 +45,11 @@ function setupMrNotesState(notesDataset, diffsDataset = {}) {
       getParameterValues('view')[0] || getCookie(DIFF_VIEW_COOKIE_NAME) || INLINE_DIFF_VIEW_TYPE,
     perPage: Number(diffsDataset.perPage),
   });
-  useCodeReview().setMrPath(mrPath);
-  useCodeReview().restoreFromAutosave();
-  useCodeReview().restoreFromLegacyMrReviews();
+  if (mrPath) {
+    useCodeReview().setMrPath(mrPath);
+    useCodeReview().restoreFromAutosave();
+    useCodeReview().restoreFromLegacyMrReviews();
+  }
 }
 
 export function initMrStateLazyLoad() {

@@ -53,7 +53,7 @@ module LabelsHelper
 
     if link
       title = label_tooltip_title(label, tooltip_shows_title: tooltip_shows_title) if tooltip
-      html = render_label_link(html, link: link, title: title, dataset: dataset)
+      html = render_label_link(html, link: link, title: title, dataset: dataset, aria_label: label.name)
     end
 
     wrap_label_html(html, label: label)
@@ -216,7 +216,7 @@ module LabelsHelper
 
   private
 
-  def render_label_link(label_html, link:, title:, dataset:)
+  def render_label_link(label_html, link:, title:, dataset:, aria_label: nil)
     classes = %w[gl-link gl-label-link]
     dataset ||= {}
 
@@ -225,7 +225,10 @@ module LabelsHelper
       dataset['title'] = title
     end
 
-    link_to(label_html, link, class: classes.join(' '), data: dataset)
+    options = { class: classes.join(' '), data: dataset }
+    options['aria-label'] = aria_label if aria_label.present?
+
+    link_to(label_html, link, options)
   end
 
   def render_label_text(name, in_reference: nil, css_class: nil, bg_color: nil)

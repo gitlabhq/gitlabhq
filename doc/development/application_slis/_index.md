@@ -18,7 +18,6 @@ monitored.
 1. `global_search_error_rate`
 1. `global_search_indexing_apdex`
 1. [`sidekiq_execution`](sidekiq_execution.md)
-1. [`zoekt_tasks`](zoekt_tasks.md)
 
 ## Defining a new SLI
 

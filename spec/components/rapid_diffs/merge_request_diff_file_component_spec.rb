@@ -43,6 +43,56 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
     end
   end
 
+  describe 'extra_file_data' do
+    it 'includes code_review_id in file_data' do
+      render_component
+
+      diff_file_element = page.find('diff-file')
+      file_data = Gitlab::Json.parse(diff_file_element['data-file-data'])
+      expect(file_data['code_review_id']).to eq(diff_file.code_review_id)
+    end
+  end
+
+  describe 'viewed toggle' do
+    let(:code_review_id) { 'abc123def456' }
+
+    before do
+      allow(diff_file).to receive(:code_review_id).and_return(code_review_id)
+    end
+
+    it 'renders viewed checkbox' do
+      render_component
+
+      expect(page).to have_css('[data-viewed-checkbox]')
+      expect(page).to have_text('Viewed')
+    end
+
+    it 'renders checkbox with correct id' do
+      render_component
+
+      expect(page).to have_css("input[name='code-review-#{code_review_id[0..8]}']")
+    end
+
+    it 'includes code_review_id in extra_options' do
+      render_component
+
+      diff_file_element = page.find('diff-file')
+      expect(diff_file_element['data-code-review-id']).to eq(code_review_id)
+    end
+
+    context 'when code_review_id is not present' do
+      before do
+        allow(diff_file).to receive(:code_review_id).and_return(nil)
+      end
+
+      it 'does not render viewed checkbox' do
+        render_component
+
+        expect(page).not_to have_css('[data-viewed-checkbox]')
+      end
+    end
+  end
+
   describe 'conflict message' do
     where(:conflict_type, :expected_message) do
       [

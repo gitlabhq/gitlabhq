@@ -444,7 +444,7 @@ results.to_a
 ### Example: Find document closest to a given embedding
 
 ```ruby
-target_embedding = ::ActiveContext::Embeddings.generate_embeddings("some text")
+target_embedding = Ai::Context::Collections::MergeRequest.search_embedding_model.generate_embeddings("some text")
 
 query = ActiveContext::Query.filter(project_id: 1).knn(target: "embeddings", vector: target_embedding, k: 1)
 

@@ -4,6 +4,7 @@ import { setHTMLFixture } from 'helpers/fixtures';
 import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
+import { useCodeReview } from '~/diffs/stores/code_review';
 
 jest.mock('~/lib/graphql');
 jest.mock('~/rapid_diffs/app/view_settings');
@@ -24,7 +25,7 @@ describe('Merge Request Rapid Diffs app', () => {
     lazy: false,
   };
 
-  const createApp = (data = {}) => {
+  const buildApp = (data = {}) => {
     setHTMLFixture(
       `
       <main>
@@ -58,22 +59,48 @@ describe('Merge Request Rapid Diffs app', () => {
   });
 
   beforeEach(() => {
-    createTestingPinia({ stubActions: false });
+    window.gon = { current_user_id: 1 };
+    createTestingPinia();
     useDiffsView().loadDiffsStats.mockResolvedValue();
     useDiffsList().reloadDiffs.mockResolvedValue();
     useDiffsList().streamRemainingDiffs.mockResolvedValue();
     initFileBrowser.mockResolvedValue();
   });
 
+  afterEach(() => {
+    window.gon = {};
+  });
+
   it('initializes app', async () => {
-    createApp();
+    buildApp();
     await app.init();
     expect(app.root).toBeDefined();
   });
 
   it('initializes file browser', async () => {
-    createApp();
+    buildApp();
     await app.init();
     expect(initFileBrowser).toHaveBeenCalled();
+  });
+
+  it('initializes code review store with mrPath', async () => {
+    buildApp({ mr_path: '/namespace/project/-/merge_requests/1' });
+    await app.init();
+    expect(useCodeReview().setMrPath).toHaveBeenCalledWith('/namespace/project/-/merge_requests/1');
+    expect(useCodeReview().restoreFromAutosave).toHaveBeenCalled();
+    expect(useCodeReview().restoreFromLegacyMrReviews).toHaveBeenCalled();
+  });
+
+  it('skips code review initialization when mrPath is not provided', async () => {
+    buildApp();
+    await app.init();
+    expect(useCodeReview().setMrPath).not.toHaveBeenCalled();
+  });
+
+  it('skips code review initialization when user is not authenticated', async () => {
+    window.gon = {};
+    buildApp({ mr_path: '/namespace/project/-/merge_requests/1' });
+    await app.init();
+    expect(useCodeReview().setMrPath).not.toHaveBeenCalled();
   });
 });

@@ -48,7 +48,7 @@ module API
       get ':id' do
         token = PersonalAccessToken.find_by_id(params[:id])
 
-        allowed = Ability.allowed?(current_user, :read_user_personal_access_tokens, token&.user)
+        allowed = Ability.allowed?(current_user, :read_personal_access_token, token&.user)
 
         if allowed
           present token, with: Entities::PersonalAccessTokenWithLastUsedIps
@@ -73,7 +73,7 @@ module API
       post ':id/rotate' do
         token = PersonalAccessToken.find_by_id(params[:id])
 
-        if Ability.allowed?(current_user, :manage_user_personal_access_token, token&.user)
+        if Ability.allowed?(current_user, :rotate_personal_access_token, token&.user)
           new_token = rotate_token(token, declared_params)
 
           present new_token, with: Entities::PersonalAccessTokenWithToken

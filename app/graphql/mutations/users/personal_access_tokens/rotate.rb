@@ -25,7 +25,7 @@ module Mutations
           end
 
           token = find_object(id)
-          raise_resource_not_available_error! unless current_user.can?(:manage_user_personal_access_token, token&.user)
+          raise_resource_not_available_error! unless current_user.can?(:rotate_personal_access_token, token&.user)
 
           params = { expires_at: args[:expires_at] || token.expires_at }.compact
           result = ::PersonalAccessTokens::RotateService.new(current_user, token, nil, params).execute

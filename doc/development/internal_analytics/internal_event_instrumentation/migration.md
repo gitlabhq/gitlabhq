@@ -15,7 +15,7 @@ This page describes how you can switch from one of the previous methods to using
 
 ## Migrating from existing Snowplow tracking
 
-If you are already tracking events in Snowplow, you can also start collecting metrics from GitLab Self-Managed instances by switching to Internal Events Tracking.
+If you are already tracking events in Snowplow, you can also start collecting metrics from GitLab Self-Managed instances by switching to Internal Events Tracking. Note that starting with GitLab 18.0, Self-Managed instances collect event data by default, providing more detailed insights than the aggregated metrics collected in previous versions.
 
 The event triggered by Internal Events has some special properties compared to previously tracking with Snowplow directly:
 

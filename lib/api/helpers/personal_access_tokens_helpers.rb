@@ -63,7 +63,7 @@ module API
       def restrict_non_admins!
         return if params[:user_id].blank?
 
-        unauthorized! unless Ability.allowed?(current_user, :read_user_personal_access_tokens, user(params[:user_id]))
+        unauthorized! unless Ability.allowed?(current_user, :read_personal_access_token, user(params[:user_id]))
       end
 
       def find_token(id)

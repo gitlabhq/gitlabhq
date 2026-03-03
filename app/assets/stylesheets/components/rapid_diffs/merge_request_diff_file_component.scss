@@ -1,0 +1,9 @@
+.rd-viewed-toggle {
+  @apply -gl-mb-3;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.user-logged-out .rd-viewed-toggle {
+  display: none;
+}

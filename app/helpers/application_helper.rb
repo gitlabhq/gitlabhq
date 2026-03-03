@@ -316,6 +316,7 @@ module ApplicationHelper
     class_names << 'page-with-panels'
     class_names << 'with-gl-container-queries'
     class_names << system_message_class
+    class_names << (current_user ? 'user-logged-in' : 'user-logged-out')
 
     class_names
   end

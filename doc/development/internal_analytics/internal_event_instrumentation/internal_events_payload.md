@@ -11,7 +11,7 @@ title: Internal Events Payload Samples
 
 This guide provides payload samples for internal events tracked across frontend and backend services. Each event type includes a detailed breakdown of its fields and descriptions. Internal events use Snowplow to track events. For more information, see [Snowplow event parameters guide](https://docs.snowplow.io/docs/sources/trackers/snowplow-tracker-protocol/going-deeper/event-parameters/).
 
-From GitLab 18.0, Self-Managed and Dedicated instances will be sending structured events, self-describing events, page views, and page pings.
+Starting with GitLab 18.0, Self-Managed and Dedicated instances collect and send structured events, self-describing events, page views, and page pings. This represents a significant change from previous versions where only aggregated metrics were collected from Self-Managed instances.
 
 ## Event Types
 

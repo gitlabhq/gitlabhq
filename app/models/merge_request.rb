@@ -1572,11 +1572,11 @@ class MergeRequest < ApplicationRecord
   # skip_locked_lfs_files_check
   def mergeable?(
     check_mergeability_retry_lease: false, skip_rebase_check: false,
-    skip_conflict_check: false, **mergeable_state_check_params)
-    return false unless mergeable_state?(**mergeable_state_check_params)
+    skip_conflict_check: false, use_cache: true, **mergeable_state_check_params)
+    return false unless mergeable_state?(use_cache: use_cache, **mergeable_state_check_params)
 
     check_mergeability(sync_retry_lease: check_mergeability_retry_lease)
-    mergeable_git_state?(skip_rebase_check: skip_rebase_check, skip_conflict_check: skip_conflict_check)
+    mergeable_git_state?(skip_rebase_check: skip_rebase_check, skip_conflict_check: skip_conflict_check, use_cache: use_cache)
   end
 
   def self.mergeable_state_checks
@@ -1615,20 +1615,22 @@ class MergeRequest < ApplicationRecord
   # skip_external_status_check
   # skip_requested_changes_check
   # skip_jira_check
-  def mergeable_state?(**params)
+  def mergeable_state?(use_cache: true, **params)
     execute_merge_checks(
       self.class.mergeable_state_checks,
       params: params,
-      execute_all: false
+      execute_all: false,
+      use_cache: use_cache
     ).success?
   end
 
   # This runs only git related checks
-  def mergeable_git_state?(**params)
+  def mergeable_git_state?(use_cache: true, **params)
     execute_merge_checks(
       self.class.mergeable_git_state_checks,
       params: params,
-      execute_all: false
+      execute_all: false,
+      use_cache: use_cache
     ).success?
   end
 
@@ -2617,11 +2619,11 @@ class MergeRequest < ApplicationRecord
     false # Overridden in EE
   end
 
-  def execute_merge_checks(checks, params: {}, execute_all: false)
+  def execute_merge_checks(checks, params: {}, execute_all: false, use_cache: true)
     # rubocop: disable CodeReuse/ServiceClass
     MergeRequests::Mergeability::RunChecksService
       .new(merge_request: self, params: params)
-      .execute(checks, execute_all: execute_all)
+      .execute(checks, execute_all: execute_all, use_cache: use_cache)
     # rubocop: enable CodeReuse/ServiceClass
   end
 

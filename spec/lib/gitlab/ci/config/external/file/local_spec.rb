@@ -275,4 +275,112 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
       )
     end
   end
+
+  describe 'logging' do
+    let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
+    let(:expected_path) { 'lib/gitlab/ci/templates/existent-file.yml' }
+    let(:blob) { instance_double(Gitlab::Git::Blob, commit_id: sha, path: expected_path, data: 'content') }
+
+    subject(:process_file) { Gitlab::Ci::Config::External::Mapper::Verifier.new(context).process([local_file]) }
+
+    before do
+      allow(project.repository).to receive(:blobs_at).and_return([])
+      allow(Gitlab::AppLogger).to receive(:warn)
+    end
+
+    describe 'verbose logging with feature flag' do
+      context 'when ci_config_local_file_verbose_logging is enabled' do
+        before do
+          Feature.enable(:ci_config_local_file_verbose_logging)
+        end
+
+        it 'logs blob request at info level' do
+          expect(Gitlab::AppLogger).to receive(:info).with(hash_including(
+            'message' => 'CI config: Fetching blobs from Gitaly',
+            'project_id' => project.id
+          ))
+
+          process_file
+        end
+
+        it 'logs nil content at warn level when file does not exist' do
+          expect(Gitlab::AppLogger).to receive(:warn).with(hash_including(
+            'message' => 'CI config: Local file content is nil',
+            'extra' => hash_including(location: expected_path)
+          ))
+
+          process_file
+        end
+
+        it 'logs successful blob response at info level when no paths are missing' do
+          allow(project.repository).to receive(:blobs_at).and_return([blob])
+
+          expect(Gitlab::AppLogger).to receive(:info).with(hash_including(
+            'message' => 'CI config: Fetching blobs from Gitaly'
+          ))
+          expect(Gitlab::AppLogger).to receive(:info).with(hash_including(
+            'message' => 'CI config: Blobs fetched from Gitaly',
+            'extra' => hash_including(returned_count: 1)
+          ))
+
+          process_file
+        end
+      end
+
+      context 'when ci_config_local_file_verbose_logging is disabled' do
+        before do
+          Feature.disable(:ci_config_local_file_verbose_logging)
+        end
+
+        it 'does not log blob request' do
+          expect(Gitlab::AppLogger).not_to receive(:info).with(hash_including(
+            'message' => 'CI config: Fetching blobs from Gitaly'
+          ))
+
+          process_file
+        end
+
+        it 'does not log any info messages on successful blob fetch' do
+          allow(project.repository).to receive(:blobs_at).and_return([blob])
+
+          expect(Gitlab::AppLogger).not_to receive(:info)
+          expect(Gitlab::AppLogger).not_to receive(:warn)
+
+          process_file
+        end
+      end
+    end
+
+    describe 'failure logging (always enabled)' do
+      before do
+        Feature.disable(:ci_config_local_file_verbose_logging)
+      end
+
+      it 'logs missing paths at warn level regardless of feature flag' do
+        expect(Gitlab::AppLogger).to receive(:warn).with(hash_including(
+          'message' => 'CI config: Blobs fetched from Gitaly - missing paths detected',
+          'extra' => hash_including(
+            missing_count: 1,
+            missing_paths: [expected_path]
+          )
+        ))
+        expect(Gitlab::AppLogger).not_to receive(:warn).with(hash_including(
+          'message' => 'CI config: Local file content is nil'
+        ))
+
+        process_file
+      end
+
+      it 'logs GRPC errors at warn level regardless of feature flag' do
+        allow(project.repository).to receive(:blobs_at).and_raise(GRPC::InvalidArgument.new('test error'))
+
+        expect(Gitlab::AppLogger).to receive(:warn).with(hash_including(
+          'message' => 'CI config: GRPC error fetching blobs',
+          'extra' => hash_including(error_class: 'GRPC::InvalidArgument')
+        ))
+
+        process_file
+      end
+    end
+  end
 end

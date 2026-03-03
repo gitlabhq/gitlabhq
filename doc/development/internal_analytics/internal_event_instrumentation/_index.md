@@ -17,6 +17,8 @@ Internal Events is an unified interface to track events in GitLab. Each tracking
 associated properties. Internal Events then provides underlying systems the properties they require for their specific
 analytics needs.
 
+**Important**: Starting with GitLab 18.0, event data is collected from Self-Managed instances, not just aggregated metrics as in previous versions. This change provides more detailed insights into product usage while maintaining user privacy through pseudonymization.
+
 Analytics systems summary:
 
 | Function\System | Service Ping | Snowplow |

@@ -21,7 +21,7 @@ Add `classification: duo` to your event definition when:
   - `ai_framework`
   - `duo_agent_framework`
   - Other AI-related product groups
-- The event data should be considered operational data for GitLab self-managed instances
+- The event data should be considered operational data for GitLab Self-Managed instances
 
 > [!note]
 > Events with `classification: duo` should also include the **AI Context** for comprehensive tracking of AI-specific attributes such as session identifiers, workflow information, token usage, and model details.
@@ -40,7 +40,7 @@ If your event doesn't fall under GitLab Duo features, remove the classification 
 
 Events with `classification: duo` are treated as operational data, which means:
 
-- They will flow through GitLab self-managed instances even when analytics data collection is opted out
+- They will flow through GitLab Self-Managed instances even when analytics data collection is opted out
 - This ensures essential AI feature functionality and monitoring continues to work
 - The data is considered necessary for operational purposes rather than purely analytical
 

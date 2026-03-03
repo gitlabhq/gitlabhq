@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
   let(:arguments) { {} }
   let(:context) { { access_token: } }
   let(:resolve_block) { ->(_obj, _args) { 'field_value' } }
-  let(:field) { create_field_with_directive(boundary: 'itself', permissions: ['READ_WIKI']) }
+  let(:field) { create_field_with_directive(boundary: 'itself', permissions: ['read_wiki']) }
 
   subject(:extension) { described_class.new(field: field, options: {}) }
 
@@ -80,7 +80,7 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
 
       context 'with standalone boundaries' do
         context 'when boundary is user' do
-          let(:field) { create_field_with_directive(boundary: 'user', permissions: ['READ_WIKI']) }
+          let(:field) { create_field_with_directive(boundary: 'user', permissions: ['read_wiki']) }
 
           it 'raises an ResourceNotAvailable error' do
             expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
@@ -88,7 +88,7 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
         end
 
         context 'when boundary is instance' do
-          let(:field) { create_field_with_directive(boundary: 'instance', permissions: ['READ_WIKI']) }
+          let(:field) { create_field_with_directive(boundary: 'instance', permissions: ['read_wiki']) }
 
           it 'raises an ResourceNotAvailable error' do
             expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
@@ -111,7 +111,7 @@ RSpec.describe Gitlab::Graphql::Authz::GranularTokenAuthorization, feature_categ
 
           resolve
 
-          different_field = create_field_with_directive(boundary: 'itself', permissions: ['CREATE_ISSUE'])
+          different_field = create_field_with_directive(boundary: 'itself', permissions: ['create_issue'])
           different_extension = described_class.new(field: different_field, options: {})
           different_extension.resolve(object: object, arguments: arguments, context: context, &resolve_block)
 

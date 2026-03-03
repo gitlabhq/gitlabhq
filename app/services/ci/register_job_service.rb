@@ -141,7 +141,7 @@ module Ci
     # rubocop: disable CodeReuse/ActiveRecord
     def each_build(params, &blk)
       queue = Ci::Queue::BuildQueueService.new(runner)
-      builds = queue.build_candidates
+      builds = queue.build_candidates.limit(MAX_QUEUE_DEPTH + 1)
 
       build_and_partition_ids = retrieve_queue(-> { queue.execute(builds) })
       queue_size = build_and_partition_ids.size

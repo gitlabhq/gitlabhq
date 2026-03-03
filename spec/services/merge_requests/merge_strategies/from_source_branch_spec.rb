@@ -29,6 +29,14 @@ RSpec.describe MergeRequests::MergeStrategies::FromSourceBranch, feature_categor
       end
     end
 
+    it 'calls mergeable? with use_cache: false' do
+      expect(merge_request).to receive(:mergeable?).with(
+        hash_including(use_cache: false)
+      ).and_return(true)
+
+      strategy.validate!
+    end
+
     context 'when merge request should be squashed but is not' do
       before do
         merge_request.target_project.project_setting.squash_always!

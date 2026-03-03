@@ -7894,7 +7894,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       ) do |svc|
         expect(svc)
           .to receive(:execute)
-          .with(described_class.all_mergeability_checks, execute_all: true)
+          .with(described_class.all_mergeability_checks, execute_all: true, use_cache: true)
           .and_return(result)
       end
 
@@ -7914,7 +7914,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       ) do |svc|
         expect(svc)
           .to receive(:execute)
-          .with(described_class.all_mergeability_checks, execute_all: false)
+          .with(described_class.all_mergeability_checks, execute_all: false, use_cache: true)
           .and_return(result)
       end
 

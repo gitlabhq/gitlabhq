@@ -5,8 +5,6 @@ module ActiveContext
     module Collection
       extend ActiveSupport::Concern
 
-      MODELS = {}.freeze
-
       class_methods do
         def track!(*objects)
           ActiveContext::Tracker.track!(objects, collection: self)
@@ -63,18 +61,6 @@ module ActiveContext
           return true unless object.respond_to?(:to_ability_name) && DeclarativePolicy.has_policy?(object)
 
           Ability.allowed?(user, :"read_#{object.to_ability_name}", object)
-        end
-
-        def current_search_embedding_version
-          self::MODELS[collection_record&.search_embedding_version] || {}
-        end
-
-        def current_indexing_embedding_versions
-          collection_record&.indexing_embedding_versions&.filter_map { |version| self::MODELS[version] } || []
-        end
-
-        def current_embedding_fields
-          current_indexing_embedding_versions.map { |v| v[:field].to_s }
         end
 
         def embedding_model_selector

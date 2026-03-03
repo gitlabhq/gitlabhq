@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
 
       expect(result).to eq({
         Directives::Authz::GranularScope => {
-          permissions: ['READ_PROJECT'],
+          permissions: ['read_project'],
           boundary: 'project'
         }
       })
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
 
       expect(result).to eq({
         Directives::Authz::GranularScope => {
-          permissions: %w[READ_PROJECT UPDATE_PROJECT]
+          permissions: %w[read_project update_project]
         }
       })
     end
@@ -75,10 +75,16 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
 
       expect(result).to eq({
         Directives::Authz::GranularScope => {
-          permissions: ['CREATE_ISSUE'],
+          permissions: ['create_issue'],
           boundary_argument: 'project_path'
         }
       })
+    end
+
+    it 'raises ArgumentError for invalid permissions' do
+      expect do
+        test_type.granular_scope_directive(permissions: :not_a_real_permission)
+      end.to raise_error(ArgumentError, /Invalid granular scope permission\(s\): not_a_real_permission/)
     end
   end
 end

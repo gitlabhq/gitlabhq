@@ -139,7 +139,8 @@ module MergeRequests
       def mergeable?
         merge_request.mergeable?(
           skip_discussions_check: options[:skip_discussions_check],
-          check_mergeability_retry_lease: options[:check_mergeability_retry_lease]
+          check_mergeability_retry_lease: options[:check_mergeability_retry_lease],
+          use_cache: false
         )
       end
 

@@ -269,3 +269,74 @@ RSpec.shared_examples 'work item listing endpoint' do
   it_behaves_like 'avoids N+1 queries'
   it_behaves_like 'work item listing payload'
 end
+
+RSpec.shared_examples 'work item show endpoint' do
+  let(:show_request_path) { "#{api_request_path}/#{primary_work_item.iid}" }
+
+  it 'returns the work item with default fields' do
+    get api(show_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include(
+      'id' => primary_work_item.id,
+      'iid' => primary_work_item.iid,
+      'global_id' => primary_work_item.to_gid.to_s,
+      'title' => primary_work_item.title
+    )
+    expect(json_response).not_to have_key('features')
+  end
+
+  it 'returns only the requested base fields when fields parameter is provided' do
+    get api(show_request_path, user), params: { fields: 'iid,reference' }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include(
+      'id' => primary_work_item.id,
+      'iid' => primary_work_item.iid,
+      'global_id' => primary_work_item.to_gid.to_s,
+      'title' => primary_work_item.title,
+      'reference' => primary_work_item.to_reference(full: true)
+    )
+    expect(json_response.keys).to contain_exactly('id', 'iid', 'global_id', 'title', 'reference')
+  end
+
+  it 'returns only the requested features when provided' do
+    get api(show_request_path, user), params: { features: 'labels,description' }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include('features')
+    expect(json_response['features']).to include(
+      'labels' => a_hash_including('labels' => contain_exactly(a_hash_including('title' => label.title))),
+      'description' => a_hash_including('description' => primary_work_item.description)
+    )
+  end
+
+  it 'returns the requested fields and features when both parameters are provided' do
+    get api(show_request_path, user), params: { fields: 'reference', features: 'labels' }
+
+    expect(response).to have_gitlab_http_status(:ok)
+    expect(json_response).to include(
+      'id' => primary_work_item.id,
+      'reference' => primary_work_item.to_reference(full: true)
+    )
+    expect(json_response).to include('features')
+    expect(json_response['features'].keys).to contain_exactly('labels')
+    expect(json_response['features']).to include(
+      'labels' => a_hash_including('labels' => contain_exactly(a_hash_including('title' => label.title)))
+    )
+  end
+
+  it 'returns forbidden when the feature flag is disabled' do
+    stub_feature_flags(work_item_rest_api: false)
+
+    get api(show_request_path, user)
+
+    expect(response).to have_gitlab_http_status(:forbidden)
+  end
+
+  it 'returns not found when the work item does not exist' do
+    get api("#{api_request_path}/#{non_existing_record_iid}", user)
+
+    expect(response).to have_gitlab_http_status(:not_found)
+  end
+end

@@ -7,8 +7,11 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
   let(:diffs_stats_endpoint) { '/diffs_stats' }
   let(:diff_files_endpoint) { '/diff_files_metadata' }
   let(:diff_file_endpoint) { '/diff_file' }
+  let(:mr_path) { '/group/project/-/merge_requests/1' }
 
   let(:merge_request) { build_stubbed(:merge_request) }
+
+  let(:current_user) { nil }
 
   let(:presenter) do
     instance_double(
@@ -17,7 +20,9 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
       diff_files_endpoint: diff_files_endpoint,
       diff_file_endpoint: diff_file_endpoint,
       environment: nil,
-      resource: merge_request
+      resource: merge_request,
+      mr_path: mr_path,
+      current_user: current_user
     )
   end
 
@@ -30,8 +35,14 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
     allow(app_component).to receive_messages(diff_collection: [], parallel_view?: false)
   end
 
-  it "renders app with correct arguments" do
-    expect(RapidDiffs::AppComponent).to receive(:new).with(presenter)
+  it "renders app with mr_path and code_review_enabled in extra_app_data" do
+    expect(RapidDiffs::AppComponent).to receive(:new).with(
+      presenter,
+      extra_app_data: {
+        mr_path: mr_path,
+        code_review_enabled: false
+      }
+    )
 
     render_component
   end
@@ -57,6 +68,26 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
     render_component
 
     expect(style_added).to be(true)
+  end
+
+  describe 'viewed FOUC prevention' do
+    let(:current_user) { build_stubbed(:user) }
+
+    it 'includes startup_js for FOUC prevention when user is logged in' do
+      render_component
+
+      expect(component.helpers.content_for?(:startup_js)).to be(true)
+    end
+
+    context 'when user is not logged in' do
+      let(:current_user) { nil }
+
+      it 'does not include startup_js for FOUC prevention' do
+        render_component
+
+        expect(component.helpers.content_for?(:startup_js)).to be(false)
+      end
+    end
   end
 
   def render_component

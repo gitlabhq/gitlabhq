@@ -8,6 +8,8 @@ title: Quick start for Internal Event Tracking
 In an effort to provide a more efficient, scalable, and unified tracking API, GitLab is deprecating existing RedisHLL and Snowplow tracking. Instead, we're implementing a new `track_event` (Backend) and `trackEvent`(Frontend) method.
 With this approach, we can update both RedisHLL counters and send Snowplow events without worrying about the underlying implementation.
 
+**Important**: Starting with GitLab 18.0, event data is collected from Self-Managed instances, providing more detailed insights than the aggregated metrics collected in previous versions.
+
 In order to instrument your code with Internal Events Tracking you need to do three things:
 
 1. Define an event

@@ -1,8 +1,14 @@
-= render RapidDiffs::DiffFileComponent.new(diff_file:, parallel_view: @parallel_view, plain_view: @plain_view) do |file_component_instance|
+= render RapidDiffs::DiffFileComponent.new(diff_file:, parallel_view: @parallel_view, plain_view: @plain_view, extra_file_data:, extra_options:) do |file_component_instance|
   - file_component_instance.with_header do
     - if diff_file.conflict
       .rd-diff-file-conflict-message
         = render Pajamas::AlertComponent.new(variant: :danger, dismissible: false) do |alert_instance|
           - alert_instance.with_body do
             = human_readable_conflict(diff_file.conflict)
-    = render RapidDiffs::DiffFileHeaderComponent.new(diff_file:, additional_menu_items:)
+    = render RapidDiffs::DiffFileHeaderComponent.new(diff_file:, additional_menu_items:) do |header_instance|
+      - if show_viewed_toggle?
+        - header_instance.with_before_file_menu do
+          .rd-viewed-toggle
+            = render Pajamas::CheckboxTagComponent.new(name: viewed_checkbox_id, checkbox_options: { disabled: true, data: { click: 'toggleViewed', viewed_checkbox: '' } }) do |checkbox|
+              - checkbox.with_label do
+                = _('Viewed')

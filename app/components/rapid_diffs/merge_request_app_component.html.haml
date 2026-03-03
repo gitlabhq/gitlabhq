@@ -1,4 +1,21 @@
-= render RapidDiffs::AppComponent.new(@presenter) do |c|
+- if current_user && mr_path
+  -# haml-lint:disable InlineJavaScript
+  - helpers.content_for :startup_js do
+    - javascript_tag nonce: content_security_policy_nonce do
+      :plain
+        const key = 'code-review-' + '#{j(mr_path)}';
+        const stored = localStorage.getItem(key);
+        if (stored) {
+          const ids = JSON.parse(stored);
+          ids.forEach(id => {
+            const style = document.createElement('style');
+            style.dataset.viewedFileStyle = id;
+            style.textContent = `:where(diff-file[data-code-review-id="${CSS.escape(id)}"]) [data-file-body] { display: none; }`;
+            document.head.appendChild(style);
+          });
+        }
+
+= render RapidDiffs::AppComponent.new(@presenter, extra_app_data: { mr_path: mr_path, code_review_enabled: current_user.present? }) do |c|
   - c.with_diffs_list do
     = render RapidDiffs::MergeRequestDiffFileComponent.with_collection(c.diff_collection, merge_request: @presenter.resource, parallel_view: c.parallel_view?)
 

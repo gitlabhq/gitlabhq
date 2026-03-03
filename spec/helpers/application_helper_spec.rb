@@ -757,6 +757,26 @@ RSpec.describe ApplicationHelper, feature_category: :shared do
     describe 'application-chrome' do
       it { is_expected.to include('application-chrome') }
     end
+
+    describe 'user-logged-in and user-logged-out' do
+      context 'when current_user is present' do
+        before do
+          allow(helper).to receive(:current_user).and_return(user)
+        end
+
+        it { is_expected.to include('user-logged-in') }
+        it { is_expected.not_to include('user-logged-out') }
+      end
+
+      context 'when no current_user' do
+        before do
+          allow(helper).to receive(:current_user).and_return(nil)
+        end
+
+        it { is_expected.to include('user-logged-out') }
+        it { is_expected.not_to include('user-logged-in') }
+      end
+    end
   end
 
   describe '#dispensable_render' do

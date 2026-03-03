@@ -24,6 +24,12 @@ module API
         hash[key.to_s] = key
       end.freeze
     FEATURE_SUPPORTED_VALUES = FEATURE_NAME_LOOKUP.keys.freeze
+    FAILURE_RESPONSES = [
+      { code: 400, message: 'Bad request' },
+      { code: 401, message: 'Unauthorized' },
+      { code: 403, message: 'Forbidden - feature flag disabled' },
+      { code: 404, message: 'Not found' }
+    ].freeze
 
     FEATURE_PRELOADS = {
       description: [:last_edited_by],
@@ -82,6 +88,17 @@ module API
           ].join(' ')
       end
 
+      params :work_item_show_params do
+        optional :fields, type: String,
+          desc: "Comma-separated list of base fields to include. Defaults to #{DEFAULT_FIELDS.join(', ')}."
+        optional :features, type: String,
+          desc: [
+            'Comma-separated list of feature payloads to include.',
+            'No feature payloads are returned unless specified.',
+            "Supported values: #{FEATURE_SUPPORTED_VALUES.join(', ')}."
+          ].join(' ')
+      end
+
       def render_work_items_collection_for(resource_parent)
         check_work_item_rest_api_feature_flag!
         check_pagination_param!(params)
@@ -90,16 +107,11 @@ module API
         authorize! :read_work_item, resource_parent
         authorize_job_token_policies!(resource_parent) if resource_parent.is_a?(::Project)
 
-        field_keys = (DEFAULT_FIELDS + filter_requested_keys(params[:fields], FIELD_NAME_LOOKUP)).uniq
-        feature_keys = filter_requested_keys(params[:features], FEATURE_NAME_LOOKUP)
-
-        work_items_relation = ::WorkItems::WorkItemsFinder.new(
-          current_user,
-          work_items_finder_params(resource_parent)
-        ).execute
-
+        field_keys = requested_field_keys(params[:fields])
+        feature_keys = requested_feature_keys(params[:features])
         preloads = preload_associations_for(field_keys, feature_keys, resource_parent)
-        work_items_relation = work_items_relation.preload(*preloads) if preloads.present? # rubocop:disable CodeReuse/ActiveRecord -- Preloading associations for API response
+
+        work_items_relation = build_work_items_relation(resource_parent, preloads: preloads)
 
         present paginate_with_strategies(work_items_relation),
           with: Entities::WorkItemBasic,
@@ -109,7 +121,49 @@ module API
           resource_parent: resource_parent
       end
 
+      def render_work_item_for(resource_parent, work_item_iid)
+        check_work_item_rest_api_feature_flag!
+
+        authorize! :read_work_item, resource_parent
+        authorize_job_token_policies!(resource_parent) if resource_parent.is_a?(::Project)
+
+        field_keys = requested_field_keys(params[:fields])
+        feature_keys = requested_feature_keys(params[:features])
+        preloads = preload_associations_for(field_keys, feature_keys, resource_parent)
+
+        work_item = build_work_items_relation(resource_parent, preloads: preloads)
+          .without_order
+          .find_by_iid(work_item_iid)
+
+        not_found!('Work Item') unless work_item
+
+        present work_item,
+          with: Entities::WorkItemBasic,
+          current_user: current_user,
+          requested_features: feature_keys,
+          fields: field_keys
+      end
+
       private
+
+      def build_work_items_relation(resource_parent, preloads: [])
+        work_items_relation = ::WorkItems::WorkItemsFinder.new(
+          current_user,
+          work_items_finder_params(resource_parent)
+        ).execute
+
+        return work_items_relation if preloads.blank?
+
+        work_items_relation.preload(*preloads) # rubocop:disable CodeReuse/ActiveRecord -- Preloading associations for API response
+      end
+
+      def requested_field_keys(requested_fields)
+        (DEFAULT_FIELDS + filter_requested_keys(requested_fields, FIELD_NAME_LOOKUP)).uniq
+      end
+
+      def requested_feature_keys(requested_features)
+        filter_requested_keys(requested_features, FEATURE_NAME_LOOKUP)
+      end
 
       def check_pagination_param!(params)
         return unless params[:pagination].present? && params[:pagination].to_s != 'keyset'
@@ -182,12 +236,7 @@ module API
           DETAIL
           hidden true
           success Entities::WorkItemBasic
-          failure [
-            { code: 400, message: 'Bad request' },
-            { code: 401, message: 'Unauthorized' },
-            { code: 403, message: 'Forbidden - feature flag disabled' },
-            { code: 404, message: 'Not found' }
-          ]
+          failure FAILURE_RESPONSES
           is_array true
           tags WORK_ITEMS_TAGS
         end
@@ -205,6 +254,32 @@ module API
 
           render_work_items_collection_for(resource_parent)
         end
+
+        desc 'Get a work item.' do
+          detail <<~DETAIL
+            Get a single work item in a namespace. Project and group namespaces are supported.
+            This feature is currently experimental and is behind the `work_item_rest_api` feature flag.
+          DETAIL
+          hidden true
+          success Entities::WorkItemBasic
+          failure FAILURE_RESPONSES
+          tags WORK_ITEMS_TAGS
+        end
+        params do
+          requires :work_item_iid, type: Integer, desc: 'The internal ID of the work item'
+          use :work_item_show_params
+        end
+        route_setting :authorization,
+          permissions: :read_work_item,
+          boundaries: [{ boundary_type: :group }, { boundary_type: :project }],
+          job_token_policies: :read_work_items
+        get ':work_item_iid' do
+          namespace = find_namespace_by_path!(params[:id].to_s, allow_project_namespaces: true)
+          not_found!('Namespace') if namespace.is_a?(::Namespaces::UserNamespace)
+          resource_parent = namespace.is_a?(::Namespaces::ProjectNamespace) ? namespace.project : namespace
+
+          render_work_item_for(resource_parent, params[:work_item_iid])
+        end
       end
     end
 
@@ -221,12 +296,7 @@ module API
           DETAIL
           hidden true
           success Entities::WorkItemBasic
-          failure [
-            { code: 400, message: 'Bad request' },
-            { code: 401, message: 'Unauthorized' },
-            { code: 403, message: 'Forbidden - feature flag disabled' },
-            { code: 404, message: 'Not found' }
-          ]
+          failure FAILURE_RESPONSES
           is_array true
           tags WORK_ITEMS_TAGS
         end
@@ -241,6 +311,30 @@ module API
           project = find_project!(params[:id])
 
           render_work_items_collection_for(project)
+        end
+
+        desc 'Get a work item in a project.' do
+          detail <<~DETAIL
+            Get a single work item in a project.
+            This feature is currently experimental and is behind the `work_item_rest_api` feature flag.
+          DETAIL
+          hidden true
+          success Entities::WorkItemBasic
+          failure FAILURE_RESPONSES
+          tags WORK_ITEMS_TAGS
+        end
+        params do
+          requires :work_item_iid, type: Integer, desc: 'The internal ID of the work item'
+          use :work_item_show_params
+        end
+        route_setting :authorization,
+          permissions: :read_work_item,
+          boundary_type: :project,
+          job_token_policies: :read_work_items
+        get ':work_item_iid' do
+          project = find_project!(params[:id])
+
+          render_work_item_for(project, params[:work_item_iid])
         end
       end
     end
@@ -258,12 +352,7 @@ module API
           DETAIL
           hidden true
           success Entities::WorkItemBasic
-          failure [
-            { code: 400, message: 'Bad request' },
-            { code: 401, message: 'Unauthorized' },
-            { code: 403, message: 'Forbidden - feature flag disabled' },
-            { code: 404, message: 'Not found' }
-          ]
+          failure FAILURE_RESPONSES
           is_array true
           tags WORK_ITEMS_TAGS
         end
@@ -277,6 +366,29 @@ module API
           group = find_group!(params[:id])
 
           render_work_items_collection_for(group)
+        end
+
+        desc 'Get a work item in a group.' do
+          detail <<~DETAIL
+            Get a single work item in a group.
+            This feature is currently experimental and is behind the `work_item_rest_api` feature flag.
+          DETAIL
+          hidden true
+          success Entities::WorkItemBasic
+          failure FAILURE_RESPONSES
+          tags WORK_ITEMS_TAGS
+        end
+        params do
+          requires :work_item_iid, type: Integer, desc: 'The internal ID of the work item'
+          use :work_item_show_params
+        end
+        route_setting :authorization,
+          permissions: :read_work_item,
+          boundary_type: :group
+        get ':work_item_iid' do
+          group = find_group!(params[:id])
+
+          render_work_item_for(group, params[:work_item_iid])
         end
       end
     end

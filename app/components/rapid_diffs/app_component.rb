@@ -11,7 +11,7 @@ module RapidDiffs
     delegate :diffs_stream_url, :reload_stream_url, :diffs_stats_endpoint, :diff_files_endpoint, :diff_file_endpoint,
       :sorted?, :diffs_slice, :lazy?, :environment, :linked_file, to: :presenter
 
-    delegate :diff_view, :current_user, to: :helpers
+    delegate :diff_view, to: :helpers
 
     def initialize(presenter, extra_app_data: nil, extra_prefetch_endpoints: [])
       @presenter = presenter

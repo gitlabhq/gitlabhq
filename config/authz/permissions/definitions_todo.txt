@@ -359,7 +359,6 @@ manage_resource_access_tokens
 manage_self_hosted_models_settings
 manage_subscription
 manage_trigger
-manage_user_personal_access_token
 mark_issue_for_publication
 mark_note_as_internal
 measure_comment_temperature
@@ -605,7 +604,6 @@ read_subscription_usage
 read_target_branch_rule
 read_timelog_category
 read_todo
-read_token
 read_upload
 read_usage
 read_usage_quotas
@@ -615,7 +613,6 @@ read_user_email_address
 read_user_groups
 read_user_membership_counts
 read_user_organizations
-read_user_personal_access_tokens
 read_user_profile
 read_users_list
 read_virtual_registry
@@ -655,7 +652,6 @@ reset_merge_request_approvals
 resolve_note
 resolve_vulnerability_with_ai
 retry_failed_status_checks
-revoke_token
 rollover_issues
 rotate_token
 security_manager_access

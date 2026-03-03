@@ -31,11 +31,24 @@ module Gitlab
           private
 
           def granular_scope_arguments(permissions:, boundary:, boundary_argument:)
+            permission = Array.wrap(permissions)
+            validate_granular_permissions!(permission)
+
             {
-              permissions: Array.wrap(permissions).map(&:to_s).map(&:upcase),
+              permissions: permission.map(&:to_s),
               boundary: boundary&.to_s,
               boundary_argument: boundary_argument&.to_s
             }.compact
+          end
+
+          def validate_granular_permissions!(permissions)
+            valid = ::Authz::PermissionGroups::Assignable.all_permissions.to_set
+            invalid = permissions.map(&:to_sym).reject { |p| valid.include?(p) }
+            return if invalid.empty?
+
+            raise ArgumentError,
+              "Invalid granular scope permission(s): #{invalid.join(', ')}. " \
+                "Permissions must exist in assignable permission groups."
           end
         end
       end

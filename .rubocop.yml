@@ -714,7 +714,8 @@ Gitlab/Authz/UsePolicyHelpers:
     - 'spec/policies/**/*'
     - 'ee/spec/policies/**/*'
 
-Gitlab/PolicyConditionScope:
+Gitlab/Authz/ConditionScope:
+  Enabled: true
   Include:
     - '{,ee/,jh/}app/policies/**/*.rb'
 

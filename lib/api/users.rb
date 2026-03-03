@@ -1697,7 +1697,7 @@ module API
           requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE, ::Gitlab::Auth::SELF_ROTATE_SCOPE].map(&:to_s),
             desc: 'The array of scopes of the personal access token'
         end
-        route_setting :authorization, permissions: :create_user_personal_access_token, boundary_type: :user
+        route_setting :authorization, permissions: :create_personal_access_token, boundary_type: :user
         post feature_category: :system_access do
           response = ::PersonalAccessTokens::CreateService.new(
             current_user: current_user, target_user: current_user, params: declared_params(include_missing: false), organization_id: Current.organization.id

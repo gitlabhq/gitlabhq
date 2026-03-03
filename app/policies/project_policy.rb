@@ -190,7 +190,6 @@ class ProjectPolicy < BasePolicy
     project.project_feature.pages_access_level == ProjectFeature::ENABLED
   end
 
-  with_scope :subject
   condition(:forking_allowed) do
     @subject.feature_available?(:forking, @user)
   end
@@ -205,7 +204,6 @@ class ProjectPolicy < BasePolicy
     ::Gitlab::CurrentSettings.current_application_settings.mirror_available
   end
 
-  with_scope :subject
   condition(:classification_label_authorized, score: 32) do
     ::Gitlab::ExternalAuthorization.access_allowed?(
       @user,
@@ -222,12 +220,10 @@ class ProjectPolicy < BasePolicy
   with_scope :subject
   condition(:service_desk_enabled) { ::ServiceDesk.enabled?(@subject) }
 
-  with_scope :subject
   condition(:model_experiments_enabled) do
     @subject.feature_available?(:model_experiments, @user)
   end
 
-  with_scope :subject
   condition(:model_registry_enabled) do
     @subject.feature_available?(:model_registry, @user)
   end

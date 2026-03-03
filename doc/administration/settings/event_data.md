@@ -21,6 +21,8 @@ title: Event data
 
 ## Data tracking for product usage at event level
 
+**Important**: Starting with GitLab 18.0, Self-Managed and Dedicated instances collect event-level data, providing more detailed insights into product usage. Previously, only aggregated metrics were collected from Self-Managed instances.
+
 For more information about changes to product usage data collection, read the blog post
 [More granular product usage insights for GitLab Self-Managed and Dedicated](https://about.gitlab.com/blog/more-granular-product-usage-insights-for-gitlab-self-managed-and-dedicated/).
 

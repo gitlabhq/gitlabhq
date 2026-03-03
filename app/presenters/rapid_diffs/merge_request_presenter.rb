@@ -6,11 +6,12 @@ module RapidDiffs
 
     presents ::MergeRequest, as: :resource
 
-    attr_reader :conflicts
+    attr_reader :conflicts, :current_user
 
     def initialize(
-      subject, diff_view:, diff_options:, current_user: nil, request_params: nil, environment: nil,
-      conflicts: nil)
+      subject, diff_view:, diff_options:,
+      current_user: nil, request_params: nil, environment: nil, conflicts: nil
+    )
       super(subject, diff_view:, diff_options:, current_user:, request_params:, environment:)
       @conflicts = conflicts
     end
@@ -48,6 +49,10 @@ module RapidDiffs
 
     def sorted?
       true
+    end
+
+    def mr_path
+      project_merge_request_path(resource.project, resource)
     end
 
     protected

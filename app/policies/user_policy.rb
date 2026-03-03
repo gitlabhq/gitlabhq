@@ -26,7 +26,7 @@ class UserPolicy < BasePolicy
     enable :create_saved_replies
     enable :update_saved_replies
     enable :destroy_saved_replies
-    enable :read_user_personal_access_tokens
+    enable :read_personal_access_token
     enable :read_user_membership_counts
     enable :read_user_groups
     enable :read_user_organizations
@@ -44,8 +44,8 @@ class UserPolicy < BasePolicy
 
   rule { default }.enable :read_user_profile
   rule { (private_profile | blocked_user | unconfirmed_user) & ~(user_is_self | admin) }.prevent :read_user_profile
-  rule { (user_is_self | admin) & ~blocked }.enable :create_user_personal_access_token
-  rule { (user_is_self | admin) & ~blocked }.enable :manage_user_personal_access_token
+  rule { (user_is_self | admin) & ~blocked }.enable :create_personal_access_token
+  rule { (user_is_self | admin) & ~blocked }.enable :rotate_personal_access_token
   rule { (user_is_self | admin) & ~blocked }.enable :get_user_associations_count
 
   rule { admin }.policy do

@@ -43,7 +43,7 @@ module PersonalAccessTokens
     def revocation_permitted?
       case source
       when :self
-        Ability.allowed?(current_user, :revoke_token, token)
+        Ability.allowed?(current_user, :revoke_personal_access_token, token)
       when :secret_detection, :api_admin_token
         true
       else

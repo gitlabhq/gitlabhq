@@ -376,6 +376,62 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#current_ref' do
+    let(:repository) { project.repository }
+
+    before do
+      helper.instance_variable_set(:@repository, repository)
+    end
+
+    context 'when current_branch exists in the repository' do
+      before do
+        allow(helper).to receive(:current_branch).and_return(project.default_branch)
+      end
+
+      it 'returns the current branch' do
+        expect(helper.send(:current_ref)).to eq(project.default_branch)
+      end
+    end
+
+    context 'when @wiki is set' do
+      before do
+        allow(helper).to receive(:current_branch).and_return(nil)
+        helper.instance_variable_set(:@wiki, double('Wiki'))
+        helper.instance_variable_set(:@ref, 'abc123fakewikicommitsha')
+      end
+
+      it 'returns root_ref instead of the wiki commit SHA' do
+        expect(helper.send(:current_ref)).to eq(repository.root_ref)
+      end
+    end
+
+    context 'when @wiki is not set and current_branch does not exist' do
+      before do
+        allow(helper).to receive(:current_branch).and_return(nil)
+      end
+
+      context 'when @ref is set' do
+        before do
+          helper.instance_variable_set(:@ref, 'some-ref')
+        end
+
+        it 'returns @ref' do
+          expect(helper.send(:current_ref)).to eq('some-ref')
+        end
+      end
+
+      context 'when @ref is not set' do
+        before do
+          helper.instance_variable_set(:@ref, nil)
+        end
+
+        it 'falls back to root_ref' do
+          expect(helper.send(:current_ref)).to eq(repository.root_ref)
+        end
+      end
+    end
+  end
+
   describe 'default_clone_protocol' do
     let(:user) { nil }
 

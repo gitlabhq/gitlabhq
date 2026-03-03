@@ -35225,6 +35225,7 @@ Describes a usage event for the subscription.
 | <a id="gitlabsubscriptionusageuserevent-eventtype"></a>`eventType` | [`String`](#string) | Event type. |
 | <a id="gitlabsubscriptionusageuserevent-flowtype"></a>`flowType` | [`String`](#string) | User-friendly display name for the event flow type. |
 | <a id="gitlabsubscriptionusageuserevent-location"></a>`location` | [`GitlabSubscriptionUsageEventLocation`](#gitlabsubscriptionusageeventlocation) | Event location: project or namespace. |
+| <a id="gitlabsubscriptionusageuserevent-sessionlink"></a>`sessionLink` | [`String`](#string) | URL of the agent session associated with the event. |
 | <a id="gitlabsubscriptionusageuserevent-timestamp"></a>`timestamp` | [`ISO8601DateTime`](#iso8601datetime) | Date and time of the event. |
 
 ### `GitlabSubscriptionUsageUserUsage`

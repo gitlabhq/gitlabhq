@@ -2,28 +2,6 @@ import { mount } from '@vue/test-utils';
 import VirtualList from 'vue-virtual-scroll-list';
 import SmartVirtualScrollList from '~/vue_shared/components/smart_virtual_list.vue';
 
-// Mock the VirtualList component for Vue 3 compatibility
-jest.mock('vue-virtual-scroll-list', () => {
-  return {
-    __esModule: true,
-    default: {
-      name: 'VirtualList',
-      render(createElement) {
-        return createElement(this.rtag, { class: 'js-virtual-list' }, [
-          createElement(this.wtag, { class: this.wclass }, this.$slots.default),
-        ]);
-      },
-      props: {
-        size: Number,
-        remain: Number,
-        rtag: String,
-        wtag: String,
-        wclass: String,
-      },
-    },
-  };
-});
-
 describe('Smart Virtual List', () => {
   let wrapper;
 

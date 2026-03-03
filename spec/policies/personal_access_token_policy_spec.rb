@@ -13,15 +13,13 @@ RSpec.describe PersonalAccessTokenPolicy do
     context 'not the owner of the token' do
       let_it_be(:token) { build_stubbed(:personal_access_token) }
 
-      it { is_expected.to be_allowed(:read_token) }
-      it { is_expected.to be_allowed(:revoke_token) }
+      it { is_expected.to be_allowed(:revoke_personal_access_token) }
     end
 
     context 'owner of the token' do
       let_it_be(:token) { build_stubbed(:personal_access_token, user: current_user) }
 
-      it { is_expected.to be_allowed(:read_token) }
-      it { is_expected.to be_allowed(:revoke_token) }
+      it { is_expected.to be_allowed(:revoke_personal_access_token) }
     end
   end
 
@@ -31,22 +29,19 @@ RSpec.describe PersonalAccessTokenPolicy do
     context 'not the owner of the token' do
       let_it_be(:token) { build_stubbed(:personal_access_token) }
 
-      it { is_expected.to be_disallowed(:read_token) }
-      it { is_expected.to be_disallowed(:revoke_token) }
+      it { is_expected.to be_disallowed(:revoke_personal_access_token) }
     end
 
     context 'owner of the token' do
       let_it_be(:token) { build_stubbed(:personal_access_token, user: current_user) }
 
-      it { is_expected.to be_allowed(:read_token) }
-      it { is_expected.to be_allowed(:revoke_token) }
+      it { is_expected.to be_allowed(:revoke_personal_access_token) }
     end
 
     context 'subject of the impersonated token' do
       let_it_be(:token) { build_stubbed(:personal_access_token, user: current_user, impersonation: true) }
 
-      it { is_expected.to be_disallowed(:read_token) }
-      it { is_expected.to be_disallowed(:revoke_token) }
+      it { is_expected.to be_disallowed(:revoke_personal_access_token) }
     end
   end
 
@@ -56,15 +51,13 @@ RSpec.describe PersonalAccessTokenPolicy do
     context 'owner of the token' do
       let_it_be(:token) { build_stubbed(:personal_access_token, user: current_user) }
 
-      it { is_expected.to be_disallowed(:read_token) }
-      it { is_expected.to be_disallowed(:revoke_token) }
+      it { is_expected.to be_disallowed(:revoke_personal_access_token) }
     end
 
     context 'not the owner of the token' do
       let_it_be(:token) { build_stubbed(:personal_access_token) }
 
-      it { is_expected.to be_disallowed(:read_token) }
-      it { is_expected.to be_disallowed(:revoke_token) }
+      it { is_expected.to be_disallowed(:revoke_personal_access_token) }
     end
   end
 end

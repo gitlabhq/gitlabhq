@@ -5498,7 +5498,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
       expect(json_response['error']).to eq('name is missing, scopes is missing')
     end
 
-    it_behaves_like 'authorizing granular token permissions', :create_user_personal_access_token do
+    it_behaves_like 'authorizing granular token permissions', :create_personal_access_token do
       let(:boundary_object) { :user }
       let(:request) do
         post api(path, personal_access_token: pat), params: { name: 'test', scopes: ['k8s_proxy'] }

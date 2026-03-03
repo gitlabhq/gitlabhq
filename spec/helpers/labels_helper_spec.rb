@@ -118,6 +118,16 @@ RSpec.describe LabelsHelper do
       # No data-html is included.
       expect(label_link_html).to eq_html('<a class="gl-link gl-label-link has-tooltip" data-title="Evil &lt;script&gt;XSS&lt;/script&gt; title" href="https://target"><b>safe content</b></a>')
     end
+
+    it 'includes aria-label when aria_label is provided' do
+      label_link_html = render_label_link('<b>content</b>'.html_safe, link: 'https://target', title: 'tooltip', dataset: {}, aria_label: 'bug')
+      expect(label_link_html).to eq_html('<a class="gl-link gl-label-link has-tooltip" data-title="tooltip" aria-label="bug" href="https://target"><b>content</b></a>')
+    end
+
+    it 'does not include aria-label when aria_label is not provided' do
+      label_link_html = render_label_link('<b>content</b>'.html_safe, link: 'https://target', title: 'tooltip', dataset: {})
+      expect(label_link_html).to eq_html('<a class="gl-link gl-label-link has-tooltip" data-title="tooltip" href="https://target"><b>content</b></a>')
+    end
   end
 
   describe 'render_label_text' do

@@ -6,7 +6,7 @@ import { imageAdapter } from '~/rapid_diffs/adapters/image_viewer';
 import { loadFileAdapter } from '~/rapid_diffs/adapters/load_file';
 import { lineLinkAdapter } from '~/rapid_diffs/adapters/line_link';
 
-const HEADER_ADAPTERS = [optionsMenuAdapter, toggleFileAdapter, loadFileAdapter];
+export const HEADER_ADAPTERS = [optionsMenuAdapter, toggleFileAdapter, loadFileAdapter];
 
 export const VIEWER_ADAPTERS = {
   text_inline: [...HEADER_ADAPTERS, expandLinesAdapter, lineLinkAdapter],

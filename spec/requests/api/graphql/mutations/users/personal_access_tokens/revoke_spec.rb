@@ -30,7 +30,7 @@ RSpec.describe 'Revoke a personal access token', feature_category: :permissions 
     end
   end
 
-  context 'when current user does not have revoke_token permission for the personal access token' do
+  context 'when current user does not have revoke_personal_access_token permission for the personal access token' do
     let_it_be(:current_user) { create(:user) }
 
     it 'does not revoke the specified personal access token', :aggregate_failures do

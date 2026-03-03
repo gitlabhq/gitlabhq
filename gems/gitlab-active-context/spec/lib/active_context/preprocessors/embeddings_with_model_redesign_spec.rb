@@ -3,8 +3,6 @@
 RSpec.describe ActiveContext::Preprocessors::EmbeddingsWithModelRedesign do
   let(:mock_reference_class) do
     Class.new(Test::References::MockWithDatabaseRecord) do
-      include ::ActiveContext::Preprocessors::Embeddings
-
       add_preprocessor :embeddings do |refs|
         apply_embeddings_with_model_redesign(
           refs: refs, content_method: :embedding_content, unit_primitive: 'test_unit_primitive'
@@ -178,8 +176,6 @@ RSpec.describe ActiveContext::Preprocessors::EmbeddingsWithModelRedesign do
           context 'when :remove_content_field is set to true' do
             let(:mock_reference_class) do
               Class.new(Test::References::MockWithDatabaseRecord) do
-                include ::ActiveContext::Preprocessors::Embeddings
-
                 add_preprocessor :embeddings do |refs|
                   apply_embeddings_with_model_redesign(
                     refs: refs, content_method: :embedding_content,
@@ -207,8 +203,6 @@ RSpec.describe ActiveContext::Preprocessors::EmbeddingsWithModelRedesign do
         context 'when :content_field is passed' do
           let(:mock_reference_class) do
             Class.new(Test::References::MockWithDatabaseRecord) do
-              include ::ActiveContext::Preprocessors::Embeddings
-
               add_preprocessor :embeddings do |refs|
                 apply_embeddings_with_model_redesign(
                   refs: refs, content_field: :other_content,
@@ -255,8 +249,6 @@ RSpec.describe ActiveContext::Preprocessors::EmbeddingsWithModelRedesign do
           context 'when :remove_content is set to true' do
             let(:mock_reference_class) do
               Class.new(Test::References::MockWithDatabaseRecord) do
-                include ::ActiveContext::Preprocessors::Embeddings
-
                 add_preprocessor :embeddings do |refs|
                   apply_embeddings_with_model_redesign(
                     refs: refs, content_field: :other_content,
@@ -287,8 +279,6 @@ RSpec.describe ActiveContext::Preprocessors::EmbeddingsWithModelRedesign do
     context 'when :content_method is passed but not defined' do
       let(:mock_reference_class) do
         Class.new(Test::References::MockWithDatabaseRecord) do
-          include ::ActiveContext::Preprocessors::Embeddings
-
           add_preprocessor :embeddings do |refs|
             apply_embeddings_with_model_redesign(
               refs: refs, content_method: :embedding_content,
@@ -306,8 +296,6 @@ RSpec.describe ActiveContext::Preprocessors::EmbeddingsWithModelRedesign do
     context 'when :content_method is not passed' do
       let(:mock_reference_class) do
         Class.new(Test::References::MockWithDatabaseRecord) do
-          include ::ActiveContext::Preprocessors::Embeddings
-
           add_preprocessor :embeddings do |refs|
             apply_embeddings_with_model_redesign(refs: refs, unit_primitive: 'test_unit_primitive')
           end
@@ -346,8 +334,6 @@ RSpec.describe ActiveContext::Preprocessors::EmbeddingsWithModelRedesign do
         context 'when :content_field is passed' do
           let(:mock_reference_class) do
             Class.new(Test::References::MockWithDatabaseRecord) do
-              include ::ActiveContext::Preprocessors::Embeddings
-
               add_preprocessor :embeddings do |refs|
                 apply_embeddings_with_model_redesign(
                   refs: refs, content_field: :other_content,

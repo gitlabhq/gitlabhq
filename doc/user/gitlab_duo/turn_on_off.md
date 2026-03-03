@@ -75,7 +75,7 @@ To change GitLab Duo availability for a project:
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
-1. Turn the **Use AI-native features in this project** toggle on or off.
+1. Turn the **GitLab Duo** toggle on or off.
 1. Select **Save changes**.
 
 ### On GitLab Self-Managed
@@ -121,7 +121,7 @@ To change GitLab Duo availability for a project:
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
-1. Turn the **Use AI-native features in this project** toggle on or off.
+1. Turn the **GitLab Duo** toggle on or off.
 1. Select **Save changes**.
 
 ### For earlier GitLab versions

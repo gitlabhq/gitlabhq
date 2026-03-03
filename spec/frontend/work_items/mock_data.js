@@ -9095,13 +9095,74 @@ export const namespaceWorkItemTypesQueryResponse = {
   },
 };
 
-export const organisationWorkItemTypesQueryResponse = {
+export const organizationWorkItemTypesQueryResponse = {
   data: {
-    organisation: {
+    organization: {
       id: 'gid://gitlab/2',
       workItemTypes: {
-        nodes: [...namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes],
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItems::Type/1',
+            name: 'Issue',
+            archived: false,
+            enabled: true,
+            canPromoteToObjective: true,
+            canUserCreateItems: true,
+            isConfigurable: true,
+            isFilterable: true,
+            isGroupWorkItemType: false,
+            isIncidentManagement: false,
+            isServiceDesk: false,
+            showProjectSelector: false,
+            supportsMoveAction: true,
+            supportsRoadmapView: false,
+            useIssueView: true,
+            visibleInSettings: true,
+            widgetDefinitions: [
+              {
+                type: 'HIERARCHY',
+                propagatesMilestone: false,
+                autoExpandTreeOnMove: false,
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/2',
+            name: 'Task',
+            archived: false,
+            enabled: false,
+            canPromoteToObjective: false,
+            canUserCreateItems: true,
+            isConfigurable: true,
+            isFilterable: true,
+            isGroupWorkItemType: false,
+            isIncidentManagement: false,
+            isServiceDesk: false,
+            showProjectSelector: false,
+            supportsMoveAction: true,
+            supportsRoadmapView: false,
+            useIssueView: false,
+            visibleInSettings: true,
+            widgetDefinitions: [
+              {
+                type: 'PROGRESS',
+                showPopover: true,
+                __typename: 'WorkItemWidgetDefinitionProgress',
+              },
+              {
+                type: 'START_AND_DUE_DATE',
+                canRollUp: true,
+                __typename: 'WorkItemWidgetDefinitionStartAndDueDate',
+              },
+            ],
+            __typename: 'WorkItemType',
+          },
+        ],
+        __typename: 'WorkItemTypeConnection',
       },
+      __typename: 'Organization',
     },
   },
 };

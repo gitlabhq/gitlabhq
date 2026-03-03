@@ -162,47 +162,71 @@ RSpec.describe MergeRequests::Mergeability::RunChecksService, :clean_gitlab_redi
 
       context 'when the check is cacheable' do
         context 'when the check is cached' do
-          before do
-            expect_next_instance_of(Gitlab::MergeRequests::Mergeability::ResultsStore) do |service|
-              expect(service).to receive(:read).with(merge_check: merge_check).and_return(success_result)
+          context 'when use_cache is true' do
+            before do
+              expect_next_instance_of(Gitlab::MergeRequests::Mergeability::ResultsStore) do |service|
+                expect(service).to receive(:read).with(merge_check: merge_check).and_return(success_result)
+              end
+            end
+
+            it 'returns the cached result' do
+              expect_next_instance_of(MergeRequests::Mergeability::Logger, merge_request: merge_request) do |logger|
+                expect(logger).to receive(:instrument).with(mergeability_name: 'check_ci_status_service').and_call_original
+                expect(logger).to receive(:commit)
+              end
+
+              expect(execute.success?).to eq(true)
+            end
+
+            it_behaves_like 'checks are all executed' do
+              let(:success?) { true }
+              let(:expected_count) { 1 }
             end
           end
 
-          it 'returns the cached result' do
-            expect_next_instance_of(MergeRequests::Mergeability::Logger, merge_request: merge_request) do |logger|
-              expect(logger).to receive(:instrument).with(mergeability_name: 'check_ci_status_service').and_call_original
-              expect(logger).to receive(:commit)
+          context 'when use_cache is false' do
+            subject(:execute) { run_checks.execute(checks, execute_all: execute_all, use_cache: false) }
+
+            it 'does not call the results store' do
+              expect(Gitlab::MergeRequests::Mergeability::ResultsStore).not_to receive(:new)
+
+              expect(execute.success?).to eq(true)
             end
-
-            expect(execute.success?).to eq(true)
-          end
-
-          it_behaves_like 'checks are all executed' do
-            let(:success?) { true }
-            let(:expected_count) { 1 }
           end
         end
 
         context 'when the check is not cached' do
-          before do
-            expect_next_instance_of(Gitlab::MergeRequests::Mergeability::ResultsStore) do |service|
-              expect(service).to receive(:read).with(merge_check: merge_check).and_return(nil)
-              expect(service).to receive(:write).with(merge_check: merge_check, result_hash: success_result.to_hash).and_return(true)
+          context 'when use_cache is true' do
+            before do
+              expect_next_instance_of(Gitlab::MergeRequests::Mergeability::ResultsStore) do |service|
+                expect(service).to receive(:read).with(merge_check: merge_check).and_return(nil)
+                expect(service).to receive(:write).with(merge_check: merge_check, result_hash: success_result.to_hash).and_return(true)
+              end
+            end
+
+            it 'writes and returns the result' do
+              expect_next_instance_of(MergeRequests::Mergeability::Logger, merge_request: merge_request) do |logger|
+                expect(logger).to receive(:instrument).with(mergeability_name: 'check_ci_status_service').and_call_original
+                expect(logger).to receive(:commit)
+              end
+
+              expect(execute.success?).to eq(true)
+            end
+
+            it_behaves_like 'checks are all executed' do
+              let(:success?) { true }
+              let(:expected_count) { 1 }
             end
           end
 
-          it 'writes and returns the result' do
-            expect_next_instance_of(MergeRequests::Mergeability::Logger, merge_request: merge_request) do |logger|
-              expect(logger).to receive(:instrument).with(mergeability_name: 'check_ci_status_service').and_call_original
-              expect(logger).to receive(:commit)
+          context 'when use_cache is false' do
+            subject(:execute) { run_checks.execute(checks, execute_all: execute_all, use_cache: false) }
+
+            it 'does not call the results store' do
+              expect(Gitlab::MergeRequests::Mergeability::ResultsStore).not_to receive(:new)
+
+              expect(execute.success?).to eq(true)
             end
-
-            expect(execute.success?).to eq(true)
-          end
-
-          it_behaves_like 'checks are all executed' do
-            let(:success?) { true }
-            let(:expected_count) { 1 }
           end
         end
       end

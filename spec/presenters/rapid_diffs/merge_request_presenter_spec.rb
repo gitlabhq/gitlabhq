@@ -204,6 +204,25 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     end
   end
 
+  describe '#mr_path' do
+    subject(:url) { presenter.mr_path }
+
+    it { is_expected.to eq(base_path) }
+  end
+
+  describe '#current_user' do
+    let(:user) { build_stubbed(:user) }
+
+    subject(:presenter) do
+      described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+        request_params: request_params, current_user: user)
+    end
+
+    it 'returns the current_user' do
+      expect(presenter.current_user).to eq(user)
+    end
+  end
+
   describe 'diff files with conflicts' do
     let(:diff_file) { build(:diff_file) }
     let(:diff_files_array) { [diff_file] }

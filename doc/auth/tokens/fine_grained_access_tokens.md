@@ -1272,7 +1272,9 @@ Grants the ability to read, write, and delete work items.
 | Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_milestone_events` |
 | Read | Project | `GET` | `/projects/:id/merge_requests/:eventable_id/resource_milestone_events/:event_id` |
 | Read | Project | `GET` | `/namespaces/:id/-/work_items` |
+| Read | Project | `GET` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Read | Project | `GET` | `/projects/:id/-/work_items` |
+| Read | Project | `GET` | `/projects/:id/-/work_items/:work_item_iid` |
 | Read | Project | `GET` | `/projects/:id/boards` |
 | Read | Project | `GET` | `/projects/:id/boards/:board_id` |
 | Read | Project | `GET` | `/projects/:id/boards/:board_id/lists` |
@@ -1314,7 +1316,9 @@ Grants the ability to read, write, and delete work items.
 | Read | Group | `GET` | `/groups/:id/issues` |
 | Read | Group | `GET` | `/groups/:id/issues_statistics` |
 | Read | Group | `GET` | `/namespaces/:id/-/work_items` |
+| Read | Group | `GET` | `/namespaces/:id/-/work_items/:work_item_iid` |
 | Read | Group | `GET` | `/groups/:id/-/work_items` |
+| Read | Group | `GET` | `/groups/:id/-/work_items/:work_item_iid` |
 | Read | Group | `GET` | `/groups/:id/epics/:noteable_id/discussions` |
 | Read | Group | `GET` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id` |
 | Read | Group | `GET` | `/groups/:id/epics/:noteable_id/discussions/:discussion_id/notes` |
@@ -1963,10 +1967,11 @@ Grants the ability to create, read, update, renew secret, and delete OAuth appli
 
 #### Personal Access Token
 
-Grants the ability to read, revoke, and rotate personal access tokens.
+Grants the ability to read, create, revoke, and rotate personal access tokens.
 
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
+| Create | User | `POST` | `/user/personal_access_tokens` |
 | Read | User | `GET` | `/personal_access_tokens` |
 | Read | User | `GET` | `/personal_access_tokens/:id` |
 | Revoke | User | `DELETE` | `/personal_access_tokens/:id` |
@@ -2117,14 +2122,6 @@ Grants the ability to create, read, and delete user emails.
 | Delete | User | `DELETE` | `/user/emails/:email_id` |
 | Read | User | `GET` | `/user/emails` |
 | Read | User | `GET` | `/user/emails/:email_id` |
-
-#### User Personal Access Token
-
-Grants the ability to create user personal access tokens.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Create | User | `POST` | `/user/personal_access_tokens` |
 
 #### User SSH Key
 
@@ -2395,6 +2392,7 @@ job token policies or resource-specific access controls.
 
 | Method | Path |
 | ------ | ---- |
+| `POST` | `/container_registry_event/events` |
 | `GET` | `/feature_flags/unleash/:project_id` |
 | `GET` | `/feature_flags/unleash/:project_id/client/features` |
 | `POST` | `/feature_flags/unleash/:project_id/client/metrics` |

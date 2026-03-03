@@ -39,7 +39,7 @@ RSpec.describe 'Rotate a personal access token', feature_category: :system_acces
     end
   end
 
-  context 'when current user does not have manage_user_personal_access_token permission on the token' do
+  context 'when current user does not have rotate_personal_access_token permission on the token' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:request_token) { create(:personal_access_token, user: current_user) }
 

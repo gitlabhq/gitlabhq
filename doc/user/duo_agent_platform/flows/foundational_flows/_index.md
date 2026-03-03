@@ -66,47 +66,101 @@ When foundational flows create merge requests, the merge request is attributed t
 
 ## Turn foundational flows on or off
 
-You can turn foundational flows on or off for a top-level group (namespace) or an instance.
-If you turn off foundational flows for a top-level group, users with that group as
-their default GitLab Duo namespace cannot access foundational flows in any namespace.
+You can turn foundational flows on or off:
+
+- On GitLab.com: For top-level groups and projects.
+- On GitLab Self-Managed: For instances, groups, and projects.
 
 You can also turn flow execution on or off to control whether
 features that consume compute minutes can run in the GitLab UI.
 These features include external agents, foundational flows, and custom flows.
 
+### On GitLab.com
+
 {{< tabs >}}
 
-{{< tab title="For GitLab.com" >}}
+{{< tab title="For a top-level group" >}}
 
 Prerequisites:
 
-- You must have the Owner role for the group.
-- The top-level group and project must have flow execution turned on.
+- The Owner role for the top-level group.
 
-1. On the top bar, select **Search or go to** and find your group.
+1. On the top bar, select **Search or go to** and find your top-level group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Flow execution**, select the **Allow flow execution** and **Allow foundational flows** checkboxes.
 1. Select the checkbox for each foundational flow you want to turn on.
 1. Select **Save changes**.
 
-You must turn on individual foundational flows for the top-level group.
-It can take a few minutes for these settings to propagate across groups.
+When you turn off foundational flows for a top-level group, users with that group as
+their default GitLab Duo namespace cannot access foundational flows in any namespace.
 
 {{< /tab >}}
+
+{{< tab title="For a project" >}}
+
+Prerequisites:
+
+- The Owner or Maintainer role for the project.
+- Flow execution and foundational flows turned on for the top-level group.
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **GitLab Duo**.
+1. Turn on the **GitLab Duo**, **Allow flow execution**, and **Allow foundational flows** toggles.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### On GitLab Self-Managed
+
+{{< tabs >}}
 
 {{< tab title="For an instance" >}}
 
 Prerequisites:
 
-- You must be an administrator.
-- The instance and project must have flow execution turned on.
+- Administrator access.
 
 1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Flow execution**, select the **Allow flow execution** and **Allow foundational flows** checkboxes.
+1. Select **Save changes**.
+
+{{< /tab >}}
+
+{{< tab title="For a group" >}}
+
+Prerequisites:
+
+- Administrator access.
+- Flow execution and foundational flows turned on for the instance.
+
+1. On the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **General**.
+1. Expand **GitLab Duo features**.
+1. Under **Flow execution**, select the **Allow flow execution** and **Allow foundational flows** checkboxes.
 1. Select the checkbox for each foundational flow you want to turn on.
+1. Select **Save changes**.
+
+When turned on for the group, foundational flows are available to all subgroups and projects.
+
+{{< /tab >}}
+
+{{< tab title="For a project" >}}
+
+Prerequisites:
+
+- The Owner or Maintainer role for the project.
+- Flow execution and foundational flows turned on for the instance and group.
+
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **GitLab Duo**.
+1. Turn on the **GitLab Duo**, **Allow flow execution**, and **Allow foundational flows** toggles.
 1. Select **Save changes**.
 
 {{< /tab >}}

@@ -5,7 +5,6 @@ module ActiveContext
     extend Concerns::ReferenceUtils
     extend Concerns::Preprocessor
     include Preprocessors::ContentFetcher
-    include Preprocessors::Embeddings
     include Preprocessors::EmbeddingsWithModelRedesign
     include Preprocessors::Preload
 
@@ -119,10 +118,6 @@ module ActiveContext
 
     def indexing_embedding_models
       collection_class&.indexing_embedding_models || []
-    end
-
-    def embedding_versions
-      collection_class&.current_indexing_embedding_versions || []
     end
 
     def collection_class

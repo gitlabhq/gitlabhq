@@ -53,6 +53,7 @@ The granular token authorization system adds fine-grained permission checks to G
 - **Purpose**: Provides the `authorize_granular_token` helper method for cleaner directive syntax
 - **Included in**: `Types::BaseObject` and `Mutations::BaseMutation`
 - **Method**: `authorize_granular_token(permissions:, boundary: nil, boundary_argument: nil)`
+- **Validation**: Permissions are validated at boot time against `Authz::PermissionGroups::Assignable.all_permissions`. Using an invalid permission raises `ArgumentError`.
 
 ## Request Flow Timeline
 
@@ -520,6 +521,12 @@ raise_resource_not_available_error!(response.message)
      # Project matches 'project' → returns Project
      ```
 
+1. **Invalid permission name**
+   - **Behavior**: Raises `ArgumentError` at boot time
+   - **Error message**: `"Invalid granular scope permission(s): not_a_real_permission. Permissions must exist in assignable permission groups."`
+   - **Cause**: Using a permission symbol that doesn't exist in `Authz::PermissionGroups::Assignable.all_permissions`
+   - **Note**: This validation happens in the helper methods (`authorize_granular_token` / `granular_scope_directive`) when the class is loaded, ensuring invalid permissions are caught early
+
 1. **Multiple directives found**
    - **Behavior**: Uses first match in priority order (field → owner → implementing type → return type)
    - **Result**: May not use expected directive if multiple apply
@@ -542,7 +549,7 @@ authorize_granular_token(permissions:, boundary: nil, boundary_argument: nil)
 
 **Parameters:**
 
-- `permissions`: Symbol representing the required permission (e.g., `:read_issue`). Can also be an array of permissions.
+- `permissions`: Symbol representing the required permission (e.g., `:read_issue`). Can also be an array of permissions. Must be a valid permission from `Authz::PermissionGroups::Assignable.all_permissions` — an `ArgumentError` is raised at boot time if not.
 - `boundary`: Symbol representing the method to call on the resolved object to extract the boundary (e.g., `:project`). Use `:user` or `:instance` for standalone resources.
 - `boundary_argument`: Symbol representing the argument name containing the boundary path (e.g., `:project_path`).
 

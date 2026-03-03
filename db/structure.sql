@@ -42874,6 +42874,8 @@ CREATE INDEX ca_aggregations_last_full_run_at ON analytics_cycle_analytics_aggre
 
 CREATE INDEX ca_aggregations_last_incremental_run_at ON analytics_cycle_analytics_aggregations USING btree (last_incremental_run_at NULLS FIRST) WHERE (enabled IS TRUE);
 
+CREATE UNIQUE INDEX ci_build_needs_pkey_partitioning ON ci_build_needs USING btree (id, partition_id);
+
 CREATE UNIQUE INDEX ci_job_token_scope_links_source_and_target_project_direction ON ci_job_token_project_scope_links USING btree (source_project_id, target_project_id, direction);
 
 CREATE INDEX ci_pipeline_artifacts_on_expire_at_for_removal ON ci_pipeline_artifacts USING btree (expire_at) WHERE ((locked = 0) AND (expire_at IS NOT NULL));
@@ -44553,6 +44555,8 @@ CREATE INDEX index_chat_names_on_user_id ON chat_names USING btree (user_id);
 CREATE UNIQUE INDEX index_chat_teams_on_namespace_id ON chat_teams USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_ci_build_needs_on_build_id_and_name ON ci_build_needs USING btree (build_id, name);
+
+CREATE UNIQUE INDEX index_ci_build_needs_on_build_id_and_name_partitioning ON ci_build_needs USING btree (build_id, name, partition_id);
 
 CREATE INDEX index_ci_build_needs_on_project_id ON ci_build_needs USING btree (project_id);
 

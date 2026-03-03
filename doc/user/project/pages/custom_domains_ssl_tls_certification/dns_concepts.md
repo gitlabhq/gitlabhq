@@ -29,6 +29,8 @@ not an administrator of your domain, and don't have access to your registrar,
 you must ask the technical support of your hosting service
 to do it for you.
 
+For more information, see [set up DNS records for GitLab Pages](_index.md#step-3-set-up-dns-records).
+
 For the most popular hosting services, see the following instructions:
 
 <!-- vale gitlab_base.Spelling = NO -->

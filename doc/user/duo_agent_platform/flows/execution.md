@@ -276,13 +276,13 @@ Flows that use CI/CD are executed on runners. These runners must:
 
 In addition, runners on GitLab Self-Managed:
 
-- Must allow network traffic to the GitLab Duo Workflow Service configured for the GitLab instance.
-  If you aren't using custom models, this traffic goes to `duo-workflow-svc.runway.gitlab.net`, port `443`.
+- Must allow network traffic to the GitLab Duo Agent Platform Service configured for the GitLab instance.
+  - The GitLab Duo Agent Platform Service ships with the [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist). If you self-host the AI Gateway and don't set a local URL for the Agent Platform, agentic features route traffic to `duo-workflow-svc.runway.gitlab.net` on port `443`.
 - Must be able to download the default image from `registry.gitlab.com`
   or be able to access [the Docker image you specified](#change-the-default-docker-image).
 
 > [!note]
-> The runner's connection to the GitLab Duo Workflow Service is routed through the
+> The runner's connection to the GitLab Duo Agent Platform Service is routed through the
 > GitLab instance. Runners do not connect directly to
 > `duo-workflow-svc.runway.gitlab.net`. The firewall requirement for
 > `duo-workflow-svc.runway.gitlab.net` on port `443` applies to the GitLab

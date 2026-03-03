@@ -19,8 +19,11 @@ title: Analyze GitLab usage
 
 {{< /history >}}
 
-GitLab provides different types of analytics insights for instances, groups, and [projects](../project/settings/_index.md#turn-off-project-analytics).
-Analytics features require different [roles and permissions](../permissions.md#project-analytics) for projects and groups.
+GitLab provides analytics features that give you insights into your software development lifecycle.
+Use these features to track productivity, code quality, deployment performance, and security.
+Analytics features are available for instances, groups, and [projects](../project/settings/_index.md#turn-off-project-analytics),
+and require different [roles and permissions](../permissions.md#project-analytics).
+This way, you can analyze data at the scale that matters to your team.
 
 ## Analytics features
 

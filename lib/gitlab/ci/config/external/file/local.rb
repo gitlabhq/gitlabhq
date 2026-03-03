@@ -8,6 +8,7 @@ module Gitlab
           class Local < Base
             extend ::Gitlab::Utils::Override
             include Gitlab::Utils::StrongMemoize
+            include Gitlab::Loggable
 
             def initialize(params, context)
               # `Repository#blobs_at` does not support files with the `/` prefix.
@@ -38,6 +39,7 @@ module Gitlab
 
             def validate_content_presence!
               if content.nil?
+                log_missing_local_file if verbose_logging_enabled?(context.project)
                 errors.push("Local file `#{masked_location}` does not exist!")
               elsif content.blank?
                 errors.push("Local file `#{masked_location}` is empty!")
@@ -54,12 +56,23 @@ module Gitlab
               BatchLoader.for([context.sha, location])
                          .batch(key: context.project) do |locations, loader, args|
                 context.logger.instrument(:config_file_fetch_local_content) do
-                  args[:key].repository.blobs_at(locations).each do |blob|
+                  project = args[:key]
+                  requested_paths = locations.map(&:second)
+
+                  log_ci_config_blob_request(project, requested_paths)
+
+                  blobs = project.repository.blobs_at(locations)
+                  returned_paths = blobs.map(&:path)
+                  missing_paths = requested_paths - returned_paths
+
+                  log_ci_config_blob_response(project, returned_paths, missing_paths)
+
+                  blobs.each do |blob|
                     loader.call([blob.commit_id, blob.path], blob.data)
                   end
                 end
-              rescue GRPC::InvalidArgument
-                # no-op
+              rescue GRPC::InvalidArgument => e
+                log_grpc_error(e)
               end
             end
 
@@ -92,6 +105,76 @@ module Gitlab
                   Gitlab::Routing.url_helpers.project_raw_url(context.project, ::File.join(context.sha, location))
                 )
               end
+            end
+
+            def log_ci_config_blob_request(project, requested_paths)
+              return unless verbose_logging_enabled?(project)
+
+              Gitlab::AppLogger.info(build_structured_payload(
+                message: "CI config: Fetching blobs from Gitaly",
+                project_id: project.id,
+                sha: context.sha,
+                extra: {
+                  requested_paths: requested_paths,
+                  requested_count: requested_paths.size,
+                  repository_storage: project.repository_storage,
+                  gitaly_storage_name: project.repository.gitaly_repository.storage_name
+                }
+              ))
+            end
+
+            def log_ci_config_blob_response(project, returned_paths, missing_paths)
+              extra = {
+                returned_paths: returned_paths,
+                returned_count: returned_paths.size,
+                repository_storage: project.repository_storage,
+                gitaly_storage_name: project.repository.gitaly_repository.storage_name
+              }
+
+              if missing_paths.any?
+                Gitlab::AppLogger.warn(build_structured_payload(
+                  message: "CI config: Blobs fetched from Gitaly - missing paths detected",
+                  project_id: project.id,
+                  sha: context.sha,
+                  extra: extra.merge(
+                    missing_paths: missing_paths,
+                    missing_count: missing_paths.size
+                  )
+                ))
+              elsif verbose_logging_enabled?(project)
+                Gitlab::AppLogger.info(build_structured_payload(
+                  message: "CI config: Blobs fetched from Gitaly",
+                  project_id: project.id,
+                  sha: context.sha,
+                  extra: extra
+                ))
+              end
+            end
+
+            def log_grpc_error(error)
+              Gitlab::AppLogger.warn(build_structured_payload(
+                message: "CI config: GRPC error fetching blobs",
+                project_id: context.project.id,
+                sha: context.sha,
+                extra: {
+                  location: location,
+                  error_class: error.class.name,
+                  error_message: error.message
+                }
+              ))
+            end
+
+            def log_missing_local_file
+              Gitlab::AppLogger.warn(build_structured_payload(
+                message: "CI config: Local file content is nil",
+                project_id: context.project.id,
+                sha: context.sha,
+                extra: { location: location }
+              ))
+            end
+
+            def verbose_logging_enabled?(project)
+              Feature.enabled?(:ci_config_local_file_verbose_logging, project, type: :ops)
             end
           end
         end
