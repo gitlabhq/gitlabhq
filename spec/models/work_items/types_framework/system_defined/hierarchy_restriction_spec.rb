@@ -3,47 +3,41 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::TypesFramework::SystemDefined::HierarchyRestriction, feature_category: :team_planning do
+  let_it_be(:issue_id) { build(:work_item_system_defined_type, :issue).id }
+  let_it_be(:task_id) { build(:work_item_system_defined_type, :task).id }
+  let_it_be(:ticket_id) { build(:work_item_system_defined_type, :ticket).id }
+
   describe 'included modules' do
     subject { described_class }
 
     it { is_expected.to include(ActiveRecord::FixedItemsModel::Model) }
   end
 
-  describe 'ITEMS configuration' do
+  describe '.fixed_items' do
     it 'has the correct structure for each item' do
-      expect(described_class::ITEMS).to all(
-        include(:id, :parent_type_id, :child_type_id, :maximum_depth)
+      expect(described_class.fixed_items).to all(
+        include(:parent_type_id, :child_type_id, :maximum_depth)
       )
     end
 
-    it 'defines unique IDs' do
-      ids = described_class::ITEMS.map { |item| item[:id] } # rubocop:disable Rails/Pluck -- Not an ActiveRecord object
-      expect(ids).to eq(ids.uniq)
+    context 'when child type is not found' do
+      it 'skips invalid child type configurations' do
+        type_with_invalid_child = build(:work_item_system_defined_type, :issue)
+
+        allow(WorkItems::TypesFramework::SystemDefined::Type).to receive(:all).and_return([type_with_invalid_child])
+        allow(WorkItems::TypesFramework::SystemDefined::Type).to receive(:find_by_type)
+          .with(:task).and_return(nil)
+
+        expect(described_class.fixed_items).to eq([[]])
+      end
     end
 
     it 'defines unique hierarchy restrictions' do
-      parent_child_pairs = described_class::ITEMS.map do |item|
+      parent_child_pairs = described_class.fixed_items.map do |item|
         [item[:parent_type_id], item[:child_type_id]]
       end
 
       expect(parent_child_pairs).to eq(parent_child_pairs.uniq)
-    end
-
-    it 'references valid work item type IDs' do
-      valid_type_ids = [
-        described_class::EPIC_ID,
-        described_class::ISSUE_ID,
-        described_class::TASK_ID,
-        described_class::OBJECTIVE_ID,
-        described_class::KEY_RESULT_ID,
-        described_class::INCIDENT_ID,
-        described_class::TICKET_ID
-      ]
-
-      described_class::ITEMS.each do |item|
-        expect(valid_type_ids).to include(item[:parent_type_id])
-        expect(valid_type_ids).to include(item[:child_type_id])
-      end
     end
 
     describe 'defined hierarchies' do
@@ -63,8 +57,17 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::HierarchyRestriction, f
 
       with_them do
         it 'correctly defines hierarchy restrictions' do
-          parent_id = described_class.const_get("#{parent_type_sym.upcase}_ID", false)
-          child_id = described_class.const_get("#{child_type_sym.upcase}_ID", false)
+          # Define EE-only types
+          ee_types = %i[epic objective key_result]
+
+          # Skip if either type is EE-only and we're in CE
+          if (ee_types.include?(parent_type_sym) || ee_types.include?(child_type_sym)) && !Gitlab.ee?
+            skip 'EE-only type'
+          end
+
+          base_class = "WorkItems::TypesFramework::SystemDefined::Definitions"
+          parent_id = "#{base_class}::#{parent_type_sym.to_s.classify}".constantize.configuration[:id]
+          child_id = "#{base_class}::#{child_type_sym.to_s.classify}".constantize.configuration[:id]
 
           expect(described_class.all).to include(
             have_attributes(
@@ -81,8 +84,8 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::HierarchyRestriction, f
   describe 'usage by ParentLink' do
     it 'can be queried by parent and child type IDs' do
       restriction = described_class.find_by(
-        parent_type_id: described_class::EPIC_ID,
-        child_type_id: described_class::ISSUE_ID
+        parent_type_id: issue_id,
+        child_type_id: task_id
       )
 
       expect(restriction).not_to be_nil
@@ -92,16 +95,16 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::HierarchyRestriction, f
 
   describe '.with_parent_type_id' do
     it 'returns hierarchy restrictions with the specified parent type' do
-      restrictions = described_class.with_parent_type_id(described_class::EPIC_ID)
-      expect(restrictions.map(&:parent_type_id).uniq).to match_array([described_class::EPIC_ID])
+      restrictions = described_class.with_parent_type_id(issue_id)
+      expect(restrictions.map(&:parent_type_id).uniq).to match_array([issue_id])
     end
   end
 
   describe '.hierarchy_relationship_allowed?' do
     it 'returns true if a hierarchical relationship is allowed' do
       result = described_class.hierarchy_relationship_allowed?(
-        parent_type_id: described_class::EPIC_ID,
-        child_type_id: described_class::ISSUE_ID
+        parent_type_id: issue_id,
+        child_type_id: task_id
       )
 
       expect(result).to be true
@@ -109,8 +112,8 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::HierarchyRestriction, f
 
     it 'returns false if a hierarchical relationship is not allowed' do
       result = described_class.hierarchy_relationship_allowed?(
-        parent_type_id: described_class::EPIC_ID,
-        child_type_id: described_class::TASK_ID
+        parent_type_id: issue_id,
+        child_type_id: ticket_id
       )
 
       expect(result).to be false

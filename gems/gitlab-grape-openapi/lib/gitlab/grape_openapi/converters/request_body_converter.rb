@@ -67,13 +67,22 @@ module Gitlab
           }
         end
 
-        # TODO: not all endpoints use the MULTIPART_FORM_DATA_CONTENT_TYPE or DEFAULT_CONTENT_TYPE
-        #   content types. Come up with a way to find which one each endpoint uses, e.g., get it from
-        #   the endpoint's docs.
         def content_type(body_params)
+          custom_content_type = extract_consumes_content_type
+          return custom_content_type if custom_content_type
+
           return MULTIPART_FORM_DATA_CONTENT_TYPE if allows_file_upload?(body_params)
 
           DEFAULT_CONTENT_TYPE
+        end
+
+        def extract_consumes_content_type
+          consumes = route.settings.dig(:description, :consumes)
+          return nil if consumes.blank?
+
+          content_type = consumes.first
+          content_type = DEFAULT_CONTENT_TYPE if content_type == :json
+          content_type
         end
 
         def allows_file_upload?(body_params)

@@ -1,5 +1,4 @@
 <script>
-import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
 import { SECURITY_SCAN_ROUTE } from '~/merge_requests/reports/constants';
 import ReportListItem from '~/merge_requests/reports/components/report_list_item.vue';
 
@@ -8,18 +7,7 @@ export default {
   components: {
     ReportListItem,
   },
-  inject: ['totalNewFindings', 'isSecurityScansLoading', 'topLevelErrorMessage'],
-  computed: {
-    statusIcon() {
-      if (this.topLevelErrorMessage) {
-        return EXTENSION_ICONS.error;
-      }
-      if (this.totalNewFindings > 0) {
-        return EXTENSION_ICONS.warning;
-      }
-      return EXTENSION_ICONS.success;
-    },
-  },
+  inject: ['isLoadingScans', 'statusIconName'],
   routeNames: {
     SECURITY_SCAN_ROUTE,
   },
@@ -29,8 +17,8 @@ export default {
 <template>
   <report-list-item
     :to="$options.routeNames.SECURITY_SCAN_ROUTE"
-    :status-icon="statusIcon"
-    :is-loading="isSecurityScansLoading"
+    :status-icon="statusIconName"
+    :is-loading="isLoadingScans"
   >
     {{ s__('MrReports|Security scan') }}
   </report-list-item>

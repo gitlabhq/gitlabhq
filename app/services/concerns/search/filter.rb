@@ -9,7 +9,8 @@ module Search
         state: params[:state],
         confidential: params[:confidential],
         include_archived: params[:include_archived],
-        autocomplete: params[:autocomplete]
+        autocomplete: params[:autocomplete],
+        work_item_type_ids: params[:work_item_type_ids]
       }
     end
   end

@@ -314,6 +314,7 @@ module SearchHelper
             label: type.name
           }
         end
+      types = types.sort_by { |type| type[:name] }
 
       # Filter types based on container and feature flags
       filter_work_item_types(types, container)
@@ -328,10 +329,18 @@ module SearchHelper
 
   def filter_work_item_types(types, container)
     types.reject do |type|
-      # Epic is only available for groups, not projects
-      (type[:name] == 'epic' && container.is_a?(Project)) ||
+      # Epic requires the licensed feature; for projects, also requires project_work_item_epics feature flag
+      (type[:name] == 'epic' && !epics_enabled_for?(container)) ||
         # OKR types require feature flag (overridden in EE)
         (OKR_TYPES.include?(type[:name]) && !okrs_mvc_enabled?)
+    end
+  end
+
+  def epics_enabled_for?(container)
+    if container.is_a?(Project)
+      container.try(:project_epics_enabled?)
+    else
+      container.licensed_feature_available?(:epics)
     end
   end
 

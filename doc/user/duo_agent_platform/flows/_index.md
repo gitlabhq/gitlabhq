@@ -64,6 +64,7 @@ To execute flows in the GitLab UI:
 - You must turn on flows with [the GitLab Duo settings](../../gitlab_duo/turn_on_off.md).
 - To use flows that create code, you must
   [configure push rules to allow a service account](../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
+- Either [configure your own runners](execution.md#configure-runners) or ensure that [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) are enabled in your project and working.
 
 ## Monitor running flows in the GitLab UI
 

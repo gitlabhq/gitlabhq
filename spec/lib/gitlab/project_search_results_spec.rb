@@ -551,6 +551,79 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
     end
   end
 
+  describe 'milestones search' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :public, group: group) }
+    let(:query) { 'release' }
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    context 'with project milestones' do
+      let!(:project_milestone) { create(:milestone, project: project, title: 'release v1') }
+
+      it 'returns project milestones' do
+        expect(results.objects('milestones')).to include(project_milestone)
+      end
+    end
+
+    context 'with group milestones' do
+      let!(:group_milestone) { create(:milestone, group: group, title: 'release v2') }
+
+      it 'includes group milestones inherited by the project' do
+        expect(results.objects('milestones')).to include(group_milestone)
+      end
+    end
+
+    context 'with ancestor group milestones' do
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:child_group) { create(:group, parent: parent_group) }
+      let_it_be(:project_in_child_group) { create(:project, :public, group: child_group) }
+      let!(:ancestor_milestone) { create(:milestone, group: parent_group, title: 'release v3') }
+
+      it 'includes milestones from ancestor groups' do
+        project_in_child_group.add_developer(user)
+        results = described_class.new(user, 'release', project: project_in_child_group)
+
+        expect(results.objects('milestones')).to include(ancestor_milestone)
+      end
+    end
+
+    context 'with both project and group milestones' do
+      let!(:project_milestone) { create(:milestone, project: project, title: 'release alpha') }
+      let!(:group_milestone) { create(:milestone, group: group, title: 'release beta') }
+
+      it 'includes both project and group milestones' do
+        objects = results.objects('milestones')
+
+        expect(objects).to include(project_milestone, group_milestone)
+      end
+    end
+
+    context 'when user cannot read milestones' do
+      let_it_be(:private_project) { create(:project, :private) }
+      let!(:milestone) { create(:milestone, project: private_project, title: 'release secret') }
+
+      it 'returns no milestones' do
+        results = described_class.new(user, 'release', project: private_project)
+
+        expect(results.objects('milestones')).to be_empty
+      end
+    end
+
+    context 'with a project in a personal namespace (no group)' do
+      let_it_be(:personal_project) { create(:project, :public, namespace: user.namespace) }
+      let!(:personal_milestone) { create(:milestone, project: personal_project, title: 'release personal') }
+
+      it 'returns project milestones without errors' do
+        results = described_class.new(user, 'release', project: personal_project)
+
+        expect(results.objects('milestones')).to include(personal_milestone)
+      end
+    end
+  end
+
   describe 'user search' do
     let(:query) { 'gob' }
 

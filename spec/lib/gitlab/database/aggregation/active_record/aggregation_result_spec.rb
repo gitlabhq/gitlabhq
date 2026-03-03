@@ -31,19 +31,25 @@ RSpec.describe Gitlab::Database::Aggregation::ActiveRecord::AggregationResult, f
     end
   end
 
+  let(:engine) { engine_definition.new(context: {}) }
+  let(:request) { Gitlab::Database::Aggregation::Request.new(metrics: [{ identifier: :total_count }]) }
+  let(:query_plan) { Gitlab::Database::Aggregation::QueryPlan.new(engine, request) }
+
   describe '#load_data' do
     it 'executes provided query without loading model' do
-      engine = engine_definition.new(context: {})
-      request = Gitlab::Database::Aggregation::Request.new(
-        metrics: [{ identifier: :total_count }]
-      )
-      query_plan = Gitlab::Database::Aggregation::QueryPlan.new(engine, request)
       results = described_class.new(engine, query_plan, MergeRequest.select('id')).to_a
       expect(results).to match_array([
         { 'id' => merge_request1.id },
         { 'id' => merge_request2.id },
         { 'id' => merge_request3.id }
       ])
+    end
+  end
+
+  describe '#count' do
+    it 'returns the number of aggregated rows via a COUNT subquery' do
+      result = described_class.new(engine, query_plan, MergeRequest.where(target_project: project).select('id'))
+      expect(result.count).to eq(2)
     end
   end
 end

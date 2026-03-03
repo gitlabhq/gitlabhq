@@ -61,11 +61,8 @@ RSpec.shared_context 'with claiming tools' do
         # We delay defining this mock because only after saving we have
         # the id we can use for the metadata.
         mock = expect(claim_service).to receive(:begin_update).with(
-          Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateRequest.new(
-            create_records: sort_records(create_records),
-            destroy_records: sort_records(destroy_records),
-            cell_id: claim_service.cell_id
-          ),
+          create_records: sort_records(create_records),
+          destroy_records: sort_records(destroy_records),
           deadline: deadline
         )
 

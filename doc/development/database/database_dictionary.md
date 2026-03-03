@@ -180,7 +180,7 @@ The `organization_transfer_support` field is **required** when a table's `shardi
 organization_transfer_support: <status_value>
 ```
 
-The value must be either `supported` or `todo`.
+The value must be one of: `supported`, `todo`, or `no_work_needed`.
 
 ### Status values
 
@@ -193,3 +193,5 @@ The value must be either `supported` or `todo`.
 
 - **`todo`**: The table needs organization transfer support but doesn't have it yet.
   - Used for **existing** tables that were sharded by `organization_id` previously.
+- **`no_work_needed`**: The table has been reviewed and does not require any updates during organization transfers.
+  - Used when the table's `organization_id` is derived from or cascades through other relationships that are already handled.

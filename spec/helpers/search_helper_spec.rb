@@ -1585,11 +1585,11 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         expect(type_names).to include('ticket')
       end
 
-      it 'excludes epic type for projects' do
+      it 'excludes epic type for projects in FOSS' do
         types = helper.work_item_types_for_filter
         type_names = types.pluck(:name)
 
-        # Epic should not be available for projects
+        # Epic should not be available for projects in FOSS (project_epics_enabled? is not defined)
         expect(type_names).not_to include('epic')
       end
 
@@ -1618,8 +1618,8 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         expect(types).to all(have_key(:label))
       end
 
-      it 'includes epic type for groups' do
-        skip 'Epic is EE-only' unless Gitlab.ee?
+      it 'includes epic type for groups', if: Gitlab.ee? do
+        stub_licensed_features(epics: true)
 
         types = helper.work_item_types_for_filter
         type_names = types.pluck(:name)

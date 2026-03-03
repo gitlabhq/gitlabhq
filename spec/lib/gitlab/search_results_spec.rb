@@ -711,5 +711,39 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
         end
       end
     end
+
+    context 'when filtering work_items by work_item_type_ids' do
+      let(:task_type) { WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
+
+      let!(:task_work_item) { create(:work_item, :task, project: project, title: 'foo task') }
+      let!(:issue_work_item) { create(:work_item, project: project, title: 'foo issue') }
+
+      before_all do
+        project.add_developer(user)
+      end
+
+      before do
+        stub_feature_flags(search_scope_work_item: true)
+      end
+
+      it 'filters by work_item_type_ids when present in filters' do
+        filtered_results = described_class.new(
+          user, query, limit_projects,
+          filters: { work_item_type_ids: [task_type.id] }
+        )
+
+        expect(filtered_results.objects('work_items')).to include(task_work_item)
+        expect(filtered_results.objects('work_items')).not_to include(issue_work_item)
+      end
+
+      it 'returns all work items when work_item_type_ids filter is empty' do
+        filtered_results = described_class.new(
+          user, query, limit_projects,
+          filters: {}
+        )
+
+        expect(filtered_results.objects('work_items')).to include(task_work_item, issue_work_item)
+      end
+    end
   end
 end

@@ -3,12 +3,16 @@ import VueRouter from 'vue-router';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
+import SmartInterval from '~/smart_interval';
 import App from '~/merge_requests/reports/components/app.vue';
 import routes from '~/merge_requests/reports/routes';
 
 jest.mock('ee_else_ce/vue_merge_request_widget/services/mr_widget_service', () => ({
   fetchInitialData: jest.fn().mockResolvedValue({ data: { current_user: {} } }),
 }));
+
+jest.mock('~/smart_interval');
 
 Vue.use(VueRouter);
 
@@ -82,5 +86,52 @@ describe('Merge request reports App component', () => {
 
     expect(findLoadingIcon().exists()).toBe(false);
     expect(findRouterView().exists()).toBe(true);
+  });
+
+  describe('MR data polling', () => {
+    const mockActivePipeline = () => {
+      MRWidgetService.fetchInitialData.mockResolvedValue({
+        data: { current_user: {}, pipeline: { active: true, details: { status: {} } } },
+      });
+    };
+
+    afterEach(() => {
+      MRWidgetService.fetchInitialData.mockResolvedValue({ data: { current_user: {} } });
+    });
+
+    it('starts polling when pipeline is active', async () => {
+      mockActivePipeline();
+      createComponent();
+      await waitForPromises();
+
+      expect(SmartInterval).toHaveBeenCalledWith(
+        expect.objectContaining({
+          callback: expect.any(Function),
+          startingInterval: 5000,
+          maxInterval: 120000,
+          incrementByFactorOf: 2,
+          immediateExecution: false,
+        }),
+      );
+    });
+
+    it('does not start polling when pipeline is not active', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(SmartInterval).not.toHaveBeenCalled();
+    });
+
+    it('cleans up polling on destroy', async () => {
+      const destroy = jest.fn();
+      SmartInterval.mockImplementation(() => ({ destroy }));
+      mockActivePipeline();
+      createComponent();
+      await waitForPromises();
+
+      wrapper.destroy();
+
+      expect(destroy).toHaveBeenCalled();
+    });
   });
 });

@@ -16,6 +16,7 @@
 - Ci::BuildMetadata#config_options
 - Ci::BuildMetadata#config_variables
 - Ci::JobDefinition#config
+- Integration#event_filters
 - GeoNodeStatus#status
 - Geo::Event#payload
 - Geo::SecondaryUsageData#payload

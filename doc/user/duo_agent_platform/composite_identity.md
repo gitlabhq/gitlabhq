@@ -53,13 +53,13 @@ Composite identity does not apply to GitLab Duo Chat (Agentic) in the UI and IDE
 
 The token that authenticates requests is a composite of two identities:
 
-- Primary author: A [service account](../profile/service_accounts.md),
-  which is the owner of the token and has the Developer role.
-- Secondary author: The human user who started the agent or flow.
+- Primary author: The human user who started the agent or flow.
   The human user's `id` is included in the scopes of the token by using a [dynamic scope](https://github.com/doorkeeper-gem/doorkeeper/pull/1739).
+- Secondary author: A [service account](../profile/service_accounts.md),
+  which is the owner of the token and has the Developer role.
 
 This composite identity ensures that any activities authored by the GitLab Duo Agent Platform are
-correctly attributed to the service account, while preventing
+attributed to the human user, while preventing
 [privilege escalation](https://en.wikipedia.org/wiki/Privilege_escalation) by either the human user or the service account.
 
 ## Composite identity workflow

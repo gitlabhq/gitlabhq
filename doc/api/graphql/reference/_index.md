@@ -17239,6 +17239,7 @@ The connection type for [`AgentPlatformSessionsAggregationResponse`](#agentplatf
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="agentplatformsessionsaggregationresponseconnection-count"></a>`count` | [`Int!`](#int) | Total number of aggregated rows. |
 | <a id="agentplatformsessionsaggregationresponseconnection-edges"></a>`edges` | [`[AgentPlatformSessionsAggregationResponseEdge]`](#agentplatformsessionsaggregationresponseedge) | A list of edges. |
 | <a id="agentplatformsessionsaggregationresponseconnection-nodes"></a>`nodes` | [`[AgentPlatformSessionsAggregationResponse]`](#agentplatformsessionsaggregationresponse) | A list of nodes. |
 | <a id="agentplatformsessionsaggregationresponseconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |

@@ -165,8 +165,6 @@ module API
       expose :remove_source_branch_after_merge, documentation: { type: 'Boolean' }
       expose :printing_merge_request_link_enabled, documentation: { type: 'Boolean' }
       expose :merge_method, documentation: { type: 'String', example: 'merge' }
-      expose :merge_request_title_regex, documentation: { type: 'String', example: '/Title of merge request/' }
-      expose :merge_request_title_regex_description, documentation: { type: 'String', example: 'This requires the title to include a Jira label' }
       expose :squash_option, documentation: { type: 'String', example: 'default_off' }
       expose :enforce_auth_checks_on_uploads, documentation: { type: 'Boolean' }
       expose :suggestion_commit_message, documentation: { type: 'String', example: 'Suggestion message' }

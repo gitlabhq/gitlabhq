@@ -298,6 +298,13 @@ On GitLab.com, flows can use:
 
 - [Hosted runners](../../../ci/runners/hosted_runners/_index.md), which GitLab provides.
 
+> [!note]
+> If your top-level group has [IP address restrictions](../../group/access_and_permissions.md#restrict-group-access-by-ip-address)
+> enabled, hosted runners cannot be used for flows. Hosted runners use dynamic IP addresses
+> from cloud provider pools that cannot be added to your group's IP allowlist. Instead,
+> configure your own group runner with the `gitlab--duo` tag at the top-level group level,
+> and ensure its IP address is included in your group's allowlist.
+
 Flows executed on runners can be secured with runtime sandboxing offering network and file system isolation. To benefit
 from sandboxing you must:
 

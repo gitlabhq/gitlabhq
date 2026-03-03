@@ -263,6 +263,10 @@ module WorkItems
           value.nil? || value
         end
 
+        def allowed_child_types_config
+          configuration_class.try(:allowed_child_types) || []
+        end
+
         private
 
         def licenses_for_parent

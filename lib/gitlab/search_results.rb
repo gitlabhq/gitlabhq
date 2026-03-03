@@ -144,7 +144,7 @@ module Gitlab
 
     def work_items(finder_params = {})
       # In CE, work items are just issues since group-level work items are EE-only
-      issues(finder_params)
+      by_work_item_type_ids(issues(finder_params))
     end
 
     private
@@ -165,6 +165,14 @@ module Gitlab
         users
       end
     end
+
+    # rubocop:disable CodeReuse/ActiveRecord -- scoping search results by type
+    def by_work_item_type_ids(items)
+      return items unless filters[:work_item_type_ids].present?
+
+      items.where(work_item_type_id: filters[:work_item_type_ids])
+    end
+    # rubocop:enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def apply_sort(results, scope: nil)

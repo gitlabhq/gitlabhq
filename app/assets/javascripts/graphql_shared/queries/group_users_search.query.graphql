@@ -8,12 +8,13 @@ query groupUsersSearch(
   $first: Int
   $ids: [ID!]
   $accessLevels: [AccessLevelEnum!]
+  $relations: [GroupMemberRelation!] = [DIRECT, DESCENDANTS, INHERITED]
 ) {
   namespace: group(fullPath: $fullPath) {
     id
     users: groupMembers(
       search: $search
-      relations: [DIRECT, DESCENDANTS, INHERITED]
+      relations: $relations
       first: $first
       after: $after
       sort: USER_FULL_NAME_ASC

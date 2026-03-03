@@ -24,31 +24,15 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
       expect(assigns(:users)).to eq([admin])
     end
 
-    context 'with search by partial email' do
+    context 'with search by partial email', unless: Gitlab.ee? do
       subject(:request) { get :index, params: { search_query: user.email[1...-1] } }
 
-      context 'when Gitlab.com' do
-        before do
-          allow(Gitlab).to receive(:com?).and_return(true)
-        end
+      it 'searches users by partial email' do
+        expect(controller).to receive(:partial_email_search?).and_call_original
 
-        it 'does not search users by partial email' do
-          request
+        request
 
-          expect(assigns(:users)).to eq([])
-        end
-      end
-
-      context 'when not Gitlab.com' do
-        before do
-          allow(Gitlab).to receive(:com?).and_return(false)
-        end
-
-        it 'searhes users by partial email' do
-          request
-
-          expect(assigns(:users)).to eq([user])
-        end
+        expect(assigns(:users)).to eq([user])
       end
     end
 

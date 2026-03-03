@@ -90,7 +90,8 @@ module TwCodeowners
     CodeOwnerRule.new('US Public Sector Services', '@lyspin'),
     CodeOwnerRule.new('Utilization', '@lciutacu'),
     # CodeOwnerRule.new('Vulnerability Research', '')
-    CodeOwnerRule.new('Workflow Catalog', '@jglassman1')
+    CodeOwnerRule.new('Workflow Catalog', '@jglassman1'),
+    CodeOwnerRule.new('Knowledge Graph', '@phillipwells')
   ].freeze
 
   CONTRIBUTOR_DOCS_PATH = '/doc/development/'

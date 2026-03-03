@@ -60,6 +60,56 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
     let(:scope) { 'milestones' }
 
     include_examples 'search results filtered by archived'
+
+    context 'when user cannot read milestones on the group' do
+      let_it_be(:private_group) { create(:group, :private) }
+      let_it_be(:private_project) { create(:project, :private, group: private_group) }
+      let!(:milestone) { create(:milestone, project: private_project, title: 'foo secret') }
+      let(:query) { 'foo' }
+      let(:limit_projects) do
+        projects = ::ProjectsFinder.new(current_user: user).execute.preload(:topics, :project_topics, :route)
+        projects.for_group_and_its_subgroups(private_group)
+      end
+
+      it 'returns no milestones' do
+        results = described_class.new(user, query, limit_projects, group: private_group, filters: filters)
+
+        expect(results.objects('milestones')).to be_empty
+      end
+    end
+
+    context 'with group milestones' do
+      let!(:group_milestone) { create(:milestone, group: group, title: 'foo group milestone') }
+      let(:query) { 'foo' }
+
+      it 'includes group milestones in search results' do
+        expect(results.objects('milestones')).to include(group_milestone)
+      end
+
+      it 'includes both project and group milestones' do
+        objects = results.objects('milestones')
+
+        expect(objects).to include(unarchived_result, group_milestone)
+      end
+    end
+
+    context 'with ancestor group milestones' do
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:child_group) { create(:group, parent: parent_group) }
+      let_it_be(:child_project) { create(:project, :public, group: child_group) }
+      let!(:parent_milestone) { create(:milestone, group: parent_group, title: 'foo parent') }
+      let!(:child_milestone) { create(:milestone, group: child_group, title: 'foo child') }
+      let!(:project_milestone) { create(:milestone, project: child_project, title: 'foo project') }
+      let(:query) { 'foo' }
+
+      subject(:results) { described_class.new(user, query, Project.all, group: child_group, filters: filters) }
+
+      it 'includes milestones from ancestor groups' do
+        objects = results.objects('milestones')
+
+        expect(objects).to include(parent_milestone, child_milestone, project_milestone)
+      end
+    end
   end
 
   describe '#projects' do
@@ -169,6 +219,37 @@ RSpec.describe Gitlab::GroupSearchResults, feature_category: :global_search do
 
       expect(work_items_results).to include(closed_issue)
       expect(work_items_results).not_to include(opened_issue)
+    end
+
+    context 'when filtering by work_item_type_ids' do
+      let(:task_type) { WorkItems::TypesFramework::Provider.new.find_by_base_type(:task) }
+
+      let!(:task_work_item) { create(:work_item, :task, project: project, title: 'test task') }
+      let!(:issue_work_item) { create(:work_item, project: project, title: 'test issue wi') }
+
+      before do
+        project.add_developer(user)
+        stub_feature_flags(search_scope_work_item: true)
+      end
+
+      it 'filters by work_item_type_ids when present in filters' do
+        filtered_results = described_class.new(
+          user, 'test', limit_projects, group: group,
+          filters: { work_item_type_ids: [task_type.id] }
+        )
+
+        expect(filtered_results.objects('work_items')).to include(task_work_item)
+        expect(filtered_results.objects('work_items')).not_to include(issue_work_item)
+      end
+
+      it 'returns all work items when work_item_type_ids filter is empty' do
+        filtered_results = described_class.new(
+          user, 'test', limit_projects, group: group,
+          filters: {}
+        )
+
+        expect(filtered_results.objects('work_items')).to include(task_work_item, issue_work_item)
+      end
     end
   end
 end

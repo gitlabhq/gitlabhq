@@ -23,7 +23,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
 
     describe '#allowed_child_types_by_name' do
-      it 'returns child types from hierarchy restrictions' do
+      # epic type is not available in CE
+      it 'returns child types from hierarchy restrictions', if: Gitlab.ee? do
         epic_type = described_class.find_by(base_type: :epic)
         issue_type = described_class.find_by(base_type: :issue)
 
@@ -217,7 +218,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
     subject { epic_type.allowed_child_types }
 
-    it 'returns queried data' do
+    # epic type is not available in CE
+    it 'returns queried data', if: Gitlab.ee? do
       is_expected.to include(issue_type) # Changed from expect(subject)
     end
   end
@@ -228,7 +230,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
     subject { issue_type.allowed_parent_types }
 
-    it 'returns queried data' do
+    # epic type is not available in CE
+    it 'returns queried data', if: Gitlab.ee? do
       is_expected.to include(epic_type)
     end
   end
@@ -240,7 +243,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
     subject(:descendant_types) { epic_type.descendant_types }
 
-    it 'returns all possible descendant types' do
+    # epic type is not available in CE
+    it 'returns all possible descendant types', if: Gitlab.ee? do
       is_expected.to include(epic_type, issue_type, task_type)
     end
 

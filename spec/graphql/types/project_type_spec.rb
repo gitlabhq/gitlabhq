@@ -50,7 +50,6 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       protectable_branches available_deploy_keys explore_catalog_path is_published
       container_protection_tag_rules pages_force_https pages_use_unique_domain ci_pipeline_creation_request
       ci_pipeline_creation_inputs marked_for_deletion_on permanent_deletion_date
-      merge_request_title_regex merge_request_title_regex_description
       webhook custom_attributes
     ]
 

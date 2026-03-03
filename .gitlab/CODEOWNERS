@@ -1019,6 +1019,8 @@ lib/gitlab/checks/
 /doc/policy/ @axil @eread
 /doc/security/ @idurham
 /doc/security/compliance_security_policy_management.md @rlehmann1
+/doc/security/dedicated_for_government_secure_config_guide.md @lyspin
+/doc/security/dedicated_for_government_shared_responsibility_model.md @lyspin
 /doc/security/hardening_nist_800_53.md @lyspin
 /doc/solutions/ @jfullam @Darwinjs @sbrightwell
 /doc/solutions/integrations/servicenow.md @eread

@@ -49,6 +49,10 @@ module WorkItems
               }
             end
 
+            def allowed_child_types
+              [{ type: :task, maximum_depth: 1 }]
+            end
+
             # This method adds a configuration for the parent of the Type, and it coresponding license.
             # The format should be { parent.base_type.to_s: license_name.to_sym}
             def licenses_for_parent

@@ -12,15 +12,13 @@ module Cells
     end
 
     def self.create_from_request!(create_records:, destroy_records:, deadline: nil)
-      req = Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateRequest.new(
+      response = claim_service.begin_update(
         create_records: create_records,
         destroy_records: destroy_records,
-        cell_id: claim_service.cell_id
+        deadline: deadline
       )
 
-      res = claim_service.begin_update(req, deadline: deadline)
-
-      create!(uuid: res.lease_uuid.value)
+      create!(uuid: response.lease_uuid.value)
     end
 
     def send_commit_update!(deadline: nil)

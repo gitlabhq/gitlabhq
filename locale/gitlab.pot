@@ -1367,6 +1367,9 @@ msgstr ""
 msgid "%{rotation} has been recalculated with the remaining participants. Please review the new setup for %{rotation}. It is recommended that you reach out to the current on-call responder to ensure continuity of on-call coverage."
 msgstr ""
 
+msgid "%{saml_link_start}SAML%{saml_link_end}/%{scim_link_start}SCIM%{scim_link_end} provisioning is active. With restricted access turned on and no seats available, new users provisioned through SAML/SCIM are assigned the non-billable Minimal Access role."
+msgstr ""
+
 msgid "%{scaleValue}%%"
 msgstr ""
 
@@ -77861,6 +77864,9 @@ msgstr ""
 msgid "Weight: %{weighted}"
 msgstr ""
 
+msgid "Welcome"
+msgstr ""
+
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."
 msgstr ""
 
@@ -81725,9 +81731,6 @@ msgstr ""
 msgid "Your personal access tokens will expire in %{days_to_expire} days or less"
 msgstr ""
 
-msgid "Your profile"
-msgstr ""
-
 msgid "Your project %{project_name} has been marked for deletion and will be removed in %{days}."
 msgstr ""
 
@@ -82477,6 +82480,12 @@ msgstr ""
 msgid "ciReport|No new vulnerabilities were found."
 msgstr ""
 
+msgid "ciReport|No security scan results. Either CI/CD is not configured or the pipeline is not yet complete."
+msgstr ""
+
+msgid "ciReport|No security scans enabled."
+msgstr ""
+
 msgid "ciReport|Parsing schema failed. Check the validity of your .gitlab-ci.yml content."
 msgstr ""
 
@@ -82514,6 +82523,9 @@ msgid "ciReport|Security scanning"
 msgstr ""
 
 msgid "ciReport|Security scanning is loading"
+msgstr ""
+
+msgid "ciReport|Security scanning is waiting for the pipeline to complete."
 msgstr ""
 
 msgid "ciReport|Showing %{fetchedItems} of %{totalItems} items"

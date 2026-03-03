@@ -10,9 +10,8 @@ describe('SecurityNavItem', () => {
   const createComponent = ({ provide = {} } = {}) => {
     wrapper = shallowMountExtended(SecurityNavItem, {
       provide: {
-        totalNewFindings: 0,
-        isSecurityScansLoading: false,
-        topLevelErrorMessage: '',
+        isLoadingScans: false,
+        statusIconName: 'success',
         ...provide,
       },
     });
@@ -31,41 +30,36 @@ describe('SecurityNavItem', () => {
       expect(findReportListItem().text()).toBe('Security scan');
     });
 
-    it('passes isSecurityScansLoading to ReportListItem', () => {
-      createComponent({ provide: { isSecurityScansLoading: true } });
+    it('passes isLoading true when isLoadingScans is true', () => {
+      createComponent({ provide: { isLoadingScans: true } });
 
       expect(findReportListItem().props('isLoading')).toBe(true);
     });
+
+    it('passes isLoading false when isLoadingScans is false', () => {
+      createComponent();
+
+      expect(findReportListItem().props('isLoading')).toBe(false);
+    });
   });
 
-  describe('statusIcon', () => {
-    it('returns error icon when topLevelErrorMessage is set', () => {
-      createComponent({ provide: { topLevelErrorMessage: 'Error occurred' } });
+  describe('statusIconName', () => {
+    it('passes statusIconName to ReportListItem', () => {
+      createComponent({ provide: { statusIconName: 'error' } });
 
       expect(findReportListItem().props('statusIcon')).toBe('error');
     });
 
-    it('returns warning icon when totalNewFindings > 0', () => {
-      createComponent({ provide: { totalNewFindings: 5 } });
+    it('passes warning icon', () => {
+      createComponent({ provide: { statusIconName: 'warning' } });
 
       expect(findReportListItem().props('statusIcon')).toBe('warning');
     });
 
-    it('returns success icon when no error and no findings', () => {
+    it('passes success icon by default', () => {
       createComponent();
 
       expect(findReportListItem().props('statusIcon')).toBe('success');
-    });
-
-    it('shows error icon when both error and findings are present', () => {
-      createComponent({
-        provide: {
-          topLevelErrorMessage: 'Error occurred',
-          totalNewFindings: 5,
-        },
-      });
-
-      expect(findReportListItem().props('statusIcon')).toBe('error');
     });
   });
 });

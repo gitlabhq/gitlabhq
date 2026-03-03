@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'organization transfer support tracking', :aggregate_failures, feature_category: :organization do
-  let(:valid_statuses) { %w[supported todo] }
+  let(:valid_statuses) { %w[supported todo no_work_needed] }
 
   # Tables that existed before this tracking system was introduced.
   # These are allowed to have value 'todo'.
@@ -48,7 +48,6 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       issue_tracker_data
       jira_connect_installations
       jira_tracker_data
-      labels
       ldap_admin_role_links
       member_roles
       merge_request_diff_commit_users
@@ -99,6 +98,12 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
       web_hook_logs_daily
       work_item_custom_types
       zentao_tracker_data
+    ]
+  end
+
+  let(:allowed_no_work_needed_tables) do
+    %w[
+      labels
     ]
   end
 
@@ -161,6 +166,37 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
             "Remove it from allowed_todo_tables or update its value to 'todo'."
       end
     end
+
+    it 'only allows known tables to have value: no_work_needed' do
+      no_work_needed_tables = org_sharded_tables.select do |entry|
+        entry.organization_transfer_support == 'no_work_needed'
+      end
+
+      no_work_needed_tables.each do |entry|
+        table_name = entry.table_name
+
+        expect(allowed_no_work_needed_tables).to include(table_name),
+          "Table '#{table_name}' has value 'no_work_needed' but is not in the allowed_no_work_needed_tables list. " \
+            "If this table has been reviewed and requires no transfer work, add it to the " \
+            "allowed_no_work_needed_tables array in this spec."
+      end
+    end
+
+    it 'ensures allowed_no_work_needed_tables only contains tables that actually have value: no_work_needed',
+      :aggregate_failures do
+      allowed_no_work_needed_tables.each do |table_name|
+        entry = Gitlab::Database::Dictionary.entry(table_name)
+
+        expect(entry).to be_present,
+          "Table '#{table_name}' is in allowed_no_work_needed_tables but doesn't exist in the database dictionary."
+
+        transfer_support = entry.organization_transfer_support
+
+        expect(transfer_support).to eq('no_work_needed'),
+          "Table '#{table_name}' is in allowed_no_work_needed_tables but has value '#{transfer_support}'. " \
+            "Remove it from allowed_no_work_needed_tables or update its value to 'no_work_needed'."
+      end
+    end
   end
 
   # These tests validate that:
@@ -194,8 +230,8 @@ RSpec.describe 'organization transfer support tracking', :aggregate_failures, fe
         expect(@tracker.tracked_tables).to include(entry.table_name),
           "Table '#{entry.table_name}' has organization_transfer_support: supported " \
             "in db/docs/#{entry.table_name}.yml but was not updated during any transfer spec. " \
-            "Either add test coverage or update the status to 'todo' if transfer support is " \
-            "not yet implemented."
+            "Either add test coverage, update the status to 'todo' if transfer support is " \
+            "not yet implemented, or 'no_work_needed' if no transfer work is required."
       end
     end
 

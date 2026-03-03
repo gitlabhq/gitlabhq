@@ -1033,26 +1033,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
     end
 
-    context 'when updating non boolean values on project setting' do
-      it 'updates project settings attributes accordingly' do
-        put :update, params: {
-          namespace_id: project.namespace,
-          id: project.path,
-          project: {
-            project_setting_attributes: {
-              merge_request_title_regex: 'aaa',
-              merge_request_title_regex_description: 'Test description'
-            }
-          }
-        }
-
-        project.reload
-
-        expect(project.merge_request_title_regex).to eq('aaa')
-        expect(project.merge_request_title_regex_description).to eq('Test description')
-      end
-    end
-
     context 'when updating boolean values on project_settings' do
       using RSpec::Parameterized::TableSyntax
 

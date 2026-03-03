@@ -139,8 +139,6 @@ tags:
   description: Operations related to GitLab Pages.
 - name: GitLab subscriptions
   description: Operations related to GitLab subscriptions.
-- name: Group access tokens
-  description: Operations related to group access tokens.
 - name: Group credentials inventory
   description: Operations related to group credentials inventory.
 - name: Group import and export
@@ -221,8 +219,6 @@ tags:
   description: Operations related to organizations.
 - name: Packages
   description: Operations related to packages.
-- name: Personal access tokens
-  description: Operations related to personal access tokens.
 - name: Pipeline schedules
   description: Operations related to pipeline schedules.
 - name: Pipelines
@@ -231,8 +227,6 @@ tags:
   description: Operations related to plan limits.
 - name: Project Google Cloud integration
   description: Operations related to project Google Cloud integration.
-- name: Project access tokens
-  description: Operations related to project access tokens.
 - name: Project alias
   description: Operations related to project alias.
 - name: Project approvals
@@ -1388,8 +1382,8 @@ paths:
   "/api/v4/projects/{id}/service_accounts":
     post:
       operationId: postApiV4ProjectsIdServiceAccounts
-      summary: Create a service account user
-      description: Create a service account user for a project
+      summary: Create a project service account
+      description: Creates a service account in the specified project
       tags:
       - Service accounts
       responses:
@@ -1424,8 +1418,8 @@ paths:
               "$ref": "#/components/schemas/RequestBody_9335422e0b70"
     get:
       operationId: getApiV4ProjectsIdServiceAccounts
-      summary: Get list of service account users
-      description: Get list of service account users for a project
+      summary: List all project service accounts
+      description: Lists all service accounts for a specified project
       tags:
       - Service accounts
       responses:
@@ -1489,9 +1483,10 @@ paths:
   "/api/v4/projects/{id}/service_accounts/{user_id}":
     delete:
       operationId: deleteApiV4ProjectsIdServiceAccountsUserId
-      summary: Delete a service account user
-      description: Delete a service account user. Available only for project owners/maintainers
-        and admins.
+      summary: Delete a project service account
+      description: |-
+        Deletes a service account from a specified project.
+                    Available only for project Owners or Maintainers, and administrators.
       tags:
       - Service accounts
       responses:
@@ -1516,7 +1511,7 @@ paths:
         in: path
       - name: user_id
         required: true
-        description: The ID of the service account user
+        description: The ID of the service account
         schema:
           type: integer
         in: path
@@ -1528,8 +1523,8 @@ paths:
         in: query
     patch:
       operationId: patchApiV4ProjectsIdServiceAccountsUserId
-      summary: Update a service account user
-      description: Update a service account user
+      summary: Update a project service account
+      description: Update a specified project service account.
       tags:
       - Service accounts
       responses:
@@ -1558,7 +1553,7 @@ paths:
         in: path
       - name: user_id
         required: true
-        description: The ID of the service account user
+        description: The ID of the service account
         schema:
           type: integer
         in: path
@@ -1571,10 +1566,12 @@ paths:
   "/api/v4/projects/{id}/service_accounts/{user_id}/personal_access_tokens":
     get:
       operationId: getApiV4ProjectsIdServiceAccountsUserIdPersonalAccessTokens
-      summary: Get a list of all personal access tokens
-      description: Get a list of all personal access tokens
+      summary: List all personal access tokens for a project service account
+      description: Lists all personal access tokens for a specified project service
+        account
       tags:
-      - Personal access tokens
+      - Access tokens
+      - Service accounts
       responses:
         '200':
           description: OK
@@ -1696,10 +1693,13 @@ paths:
         example: 20
     post:
       operationId: postApiV4ProjectsIdServiceAccountsUserIdPersonalAccessTokens
-      summary: Create a personal access token. Available only for project owners/maintainers.
-      description: Create a personal access token for a project service account
+      summary: Create a personal access token for a project service account.
+      description: |-
+        Creates a personal access token for a specified project service account.
+                      Available only for project Owners or Maintainers.
       tags:
-      - Personal access tokens
+      - Access tokens
+      - Service accounts
       responses:
         '201':
           description: Created
@@ -1725,10 +1725,12 @@ paths:
   "/api/v4/projects/{id}/service_accounts/{user_id}/personal_access_tokens/{token_id}":
     delete:
       operationId: deleteApiV4ProjectsIdServiceAccountsUserIdPersonalAccessTokensTokenId
-      summary: Revoke personal access token
-      description: Revoke a personal access token.
+      summary: Revoke a personal access token for a project service account
+      description: Revokes a specified personal access token for a project service
+        account.
       tags:
-      - Personal access tokens
+      - Access tokens
+      - Service accounts
       responses:
         '204':
           description: No Content
@@ -1752,10 +1754,12 @@ paths:
   "/api/v4/projects/{id}/service_accounts/{user_id}/personal_access_tokens/{token_id}/rotate":
     post:
       operationId: postApiV4ProjectsIdServiceAccountsUserIdPersonalAccessTokensTokenIdRotate
-      summary: Rotate personal access token
-      description: Rotates a personal access token.
+      summary: Rotate a personal access token for a project service account
+      description: Rotates a specified personal access token for a project service
+        account.
       tags:
-      - Personal access tokens
+      - Access tokens
+      - Service accounts
       responses:
         '201':
           description: Created
@@ -1781,8 +1785,8 @@ paths:
   "/api/v4/groups/{id}/service_accounts":
     post:
       operationId: postApiV4GroupsIdServiceAccounts
-      summary: Create a service account user
-      description: Create a service account user
+      summary: Create a group service account
+      description: Creates a service account in the specified group
       tags:
       - Service accounts
       responses:
@@ -1817,8 +1821,8 @@ paths:
               "$ref": "#/components/schemas/RequestBody_9335422e0b70"
     get:
       operationId: getApiV4GroupsIdServiceAccounts
-      summary: Get list of service account users
-      description: Get list of service account users
+      summary: List all group service accounts
+      description: Lists all service accounts for a specified group
       tags:
       - Service accounts
       responses:
@@ -1882,8 +1886,9 @@ paths:
   "/api/v4/groups/{id}/service_accounts/{user_id}":
     delete:
       operationId: deleteApiV4GroupsIdServiceAccountsUserId
-      summary: Delete a service account user. Available only for group owners and
-        admins.
+      summary: Delete a group service account.
+      description: Deletes a service account from a specified group. Available only
+        for group owners and admins.
       tags:
       - Service accounts
       responses:
@@ -1906,7 +1911,7 @@ paths:
         in: path
       - name: user_id
         required: true
-        description: The ID of the service account user
+        description: The ID of the service account
         schema:
           type: integer
         in: path
@@ -1918,8 +1923,8 @@ paths:
         in: query
     patch:
       operationId: patchApiV4GroupsIdServiceAccountsUserId
-      summary: Update a service account user
-      description: Update a service account user
+      summary: Update a group service account
+      description: Update a specified group service account.
       tags:
       - Service accounts
       responses:
@@ -1948,7 +1953,7 @@ paths:
         in: path
       - name: user_id
         required: true
-        description: The ID of the service account user
+        description: The ID of the service account
         schema:
           type: integer
         in: path
@@ -1961,10 +1966,12 @@ paths:
   "/api/v4/groups/{id}/service_accounts/{user_id}/personal_access_tokens":
     get:
       operationId: getApiV4GroupsIdServiceAccountsUserIdPersonalAccessTokens
-      summary: Get a list of all personal access tokens
-      description: Get a list of all personal access tokens
+      summary: List all personal access tokens for a group service account
+      description: Lists all personal access tokens for a specified group service
+        account
       tags:
       - Access tokens
+      - Service accounts
       responses:
         '200':
           description: OK
@@ -2086,10 +2093,13 @@ paths:
         example: 20
     post:
       operationId: postApiV4GroupsIdServiceAccountsUserIdPersonalAccessTokens
-      summary: Create a personal access token. Available only for group owners.
-      description: This feature was introduced in GitLab 16.1
+      summary: Create a personal access token for a group service account.
+      description: |-
+        Creates a personal access token for a specified group service account.
+                      Requires the group Owner role. This feature was introduced in GitLab 16.1.
       tags:
       - Access tokens
+      - Service accounts
       responses:
         '201':
           description: Created
@@ -2115,10 +2125,11 @@ paths:
   "/api/v4/groups/{id}/service_accounts/{user_id}/personal_access_tokens/{token_id}":
     delete:
       operationId: deleteApiV4GroupsIdServiceAccountsUserIdPersonalAccessTokensTokenId
-      summary: Revoke personal access token
-      description: Revoke a personal access token.
+      summary: Revoke a personal access token for a group service account
+      description: Revokes a specified personal access token for a group service account.
       tags:
       - Access tokens
+      - Service accounts
       responses:
         '204':
           description: No Content
@@ -2142,10 +2153,11 @@ paths:
   "/api/v4/groups/{id}/service_accounts/{user_id}/personal_access_tokens/{token_id}/rotate":
     post:
       operationId: postApiV4GroupsIdServiceAccountsUserIdPersonalAccessTokensTokenIdRotate
-      summary: Rotate personal access token
-      description: Rotates a personal access token.
+      summary: Rotate personal access token for group service account
+      description: Rotates a specified personal access token for a group service account.
       tags:
       - Access tokens
+      - Service accounts
       responses:
         '201':
           description: Created
@@ -23600,7 +23612,7 @@ paths:
       summary: Get list of all access tokens for the specified resource
       description: This feature was introduced in GitLab 13.9.
       tags:
-      - Project access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -23701,7 +23713,7 @@ paths:
       summary: Create a resource access token
       description: This feature was introduced in GitLab 13.9.
       tags:
-      - Project access tokens
+      - Access tokens
       responses:
         '201':
           description: Created
@@ -23729,7 +23741,7 @@ paths:
       summary: Get an access token for the specified resource by ID
       description: This feature was introduced in GitLab 14.10.
       tags:
-      - Project access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -23757,7 +23769,7 @@ paths:
       summary: Revoke a resource access token
       description: This feature was introduced in GitLab 13.9.
       tags:
-      - Project access tokens
+      - Access tokens
       responses:
         '204':
           description: No Content
@@ -23784,7 +23796,7 @@ paths:
       summary: Rotate a resource access token
       description: This feature was introduced in GitLab 16.0.
       tags:
-      - Project access tokens
+      - Access tokens
       responses:
         '201':
           description: Created
@@ -23817,7 +23829,7 @@ paths:
       summary: Get list of all access tokens for the specified resource
       description: This feature was introduced in GitLab 13.9.
       tags:
-      - Group access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -23918,7 +23930,7 @@ paths:
       summary: Create a resource access token
       description: This feature was introduced in GitLab 13.9.
       tags:
-      - Group access tokens
+      - Access tokens
       responses:
         '201':
           description: Created
@@ -23946,7 +23958,7 @@ paths:
       summary: Get an access token for the specified resource by ID
       description: This feature was introduced in GitLab 14.10.
       tags:
-      - Group access tokens
+      - Access tokens
       responses:
         '200':
           description: OK
@@ -23974,7 +23986,7 @@ paths:
       summary: Revoke a resource access token
       description: This feature was introduced in GitLab 13.9.
       tags:
-      - Group access tokens
+      - Access tokens
       responses:
         '204':
           description: No Content
@@ -24001,7 +24013,7 @@ paths:
       summary: Rotate a resource access token
       description: This feature was introduced in GitLab 16.0.
       tags:
-      - Group access tokens
+      - Access tokens
       responses:
         '201':
           description: Created
@@ -29159,7 +29171,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               "$ref": "#/components/schemas/RequestBody_429993058803"
   "/api/v4/projects/import-relation/authorize":
@@ -29264,7 +29276,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               "$ref": "#/components/schemas/RequestBody_c4542ddac44d"
   "/api/v4/projects/{id}/hooks/{hook_id}/url_variables/{key}":
@@ -59949,7 +59961,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/x-www-form-urlencoded:
             schema:
               "$ref": "#/components/schemas/RequestBody_908021d239a2"
     get:
@@ -61881,7 +61893,7 @@ paths:
       requestBody:
         required: false
         content:
-          application/json:
+          multipart/form-data:
             schema:
               "$ref": "#/components/schemas/RequestBody_df3496ba0a6f"
   "/api/v4/projects/{id}/alert_management_alerts/{alert_iid}/metric_images/authorize":
@@ -62025,7 +62037,7 @@ paths:
       requestBody:
         required: false
         content:
-          application/json:
+          multipart/form-data:
             schema:
               "$ref": "#/components/schemas/RequestBody_53689986010a"
     delete:
@@ -77066,12 +77078,6 @@ components:
         merge_method:
           type: string
           example: merge
-        merge_request_title_regex:
-          type: string
-          example: "/Title of merge request/"
-        merge_request_title_regex_description:
-          type: string
-          example: This requires the title to include a Jira label
         squash_option:
           type: string
           example: default_off
@@ -77157,6 +77163,12 @@ components:
           type: boolean
           description: The spp_repository_pipeline_access setting is only visible
             if the security_orchestration_policies feature is available.
+        merge_request_title_regex:
+          type: string
+          example: "/Title of merge request/"
+        merge_request_title_regex_description:
+          type: string
+          example: This requires the title to include a Jira label
     APIEntitiesProjectWithAccess:
       type: object
       properties:
@@ -77454,12 +77466,6 @@ components:
         merge_method:
           type: string
           example: merge
-        merge_request_title_regex:
-          type: string
-          example: "/Title of merge request/"
-        merge_request_title_regex_description:
-          type: string
-          example: This requires the title to include a Jira label
         squash_option:
           type: string
           example: default_off
@@ -77545,6 +77551,12 @@ components:
           type: boolean
           description: The spp_repository_pipeline_access setting is only visible
             if the security_orchestration_policies feature is available.
+        merge_request_title_regex:
+          type: string
+          example: "/Title of merge request/"
+        merge_request_title_regex_description:
+          type: string
+          example: This requires the title to include a Jira label
         permissions:
           type: string
     APIEntitiesClusterProject:
@@ -85972,13 +85984,6 @@ components:
         mr_default_target_self:
           type: boolean
           description: Merge requests of this forked project targets itself by default
-        merge_request_title_regex:
-          type: string
-          description: The regex the Merge Request must adhere to
-        merge_request_title_regex_description:
-          type: string
-          description: The description for the regex the Merge Request must adhere
-            to
         only_allow_merge_if_all_status_checks_passed:
           type: boolean
           description: Blocks merge requests from merging unless all status checks
@@ -86023,6 +86028,13 @@ components:
           type: boolean
           description: Grant read-only access to security policy configurations for
             enforcement in linked CI/CD projects
+        merge_request_title_regex:
+          type: string
+          description: The regex the Merge Request must adhere to
+        merge_request_title_regex_description:
+          type: string
+          description: The description for the regex the Merge Request must adhere
+            to
         repository_object_format:
           type: string
           enum:
@@ -86421,13 +86433,6 @@ components:
         mr_default_target_self:
           type: boolean
           description: Merge requests of this forked project targets itself by default
-        merge_request_title_regex:
-          type: string
-          description: The regex the Merge Request must adhere to
-        merge_request_title_regex_description:
-          type: string
-          description: The description for the regex the Merge Request must adhere
-            to
         only_allow_merge_if_all_status_checks_passed:
           type: boolean
           description: Blocks merge requests from merging unless all status checks
@@ -86472,6 +86477,13 @@ components:
           type: boolean
           description: Grant read-only access to security policy configurations for
             enforcement in linked CI/CD projects
+        merge_request_title_regex:
+          type: string
+          description: The regex the Merge Request must adhere to
+        merge_request_title_regex_description:
+          type: string
+          description: The description for the regex the Merge Request must adhere
+            to
         repository_object_format:
           type: string
           enum:
@@ -86872,13 +86884,6 @@ components:
         mr_default_target_self:
           type: boolean
           description: Merge requests of this forked project targets itself by default
-        merge_request_title_regex:
-          type: string
-          description: The regex the Merge Request must adhere to
-        merge_request_title_regex_description:
-          type: string
-          description: The description for the regex the Merge Request must adhere
-            to
         only_allow_merge_if_all_status_checks_passed:
           type: boolean
           description: Blocks merge requests from merging unless all status checks
@@ -86923,6 +86928,13 @@ components:
           type: boolean
           description: Grant read-only access to security policy configurations for
             enforcement in linked CI/CD projects
+        merge_request_title_regex:
+          type: string
+          description: The regex the Merge Request must adhere to
+        merge_request_title_regex_description:
+          type: string
+          description: The description for the regex the Merge Request must adhere
+            to
         ci_default_git_depth:
           type: integer
           description: Default number of revisions for shallow cloning
@@ -87705,13 +87717,6 @@ components:
               type: boolean
               description: Merge requests of this forked project targets itself by
                 default
-            merge_request_title_regex:
-              type: string
-              description: The regex the Merge Request must adhere to
-            merge_request_title_regex_description:
-              type: string
-              description: The description for the regex the Merge Request must adhere
-                to
             only_allow_merge_if_all_status_checks_passed:
               type: boolean
               description: Blocks merge requests from merging unless all status checks
@@ -87757,6 +87762,13 @@ components:
               type: boolean
               description: Grant read-only access to security policy configurations
                 for enforcement in linked CI/CD projects
+            merge_request_title_regex:
+              type: string
+              description: The regex the Merge Request must adhere to
+            merge_request_title_regex_description:
+              type: string
+              description: The description for the regex the Merge Request must adhere
+                to
         file.path:
           type: string
           description: Path to locally stored body (generated by Workhorse)
@@ -88189,13 +88201,6 @@ components:
               type: boolean
               description: Merge requests of this forked project targets itself by
                 default
-            merge_request_title_regex:
-              type: string
-              description: The regex the Merge Request must adhere to
-            merge_request_title_regex_description:
-              type: string
-              description: The description for the regex the Merge Request must adhere
-                to
             only_allow_merge_if_all_status_checks_passed:
               type: boolean
               description: Blocks merge requests from merging unless all status checks
@@ -88241,6 +88246,13 @@ components:
               type: boolean
               description: Grant read-only access to security policy configurations
                 for enforcement in linked CI/CD projects
+            merge_request_title_regex:
+              type: string
+              description: The regex the Merge Request must adhere to
+            merge_request_title_regex_description:
+              type: string
+              description: The description for the regex the Merge Request must adhere
+                to
       required:
       - url
       - path
@@ -88703,13 +88715,6 @@ components:
               type: boolean
               description: Merge requests of this forked project targets itself by
                 default
-            merge_request_title_regex:
-              type: string
-              description: The regex the Merge Request must adhere to
-            merge_request_title_regex_description:
-              type: string
-              description: The description for the regex the Merge Request must adhere
-                to
             only_allow_merge_if_all_status_checks_passed:
               type: boolean
               description: Blocks merge requests from merging unless all status checks
@@ -88755,6 +88760,13 @@ components:
               type: boolean
               description: Grant read-only access to security policy configurations
                 for enforcement in linked CI/CD projects
+            merge_request_title_regex:
+              type: string
+              description: The regex the Merge Request must adhere to
+            merge_request_title_regex_description:
+              type: string
+              description: The description for the regex the Merge Request must adhere
+                to
       required:
       - region
       - bucket_name

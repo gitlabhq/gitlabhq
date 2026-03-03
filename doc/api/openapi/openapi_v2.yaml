@@ -32230,16 +32230,6 @@ paths:
         type: boolean
         required: false
       - in: formData
-        name: override_params[merge_request_title_regex]
-        description: The regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
-        name: override_params[merge_request_title_regex_description]
-        description: The description for the regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
         description: Blocks merge requests from merging unless all status checks have
           passed
@@ -32307,6 +32297,16 @@ paths:
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
         type: boolean
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex]
+        description: The regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
+        type: string
         required: false
       - in: formData
         name: file.path
@@ -32953,16 +32953,6 @@ paths:
         type: boolean
         required: false
       - in: formData
-        name: override_params[merge_request_title_regex]
-        description: The regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
-        name: override_params[merge_request_title_regex_description]
-        description: The description for the regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
         description: Blocks merge requests from merging unless all status checks have
           passed
@@ -33030,6 +33020,16 @@ paths:
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
         type: boolean
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex]
+        description: The regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
+        type: string
         required: false
       responses:
         '201':
@@ -33755,16 +33755,6 @@ paths:
         type: boolean
         required: false
       - in: formData
-        name: override_params[merge_request_title_regex]
-        description: The regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
-        name: override_params[merge_request_title_regex_description]
-        description: The description for the regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
         description: Blocks merge requests from merging unless all status checks have
           passed
@@ -33832,6 +33822,16 @@ paths:
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
         type: boolean
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex]
+        description: The regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
+        type: string
         required: false
       responses:
         '201':
@@ -49684,12 +49684,6 @@ definitions:
       merge_method:
         type: string
         example: merge
-      merge_request_title_regex:
-        type: string
-        example: "/Title of merge request/"
-      merge_request_title_regex_description:
-        type: string
-        example: This requires the title to include a Jira label
       squash_option:
         type: string
         example: default_off
@@ -49776,6 +49770,12 @@ definitions:
         type: boolean
         description: The spp_repository_pipeline_access setting is only visible if
           the security_orchestration_policies feature is available.
+      merge_request_title_regex:
+        type: string
+        example: "/Title of merge request/"
+      merge_request_title_regex_description:
+        type: string
+        example: This requires the title to include a Jira label
     required:
     - id
     - description
@@ -49847,8 +49847,6 @@ definitions:
     - remove_source_branch_after_merge
     - printing_merge_request_link_enabled
     - merge_method
-    - merge_request_title_regex
-    - merge_request_title_regex_description
     - squash_option
     - enforce_auth_checks_on_uploads
     - suggestion_commit_message
@@ -49862,6 +49860,8 @@ definitions:
     - requirements_access_level
     - security_and_compliance_enabled
     - compliance_frameworks
+    - merge_request_title_regex
+    - merge_request_title_regex_description
     description: API_Entities_Project model
   API_Entities_LicenseBasic:
     type: object
@@ -67365,12 +67365,6 @@ definitions:
       mr_default_target_self:
         type: boolean
         description: Merge requests of this forked project targets itself by default
-      merge_request_title_regex:
-        type: string
-        description: The regex the Merge Request must adhere to
-      merge_request_title_regex_description:
-        type: string
-        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -67416,6 +67410,12 @@ definitions:
         type: boolean
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
+      merge_request_title_regex:
+        type: string
+        description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       repository_object_format:
         type: string
         description: The object format of the project repository
@@ -67815,12 +67815,6 @@ definitions:
       mr_default_target_self:
         type: boolean
         description: Merge requests of this forked project targets itself by default
-      merge_request_title_regex:
-        type: string
-        description: The regex the Merge Request must adhere to
-      merge_request_title_regex_description:
-        type: string
-        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -67866,6 +67860,12 @@ definitions:
         type: boolean
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
+      merge_request_title_regex:
+        type: string
+        description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       repository_object_format:
         type: string
         description: The object format of the project repository
@@ -68238,12 +68238,6 @@ definitions:
       merge_method:
         type: string
         example: merge
-      merge_request_title_regex:
-        type: string
-        example: "/Title of merge request/"
-      merge_request_title_regex_description:
-        type: string
-        example: This requires the title to include a Jira label
       squash_option:
         type: string
         example: default_off
@@ -68330,6 +68324,12 @@ definitions:
         type: boolean
         description: The spp_repository_pipeline_access setting is only visible if
           the security_orchestration_policies feature is available.
+      merge_request_title_regex:
+        type: string
+        example: "/Title of merge request/"
+      merge_request_title_regex_description:
+        type: string
+        example: This requires the title to include a Jira label
       permissions:
         type: object
         properties:
@@ -68411,8 +68411,6 @@ definitions:
     - remove_source_branch_after_merge
     - printing_merge_request_link_enabled
     - merge_method
-    - merge_request_title_regex
-    - merge_request_title_regex_description
     - squash_option
     - enforce_auth_checks_on_uploads
     - suggestion_commit_message
@@ -68426,6 +68424,8 @@ definitions:
     - requirements_access_level
     - security_and_compliance_enabled
     - compliance_frameworks
+    - merge_request_title_regex
+    - merge_request_title_regex_description
     - permissions
     description: API_Entities_ProjectWithAccess model
   API_Entities_ProjectAccess:
@@ -68859,12 +68859,6 @@ definitions:
       mr_default_target_self:
         type: boolean
         description: Merge requests of this forked project targets itself by default
-      merge_request_title_regex:
-        type: string
-        description: The regex the Merge Request must adhere to
-      merge_request_title_regex_description:
-        type: string
-        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -68910,6 +68904,12 @@ definitions:
         type: boolean
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
+      merge_request_title_regex:
+        type: string
+        description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       ci_default_git_depth:
         type: integer
         format: int32

@@ -26,23 +26,46 @@ RSpec.describe Gitlab::TopologyServiceClient::ClaimService, feature_category: :c
     end
   end
 
-  describe 'method delegation' do
-    let(:args) { { foo: 'bar' } }
+  describe '#service_class' do
+    it 'returns the correct gRPC stub class' do
+      result = service.send(:service_class)
+      expect(result).to eq(Gitlab::Cells::TopologyService::Claims::V1::ClaimService::Stub)
+    end
+  end
+
+  describe '#begin_update' do
+    let(:request) do
+      Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateRequest.new(
+        create_records: [],
+        destroy_records: [],
+        cell_id: cell_id
+      )
+    end
+
+    let(:mock_response) { Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateResponse.new }
 
     before do
       allow(service).to receive(:client).and_return(client_double)
     end
 
-    it 'delegates #begin_update to the client' do
-      expect(client_double).to receive(:begin_update).with(args)
-      service.begin_update(args)
-    end
-  end
+    it 'calls client.begin_update with the correct parameters' do
+      expect(client_double).to receive(:begin_update).with(request, deadline: nil).and_return(mock_response)
 
-  describe '#service_class' do
-    it 'returns the correct gRPC stub class' do
-      result = service.send(:service_class)
-      expect(result).to eq(Gitlab::Cells::TopologyService::Claims::V1::ClaimService::Stub)
+      result = service.begin_update(create_records: [], destroy_records: [])
+
+      expect(result).to eq(mock_response)
+    end
+
+    context 'with deadline' do
+      let(:deadline) { GRPC::Core::TimeConsts.from_relative_time(5.0) }
+
+      it 'calls client.begin_update with valid parameters' do
+        expect(client_double).to receive(:begin_update).with(request, deadline: deadline).and_return(mock_response)
+
+        result = service.begin_update(create_records: [], destroy_records: [], deadline: deadline)
+
+        expect(result).to eq(mock_response)
+      end
     end
   end
 

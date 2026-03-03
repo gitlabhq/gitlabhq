@@ -5,7 +5,15 @@ module Gitlab
     class ClaimService < BaseService
       include Singleton
 
-      delegate :begin_update, to: :client
+      def begin_update(create_records: [], destroy_records: [], deadline: nil)
+        request = Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateRequest.new(
+          create_records: create_records,
+          destroy_records: destroy_records,
+          cell_id: cell_id
+        )
+
+        client.begin_update(request, deadline: deadline)
+      end
 
       def commit_update(uuid, deadline: nil)
         request = Gitlab::Cells::TopologyService::Claims::V1::CommitUpdateRequest.new(
@@ -25,9 +33,9 @@ module Gitlab
 
       def list_leases(cursor: nil, limit: nil, deadline: nil)
         request = Gitlab::Cells::TopologyService::Claims::V1::ListLeasesRequest.new(
-          cell_id: cell_id,
           next: cursor,
-          limit: limit
+          limit: limit,
+          cell_id: cell_id
         )
 
         client.list_leases(request, deadline: deadline)

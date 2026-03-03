@@ -9,8 +9,10 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
   let(:options) { { method: method, params: params } }
   let(:request_body_registry) { Gitlab::GrapeOpenapi::RequestBodyRegistry.new }
 
+  let(:route_settings) { {} }
+
   let(:route) do
-    double('Route', path: route_path)
+    double('Route', path: route_path, settings: route_settings)
   end
 
   let(:parameters_instance) { instance_double(Gitlab::GrapeOpenapi::Models::RequestBody::Parameters) }
@@ -217,6 +219,39 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
 
         it 'includes multipart/form-data content type' do
           expect(request_body[:content]).to have_key('multipart/form-data')
+        end
+      end
+
+      context 'when the endpoint specifies consumes' do
+        let(:route_settings) { { description: { consumes: ['application/x-www-form-urlencoded'] } } }
+
+        it 'uses the specified content type' do
+          expect(request_body[:content]).to have_key('application/x-www-form-urlencoded')
+          expect(request_body[:content]).not_to have_key('application/json')
+        end
+      end
+
+      context 'when the endpoint specifies consumes with :json symbol' do
+        let(:route_settings) { { description: { consumes: [:json] } } }
+
+        it 'converts :json to application/json' do
+          expect(request_body[:content]).to have_key('application/json')
+        end
+      end
+
+      context 'when consumes is specified but endpoint also has file uploads' do
+        let(:route_settings) { { description: { consumes: ['application/octet-stream'] } } }
+
+        let(:body_params) do
+          {
+            name: { type: 'String', desc: 'User name', required: true },
+            file: { type: 'API::Validations::Types::WorkhorseFile', desc: 'File', required: false }
+          }
+        end
+
+        it 'uses the specified consumes content type over auto-detection' do
+          expect(request_body[:content]).to have_key('application/octet-stream')
+          expect(request_body[:content]).not_to have_key('multipart/form-data')
         end
       end
 

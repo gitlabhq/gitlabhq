@@ -108,13 +108,13 @@ module Gitlab
     end
 
     def blobs(limit: count_limit)
-      return [] unless Ability.allowed?(@current_user, :read_code, @project)
+      return [] unless Ability.allowed?(current_user, :read_code, project)
 
       @blobs ||= Gitlab::FileFinder.new(project, repository_project_ref).find(query, content_match_cutoff: limit)
     end
 
     def wiki_blobs(limit: count_limit)
-      return [] unless Ability.allowed?(@current_user, :read_wiki, @project)
+      return [] unless Ability.allowed?(current_user, :read_wiki, project)
 
       @wiki_blobs ||= if project.wiki_enabled? && query.present?
                         if project.wiki.empty?
@@ -133,7 +133,7 @@ module Gitlab
 
     # rubocop: disable CodeReuse/ActiveRecord
     def notes_finder(type)
-      note_finder = NotesFinder.new(@current_user, search: query, target_type: type, project: project)
+      note_finder = NotesFinder.new(current_user, search: query, target_type: type, project: project)
       note_finder.execute.user.order(updated_at: :desc)
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -143,7 +143,7 @@ module Gitlab
     end
 
     def find_commits(query, limit:)
-      return [] unless Ability.allowed?(@current_user, :read_code, @project)
+      return [] unless Ability.allowed?(current_user, :read_code, project)
 
       commits = find_commits_by_message(query, limit: limit)
       commit_by_sha = find_commit_by_sha(query)
@@ -165,9 +165,11 @@ module Gitlab
     end
 
     def filter_milestones_by_project(milestones)
-      return Milestone.none unless Ability.allowed?(@current_user, :read_milestone, @project)
+      return Milestone.none unless Ability.allowed?(current_user, :read_milestone, project)
 
-      milestones.of_projects(project.id)
+      milestones
+        .for_projects_and_groups([project.id],
+          project.group&.self_and_ancestors&.public_or_visible_to_user(current_user)&.select(:id))
     end
 
     def repository_project_ref
