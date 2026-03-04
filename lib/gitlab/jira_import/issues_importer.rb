@@ -115,7 +115,7 @@ module Gitlab
         Gitlab::JiraImport.store_pagination_state(project.id, {
           is_last: payload[:is_last] || payload[:issues].blank? || payload[:issues].empty?,
           next_page_token: payload[:next_page_token],
-          page: payload[:page]
+          page: payload[:page].to_i + 1
         })
       end
     end
