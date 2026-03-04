@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
@@ -193,10 +193,11 @@ describe('Job App', () => {
 
   describe('with successful request', () => {
     describe('Header section', () => {
+      const findGlAlert = () => wrapper.findComponent(GlAlert);
       describe('job callout message', () => {
         it('should not render the reason when reason is absent', () =>
           setupAndMount().then(() => {
-            expect(wrapper.vm.shouldRenderCalloutMessage).toBe(false);
+            expect(findGlAlert().exists()).toBe(false);
           }));
 
         it('should render the reason when reason is present', () =>
@@ -205,8 +206,28 @@ describe('Job App', () => {
               callout_message: 'There is an unkown failure, please try again',
             },
           }).then(() => {
-            expect(wrapper.vm.shouldRenderCalloutMessage).toBe(true);
+            expect(findGlAlert().exists()).toBe(true);
+            expect(findGlAlert().text()).toBe('There is an unkown failure, please try again');
           }));
+      });
+
+      describe('attestation warning message', () => {
+        it('should not render the warning when the warning is absent', async () => {
+          await setupAndMount();
+          expect(findGlAlert().exists()).toBe(false);
+        });
+
+        it('should render the warning when the warning is present', async () => {
+          await setupAndMount({
+            jobData: {
+              supply_chain_attestation_status: 'error',
+            },
+          });
+          expect(findGlAlert().exists()).toBe(true);
+          expect(findGlAlert().text()).toBe(
+            'An error occurred while generating an attestation for build artifacts in this job. Please check the configuration, and try again.',
+          );
+        });
       });
     });
 

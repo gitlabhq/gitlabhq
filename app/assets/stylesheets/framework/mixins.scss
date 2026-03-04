@@ -203,13 +203,7 @@
   z-index: 2;
   position: sticky;
   @apply gl-rounded-t-lg;
-
-  top: calc(#{$calc-application-header-height} - 1px);
-
-  .page-with-panels & {
-    // Project studio overrides, should become the default.
-    top: -1px;
-  }
+  top: -1px;
 }
 
 /*

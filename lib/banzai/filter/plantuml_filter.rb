@@ -9,16 +9,14 @@ module Banzai
     #
     class PlantumlFilter < HTML::Pipeline::Filter
       prepend Concerns::PipelineTimingCheck
+      prepend Concerns::DiagramService
 
       def call
-        return doc unless settings.plantuml_enabled? && doc.at_xpath(lang_tag)
-
-        Gitlab::Plantuml.configure
+        return doc unless settings.plantuml_enabled?
 
         doc.xpath(lang_tag).each do |node|
           diagram_src = node.content.chomp
-          img_tag = Nokogiri::HTML::DocumentFragment.parse(
-            Asciidoctor::PlantUml::Processor.plantuml_content(diagram_src, {})).css('img').first
+          img_tag = self.class.plantuml_img_tag(diagram_src)
 
           next if img_tag.nil?
 
@@ -34,12 +32,16 @@ module Banzai
       private
 
       def lang_tag
-        @lang_tag ||= Gitlab::Utils::Nokogiri
-          .css_to_xpath('pre[data-canonical-lang="plantuml"] > code, pre > code[data-canonical-lang="plantuml"]').freeze
+        @lang_tag ||= Gitlab::Utils::Nokogiri.css_to_xpath(css_selector_for_code_blocks(lang: 'plantuml')).freeze
       end
 
-      def settings
-        Gitlab::CurrentSettings.current_application_settings
+      class << self
+        def plantuml_img_tag(diagram_src)
+          Gitlab::Plantuml.configure
+
+          Nokogiri::HTML::DocumentFragment.parse(
+            Asciidoctor::PlantUml::Processor.plantuml_content(diagram_src, {})).css('img').first
+        end
       end
     end
   end

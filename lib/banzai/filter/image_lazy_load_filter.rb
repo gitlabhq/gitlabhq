@@ -14,13 +14,19 @@ module Banzai
 
       def call
         doc.xpath(XPATH).each do |img|
+          self.class.apply_lazy_load(img)
+        end
+
+        doc
+      end
+
+      class << self
+        def apply_lazy_load(img)
           img['decoding'] = 'async'
           img.add_class('lazy')
           img['data-src'] = img['src']
           img['src'] = LazyImageTagHelper.placeholder_image
         end
-
-        doc
       end
     end
   end

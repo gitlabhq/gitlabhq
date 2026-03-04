@@ -166,7 +166,7 @@ export default {
     <template v-if="name" #stages>
       <div
         data-testid="stage-column-title"
-        class="stage-column-title gl-pipeline-job-width gl-relative -gl-mb-2 gl-flex gl-justify-between gl-truncate gl-pl-4 gl-font-bold gl-leading-36"
+        class="stage-column-title gl-pipeline-job-width gl-relative -gl-mb-2 gl-flex gl-justify-between gl-truncate gl-pl-4 gl-font-bold"
       >
         <h2
           :title="name"

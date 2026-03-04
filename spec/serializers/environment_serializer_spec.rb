@@ -275,6 +275,21 @@ RSpec.describe EnvironmentSerializer, feature_category: :continuous_delivery do
         json
       end
     end
+
+    it 'does not crash when last deployment is a bridge' do
+      last_deployment = nil
+      create(:environment, project: project).tap do |environment|
+        create(:deployment, :success, environment: environment, project: project)
+
+        create(:ci_bridge, :success, project: project).tap do |build|
+          last_deployment = create(:deployment, :success, environment: environment, project: project, deployable: build)
+        end
+      end
+
+      response_json = json
+
+      expect(response_json.last[:last_deployment][:id]).to eq(last_deployment.id)
+    end
   end
 
   def create_environment_with_associations(project)

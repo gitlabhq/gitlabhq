@@ -531,6 +531,7 @@ builds:
 - job_artifacts_annotations
 - project_mirror
 - job_source
+- supply_chain_attestation
 bridges:
 - user
 - pipeline
@@ -551,6 +552,7 @@ bridges:
 - downstream_pipeline
 - upstream_pipeline
 - job_source
+- supply_chain_attestation
 generic_commit_statuses:
 - user
 - pipeline

@@ -228,7 +228,6 @@ describe('graph component', () => {
         'gl-font-bold',
         'gl-pipeline-job-width',
         'gl-truncate',
-        'gl-leading-36',
         'gl-pl-4',
         '-gl-mb-2',
       ];

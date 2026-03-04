@@ -385,11 +385,3 @@ input[type='search'] {
 .description.term p:last-child {
   @apply gl-m-0;
 }
-
-
-/* Hide sidebar toggle in new "Project Studio" layout where this page has no sidebar */
-.application-chrome {
-  .super-sidebar-toggle {
-    display: none;
-  }
-}

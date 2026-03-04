@@ -8,7 +8,7 @@ class PrepareAsyncIndexPlaceholderRefsOnSourceUserIdAndId < Gitlab::Database::Mi
   INDEX_NAME = 'index_import_source_user_placeholder_refs_on_source_user_id_id'
 
   def up
-    # rubocop:disable Migration/PreventIndexCreation -- this table is not in the FORBIDDEN_TABLES list, the cop is a false positive
+    # rubocop:disable Migration/PreventIndexCreation -- https://gitlab.com/gitlab-org/database-team/team-tasks/-/work_items/591
     prepare_async_index TABLE_NAME, COLUMNS, name: INDEX_NAME
     # rubocop:enable Migration/PreventIndexCreation
   end

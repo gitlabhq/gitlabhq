@@ -1992,9 +1992,6 @@ msgstr ""
 msgid "0 B"
 msgstr ""
 
-msgid "0 cores"
-msgstr ""
-
 msgid "1 Day"
 msgid_plural "%d Days"
 msgstr[0] ""
@@ -39342,6 +39339,9 @@ msgstr[1] ""
 msgid "Job|An error occurred while fetching the job header data."
 msgstr ""
 
+msgid "Job|An error occurred while generating an attestation for build artifacts in this job. Please check the configuration, and try again."
+msgstr ""
+
 msgid "Job|Are you sure you want to erase this job log and artifacts?"
 msgstr ""
 
@@ -39349,6 +39349,9 @@ msgid "Job|Are you sure you want to force cancel this job? This will immediately
 msgstr ""
 
 msgid "Job|Artifacts help"
+msgstr ""
+
+msgid "Job|Attestation Generation Error"
 msgstr ""
 
 msgid "Job|Browse"

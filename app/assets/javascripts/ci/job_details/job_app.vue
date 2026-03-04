@@ -120,6 +120,10 @@ export default {
       return this.shouldRenderCalloutMessage && !this.hasUnmetPrerequisitesFailure;
     },
 
+    shouldRenderAttestationWarning() {
+      return this.job.supply_chain_attestation_status === 'error';
+    },
+
     isJobRetryable() {
       return Boolean(this.job.retry_path);
     },
@@ -237,6 +241,21 @@ export default {
             :dismissible="false"
           >
             <div v-safe-html="job.callout_message"></div>
+          </gl-alert>
+          <gl-alert
+            v-if="shouldRenderAttestationWarning"
+            :title="s__('Job|Attestation Generation Error')"
+            variant="warning"
+            class="mb-2 gl-mt-3"
+            :dismissible="false"
+          >
+            <div>
+              {{
+                s__(
+                  'Job|An error occurred while generating an attestation for build artifacts in this job. Please check the configuration, and try again.',
+                )
+              }}
+            </div>
           </gl-alert>
         </header>
         <!-- EO Header Section -->

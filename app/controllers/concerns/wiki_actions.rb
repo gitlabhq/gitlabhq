@@ -447,20 +447,21 @@ module WikiActions
     end
   end
 
-  def find_redirection(path, redirect_limit = 50)
-    seen = Set[]
-    current_path = path
+  def find_redirection(original_path, redirect_limit = 50)
+    seen_full_paths = Set[]
+    seen_subpaths = Set[]
+    current_path = original_path
 
     redirect_limit.times do
-      seen << current_path
-      next_path = find_single_redirection(current_path, redirect_limit)
+      next_path = resolve_next_subpath_redirect(current_path, seen_full_paths, seen_subpaths, redirect_limit)
+      seen_full_paths << current_path
 
       # if no single redirect is found, then use the current path
       # unless it is the same as the original path
-      return current_path == path ? nil : current_path if next_path.nil?
+      return (current_path == original_path ? nil : current_path) if next_path.nil?
 
-      # if the file was already seen, then we have a loop
-      return { error: true, reason: :loop } if seen.include?(next_path)
+      # if the full path has already been seen then we have a loop
+      return { error: true, reason: :loop } if seen_full_paths.include?(next_path)
 
       current_path = next_path
     end
@@ -468,21 +469,32 @@ module WikiActions
     { error: true, reason: :limit }
   end
 
-  def find_single_redirection(path, redirect_limit)
+  def resolve_next_subpath_redirect(path, seen_full_paths, seen_subpaths, redirect_limit)
+    return if seen_full_paths.include?(path)
+
     current = path
     rest = []
 
     redirect_limit.times do
       break if current == '.'
 
-      redirect = redirections[current]
-      return File.join(redirect, *rest) if redirect
+      redirected_subpath = redirections[current]
+
+      if redirected_subpath.present? && seen_subpaths.exclude?(current)
+        seen_subpaths << current
+
+        return full_path_with_redirect(redirected_subpath, rest)
+      end
 
       current, basename = File.split(current)
       rest.unshift(basename)
     end
 
     nil
+  end
+
+  def full_path_with_redirect(redirected_subpath, rest)
+    File.join(redirected_subpath, *rest)
   end
 
   def redirections

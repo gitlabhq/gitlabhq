@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe SupplyChain::ArtifactsReader, feature_category: :artifact_security do
   let(:reader) { described_class.new(build) }
+  let(:max_size) { Ci::JobArtifact.max_artifact_size(type: :archive, project: build.project) }
 
   describe 'when build has artifacts' do
     include_context 'with build, pipeline and artifacts'
@@ -36,7 +37,7 @@ RSpec.describe SupplyChain::ArtifactsReader, feature_category: :artifact_securit
 
     context 'when the bundle is too large' do
       before do
-        allow(build.job_artifacts_archive).to receive(:size).and_return(described_class::MAX_SIZE + 1)
+        allow(build.job_artifacts_archive).to receive(:size).and_return(max_size + 1)
       end
 
       it 'fails with an exception' do
@@ -49,7 +50,7 @@ RSpec.describe SupplyChain::ArtifactsReader, feature_category: :artifact_securit
         metadata = instance_double(Gitlab::Ci::Build::Artifacts::Metadata::Entry)
         entries = {
           "artifact.txt" => {
-            size: described_class::MAX_SIZE + 1
+            size: max_size + 1
           }
         }
 

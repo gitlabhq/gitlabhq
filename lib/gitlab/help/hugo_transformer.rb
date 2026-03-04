@@ -28,7 +28,7 @@ module Gitlab
       MAINTAINED_VERSIONS_PATTERN = %r{\{\{<\s*maintained-versions\s*/?\s*>\}\}}
       COLLAPSIBLE_PATTERN = %r{\{\{<\s*collapsible\s+title="([^"]+)"\s*>\}\}(.*?)\{\{<\s*/collapsible\s*>\}\}}m
       YES_NO_PATTERN = /\{\{<\s*(yes|no)\s*>\}\}/
-      # Patterns for Hugo attributes
+      GLOSSARY_TOOLTIP_PATTERN = %r{\{\{<\s*glossary-tooltip\s+text="([^"]*)"\s*>\}\}}
       MARKDOWN_ATTRIBUTE_PATTERN = %r{
         \{
           (?:
@@ -61,6 +61,7 @@ module Gitlab
         handle_tab_shortcodes(processed_content)
         handle_maintained_versions_shortcodes(processed_content)
         handle_collapsible_shortcodes(processed_content)
+        handle_glossary_tooltip_shortcodes(processed_content)
         handle_yes_no_shortcodes(processed_content)
         remove_generic_shortcodes(processed_content)
         remove_markdown_attributes(processed_content)
@@ -163,6 +164,13 @@ module Gitlab
 
       def handle_yes_no_shortcodes(content)
         content.gsub!(YES_NO_PATTERN) do
+          ::Regexp.last_match(1)
+        end
+        content
+      end
+
+      def handle_glossary_tooltip_shortcodes(content)
+        content.gsub!(GLOSSARY_TOOLTIP_PATTERN) do
           ::Regexp.last_match(1)
         end
         content

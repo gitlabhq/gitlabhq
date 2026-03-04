@@ -2,8 +2,9 @@
 
 module SupplyChain
   class ArtifactsReader
+    include Gitlab::Utils::StrongMemoize
+
     MAX_FILES_IN_BUNDLE = 1000
-    MAX_SIZE = Gitlab::CurrentSettings.current_application_settings.max_artifacts_content_include_size
 
     Error = Class.new(StandardError)
     BundleTooLarge = Class.new(Error)
@@ -42,6 +43,11 @@ module SupplyChain
       raise DiskFull, "#{build_id} Unable to download artifact bundle: insufficient disk space"
     end
 
+    def max_artifact_size
+      Ci::JobArtifact.max_artifact_size(type: :archive, project: @build.project)
+    end
+    strong_memoize_attr :max_artifact_size
+
     private
 
     def artifacts_in_metadata
@@ -57,11 +63,11 @@ module SupplyChain
     end
 
     def validate_bundle!
-      if @build.artifacts_size > MAX_SIZE
+      if @build.artifacts_size > max_artifact_size
         raise BundleTooLarge,
           "#{build_id}'s artifact bundle is too large: " \
             "#{bytes_to_human_size(@build.artifacts_size)} " \
-            "exceeds maximum of #{bytes_to_human_size(MAX_SIZE)}"
+            "exceeds maximum of #{bytes_to_human_size(max_artifact_size)}"
       end
 
       nb_files = @metadata.entries.length
@@ -72,12 +78,12 @@ module SupplyChain
       raise Error, "#{build_id}: #{path} has invalid metadata" unless metadata_entry
 
       file_size = metadata_entry[:size]
-      return unless file_size > MAX_SIZE
+      return unless file_size > max_artifact_size
 
       raise ArtifactTooLarge,
         "#{build_id}: #{path} is too large: " \
           "#{bytes_to_human_size(file_size)} " \
-          "exceeds maximum of #{bytes_to_human_size(MAX_SIZE)}"
+          "exceeds maximum of #{bytes_to_human_size(max_artifact_size)}"
     end
 
     def build_id

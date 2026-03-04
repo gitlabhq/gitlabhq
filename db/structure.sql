@@ -45755,6 +45755,8 @@ CREATE INDEX index_import_placeholder_user_details_on_placeholder_user_id ON imp
 
 CREATE INDEX index_import_source_user_placeholder_references_on_namespace_id ON import_source_user_placeholder_references USING btree (namespace_id);
 
+CREATE INDEX index_import_source_user_placeholder_refs_on_source_user_id_id ON import_source_user_placeholder_references USING btree (source_user_id, id);
+
 CREATE INDEX index_import_source_users_on_namespace_id_and_status ON import_source_users USING btree (namespace_id, status);
 
 CREATE UNIQUE INDEX index_import_source_users_on_namespace_id_reassignment_token ON import_source_users USING btree (namespace_id, reassignment_token);

@@ -1,6 +1,6 @@
 import { GlForm, GlFormFields, GlToggle, GlButton } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import SettingsForm from '~/vscode_extension_marketplace/components/settings_form.vue';
 import { PRESETS } from '../mock_data';
 
@@ -133,7 +133,7 @@ describe('~/vscode_extension_marketplace/components/settings_form.vue', () => {
       });
 
       await findOpenVsxToggle().vm.$emit('change', false);
-      await nextTick();
+      await waitForPromises();
 
       expect(findFormFields().props('values')).toEqual({
         useOpenVsx: false,
@@ -166,7 +166,7 @@ describe('~/vscode_extension_marketplace/components/settings_form.vue', () => {
         resourceUrlTemplate: 'xyz',
       });
       await findOpenVsxToggle().vm.$emit('change', true);
-      await nextTick();
+      await waitForPromises();
 
       expect(findFormFields().props('values')).toEqual({
         useOpenVsx: true,
@@ -180,7 +180,7 @@ describe('~/vscode_extension_marketplace/components/settings_form.vue', () => {
       });
 
       await findOpenVsxToggle().vm.$emit('change', false);
-      await nextTick();
+      await waitForPromises();
 
       expect(findFormFields().props('values')).toEqual({
         useOpenVsx: false,

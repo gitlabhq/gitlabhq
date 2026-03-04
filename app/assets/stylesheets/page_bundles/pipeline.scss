@@ -256,7 +256,7 @@
     background-color: $gray-200;
 
     @include gl-container-width-up(sm, panel) {
-      top: 1.25rem;
+      top: 1.125rem;
       left: 100%;
       width: $gl-spacing-scale-5 * 2;
       height: 2px;

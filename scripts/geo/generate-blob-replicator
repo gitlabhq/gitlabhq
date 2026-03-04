@@ -1,0 +1,2099 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Script to generate all Geo SSF boilerplate files for a new blob replicator.
+#
+# This automates the steps described in the issue template:
+#   .gitlab/issue_templates/Geo Replicate a new blob type.md
+#
+# Usage:
+#   scripts/geo/generate-blob-replicator \
+#     --replicable-name=abuse_report_upload \
+#     --model-class=AbuseReport \
+#     --table-name=abuse_report_uploads \
+#     --sharding-key=organization_id \
+#     --milestone=18.10 \
+#     --upload-partition
+#
+# Options:
+#   --replicable-name     The snake_case replicable name (e.g. abuse_report_upload)
+#   --model-class         The Ruby model class name (e.g. AbuseReport)
+#   --table-name          The database table name (e.g. abuse_report_uploads)
+#   --sharding-key        The sharding key column(s). Can be specified multiple times
+#                         or as a comma-separated list. Valid values:
+#                         project_id, namespace_id, organization_id
+#                         Example: --sharding-key=organization_id
+#                         Example: --sharding-key=project_id,namespace_id,organization_id
+#   --milestone           The milestone for this feature (e.g. 18.10)
+#   --upload-partition    Generate a dedicated model for an upload partition table
+#                         that overrides the composite PK (id, model_type) to use
+#                         just `id`, avoiding the need for composite PK support
+#                         in the Geo SSF. Also generates the model spec.
+#   --dry-run             Print file paths without writing (default: false)
+#   --help                Show this help message
+#
+# Related:
+#   - Epic: https://gitlab.com/groups/gitlab-org/-/work_items/20933
+#   - Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/589925
+
+require 'optparse'
+require 'fileutils'
+require 'yaml'
+require 'date'
+require 'json'
+
+# rubocop:disable Graphql/GraphqlNamePosition -- Vibe-coded generator
+# rubocop:disable Layout/ExtraSpacing -- Vibe-coded generator
+# rubocop:disable Layout/LineLength -- Vibe-coded generator
+# rubocop:disable Style/PerlBackrefs -- Vibe-coded generator
+# rubocop:disable Style/StringConcatenation -- Vibe-coded generator
+module Geo
+  class BlobReplicatorGenerator
+    MIGRATION_VERSION = '2.3'
+
+    attr_reader :replicable_name, :model_class, :table_name, :sharding_keys, :milestone, :dry_run,
+      :upload_partition
+
+    def initialize(options)
+      @replicable_name = options[:replicable_name]
+      @model_class = options[:model_class]
+      @table_name = options[:table_name]
+      @sharding_keys = parse_sharding_keys(options[:sharding_keys])
+      @milestone = options[:milestone]
+      @dry_run = options[:dry_run] || false
+      @upload_partition = options[:upload_partition] || false
+      @files_created = []
+      @files_modified = []
+    end
+
+    def parse_sharding_keys(keys)
+      return [] if keys.nil? || keys.empty?
+
+      keys.flat_map { |k| k.split(',') }.map(&:strip).uniq
+    end
+
+    # For backward compatibility and single-key scenarios
+    def sharding_key
+      sharding_keys.first
+    end
+
+    def run
+      validate!
+
+      puts "Generating Geo blob replicator for #{replicable_name}..."
+      puts "  Model class:       #{model_class}"
+      puts "  Table name:        #{table_name}"
+      puts "  Sharding key(s):   #{sharding_keys.join(', ')}"
+      puts "  Milestone:         #{milestone}"
+      puts "  Upload partition:  #{upload_partition}"
+      puts
+
+      generate_new_files
+      patch_existing_files
+
+      print_summary
+    end
+
+    private
+
+    # -------------------------------------------------------------------------
+    # Naming helpers
+    # -------------------------------------------------------------------------
+
+    def replicable_name_camel
+      @replicable_name_camel ||= replicable_name.split('_').map(&:capitalize).join
+    end
+
+    def replicable_name_human
+      @replicable_name_human ||= replicable_name.split('_').map(&:capitalize).join(' ')
+    end
+
+    def replicable_name_human_plural
+      @replicable_name_human_plural ||= "#{replicable_name_human}s"
+    end
+
+    def registry_table_name
+      "#{replicable_name}_registry"
+    end
+
+    def state_table_name
+      "#{replicable_name}_states"
+    end
+
+    def foreign_key_name
+      "#{replicable_name}_id"
+    end
+
+    def registry_class_name
+      "#{replicable_name_camel}Registry"
+    end
+
+    def replicator_class_name
+      "#{replicable_name_camel}Replicator"
+    end
+
+    def state_class_name
+      "#{replicable_name_camel}State"
+    end
+
+    def finder_class_name
+      "#{replicable_name_camel}RegistryFinder"
+    end
+
+    def resolver_class_name
+      "#{replicable_name_camel}RegistriesResolver"
+    end
+
+    def registry_type_class_name
+      "#{replicable_name_camel}RegistryType"
+    end
+
+    def registry_factory_replicable_name
+      if upload_partition
+        "geo_#{replicable_name}"
+      else
+        replicable_name
+      end
+    end
+
+    def graphql_field_name
+      "#{replicable_name}_registries"
+    end
+
+    def graphql_field_name_camel
+      parts = replicable_name.split('_')
+      parts[0] + parts[1..].map(&:capitalize).join
+    end
+
+    def graphql_registries_field_camel
+      "#{graphql_field_name_camel}Registries"
+    end
+
+    def graphql_foreign_key_field_camel
+      "#{graphql_field_name_camel}Id"
+    end
+
+    def replication_feature_flag_name
+      "geo_#{replicable_name}_replication"
+    end
+
+    def force_primary_checksumming_feature_name
+      "geo_#{replicable_name}_force_primary_checksumming"
+    end
+
+    def timestamp
+      @timestamp ||= Time.now.utc.strftime('%Y%m%d%H%M%S')
+    end
+
+    def next_timestamp
+      @next_timestamp ||= (Time.now.utc + 1).strftime('%Y%m%d%H%M%S')
+    end
+
+    def additional_timestamps(count)
+      @additional_timestamps ||= (1..count).map do |i|
+        (Time.now.utc + 1 + i).strftime('%Y%m%d%H%M%S')
+      end
+    end
+
+    def graphql_name
+      registry_class_name
+    end
+
+    def enum_key
+      registry_table_name.upcase
+    end
+
+    # -------------------------------------------------------------------------
+    # Selective sync scope helpers
+    # -------------------------------------------------------------------------
+
+    def scope_method
+      case sharding_key
+      when 'project_id'
+        'project_id_in'
+      when 'namespace_id'
+        'group_id_in'
+      when 'organization_id'
+        'organization_id_in'
+      else
+        'organization_id_in'
+      end
+    end
+
+    def selective_sync_scope_body
+      body = case sharding_key
+             when 'project_id'
+               <<~RUBY
+                 replicables = params.fetch(:replicables, all)
+                 replicables = replicables.primary_key_in(params[:primary_key_in]) if params[:primary_key_in].present?
+
+                 return replicables unless node.selective_sync?
+
+                 if node.selective_sync_by_namespaces?
+                   replicables.project_id_in(node.projects.select(:id))
+                 elsif node.selective_sync_by_organizations?
+                   organization_ids = node.organizations.pluck_primary_key
+                   return none if organization_ids.empty?
+
+                   replicables.where(project_id: ::Project.where(organization_id: organization_ids).select(:id))
+                 else
+                   raise ::Geo::Errors::UnknownSelectiveSyncType.new(selective_sync_type: node.selective_sync_type)
+                 end
+               RUBY
+             when 'namespace_id'
+               <<~RUBY
+                 replicables = params.fetch(:replicables, all)
+                 replicables = replicables.primary_key_in(params[:primary_key_in]) if params[:primary_key_in].present?
+
+                 return replicables unless node.selective_sync?
+
+                 if node.selective_sync_by_namespaces?
+                   replicables.group_id_in(node.namespaces_for_group_owned_replicables.select(:id))
+                 elsif node.selective_sync_by_organizations?
+                   organization_ids = node.organizations.pluck_primary_key
+                   return none if organization_ids.empty?
+
+                   replicables.where(namespace_id: ::Namespace.where(organization_id: organization_ids).select(:id))
+                 else
+                   raise ::Geo::Errors::UnknownSelectiveSyncType.new(selective_sync_type: node.selective_sync_type)
+                 end
+               RUBY
+             when 'organization_id'
+               <<~RUBY
+                 replicables = params.fetch(:replicables, all)
+                 replicables = replicables.primary_key_in(params[:primary_key_in]) if params[:primary_key_in].present?
+
+                 return replicables unless node.selective_sync?
+
+                 if node.selective_sync_by_namespaces? || node.selective_sync_by_shards?
+                   namespace_ids = node.namespaces_for_group_owned_replicables.select(:id)
+                   organization_ids = ::Namespace.id_in(namespace_ids).distinct(:organization_id).select(:organization_id)
+                   return none if organization_ids.empty?
+
+                   replicables.organization_id_in(organization_ids)
+                 elsif node.selective_sync_by_organizations?
+                   organization_ids = node.organizations.pluck_primary_key
+                   return none if organization_ids.empty?
+
+                   replicables.organization_id_in(organization_ids)
+                 else
+                   raise ::Geo::Errors::UnknownSelectiveSyncType.new(selective_sync_type: node.selective_sync_type)
+                 end
+               RUBY
+             end
+
+      # Indent relative to the heredoc template. The model template uses
+      # <<~RUBY with 8-space base indent. The interpolation point is also at
+      # 8 spaces, so we need 8 more spaces of indent (16 total in output:
+      # module Geo > class > class << self > def body) minus 8 stripped = 8.
+      indent = ' ' * 8
+      body.chomp.lines.map { |l| l.strip.empty? ? "\n" : "#{indent}#{l}" }.join
+    end
+
+    def scope_definition
+      case sharding_key
+      when 'project_id'
+        "scope :project_id_in, ->(ids) { where(project_id: ids) }"
+      when 'namespace_id'
+        "scope :group_id_in, ->(ids) { joins(:group).merge(::Namespace.id_in(ids)) }"
+      when 'organization_id'
+        "scope :organization_id_in, ->(ids) { where(organization_id: ids) }"
+      end
+    end
+
+    # -------------------------------------------------------------------------
+    # Validation
+    # -------------------------------------------------------------------------
+
+    def validate!
+      errors = []
+      errors << '--replicable-name is required' unless replicable_name
+      errors << '--model-class is required' unless model_class
+      errors << '--table-name is required' unless table_name
+      errors << '--sharding-key is required' if sharding_keys.empty?
+      errors << '--milestone is required' unless milestone
+
+      valid_keys = %w[project_id namespace_id organization_id]
+      invalid_keys = sharding_keys - valid_keys
+      unless invalid_keys.empty?
+        errors << "--sharding-key must be one of: #{valid_keys.join(', ')} (got invalid: #{invalid_keys.join(', ')})"
+      end
+
+      return if errors.empty?
+
+      errors.each { |e| warn "ERROR: #{e}" }
+      exit 1
+    end
+
+    # -------------------------------------------------------------------------
+    # File generation
+    # -------------------------------------------------------------------------
+
+    def generate_new_files
+      generate_upload_partition_model if upload_partition
+      generate_replicator
+      generate_registry_model
+      generate_state_model
+      generate_registry_finder
+      generate_graphql_resolver
+      generate_graphql_type
+      generate_replication_feature_flag
+      generate_force_primary_checksumming_feature_flag
+      generate_geo_migration
+      generate_state_migration
+      generate_sharding_key_trigger_migration
+      generate_geo_db_dictionary
+      generate_state_db_dictionary
+      generate_upload_partition_model_factory if upload_partition
+      generate_registry_factory
+      generate_state_factory
+      generate_upload_partition_model_spec if upload_partition
+      generate_replicator_spec
+      generate_registry_model_spec
+      generate_finder_spec
+      generate_graphql_resolver_spec
+      generate_graphql_type_spec
+    end
+
+    # -- Upload partition model --
+
+    def generate_upload_partition_model
+      model_file_path = "ee/app/models/geo/#{replicable_name}.rb"
+
+      write_file(model_file_path, <<~RUBY)
+        # frozen_string_literal: true
+
+        # Read-only model for the #{table_name} upload partition table.
+        #
+        # Upload partition tables are populated automatically by PostgreSQL's
+        # list partitioning on model_type. The application writes through the
+        # Upload model to the uploads parent table, and PostgreSQL routes the
+        # row to the correct partition.
+        #
+        # This model reads from the partition table for Geo replication. It
+        # inherits from Upload to get all Upload behavior (retrieve_uploader,
+        # model polymorphic association, absolute_path, etc.).
+        #
+        # The composite primary key (id, model_type) is overridden to just `id`
+        # since `id` is globally unique across all partitions (shared sequence).
+        # See: https://gitlab.com/gitlab-org/gitlab/-/issues/536647
+        module Geo
+          class #{replicable_name_camel} < ::Upload
+            include ::Geo::ReplicableModel
+            include ::Geo::VerifiableModel
+            extend ::ActiveSupport::Concern
+            extend ::Gitlab::Utils::Override
+
+            self.table_name = '#{table_name}'
+            self.primary_key = :id
+
+            delegate(*::Geo::VerificationState::VERIFICATION_METHODS, to: :#{replicable_name}_state)
+
+            with_replicator Geo::#{replicator_class_name}
+
+            has_one :#{replicable_name}_state,
+              autosave: false,
+              inverse_of: :#{replicable_name},
+              class_name: 'Geo::#{state_class_name}',
+              foreign_key: :#{foreign_key_name}
+
+            scope :with_verification_state, ->(state) {
+              joins(:#{replicable_name}_state)
+                .where(#{state_table_name}: { verification_state: verification_state_value(state) })
+            }
+
+            #{scope_definition}
+
+            def verification_state_object
+              #{replicable_name}_state
+            end
+
+            def #{replicable_name}_state
+              super || build_#{replicable_name}_state
+            end
+
+            class << self
+              extend ::Gitlab::Utils::Override
+
+              override :selective_sync_scope
+              def selective_sync_scope(node, **params)
+        #{selective_sync_scope_body}
+              end
+
+              override :verification_state_model_key
+              def verification_state_model_key
+                :#{foreign_key_name}
+              end
+
+              override :verification_state_table_class
+              def verification_state_table_class
+                Geo::#{state_class_name}
+              end
+            end
+          end
+        end
+      RUBY
+    end
+
+    # Convert CamelCase to snake_case without ActiveSupport
+    def to_snake_case(str)
+      str.gsub(/::/, '/')
+         .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+         .gsub(/([a-z\d])([A-Z])/, '\1_\2')
+         .downcase
+    end
+
+    def model_factory_name
+      to_snake_case(model_class.split('::').last)
+    end
+
+    def generate_upload_partition_model_factory
+      write_file("ee/spec/factories/geo/#{replicable_name}.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        FactoryBot.define do
+          factory :geo_#{replicable_name}, class: 'Geo::#{replicable_name_camel}' do
+            # Upload partition tables are read-only. Data is written through the
+            # Upload model to the uploads parent table, and PostgreSQL routes the
+            # row to the correct partition by model_type.
+            #
+            # This factory creates a regular Upload with the appropriate model
+            # association, then returns the record from the partition table.
+            transient do
+              parent_model { create(:#{model_factory_name}) } # rubocop:disable RSpec/FactoryBot/InlineAssociation -- See above
+            end
+
+            initialize_with do
+              upload = create(:upload, :with_file, model: parent_model)
+              Geo::#{replicable_name_camel}.find(upload.id)
+            end
+
+            trait :remote_store do
+              initialize_with do
+                upload = create(:upload, :object_storage, model: parent_model)
+                Geo::#{replicable_name_camel}.find(upload.id)
+              end
+            end
+
+            # Verification state is stored in a separate state table
+            # (Geo::#{state_class_name}), not on the model itself.
+            trait(:verification_succeeded) do
+              after(:create) do |instance|
+                state = instance.#{replicable_name}_state
+                state.verification_checksum = 'abc'
+                state.verification_state = Geo::#{replicable_name_camel}.verification_state_value(:verification_succeeded)
+                state.save!
+              end
+            end
+
+            trait(:verification_failed) do
+              after(:create) do |instance|
+                state = instance.#{replicable_name}_state
+                state.verification_failure = 'Could not calculate the checksum'
+                state.verification_state = Geo::#{replicable_name_camel}.verification_state_value(:verification_failed)
+                state.save!
+              end
+            end
+
+            to_create { |instance| instance } # already persisted via initialize_with
+          end
+        end
+      RUBY
+    end
+
+    def selective_sync_fixtures
+      body = case sharding_key
+             when 'organization_id'
+               <<~RUBY
+                 let_it_be(:organization_1) { create(:organization) }
+                 let_it_be(:organization_2) { create(:organization) }
+                 let_it_be(:group_1) { create(:group, organization: organization_1) }
+                 let_it_be(:group_2) { create(:group, organization: organization_2) }
+
+                 let!(:first_replicable_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, organization: organization_1))
+                 end
+
+                 let!(:second_replicable_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, organization: organization_1))
+                 end
+
+                 let!(:third_replicable_on_object_storage_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, :remote_store, parent_model: create(:#{model_factory_name}, organization: organization_1))
+                 end
+
+                 let!(:last_replicable_and_not_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, organization: organization_2))
+                 end
+               RUBY
+             when 'namespace_id'
+               <<~RUBY
+                 let_it_be(:group_1) { create(:group, organization: create(:organization)) }
+                 let_it_be(:group_2) { create(:group, organization: create(:organization)) }
+                 let_it_be(:nested_group_1) { create(:group, parent: group_1) }
+
+                 let!(:first_replicable_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, group: group_1))
+                 end
+
+                 let!(:second_replicable_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, group: nested_group_1))
+                 end
+
+                 let!(:third_replicable_on_object_storage_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, :remote_store, parent_model: create(:#{model_factory_name}, group: group_1))
+                 end
+
+                 let!(:last_replicable_and_not_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, group: group_2))
+                 end
+               RUBY
+             when 'project_id'
+               <<~RUBY
+                 let_it_be(:group_1) { create(:group, organization: create(:organization)) }
+                 let_it_be(:group_2) { create(:group, organization: create(:organization)) }
+                 let_it_be(:nested_group_1) { create(:group, parent: group_1) }
+                 let_it_be(:project_1) { create(:project, group: group_1) }
+                 let_it_be(:project_2) { create(:project, group: nested_group_1) }
+                 let_it_be(:project_3) { create(:project, group: group_2) }
+
+                 let!(:first_replicable_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, project: project_1))
+                 end
+
+                 let!(:second_replicable_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, project: project_2))
+                 end
+
+                 let!(:third_replicable_on_object_storage_and_in_selective_sync) do
+                   create(:geo_#{replicable_name}, :remote_store, parent_model: create(:#{model_factory_name}, project: project_1))
+                 end
+
+                 let!(:last_replicable_and_not_in_selective_sync) do
+                   create(:geo_#{replicable_name}, parent_model: create(:#{model_factory_name}, project: project_3))
+                 end
+               RUBY
+             end
+
+      # Indent relative to the heredoc template. The spec template uses
+      # <<~RUBY with 8-space base indent. The interpolation point is also at
+      # 8 spaces, so we need 6 more spaces (14 total in output:
+      # RSpec.describe > describe > describe > body) minus 8 stripped = 6.
+      indent = ' ' * 6
+      body.chomp.lines.map { |l| l.strip.empty? ? "\n" : "#{indent}#{l}" }.join
+    end
+
+    def generate_upload_partition_model_spec
+      model_spec_path = "ee/spec/models/geo/#{replicable_name}_spec.rb"
+
+      write_file(model_spec_path, <<~RUBY)
+        # frozen_string_literal: true
+
+        require 'spec_helper'
+
+        RSpec.describe Geo::#{replicable_name_camel}, feature_category: :geo_replication do
+          include ::EE::GeoHelpers
+
+          it { expect(described_class.table_name).to eq('#{table_name}') }
+          it { expect(described_class.primary_key).to eq('id') }
+          it { expect(described_class.superclass).to eq(::Upload) }
+
+          describe 'Geo replication' do
+            describe 'associations' do
+              it 'has one verification state table class' do
+                is_expected
+                  .to have_one(:#{replicable_name}_state)
+                  .class_name('Geo::#{state_class_name}')
+                  .inverse_of(:#{replicable_name})
+                  .autosave(false)
+              end
+            end
+
+            include_examples 'a verifiable model for verification state' do
+              # The factory creates the record via Upload, which may trigger
+              # save_partition_verification_details and create the state row.
+              # The shared example expects save! to create the state row
+              # (count change by 1), so we delete any pre-existing state row
+              # and reload the record to clear the cached association.
+              let(:verifiable_model_record) do
+                record = create(:geo_#{replicable_name})
+                described_class.verification_state_table_class.where(#{foreign_key_name}: record.id).delete_all
+                record.reload
+              end
+
+              let(:unverifiable_model_record) do
+                record = create(:geo_#{replicable_name}, :remote_store)
+                described_class.verification_state_table_class.where(#{foreign_key_name}: record.id).delete_all
+                record.reload
+              end
+            end
+
+            describe 'replication/verification' do
+        #{selective_sync_fixtures}
+
+              include_examples 'Geo Framework selective sync behavior'
+            end
+          end
+        end
+      RUBY
+    end
+
+    # -- Replicator --
+
+    def replicator_model_reference
+      upload_partition ? "::Geo::#{replicable_name_camel}" : "::#{model_class}"
+    end
+
+    def carrierwave_uploader_body
+      if upload_partition
+        'model_record.retrieve_uploader'
+      else
+        'model_record.file'
+      end
+    end
+
+    def generate_replicator
+      write_file("ee/app/replicators/geo/#{replicable_name}_replicator.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        module Geo
+          class #{replicator_class_name} < Gitlab::Geo::Replicator
+            include ::Geo::BlobReplicatorStrategy
+            extend ::Gitlab::Utils::Override
+
+            def self.model
+              #{replicator_model_reference}
+            end
+
+            # @return [String] human-readable title.
+            def self.replicable_title
+              s_('Geo|#{replicable_name_human}')
+            end
+
+            # @return [String] pluralized human-readable title.
+            def self.replicable_title_plural
+              s_('Geo|#{replicable_name_human_plural}')
+            end
+
+            def carrierwave_uploader
+              #{carrierwave_uploader_body}
+            end
+          end
+        end
+      RUBY
+    end
+
+    # -- Registry model --
+
+    def registry_belongs_to_class
+      upload_partition ? "Geo::#{replicable_name_camel}" : model_class
+    end
+
+    def registry_model_class_reference
+      upload_partition ? "::Geo::#{replicable_name_camel}" : "::#{model_class}"
+    end
+
+    def generate_registry_model
+      write_file("ee/app/models/geo/#{replicable_name}_registry.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        module Geo
+          class #{registry_class_name} < Geo::BaseRegistry
+            include ::Geo::ReplicableRegistry
+            include ::Geo::VerifiableRegistry
+
+            belongs_to :#{replicable_name}, class_name: '#{registry_belongs_to_class}'
+
+            def self.model_class
+              #{registry_model_class_reference}
+            end
+
+            def self.model_foreign_key
+              :#{foreign_key_name}
+            end
+          end
+        end
+      RUBY
+    end
+
+    # -- State model --
+
+    def state_belongs_to_class
+      upload_partition ? "Geo::#{replicable_name_camel}" : model_class
+    end
+
+    def generate_state_model
+      write_file("ee/app/models/geo/#{replicable_name}_state.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        module Geo
+          class #{state_class_name} < ApplicationRecord
+            include ::Geo::VerificationStateDefinition
+
+            self.primary_key = :#{foreign_key_name}
+
+            belongs_to :#{replicable_name}, inverse_of: :#{replicable_name}_state, class_name: '#{state_belongs_to_class}'
+
+            validates :verification_state, :#{replicable_name}, presence: true
+          end
+        end
+      RUBY
+    end
+
+    # -- Registry finder --
+
+    def generate_registry_finder
+      write_file("ee/app/finders/geo/#{replicable_name}_registry_finder.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        module Geo
+          class #{finder_class_name}
+            include FrameworkRegistryFinder
+          end
+        end
+      RUBY
+    end
+
+    # -- GraphQL resolver --
+
+    def generate_graphql_resolver
+      write_file("ee/app/graphql/resolvers/geo/#{replicable_name}_registries_resolver.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        module Resolvers
+          module Geo
+            class #{resolver_class_name} < BaseResolver
+              type ::Types::Geo::GeoNodeType.connection_type, null: true
+
+              include RegistriesResolver
+            end
+          end
+        end
+      RUBY
+    end
+
+    # -- GraphQL type --
+
+    def generate_graphql_type
+      write_file("ee/app/graphql/types/geo/#{replicable_name}_registry_type.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        module Types
+          module Geo
+            # rubocop:disable Graphql/AuthorizeTypes -- because it is included
+            class #{registry_type_class_name} < BaseObject
+              graphql_name '#{graphql_name}'
+
+              include ::Types::Geo::RegistryType
+
+              description 'Represents the Geo replication and verification state of a #{replicable_name}'
+
+              field :#{foreign_key_name}, GraphQL::Types::ID, null: false, description: 'ID of the #{replicable_name_human}.'
+            end
+            # rubocop:enable Graphql/AuthorizeTypes
+          end
+        end
+      RUBY
+    end
+
+    # -- Feature flags --
+
+    def generate_replication_feature_flag
+      write_file("ee/config/feature_flags/ops/#{replication_feature_flag_name}.yml", <<~YAML)
+        ---
+        name: #{replication_feature_flag_name}
+        feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/589925
+        introduced_by_url:
+        rollout_issue_url:
+        milestone: '#{milestone}'
+        group: group::geo
+        type: ops
+        default_enabled: false
+      YAML
+    end
+
+    def generate_force_primary_checksumming_feature_flag
+      write_file("ee/config/feature_flags/ops/#{force_primary_checksumming_feature_name}.yml", <<~YAML)
+        ---
+        name: #{force_primary_checksumming_feature_name}
+        feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/589925
+        introduced_by_url:
+        rollout_issue_url:
+        milestone: '#{milestone}'
+        group: group::geo
+        type: ops
+        default_enabled: false
+      YAML
+    end
+
+    # -- Geo tracking DB migration --
+
+    def generate_geo_migration
+      migration_class = "Create#{replicable_name_camel}Registry"
+      file_path = "ee/db/geo/migrate/#{timestamp}_create_#{replicable_name}_registry.rb"
+
+      write_file(file_path, <<~RUBY)
+        # frozen_string_literal: true
+
+        class #{migration_class} < Gitlab::Database::Migration[#{MIGRATION_VERSION}]
+          milestone '#{milestone}'
+
+          def change
+            create_table :#{registry_table_name}, id: :bigserial, force: :cascade, if_not_exists: true do |t|
+              t.bigint :#{foreign_key_name}, null: false
+              t.datetime_with_timezone :created_at, null: false
+              t.datetime_with_timezone :last_synced_at
+              t.datetime_with_timezone :retry_at
+              t.datetime_with_timezone :verified_at
+              t.datetime_with_timezone :verification_started_at
+              t.datetime_with_timezone :verification_retry_at
+              t.integer :state, default: 0, null: false, limit: 2
+              t.integer :verification_state, default: 0, null: false, limit: 2
+              t.integer :retry_count, default: 0, limit: 2, null: false
+              t.integer :verification_retry_count, default: 0, limit: 2, null: false
+              t.boolean :checksum_mismatch, default: false, null: false
+              t.binary :verification_checksum
+              t.binary :verification_checksum_mismatched
+              t.text :verification_failure, limit: 255
+              t.text :last_sync_failure, limit: 255
+
+              t.index :#{foreign_key_name}, name: :index_#{registry_table_name}_on_#{foreign_key_name}, unique: true
+              t.index :retry_at
+              t.index :state
+              # To optimize performance of #{registry_class_name}.verification_failed_batch
+              t.index :verification_retry_at,
+                name: :#{registry_table_name}_failed_verification,
+                order: "NULLS FIRST",
+                where: "((state = 2) AND (verification_state = 3))"
+              # To optimize performance of #{registry_class_name}.needs_verification_count
+              t.index :verification_state,
+                name: :#{registry_table_name}_needs_verification,
+                where: "((state = 2) AND (verification_state = ANY (ARRAY[0, 3])))"
+              # To optimize performance of #{registry_class_name}.verification_pending_batch
+              t.index :verified_at,
+                name: :#{registry_table_name}_pending_verification,
+                order: "NULLS FIRST",
+                where: "((state = 2) AND (verification_state = 0))"
+            end
+          end
+        end
+      RUBY
+    end
+
+    # -- Sharding key helpers --
+
+    def sharding_key_reference_table_for(key)
+      case key
+      when 'project_id'
+        'projects'
+      when 'namespace_id'
+        'namespaces'
+      when 'organization_id'
+        'organizations'
+      end
+    end
+
+    # For backward compatibility
+    def sharding_key_reference_table
+      sharding_key_reference_table_for(sharding_key)
+    end
+
+    def sharding_key_column_definitions
+      sharding_keys.map { |key| "t.bigint :#{key}" }.join("\n              ")
+    end
+
+    def sharding_key_index_definitions
+      sharding_keys.map { |key| "t.index :#{key}" }.join("\n              ")
+    end
+
+    def sharding_key_foreign_key_definitions
+      sharding_keys.map do |key|
+        ref_table = sharding_key_reference_table_for(key)
+        "add_concurrent_foreign_key :#{state_table_name}, :#{ref_table}, column: :#{key}, on_delete: :cascade"
+      end.join("\n            ")
+    end
+
+    def sharding_key_not_null_constraint
+      # Single key: make it NOT NULL in the column definition instead
+      return unless sharding_keys.size > 1
+
+      "add_multi_column_not_null_constraint(:#{state_table_name}, #{sharding_keys.map { |k| ":#{k}" }.join(', ')})"
+    end
+
+    def sharding_key_column_definition
+      if sharding_keys.size == 1
+        "t.bigint :#{sharding_key}, null: false"
+      else
+        # Multiple keys: columns are nullable, constraint enforces at least one
+        sharding_key_column_definitions
+      end
+    end
+
+    def sharding_key_index_definition
+      if sharding_keys.size == 1
+        "t.index :#{sharding_key}"
+      else
+        sharding_key_index_definitions
+      end
+    end
+
+    def sharding_key_foreign_key_definition
+      if sharding_keys.size == 1
+        ref_table = sharding_key_reference_table_for(sharding_key)
+        "add_concurrent_foreign_key :#{state_table_name}, :#{ref_table}, column: :#{sharding_key}, on_delete: :cascade"
+      else
+        sharding_key_foreign_key_definitions
+      end
+    end
+
+    def sharding_key_trigger_install(key)
+      <<~RUBY.chomp
+        install_sharding_key_assignment_trigger(
+          table: :#{state_table_name},
+          sharding_key: :#{key},
+          parent_table: :#{table_name},
+          parent_sharding_key: :#{key},
+          foreign_key: :#{foreign_key_name}
+        )
+      RUBY
+    end
+
+    def sharding_key_trigger_removal(key)
+      <<~RUBY.chomp
+        remove_sharding_key_assignment_trigger(
+          table: :#{state_table_name},
+          sharding_key: :#{key},
+          parent_table: :#{table_name},
+          parent_sharding_key: :#{key},
+          foreign_key: :#{foreign_key_name}
+        )
+      RUBY
+    end
+
+    # -- Main DB state migration --
+
+    def state_foreign_key_options
+      if upload_partition
+        # For upload partitions, reference the parent uploads table, not the partition.
+        # The partition table has a composite PK (id, model_type) which can't be
+        # referenced directly. Instead, we reference the parent uploads table which
+        # has a unique constraint on id.
+        "{ to_table: :uploads, on_delete: :cascade }"
+      else
+        '{ on_delete: :cascade }'
+      end
+    end
+
+    def generate_state_migration
+      migration_class = "Create#{replicable_name_camel}States"
+      file_path = "db/migrate/#{next_timestamp}_create_#{replicable_name}_states.rb"
+
+      # For upload partitions, we can't use foreign_key in create_table because
+      # partition tables have composite PKs. Instead, we add the FK separately.
+      if upload_partition
+        fk_in_create_table = ''
+        fk_after_create = "add_concurrent_foreign_key :#{state_table_name}, :uploads, column: :#{foreign_key_name}, on_delete: :cascade"
+      else
+        fk_in_create_table = ",\n                foreign_key: #{state_foreign_key_options}"
+        fk_after_create = ''
+      end
+
+      after_create_statements = [
+        fk_after_create,
+        sharding_key_foreign_key_definition,
+        sharding_key_not_null_constraint
+      ].compact.reject(&:empty?)
+
+      after_create_block = after_create_statements.map { |s| "    #{s}" }.join("\n")
+      after_create_block = "\n\n#{after_create_block}" unless after_create_block.empty?
+
+      write_file(file_path, <<~RUBY)
+        # frozen_string_literal: true
+
+        class #{migration_class} < Gitlab::Database::Migration[#{MIGRATION_VERSION}]
+          disable_ddl_transaction!
+
+          milestone '#{milestone}'
+
+          VERIFICATION_STATE_INDEX_NAME = "index_#{state_table_name}_on_verification_state"
+          PENDING_VERIFICATION_INDEX_NAME = "index_#{state_table_name}_pending_verification"
+          FAILED_VERIFICATION_INDEX_NAME = "index_#{state_table_name}_failed_verification"
+          NEEDS_VERIFICATION_INDEX_NAME = "index_#{state_table_name}_needs_verification_id"
+          VERIFICATION_STARTED_INDEX_NAME = "index_#{state_table_name}_on_verification_started"
+
+          def up
+            create_table :#{state_table_name}, if_not_exists: true do |t|
+              t.datetime_with_timezone :verification_started_at
+              t.datetime_with_timezone :verification_retry_at
+              t.datetime_with_timezone :verified_at
+              t.references :#{replicable_name},
+                null: false,
+                index: { unique: true }#{fk_in_create_table}
+              #{sharding_key_column_definition}
+              t.integer :verification_state, default: 0, limit: 2, null: false
+              t.integer :verification_retry_count, default: 0, limit: 2, null: false
+              t.binary :verification_checksum, using: 'verification_checksum::bytea'
+              t.text :verification_failure, limit: 255
+
+              t.index :verification_state, name: VERIFICATION_STATE_INDEX_NAME
+              t.index :verified_at,
+                where: "(verification_state = 0)",
+                order: { verified_at: 'ASC NULLS FIRST' },
+                name: PENDING_VERIFICATION_INDEX_NAME
+              t.index :verification_retry_at,
+                where: "(verification_state = 3)",
+                order: { verification_retry_at: 'ASC NULLS FIRST' },
+                name: FAILED_VERIFICATION_INDEX_NAME
+              t.index [:#{foreign_key_name}, :verification_started_at],
+                where: "(verification_state = 1)",
+                name: VERIFICATION_STARTED_INDEX_NAME
+              t.index :#{foreign_key_name},
+                where: "((verification_state = 0) OR (verification_state = 3))",
+                name: NEEDS_VERIFICATION_INDEX_NAME
+              #{sharding_key_index_definition}
+            end#{after_create_block}
+          end
+
+          def down
+            drop_table :#{state_table_name}
+          end
+        end
+      RUBY
+    end
+
+    def generate_sharding_key_trigger_migration
+      timestamps = additional_timestamps(sharding_keys.size)
+
+      sharding_keys.each_with_index do |key, index|
+        key_camel = key.split('_').map(&:capitalize).join
+        migration_class = "Add#{replicable_name_camel}States#{key_camel}ShardingKeyTrigger"
+        file_path = "db/migrate/#{timestamps[index]}_add_#{replicable_name}_states_#{key}_sharding_key_trigger.rb"
+
+        trigger_install = sharding_key_trigger_install(key)
+        trigger_removal = sharding_key_trigger_removal(key)
+
+        # Indent trigger content to 4 spaces (method body inside class)
+        indented_install = trigger_install.lines.map { |l| "    #{l}" }.join.chomp
+        indented_removal = trigger_removal.lines.map { |l| "    #{l}" }.join.chomp
+
+        # Build as plain string to avoid heredoc indentation issues
+        migration_content = [
+          "# frozen_string_literal: true",
+          "",
+          "class #{migration_class} < Gitlab::Database::Migration[#{MIGRATION_VERSION}]",
+          "  milestone '#{milestone}'",
+          "",
+          "  def up",
+          indented_install,
+          "  end",
+          "",
+          "  def down",
+          indented_removal,
+          "  end",
+          "end",
+          ""
+        ].join("\n")
+
+        write_file(file_path, migration_content)
+      end
+    end
+
+    # -- Database dictionary files --
+
+    def generate_geo_db_dictionary
+      write_file("ee/db/geo/docs/#{registry_table_name}.yml", <<~YAML)
+        ---
+        table_name: #{registry_table_name}
+        description: Geo registry table for tracking replication and verification of #{replicable_name_human_plural}
+        introduced_by_url:
+        milestone: '#{milestone}'
+        feature_categories:
+          - geo_replication
+        classes:
+          - Geo::#{registry_class_name}
+        gitlab_schema: gitlab_geo
+      YAML
+    end
+
+    def sharding_key_yaml_entries
+      sharding_keys.map do |key|
+        ref_table = sharding_key_reference_table_for(key)
+        "  #{key}: #{ref_table}"
+      end.join("\n")
+    end
+
+    def generate_state_db_dictionary
+      write_file("db/docs/#{state_table_name}.yml", <<~YAML)
+        ---
+        table_name: #{state_table_name}
+        description: Separate table for #{replicable_name_human} verification states
+        introduced_by_url:
+        milestone: '#{milestone}'
+        feature_categories:
+          - geo_replication
+        classes:
+          - Geo::#{state_class_name}
+        gitlab_schema: gitlab_main_org
+        sharding_key:
+        #{sharding_key_yaml_entries}
+      YAML
+    end
+
+    # -- Factory files --
+
+    def generate_registry_factory
+      write_file("ee/spec/factories/geo/#{replicable_name}_registry.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        FactoryBot.define do
+          factory :geo_#{replicable_name}_registry, class: 'Geo::#{registry_class_name}' do
+            association(:#{replicable_name}, factory: :#{registry_factory_replicable_name})
+            state { Geo::#{registry_class_name}.state_value(:pending) }
+
+            trait :synced do
+              state { Geo::#{registry_class_name}.state_value(:synced) }
+              last_synced_at { 5.days.ago }
+            end
+
+            trait :failed do
+              state { Geo::#{registry_class_name}.state_value(:failed) }
+              last_synced_at { 1.day.ago }
+              retry_count { 2 }
+              retry_at { 2.hours.from_now }
+              last_sync_failure { 'Random error' }
+            end
+
+            trait :started do
+              state { Geo::#{registry_class_name}.state_value(:started) }
+              last_synced_at { 1.day.ago }
+              retry_count { 0 }
+            end
+
+            trait :verification_succeeded do
+              synced
+              verification_checksum { 'e079a831cab27bcda7d81cd9b48296d0c3dd92ef' }
+              verification_state { Geo::#{registry_class_name}.verification_state_value(:verification_succeeded) }
+              verified_at { 5.days.ago }
+            end
+
+            trait :verification_failed do
+              synced
+              verification_failure { 'Could not calculate the checksum' }
+              verification_state { Geo::#{registry_class_name}.verification_state_value(:verification_failed) }
+              verification_retry_count { 1 }
+              verification_retry_at { 2.hours.from_now }
+            end
+          end
+        end
+      RUBY
+    end
+
+    def generate_state_factory
+      write_file("ee/spec/factories/geo/#{replicable_name}_states.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        FactoryBot.define do
+          factory :geo_#{replicable_name}_state, class: 'Geo::#{state_class_name}' do
+            #{replicable_name}
+
+            trait :checksummed do
+              verification_checksum { 'abc' }
+            end
+
+            trait :checksum_failure do
+              verification_failure { 'Could not calculate the checksum' }
+            end
+          end
+        end
+      RUBY
+    end
+
+    # -- Spec files --
+
+    def generate_replicator_spec
+      if upload_partition
+        generate_upload_partition_replicator_spec
+      else
+        generate_standard_replicator_spec
+      end
+    end
+
+    def generate_standard_replicator_spec
+      write_file("ee/spec/replicators/geo/#{replicable_name}_replicator_spec.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        require 'spec_helper'
+
+        RSpec.describe Geo::#{replicator_class_name}, feature_category: :geo_replication do
+          let(:model_record) { build(:#{replicable_name}) }
+
+          include_examples 'a blob replicator'
+        end
+      RUBY
+    end
+
+    def generate_upload_partition_replicator_spec
+      write_file("ee/spec/replicators/geo/#{replicable_name}_replicator_spec.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        require 'spec_helper'
+
+        RSpec.describe Geo::#{replicator_class_name}, feature_category: :geo_replication do
+          let(:model_record) { create(:geo_#{replicable_name}) }
+
+          include_examples 'a blob replicator with a read-only replicable model'
+        end
+      RUBY
+    end
+
+    def generate_registry_model_spec
+      write_file("ee/spec/models/geo/#{replicable_name}_registry_spec.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        require 'spec_helper'
+
+        RSpec.describe Geo::#{registry_class_name}, :geo, feature_category: :geo_replication do
+          let_it_be(:registry) { build(:geo_#{replicable_name}_registry) }
+
+          specify 'factory is valid' do
+            expect(registry).to be_valid
+          end
+
+          include_examples 'a Geo framework registry'
+        end
+      RUBY
+    end
+
+    def generate_finder_spec
+      write_file("ee/spec/finders/geo/#{replicable_name}_registry_finder_spec.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        require 'spec_helper'
+
+        RSpec.describe Geo::#{finder_class_name}, feature_category: :geo_replication do
+          it_behaves_like 'a framework registry finder', :geo_#{replicable_name}_registry
+        end
+      RUBY
+    end
+
+    def generate_graphql_resolver_spec
+      write_file("ee/spec/graphql/resolvers/geo/#{replicable_name}_registries_resolver_spec.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        require 'spec_helper'
+
+        RSpec.describe Resolvers::Geo::#{resolver_class_name}, feature_category: :geo_replication do
+          it_behaves_like 'a Geo registries resolver', :geo_#{replicable_name}_registry
+        end
+      RUBY
+    end
+
+    def generate_graphql_type_spec
+      write_file("ee/spec/graphql/types/geo/#{replicable_name}_registry_type_spec.rb", <<~RUBY)
+        # frozen_string_literal: true
+
+        require 'spec_helper'
+
+        RSpec.describe GitlabSchema.types['#{graphql_name}'], feature_category: :geo_replication do
+          it_behaves_like 'a Geo registry type'
+
+          it 'has the expected fields (other than those included in RegistryType)' do
+            expected_fields = %i[#{foreign_key_name}]
+
+            expect(described_class).to have_graphql_fields(*expected_fields).at_least
+          end
+        end
+      RUBY
+    end
+
+    # -------------------------------------------------------------------------
+    # Patching existing files
+    # -------------------------------------------------------------------------
+
+    def patch_existing_files
+      patch_replicator_classes
+      patch_registry_classes
+      patch_geo_node_type
+      patch_registrable_type
+      patch_inflections
+      patch_registries_shared_context
+      patch_registries_spec
+      patch_registry_consistency_worker_spec
+      patch_geo_node_type_spec
+      patch_registry_class_enum_spec
+      patch_possible_types_json
+      patch_geo_status_json('ee/spec/fixtures/api/schemas/public_api/v4/geo_node_status.json')
+      patch_geo_status_json('ee/spec/fixtures/api/schemas/public_api/v4/geo_site_status.json')
+      patch_geo_api_doc('doc/api/geo_nodes.md')
+      patch_geo_api_doc('doc/api/geo_sites.md')
+      patch_prometheus_metrics_doc
+    end
+
+    # -- REPLICATOR_CLASSES in ee/lib/gitlab/geo.rb --
+
+    def patch_replicator_classes
+      file_path = 'ee/lib/gitlab/geo.rb'
+      new_entry = "      ::Geo::#{replicator_class_name}"
+
+      patch_array_in_file(
+        file_path,
+        anchor: '::Geo::PackagesHelmMetadataCacheReplicator',
+        new_line: "#{new_entry},",
+        after_anchor: true
+      )
+    end
+
+    # -- REGISTRY_CLASSES in registry_consistency_worker.rb --
+
+    def patch_registry_classes
+      file_path = 'ee/app/workers/geo/secondary/registry_consistency_worker.rb'
+      new_entry = "        Geo::#{registry_class_name}"
+
+      patch_array_in_file(
+        file_path,
+        anchor: 'Geo::PackagesHelmMetadataCacheRegistry',
+        new_line: "#{new_entry},",
+        after_anchor: true
+      )
+    end
+
+    # -- GeoNodeType GraphQL field --
+
+    def patch_geo_node_type
+      file_path = 'ee/app/graphql/types/geo/geo_node_type.rb'
+      new_field = <<~RUBY.chomp
+            field :#{graphql_field_name}, ::Types::Geo::#{registry_type_class_name}.connection_type,
+              null: true,
+              resolver: ::Resolvers::Geo::#{resolver_class_name},
+              description: 'Find #{replicable_name_human} registries on this Geo node. ' \\
+                           'Ignored if `#{replication_feature_flag_name}` feature flag is disabled.',
+              experiment: { milestone: '#{milestone}' }
+      RUBY
+
+      # Detect indentation from the anchor line
+      content = File.read(file_path) if File.exist?(file_path)
+      anchor = 'field :verification_max_capacity'
+      anchor_line = content&.lines&.find { |l| l.include?(anchor) }
+      indent = anchor_line ? anchor_line[/^\s*/] : '      '
+
+      indented_field = new_field.lines.map { |line| line.strip.empty? ? line : "#{indent}#{line}" }.join
+
+      insert_before_line(
+        file_path,
+        anchor: anchor,
+        new_content: indented_field,
+        before_anchor: true
+      )
+    end
+
+    # -- RegistrableType GEO_REGISTRY_TYPES --
+
+    def patch_registrable_type
+      file_path = 'ee/app/graphql/types/geo/registrable_type.rb'
+      new_entry = "        ::Geo::#{registry_class_name} => Types::Geo::#{registry_type_class_name}"
+
+      patch_array_in_file(
+        file_path,
+        anchor: '::Geo::PackagesNugetSymbolRegistry',
+        new_line: "#{new_entry},",
+        after_anchor: true
+      )
+    end
+
+    # -- Inflections --
+
+    def patch_inflections
+      file_path = 'config/initializers_before_autoloader/000_inflections.rb'
+
+      patch_array_in_file(
+        file_path,
+        anchor: 'packages_helm_metadata_cache_registry',
+        new_line: "    #{registry_table_name}",
+        after_anchor: true
+      )
+    end
+
+    # -- Registries shared context --
+
+    def patch_registries_shared_context
+      file_path = 'ee/spec/support/shared_contexts/graphql/geo/registries_shared_context.rb'
+      # Pad to align with existing entries
+      new_line = format_shared_context_line
+
+      patch_array_in_file(
+        file_path,
+        anchor: 'Geo::PackagesNugetSymbolRegistry',
+        new_line: new_line,
+        after_anchor: true
+      )
+    end
+
+    def format_shared_context_line
+      registry_class = "Geo::#{registry_class_name}"
+      registry_type = "Types::Geo::#{registry_type_class_name}"
+      factory = ":geo_#{replicable_name}_registry"
+
+      # Align columns like existing entries
+      col1 = registry_class.ljust(40)
+      col2 = registry_type.ljust(48)
+
+      "    #{col1}| #{col2}| #{factory}"
+    end
+
+    # -- Registries spec --
+
+    def patch_registries_spec
+      file_path = 'ee/spec/requests/api/graphql/geo/registries_spec.rb'
+      new_block = <<~RUBY
+
+        it_behaves_like 'gets registries for', {
+          field_name: '#{graphql_registries_field_camel}',
+          registry_class_name: '#{registry_class_name}',
+          registry_factory: :geo_#{replicable_name}_registry,
+          registry_foreign_key_field_name: '#{graphql_foreign_key_field_camel}'
+        }
+      RUBY
+
+      append_before_last_end(file_path, new_block)
+    end
+
+    # -- Registry consistency worker spec --
+
+    def patch_registry_consistency_worker_spec
+      file_path = 'ee/spec/workers/geo/secondary/registry_consistency_worker_spec.rb'
+
+      unless File.exist?(file_path)
+        warn "  [SKIP]   #{file_path} (file not found)"
+        return
+      end
+
+      content = File.read(file_path)
+
+      # Check if already patched
+      if content.include?("#{replicable_name}_") || content.include?("Geo::#{registry_class_name}")
+        puts "  [SKIP]   #{file_path} (already contains entry)"
+        return
+      end
+
+      # Determine the creation line and variable name based on model type
+      creation_line =
+        if upload_partition
+          "      #{replicable_name} = create(:geo_#{model_factory_name})"
+        else
+          "      #{replicable_name} = create(:#{replicable_name})"
+        end
+
+      foreign_key_value = "#{replicable_name}.id"
+
+      # Add creation line after the last similar creation
+      anchor_creation = 'helm_metadata_cache = create(:helm_metadata_cache)'
+      if content.include?(anchor_creation)
+        content = content.sub(
+          anchor_creation,
+          "#{anchor_creation}\n#{creation_line}"
+        )
+      end
+
+      # Add pre-execution assertion
+      pre_assertion = "      expect(Geo::#{registry_class_name}.where(#{foreign_key_name}: #{foreign_key_value}).count).to eq(0)"
+      anchor_pre = 'expect(Geo::PackagesHelmMetadataCacheRegistry.where(packages_helm_metadata_cache_id: helm_metadata_cache.id).count).to eq(0)'
+      if content.include?(anchor_pre)
+        content = content.sub(
+          anchor_pre,
+          "#{anchor_pre}\n#{pre_assertion}"
+        )
+      end
+
+      # Add post-execution assertion
+      post_assertion = "      expect(Geo::#{registry_class_name}.where(#{foreign_key_name}: #{foreign_key_value}).count).to eq(1)"
+      anchor_post = 'expect(Geo::PackagesHelmMetadataCacheRegistry.where(packages_helm_metadata_cache_id: helm_metadata_cache.id).count).to eq(1)'
+      if content.include?(anchor_post)
+        content = content.sub(
+          anchor_post,
+          "#{anchor_post}\n#{post_assertion}"
+        )
+      end
+
+      if dry_run
+        puts "  [PATCH]  #{file_path}"
+        return
+      end
+
+      File.write(file_path, content)
+      @files_modified << file_path
+      puts "  [PATCH]  #{file_path}"
+    end
+
+    # -- GeoNodeType spec --
+
+    def patch_geo_node_type_spec
+      file_path = 'ee/spec/graphql/types/geo/geo_node_type_spec.rb'
+
+      patch_array_in_file(
+        file_path,
+        anchor: 'packages_nuget_symbol_registries',
+        new_line: "      #{graphql_field_name}",
+        after_anchor: true
+      )
+    end
+
+    # -- RegistryClassEnum spec --
+
+    def patch_registry_class_enum_spec
+      file_path = 'ee/spec/graphql/types/geo/registry_class_enum_spec.rb'
+
+      patch_array_in_file(
+        file_path,
+        anchor: 'PACKAGES_HELM_METADATA_CACHE_REGISTRY',
+        new_line: "      #{enum_key}",
+        after_anchor: true
+      )
+    end
+
+    # -- GraphQL possible_types.json --
+
+    def patch_possible_types_json
+      file_path = 'app/assets/javascripts/graphql_shared/possible_types.json'
+
+      unless File.exist?(file_path)
+        warn "  [SKIP]   #{file_path} (file not found)"
+        return
+      end
+
+      content = File.read(file_path)
+
+      if content.include?("\"#{registry_class_name}\"")
+        puts "  [SKIP]   #{file_path} (already contains #{registry_class_name})"
+        return
+      end
+
+      # The Registrable array is alphabetically sorted.
+      # Find the correct insertion point.
+      registrable_match = content.match(/"Registrable":\s*\[([^\]]+)\]/m)
+      unless registrable_match
+        warn "  [WARN]   #{file_path} (Registrable array not found, manual edit required)"
+        return
+      end
+
+      registrable_block = registrable_match[1]
+      entries = registrable_block.scan(/"(\w+)"/).flatten
+
+      # Find the correct alphabetical insertion point
+      insert_before = entries.find { |e| e > registry_class_name }
+
+      if insert_before
+        # Insert before the first entry that comes after alphabetically
+        content = content.sub(
+          /"#{insert_before}"/,
+          "\"#{registry_class_name}\",\n    \"#{insert_before}\""
+        )
+      else
+        # New entry goes at the end; insert after the last entry
+        insert_after = entries.last
+        content = content.sub(
+          /"#{insert_after}"/,
+          "\"#{insert_after}\",\n    \"#{registry_class_name}\""
+        )
+      end
+
+      if dry_run
+        puts "  [PATCH]  #{file_path}"
+        return
+      end
+
+      File.write(file_path, content)
+      @files_modified << file_path
+      puts "  [PATCH]  #{file_path}"
+    end
+
+    # -- Geo node/site status JSON schemas --
+
+    def status_field_prefix
+      # The status fields use the pluralized replicable name as prefix.
+      # e.g. replicable_name "abuse_report_upload" -> "abuse_report_uploads"
+      @status_field_prefix ||= "#{replicable_name}s"
+    end
+
+    def status_required_fields
+      p = status_field_prefix
+      [
+        "#{p}_count",
+        "#{p}_checksum_total_count",
+        "#{p}_checksummed_count",
+        "#{p}_checksum_failed_count",
+        "#{p}_synced_count",
+        "#{p}_failed_count",
+        "#{p}_registry_count",
+        "#{p}_verification_total_count",
+        "#{p}_verified_count",
+        "#{p}_verification_failed_count",
+        "#{p}_synced_in_percentage",
+        "#{p}_verified_in_percentage"
+      ]
+    end
+
+    def nullable_int_property(name)
+      <<~JSON.chomp
+            "#{name}": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+      JSON
+    end
+
+    def string_property(name)
+      <<~JSON.chomp
+            "#{name}": {
+              "type": "string"
+            }
+      JSON
+    end
+
+    def status_properties_json
+      p = status_field_prefix
+
+      properties = [
+        nullable_int_property("#{p}_count"),
+        nullable_int_property("#{p}_checksum_total_count"),
+        nullable_int_property("#{p}_checksummed_count"),
+        nullable_int_property("#{p}_checksum_failed_count"),
+        nullable_int_property("#{p}_synced_count"),
+        nullable_int_property("#{p}_failed_count"),
+        nullable_int_property("#{p}_registry_count"),
+        nullable_int_property("#{p}_verification_total_count"),
+        nullable_int_property("#{p}_verified_count"),
+        nullable_int_property("#{p}_verification_failed_count"),
+        string_property("#{p}_synced_in_percentage"),
+        string_property("#{p}_verified_in_percentage")
+      ]
+
+      properties.join(",\n")
+    end
+
+    def patch_geo_status_json(file_path)
+      unless File.exist?(file_path)
+        warn "  [SKIP]   #{file_path} (file not found)"
+        return
+      end
+
+      content = File.read(file_path)
+
+      if content.include?("\"#{status_field_prefix}_count\"")
+        puts "  [SKIP]   #{file_path} (already contains #{status_field_prefix} fields)"
+        return
+      end
+
+      # 1. Add to "required" array: insert before "git_fetch_event_count_weekly"
+      required_entries = status_required_fields.map { |f| "    \"#{f}\"" }.join(",\n")
+      content = content.sub(
+        /    "git_fetch_event_count_weekly"/,
+        "#{required_entries},\n\"git_fetch_event_count_weekly\""
+      )
+
+      # 2. Add to "properties" object: insert before "git_fetch_event_count_weekly" property
+      properties_block = status_properties_json
+      content = content.sub(
+        /    "git_fetch_event_count_weekly": \{/,
+        "#{properties_block},\n\"git_fetch_event_count_weekly\": {"
+      )
+
+      if dry_run
+        puts "  [PATCH]  #{file_path}"
+        return
+      end
+
+      parsed_content = JSON.parse(content)
+      pretty_content = JSON.pretty_generate(parsed_content)
+      File.write(file_path, "#{pretty_content}\n")
+      @files_modified << file_path
+      puts "  [PATCH]  #{file_path}"
+    end
+
+    # -- Geo API docs (geo_nodes.md, geo_sites.md) --
+
+    def api_doc_json_fields(indent)
+      p = status_field_prefix
+      fields = [
+        ["#{p}_count", '0'],
+        ["#{p}_checksum_total_count", '0'],
+        ["#{p}_checksummed_count", '0'],
+        ["#{p}_checksum_failed_count", '0'],
+        ["#{p}_synced_count", 'null'],
+        ["#{p}_failed_count", 'null'],
+        ["#{p}_registry_count", 'null'],
+        ["#{p}_verification_total_count", 'null'],
+        ["#{p}_verified_count", 'null'],
+        ["#{p}_verification_failed_count", 'null'],
+        ["#{p}_synced_in_percentage", '"0.00%"'],
+        ["#{p}_verified_in_percentage", '"0.00%"']
+      ]
+
+      fields.map { |name, val| "#{indent}\"#{name}\": #{val}" }.join(",\n") + ","
+    end
+
+    def patch_geo_api_doc(file_path)
+      unless File.exist?(file_path)
+        warn "  [SKIP]   #{file_path} (file not found)"
+        return
+      end
+
+      content = File.read(file_path)
+
+      if content.include?("\"#{status_field_prefix}_count\"")
+        puts "  [SKIP]   #{file_path} (already contains #{status_field_prefix} fields)"
+        return
+      end
+
+      # The doc files contain multiple JSON example blocks. Each has a
+      # "git_fetch_event_count_weekly" field. We insert before every occurrence.
+      # Detect indentation from the anchor line itself.
+      content = content.gsub(/(^([ ]*)"git_fetch_event_count_weekly")/) do |match|
+        indent = $2
+        "#{api_doc_json_fields(indent)}\n#{match}"
+      end
+
+      if dry_run
+        puts "  [PATCH]  #{file_path}"
+        return
+      end
+
+      File.write(file_path, content)
+      @files_modified << file_path
+      puts "  [PATCH]  #{file_path}"
+    end
+
+    # -- Prometheus metrics doc --
+
+    def prometheus_metrics_rows
+      p = status_field_prefix
+      h = replicable_name_human_plural
+      m = milestone
+
+      # Match the column alignment of existing rows:
+      # | `metric_name`<pad> | Gauge<pad> | version | `url`<pad> | description |
+      rows = [
+        metric_row("geo_#{p}",                        m, "Number of #{h} on primary"),
+        metric_row("geo_#{p}_checksum_total",          m, "Number of #{h} to checksum on primary"),
+        metric_row("geo_#{p}_checksummed",             m, "Number of #{h} that successfully calculated the checksum on primary"),
+        metric_row("geo_#{p}_checksum_failed",         m, "Number of #{h} failed to calculate the checksum on primary"),
+        metric_row("geo_#{p}_synced",                  m, "Number of syncable #{h} synced on secondary"),
+        metric_row("geo_#{p}_failed",                  m, "Number of syncable #{h} failed to sync on secondary"),
+        metric_row("geo_#{p}_registry",                m, "Number of #{h} in the registry"),
+        metric_row("geo_#{p}_verification_total",      m, "Number of #{h} to attempt to verify on secondary"),
+        metric_row("geo_#{p}_verified",                m, "Number of #{h} successfully verified on secondary"),
+        metric_row("geo_#{p}_verification_failed",     m, "Number of #{h} that failed verification on secondary")
+      ]
+
+      rows.join("\n")
+    end
+
+    def metric_row(name, version, description)
+      # Pad the metric name column to 58 chars to align with existing rows
+      name_col = "`#{name}`".ljust(57)
+      url_col = "`url`".ljust(90)
+      "| #{name_col}| Gauge     | #{version} | #{url_col}| #{description} |"
+    end
+
+    def patch_prometheus_metrics_doc
+      file_path = 'doc/administration/monitoring/prometheus/gitlab_metrics.md'
+
+      unless File.exist?(file_path)
+        warn "  [SKIP]   #{file_path} (file not found)"
+        return
+      end
+
+      content = File.read(file_path)
+
+      if content.include?("geo_#{status_field_prefix}")
+        puts "  [SKIP]   #{file_path} (already contains geo_#{status_field_prefix} metrics)"
+        return
+      end
+
+      # Insert before the geo_status_failed_total row
+      anchor = '| `geo_status_failed_total`'
+      unless content.include?(anchor)
+        warn "  [WARN]   #{file_path} (anchor '#{anchor}' not found, manual edit required)"
+        return
+      end
+
+      content = content.sub(anchor, "#{prometheus_metrics_rows}\n#{anchor}")
+
+      if dry_run
+        puts "  [PATCH]  #{file_path}"
+        return
+      end
+
+      File.write(file_path, content)
+      @files_modified << file_path
+      puts "  [PATCH]  #{file_path}"
+    end
+
+    # -------------------------------------------------------------------------
+    # File I/O helpers
+    # -------------------------------------------------------------------------
+
+    def write_file(path, content)
+      if dry_run
+        puts "  [CREATE] #{path}"
+        return
+      end
+
+      FileUtils.mkdir_p(File.dirname(path))
+      File.write(path, content)
+      @files_created << path
+      puts "  [CREATE] #{path}"
+    end
+
+    def patch_array_in_file(file_path, anchor:, new_line:, after_anchor: true)
+      unless File.exist?(file_path)
+        warn "  [SKIP]   #{file_path} (file not found)"
+        return
+      end
+
+      content = File.read(file_path)
+
+      if content.include?(new_line.strip)
+        puts "  [SKIP]   #{file_path} (already contains entry)"
+        return
+      end
+
+      anchor_index = content.index(anchor)
+      unless anchor_index
+        warn "  [WARN]   #{file_path} (anchor '#{anchor}' not found, manual edit required)"
+        return
+      end
+
+      if after_anchor
+        # Find the end of the anchor line
+        line_end = content.index("\n", anchor_index)
+        anchor_line = content[anchor_index..line_end]
+
+        # If the anchor line is the last element (no trailing comma),
+        # add a comma to it and remove the trailing comma from the new entry.
+        unless anchor_line.rstrip.end_with?(',')
+          content.insert(line_end, ',')
+          line_end += 1 # account for the inserted comma
+          new_line = new_line.sub(/,\s*$/, '')
+        end
+
+        content.insert(line_end + 1, "#{new_line}\n")
+      else
+        # Find the start of the anchor line
+        line_start = content.rindex("\n", anchor_index)
+        line_start = line_start ? line_start + 1 : 0
+        content.insert(line_start, "#{new_line}\n")
+      end
+
+      if dry_run
+        puts "  [PATCH]  #{file_path}"
+        return
+      end
+
+      File.write(file_path, content)
+      @files_modified << file_path
+      puts "  [PATCH]  #{file_path}"
+    end
+
+    def insert_before_line(file_path, anchor:, new_content:, before_anchor: false)
+      unless File.exist?(file_path)
+        warn "  [SKIP]   #{file_path} (file not found)"
+        return
+      end
+
+      content = File.read(file_path)
+
+      if content.include?("field :#{graphql_field_name}")
+        puts "  [SKIP]   #{file_path} (already contains field)"
+        return
+      end
+
+      anchor_index = content.index(anchor)
+      unless anchor_index
+        warn "  [WARN]   #{file_path} (anchor '#{anchor}' not found, manual edit required)"
+        return
+      end
+
+      if before_anchor
+        line_start = content.rindex("\n", anchor_index)
+        line_start = line_start ? line_start + 1 : 0
+        content.insert(line_start, "#{new_content}\n")
+      else
+        line_end = content.index("\n", anchor_index)
+        content.insert(line_end + 1, "#{new_content}\n")
+      end
+
+      if dry_run
+        puts "  [PATCH]  #{file_path}"
+        return
+      end
+
+      File.write(file_path, content)
+      @files_modified << file_path
+      puts "  [PATCH]  #{file_path}"
+    end
+
+    def append_before_last_end(file_path, new_content)
+      unless File.exist?(file_path)
+        warn "  [SKIP]   #{file_path} (file not found)"
+        return
+      end
+
+      content = File.read(file_path)
+
+      if content.include?("geo_#{replicable_name}_registry")
+        puts "  [SKIP]   #{file_path} (already contains entry)"
+        return
+      end
+
+      # Insert before the final 'end' in the file
+      last_end_index = content.rindex('end')
+      unless last_end_index
+        warn "  [WARN]   #{file_path} (could not find final 'end', manual edit required)"
+        return
+      end
+
+      # Detect indentation from the 'end' line and apply it to the new content
+      line_start = content.rindex("\n", last_end_index)
+      end_indent = line_start ? content[(line_start + 1)...last_end_index] : ''
+      # The content inside the block is indented one level deeper than 'end'
+      inner_indent = end_indent + '  '
+
+      # Preserve relative indentation within the new content by finding the
+      # minimum indentation of non-empty lines and offsetting from there.
+      non_empty_lines = new_content.lines.reject { |l| l.strip.empty? }
+      min_indent = non_empty_lines.map { |l| l[/^ */].length }.min || 0
+
+      indented_content = new_content.lines.map do |line|
+        if line.strip.empty?
+          "\n"
+        else
+          extra = line[/^ */].length - min_indent
+          "#{inner_indent}#{' ' * extra}#{line.lstrip}"
+        end
+      end.join
+
+      # Ensure exactly one newline before 'end'
+      indented_content = indented_content.chomp + "\n"
+
+      content.insert(last_end_index, indented_content)
+
+      if dry_run
+        puts "  [PATCH]  #{file_path}"
+        return
+      end
+
+      File.write(file_path, content)
+      @files_modified << file_path
+      puts "  [PATCH]  #{file_path}"
+    end
+
+    # -------------------------------------------------------------------------
+    # Summary
+    # -------------------------------------------------------------------------
+
+    def print_summary
+      puts
+      puts '=' * 72
+      puts "Summary for #{replicable_name}"
+      puts '=' * 72
+
+      if dry_run
+        puts 'DRY RUN: No files were written.'
+      else
+        puts "Files created:  #{@files_created.size}"
+        puts "Files modified: #{@files_modified.size}"
+      end
+
+      puts
+      puts 'Manual steps still required:'
+      puts '  1. Run Geo tracking database migration:'
+      puts '       bin/rake db:migrate:geo'
+      puts '  2. Run main database migration:'
+      puts '       bin/rake db:migrate'
+      puts '  3. Commit the generated db/structure.sql, ee/db/geo/structure.sql,'
+      puts '       and schema_migrations changes'
+
+      if upload_partition
+        puts "  4. The model (Geo::#{replicable_name_camel}) was auto-generated with all"
+        puts '       Geo concerns. Review it and adjust if needed.'
+      else
+        puts "  4. Add model concerns to #{model_class} (see issue template):"
+        puts '       - include ::Geo::ReplicableModel'
+        puts '       - include ::Geo::VerifiableModel'
+        puts "       - with_replicator Geo::#{replicator_class_name}"
+        puts "       - has_one :#{replicable_name}_state"
+        puts '       - delegate verification methods'
+        puts '       - implement selective_sync_scope'
+        puts '       - implement verification_state_object'
+      end
+
+      puts '  5. Run: tooling/bin/gettext_extractor locale/gitlab.pot'
+      puts '  6. Run: bundle exec rake geo:dev:ssf_metrics'
+      puts '  7. Run: bundle exec rake gitlab:graphql:compile_docs'
+      puts '  8. Run: bundle exec rake gitlab:graphql:generate_all_introspection_schemas'
+      puts '  9. Run: bundle exec rake gitlab:openapi:v2:generate'
+      puts ' 10. Run: bundle exec rake gitlab:openapi:v3:generate'
+      puts
+      puts 'For the full checklist, see:'
+      puts '  .gitlab/issue_templates/Geo Replicate a new blob type.md'
+    end
+  end
+end
+# rubocop:enable Graphql/GraphqlNamePosition -- Vibe-coded generator
+# rubocop:enable Layout/ExtraSpacing -- Vibe-coded generator
+# rubocop:enable Layout/LineLength -- Vibe-coded generator
+# rubocop:enable Style/PerlBackrefs -- Vibe-coded generator
+# rubocop:enable Style/StringConcatenation -- Vibe-coded generator
+
+# =============================================================================
+# CLI
+# =============================================================================
+
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = 'Usage: scripts/geo/generate-blob-replicator [options]'
+
+  opts.on('--replicable-name=NAME', 'Snake_case replicable name (e.g. abuse_report_upload)') do |v|
+    options[:replicable_name] = v
+  end
+
+  opts.on('--model-class=CLASS', 'Ruby model class name (e.g. AbuseReport)') do |v|
+    options[:model_class] = v
+  end
+
+  opts.on('--table-name=TABLE', 'Database table name (e.g. abuse_report_uploads)') do |v|
+    options[:table_name] = v
+  end
+
+  opts.on('--sharding-key=KEY', 'Sharding key column(s). Can be specified multiple times or comma-separated.') do |v|
+    options[:sharding_keys] ||= []
+    options[:sharding_keys] << v
+  end
+
+  opts.on('--milestone=VERSION', 'Milestone version (e.g. 18.10)') do |v|
+    options[:milestone] = v
+  end
+
+  opts.on('--upload-partition', 'Generate a dedicated model for an upload partition table') do
+    options[:upload_partition] = true
+  end
+
+  opts.on('--dry-run', 'Print file paths without writing') do
+    options[:dry_run] = true
+  end
+
+  opts.on('-h', '--help', 'Show this help message') do
+    puts opts
+    exit
+  end
+end.parse!
+
+if options.empty?
+  warn 'ERROR: No options provided. Run with --help for usage.'
+  exit 1
+end
+
+Geo::BlobReplicatorGenerator.new(options).run

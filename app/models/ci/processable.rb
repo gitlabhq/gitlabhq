@@ -55,6 +55,9 @@ module Ci
       inverse_of: :job,
       partition_foreign_key: :partition_id
 
+    has_one :supply_chain_attestation, class_name: 'SupplyChain::Attestation', foreign_key: :build_id, inverse_of:
+      :build
+
     accepts_nested_attributes_for :needs
     accepts_nested_attributes_for :job_definition_instance
 

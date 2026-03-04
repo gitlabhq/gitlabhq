@@ -2,6 +2,7 @@
 
 module Ci
   class Stage < Ci::ApplicationRecord
+    include AfterCommitQueue
     include Ci::Partitionable
     include Ci::HasStatus
     include Importable
@@ -135,6 +136,12 @@ module Ci
       event :delay do
         transition any - [:scheduled] => :scheduled
       end
+
+      after_transition any => any do |stage, _transition|
+        stage.run_after_commit do
+          GraphqlTriggers.ci_stage_status_updated(self)
+        end
+      end
     end
 
     # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability, consider refactoring issue #439268
@@ -227,7 +234,7 @@ module Ci
     private
 
     def preload_metadata(statuses)
-      relations = [:metadata, :job_definition, :error_job_messages, :pipeline,
+      relations = [:metadata, :job_definition, :error_job_messages, :pipeline, :supply_chain_attestation,
         { downstream_pipeline: [:user, { project: [:route, { namespace: :route }] }] }]
 
       ::Ci::Preloaders::CommitStatusPreloader.new(statuses).execute(relations)

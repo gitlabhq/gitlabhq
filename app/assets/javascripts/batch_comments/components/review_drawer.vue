@@ -295,6 +295,7 @@ export default {
     :header-height="getDrawerHeaderHeight"
     :z-index="$options.DRAWER_Z_INDEX"
     :open="drawerOpened"
+    header-sticky
     class="merge-request-review-drawer !gl-w-[100cqw] !gl-max-w-2xl"
     data-testid="review-drawer-toggle"
     @close="setDrawerOpened(false)"

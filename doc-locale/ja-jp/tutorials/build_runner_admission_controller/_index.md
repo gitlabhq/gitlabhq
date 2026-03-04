@@ -1,25 +1,25 @@
 ---
 stage: Verify
 group: Runner Core
-info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
-title: 'チュートリアル: Runnerアドミッションコントローラーをビルドする'
+info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
+title: 'チュートリアル: Runnerコントローラーの許可リストをビルドする'
 ---
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
-このチュートリアルでは、CI/CDジョブの実行に関するカスタムポリシーを適用する、Runnerアドミッションコントローラーのビルドについて説明します。ジョブルーターに接続し、イメージ許可リストポリシーを実装するGoでコントローラーを作成します。
+このチュートリアルでは、CI/CDジョブの実行に関するカスタムポリシーを適用する、Runnerコントローラーのビルドについて説明します。Goでコントローラーを作成し、ジョブルーターに接続して、イメージ許可リストポリシーを実装します。
 
-このチュートリアルのコード例は、[runner-controller-example](https://gitlab.com/gitlab-org/cluster-integration/runner-controller-example)リポジトリから引用されています。このリポジトリには、出発点として使用できる完全な参照実装が用意されています。
+このチュートリアルのコード例は、[runner-controller-example](https://gitlab.com/gitlab-org/cluster-integration/runner-controller-example)リポジトリから転載したもので、出発点として使用できる完全な参照実装を提供します。
 
-このチュートリアルを終えるまでに、次のことを行うアドミッションコントローラーが完成します:
+このチュートリアルを終えるまでに、次のことを行う、実用的なコントローラーが完成します:
 
 - gRPCを使用してジョブルーターに接続する
 - GitLabに自身を登録する
 - ジョブアドミッションリクエストを受信する
-- カスタムポリシーに対してジョブを評価する
+- カスタムポリシーに対してジョブを検証する
 - アドミッションの決定を返す
 
-Runnerアドミッションコントローラーをビルドするには:
+Runnerコントローラーをビルドするには、次の手順を実行します:
 
 1. [GitLabでRunnerコントローラーを作成する](#create-a-runner-controller-in-gitlab)
 1. [Runnerコントローラーのスコープを設定する](#scope-the-runner-controller)
@@ -37,13 +37,13 @@ Runnerアドミッションコントローラーをビルドするには:
 
 以下を確認してください:
 
-- UltimateプランのGitLab Self-ManagedまたはGitLab Dedicated
+- UltimateティアのGitLabセルフマネージドまたはGitLab Dedicated
 - GitLabインスタンスへの管理者アクセス
 - GitLab APIとやり取りするための次のいずれか:
-  - [GitLab CLI (`glab`)](https://docs.gitlab.com/cli/) 1.85.0以降。`glab auth login`で認証済み
+  - [GitLab CLI (`glab`)](https://docs.gitlab.com/cli/) 1.85.0以降。`glab auth login`で認証されています
   - `curl`または別のHTTPクライアント
 - Go 1.21以降がインストールされている
-- Protobufコードを生成するためにインストールされた[`buf` CLI](https://buf.build/docs/installation)
+- [Protobufコードを生成するためにインストールされた`buf` CLI](https://buf.build/docs/installation)
 - GitLabインスタンスで次の機能フラグが有効になっている:
   - `job_router`
   - `job_router_admission_control`
@@ -53,7 +53,7 @@ Runnerアドミッションコントローラーをビルドするには:
 
 [RunnerコントローラーAPI](../../api/runner_controllers.md)を使用して、Runnerコントローラーを作成します。
 
-適用を有効にする前に、`dry_run`状態で開始して、コントローラーの動作を検証します:
+`dry_run`状態から開始して、適用を有効にする前に、コントローラーの動作を検証します:
 
 {{< tabs >}}
 
@@ -79,13 +79,13 @@ curl --request POST \
 
 {{< /tabs >}}
 
-次のステップのために、返された`id`を保存します。
+次の手順のために、返された`id`を保存します。
 
 ## Runnerコントローラーのスコープを設定する {#scope-the-runner-controller}
 
-アドミッションリクエストを受信するには、Runnerコントローラーのスコープを設定する必要があります。スコープがないと、コントローラーは有効にしても非アクティブのままになります。
+Runnerコントローラーは、アドミッションリクエストを受信するようにスコープを設定する必要があります。スコープがないと、有効にしてもコントローラーは非アクティブのままになります。
 
-このチュートリアルでは、インスタンス内のすべてのRunnerに対してコントローラーのスコープを設定します:
+このチュートリアルでは、インスタンス内のすべてのRunnerにコントローラーのスコープを設定します:
 
 {{< tabs >}}
 
@@ -109,7 +109,7 @@ curl --request POST \
 
 {{< /tabs >}}
 
-または、[RunnerコントローラーAPI](../../api/runner_controllers.md)を使用して、特定のRunnerに対してコントローラーのスコープを設定することもできます。コントローラーに特定のRunnerのジョブのみを評価させる場合は、Runnerレベルのスコープ設定を使用します。
+または、[RunnerコントローラーAPI](../../api/runner_controllers.md)を使用して、特定のRunnerにコントローラーのスコープを設定することもできます。特定のRunnerに対してのみジョブを検証するようにコントローラーを設定する場合は、Runnerレベルのスコープ設定を使用します。
 
 ## Runnerコントローラートークンを作成する {#create-a-runner-controller-token}
 
@@ -139,7 +139,7 @@ curl --request POST \
 
 {{< /tabs >}}
 
-返された`token`の値を安全に保存します。トークンは1回のみ表示されます。
+返された`token`値を安全に保存します。トークンは一度しか表示されません。
 
 ## Goプロジェクトをセットアップする {#set-up-your-go-project}
 
@@ -153,12 +153,12 @@ go mod init example.com/runner-admission-controller
 
 ## protobuf定義からクライアントコードを生成する {#generate-client-code-from-protobuf-definitions}
 
-[Kubernetes向けGitLabエージェント](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent)リポジトリのProtobuf定義からgRPCクライアントコードを生成する必要があります。次の方法を含め、任意の方法を使用できます:
+[Kubernetes向けGitLabエージェント](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent)リポジトリ内のProtobuf定義からgRPCクライアントコードを生成する必要があります。次の方法を含め、任意の方法を使用できます:
 
-- `.proto`ファイルを手動でベンダーリングし、`protoc`を直接使用する。
-- [`buf`](https://buf.build/)を使用して、コードを自動的にフェッチして生成します。
+- `.proto`ファイルをフェッチして、`protoc`を直接使用します。
+- [`buf`を使用](https://buf.build/)してコードを自動的にフェッチおよび生成します。
 
-Protobuf定義の詳細については、Runnerコントローラー仕様の[クライアントコードの生成](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md#generating-client-code)を参照してください。
+Protobuf定義の詳細については、Runnerコントローラーの仕様の[クライアントコードの生成](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md#generating-client-code)を参照してください。
 
 このチュートリアルでは、`buf`を使用します。`buf.gen.yaml`を作成します:
 
@@ -192,11 +192,11 @@ plugins:
 buf generate
 ```
 
-これにより、`internal/rpc/`にgRPCクライアントコードが作成されます。
+これにより、gRPCクライアントコードが`internal/rpc/`に作成されます。
 
 ## 認証を実装する {#implement-authentication}
 
-Runnerコントローラーは、gRPCメタデータヘッダーを使用してジョブルーターで認証を行います。仕様の詳細については、Runnerコントローラー仕様の[認証](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md#authentication)を参照してください。
+Runnerコントローラーは、gRPCメタデータヘッダーを使用してジョブルーターで認証します。仕様の詳細については、Runnerコントローラーの仕様の[認証](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md#authentication)を参照してください。
 
 必要なヘッダーを含む認証情報プロバイダーを作成します:
 
@@ -228,7 +228,7 @@ conn, err := grpc.NewClient(kasAddress,
 
 ## エージェント登録を実装する {#implement-agent-registration}
 
-プレゼンストラッキングとモニタリングのために、ジョブルーターにコントローラーを登録します。プレゼンスを維持するために、定期的に再登録します(推奨: 3分ごと)。仕様の詳細については、Runnerコントローラー仕様の[エージェント登録](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md#agentregistrar)を参照してください。
+プレゼンストラッキングとモニタリングのために、ジョブルーターにコントローラーを登録します。プレゼンスを維持するために、定期的に再登録します（推奨：3分ごと）。仕様の詳細については、Runnerコントローラーの仕様の[AgentRegistrar](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md#agentregistrar)を参照してください。
 
 ```go
 func registerAgent(ctx context.Context, conn *grpc.ClientConn, instanceID int64) error {
@@ -248,7 +248,7 @@ func registerAgent(ctx context.Context, conn *grpc.ClientConn, instanceID int64)
 
 ## アドミッションループを実装する {#implement-the-admission-loop}
 
-アドミッションループは、ジョブの詳細をジョブルーターから受信し、決定を送信します。仕様の詳細については、Runnerコントローラー仕様の[Runnerコントローラーサービス](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md#runnercontrollerservice)と[プロトコルフロー](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md#protocol-flow)を参照してください。
+アドミッションループは、ジョブルーターからジョブの詳細を受信し、決定を送信します。仕様の詳細については、Runnerコントローラーの仕様の[RunnerControllerService](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md#runnercontrollerservice)と[プロトコルフロー](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md#protocol-flow)を参照してください。
 
 ```go
 func handleAdmissionRequest(ctx context.Context, client rpc.RunnerControllerServiceClient) error {
@@ -325,11 +325,11 @@ func evaluateJob(req *rpc.AdmitJobRequest) (admitted bool, reason string) {
 
 ## ドライラン状態でテストする {#test-with-dry-run-state}
 
-コントローラーが実行中で、`dry_run`状態になっている場合は、CI/CDパイプラインをトリガーします。コントローラーログをチェックして、アドミッションリクエストを受信したことを確認します。ジョブルーターは決定をログに記録しますが、ドライラン状態のコントローラーには適用しません。このアクションにより、適用を有効にする前に動作を検証し、デプロイのリスクを軽減できます。
+コントローラーの実行中、`dry_run`状態の場合、CI/CDパイプラインをトリガーします。コントローラーのログをチェックして、アドミッションリクエストを受信したことを確認します。ジョブルーターは決定をログに記録しますが、ドライラン状態のコントローラーには適用しません。このアクションにより、適用を有効にする前に、動作を検証し、デプロイのリスクを軽減できます。
 
 ## 本番環境で有効にする {#enable-in-production}
 
-`dry_run`状態でコントローラーの動作を検証したら、`enabled`状態に更新します:
+`dry_run`状態でコントローラーの動作を検証した後、`enabled`状態に更新します:
 
 {{< tabs >}}
 
@@ -357,12 +357,12 @@ curl --request PUT \
 
 これで、アドミッションの決定がジョブの実行に影響を与えるようになりました。
 
-### Runnerコントローラーのホスティング {#hosting-the-runner-controller}
+### Runnerコントローラーのホスト {#hosting-the-runner-controller}
 
-Runnerコントローラーのホスティングは、GitLabインスタンスのスケールと、アドミッションコントロールの影響を受けるジョブの負荷によって異なります。唯一の要件は、GitLabインスタンスがRunnerコントローラーから到達可能であることです。これは、接続先であるためです。
+Runnerコントローラーのホストは、アドミッション制御の影響を受けるジョブのスケールと負荷に応じて異なりますGitLabインスタンスの。唯一の要件は、GitLabインスタンスがRunnerコントローラーから到達可能であることです。それは接続先であるためです。
 
 ## 次の手順 {#next-steps}
 
-- [完全な実装例](https://gitlab.com/gitlab-org/cluster-integration/runner-controller-example)を確認してください。
+- [完全な例の実装](https://gitlab.com/gitlab-org/cluster-integration/runner-controller-example)をレビューします。
 - プロトコルの詳細については、[Runnerコントローラー仕様](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md)をお読みください。
 - より複雑なポリシーについては、[Open Policy Agent (OPA)](https://www.openpolicyagent.org/)の使用を検討してください。

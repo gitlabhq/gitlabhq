@@ -22,6 +22,10 @@ module GraphqlTriggers
     GitlabSchema.subscriptions.trigger(:ci_stage_updated, { stage_id: stage_gid }, job)
   end
 
+  def self.ci_stage_status_updated(stage)
+    GitlabSchema.subscriptions.trigger(:ci_stage_status_updated, { stage_id: stage.to_gid }, stage)
+  end
+
   def self.ci_pipeline_status_updated(pipeline)
     GitlabSchema.subscriptions.trigger(:ci_pipeline_status_updated, { pipeline_id: pipeline.to_gid }, pipeline)
   end
