@@ -456,7 +456,6 @@ Style/ClassAndModuleChildren:
     - 'lib/gitlab/ci/mask_secret.rb'
     - 'lib/gitlab/ci/warnings.rb'
     - 'lib/gitlab/config_helper.rb'
-    - 'lib/gitlab/instrumentation/elasticsearch_transport.rb'
     - 'lib/gitlab/usage_data_counters/base_counter.rb'
     - 'lib/gitlab/usage_data_counters/ci_template_unique_counter.rb'
     - 'lib/release_highlights/validator/entry.rb'

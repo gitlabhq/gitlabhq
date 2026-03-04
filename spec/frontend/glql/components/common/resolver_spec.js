@@ -27,8 +27,6 @@ const MOCK_PARSE_OUTPUT = {
     before: { value: null, type: 'String' },
   },
   fields: MOCK_FIELDS,
-  aggregate: [],
-  groupBy: [],
 };
 
 describe('Resolver', () => {
@@ -178,8 +176,8 @@ describe('Resolver', () => {
         fields: MOCK_FIELDS,
         displayType: 'list',
         loading: false,
-        aggregate: MOCK_PARSE_OUTPUT.aggregate,
-        groupBy: MOCK_PARSE_OUTPUT.groupBy,
+        aggregate: null,
+        groupBy: null,
       });
     });
 

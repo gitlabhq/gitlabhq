@@ -44449,6 +44449,9 @@ msgstr ""
 msgid "MrReports|Security scan"
 msgstr ""
 
+msgid "MrReports|View report"
+msgstr ""
+
 msgid "Multiple IP address ranges are supported. Does not affect access to the group's settings."
 msgstr ""
 

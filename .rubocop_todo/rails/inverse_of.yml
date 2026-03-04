@@ -51,7 +51,6 @@ Rails/InverseOf:
     - 'ee/app/models/ee/ci/build.rb'
     - 'ee/app/models/ee/ci/pipeline.rb'
     - 'ee/app/models/ee/clusters/agent.rb'
-    - 'ee/app/models/ee/epic.rb'
     - 'ee/app/models/ee/group.rb'
     - 'ee/app/models/ee/plan.rb'
     - 'ee/app/models/ee/project.rb'

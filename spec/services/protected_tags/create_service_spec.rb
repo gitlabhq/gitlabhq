@@ -18,7 +18,7 @@ RSpec.describe ProtectedTags::CreateService, feature_category: :compliance_manag
     subject(:service) { described_class.new(project, user, params) }
 
     it 'creates a new protected tag' do
-      expect { service.execute }.to change(ProtectedTag, :count).by(1)
+      expect { service.execute }.to change { ProtectedTag.count }.by(1)
       expect(project.protected_tags.last.create_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
     end
 
@@ -28,7 +28,7 @@ RSpec.describe ProtectedTags::CreateService, feature_category: :compliance_manag
       subject(:service) { described_class.new(project, user, params) }
 
       it 'creates a new protected tag' do
-        expect { service.execute }.to change(ProtectedTag, :count).by(1)
+        expect { service.execute }.to change { ProtectedTag.count }.by(1)
         expect(project.protected_tags.last.name).to eq(name)
       end
     end

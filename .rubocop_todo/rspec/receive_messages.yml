@@ -84,7 +84,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/policies/issue_policy_spec.rb'
     - 'ee/spec/presenters/ci/minutes/usage_presenter_spec.rb'
     - 'ee/spec/presenters/merge_request_approver_presenter_spec.rb'
-    - 'ee/spec/presenters/merge_request_presenter_spec.rb'
     - 'ee/spec/replicators/geo/container_repository_replicator_spec.rb'
     - 'ee/spec/requests/api/code_suggestions_spec.rb'
     - 'ee/spec/requests/api/graphql/audit_events/streaming/instance_headers/destroy_spec.rb'

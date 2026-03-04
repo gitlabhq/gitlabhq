@@ -23,10 +23,6 @@ module ActiveContext
         false
       end
 
-      def completed?
-        raise NotImplementedError, "#{self.class.name} must implement #completed?"
-      end
-
       def create_collection(name, **options, &block)
         ActiveContext.adapter.executor.create_collection(name, **options, &block)
       end

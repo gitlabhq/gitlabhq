@@ -5,7 +5,7 @@ module Mutations
     class ReviewerRereview < Base
       graphql_name 'MergeRequestReviewerRereview'
 
-      argument :user_id, ::Types::GlobalIDType[::User],
+      argument :user_id, ::Types::GlobalIDType[::User], # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
         loads: Types::UserType,
         required: true,
         description: <<~DESC

@@ -693,15 +693,19 @@ describe('Merge requests list app', () => {
       expect(findBulkEditButton().exists()).toBe(false);
     });
 
-    it('emits "issuables:enableBulkEdit" event to legacy bulk edit class', async () => {
-      createComponent({ provide: { canBulkUpdate: true }, mountFn: mountExtended });
-      jest.spyOn(issuableEventHub, '$emit');
+    it(
+      'emits "issuables:enableBulkEdit" event to legacy bulk edit class',
+      async () => {
+        createComponent({ provide: { canBulkUpdate: true }, mountFn: mountExtended });
+        jest.spyOn(issuableEventHub, '$emit');
 
-      findBulkEditButton().vm.$emit('click');
-      await waitForPromises();
+        findBulkEditButton().vm.$emit('click');
+        await waitForPromises();
 
-      expect(issuableEventHub.$emit).toHaveBeenCalledWith('issuables:enableBulkEdit');
-    });
+        expect(issuableEventHub.$emit).toHaveBeenCalledWith('issuables:enableBulkEdit');
+      },
+      process.env.CI ? 20000 : 5000,
+    ); // timeout of 20s for CI only to accommodate gVisor syscall overhead
 
     describe.each([true, false])(
       'when "issuables:toggleBulkEdit" event is received with payload `%s`',

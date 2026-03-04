@@ -2437,6 +2437,49 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#member_of_self_or_descendant?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    subject { group.member_of_self_or_descendant?(user) }
+
+    context 'when user is nil' do
+      it 'is falsey' do
+        expect(group.member_of_self_or_descendant?(nil)).to be_falsey
+      end
+    end
+
+    context 'when user is not a member of the group' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when user is a member of the group' do
+      before do
+        group.add_guest(user)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when user is a member of a descendant group' do
+      before do
+        create(:group, parent: group).add_guest(user)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when user is a member of a shared descendant group' do
+      before do
+        shared_group = create(:group)
+        create(:group_group_link, shared_group: group, shared_with_group: shared_group)
+        shared_group.add_developer(user)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#max_member_access_for_user' do
     let_it_be(:group_user) { create(:user) }
 

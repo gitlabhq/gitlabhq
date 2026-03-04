@@ -9,6 +9,8 @@ module Mutations
       include FindsProject
       include CommonMutationArguments
 
+      authorize_granular_token permissions: :create_issue, boundary_argument: :project_path, boundary_type: :project
+
       authorize :create_issue
 
       argument :project_path, GraphQL::Types::ID,

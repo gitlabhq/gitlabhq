@@ -77,7 +77,12 @@ class Projects::NotesController < Projects::ApplicationController
   alias_method :awardable, :note
 
   def finder_params
-    params.merge(project: project, last_fetched_at: last_fetched_at, notes_filter: notes_filter)
+    params.merge(
+      organization_id: Current.organization.id,
+      project: project,
+      last_fetched_at: last_fetched_at,
+      notes_filter: notes_filter
+    )
   end
 
   def authorize_admin_note!

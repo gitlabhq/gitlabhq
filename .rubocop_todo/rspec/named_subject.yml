@@ -2050,7 +2050,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/utils/usage_data_spec.rb'
     - 'spec/lib/gitlab/utils/username_and_email_generator_spec.rb'
     - 'spec/lib/gitlab/word_diff/parser_spec.rb'
-    - 'spec/lib/gitlab/work_items/work_item_hierarchy_spec.rb'
     - 'spec/lib/gitlab/workhorse_spec.rb'
     - 'spec/lib/gitlab/x509/certificate_spec.rb'
     - 'spec/lib/gitlab_spec.rb'

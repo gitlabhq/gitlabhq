@@ -750,6 +750,12 @@ class Group < Namespace
     max_member_access_for_user(user) >= min_access_level
   end
 
+  def member_of_self_or_descendant?(user)
+    return false unless user
+
+    members_with_descendants.exists?(user_id: user)
+  end
+
   def has_owner?(user)
     return false unless user
 

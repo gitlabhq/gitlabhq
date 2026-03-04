@@ -129,6 +129,41 @@ end
 Of the two approaches, authorizing the object is more efficient, because it
 helps avoid unnecessary queries.
 
+### Do not use `loads:` in argument definitions
+
+Do not use the `loads:` option when defining GraphQL arguments. When `loads:` is used,
+`graphql-ruby` automatically resolves Global IDs into objects, but it produces
+different error messages depending on whether the object does not exist or the
+user lacks permission.
+
+This allows an attacker to enumerate valid resource IDs. Clients must not be able to
+distinguish between the absence of a record and the presence of one they do not have
+access to.
+
+Instead, accept the Global ID as a plain argument and load and authorize the
+object manually in the resolver using `authorized_find!`:
+
+```ruby
+# bad
+argument :milestone_id, ::Types::GlobalIDType[::Milestone],
+         loads: Types::MilestoneType,
+         description: 'Global ID of the milestone.'
+
+# good
+argument :milestone_id, ::Types::GlobalIDType[::Milestone],
+         required: false,
+         description: 'Global ID of the milestone.'
+
+def resolve(milestone_id:)
+  milestone = authorized_find!(id: milestone_id)
+  # ...
+end
+```
+
+This pattern ensures a uniform `ResourceNotAvailable` error is returned
+regardless of whether the resource is missing or the user is unauthorized.
+The `Graphql/ForbiddenLoadsArgument` RuboCop cop enforces this rule.
+
 ## Field authorization
 
 Fields can be authorized with the `authorize` option.

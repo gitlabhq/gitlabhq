@@ -1064,8 +1064,10 @@ rspec-ee system pg17 single-db-sec-connection:
 rspec-ee system pg17 duo_workflow_service:
   extends:
     - rspec-ee system pg17
+    - .default-retry
   rules:
     - !reference [".rails:rules:triggered-by-aigw-project", rules]
+    - !reference ['.rails:rules:ee-only-system', rules]
   variables:
     RSPEC_TAGS: "--tag duo_workflow_service"
   parallel: 4

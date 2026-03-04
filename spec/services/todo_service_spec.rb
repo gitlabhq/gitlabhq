@@ -663,7 +663,7 @@ RSpec.describe TodoService, feature_category: :notifications do
     it 'creates a MENTIONED todo even if user already has a pending MENTIONED todo' do
       create(:todo, :mentioned, user: member, project: project, target: issue, author: author)
 
-      expect { service.update_issue(issue, author) }.to change(member.todos, :count)
+      expect { service.update_issue(issue, author) }.to change { member.todos.count }
     end
 
     it 'creates a DIRECTLY_ADDRESSED todo even if user already has a pending DIRECTLY_ADDRESSED todo' do
@@ -671,19 +671,19 @@ RSpec.describe TodoService, feature_category: :notifications do
 
       issue.update!(description: "#{member.to_reference}, what do you think?")
 
-      expect { service.update_issue(issue, author) }.to change(member.todos, :count)
+      expect { service.update_issue(issue, author) }.to change { member.todos.count }
     end
 
     it 'creates an ASSIGNED todo even if user already has a pending MARKED todo' do
       create(:todo, :marked, user: john_doe, project: project, target: assigned_issue, author: author)
 
-      expect { service.reassigned_assignable(assigned_issue, author) }.to change(john_doe.todos, :count)
+      expect { service.reassigned_assignable(assigned_issue, author) }.to change { john_doe.todos.count }
     end
 
     it 'does not create an ASSIGNED todo if user already has an ASSIGNED todo' do
       create(:todo, :assigned, user: john_doe, project: project, target: assigned_issue, author: author)
 
-      expect { service.reassigned_assignable(assigned_issue, author) }.not_to change(john_doe.todos, :count)
+      expect { service.reassigned_assignable(assigned_issue, author) }.not_to change { john_doe.todos.count }
     end
 
     it 'creates multiple todos if a user is assigned and mentioned in a new issue' do
@@ -1624,6 +1624,6 @@ RSpec.describe TodoService, feature_category: :notifications do
   end
 
   def should_not_create_any_todo
-    expect { yield }.not_to change(Todo, :count)
+    expect { yield }.not_to change { Todo.count }
   end
 end

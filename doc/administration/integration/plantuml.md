@@ -138,10 +138,9 @@ In this basic `docker-compose.yml` file, PlantUML is accessible to GitLab at the
 `http://plantuml:8005/`:
 
 ```yaml
-version: "3"
 services:
   gitlab:
-    image: 'gitlab/gitlab-ee:17.9.1-ee.0'
+    image: 'gitlab/gitlab-ee:18.9.1-ee.0'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n    proxy_pass  http://plantuml:8005/; \n}\n"

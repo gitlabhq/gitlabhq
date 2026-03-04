@@ -10,7 +10,17 @@ The migration from Vue 2 to 3 is tracked in epic [&6252](https://gitlab.com/grou
 To ease migration to Vue 3.x, we have added [ESLint rules](https://gitlab.com/gitlab-org/frontend/eslint-plugin/-/merge_requests/50)
 that prevent us from using the following deprecated features in the codebase.
 
-## Setup GDK to use Vue3
+## GitLab can use Vue 3 (@vue/compat)
+
+The GitLab frontend team has enabled Vue 3 (@vue/compat) for development environments like GDK. While not yet production-ready, you can opt-in locally to verify your client code is forward-compatible with Vue 3.
+
+**How does it work?** When the build tool (Vite or Webpack) detects the VUE_VERSION=3 environment variable,
+it uses module aliasing to swap out certain dependencies, including Vue itself, for their Vue 3-compatible counterparts.
+
+Some of these replacement libraries are maintained by the team and act as thin wrappers around existing
+libraries, making them Vue 3-compatible without requiring any changes in consumer code.
+
+## Setup GDK to use Vue 3 (@vue/compat)
 
 This guide walks you through configuring the GitLab Development Kit (GDK) to use Vite as the build tool with Vue 3.
 
@@ -24,19 +34,7 @@ This guide walks you through configuring the GitLab Development Kit (GDK) to use
 
 ### Switching Between Vue Versions
 
-If you need to switch between Vue 2 and Vue 3, follow these steps carefully:
-
-1. **Stop GDK processes:**
-
-   ```shell
-   gdk kill
-   ```
-
-1. **Clear the Vite and Webpack caches:**
-
-   ```shell
-   yarn clean
-   ```
+To switch between Vue 2 and Vue 3, follow these steps:
 
 1. **Set the desired Vue version:**
 
@@ -53,10 +51,10 @@ If you need to switch between Vue 2 and Vue 3, follow these steps carefully:
 1. **Restart GDK:**
 
    ```shell
-   gdk start
+   gdk restart # or `gdk start` if running for the first time
    ```
 
-> **Important:** Always run `gdk kill` and clear caches with `yarn clean` when switching Vue versions. Failing to do so may cause build errors or unexpected behavior due to cached artifacts from the previous version.
+> **Important:** You can clear caches with `yarn clean` or `gdk kill vite` if you face issues switching Vue versions.
 
 ### Verifying Your Setup
 
@@ -69,6 +67,16 @@ gdk config get vite
 This should display your current Vite settings, including the enabled status and Vue version. Your GDK
 should also be up and running.
 
+```shell
+---
+enabled: true
+hot_module_reloading: true
+https:
+  enabled: true
+port: 3038
+vue_version: 3
+```
+
 ### Troubleshooting
 
 #### General Debugging
@@ -79,21 +87,19 @@ When encountering issues, start by checking the Vite logs:
 gdk tail vite
 ```
 
-This will show real-time Vite output and error messages that can help identify the problem.
+This shows real-time Vite output and error messages that can help identify the problem.
 
 #### Build Errors After Switching Versions
 
 If you encounter build errors after switching Vue versions:
 
-1. Ensure you've cleared the Vite cache
+1. Ensure you've cleared the Vite cache with `yarn clean`
 1. Try clearing `node_modules` and reinstalling dependencies:
 
    ```shell
    rm -rf node_modules
    yarn install
    ```
-
-1. Check `app/assets/javascripts/lib/utils/vue3compat/vue.js` - this compatibility layer can be a common source of issues when switching between Vue versions. If you're seeing import or module resolution errors, verify that this file is correctly configured for your target Vue version.
 
 #### Vite Not Starting
 
@@ -109,7 +115,9 @@ If Vite fails to start:
 - [Vue 3 Documentation](https://vuejs.org/)
 - [GDK Documentation](https://gitlab.com/gitlab-org/gitlab-development-kit)
 
-## Vue filters
+## Compatibility changes
+
+### Vue filters
 
 **Why**?
 
@@ -119,7 +127,7 @@ Filters [are removed](https://github.com/vuejs/rfcs/blob/master/active-rfcs/0015
 
 Component's computed properties / methods or external helpers.
 
-## Event hub
+### Event hub
 
 **Why**?
 
@@ -147,7 +155,7 @@ export default createEventHub();
 Event hubs created with the factory expose the same methods as Vue 2 event hubs (`$on`, `$once`, `$off` and
 `$emit`), making them backward compatible with our previous approach.
 
-## \<template functional>
+### \<template functional>
 
 **Why**?
 
@@ -167,7 +175,7 @@ const FunctionalComp = (props, slots) => {
 
 It is not recommended to replace stateful components with functional components unless you absolutely need a performance improvement right now. In Vue 3, performance gains for functional components are negligible.
 
-## Old slots syntax with `slot` attribute
+### Old slots syntax with `slot` attribute
 
 **Why**?
 
@@ -214,7 +222,7 @@ shallowMount(MyAwesomeComponent, {
 })
 ```
 
-## Props default function `this` access
+### Props default function `this` access
 
 **Why**?
 
@@ -258,11 +266,11 @@ export default {
 the props default value factory is passed the raw props as an argument, and can
 also access injections.
 
-## Handling libraries that do not work with `@vue/compat`
+### Handling libraries that do not work with `@vue/compat`
 
 **Problem**
 
-Some libraries rely on Vue.js 2 internals. They might not work with `@vue/compat`, so we need a strategy to use an updated version with Vue.js 3 while maintaining compatibility with the current codebase.
+Some libraries rely on Vue.js 2 internals. They might not work with `@vue/compat`, so we have added an adapter or replacements as a compatibility layer.
 
 **Goals**
 
@@ -270,224 +278,7 @@ Some libraries rely on Vue.js 2 internals. They might not work with `@vue/compat
 - Switching between new and old versions should be hidden inside tooling (webpack / jest) and should not be exposed to the code
 - All facades specific to migration should live in the same directory to simplify future migration steps
 
-### Step-by-step migration
+## Testing
 
-In the step-by-step guide, we will be migrating [VueApollo Demo](https://gitlab.com/gitlab-org/frontend/vue3-migration-vue-apollo/-/tree/main/src/vue3compat) project. It will allow us to focus on migration specifics while avoiding nuances of complex tooling setup in the GitLab project. The project intentionally uses the same tooling as GitLab:
-
-- webpack
-- yarn
-- Vue.js + VueApollo
-
-#### Initial state
-
-Right after cloning, you could run [VueApollo Demo](https://gitlab.com/gitlab-org/frontend/vue3-migration-vue-apollo/-/tree/main/src/vue3compat) with Vue.js 2 using `yarn serve` or with Vue.js 3 (`compat` build) using `yarn serve:vue3`. However latter immediately crashes:
-
-```javascript
-Uncaught TypeError: Cannot read properties of undefined (reading 'loading')
-```
-
-VueApollo v3 (used for Vue.js 2) fails to initialize in Vue.js `compat`
-
-> [!note]
-> While stubbing `Vue.version` will solve VueApollo-related issues in the demo project, it will still lose reactivity on specific scenarios, so an upgrade is still needed
-
-#### Step 1. Perform upgrade according to library docs
-
-According to [VueApollo v4 installation guide](https://v4.apollo.vuejs.org/guide/installation.html), we need to install `@vue/apollo-option` (this package provides VueApollo support for Options API) and make changes to our application:
-
-```diff
---- a/src/index.js
-+++ b/src/index.js
-@@ -1,19 +1,17 @@
--import Vue from "vue";
--import VueApollo from "vue-apollo";
-+import { createApp, h } from "vue";
-+import { createApolloProvider } from "@vue/apollo-option";
-
- import Demo from "./components/Demo.vue";
- import createDefaultClient from "./lib/graphql";
-
--Vue.use(VueApollo);
--
--const apolloProvider = new VueApollo({
-+const apolloProvider = createApolloProvider({
-   defaultClient: createDefaultClient(),
- });
-
--new Vue({
--  el: "#app",
--  apolloProvider,
--  render(h) {
-+const app = createApp({
-+  render() {
-     return h(Demo);
-   },
- });
-+app.use(apolloProvider);
-+app.mount("#app");
-```
-
-You can view these changes in [01-upgrade-vue-apollo](https://gitlab.com/gitlab-org/frontend/vue3-migration-vue-apollo/-/compare/main...01-upgrade-vue-apollo) branch of demo project
-
-#### Step 2. Addressing differences in augmenting applications in Vue.js 2 and 3
-
-In Vue.js 2 tooling like `VueApollo` is initialized in a "lazy" fashion:
-
-```javascript
-// We are registering VueApollo "handler" to handle some data LATER
-Vue.use(VueApollo)
-// ...
-// apolloProvider is provided at app instantiation,
-// previously registered VueApollo will handle that
-new Vue({ /- ... */, apolloProvider })
-```
-
-In Vue.js 3 both steps were merged in one - we are immediately registering the handler and passing configuration:
-
-```javascript
-app.use(apolloProvider)
-```
-
-In order to backport this behavior, we need the following knowledge:
-
-- We can access extra options provided to Vue instance via `$options`, so extra `apolloProvider` will be visible as `this.$options.apolloProvider`
-- We can access the current `app` (in Vue.js 3 meaning) on the Vue instance via `this.$.appContext.app`
-
-> [!note]
-> We're relying on non-public Vue.js 3 API in this case. However, since `@vue/compat` builds are expected to be available only for 3.2.x branch, we have reduced risks that this API will be changed
-
-With this knowledge, we can move the initialization of our tooling as early as possible in Vue2 - in the `beforeCreate()` lifecycle hook:
-
-```diff
---- a/src/index.js
-+++ b/src/index.js
-@@ -1,4 +1,4 @@
--import { createApp, h } from "vue";
-+import Vue from "vue";
- import { createApolloProvider } from "@vue/apollo-option";
-
- import Demo from "./components/Demo.vue";
-@@ -8,10 +8,13 @@ const apolloProvider = createApolloProvider({
-   defaultClient: createDefaultClient(),
- });
-
--const app = createApp({
--  render() {
-+new Vue({
-+  el: "#app",
-+  apolloProvider,
-+  render(h) {
-     return h(Demo);
-   },
-+  beforeCreate() {
-+    this.$.appContext.app.use(this.$options.apolloProvider);
-+  },
- });
--app.use(apolloProvider);
--app.mount("#app");
-```
-
-You can view these changes in [02-bring-back-new-vue](https://gitlab.com/gitlab-org/frontend/vue3-migration-vue-apollo/-/compare/01-upgrade-vue-apollo...02-bring-back-new-vue) branch of demo project
-
-#### Step 3. Recreating `VueApollo` class
-
-Vue.js 3 libraries (and Vue.js itself) have a preference for using factories like `createApp` instead of classes (previously `new Vue`)
-
-`VueApollo` class served two purposes:
-
-- constructor for creating `apolloProvider`
-- installation of apollo-related logic in components
-
-We can utilize `Vue.use(VueApollo)` code, which existed in our codebase, to hide there our mixin and avoid modification of our app code:
-
-```diff
---- a/src/index.js
-+++ b/src/index.js
-@@ -4,7 +4,26 @@ import { createApolloProvider } from "@vue/apollo-option";
- import Demo from "./components/Demo.vue";
- import createDefaultClient from "./lib/graphql";
-
--const apolloProvider = createApolloProvider({
-+class VueApollo {
-+  constructor(...args) {
-+    return createApolloProvider(...args);
-+  }
-+
-+  // called by Vue.use
-+  static install() {
-+    Vue.mixin({
-+      beforeCreate() {
-+        if (this.$options.apolloProvider) {
-+          this.$.appContext.app.use(this.$options.apolloProvider);
-+        }
-+      },
-+    });
-+  }
-+}
-+
-+Vue.use(VueApollo);
-+
-+const apolloProvider = new VueApollo({
-   defaultClient: createDefaultClient(),
- });
-
-@@ -14,7 +33,4 @@ new Vue({
-   render(h) {
-     return h(Demo);
-   },
--  beforeCreate() {
--    this.$.appContext.app.use(this.$options.apolloProvider);
--  },
- });
-```
-
-You can view these changes in [03-recreate-vue-apollo](https://gitlab.com/gitlab-org/frontend/vue3-migration-vue-apollo/-/compare/02-bring-back-new-vue...03-recreate-vue-apollo) branch of demo project
-
-#### Step 4. Moving `VueApollo` class to a separate file and setting up an alias
-
-Now, we have almost the same code (excluding import) as in Vue.js 2 version.
-We will move our facade to the separate file and set up `webpack` conditionally execute it if `vue-apollo` is imported when using Vue.js 3:
-
-```diff
---- a/src/index.js
-+++ b/src/index.js
-@@ -1,5 +1,5 @@
- import Vue from "vue";
--import { createApolloProvider } from "@vue/apollo-option";
-+import VueApollo from "vue-apollo";
-
- import Demo from "./components/Demo.vue";
- import createDefaultClient from "./lib/graphql";
-diff --git a/webpack.config.js b/webpack.config.js
-index 6160d3f..b8b955f 100644
---- a/webpack.config.js
-+++ b/webpack.config.js
-@@ -12,6 +12,7 @@ if (USE_VUE3) {
-
-   VUE3_ALIASES = {
-     vue: "@vue/compat",
-+    "vue-apollo": path.resolve("src/vue3compat/vue-apollo"),
-   };
- }
-```
-
-(moving `VueApollo` class from `index.js` to `vue3compat/vue-apollo.js` as default export is omitted for clarity)
-
-You can view these changes in [04-add-webpack-alias](https://gitlab.com/gitlab-org/frontend/vue3-migration-vue-apollo/-/compare/03-recreate-vue-apollo...04-add-webpack-alias) branch of demo project
-
-#### Step 5. Observe the results
-
-At this point, you should be able again to run **both*- Vue.js 2 version with `yarn serve` and Vue.js 3 one with `yarn serve:vue3`
-[Final MR](https://gitlab.com/gitlab-org/frontend/vue3-migration-vue-apollo/-/merge_requests/1/diffs) with all changes from previous steps displays no changes to `index.js` (application code), which was our goal
-
-### Applying this approach in the GitLab project
-
-In [commit adding VueApollo v4 support](https://gitlab.com/gitlab-org/gitlab/-/commit/e0af7e6479695a28a4fe85a88f90815aa3ce2814) we can see additional nuances not covered by step-by-step guide:
-
-- We might need to add additional imports to our facades (our code in GitLab uses `ApolloMutation` component)
-- We need to update aliases not only for webpack but also for jest so our tests could also consume our facade
-
-## Unit testing
-
-For more information about implementing unit tests or fixing tests that fail while using Vue 3,
-read the [Vue 3 testing guide](../testing_guide/testing_vue3.md).
+For more information about implementing or fixing tests that fail while using Vue 3, read the
+[Vue 3 testing guide](../testing_guide/testing_vue3.md).

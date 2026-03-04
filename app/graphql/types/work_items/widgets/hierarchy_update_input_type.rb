@@ -6,19 +6,19 @@ module Types
       class HierarchyUpdateInputType < BaseInputObject
         graphql_name 'WorkItemWidgetHierarchyUpdateInput'
 
-        argument :adjacent_work_item_id,
+        argument :adjacent_work_item_id, # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
           ::Types::GlobalIDType[::WorkItem],
           required: false,
           loads: ::Types::WorkItemType,
           description: 'ID of the work item to be switched with.'
 
-        argument :children_ids, [::Types::GlobalIDType[::WorkItem]],
+        argument :children_ids, [::Types::GlobalIDType[::WorkItem]], # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
           required: false,
           description: 'Global IDs of children work items.',
           loads: ::Types::WorkItemType,
           as: :children
 
-        argument :parent_id, ::Types::GlobalIDType[::WorkItem],
+        argument :parent_id, ::Types::GlobalIDType[::WorkItem], # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
           required: false,
           loads: ::Types::WorkItemType,
           description: 'Global ID of the parent work item. Use `null` to remove the association.'

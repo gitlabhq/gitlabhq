@@ -35,7 +35,6 @@ RSpec/AnyInstanceOf:
     - 'ee/spec/services/ee/users/create_service_spec.rb'
     - 'ee/spec/services/geo/container_repository_sync_service_spec.rb'
     - 'ee/spec/services/geo/framework_repository_sync_service_spec.rb'
-    - 'ee/spec/services/geo/metrics_update_service_spec.rb'
     - 'ee/spec/services/groups/destroy_service_spec.rb'
     - 'ee/spec/services/groups/update_service_spec.rb'
     - 'ee/spec/services/merge_requests/create_from_vulnerability_data_service_spec.rb'

@@ -1289,7 +1289,7 @@ CREATE FUNCTION sync_project_push_rules_on_insert_update() RETURNS trigger
     AS $$
  BEGIN
     IF (NEW.project_id IS NOT NULL) THEN
-      IF EXISTS (SELECT 1 FROM project_push_rules WHERE id = NEW.id) THEN
+      IF EXISTS (SELECT 1 FROM project_push_rules WHERE project_id = NEW.project_id) THEN
         UPDATE project_push_rules SET
           max_file_size = NEW.max_file_size,
           member_check = NEW.member_check,
@@ -1305,7 +1305,7 @@ CREATE FUNCTION sync_project_push_rules_on_insert_update() RETURNS trigger
           author_email_regex = NEW.author_email_regex,
           file_name_regex = NEW.file_name_regex,
           updated_at = NEW.updated_at
-        WHERE id = NEW.id;
+        WHERE project_id = NEW.project_id;
       ELSE
         INSERT INTO project_push_rules (
           id,
@@ -1326,7 +1326,7 @@ CREATE FUNCTION sync_project_push_rules_on_insert_update() RETURNS trigger
           created_at,
           updated_at
         ) VALUES (
-          NEW.id,
+          nextval(pg_get_serial_sequence('project_push_rules', 'id')),
           NEW.project_id,
           NEW.max_file_size,
           NEW.member_check,
@@ -1345,7 +1345,6 @@ CREATE FUNCTION sync_project_push_rules_on_insert_update() RETURNS trigger
           NEW.updated_at
         )
         ON CONFLICT (project_id) DO UPDATE SET
-          id = EXCLUDED.id,
           max_file_size = EXCLUDED.max_file_size,
           member_check = EXCLUDED.member_check,
           prevent_secrets = EXCLUDED.prevent_secrets,
@@ -1359,8 +1358,7 @@ CREATE FUNCTION sync_project_push_rules_on_insert_update() RETURNS trigger
           commit_message_negative_regex = EXCLUDED.commit_message_negative_regex,
           author_email_regex = EXCLUDED.author_email_regex,
           file_name_regex = EXCLUDED.file_name_regex,
-          updated_at = EXCLUDED.updated_at
-        WHERE NOT EXISTS (SELECT 1 FROM project_push_rules WHERE id = EXCLUDED.id AND project_id != EXCLUDED.project_id);
+          updated_at = EXCLUDED.updated_at;
       END IF;
     END IF;
    RETURN NEW;

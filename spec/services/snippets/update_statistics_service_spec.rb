@@ -24,7 +24,7 @@ RSpec.describe Snippets::UpdateStatisticsService, feature_category: :source_code
 
           expect do
             subject
-          end.to change(SnippetStatistics, :count).by(1)
+          end.to change { SnippetStatistics.count }.by(1)
 
           expect(snippet.statistics.commit_count).not_to be_zero
           expect(snippet.statistics.file_count).not_to be_zero

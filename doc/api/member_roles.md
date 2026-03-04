@@ -30,7 +30,6 @@ description: Use the Member Roles API to manage custom roles for GitLab.com grou
 - [Manage group access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140115) in GitLab 16.8.
 - [Admin terraform state introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140759) in GitLab 16.8.
 - Allow to create and remove an instance-wide custom role on GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
-- [Admin security testing introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176628) in GitLab 17.9 [with a flag](../administration/feature_flags/_index.md) named `custom_ability_admin_security_testing`. Disabled by default.
 
 {{< /history >}}
 

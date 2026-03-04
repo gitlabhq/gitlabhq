@@ -5,7 +5,7 @@ module ActiveContext
     extend Concerns::ReferenceUtils
     extend Concerns::Preprocessor
     include Preprocessors::ContentFetcher
-    include Preprocessors::EmbeddingsWithModelRedesign
+    include Preprocessors::Embeddings
     include Preprocessors::Preload
 
     DELIMITER = '|'

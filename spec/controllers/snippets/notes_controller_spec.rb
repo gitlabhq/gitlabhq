@@ -18,6 +18,16 @@ RSpec.describe Snippets::NotesController, feature_category: :team_planning do
       request.headers['X-Last-Fetched-At'] = 0
     end
 
+    it 'passes organization_id to NotesFinder' do
+      note_on_public
+
+      expect(NotesFinder).to receive(:new)
+        .with(anything, hash_including(organization_id: current_organization.id))
+        .and_call_original
+
+      get :index, params: { snippet_id: public_snippet, format: :json }
+    end
+
     context 'when a snippet is public' do
       before do
         note_on_public

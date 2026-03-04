@@ -192,7 +192,6 @@ RSpec/VerifiedDoubles:
     - 'spec/controllers/concerns/spammable_actions/captcha_check/html_format_actions_support_spec.rb'
     - 'spec/controllers/concerns/spammable_actions/captcha_check/json_format_actions_support_spec.rb'
     - 'spec/controllers/dashboard/snippets_controller_spec.rb'
-    - 'spec/controllers/explore/projects_controller_spec.rb'
     - 'spec/controllers/groups/dependency_proxy_auth_controller_spec.rb'
     - 'spec/controllers/groups/dependency_proxy_for_containers_controller_spec.rb'
     - 'spec/controllers/help_controller_spec.rb'

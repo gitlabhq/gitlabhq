@@ -14,6 +14,33 @@ Various settings control when and how users can interact with GitLab Duo feature
 user perspective. This document explains the implementation logic from a
 developer perspective and includes technical details.
 
+### Namespace billing and governance
+
+On GitLab.com, the `governing_namespace` [method](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/concerns/ai/user_authorizable.rb)
+determines the authoritative namespace for GitLab Duo usage-based billing and governance in a user's request context.
+Governing namespace is not applicable to self-managed or dedicated instances.
+
+The `governing_namespace` method follows this decision process:
+
+- If a `scope` (namespace context) is provided and the user is a member
+  of that namespace's top-level group or any subgroups or projects within the top-level group, use the top-level group.
+  Otherwise, use the user's selected default GitLab Duo namespace.
+- If the user has not selected a default namespace, attempt to infer one.
+  Return `nil` if no suitable namespace can be determined.
+
+```ruby
+# Without a scope: uses the user's default GitLab Duo namespace
+governing_ns = current_user.governing_namespace
+# => Returns the user's default namespace or inferred namespace
+
+# With a scope: prefers the scope's top-level group if the user is a member
+governing_ns = current_user.governing_namespace(project)
+# => Returns the project's top-level group if the user is a member. Otherwise, returns the default namespace
+
+# Alias for clarity in billing contexts
+billable_ns = current_user.billable_duo_namespace(resource)
+```
+
 ### UI Options and Database States
 
 In the UI, the "GitLab Duo Enterprise availability" setting shows 3 options:

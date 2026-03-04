@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'authorizing granular token permissions' do |permissions, expected_success_status: :success|
+RSpec.shared_examples 'authorizing granular token permissions' do |permissions, expected_success_status: :success,
+    context_type: :rest|
+  let(:is_graphql) { context_type == :graphql }
+
   shared_examples 'granting access' do
-    it 'grants access' do
+    it 'grants access', :aggregate_failures do
       request
 
       expect(response).to have_gitlab_http_status(expected_success_status)
+      expect(graphql_errors).to be_nil if is_graphql
     end
   end
 
@@ -13,12 +17,17 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
     it 'denies access', :aggregate_failures do
       request
 
-      expect(response).to have_gitlab_http_status(:forbidden)
+      if is_graphql
+        expect(response).to have_gitlab_http_status(:success)
+        expect(graphql_errors).to include(a_hash_including('message' => include(message)))
+      else
+        expect(response).to have_gitlab_http_status(:forbidden)
 
-      # Only check JSON body if present (GET/POST/etc have bodies, HEAD doesn't)
-      if response.body.present?
-        expect(json_response['error']).to eq('insufficient_granular_scope')
-        expect(json_response['error_description']).to include(message)
+        # Only check JSON body if present (GET/POST/etc have bodies, HEAD doesn't)
+        if response.body.present?
+          expect(json_response['error']).to eq('insufficient_granular_scope')
+          expect(json_response['error_description']).to include(message)
+        end
       end
     end
   end
@@ -68,4 +77,8 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions, 
       it_behaves_like 'denying access'
     end
   end
+end
+
+RSpec.shared_examples 'authorizing granular token permissions for GraphQL' do |permissions|
+  it_behaves_like 'authorizing granular token permissions', permissions, context_type: :graphql
 end

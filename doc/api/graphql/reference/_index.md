@@ -10307,6 +10307,31 @@ Input type: `MavenVirtualRegistryUpdateInput`
 | <a id="mutation-mavenvirtualregistryupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-mavenvirtualregistryupdate-registry"></a>`registry` | [`MavenRegistry`](#mavenregistry) | Maven virtual registry after the mutation. |
 
+### `Mutation.mavenVirtualRegistryUpstreamUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `MavenVirtualRegistryUpstreamUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mavenvirtualregistryupstreamupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mavenvirtualregistryupstreamupdate-id"></a>`id` | [`VirtualRegistriesPackagesMavenRegistryUpstreamID!`](#virtualregistriespackagesmavenregistryupstreamid) | ID of the Maven virtual registry upstream. |
+| <a id="mutation-mavenvirtualregistryupstreamupdate-position"></a>`position` | [`Int!`](#int) | Priority order of an upstream within a virtual registry. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-mavenvirtualregistryupstreamupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-mavenvirtualregistryupstreamupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-mavenvirtualregistryupstreamupdate-registryupstream"></a>`registryUpstream` | [`MavenRegistryUpstreamWithRegistry`](#mavenregistryupstreamwithregistry) | Maven registry upstream after update. |
+
 ### `Mutation.memberRoleAdminCreate`
 
 {{< details >}}
@@ -55741,7 +55766,6 @@ Member role permission.
 | <a id="memberrolepermission-admin_push_rules"></a>`ADMIN_PUSH_RULES` | Configure push rules for repositories at the group or project level. |
 | <a id="memberrolepermission-admin_runners"></a>`ADMIN_RUNNERS` | Create, view, edit, and delete group or project Runners. Includes configuring Runner settings. |
 | <a id="memberrolepermission-admin_security_attributes"></a>`ADMIN_SECURITY_ATTRIBUTES` | Manage the security categories and attributes belonging to a top-level group. Also requires the `read_security_attribute` permission. |
-| <a id="memberrolepermission-admin_security_testing"></a>`ADMIN_SECURITY_TESTING` | Edit and manage security testing configurations and settings. |
 | <a id="memberrolepermission-admin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |
 | <a id="memberrolepermission-admin_vulnerability"></a>`ADMIN_VULNERABILITY` | Edit the status, linked issue, and severity of a vulnerability object. Also requires the `read_vulnerability` permission. |
 | <a id="memberrolepermission-admin_web_hook"></a>`ADMIN_WEB_HOOK` | Manage webhooks. |
@@ -55786,7 +55810,6 @@ Member role standard permission.
 | <a id="memberrolestandardpermission-admin_push_rules"></a>`ADMIN_PUSH_RULES` | Configure push rules for repositories at the group or project level. |
 | <a id="memberrolestandardpermission-admin_runners"></a>`ADMIN_RUNNERS` | Create, view, edit, and delete group or project Runners. Includes configuring Runner settings. |
 | <a id="memberrolestandardpermission-admin_security_attributes"></a>`ADMIN_SECURITY_ATTRIBUTES` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.2. **Status**: Experiment. Manage the security categories and attributes belonging to a top-level group. Also requires the `read_security_attribute` permission. |
-| <a id="memberrolestandardpermission-admin_security_testing"></a>`ADMIN_SECURITY_TESTING` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Edit and manage security testing configurations and settings. |
 | <a id="memberrolestandardpermission-admin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Execute terraform commands, lock/unlock terraform state files, and remove file versions. |
 | <a id="memberrolestandardpermission-admin_vulnerability"></a>`ADMIN_VULNERABILITY` | Edit the status, linked issue, and severity of a vulnerability object. Also requires the `read_vulnerability` permission. |
 | <a id="memberrolestandardpermission-admin_web_hook"></a>`ADMIN_WEB_HOOK` | Manage webhooks. |
@@ -59374,6 +59397,12 @@ An example `VirtualRegistriesContainerUpstreamID` is: `"gid://gitlab/VirtualRegi
 A `VirtualRegistriesPackagesMavenRegistryID` is a global ID. It is encoded as a string.
 
 An example `VirtualRegistriesPackagesMavenRegistryID` is: `"gid://gitlab/VirtualRegistries::Packages::Maven::Registry/1"`.
+
+### `VirtualRegistriesPackagesMavenRegistryUpstreamID`
+
+A `VirtualRegistriesPackagesMavenRegistryUpstreamID` is a global ID. It is encoded as a string.
+
+An example `VirtualRegistriesPackagesMavenRegistryUpstreamID` is: `"gid://gitlab/VirtualRegistries::Packages::Maven::RegistryUpstream/1"`.
 
 ### `VirtualRegistriesPackagesMavenUpstreamID`
 

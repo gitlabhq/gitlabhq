@@ -38,20 +38,23 @@ After completing the integration, the diagrams.net editor opens with the URL you
 
 ## Configure your diagrams.net server
 
-You can set up your own diagrams.net server to generate the diagrams.
+You can set up your own diagrams.net server to generate diagrams.
+For GitLab Self-Managed offline installations, this step is required.
 
-It's a required step for users on an offline installation of GitLab Self-Managed.
-
-For example, to run a diagrams.net container in Docker, run the following command:
+To run a diagrams.net container in Docker, run the following command:
 
 ```shell
-docker run -it --rm --name="draw" -p 8080:8080 -p 8443:8443 jgraph/drawio
+docker run -it --rm --name="draw" -p 8006:8080 -p 8443:8443 jgraph/drawio
 ```
 
-Make note of the hostname of the server running the container, to be used as the diagrams.net URL
-when you enable the integration.
+> [!note]
+> Use port `8006` for the HTTP endpoint. You should avoid the default port `8080`
+> because [Puma](../operations/puma.md) listens on port `8080` for metrics.
 
-For more information, see [Run your own diagrams.net server with Docker](https://www.drawio.com/blog/diagrams-docker-app).
+Note the hostname of the server running the container. You use this hostname as the
+diagrams.net URL when you enable the integration.
+
+For more information, see [run your own diagrams.net server with Docker](https://www.drawio.com/blog/diagrams-docker-app).
 
 ## Enable Diagrams.net integration
 

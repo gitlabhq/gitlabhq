@@ -115,7 +115,6 @@ RSpec/RailsControllerTesting:
     - 'ee/spec/requests/groups/settings/reporting_controller_spec.rb'
     - 'ee/spec/requests/groups/virtual_registries/maven/registries_controller_spec.rb'
     - 'ee/spec/requests/groups/virtual_registries/maven/upstreams_controller_spec.rb'
-    - 'ee/spec/requests/groups/virtual_registries_controller_spec.rb'
     - 'ee/spec/requests/projects/get_started_controller_spec.rb'
     - 'ee/spec/requests/projects/merge_trains_controller_spec.rb'
     - 'ee/spec/requests/projects/project_members_controller_spec.rb'

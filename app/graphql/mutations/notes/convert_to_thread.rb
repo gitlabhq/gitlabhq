@@ -11,7 +11,7 @@ module Mutations
       # to a thread.
       authorize :resolve_note
 
-      argument :id,
+      argument :id, # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
         Types::GlobalIDType[Note],
         loads: Types::Notes::NoteType,
         as: :note,

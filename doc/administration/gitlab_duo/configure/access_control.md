@@ -44,9 +44,9 @@ To give access to specific Agent Platform features for a top-level group:
 
 These settings apply to:
 
+- Users who execute actions in the top-level group or a subgroup or project within a top-level group, and are direct
+  members of either the top-level group, or of any subgroup or project within that top-level group.
 - Users who have the top-level group as the [default GitLab Duo namespace](../../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
-- Users who execute actions in the top-level group and are direct members of that group.
-- Users who are [inherited members](../../../user/project/members/_index.md#membership-types) of the top-level group.
 
 > [!note]
 > When you configure group-based access controls, you can select only groups

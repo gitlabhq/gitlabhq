@@ -26,10 +26,15 @@ export const parseQueryTextWithFrontmatter = (text) => {
 };
 
 export const parseQuery = async (query, config) => {
-  const { output, success, variables, fields, groupBy, aggregate } = await glql.compile(query, {
+  const aggregationContext =
+    glqlAggregationEnabled() && config.groupBy && config.aggregate
+      ? { aggregate: { dimensions: config.groupBy, metrics: config.aggregate } }
+      : {};
+
+  const { output, success, variables, fields } = await glql.compile(query, {
     ...omit(config, ['groupBy', 'aggregate']),
     ...extractGroupOrProject(),
-    ...(glqlAggregationEnabled() ? { groupBy: config.groupBy, aggregate: config.aggregate } : {}),
+    ...aggregationContext,
     username: gon.current_username,
     featureFlags: glqlFeatureFlags(),
   });
@@ -41,8 +46,6 @@ export const parseQuery = async (query, config) => {
     variables,
     config,
     fields,
-    groupBy,
-    aggregate,
   };
 };
 

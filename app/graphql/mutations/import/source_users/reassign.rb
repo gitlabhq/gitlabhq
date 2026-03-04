@@ -10,7 +10,7 @@ module Mutations
           required: true,
           description: 'Global ID of the mapping of a user on source instance to a user on destination instance.'
 
-        argument :assignee_user_id, Types::GlobalIDType[::User],
+        argument :assignee_user_id, Types::GlobalIDType[::User], # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
           required: true,
           loads: Types::UserType,
           description: 'Global ID of the assignee user.'

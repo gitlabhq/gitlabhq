@@ -101,7 +101,6 @@ Style/FormatString:
     - 'ee/lib/gitlab/analytics/cycle_analytics/stage_events/merge_request_label_removed.rb'
     - 'ee/lib/gitlab/auth/group_saml/response_check.rb'
     - 'ee/lib/gitlab/expiring_subscription_message.rb'
-    - 'ee/lib/gitlab/geo.rb'
     - 'ee/lib/gitlab/manual_quarterly_co_term_banner.rb'
     - 'ee/spec/controllers/groups/security/policies_controller_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/filters_and_data_spec.rb'

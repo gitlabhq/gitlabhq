@@ -65,7 +65,6 @@ Performance/MapCompact:
     - 'lib/api/helpers/common_helpers.rb'
     - 'lib/atlassian/jira_connect/client.rb'
     - 'lib/atlassian/jira_connect/serializers/feature_flag_entity.rb'
-    - 'lib/banzai/filter/image_link_filter.rb'
     - 'lib/banzai/filter/references/design_reference_filter.rb'
     - 'lib/banzai/reference_parser/issuable_parser.rb'
     - 'lib/error_tracking/sentry_client/pagination_parser.rb'

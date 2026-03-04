@@ -321,6 +321,10 @@ When you configure access levels:
 
 - You can set multiple access levels simultaneously for `allowed_to_push` and `allowed_to_merge`.
 - The most permissive access level determines who can perform the action.
+- Do not include `id` in the `allowed_to_push`, `allowed_to_merge`, or `allowed_to_unprotect` arrays.
+  The `id` field identifies an existing access level record and is only valid when you
+  [update a protected branch](#update-a-protected-branch). If you include an `id` that does not
+  match an existing record, the API returns `404 Not Found`.
 
 This behavior differs from the UI, which automatically clears other role selections
 when you select **No one** (`access_level: 0`).
@@ -814,11 +818,14 @@ be one of `user_id`, `group_id`, or `access_level`, and take the form `{user_id:
 
 To update:
 
-- `user_id`: Ensure the updated user has access to the project. You must also pass the
-  `id` of the `access_level` in the respective hash.
+- `user_id`: Ensure the updated user has access to the project. Include the access level
+  record's `id` in the hash.
 - `group_id`: Ensure the updated group [has this project shared](../user/project/members/sharing_projects_groups.md).
-  You must also pass the `id` of the `access_level` in the respective hash.
-- `deploy_key_id`: Ensure the deploy key is enabled for your project and it must have write access to your project repository.
+  Include the access level record's `id` in the hash.
+- `deploy_key_id`: Ensure the deploy key is enabled for your project and has write access
+  to your project repository.
+
+To update any other field on an existing access level record, include the record's `id` in the hash.
 
 To delete, you must pass `_destroy` set to `true`. See the following examples.
 

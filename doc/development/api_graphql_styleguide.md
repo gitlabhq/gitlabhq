@@ -2284,6 +2284,13 @@ argument :my_arg, GraphQL::Types::String,
          description: "A description of the argument."
 ```
 
+### Do not use `loads:`
+
+Do not use the `loads:` option in argument definitions. It leaks information about resource existence by returning
+different errors for "not found" and "not authorized." Instead, accept the Global ID and load the object manually
+with `authorized_find!`. See [Do not use `loads:` in argument definitions](graphql_guide/authorization.md#do-not-use-loads-in-argument-definitions)
+for details and examples.
+
 ### Nullability
 
 Arguments can be marked as `required: true` which means the value must be present and not `null`.

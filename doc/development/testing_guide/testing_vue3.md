@@ -14,7 +14,7 @@ Right now, we fail pipelines if:
 1. An existing test file fails under Vue 3 that was previously passing.
 1. One of the known failures on the [quarantine list](#quarantine-list) is now passing and has not been removed from the quarantine list.
 
-## Running unit tests using Vue 3
+## Running unit tests locally with Vue 3
 
 To run unit tests using Vue 3, set the `VUE_VERSION` environment variable to `3` when executing jest.
 
@@ -22,7 +22,36 @@ To run unit tests using Vue 3, set the `VUE_VERSION` environment variable to `3`
 VUE_VERSION=3 yarn jest #[file-path]
 ```
 
-## Testing Caveats
+Pipelines run the unit tests suite as well.
+
+## Running system tests (spec/features) locally with Vue 3
+
+To run system tests using Vue 3, [GDK must be running on with Vue 3 enabled](../fe_guide/vue3_migration.md#switching-between-vue-versions). You may enable it with these commands:
+
+```shell
+gdk config set vite.vue_version 3 # or 2, to return to vue 2
+gdk reconfigure
+gdk restart
+```
+
+Run your test with `rspec` as usual.
+
+```shell
+bundle exec rspec spec/features/abuse_report_spec.rb
+```
+
+**Note:** When you visit your local instance on your browser, it is also running Vue 3 (`@vue/compat`). This
+allows you to test your feature in Vue 3 manually.
+
+### Running the system test suite with Vue 3 for your MR
+
+To ensure your merge request changes are Vue 3 compatible, run the system
+tests suite in your pipeline by adding the label `~pipeline:run-rspec-vue3`.
+
+RSpec jobs with the names `rspec system pg17 vue3` and `rspec-ee system pg17 vue3` are added and run
+in parallel to the usual `rspec system` jobs, except they use the Vue 3 build!
+
+## Unit testing Caveats
 
 ### Ref management when mocking composables
 
@@ -360,7 +389,7 @@ This is an anti-pattern, as Vue router is overkill, a preferable approach would 
 
 When rewriting the component is not possible, passing the `App` component that the application is rendering without the use of `router-view` will let the tests pass, however, this opens up the possibility of introducing unwanted behavior in the future if a `<router-view />` is added to the component and should be used with care.
 
-## Quarantine list
+### Quarantine list
 
 The `scripts/frontend/quarantined_vue3_specs.txt` file is built up of all the known failing Vue 3 test files.
 In order to not overwhelm us with failing pipelines, these files are skipped on the Vue 3 test job.
@@ -370,14 +399,14 @@ This job is confusing as it fails when a test passes and it passes if they all f
 The reason for this is because all newly passing tests should be [removed from the quarantine list](#removing-from-the-quarantine-list).
 Congratulate yourself on fixing a previously failing test and remove it from the quarantine list to get this pipeline passing again.
 
-### Removing from the quarantine list
+#### Removing from the quarantine list
 
 If your pipeline is failing because of the `vue3 check quarantined` jobs, good news!
 You fixed a previously failing test!
 What you need to do now is remove the newly-passing test from the quarantine list.
 This ensures that the test will continue to pass and prevent any further regressions.
 
-### Adding to the quarantine list
+#### Adding to the quarantine list
 
 Don't do it.
 This list should only get smaller, not larger.

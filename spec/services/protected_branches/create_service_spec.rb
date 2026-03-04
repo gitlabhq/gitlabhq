@@ -17,7 +17,7 @@ RSpec.describe ProtectedBranches::CreateService, feature_category: :compliance_m
   shared_examples 'execute with entity' do
     describe '#execute' do
       it 'creates a new protected branch' do
-        expect { service.execute }.to change(ProtectedBranch, :count).by(1)
+        expect { service.execute }.to change { ProtectedBranch.count }.by(1)
         expect(entity.protected_branches.last.push_access_levels.map(&:access_level)).to match_array([Gitlab::Access::MAINTAINER])
         expect(entity.protected_branches.last.merge_access_levels.map(&:access_level)).to match_array([Gitlab::Access::MAINTAINER])
       end
@@ -43,7 +43,7 @@ RSpec.describe ProtectedBranches::CreateService, feature_category: :compliance_m
         let(:name) { 'foo<b>bar<\b>' }
 
         it 'creates a new protected branch' do
-          expect { service.execute }.to change(ProtectedBranch, :count).by(1)
+          expect { service.execute }.to change { ProtectedBranch.count }.by(1)
           expect(entity.protected_branches.last.name).to eq(name)
         end
       end
@@ -58,7 +58,7 @@ RSpec.describe ProtectedBranches::CreateService, feature_category: :compliance_m
         end
 
         it 'creates a new protected branch if we skip authorization step' do
-          expect { service.execute(skip_authorization: true) }.to change(ProtectedBranch, :count).by(1)
+          expect { service.execute(skip_authorization: true) }.to change { ProtectedBranch.count }.by(1)
         end
       end
     end

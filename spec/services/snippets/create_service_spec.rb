@@ -225,7 +225,7 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
         it 'does not create repository' do
           expect do
             subject
-          end.not_to change(Snippet, :count)
+          end.not_to change { Snippet.count }
 
           expect(snippet.repository_exists?).to be_falsey
         end

@@ -54099,8 +54099,6 @@ definitions:
         type: boolean
       admin_security_attributes:
         type: boolean
-      admin_security_testing:
-        type: boolean
       admin_terraform_state:
         type: boolean
       admin_vulnerability:
@@ -54161,7 +54159,6 @@ definitions:
     - admin_push_rules
     - admin_runners
     - admin_security_attributes
-    - admin_security_testing
     - admin_terraform_state
     - admin_vulnerability
     - admin_web_hook

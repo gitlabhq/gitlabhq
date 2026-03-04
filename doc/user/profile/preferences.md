@@ -188,18 +188,27 @@ Your project overview page is the page you view when you select **Project overvi
 {{< /history >}}
 
 Set a default GitLab Duo namespace to ensure GitLab Duo is available to use with your project.
-GitLab Duo cannot automatically detect your namespace in the following scenarios:
+Your default GitLab Duo namespace determines your available [AI models](../gitlab_duo/model_selection.md)
+and GitLab Duo features and your consumption of [GitLab Credits](../../subscriptions/gitlab_credits.md).
+
+Your default GitLab Duo namespace determines feature availability and credit consumption in the following scenarios:
 
 - You're not a member of the project you're working in.
 - You belong to multiple GitLab Duo namespaces.
 - You work in your IDE with a project that does not have a GitLab remote configured.
 - You use GitLab Duo in the CLI.
 
-In such cases, the default namespace is used to determine what models to use.
+When you work in a project or group where you're a direct or inherited member, the top-level group
+of that project or group is used instead for feature availability and credit consumption:
+
+- If you use GitLab Duo features in a project you're a member of,
+  usage is billed to the top-level group of that project.
+- If you use GitLab Duo features outside a project (for example, in your IDE without
+  an open project or in the CLI), usage is billed to your default namespace.
+- If you use GitLab Duo features in a project you're not a member of,
+  usage is billed to your default namespace.
 
 If you do not set a default namespace, GitLab Duo Chat (Agentic) and the GitLab Duo Agent Platform are disabled.
-For projects you're not a member of, your default namespace determines your
-[GitLab Credits](../../subscriptions/gitlab_credits.md) and available GitLab Duo features.
 
 To set a default GitLab Duo namespace:
 

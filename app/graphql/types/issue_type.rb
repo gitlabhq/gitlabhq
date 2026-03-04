@@ -10,6 +10,8 @@ module Types
     implements Types::CurrentUserTodos
     implements Types::TodoableInterface
 
+    authorize_granular_token permissions: :read_issue, boundary: :project, boundary_type: :project
+
     authorize :read_issue
 
     expose_permissions Types::PermissionTypes::Issue

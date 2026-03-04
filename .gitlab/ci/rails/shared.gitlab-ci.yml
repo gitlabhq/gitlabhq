@@ -102,7 +102,7 @@ include:
     GEO_SECONDARY_PROXY: 0
     SUCCESSFULLY_RETRIED_TEST_EXIT_CODE: 137
     EVENT_PROF: "sql.active_record"
-    RSPEC_TAGS: "--tag ~level:background_migration --tag ~click_house"
+    RSPEC_TAGS: "--tag ~level:background_migration --tag ~click_house --tag ~duo_workflow_service"
   needs:
     - !reference [.rspec-base-needs, needs]
     - job: "detect-tests"

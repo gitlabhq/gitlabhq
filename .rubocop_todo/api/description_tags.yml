@@ -2,10 +2,6 @@
 # Cop supports --autocorrect.
 API/DescriptionTags:
   Exclude:
-    - 'ee/lib/api/ai/duo_workflows/code_review.rb'
-    - 'ee/lib/api/ai/duo_workflows/workflows.rb'
-    - 'ee/lib/api/ai/duo_workflows/workflows_internal.rb'
-    - 'ee/lib/api/ai/third_party_agents.rb'
     - 'ee/lib/api/code_suggestions.rb'
     - 'ee/lib/api/group_repository_storage_moves.rb'
     - 'ee/lib/api/internal/ai/x_ray/scan.rb'
@@ -17,11 +13,8 @@ API/DescriptionTags:
     - 'ee/lib/gitlab_subscriptions/api/internal/namespaces/provision.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/subscriptions.rb'
     - 'ee/lib/gitlab_subscriptions/api/internal/users.rb'
-    - 'lib/api/group_placeholder_reassignments.rb'
     - 'lib/api/internal/auto_flow.rb'
     - 'lib/api/internal/coverage.rb'
     - 'lib/api/internal/kubernetes.rb'
     - 'lib/api/internal/lfs.rb'
     - 'lib/api/internal/pages.rb'
-    - 'lib/api/project_repository_storage_moves.rb'
-    - 'lib/api/snippet_repository_storage_moves.rb'

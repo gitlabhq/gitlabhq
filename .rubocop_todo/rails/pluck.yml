@@ -29,7 +29,6 @@ Rails/Pluck:
     - 'ee/spec/controllers/operations_controller_spec.rb'
     - 'ee/spec/controllers/projects/audit_events_controller_spec.rb'
     - 'ee/spec/controllers/projects/feature_flag_issues_controller_spec.rb'
-    - 'ee/spec/features/projects/new_project_spec.rb'
     - 'ee/spec/graphql/api/vulnerabilities_spec.rb'
     - 'ee/spec/helpers/ee/operations_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/import_export/group/tree_saver_spec.rb'

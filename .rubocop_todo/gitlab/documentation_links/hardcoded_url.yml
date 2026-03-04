@@ -22,7 +22,6 @@ Gitlab/DocumentationLinks/HardcodedUrl:
     - 'lib/gitlab/pagination/keyset/unsupported_scope_order.rb'
     - 'lib/gitlab/redis/hll.rb'
     - 'lib/gitlab/slash_commands/presenters/help.rb'
-    - 'lib/initializer_connections.rb'
     - 'lib/tasks/db_obsolete_ignored_columns.rake'
     - 'lib/tasks/gitlab/docs/redirect.rake'
     - 'lib/tasks/migrate/schema_check.rake'

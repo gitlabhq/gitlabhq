@@ -6539,7 +6539,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a02c4e72d08b"
+              "$ref": "#/components/schemas/RequestBody_b38efdf6aeba"
   "/api/v4/groups/{id}/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4GroupsIdMemberRolesMemberRoleId
@@ -6606,7 +6606,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_a02c4e72d08b"
+              "$ref": "#/components/schemas/RequestBody_b38efdf6aeba"
   "/api/v4/member_roles/{member_role_id}":
     delete:
       operationId: deleteApiV4MemberRolesMemberRoleId
@@ -68936,9 +68936,6 @@ components:
         admin_security_attributes:
           type: boolean
           default: false
-        admin_security_testing:
-          type: boolean
-          default: false
         admin_terraform_state:
           type: boolean
           default: false
@@ -80373,7 +80370,7 @@ components:
           description: Desired/new external UID of the user
       required:
       - extern_uid
-    RequestBody_a02c4e72d08b:
+    RequestBody_b38efdf6aeba:
       type: object
       properties:
         base_access_level:
@@ -80473,9 +80470,6 @@ components:
           type: boolean
           description: Manage the security categories and attributes belonging to
             a top-level group. Also requires the `read_security_attribute` permission.
-        admin_security_testing:
-          type: boolean
-          description: Edit and manage security testing configurations and settings.
         admin_terraform_state:
           type: boolean
           description: Execute terraform commands, lock/unlock terraform state files,
