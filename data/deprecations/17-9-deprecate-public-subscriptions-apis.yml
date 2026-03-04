@@ -6,7 +6,7 @@
   reporter: jhyson
   stage: fulfillment
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515371#note_2319368251
-  impact: low # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
+  impact: low  # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
   scope: instance
   resolution_role: Admin
   manual_task: true

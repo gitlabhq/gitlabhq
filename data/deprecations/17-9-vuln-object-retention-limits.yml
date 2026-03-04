@@ -4,7 +4,7 @@
   breaking_change: true
   reporter: smeadzinger
   stage: security_risk_management
-  issue_url: https://gitlab.com/groups/gitlab-org/-/epics/16629 # Replace with actual issue
+  issue_url: https://gitlab.com/groups/gitlab-org/-/epics/16629  # Replace with actual issue
   impact: medium
   scope: instance
   resolution_role: Developer

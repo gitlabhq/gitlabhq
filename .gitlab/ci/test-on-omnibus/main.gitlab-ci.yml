@@ -90,7 +90,7 @@ praefect:
     - .omnibus-e2e
   variables:
     QA_SCENARIO: Test::Integration::Praefect
-    QA_SUITE_CLASS_NAME: Test::Instance::Create # overrides default 'All' suite to only run 'Create' group specs
+    QA_SUITE_CLASS_NAME: Test::Instance::Create  # overrides default 'All' suite to only run 'Create' group specs
     QA_CAN_TEST_PRAEFECT: "true"
     QA_GITALY_TRANSACTIONS_ENABLED: "false"
   rules:
@@ -110,7 +110,7 @@ gitaly-reftables-backend:
     - .with-ignored-runtime-data
   variables:
     QA_SCENARIO: Test::Integration::Praefect
-    QA_SUITE_CLASS_NAME: Test::Instance::Create # overrides default 'All' suite to only run 'Create' group specs
+    QA_SUITE_CLASS_NAME: Test::Instance::Create  # overrides default 'All' suite to only run 'Create' group specs
     QA_CAN_TEST_PRAEFECT: "true"
     QA_FEATURE_FLAGS: "gitaly_new_repo_reftable_backend=enabled"
   rules:

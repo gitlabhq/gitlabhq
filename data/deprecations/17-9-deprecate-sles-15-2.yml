@@ -5,10 +5,10 @@
   reporter: clemensbeck  # (required) GitLab username of the person reporting the change
   stage: systems  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8888
-  impact: low # Can be one of: [critical, high, medium, low]
-  scope: instance # Can be one or a combination of: [instance, group, project]
-  resolution_role: Admin # Can be one of: [Admin, Owner, Maintainer, Developer]
-  manual_task: true # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  impact: low  # Can be one of: [critical, high, medium, low]
+  scope: instance  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Admin  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Do not modify this line, instead modify the lines below.
     Long term service and support (LTSS) for SUSE Linux Enterprise Server (SLES) 15 SP2 ended in December 2024.
 

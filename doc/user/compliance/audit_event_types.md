@@ -819,6 +819,7 @@ Audit event types belong to the following product categories.
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`virtual_registries_container_cache_remote_entry_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220483) | A virtual registry container cache remote entry was deleted | {{< yes >}} | GitLab [18.9](https://gitlab.com/gitlab-org/gitlab/-/work_items/583726) | Group |
 | [`virtual_registries_packages_maven_cache_remote_entry_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209828) | A virtual registry Maven cache remote entry was deleted | {{< yes >}} | GitLab [18.6](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) | Group |
+| [`virtual_registries_packages_maven_upstream_artifact_denied`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225335) | A virtual registry Maven upstream denied an artifact due to filtration rules | {{< yes >}} | GitLab [18.10](https://gitlab.com/gitlab-org/gitlab/-/work_items/585125) | Group |
 
 ### Vulnerability management
 

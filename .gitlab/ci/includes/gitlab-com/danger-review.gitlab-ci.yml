@@ -25,5 +25,5 @@ danger-review:
     - source scripts/utils.sh
     - bundle_install_script
     - yarn_install_script
-# extending from .review:rules:danger doesn't work
+  # extending from .review:rules:danger doesn't work
   rules: !reference [.review:rules:danger, rules]

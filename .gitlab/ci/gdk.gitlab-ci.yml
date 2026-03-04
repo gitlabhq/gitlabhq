@@ -30,7 +30,7 @@ gdk-update:
         git remote set-url origin "https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/gitlab-org/security/gitaly.git"
       fi
     - cd /home/gdk/gdk/gitlab
-    - yarn patch-package --reverse || true # Remove patches from cached node_modules (reapplied during gdk update)
+    - yarn patch-package --reverse || true  # Remove patches from cached node_modules (reapplied during gdk update)
     - git remote set-url origin "$CI_REPOSITORY_URL"
     - gdk config set gitlab.default_branch "$CI_COMMIT_SHA"
     - gdk update

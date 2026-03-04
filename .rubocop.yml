@@ -1563,3 +1563,9 @@ Gitlab/Authz/PermissionCheck:
   Exclude:
     - '{,ee/}app/policies/**/*.rb'
     - '{,ee/}spec/**/*.rb'
+
+Gitlab/Authz/RoleCheckInRule:
+  Enabled: true
+  Include:
+    - 'app/policies/**/*.rb'
+    - 'ee/app/policies/**/*.rb'

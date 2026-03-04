@@ -357,7 +357,6 @@ manage_project_security_exclusions
 manage_protected_tags
 manage_resource_access_tokens
 manage_self_hosted_models_settings
-manage_subscription
 manage_trigger
 mark_issue_for_publication
 mark_note_as_internal

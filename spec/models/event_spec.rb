@@ -1241,12 +1241,14 @@ RSpec.describe Event, feature_category: :user_profile do
 
     context 'when a project was updated less than 1 hour ago' do
       it 'does not update the project' do
-        project.update!(last_activity_at: Time.current)
-
-        expect(project).not_to receive(:update_column)
-          .with(:last_activity_at, a_kind_of(Time))
+        recent_time = 45.minutes.ago
+        project.update!(last_activity_at: recent_time)
 
         create_push_event(project, project.first_owner)
+
+        project.reload
+
+        expect(project.last_activity_at).to be_like_time(recent_time)
       end
     end
 

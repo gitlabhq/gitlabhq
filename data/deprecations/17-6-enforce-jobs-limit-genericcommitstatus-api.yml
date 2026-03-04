@@ -3,16 +3,16 @@
   removal_milestone: "18.1"
   announcement_milestone: "17.7"
   breaking_change: true
-  window: 1 # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com
-  reporter: rutshah # The GitLab username of the person reporting the change
+  window: 1  # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com
+  reporter: rutshah  # The GitLab username of the person reporting the change
   stage: verify
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/436361
   # Use the impact calculator https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?
-  impact: low # Can be one of: [critical, high, medium, low]
-  scope: project # Can be one or a combination of: [instance, group, project]
-  resolution_role: Owner # Can be one of: [Admin, Owner, Maintainer, Developer]
-  manual_task: true # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
-  body: | # (required) Don't change this line.
+  impact: low  # Can be one of: [critical, high, medium, low]
+  scope: project  # Can be one or a combination of: [instance, group, project]
+  resolution_role: Owner  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: |  # (required) Don't change this line.
       Starting in GitLab 18.0, the maximum [number of jobs in active pipelines](https://docs.gitlab.com/administration/instance_limits/#number-of-jobs-in-active-pipelines) will also apply when creating jobs using the [Commits API](https://docs.gitlab.com/api/commits/#set-the-pipeline-status-of-a-commit). Review your integration to ensure it stays within the configured job limits.
 # ==============================
 # OPTIONAL END-OF-SUPPORT FIELDS

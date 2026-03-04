@@ -2,7 +2,7 @@
   removal_milestone: "Cancelled"
   announcement_milestone: "17.9"
   breaking_change: false
-  window: 1 # Note: a change window is not applicable to a non-breaking change
+  window: 1  # Note: a change window is not applicable to a non-breaking change
   reporter: thiagocsf
   stage: application security testing
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513409

@@ -331,7 +331,7 @@
         docker run --rm --privileged ${QEMU_IMAGE} --install all;
         echo -e "section_end:`date +%s`:emulator_install\r\e[0K"
       fi
-    - docker buildx create --use --driver-opt network=host # creates and sets to active buildkit builder
+    - docker buildx create --use --driver-opt network=host  # creates and sets to active buildkit builder
 
 .use-buildx:
   extends: .use-docker-in-docker
@@ -503,7 +503,7 @@
     - !reference [.ruby-gems-cache]
     - *gitaly-binaries-cache
     - *workhorse-cache
-    - *zoekt-elasticsearch-indexer-cache # gitlab-ci has a limit of max 4 caches, so these binaries are cached together
+    - *zoekt-elasticsearch-indexer-cache  # gitlab-ci has a limit of max 4 caches, so these binaries are cached together
 
 .static-analysis-cache:
   extends: .cache-analytics

@@ -86,6 +86,10 @@ Gitlab/RSpec/MisplacedEeSpecFile:
 Graphql/AuthorizeTypes:
   Enabled: false
 
+# This cop doesn't make sense in the context of gems
+Gitlab/Authz/RoleCheckInRule:
+  Enabled: false
+
 Gitlab/Json:
   Enabled: false
 

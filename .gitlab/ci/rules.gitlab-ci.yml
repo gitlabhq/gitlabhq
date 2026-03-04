@@ -3214,7 +3214,7 @@
     - !reference [".prevent-tier-2-and-above", rules]
     - <<: *if-merge-request
       changes: *code-patterns
-    - <<: *if-merge-request # no code changes, but has doc changes
+    - <<: *if-merge-request  # no code changes, but has doc changes
       changes:
         - "doc/**/*"
       when: never
@@ -3474,7 +3474,7 @@
     - if: '$AIGW_TAGGING_ACCESS_TOKEN == null'
       when: never
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.0-ee$/'
-      # Only run when a version tag is created (release is cut)
+    # Only run when a version tag is created (release is cut)
 
 .ai-gateway:rules:update-test-branch:
   rules:

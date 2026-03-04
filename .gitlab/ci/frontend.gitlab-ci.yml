@@ -15,7 +15,7 @@
     - .with-ci-node-image
   variables:
     SETUP_DB: "false"
-    USE_BUNDLE_INSTALL: "false" # skip bundle install from default prepare_build script
+    USE_BUNDLE_INSTALL: "false"  # skip bundle install from default prepare_build script
     WEBPACK_VENDOR_DLL: "true"
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384

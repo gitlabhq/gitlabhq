@@ -30,7 +30,7 @@
   published_at: 2025-11-20  # YYYY-MM-DD
   release: 18.6  # XX.Y
 
-- name: "CI/CD Components can reference their own metadata" # Match the release post entry
+- name: "CI/CD Components can reference their own metadata"  # Match the release post entry
   description: |  # Do not modify this line, instead modify the lines below.
       Previously, CI/CD components couldn't reference their own metadata, such as version numbers or commit SHAs, within their configuration. This lack of information could cause you to use configuration with hardcoded values or complex workarounds. Writing configuration this way can lead to version mismatches when components build resources such as Docker images, because there's no way to automatically tag those resources with the component's compatible version.
 
