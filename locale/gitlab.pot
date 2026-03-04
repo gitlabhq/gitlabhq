@@ -5804,6 +5804,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|GitLab managed models"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Google Vertex AI"
+msgstr ""
+
 msgid "AdminSelfHostedModels|If required, provide the API token that grants access to your self-hosted model deployment."
 msgstr ""
 
@@ -5825,7 +5828,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|Model identifier must be less than 255 characters."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Model identifier must start with \"%{bedrockIdentifierPrefix}\""
+msgid "AdminSelfHostedModels|Model identifier must start with \"%{identifierPrefix}\""
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model uses an API token"
@@ -5913,6 +5916,9 @@ msgid "AdminSelfHostedModels|This self-hosted model cannot be deleted"
 msgstr ""
 
 msgid "AdminSelfHostedModels|To fully set up AWS credentials for this model please refer to the %{linkStart}AWS Bedrock Configuration Guide%{linkEnd}"
+msgstr ""
+
+msgid "AdminSelfHostedModels|To fully set up Google Cloud credentials for this model please refer to the %{linkStart}Google Vertex AI Configuration Guide%{linkEnd}"
 msgstr ""
 
 msgid "AdminSelfHostedModels|To remove %{boldStart}%{modelName}%{boldEnd}, you must first remove it from the following AI Feature(s):"
@@ -44441,6 +44447,9 @@ msgid "MrList|Review requested from %{name}"
 msgstr ""
 
 msgid "MrReports|Blockers"
+msgstr ""
+
+msgid "MrReports|License compliance"
 msgstr ""
 
 msgid "MrReports|Reports"

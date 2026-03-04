@@ -165,26 +165,201 @@ still add it to their project at which point they can be used through triggers.
 Versioning of agents is not yet supported. Consider potential breaking changes to older GitLab versions
 before doing changes to an agent.
 
-## Local testing
+## Developing foundational agents locally
 
-It is possible to test the setup locally.
+  For AI catalog created agents, you need to sync the agents locally. To do so, either create the agent in the local AI Catalog or on GitLab.com AI Catalog.
 
-1. For AI catalog created agents, you need to sync the agents locally. To do so, either create the agent in the local AI
-   Catalog or on GitLab.com AI Catalog. Then, on `$GDK/gitlab-ai-gateway`, run the following command:
+1. **Fetch agents from GitLab.com**
+
+   On `$GDK/gitlab-ai-gateway`, run the following command:
 
    ```shell
    poetry run fetch-foundational-agents "http://gdk.test:3000 or https://gitlab.com" "<token-to-your-local-gdk>" \
-     "<agent-reference>:<agent-id-in-local-catalog>" \
-     --output-path duo_workflow_service/agent_platform/experimental/flows/configs
+    "<agent-reference>:<agent-id-in-local-catalog>" --flow-registry-version v1
    ```
 
-1. Restart GitLab Duo Workflow Service.
+   An example pulling `duo_planner` and `security_analyst_agent` from GitLab.com would look like this:
+
+   ```shell
+   poetry run fetch-foundational-agents "https://gitlab.com" "<token-to-your-local-gdk>" \
+    "duo_planner:348,security_analyst_agent:356" --flow-registry-version v1
+   ```
+
+   Where:
+
+   - `348` is the GitLab Duo Planner catalog ID on GitLab.com
+   - `356` is the Security Analyst Agent catalog ID on GitLab.com
+
+   After fetching the configurations, restart the service:
 
    ```shell
    gdk restart duo-workflow-service
    ```
 
-1. With the changes to `FoundationalChatAgentsDefinitions.rb`, you can now select your foundational agent in the web chat locally.
+1. **Verify the setup**
+
+   Foundational agents are saved in `$GDK/gitlab-ai-gateway/duo_workflow_service/agent_platform/v1/flows/configs/` as `.yml` files.
+
+   For example if you used the above `poetry` command to pull `duo_planner` and `security_analyst_agent`, you can run the following:
+
+   ```shell
+   ls duo_workflow_service/agent_platform/v1/flows/configs/ | grep -e "duo_planner" -e "security_analyst"
+   ```
+
+   You then should see the following output:
+
+   ```shell
+   duo_planner.yml
+   security_analyst_agent.yml
+   ```
+
+   Alternatively to check in the GDK UI:
+
+   1. With the changes to `FoundationalChatAgentsDefinitions.rb`, you can now select your foundational agent in the web chat locally.
+   1. Verify that you can see and interact with the foundational agents
+   1. Test sending a message to confirm the agents respond correctly
+
+### Troubleshooting
+
+- Agents don't appear in chat: Verify the configuration files were created in your GitLab-ai-gateway directory and the service restarted successfully
+- Permission errors: Ensure your GitLab.com API token has the API scope
+- Flow registry version errors: Confirm you're using `--flow-registry-version v1`
+
+## Testing foundational agent synchronization pipeline
+
+This section describes how to test the pipeline used to sync foundational agents in your local GDK. For developing the foundational flows or pulling the latest flows refer to the [Developing foundational agents locally](#developing-foundational-agents-locally) section above.
+
+### Prerequisites
+
+- A running GDK instance
+- A GitLab API token with `api` scope (`$GDK_PAT_WITH_API_SCOPE`)
+- Access to the `gitlab-ai-gateway` repository in your GDK
+
+### Step 1: Check existing foundational agents
+
+First, identify which foundational agents are defined in the monolith but missing from your local AI Catalog:
+
+1. Check the foundational agents definitions:
+
+   ```shell
+   # In your GDK's gitlab directory
+   cat ee/lib/ai/foundational_chat_agents_definitions.rb
+   ```
+
+1. List existing agents in your local AI Catalog:
+
+   ```shell
+   curl --header "Authorization: Bearer $GDK_PAT_WITH_API_SCOPE" \
+     --header "Content-Type: application/json" \
+     "http://gdk.test:3000/api/graphql" \
+     --data '{"query": "query { aiCatalogItems { nodes { id name description } } }"}'
+   ```
+
+1. Compare the results to identify missing foundational agents (typically `duo_planner` and `security_analyst_agent`).
+
+### Step 2: Create missing foundational agents
+
+If foundational agents are missing from your local AI Catalog, create them programmatically:
+
+1. Get a project ID for hosting the agents:
+
+   If you've run the duo setup script with `bundle exec rake gitlab:duo:setup`, you can use the project with ID `1000000` as the foundational agents owning project. If not, you can pick any Premium or Ultimate project in your GDK and use that project's ID.
+
+   ```shell
+   # If you haven't run the duo setup script, get any project ID
+   curl --header "Authorization: Bearer $GDK_PAT_WITH_API_SCOPE" \
+     "http://gdk.test:3000/api/v4/projects" | jq '.[0].id'
+   ```
+
+1. Create the Planner agent:
+
+   ```shell
+   curl --header "Authorization: Bearer $GDK_PAT_WITH_API_SCOPE" \
+     --header "Content-Type: application/json" \
+     "http://gdk.test:3000/api/graphql" \
+     --data '{
+       "query": "mutation { aiCatalogAgentCreate(input: { projectId: \"gid://gitlab/Project/YOUR_PROJECT_ID\", name: \"Planner\", description: \"Get help with planning and workflow management. Organize, edit, create, and track work more effectively in GitLab.\", public: true, systemPrompt: \"You are a helpful planning assistant that helps users organize, edit, create, and track work more effectively in GitLab.\" }) { item { id name } errors } }"
+     }'
+   ```
+
+1. Create the Security Analyst agent:
+
+   ```shell
+   curl --header "Authorization: Bearer $GDK_PAT_WITH_API_SCOPE" \
+     --header "Content-Type: application/json" \
+     "http://gdk.test:3000/api/graphql" \
+     --data '{
+       "query": "mutation { aiCatalogAgentCreate(input: { projectId: \"gid://gitlab/Project/YOUR_PROJECT_ID\", name: \"Security Analyst\", description: \"Automate vulnerability management and security workflows. The Security Analyst Agent acts as an AI team member that can autonomously analyze, triage, and remediate security vulnerabilities.\", public: true, systemPrompt: \"You are a security analyst AI that helps with vulnerability management and security workflows. You can analyze, triage, and help remediate security vulnerabilities.\" }) { item { id name } errors } }"
+     }'
+   ```
+
+   Replace `YOUR_PROJECT_ID` with the actual project ID from step 1.
+
+### Step 3: Get the local agent IDs
+
+After creating the agents, get their local catalog IDs:
+
+```shell
+# Get Planner agent ID
+curl --header "Authorization: Bearer $GDK_PAT_WITH_API_SCOPE" \
+  --header "Content-Type: application/json" \
+  "http://gdk.test:3000/api/graphql" \
+  --data '{"query": "query { aiCatalogItems(search: \"Planner\") { nodes { id name } } }"}'
+
+# Get Security Analyst agent ID
+curl --header "Authorization: Bearer $GDK_PAT_WITH_API_SCOPE" \
+  --header "Content-Type: application/json" \
+  "http://gdk.test:3000/api/graphql" \
+  --data '{"query": "query { aiCatalogItems(search: \"Security Analyst\") { nodes { id name } } }"}'
+```
+
+Note the numeric IDs from the responses (for example, `10` and `11`).
+
+### Step 4: Fetch foundational agent configurations
+
+In your `gitlab-ai-gateway` directory, fetch the agent configurations using the local IDs:
+
+```shell
+# For v1 flow registry (recommended)
+poetry run fetch-foundational-agents "http://gdk.test:3000" "$GDK_PAT_WITH_API_SCOPE" \
+  "duo_planner:10,security_analyst_agent:11" \
+  --flow-registry-version v1
+
+# For experimental flow registry (alternative)
+poetry run fetch-foundational-agents "http://gdk.test:3000" "$GDK_PAT_WITH_API_SCOPE" \
+  "duo_planner:10,security_analyst_agent:11" \
+  --flow-registry-version experimental \
+  --output-path duo_workflow_service/agent_platform/experimental/flows/configs
+```
+
+Replace `10` and `11` with the actual agent IDs from step 3.
+
+### Step 5: Restart GitLab Duo Workflow Service
+
+```shell
+gdk restart duo-workflow-service
+```
+
+### Step 6: Verify the setup
+
+With the changes to `FoundationalChatAgentsDefinitions.rb` and the fetched configurations, you can now select your foundational agents in the web chat locally.
+
+### Troubleshooting
+
+- **Missing agents**: If agents don't appear in chat after following these steps, verify:
+  - The agents exist in your local AI Catalog (check with the GraphQL query from Step 3)
+  - The flow configuration files were created in the correct directory after running `fetch-foundational-agents`
+  - The GitLab Duo Workflow Service was restarted successfully
+- **Flow registry version**: Use `v1` for production-like behavior, `experimental` for testing new features
+- **Permission errors**: Ensure your API token has the `api` scope and sufficient project permissions
+- **GraphQL errors**: Check the exact mutation parameters using GraphQL introspection:
+
+  ```shell
+  curl --header "Authorization: Bearer $GDK_PAT_WITH_API_SCOPE" \
+    --header "Content-Type: application/json" \
+    "http://gdk.test:3000/api/graphql" \
+    --data '{"query": "query { __type(name: \"AiCatalogAgentCreatePayload\") { fields { name type { name } } } }"}'
+  ```
 
 ## Architecture design
 

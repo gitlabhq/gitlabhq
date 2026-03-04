@@ -21,10 +21,19 @@ describe('Merge request reports App component', () => {
 
   const findSecurityScansProvider = () => wrapper.findComponent({ name: 'SecurityScansProvider' });
   const findSecurityNavItem = () => wrapper.findComponent({ name: 'SecurityNavItem' });
+  const findLicenseComplianceProvider = () =>
+    wrapper.findComponent({ name: 'LicenseComplianceProvider' });
+  const findLicenseComplianceNavItem = () =>
+    wrapper.findComponent({ name: 'LicenseComplianceNavItem' });
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findRouterView = () => wrapper.findComponent({ name: 'RouterView' });
 
   const createComponent = () => {
+    gl.mrWidgetData = {
+      merge_request_cached_widget_path: '/',
+      merge_request_widget_path: '/',
+    };
+
     const router = new VueRouter({ mode: 'history', routes });
     wrapper = shallowMountExtended(App, {
       router,
@@ -42,50 +51,74 @@ describe('Merge request reports App component', () => {
           name: 'SecurityNavItem',
           template: '<div></div>',
         },
+        LicenseComplianceProvider: {
+          name: 'LicenseComplianceProvider',
+          template: '<div><slot /></div>',
+        },
+        LicenseComplianceNavItem: {
+          name: 'LicenseComplianceNavItem',
+          template: '<div></div>',
+        },
       },
     });
   };
 
-  beforeEach(() => {
-    window.gl = {
-      mrWidgetData: { merge_request_cached_widget_path: '/', merge_request_widget_path: '/' },
-    };
-  });
-
   afterEach(() => {
-    window.gl = {};
+    gl.mrWidgetData = {};
   });
 
-  it('renders SecurityScansProvider when mr is loaded', async () => {
-    createComponent();
+  describe('rendering', () => {
+    it('shows loading icon when mr is not loaded', () => {
+      createComponent();
 
-    await waitForPromises();
+      expect(findLoadingIcon().exists()).toBe(true);
+      expect(findRouterView().exists()).toBe(false);
+    });
 
-    expect(findSecurityScansProvider().exists()).toBe(true);
+    it('shows router-view when mr is loaded', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findLoadingIcon().exists()).toBe(false);
+      expect(findRouterView().exists()).toBe(true);
+    });
   });
 
-  it('renders SecurityNavItem inside provider', async () => {
-    createComponent();
+  describe('security scans', () => {
+    it('renders SecurityScansProvider when mr is loaded', async () => {
+      createComponent();
 
-    await waitForPromises();
+      await waitForPromises();
 
-    expect(findSecurityNavItem().exists()).toBe(true);
+      expect(findSecurityScansProvider().exists()).toBe(true);
+    });
+
+    it('renders SecurityNavItem inside provider', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findSecurityNavItem().exists()).toBe(true);
+    });
   });
 
-  it('shows loading icon when mr is not loaded', () => {
-    createComponent();
+  describe('license compliance', () => {
+    it('renders LicenseComplianceProvider when mr is loaded', async () => {
+      createComponent();
 
-    expect(findLoadingIcon().exists()).toBe(true);
-    expect(findRouterView().exists()).toBe(false);
-  });
+      await waitForPromises();
 
-  it('shows router-view when mr is loaded', async () => {
-    createComponent();
+      expect(findLicenseComplianceProvider().exists()).toBe(true);
+    });
 
-    await waitForPromises();
+    it('renders LicenseComplianceNavItem inside provider', async () => {
+      createComponent();
 
-    expect(findLoadingIcon().exists()).toBe(false);
-    expect(findRouterView().exists()).toBe(true);
+      await waitForPromises();
+
+      expect(findLicenseComplianceNavItem().exists()).toBe(true);
+    });
   });
 
   describe('MR data polling', () => {

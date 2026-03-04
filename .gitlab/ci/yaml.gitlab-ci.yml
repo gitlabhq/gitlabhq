@@ -23,7 +23,7 @@ lint-pipeline-yaml:
   variables:
     LINT_PATHS: .gitlab-ci.yml .gitlab/ci .gitlab/duo lib/gitlab/ci/templates data/deprecations data/whats_new
   script:
-    - 'yamllint -d "{extends: default, rules: {line-length: disable, document-start: disable}}" $LINT_PATHS'
+    - 'yamllint -d "{extends: default, rules: {line-length: disable, document-start: disable, comments: {min-spaces-from-content: 1}}}" $LINT_PATHS'
 
 lint-metrics-yaml:
   extends:

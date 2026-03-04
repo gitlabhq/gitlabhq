@@ -5,7 +5,7 @@ module Ci
     include ReactiveCaching
 
     self.reactive_cache_key = ->(service) { [service.class.name, service.id] }
-    self.reactive_cache_work_type = :external_dependency
+    self.reactive_cache_work_type = :no_dependency
     self.reactive_cache_worker_finder = ->(id, *_args) { from_cache(id) }
 
     def self.from_cache(id)

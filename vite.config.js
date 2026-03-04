@@ -30,21 +30,22 @@ import { PrebuildDuoNext } from './config/helpers/vite_plugin_prebuild_duo_next'
 import * as vue3SfcCompiler from './config/vue3migration/vue3_sfc_compiler.mjs';
 import vue2Compiler from './config/vue3migration/vue2_compiler';
 
-const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
-const { VUE_COMPILER_VERSION } = process.env;
-if (![undefined, '2', '3'].includes(EXPLICIT_VUE_VERSION)) {
+const { VUE_VERSION = '2', VUE_COMPILER_VERSION = '2' } = process.env;
+
+if (!['2', '3'].includes(VUE_VERSION)) {
+  throw new Error(`Invalid VUE_VERSION value: ${VUE_VERSION}. Only '2' or '3' are supported`);
+}
+if (!['2', '3'].includes(VUE_COMPILER_VERSION)) {
   throw new Error(
-    `Invalid VUE_VERSION value: ${EXPLICIT_VUE_VERSION}. Only '2' and '3' are supported`,
+    `Invalid VUE_COMPILER_VERSION value: ${VUE_COMPILER_VERSION}. Only '2' or '3' are supported`,
   );
 }
-const USE_VUE3 = EXPLICIT_VUE_VERSION === '3';
+
+const USE_VUE3 = VUE_VERSION === '3';
 const USE_VUE3_COMPILER = USE_VUE3 && VUE_COMPILER_VERSION === '3';
 
-if (USE_VUE3) {
-  console.log('[V] Using Vue.js 3');
-} else {
-  console.log('[V] Using Vue.js 2');
-}
+console.log(`[V] Using Vue.js ${VUE_VERSION} (compiler ${VUE_COMPILER_VERSION})`);
+
 const vue = USE_VUE3_COMPILER ? vue3 : vue2;
 
 let viteGDKConfig;
@@ -97,7 +98,10 @@ const JH_ELSE_EE_ALIAS_FALLBACK = [
 ];
 
 export default defineConfig({
-  cacheDir: path.resolve(__dirname, 'tmp/cache/vite'),
+  cacheDir: path.resolve(
+    __dirname,
+    `tmp/cache/vite/vue${VUE_VERSION}-compiler${VUE_COMPILER_VERSION}`,
+  ),
   resolve: {
     alias: [
       ...aliasArr,

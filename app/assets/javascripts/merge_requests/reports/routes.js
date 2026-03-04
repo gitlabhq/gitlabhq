@@ -1,4 +1,4 @@
-import { SECURITY_SCAN_ROUTE } from './constants';
+import { SECURITY_SCAN_ROUTE, LICENSE_COMPLIANCE_ROUTE } from './constants';
 
 export default [
   {
@@ -9,5 +9,11 @@ export default [
     name: SECURITY_SCAN_ROUTE,
     path: `/${SECURITY_SCAN_ROUTE}`,
     component: () => import('ee_component/merge_requests/reports/pages/security_scans_page.vue'),
+  },
+  {
+    name: LICENSE_COMPLIANCE_ROUTE,
+    path: `/${LICENSE_COMPLIANCE_ROUTE}`,
+    component: () =>
+      import('ee_component/merge_requests/reports/pages/license_compliance_page.vue'),
   },
 ];

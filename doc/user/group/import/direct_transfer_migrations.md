@@ -30,7 +30,7 @@ If there are any problems, you can:
 
 {{< history >}}
 
-- Renaming milestone titles to avoid clashes on destination instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221447) in GitLab 18.9.
+- Renaming milestone titles to avoid clashes on destination instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221447) in GitLab 18.6.7 and later, 18.7.5 and later, and 18.8.5 and later.
 
 {{< /history >}}
 

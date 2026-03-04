@@ -65,7 +65,6 @@
 # ============================================================================
 
 Gitlab/JsonSafeParse:
-  Details: grace period
   Exclude:
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/concerns/redis_cacheable.rb'

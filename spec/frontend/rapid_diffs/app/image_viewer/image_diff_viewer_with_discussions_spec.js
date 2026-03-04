@@ -8,6 +8,7 @@ import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue'
 import BaseImageDiffOverlay from '~/diffs/components/base_image_diff_overlay.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
+import { useDiscussions } from '~/notes/store/discussions';
 import axios from '~/lib/utils/axios_utils';
 import { clearDraft } from '~/lib/utils/autosave';
 import { createAlert } from '~/alert';
@@ -109,7 +110,7 @@ describe('ImageDiffViewerWithDiscussions', () => {
     });
 
     it('passes props overlay', () => {
-      useDiffDiscussions().discussions = [createImageDiscussion('1', 'old.png', 'new.png')];
+      useDiscussions().discussions = [createImageDiscussion('1', 'old.png', 'new.png')];
       createComponent();
 
       const overlay = findOverlay();
@@ -131,7 +132,7 @@ describe('ImageDiffViewerWithDiscussions', () => {
 
   describe('discussions', () => {
     it('renders DiffDiscussions with discussions from store', () => {
-      useDiffDiscussions().discussions = [
+      useDiscussions().discussions = [
         createImageDiscussion('1', 'old.png', 'new.png'),
         createImageDiscussion('2', 'old.png', 'new.png'),
       ];
@@ -142,7 +143,7 @@ describe('ImageDiffViewerWithDiscussions', () => {
     });
 
     it('filters discussions by path', () => {
-      useDiffDiscussions().discussions = [
+      useDiscussions().discussions = [
         createImageDiscussion('1', 'other.png', 'other.png'),
         createImageDiscussion('2', 'old.png', 'new.png'),
       ];
@@ -257,14 +258,13 @@ describe('ImageDiffViewerWithDiscussions', () => {
 
         it('adds discussion to store and closes form', async () => {
           createComponent();
-          const store = useDiffDiscussions();
           findOverlay().vm.$emit('image-click', formData);
           await nextTick();
 
           await findNoteForm().props('saveNote')('My comment');
 
-          expect(store.discussions).toHaveLength(1);
-          expect(store.discussions[0].id).toBe('new-discussion');
+          expect(useDiscussions().discussions).toHaveLength(1);
+          expect(useDiscussions().discussions[0].id).toBe('new-discussion');
           expect(findNoteForm().exists()).toBe(false);
         });
 

@@ -23,13 +23,6 @@ export default {
       isLoggedIn: isLoggedIn(),
     };
   },
-  computed: {
-    timelineDiscussions() {
-      return this.store.discussions.filter(
-        (discussion) => !discussion.isForm && !discussion.diff_discussion,
-      );
-    },
-  },
   methods: {
     async saveNote(noteText) {
       if (!noteText) return;
@@ -49,7 +42,7 @@ export default {
 <template>
   <div class="rd-discussion-timeline gl-my-5" data-testid="commit-timeline">
     <div class="rd-discussion-timeline-comments">
-      <diff-discussions :discussions="timelineDiscussions" timeline-layout />
+      <diff-discussions :discussions="store.timelineDiscussions" timeline-layout />
     </div>
     <div
       v-if="!isLoggedIn || userPermissions.can_create_note"

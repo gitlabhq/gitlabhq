@@ -1586,6 +1586,65 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           end
         end
       end
+
+      describe '#new_mentions_in_note' do
+        let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: "Hello @#{@u_mentioned.to_reference}") }
+
+        it 'sends email to newly mentioned users' do
+          notification.new_mentions_in_note(note, [@u_mentioned], author)
+
+          should_only_email(@u_mentioned)
+        end
+
+        it 'does not send email when there are no new mentions' do
+          notification.new_mentions_in_note(note, [], author)
+
+          should_not_email_anyone
+        end
+
+        it 'does not send email to users not in the new mentions list' do
+          notification.new_mentions_in_note(note, [@u_mentioned], author)
+
+          should_not_email(@u_disabled)
+        end
+
+        it 'filters out "mentioned in" system notes' do
+          mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
+
+          notification.new_mentions_in_note(mentioned_note, [@u_mentioned], author)
+
+          should_not_email_anyone
+        end
+
+        context 'when the author is blocked' do
+          let(:blocked_author) { create(:user, :blocked) }
+
+          it 'does not send any notification' do
+            notification.new_mentions_in_note(note, [@u_mentioned], blocked_author)
+
+            should_not_email_anyone
+          end
+        end
+
+        context 'when the author is a ghost' do
+          let(:ghost_author) { create(:user, :ghost) }
+
+          it 'does not send any notification' do
+            notification.new_mentions_in_note(note, [@u_mentioned], ghost_author)
+
+            should_not_email_anyone
+          end
+        end
+
+        context 'when the note has no noteable_type' do
+          it 'returns true without sending notifications' do
+            allow(note).to receive(:noteable_type).and_return(nil)
+
+            expect(notification.new_mentions_in_note(note, [@u_mentioned], author)).to be(true)
+            should_not_email_anyone
+          end
+        end
+      end
     end
 
     context 'project snippet note', :deliver_mails_inline do

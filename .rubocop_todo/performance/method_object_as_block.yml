@@ -34,7 +34,6 @@ Performance/MethodObjectAsBlock:
     - 'spec/lib/gitlab/import_export/import_test_coverage_spec.rb'
     - 'spec/lib/gitlab/search_context/builder_spec.rb'
     - 'spec/models/design_management/version_spec.rb'
-    - 'spec/services/notification_service_spec.rb'
     - 'spec/support/helpers/migrations_helpers.rb'
     - 'spec/support/shared_examples/models/active_record_enum_shared_examples.rb'
     - 'spec/support_specs/helpers/stub_feature_flags_spec.rb'

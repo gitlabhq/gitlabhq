@@ -32,6 +32,7 @@ function mountVueApp({ el, position, appData, store, onEmpty }) {
       });
     },
   });
+  return instance;
 }
 
 function getLineNumbers(row) {
@@ -104,11 +105,10 @@ function addParallelCells(lineRow) {
 function createDiscussionMount(createCell) {
   return ({ diffElement, position, appData, store }) => {
     const cell = createCell(diffElement, position.old_line, position.new_line);
-    if (cell.hasMountedApp) return;
+    if (cell.destroyApp) return;
     const mountTarget = document.createElement('div');
     cell.appendChild(mountTarget);
-    cell.hasMountedApp = true;
-    mountVueApp({
+    const instance = mountVueApp({
       el: mountTarget,
       position: {
         oldLine: position.old_line,
@@ -126,6 +126,7 @@ function createDiscussionMount(createCell) {
         return true;
       },
     });
+    cell.destroyApp = () => instance.$destroy();
   };
 }
 
@@ -149,14 +150,20 @@ const mountInlineDiscussion = createDiscussionMount((diffElement, oldLine, newLi
 });
 
 // eslint-disable-next-line max-params
-function createDiscussionsWatcher(oldPath, newPath, callback, store) {
-  return watch(
-    () => store.findAllDiscussionsForFile({ oldPath, newPath }),
+function createDiscussionsWatcher(oldPath, newPath, callback, store, diffElement) {
+  const stopWatcher = watch(
+    () => store.findVisibleDiscussionsForFile({ oldPath, newPath }),
     (matchedDiscussions) => {
       matchedDiscussions.forEach(callback);
     },
     { immediate: true },
   );
+  return () => {
+    stopWatcher();
+    diffElement.querySelectorAll('[data-discussion-row] td').forEach((cell) => {
+      cell.destroyApp?.();
+    });
+  };
 }
 
 function focusForm(id) {
@@ -174,6 +181,7 @@ export const createParallelDiscussionsAdapter = (store) => ({
           mountParallelDiscussion({ diffElement, id, position, appData, store });
         },
         store,
+        diffElement,
       ),
     );
   },
@@ -203,6 +211,7 @@ export const createInlineDiscussionsAdapter = (store) => ({
           mountInlineDiscussion({ diffElement, id, position, appData, store });
         },
         store,
+        diffElement,
       ),
     );
   },

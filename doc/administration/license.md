@@ -142,6 +142,7 @@ This can be caused by:
   - Check for any active disruptions to the Customers Portal on [status](https://status.gitlab.com/).
 
 - **An offline environment**:
-  - If you are unable to configure your setup to allow connection to GitLab servers, contact your Sales Representative to request an [Offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license).
-
-    For assistance, you can contact [GitLab support](https://about.gitlab.com/support/#contact-support) with reference to [troubleshooting network connectivity](https://handbook.gitlab.com/handbook/support/license-and-renewals/workflows/self-managed/troubleshoot_cloud_licensing/#troubleshooting-network-connectivity).
+  - Check [DNS settings](https://docs.gitlab.com/omnibus/settings/dns/).
+  - Contact either:
+    - Your GitLab sales representative to request an [offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license).
+    - [GitLab Support](https://about.gitlab.com/support/#contact-support) to request assistance with [troubleshooting network connectivity](https://handbook.gitlab.com/handbook/support/license-and-renewals/workflows/self-managed/troubleshoot_cloud_licensing/#troubleshooting-network-connectivity).

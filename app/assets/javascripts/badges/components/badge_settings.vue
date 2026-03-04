@@ -85,6 +85,7 @@ export default {
     icon="labels"
     :count="pagination.total"
     :toggle-text="$options.i18n.addFormTitle"
+    title-tag="div"
     data-testid="badge-settings"
   >
     <template #form>

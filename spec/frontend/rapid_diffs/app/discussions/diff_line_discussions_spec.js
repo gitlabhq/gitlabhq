@@ -6,6 +6,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import DiffLineDiscussions from '~/rapid_diffs/app/discussions/diff_line_discussions.vue';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
+import { useDiscussions } from '~/notes/store/discussions';
 import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
 import NewLineDiscussionForm from '~/rapid_diffs/app/discussions/new_line_discussion_form.vue';
 import NoteSignedOutWidget from '~/rapid_diffs/app/discussions/note_signed_out_widget.vue';
@@ -55,7 +56,7 @@ describe('DiffLineDiscussions', () => {
     createComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
     const discussions = wrapper.findComponent(DiffDiscussions).props('discussions');
     expect(discussions).toHaveLength(1);
-    expect(discussions[0]).toStrictEqual(useDiffDiscussions().discussions[0]);
+    expect(discussions[0]).toStrictEqual(useDiscussions().discussions[0]);
   });
 
   it('does not show hidden discussions', () => {
@@ -81,7 +82,7 @@ describe('DiffLineDiscussions', () => {
     });
     createComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
     expect(wrapper.findComponent(NewLineDiscussionForm).props('discussion')).toStrictEqual(
-      useDiffDiscussions().discussions[0],
+      useDiffDiscussions().discussionForms[0],
     );
   });
 
@@ -93,7 +94,7 @@ describe('DiffLineDiscussions', () => {
       newLine: '1',
     });
     createComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
-    useDiffDiscussions().removeNewLineDiscussionForm(useDiffDiscussions().discussions[0]);
+    useDiffDiscussions().removeNewLineDiscussionForm(useDiffDiscussions().discussionForms[0]);
     await nextTick();
     expect(wrapper.emitted('empty')).toStrictEqual([[]]);
   });
@@ -129,7 +130,7 @@ describe('DiffLineDiscussions', () => {
       ]);
       createComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
       wrapper.findComponent(GlButton).vm.$emit('click');
-      expect(useDiffDiscussions().discussions[1].isForm).toBe(true);
+      expect(useDiffDiscussions().discussionForms[0].isForm).toBe(true);
     });
 
     it('shows placeholder for guests', () => {

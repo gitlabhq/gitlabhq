@@ -1,4 +1,5 @@
 ---
+# Cop supports --autocorrect.
 Gitlab/Authz/UsePolicyHelpers:
   Details: grace period
   Exclude:
@@ -67,6 +68,8 @@ Gitlab/Authz/UsePolicyHelpers:
     - 'ee/spec/policies/project_policy_spec.rb'
     - 'ee/spec/policies/project_snippet_policy_spec.rb'
     - 'ee/spec/policies/projects/compliance_standards/adherence_policy_spec.rb'
+    - 'ee/spec/policies/resource_iteration_event_policy_spec.rb'
+    - 'ee/spec/policies/resource_weight_event_policy_spec.rb'
     - 'ee/spec/policies/saml_provider_policy_spec.rb'
     - 'ee/spec/policies/sbom/component_policy_spec.rb'
     - 'ee/spec/policies/sbom/component_version_policy_spec.rb'
@@ -146,6 +149,7 @@ Gitlab/Authz/UsePolicyHelpers:
     - 'spec/policies/issuable_policy_spec.rb'
     - 'spec/policies/issue_policy_spec.rb'
     - 'spec/policies/merge_request_policy_spec.rb'
+    - 'spec/policies/namespaces/project_namespace_policy_spec.rb'
     - 'spec/policies/namespaces/user_namespace_policy_spec.rb'
     - 'spec/policies/note_policy_spec.rb'
     - 'spec/policies/organizations/organization_policy_spec.rb'
@@ -163,6 +167,8 @@ Gitlab/Authz/UsePolicyHelpers:
     - 'spec/policies/projects/branch_rule_policy_spec.rb'
     - 'spec/policies/release_policy_spec.rb'
     - 'spec/policies/resource_label_event_policy_spec.rb'
+    - 'spec/policies/resource_milestone_event_policy_spec.rb'
+    - 'spec/policies/resource_state_event_policy_spec.rb'
     - 'spec/policies/system_hook_policy_spec.rb'
     - 'spec/policies/terraform/state_policy_spec.rb'
     - 'spec/policies/terraform/state_version_policy_spec.rb'

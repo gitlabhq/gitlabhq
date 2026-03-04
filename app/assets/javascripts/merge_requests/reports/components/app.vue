@@ -19,6 +19,10 @@ export default {
     SecurityScansProvider: () =>
       import('ee_component/merge_requests/reports/components/security_scans_provider.vue'),
     SecurityNavItem: () => import('~/merge_requests/reports/components/security_nav_item.vue'),
+    LicenseComplianceProvider: () =>
+      import('ee_component/merge_requests/reports/components/license_compliance_provider.vue'),
+    LicenseComplianceNavItem: () =>
+      import('ee_component/merge_requests/reports/components/license_compliance_nav_item.vue'),
   },
   data() {
     return {
@@ -75,6 +79,9 @@ export default {
         <security-scans-provider v-if="mr" :mr="mr">
           <security-nav-item />
         </security-scans-provider>
+        <license-compliance-provider v-if="mr" :mr="mr">
+          <license-compliance-nav-item />
+        </license-compliance-provider>
       </nav>
     </aside>
     <section class="@md/panel:gl-pt-5">

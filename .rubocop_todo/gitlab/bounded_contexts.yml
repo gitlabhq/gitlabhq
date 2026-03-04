@@ -1,3 +1,4 @@
+---
 Gitlab/BoundedContexts:
   Exclude:
     - 'app/events/groups/group_deleted_event.rb'

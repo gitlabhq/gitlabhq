@@ -100,3 +100,5 @@ IP addresses is not allowed.
 
 To resolve this issue, allow network traffic from your GitLab instance to the IP addresses
 `172.64.146.11:443` and `104.18.41.245:443` (`customers.gitlab.com`).
+
+For more information, see [troubleshooting connectivity issues](../../administration/license.md#error-cannot-activate-instance-due-to-a-connectivity-issue).

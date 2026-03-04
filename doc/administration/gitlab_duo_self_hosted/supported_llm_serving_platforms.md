@@ -151,6 +151,7 @@ This change has been observed to notably improve response times in internal benc
 GitLab has validated and tested the following providers. The AI Gateway supports LLM providers that are compatible with [LiteLLM](https://docs.litellm.ai/docs/providers).
 
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+- [Google Vertex AI](https://cloud.google.com/vertex-ai)
 - [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
 - [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)
 - [OpenAI](https://developers.openai.com/api/docs/models)
@@ -377,6 +378,20 @@ docker run -d \
 ```
 
 For VPC endpoints, use the format: `https://vpce-{vpc-endpoint-id}-{service-name}.{region}.vpce.amazonaws.com`
+
+### Configure authentication with Google Vertex AI
+
+To use models from Google Vertex AI, you must authenticate your AI Gateway instance. You can use any of the following mechanisms:
+
+- Export the environment variables when starting the Docker container. To do this, set the following environment variables when running the AI Gateway container:
+
+  ```shell
+  GOOGLE_APPLICATION_CREDENTIALS=/path/to/application_default_credentials.json
+  VERTEXAI_PROJECT=<gcp-project-id>
+  VERTEXAI_LOCATION=global
+  ```
+
+- Run the AI Gateway container on Google Cloud Run and use the [Cloud Run service account](https://docs.litellm.ai/docs/providers/vertex#using-gcp-service-account) for Vertex AI access.
 
 ## Use multiple models and platforms
 

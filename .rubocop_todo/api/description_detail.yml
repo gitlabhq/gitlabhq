@@ -19,7 +19,6 @@ API/DescriptionDetail:
     - 'ee/lib/api/group_approval_rules.rb'
     - 'ee/lib/api/group_enterprise_users.rb'
     - 'ee/lib/api/group_protected_branches.rb'
-    - 'ee/lib/api/group_service_accounts.rb'
     - 'ee/lib/api/managed_licenses.rb'
     - 'ee/lib/api/member_roles.rb'
     - 'ee/lib/api/merge_request_approval_rules.rb'

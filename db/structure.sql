@@ -47816,7 +47816,7 @@ CREATE UNIQUE INDEX index_scim_oauth_access_tokens_on_group_id_and_token_encrypt
 
 CREATE INDEX index_scim_oauth_access_tokens_on_organization_id ON scim_oauth_access_tokens USING btree (organization_id);
 
-CREATE INDEX index_sec_finding_enrichments_on_created_at ON security_finding_enrichments USING btree (created_at);
+CREATE INDEX index_sec_finding_enrichments_on_created_at_and_id ON security_finding_enrichments USING btree (created_at, id);
 
 CREATE INDEX index_sec_finding_enrichments_on_epss_score ON security_finding_enrichments USING btree (epss_score) WHERE (epss_score IS NOT NULL);
 

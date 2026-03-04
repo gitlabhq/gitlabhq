@@ -100,7 +100,7 @@ the related documentation:
 To use the GitLab container registry, Docker clients must have access to:
 
 - The registry endpoint and GitLab.com for authorization.
-- Google Cloud Storage or Google Cloud Content Delivery Network to download images.
+- Google Cloud Storage (see [IP ranges that Google makes available to users on the internet](https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges)) or Google Cloud Content Delivery Network to download images.
 
 GitLab.com is fronted by Cloudflare.
 For incoming connections to GitLab.com, you must allow CIDR blocks of Cloudflare

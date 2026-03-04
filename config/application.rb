@@ -430,6 +430,8 @@ module Gitlab
     config.assets.precompile << "icons.json"
     config.assets.precompile << "file_icons/file_icons.svg"
     config.assets.precompile << "file_icons/file_icons.json"
+    config.assets.precompile << "illustrations.svg"
+    config.assets.precompile << "illustrations.json"
     config.assets.precompile << "illustrations/*.svg"
     config.assets.precompile << "illustrations/*.png"
 

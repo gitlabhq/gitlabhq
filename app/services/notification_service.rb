@@ -482,6 +482,19 @@ class NotificationService
     send_service_desk_notification(note)
   end
 
+  # Notify users when note is edited to add a mention of them
+  def new_mentions_in_note(note, new_mentioned_users, current_user)
+    return true unless note.noteable_type.present?
+    return true if note.system_note_with_references?
+
+    unless current_user.can_trigger_notifications?
+      warn_skipping_notifications(current_user, note)
+      return false
+    end
+
+    send_new_mentions_in_note_notifications(note, new_mentioned_users)
+  end
+
   # Notify users when a new release is created
   def send_new_release_notifications(release)
     unless release.author&.can_trigger_notifications?
@@ -888,9 +901,21 @@ class NotificationService
   private
 
   def send_new_note_notifications(note)
+    recipients = NotificationRecipients::BuildService.build_new_note_recipients(note)
+
+    send_note_notifications(note, recipients)
+  end
+
+  def send_new_mentions_in_note_notifications(note, new_mentioned_users)
+    recipients = NotificationRecipients::BuildService.build_new_note_recipients(note)
+    recipients = recipients.select { |r| new_mentioned_users.include?(r.user) }
+
+    send_note_notifications(note, recipients)
+  end
+
+  def send_note_notifications(note, recipients)
     notify_method = :"note_#{note.noteable_ability_name}_email"
 
-    recipients = NotificationRecipients::BuildService.build_new_note_recipients(note)
     recipients.each do |recipient|
       mailer.send(notify_method, recipient.user.id, note.id, recipient.reason).deliver_later
     end

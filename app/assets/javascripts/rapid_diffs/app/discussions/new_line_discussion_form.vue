@@ -65,7 +65,7 @@ export default {
           note: noteBody,
         },
       });
-      this.store.replaceDiscussion(this.discussion, discussion);
+      this.store.replaceDiscussionForm(this.discussion, discussion);
     },
   },
 };

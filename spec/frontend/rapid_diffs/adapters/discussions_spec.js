@@ -8,6 +8,7 @@ import {
 } from '~/rapid_diffs/adapters/discussions';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
+import { useDiscussions } from '~/notes/store/discussions';
 import { pinia } from '~/pinia/instance';
 
 // jest fails with direct usage of lodash inside jest.mock
@@ -25,6 +26,9 @@ jest.mock('~/rapid_diffs/app/discussions/diff_line_discussions.vue', () => {
     },
     mounted() {
       this.$el.instance = () => this;
+    },
+    beforeDestroy() {
+      this.$el.onDestroy?.();
     },
     render(h) {
       const renderAsDataAttr = (key, value) => {
@@ -83,7 +87,8 @@ describe('discussions adapters', () => {
   });
 
   afterEach(() => {
-    store.discussions = [];
+    useDiscussions().discussions = [];
+    store.discussionForms = [];
     resetHTMLFixture();
   });
 
@@ -130,7 +135,7 @@ describe('discussions adapters', () => {
     it('renders a discussion', async () => {
       const discussionId = 'abc';
       const oldLine = 1;
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: discussionId,
           diff_discussion: true,
@@ -149,7 +154,7 @@ describe('discussions adapters', () => {
     });
 
     it('provides app data', async () => {
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: 'abc',
           diff_discussion: true,
@@ -170,7 +175,7 @@ describe('discussions adapters', () => {
 
     it('does not render hidden discussions', async () => {
       const discussionId = 'hidden-discussion';
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: discussionId,
           diff_discussion: true,
@@ -183,7 +188,7 @@ describe('discussions adapters', () => {
     });
 
     it('does not render discussions for different paths', async () => {
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: 'xyz',
           diff_discussion: true,
@@ -196,7 +201,7 @@ describe('discussions adapters', () => {
 
     it('creates only one discussion row when multiple discussions share the same position', async () => {
       const oldLine = 1;
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: 'first',
           diff_discussion: true,
@@ -234,7 +239,7 @@ describe('discussions adapters', () => {
     it('removes empty row', async () => {
       const discussionId = 'abc';
       const oldLine = 1;
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: discussionId,
           diff_discussion: true,
@@ -245,6 +250,43 @@ describe('discussions adapters', () => {
       document.querySelector('#discussions-component').instance().empty();
       await nextTick();
       expect(getDiscussionRows()).toHaveLength(0);
+    });
+
+    it('re-renders discussions after hiding and showing', async () => {
+      const oldLine = 1;
+      useDiscussions().setInitialDiscussions([
+        {
+          id: 'abc',
+          diff_discussion: true,
+          notes: [],
+          position: { old_path: oldPath, new_path: newPath, old_line: oldLine, new_line: null },
+        },
+      ]);
+      await nextTick();
+      expect(getDiscussionRows()).toHaveLength(1);
+      store.setFileDiscussionsHidden(oldPath, newPath, true);
+      await nextTick();
+      document.querySelector('#discussions-component').instance().empty();
+      await nextTick();
+      expect(getDiscussionRows()).toHaveLength(0);
+      store.setFileDiscussionsHidden(oldPath, newPath, false);
+      await nextTick();
+      expect(getDiscussionRows()).toHaveLength(1);
+    });
+
+    it('destroys Vue instances on cleanup', async () => {
+      useDiscussions().discussions = [
+        {
+          id: 'abc',
+          diff_discussion: true,
+          position: { old_path: oldPath, new_path: newPath, old_line: 1, new_line: null },
+        },
+      ];
+      await nextTick();
+      const onDestroy = jest.fn();
+      document.querySelector('#discussions-component').onDestroy = onDestroy;
+      getDiffFile().remove();
+      expect(onDestroy).toHaveBeenCalled();
     });
   });
 
@@ -293,7 +335,7 @@ describe('discussions adapters', () => {
     it('renders a discussion on the old side', async () => {
       const discussionId = 'old-side';
       const oldLine = 1;
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: discussionId,
           diff_discussion: true,
@@ -314,7 +356,7 @@ describe('discussions adapters', () => {
     it('renders a discussion on the new side', async () => {
       const discussionId = 'new-side';
       const newLine = 2;
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: discussionId,
           diff_discussion: true,
@@ -337,7 +379,7 @@ describe('discussions adapters', () => {
       const rightDiscussionId = 'right';
       const oldLine = 1;
       const newLine = 1;
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: leftDiscussionId,
           diff_discussion: true,
@@ -373,7 +415,7 @@ describe('discussions adapters', () => {
       const discussionId = 'both-sides';
       const oldLine = 1;
       const newLine = 1;
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: discussionId,
           diff_discussion: true,
@@ -390,7 +432,7 @@ describe('discussions adapters', () => {
 
     it('does not render hidden discussions', async () => {
       const discussionId = 'hidden-discussion';
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: discussionId,
           diff_discussion: true,
@@ -403,7 +445,7 @@ describe('discussions adapters', () => {
     });
 
     it('does not render discussions for different paths', async () => {
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: 'xyz',
           diff_discussion: true,
@@ -416,7 +458,7 @@ describe('discussions adapters', () => {
 
     it('creates only one discussion row when multiple discussions share the same position', async () => {
       const oldLine = 1;
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: 'first',
           diff_discussion: true,
@@ -454,7 +496,7 @@ describe('discussions adapters', () => {
     it('removes empty row', async () => {
       const discussionId = 'abc';
       const oldLine = 1;
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: discussionId,
           diff_discussion: true,
@@ -472,7 +514,7 @@ describe('discussions adapters', () => {
       const rightDiscussionId = 'right';
       const oldLine = 1;
       const newLine = 1;
-      store.discussions = [
+      useDiscussions().discussions = [
         {
           id: leftDiscussionId,
           diff_discussion: true,

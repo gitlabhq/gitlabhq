@@ -6,27 +6,23 @@ title: Security threats in agentic systems
 ---
 
 Common security threats can affect agentic systems.
-To improve your security posture, you should familiarize yourself with these threats and follow
-security best practices when deploying and using agents and flows.
+To improve your security posture, familiarize yourself with these threats and follow security 
+best practices when deploying and using agents and flows.
 
-While no solution can eliminate risks entirely, GitLab invests significant effort in mitigating
-risks through built-in safeguards and security controls, including:
+GitLab mitigates risks through built-in safeguards and security controls with the following mechanisms:
 
 - [Composite identity](composite_identity.md#why-composite-identity-matters) to [limit GitLab Duo Agent Platform access](flows/foundational_flows/software_development.md#apis-that-the-flow-has-access-to), [improve the auditability of AI workflows](flows/foundational_flows/software_development.md#audit-log), and even [attribute resources created by long-lived remote workflows to dedicate the agent's service account](../../development/ai_features/composite_identity.md#attributing-actions-to-the-service-account).
 - [Remote execution environment sandbox](environment_sandbox.md).
 - Integrated [Visual Studio Code Dev Container](../../editor_extensions/visual_studio_code/setup.md#use-the-extension-in-a-visual-studio-code-dev-container) sandbox.
 - [Tools output sanitization](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/duo_workflow_service/security/TOOL_RESPONSE_SECURITY.md).
 - [Human in the loop approvals for chat-based GitLab Duo Agent Platform sessions](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/duo_workflow/#workflow-agents-tools).
-- Integrated [prompt injection detection](#detect-prompt-injection-attempts) tools such as [HiddenLayer](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors).
+- Integrated [prompt injection detection](#detect-prompt-injection-attempts) tools such
+  as [HiddenLayer](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors). 
 
 ## Prompt injection
 
-Prompt injection is an attack where malicious instructions are hidden
-within data that an AI processes. Instead of following its original instructions,
-the AI follows the hidden commands embedded in the data.
-
-It's like slipping a fake note into a stack of real ones,
-and the fake note says, "ignore everything else and do this instead."
+Prompt injection is an attack where malicious instructions hidden in data cause an AI agent to
+follow unintended commands instead of its original instructions.
 
 ### Common attack vectors
 
@@ -44,28 +40,23 @@ and the fake note says, "ignore everything else and do this instead."
 
 ### The lethal trifecta
 
-The most dangerous prompt injection attacks combine three elements (also known as [lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/)):
+The [lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) describes the three elements that make prompt injection attacks most dangerous:
 
-1. Access to sensitive systems: An agent can read private data
-   (GitLab projects, files, credentials), or modify external systems (local environment, remote systems, GitLab entities).
-1. Exposure to untrusted content: Malicious instructions can reach the agent
-   through user-controlled sources such as issue and merge request descriptions, code comments, or file contents.
-1. Autonomous action without approval: The agent can take actions without human review or approval,
-   including exfiltrating data through external communication or damaging the state
-   of external systems on the GitLab instance (deleting issues, merge requests, spamming comments).
+- Access to sensitive systems: An agent can read private data (GitLab projects, files, credentials) or modify external systems (local environment, remote systems, GitLab entities).
+- Exposure to untrusted content: Malicious instructions reach the agent through user-controlled sources such as issue and merge request descriptions, code comments, or file contents.
+- Autonomous action without approval: The agent takes actions without human review or approval, including exfiltrating data through external communication or damaging external systems on the GitLab instance (deleting issues, merge requests, spamming comments).
 
 #### Risk factors and impact
 
-A table below provide concise overview of strengths and risks factors for each of GitLab Duo Agent Platform execution environments in the context of the lethal trifecta. The table assume access to complete set of tools granted to agents and flows.
+The following table shows strengths and risk factors for each GitLab Duo Agent Platform execution environment.
+The table assumes agents and flows have access to all available tools.
 
-| Trifecta element | [Remote Flows (GitLab CI)](flows/execution.md#configure-cicd-execution) | Chat [Agents](agents/_index.md) (GitLab Web) | IDE Chat Agents and Flows (Local environment) |
+| Trifecta element | [Remote flows (GitLab CI)](flows/execution.md#configure-cicd-execution) | Chat [agents](agents/_index.md) (GitLab UI) | Chat agents and flows (IDE local environment) |
 |---|---|---|---|
-| Access to Private Data | Within a scope of a top-level group the same access as the user who started a flow session | The same access to GitLab resources as the user who started a flow session, including public resources from groups or project that uses might not be a member of | The same access as Chat Agents on GitLab Web, with extended access to a local working directory from which a flow session has been started |
-| External Communication | [Sandboxed](environment_sandbox.md) (`srt`) blocking external communication. Write GitLab API scoped to top-level group | Write to GitLab API only (public and private projects) | Unrestricted network access. Write GitLab API (public and private projects) |
-| Exposure to Untrusted Data | On multi-tenant GitLab instances: access to public resources outside of a top-level group hierarchy | On multi-tenant GitLab instances: access to public resources outside of a top-level group hierarchy  | Unrestricted network access. On multi-tenant GitLab instances: access to public resources outside of a top-level group hierarchy. |
-| Risk profile | Sandboxing combined with scope and tools restrictions offers mitigation strategies to break lethal trifecta | Unless strict tools restrictions are applied full trifecta is present, security relies primarily on human approval | Unless strict tools restrictions are applied full trifecta is present, security relies primarily on human approval |
-
-In-depth documentation of lethal trifecta mitigation strategies is presented within dedicated paragraphs of this document.
+| Access to private data | Same access as the user who started the flow session, scoped to a top-level group | Same access to GitLab resources as the user who started the flow session, including public resources from groups or projects the user is not a member of | Same access as Chat agents on the GitLab UI, plus access to the local working directory |
+| External communication | [Sandboxed](environment_sandbox.md) (`srt`) blocks external communication. GitLab API writes are scoped to the top-level group | Writes to GitLab API only (public and private projects) | Unrestricted network access. Writes to GitLab API (public and private projects) |
+| Exposure to untrusted data | On multi-tenant GitLab instances: access to public resources outside the top-level group hierarchy | On multi-tenant GitLab instances: access to public resources outside the top-level group hierarchy | Unrestricted network access. On multi-tenant GitLab instances: access to public resources outside the top-level group hierarchy |
+| Risk profile | Sandboxing, scope restrictions, and tool limitations break the lethal trifecta | Without strict tool restrictions, the full trifecta is present. Security relies primarily on human approval | Without strict tool restrictions, the full trifecta is present. Security relies primarily on human approval |
 
 ### Example attack sequences
 
@@ -73,7 +64,11 @@ The following sequences show how an attack might occur.
 
 #### SSH Key exfiltration from a Chat Agent or Flow in an IDE
 
-An attacker hides malicious instructions in a public project's merge request that are undetected by GitLab prompt-injection mitigations and order the agent to retrieve SSH keys from a developer's local machine using available tools, then posts them as a review comment. When the developer runs the agent in their IDE, the injected prompt causes the agent to steal credentials from the local environment and expose them publicly.
+An attacker hides malicious instructions in a public project's merge request.
+The instructions are undetected by GitLab prompt-injection mitigations.
+The attacker orders the agent to retrieve SSH keys from a developer's local machine using available tools.
+The agent then posts the keys as a review comment.
+When the developer runs the agent in their IDE, the injected prompt causes the agent to steal and expose credentials.
 
 ```mermaid
 sequenceDiagram
@@ -104,7 +99,11 @@ sequenceDiagram
 
 #### CI token exfiltration by executing a flow on a runner
 
-An attacker hides malicious instructions in a public project's merge request that are undetected by GitLab prompt-injection mitigations and instructs the agent to retrieve a CI token from a pipeline environment using available tools, then posts it as a review comment. When the agent runs in the CI pipeline with access to environment variables, the injected prompt can make the agent steal the CI token and expose it in a public location.
+An attacker hides malicious instructions in a public project's merge request.
+The instructions are undetected by GitLab prompt-injection mitigations.
+The attacker instructs the agent to retrieve a CI token from a pipeline environment using available tools.
+The agent then posts the token as a review comment.
+When the agent runs in the CI pipeline, the injected prompt makes the agent steal and expose the CI token.
 
 ```mermaid
 sequenceDiagram
@@ -136,25 +135,29 @@ sequenceDiagram
 
 ### Mitigation
 
-To reduce the risk and impact of prompt injection attacks, apply the principle of least privilege to agents, similar to how you would for human team members. Agents should be scoped to specific tasks with only the permissions and tools they need to complete their work.
+Apply the principle of least privilege to agents, just as you would for human team members.
+Give agents only the permissions and tools they need for their specific tasks.
 
-#### Turn Off Duo
+#### Turn off GitLab Duo
 
 To prevent GitLab Duo from accessing resources on a specific group or project, you can [turn off flow execution](flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
 
 #### Scope agents to specific tasks
 
-Design agents with a narrow, well-defined purpose. For example, a code review agent should focus on reviewing code and related work items. It should not need access to [tools](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/duo_workflow/#workflow-agents-tools) like `run_command` to be effective. Limiting tool access reduces the attack surface and prevents attackers from abusing capabilities agents doesn't actually need.
+Design agents with a narrow, well-defined purpose.
+For example, a code review agent should focus on reviewing code and related work items.
+It should not need access to [tools](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/duo_workflow/#workflow-agents-tools) like `run_command` to be effective.
+Limiting tool access reduces the attack surface and prevents attackers from abusing unnecessary capabilities.
 
-Scoping agents to specific tasks also improves the quality of LLM outputs by keeping the agent focused on its core responsibility.
+Scoping agents to specific tasks also improves LLM output quality by keeping the agent focused on its core responsibility.
 
 #### Use detailed and prescriptive prompts
 
-Write clear, detailed system prompts that:
+Write clear, detailed system prompts that define the following operational boundaries:
 
-- Define the agent's role and responsibilities explicitly
-- Describe what actions the agent is allowed to take
-- Specify what data sources the agent can access
+- The agent's role and responsibilities.
+- What actions the agent is allowed to take.
+- What data sources the agent can access.
 
 #### Detect prompt injection attempts
 
@@ -184,34 +187,44 @@ To configure prompt injection protection:
    - **Interrupt**: Scan and block detected prompt injection attempts.
 1. Select **Save changes**.
 
-#### Avoiding the lethal trifecta through careful tool selection
+#### Avoid the lethal trifecta through careful tool selection
 
-You can significantly reduce the impact of prompt injection attacks by carefully selecting which tools an agent can access. The goal is to break one of the three conditions of the lethal trifecta.
+Reduce the impact of prompt injection attacks by carefully selecting which tools an agent can access.
+The goal is to break one of the three conditions of the lethal trifecta.
 
 ##### Example: Restrict write access to local environment
 
-Allow an agent to read from a broad range of resources, but restrict its write access to only the local user environment. This creates a review opportunity: a user can examine the agent's output before it's posted to a public location, giving the user a chance to detect and prevent any attempts to exfiltrate sensitive information.
+Allow an agent to read from many resources, but restrict write access to the local user environment.
+This creates a review opportunity: users can examine the agent's output before it's posted publicly and detect attempts to exfiltrate sensitive information.
 
 ##### Example: Restrict read access to controlled environment
 
-Allow an agent to write to a broad range of resources, but restrict the agent's read access to a controlled environment, for example the agent could be limited to read only from a local filesystems subtree opened in an IDE. This prevents the agent from accessing public repositories where attackers could inject malicious prompts. Since the agent only reads from trusted, private sources, attackers cannot inject instructions through public merge requests or issues, breaking the "exposure to untrusted content" condition of the lethal trifecta.
+Allow an agent to write to many resources, but restrict read access to a controlled environment.
+For example, limit the agent to read only from a local file system subtree opened in an IDE.
+This prevents the agent from accessing public repositories where attackers could inject malicious prompts.
+Because the agent only reads from trusted, private sources, attackers cannot inject instructions through public merge requests, or public issues.
+This breaks the "exposure to untrusted content" condition of the lethal trifecta.
 
-#### Use VS Code Dev Containers when running GitLab Duo on the IDE
+#### Use VS Code Dev Containers when running GitLab Duo in the IDE
 
-Familiarize yourself with the [Security considerations for editor extensions](../../editor_extensions/security_considerations.md).
+Review the [security considerations for editor extensions](../../editor_extensions/security_considerations.md).
 
-For added security, [set up the extension and use GitLab Duo in a containerized development environment with VS Code Dev Containers](../../editor_extensions/visual_studio_code/setup.md#use-the-extension-in-a-visual-studio-code-dev-container). This sandboxes Duo and can limit its access to files, resources, and network paths.
+For added security, [set up the extension and use GitLab Duo in a containerized development environment with VS Code Dev Containers](../../editor_extensions/visual_studio_code/setup.md#use-the-extension-in-a-visual-studio-code-dev-container).
+This sandboxes GitLab Duo and limits its access to files, resources, and network paths.
 
-#### Applying layered agents flow architecture to reduce prompt injection risk
+#### Apply layered agent flow architecture to reduce prompt injection risk
 
-Another way to reduce the effectiveness of prompt injection attacks is to break a single generalist agent into multiple specialized agents that collaborate with each other. Each agent should have narrowed responsibilities following the lethal trifecta prevention guidelines.
+Reduce the effectiveness of prompt injection attacks by breaking a single generalist agent into multiple specialized agents.
+Each agent should have narrowed responsibilities following the lethal trifecta prevention guidelines.
 
 For example, instead of using a single code review agent with both read and write access to public resources, use two agents:
 
 1. Reader agent: Reads merge request changes and prepares a review context for the writer agent.
 1. Writer agent: Uses the prepared context from the reader agent to post a code review as a comment.
 
-This separation limits what each agent can access and do. If an attacker injects a prompt within a merge request, the reader agent can only read data, and the writer agent cannot access the original malicious content, because it only receives the prepared context from the reader agent.
+This separation limits what each agent can access and do.
+If an attacker injects a prompt in a merge request, the reader agent can only read data.
+The writer agent cannot access the original malicious content, because it only receives the prepared context from the reader agent.
 
 ```mermaid
 graph TD

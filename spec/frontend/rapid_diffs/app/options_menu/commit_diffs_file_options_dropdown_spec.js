@@ -4,6 +4,7 @@ import { PiniaVuePlugin } from 'pinia';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DiffFileOptionsDropdown from '~/rapid_diffs/app/options_menu/diff_file_options_dropdown.vue';
 import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
+import { useDiscussions } from '~/notes/store/discussions';
 import CommitDiffFileOptionsDropdown from '~/rapid_diffs/app/options_menu/commit_diffs_file_options_dropdown.vue';
 
 Vue.use(PiniaVuePlugin);
@@ -77,7 +78,7 @@ describe('CommitDiffFileOptionsDropdown', () => {
     });
 
     it('shows "Show comments" when discussions are hidden', async () => {
-      store.discussions[0].hidden = true;
+      useDiscussions().discussions[0].hidden = true;
 
       await nextTick();
 
@@ -108,7 +109,7 @@ describe('CommitDiffFileOptionsDropdown', () => {
     });
 
     it('calls store action to show discussions when currently hidden', async () => {
-      store.discussions[0].hidden = true;
+      useDiscussions().discussions[0].hidden = true;
       await nextTick();
 
       jest.spyOn(store, 'setFileDiscussionsHidden');
