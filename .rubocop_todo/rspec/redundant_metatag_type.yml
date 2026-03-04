@@ -389,7 +389,6 @@ RSpec/RedundantMetatagType:
     - 'spec/requests/metrics_controller_spec.rb'
     - 'spec/requests/passwords_controller_spec.rb'
     - 'spec/requests/registrations_controller_spec.rb'
-    - 'spec/requests/search_controller_spec.rb'
     - 'spec/requests/sessions_controller_spec.rb'
     - 'spec/requests/user_settings/passwords_controller_spec.rb'
     - 'spec/requests/user_settings_spec.rb'

@@ -229,7 +229,7 @@ class Issue < ApplicationRecord
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> do
-    preload(:author, :namespace, :labels, project: [:project_feature, :route, { namespace: :route }])
+    preload(:author, :namespace, :labels, project: [:project_feature, :route, { namespace: :route }, { group: :route }])
   end
 
   scope :preload_awardable, -> { preload(:award_emoji) }

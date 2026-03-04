@@ -17190,6 +17190,7 @@ CREATE TABLE ci_runner_controller_tokens (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
+    last_used_at timestamp with time zone,
     CONSTRAINT check_84d7d76c86 CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_ec7c3fc764 CHECK ((char_length(token_digest) <= 255))
 );
@@ -44719,7 +44720,7 @@ CREATE INDEX index_ci_resources_on_project_id ON ci_resources USING btree (proje
 
 CREATE UNIQUE INDEX index_ci_resources_on_resource_group_id_and_build_id ON ci_resources USING btree (resource_group_id, build_id);
 
-CREATE INDEX index_ci_runner_controller_tokens_on_rc_id_and_status ON ci_runner_controller_tokens USING btree (runner_controller_id, status);
+CREATE INDEX index_ci_runner_controller_tokens_on_rc_id_status_last_used_at ON ci_runner_controller_tokens USING btree (runner_controller_id, status, last_used_at DESC);
 
 CREATE UNIQUE INDEX index_ci_runner_controller_tokens_on_token_digest ON ci_runner_controller_tokens USING btree (token_digest);
 

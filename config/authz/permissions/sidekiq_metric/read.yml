@@ -1,0 +1,3 @@
+---
+name: read_sidekiq_metric
+description: Grants the ability to read Sidekiq metrics

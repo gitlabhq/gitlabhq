@@ -5,6 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import simplePoll from '~/lib/utils/simple_poll';
 import App from '~/observability/components/app.vue';
 import { MAX_POLLING_ATTEMPTS, POLLING_TIMEOUT } from '~/observability/constants';
+import iframeNavigator from '~/observability/iframe_navigator';
 import * as cryptoModule from '~/observability/utils/nonce';
 import { AuthManager } from '~/observability/utils/auth_manager';
 
@@ -28,6 +29,14 @@ const mockAuthManager = {
 
 jest.mock('~/observability/utils/auth_manager', () => ({
   AuthManager: jest.fn(() => mockAuthManager),
+}));
+
+jest.mock('~/observability/iframe_navigator', () => ({
+  __esModule: true,
+  default: {
+    register: jest.fn(),
+    deregister: jest.fn(),
+  },
 }));
 
 jest.mock('~/observability/utils/nonce', () => ({
@@ -468,6 +477,37 @@ describe('Observability App Component', () => {
       expect(axiosGetSpy.mock.calls).toHaveLength(callsAfterFirstCycle);
 
       axiosGetSpy.mockRestore();
+    });
+  });
+
+  describe('IframeNavigator integration', () => {
+    it('registers iframe navigator on auth success', async () => {
+      await setupComponent();
+
+      authCallbacks.onAuthSuccess();
+      await nextTick();
+
+      expect(iframeNavigator.register).toHaveBeenCalledWith(
+        wrapper.find('iframe').element,
+        'https://o11y.gitlab.com',
+      );
+    });
+
+    it('does not register iframe navigator on auth error', async () => {
+      await setupComponent();
+
+      authCallbacks.onAuthError();
+      await nextTick();
+
+      expect(iframeNavigator.register).not.toHaveBeenCalled();
+    });
+
+    it('deregisters iframe navigator on destroy', async () => {
+      await setupComponent();
+
+      wrapper.vm.$options.beforeUnmount.call(wrapper.vm);
+
+      expect(iframeNavigator.deregister).toHaveBeenCalled();
     });
   });
 });

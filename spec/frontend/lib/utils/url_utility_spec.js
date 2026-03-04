@@ -1505,4 +1505,18 @@ describe('URL utility', () => {
       });
     });
   });
+
+  describe('safeDecodeURIComponent', () => {
+    it('decodes a valid URI component', () => {
+      expect(urlUtils.safeDecodeURIComponent('hello%20world')).toBe('hello world');
+    });
+
+    it('returns the original value for a malformed URI component', () => {
+      expect(urlUtils.safeDecodeURIComponent('%ZZ')).toBe('%ZZ');
+    });
+
+    it('returns an empty string when given an empty string', () => {
+      expect(urlUtils.safeDecodeURIComponent('')).toBe('');
+    });
+  });
 });

@@ -2,6 +2,7 @@ import { GlBadge, GlDisclosureDropdown, GlIcon, GlModal, GlTable } from '@gitlab
 import { createTestingPinia } from '@pinia/testing';
 import Vue from 'vue';
 import { PiniaVuePlugin } from 'pinia';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import AccessTokenTable from '~/vue_shared/access_tokens/components/access_token_table.vue';
@@ -32,6 +33,9 @@ describe('AccessTokenTable', () => {
       },
       stubs: {
         GlModal: stubComponent(GlModal),
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
     });
   };
@@ -154,7 +158,7 @@ describe('AccessTokenTable', () => {
 
       describe('when token is expired', () => {
         it('shows an expired status badge', () => {
-          const tokens = [{ ...defaultToken, active: false, revoked: false }];
+          const tokens = [{ ...defaultToken, active: false, revoked: false, expired: true }];
           createComponent({ tokens });
 
           const badge = findBadge();
@@ -163,6 +167,48 @@ describe('AccessTokenTable', () => {
             icon: 'time-out',
           });
           expect(badge.text()).toBe('Expired');
+        });
+      });
+
+      describe('when token is inactive', () => {
+        describe('when token is granular', () => {
+          it('shows an inactive status badge with feature flag tooltip', () => {
+            const tokens = [
+              { ...defaultToken, active: false, revoked: false, expired: false, granular: true },
+            ];
+            createComponent({ tokens });
+
+            const badge = findBadge();
+            const tooltip = getBinding(badge.element, 'gl-tooltip');
+
+            expect(badge.props()).toMatchObject({
+              variant: 'neutral',
+              icon: 'status_warning',
+            });
+            expect(badge.text()).toBe('Inactive');
+            expect(tooltip.value.title).toBe(
+              'Requires the granular_personal_access_tokens feature flag.',
+            );
+          });
+        });
+
+        describe('when token is not granular', () => {
+          it('shows an inactive status badge without tooltip', () => {
+            const tokens = [
+              { ...defaultToken, active: false, revoked: false, expired: false, granular: false },
+            ];
+            createComponent({ tokens });
+
+            const badge = findBadge();
+            const tooltip = getBinding(badge.element, 'gl-tooltip');
+
+            expect(badge.props()).toMatchObject({
+              variant: 'neutral',
+              icon: 'status_warning',
+            });
+            expect(badge.text()).toBe('Inactive');
+            expect(tooltip.value).toEqual({});
+          });
         });
       });
     });

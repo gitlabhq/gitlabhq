@@ -1037,9 +1037,6 @@ Gitlab.ee do
   Settings.cron_jobs['users_delete_unconfirmed_users_worker'] ||= {}
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['users_delete_unconfirmed_users_worker']['job_class'] = 'Users::UnconfirmedUsersDeletionCronWorker'
-  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker'] ||= {}
-  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['cron'] ||= '10 * * * *'
-  Settings.cron_jobs['users_unconfirmed_secondary_emails_deletion_cron_worker']['job_class'] = 'Users::UnconfirmedSecondaryEmailsDeletionCronWorker'
   Settings.cron_jobs['package_metadata_advisories_sync_worker'] ||= {}
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['cron'] ||= "*/5 * * * *"
   Settings.cron_jobs['package_metadata_advisories_sync_worker']['job_class'] = 'PackageMetadata::AdvisoriesSyncWorker'
@@ -1051,7 +1048,7 @@ Gitlab.ee do
   Settings.cron_jobs['timeout_pending_status_check_responses_worker']['job_class'] = 'ComplianceManagement::TimeoutPendingStatusCheckResponsesWorker'
   Settings.cron_jobs['click_house_ci_finished_builds_sync_worker'] ||= {}
   Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['cron'] ||= '*/3 * * * *'
-  Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['args'] ||= [3]
+  Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['args'] ||= [1]
   Settings.cron_jobs['click_house_ci_finished_builds_sync_worker']['job_class'] = 'ClickHouse::CiFinishedBuildsSyncCronWorker'
   Settings.cron_jobs['click_house_events_sync_worker'] ||= {}
   Settings.cron_jobs['click_house_events_sync_worker']['cron'] ||= "*/3 * * * *"

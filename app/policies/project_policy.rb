@@ -450,6 +450,7 @@ class ProjectPolicy < BasePolicy
     enable :create_build
     enable :read_runners
     enable :read_security_configuration
+    enable :admin_security_attributes
   end
 
   rule { can?(:developer_access) }.policy do

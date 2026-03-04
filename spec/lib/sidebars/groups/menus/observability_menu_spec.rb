@@ -11,6 +11,16 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
 
   subject(:observability_menu) { described_class.new(context) }
 
+  shared_context 'with observability sass features enabled and setting persisted' do
+    before do
+      stub_feature_flags(observability_sass_features: group, o11y_settings_access: false)
+      stub_member_access_level(group, developer: user)
+      allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
+        Observability::GroupO11ySetting, persisted?: true))
+      observability_menu.configure_menu_items
+    end
+  end
+
   describe '#configure_menu_items' do
     context 'when observability_sass_features feature flag is enabled' do
       before do
@@ -156,13 +166,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
   end
 
   describe '#title, #sprite_icon, #link' do
-    before do
-      stub_feature_flags(observability_sass_features: group, o11y_settings_access: false)
-      stub_member_access_level(group, developer: user)
-      allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
-        Observability::GroupO11ySetting, persisted?: true))
-      observability_menu.configure_menu_items
-    end
+    include_context 'with observability sass features enabled and setting persisted'
 
     it 'has the right title' do
       expect(observability_menu.title).to eq(_('Observability'))
@@ -178,13 +182,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
   end
 
   describe '#active_routes' do
-    before do
-      stub_feature_flags(observability_sass_features: group, o11y_settings_access: false)
-      stub_member_access_level(group, developer: user)
-      allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
-        Observability::GroupO11ySetting, persisted?: true))
-      observability_menu.configure_menu_items
-    end
+    include_context 'with observability sass features enabled and setting persisted'
 
     it 'has the right active routes' do
       expect(observability_menu.active_routes).to eq({ controller: 'groups/observability' })
@@ -204,13 +202,7 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
   end
 
   describe '#menu items links' do
-    before do
-      stub_feature_flags(observability_sass_features: group, o11y_settings_access: false)
-      stub_member_access_level(group, developer: user)
-      allow(group).to receive(:observability_group_o11y_setting).and_return(instance_double(
-        Observability::GroupO11ySetting, persisted?: true))
-      observability_menu.configure_menu_items
-    end
+    include_context 'with observability sass features enabled and setting persisted'
 
     it 'has the right links for each menu item' do
       menu_items = observability_menu.renderable_items
@@ -235,6 +227,45 @@ RSpec.describe Sidebars::Groups::Menus::ObservabilityMenu, feature_category: :ob
       expect(menu_items.find do |i|
         i.item_id == :notification_channels
       end.link).to include(ERB::Util.url_encode('settings/channels'))
+    end
+  end
+
+  describe 'js-observability-nav CSS class' do
+    include_context 'with observability sass features enabled and setting persisted'
+
+    it 'includes js-observability-nav on iframe-navigable menu items' do
+      iframe_item_ids = %i[
+        services traces_explorer logs_explorer metrics_explorer
+        infrastructure_monitoring dashboard messaging_queues api_monitoring
+        alerts exceptions service_map notification_channels
+      ]
+
+      menu_items = observability_menu.renderable_items
+
+      iframe_item_ids.each do |item_id|
+        item = menu_items.find { |i| i.item_id == item_id }
+        expect(item.container_html_options[:class]).to include('js-observability-nav'),
+          "Expected #{item_id} to include js-observability-nav class"
+      end
+    end
+
+    it 'does not include js-observability-nav on setup menu item' do
+      item = observability_menu.renderable_items.find { |i| i.item_id == :setup }
+
+      expect(item.container_html_options[:class]).not_to include('js-observability-nav')
+    end
+
+    context 'when o11y_settings_access is enabled' do
+      before do
+        stub_feature_flags(observability_sass_features: group, o11y_settings_access: user)
+        observability_menu.configure_menu_items
+      end
+
+      it 'does not include js-observability-nav on o11y_settings menu item' do
+        item = observability_menu.renderable_items.find { |i| i.item_id == :o11y_settings }
+
+        expect(item.container_html_options[:class]).not_to include('js-observability-nav')
+      end
     end
   end
 

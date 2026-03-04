@@ -21,6 +21,7 @@ title: Runner controllers API
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218229) in GitLab 18.9 [with a flag](../administration/feature_flags/_index.md) named `FF_USE_JOB_ROUTER`. This feature is an [experiment](../policy/development_stages_support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+- `connected` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/591615) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -99,6 +100,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with the
 | `id`               | integer      | The unique identifier of the runner controller. |
 | `description`      | string       | A description for the runner controller. |
 | `state`            | string       | The state of the runner controller. Valid values are `disabled` (default), `enabled`, or `dry_run`. |
+| `connected`        | boolean      | Whether the runner controller is currently connected. A runner controller is considered connected when it uses at least one of its active tokens within the last hour. |
 | `created_at`       | datetime     | The date and time when the runner controller was created. |
 | `updated_at`       | datetime     | The date and time when the runner controller was last updated. |
 
@@ -117,6 +119,7 @@ Example response:
     "id": 1,
     "description": "Runner controller",
     "state": "enabled",
+    "connected": true,
     "created_at": "2026-01-01T00:00:00Z",
     "updated_at": "2026-01-02T00:00:00Z"
 }

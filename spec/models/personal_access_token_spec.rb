@@ -673,6 +673,28 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       end
     end
 
+    describe '.granular' do
+      subject(:granular) { described_class.granular }
+
+      let_it_be(:granular_token) { create(:granular_pat) }
+      let_it_be(:not_granular_token) { create(:personal_access_token) }
+
+      it 'returns only granular tokens' do
+        expect(granular).to contain_exactly(granular_token)
+      end
+    end
+
+    describe '.not_granular' do
+      subject(:not_granular) { described_class.not_granular }
+
+      let_it_be(:granular_token) { create(:granular_pat) }
+      let_it_be(:not_granular_token) { create(:personal_access_token) }
+
+      it 'returns only granular tokens' do
+        expect(not_granular).to contain_exactly(not_granular_token)
+      end
+    end
+
     describe '.expiring_and_not_notified' do
       let_it_be(:expired_token) { create(:personal_access_token, expires_at: 2.days.ago) }
       let_it_be(:revoked_token) { create(:personal_access_token, revoked: true) }

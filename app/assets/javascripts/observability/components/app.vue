@@ -13,6 +13,7 @@ import {
 } from '../constants';
 import { buildIframeUrl, extractTargetPath } from '../utils/url_helpers';
 import { AuthManager } from '../utils/auth_manager';
+import iframeNavigator from '../iframe_navigator';
 import ObservabilityLoading from './observability_loading.vue';
 
 export default {
@@ -149,6 +150,7 @@ export default {
     this.pollingCancelled = true;
     clearTimeout(this.iframeReadyTimeout);
     this.stopProvisioningMessageCycle();
+    iframeNavigator.deregister();
     if (this.authManager) {
       this.authManager.destroy();
     }
@@ -270,6 +272,7 @@ export default {
     handleAuthSuccess() {
       this.isLoading = false;
       this.isAuthenticated = true;
+      iframeNavigator.register(this.$refs.o11yFrame, this.allowedOrigin);
     },
 
     handleAuthError() {

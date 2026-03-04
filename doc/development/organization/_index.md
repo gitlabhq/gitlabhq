@@ -154,6 +154,20 @@ you've discovered a cross-organization data leak. This is particularly useful wh
 
 For automated testing strategies, see [Testing with Organizations](../../development/testing_guide/testing_with_organizations.md).
 
+## Frontend guidelines
+
+### REST API and GraphQL requests
+
+Providing the current organization context to REST API and GraphQL requests does not require any additional arguments. Behind the scenes the current organization is passed via the `X-GitLab-Organization-ID` header in [axios_utils.js#L15](https://gitlab.com/gitlab-org/gitlab/-/blob/3deab3ebc51cdbb14de4a593b35d3df2e26f34bc/app/assets/javascripts/lib/utils/axios_utils.js#L15) and [graphql.js#L183](https://gitlab.com/gitlab-org/gitlab/-/blob/3deab3ebc51cdbb14de4a593b35d3df2e26f34bc/app/assets/javascripts/lib/graphql.js#L183).
+
+### URLs
+
+Do not hardcode or construct URLs on the frontend as they will not support [organization routing](#organization-routing). See [URLs in GitLab](../urls_in_gitlab.md#frontend-guidelines) for guidelines on how to generate URLs on the frontend.
+
+### Accessing the current organization
+
+The current organization context is available on the frontend via `window.gon.current_organization`. Behind the scenes this is exposed to the frontend in [gon_helper.rb#L69](https://gitlab.com/gitlab-org/gitlab/-/blob/f8cdb7b281830854374686003edf7bb66b7a59fa/lib/gitlab/gon_helper.rb#L69).
+
 ## Related topics
 
 - [Sharding guidelines](sharding/_index.md)

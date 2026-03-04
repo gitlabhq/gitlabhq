@@ -76,6 +76,7 @@ Unused credits do not roll over to the next month.
 
 > [!note]
 > When purchasing a monthly commitment pool, you accept the usage billing terms, including On-Demand credit usage.
+> After you accept the terms, On-Demand billing stays active for the rest of your subscription and subsequent self-serve renewals, and you cannot opt out.
 
 ## On-Demand credits
 

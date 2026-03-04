@@ -16,7 +16,7 @@ RSpec.describe Tooling::Danger::SpecOnly, feature_category: :tooling do
   before do
     allow(spec_only).to receive_message_chain(:gitlab, :api).and_return(fake_api)
     allow(spec_only).to receive_message_chain(:gitlab, :mr_json).and_return({ 'project_id' => 1, 'iid' => 2 })
-    allow(fake_helper).to receive(:labels_to_add).and_return([])
+    allow(fake_helper).to receive_messages(labels_to_add: [], deleted_files: [], renamed_files: [])
   end
 
   shared_examples 'eligible for spec-only' do
@@ -131,6 +131,109 @@ RSpec.describe Tooling::Danger::SpecOnly, feature_category: :tooling do
     context 'when there are no changed files' do
       before do
         allow(fake_helper).to receive(:all_changed_files).and_return([])
+      end
+
+      it_behaves_like 'not eligible for spec-only'
+    end
+
+    context 'when only spec files are deleted' do
+      before do
+        allow(fake_helper).to receive_messages(all_changed_files: [],
+          deleted_files: %w[spec/lib/gitlab/checks/file_size_limit_check_spec.rb])
+      end
+
+      it_behaves_like 'eligible for spec-only'
+    end
+
+    context 'when spec files are deleted along with modified spec files' do
+      before do
+        allow(fake_helper).to receive_messages(all_changed_files: %w[spec/models/user_spec.rb],
+          deleted_files: %w[spec/services/foo_spec.rb])
+      end
+
+      it_behaves_like 'eligible for spec-only'
+    end
+
+    context 'when spec and non-spec files are deleted' do
+      before do
+        allow(fake_helper).to receive_messages(all_changed_files: [],
+          deleted_files: %w[spec/models/user_spec.rb app/models/user.rb])
+      end
+
+      it_behaves_like 'not eligible for spec-only'
+    end
+
+    context 'when spec files are deleted along with doc files' do
+      before do
+        allow(fake_helper).to receive_messages(all_changed_files: [],
+          deleted_files: %w[spec/models/user_spec.rb doc/api/users.md])
+      end
+
+      it_behaves_like 'eligible for spec-only'
+    end
+
+    context 'when only spec files are renamed' do
+      before do
+        allow(fake_helper).to receive_messages(
+          all_changed_files: [],
+          renamed_files: [
+            { before: 'spec/models/user_spec.rb', after: 'spec/models/member_spec.rb' }
+          ]
+        )
+      end
+
+      it_behaves_like 'eligible for spec-only'
+    end
+
+    context 'when spec file is renamed to a non-spec file' do
+      before do
+        allow(fake_helper).to receive_messages(
+          all_changed_files: [],
+          renamed_files: [
+            { before: 'spec/models/user_spec.rb', after: 'app/models/user.rb' }
+          ]
+        )
+      end
+
+      it_behaves_like 'not eligible for spec-only'
+    end
+
+    context 'when non-spec file is renamed to a spec file' do
+      before do
+        allow(fake_helper).to receive_messages(
+          all_changed_files: [],
+          renamed_files: [
+            { before: 'app/models/user.rb', after: 'spec/models/user_spec.rb' }
+          ]
+        )
+      end
+
+      it_behaves_like 'not eligible for spec-only'
+    end
+
+    context 'when spec files are renamed along with doc files' do
+      before do
+        allow(fake_helper).to receive_messages(
+          all_changed_files: [],
+          renamed_files: [
+            { before: 'spec/models/user_spec.rb', after: 'spec/models/member_spec.rb' },
+            { before: 'doc/api/users.md', after: 'doc/api/members.md' }
+          ]
+        )
+      end
+
+      it_behaves_like 'eligible for spec-only'
+    end
+
+    context 'when spec and non-spec files are renamed' do
+      before do
+        allow(fake_helper).to receive_messages(
+          all_changed_files: [],
+          renamed_files: [
+            { before: 'spec/models/user_spec.rb', after: 'spec/models/member_spec.rb' },
+            { before: 'app/models/user.rb', after: 'app/models/member.rb' }
+          ]
+        )
       end
 
       it_behaves_like 'not eligible for spec-only'

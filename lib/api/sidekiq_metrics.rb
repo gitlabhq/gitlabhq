@@ -87,6 +87,7 @@ module API
       detail 'Retrieves metrics for Sidekiq queues'
       tags ['sidekiq']
     end
+    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance
     get 'sidekiq/queue_metrics' do
       { queues: queue_metrics }
     end
@@ -95,6 +96,7 @@ module API
       detail 'Retrieves metrics for Sidekiq processes'
       tags ['sidekiq']
     end
+    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance
     get 'sidekiq/process_metrics' do
       { processes: process_metrics }
     end
@@ -103,6 +105,7 @@ module API
       detail 'Retrieves statistics for Sidekiq jobs'
       tags ['sidekiq']
     end
+    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance
     get 'sidekiq/job_stats' do
       { jobs: job_stats }
     end
@@ -111,6 +114,7 @@ module API
       detail 'Retrieves compound metrics including queue, process, and job statistics'
       tags ['sidekiq']
     end
+    route_setting :authorization, permissions: :read_sidekiq_metric, boundary_type: :instance
     get 'sidekiq/compound_metrics' do
       { queues: queue_metrics, processes: process_metrics, jobs: job_stats }
     end

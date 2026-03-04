@@ -185,8 +185,18 @@ To export a project and its data, follow these steps:
    - Follow a link contained in an email that you should receive.
    - Refresh the project settings page and in the **Export project** area, select **Download export**.
 
-The export is generated in your configured `shared_path`, a temporary shared directory, and then
-moved to your configured `uploads_directory`. Every 24 hours, a worker deletes these export files.
+The export is generated in your configured `shared_path`, a temporary shared directory
+(by default, `<shared_path>/tmp/gitlab_exports`), and then either:
+
+- Moved to your configured `uploads_directory`.
+- Uploaded to object storage.
+
+Every 24 hours, a worker deletes these export files.
+
+On GitLab instances with separate Sidekiq, Gitaly, and GitLab application (Rails) nodes,
+the directory specified in the
+[`shared_path`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/b350e3cd5b06a94adb463ece4d41b9f3df6ab282/files/gitlab-config-template/gitlab.rb.template#L731)
+setting must be available to all nodes.
 
 #### Project items that are exported
 

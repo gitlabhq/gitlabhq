@@ -165,7 +165,7 @@ class Milestone < ApplicationRecord
   end
 
   def self.with_web_entity_associations
-    preload(:group, project: [:project_feature, { group: [:parent], namespace: :route }])
+    preload(:group, project: [:project_feature, :route, { group: [:parent], namespace: :route }])
   end
 
   def participants

@@ -71,6 +71,8 @@ class PersonalAccessToken < ApplicationRecord
   scope :revoked, -> { where(revoked: true) }
   scope :revoked_after, ->(date) { revoked.where(arel_table[:updated_at].gteq(date)) }
   scope :not_revoked, -> { where(revoked: [false, nil]) }
+  scope :granular, -> { where(granular: true) }
+  scope :not_granular, -> { where(granular: false) }
   scope :for_user, ->(user) { where(user: user) }
   scope :for_users, ->(users) { where(user: users) }
   scope :for_user_types, ->(user_types) { where(user_type: user_types) }

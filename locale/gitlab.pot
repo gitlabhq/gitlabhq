@@ -4507,6 +4507,9 @@ msgstr ""
 msgid "AccessTokens|Require expiration dates for service accounts"
 msgstr ""
 
+msgid "AccessTokens|Requires the granular_personal_access_tokens feature flag."
+msgstr ""
+
 msgid "AccessTokens|Revoke"
 msgstr ""
 

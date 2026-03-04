@@ -29,6 +29,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
         active_other: create(:personal_access_token, user: other_user, name: 'my_pat_2', organization: organization),
         expired: create(:personal_access_token, :expired, user: user, organization: organization),
         revoked: create(:personal_access_token, :revoked, user: user, organization: organization),
+        granular: create(:granular_pat, user: user, organization: organization),
         active_impersonation: create(:personal_access_token, :impersonation, user: user, organization: organization),
         expired_impersonation: create(:personal_access_token, :expired, :impersonation, user: user, organization: organization),
         revoked_impersonation: create(:personal_access_token, :revoked, :impersonation, user: user, organization: organization),
@@ -116,7 +117,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
     describe 'by user' do
       where(:by_user, :expected_tokens) do
         nil              | ref(:tokens_keys)
-        ref(:user)       | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
+        ref(:user)       | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :granular]
         ref(:other_user) | [:active_other]
         ref(:admin)      | []
       end
@@ -133,9 +134,9 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
     describe 'by users' do
       where(:by_users, :expected_tokens) do
         nil                         | ref(:tokens_keys)
-        lazy { [user] }             | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
+        lazy { [user] }             | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :granular]
         lazy { [other_user] }       | [:active_other]
-        lazy { [user, other_user] } | [:active, :active_other, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation]
+        lazy { [user, other_user] } | [:active, :active_other, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :granular]
         []                          | []
       end
 
@@ -169,7 +170,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
       where(:by_impersonation, :expected_tokens) do
         nil       | ref(:tokens_keys)
         true      | [:active_impersonation, :expired_impersonation, :revoked_impersonation]
-        false     | [:active, :active_other, :expired, :revoked, :bot, :with_group, :with_another_group]
+        false     | [:active, :active_other, :expired, :revoked, :bot, :with_group, :with_another_group, :granular]
         'other'   | ref(:tokens_keys)
       end
 
@@ -183,18 +184,45 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
     end
 
     describe 'by state' do
-      where(:by_state, :expected_tokens) do
-        nil        | ref(:tokens_keys)
-        'active'   | [:active, :active_other, :active_impersonation, :bot, :with_group, :with_another_group]
-        'inactive' | [:expired, :revoked, :expired_impersonation, :revoked_impersonation]
-        'other'    | ref(:tokens_keys)
+      context 'when `granular_personal_access_tokens` feature flag is enabled' do
+        before do
+          stub_feature_flags(granular_personal_access_tokens: true)
+        end
+
+        where(:by_state, :expected_tokens) do
+          nil        | ref(:tokens_keys)
+          'active'   | [:active, :active_other, :active_impersonation, :bot, :with_group, :with_another_group, :granular]
+          'inactive' | [:expired, :revoked, :expired_impersonation, :revoked_impersonation]
+          'other'    | ref(:tokens_keys)
+        end
+
+        with_them do
+          let(:params) { { state: by_state } }
+
+          it 'returns tokens by state' do
+            is_expected.to match_array(tokens.values_at(*expected_tokens))
+          end
+        end
       end
 
-      with_them do
-        let(:params) { { state: by_state } }
+      context 'when `granular_personal_access_tokens` feature flag is disabled' do
+        before do
+          stub_feature_flags(granular_personal_access_tokens: false)
+        end
 
-        it 'returns tokens by state' do
-          is_expected.to match_array(tokens.values_at(*expected_tokens))
+        where(:by_state, :expected_tokens) do
+          nil        | ref(:tokens_keys)
+          'active'   | [:active, :active_other, :active_impersonation, :bot, :with_group, :with_another_group]
+          'inactive' | [:expired, :revoked, :expired_impersonation, :revoked_impersonation, :granular]
+          'other'    | ref(:tokens_keys)
+        end
+
+        with_them do
+          let(:params) { { state: by_state } }
+
+          it 'returns tokens by state' do
+            is_expected.to match_array(tokens.values_at(*expected_tokens))
+          end
         end
       end
     end
@@ -202,7 +230,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
     describe 'by owner type' do
       where(:by_owner_type, :expected_tokens) do
         nil     | ref(:tokens_keys)
-        'human' | [:active, :active_other, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :with_group, :with_another_group]
+        'human' | [:active, :active_other, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :with_group, :with_another_group, :granular]
         'other' | ref(:tokens_keys)
       end
 
@@ -217,11 +245,11 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
 
     describe 'by revoked state' do
       where(:by_revoked_state, :expected_tokens) do
-        nil     | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot, :with_group, :with_another_group]
+        nil     | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot, :with_group, :with_another_group, :granular]
         true    | [:revoked, :revoked_impersonation]
         'true'  | [:revoked, :revoked_impersonation]
-        false   | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot, :with_group, :with_another_group]
-        'false' | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot, :with_group, :with_another_group]
+        false   | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot, :with_group, :with_another_group, :granular]
+        'false' | [:active, :active_other, :expired, :active_impersonation, :expired_impersonation, :bot, :with_group, :with_another_group, :granular]
       end
 
       with_them do
@@ -257,7 +285,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
       describe 'by created after' do
         where(:by_created_after, :expected_tokens) do
           6.days.ago      | ref(:tokens_keys)
-          2.days.ago      | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :bot, :with_group, :with_another_group]
+          2.days.ago      | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :bot, :with_group, :with_another_group, :granular]
           2.days.from_now | []
         end
 
@@ -290,7 +318,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
     describe 'by expires after' do
       where(:by_expires_after, :expected_tokens) do
         2.days.ago       | ref(:tokens_keys)
-        30.days.from_now | [:active, :active_other, :revoked, :active_impersonation, :revoked_impersonation, :bot, :with_group, :with_another_group]
+        30.days.from_now | [:active, :active_other, :revoked, :active_impersonation, :revoked_impersonation, :bot, :with_group, :with_another_group, :granular]
         31.days.from_now | []
       end
 
@@ -328,7 +356,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
       describe 'by last used after' do
         where(:by_last_used_after, :expected_tokens) do
           6.days.ago      | ref(:tokens_keys)
-          2.days.ago      | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :bot, :with_group, :with_another_group]
+          2.days.ago      | [:active, :expired, :revoked, :active_impersonation, :expired_impersonation, :revoked_impersonation, :bot, :with_group, :with_another_group, :granular]
           2.days.from_now | []
         end
 

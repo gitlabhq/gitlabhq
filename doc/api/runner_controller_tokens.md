@@ -21,6 +21,7 @@ title: Runner controller tokens API
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218229) in GitLab 18.9 [with a flag](../administration/feature_flags/_index.md) named `FF_USE_JOB_ROUTER`. This feature is an [experiment](../policy/development_stages_support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+- `last_used_at` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/591615) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -55,6 +56,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the 
 | `id`                    | integer | The unique identifier of the runner controller token. |
 | `runner_controller_id`  | integer | The ID of the associated runner controller. |
 | `description`           | string  | A description for the token. |
+| `last_used_at`          | datetime| The date and time when the token was last used. |
 | `created_at`            | datetime| The date and time when the token was created. |
 | `updated_at`            | datetime| The date and time when the token was last updated. |
 
@@ -74,6 +76,7 @@ Example response:
         "id": 1,
         "runner_controller_id": 1,
         "description": "Token for runner controller",
+        "last_used_at": "2026-01-05T00:00:00Z",
         "created_at": "2026-01-01T00:00:00Z",
         "updated_at": "2026-01-02T00:00:00Z"
     },
@@ -81,6 +84,7 @@ Example response:
         "id": 2,
         "runner_controller_id": 1,
         "description": "Another token for runner controller",
+        "last_used_at": "2026-01-05T00:00:00Z",
         "created_at": "2026-01-03T00:00:00Z",
         "updated_at": "2026-01-04T00:00:00Z"
     }
@@ -111,6 +115,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with the
 | `id`                    | integer | The unique identifier of the runner controller token. |
 | `runner_controller_id`  | integer | The ID of the associated runner controller. |
 | `description`           | string  | A description for the token. |
+| `last_used_at`          | datetime| The date and time when the token was last used. |
 | `created_at`            | datetime| The date and time when the token was created. |
 | `updated_at`            | datetime| The date and time when the token was last updated. |
 
@@ -129,6 +134,7 @@ Example response:
     "id": 1,
     "runner_controller_id": 1,
     "description": "Token for runner controller",
+    "last_used_at": "2026-01-05T00:00:00Z",
     "created_at": "2026-01-01T00:00:00Z",
     "updated_at": "2026-01-02T00:00:00Z"
 }
@@ -163,6 +169,7 @@ If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) wit
 | `id`                    | integer | The unique identifier of the runner controller token. |
 | `runner_controller_id`  | integer | The ID of the associated runner controller. |
 | `description`           | string  | A description for the token. |
+| `last_used_at`          | datetime| The date and time when the token was last used. |
 | `created_at`            | datetime| The date and time when the token was created. |
 | `updated_at`            | datetime| The date and time when the token was last updated. |
 | `token`                 | string  | The actual token value used for authentication. |
@@ -184,6 +191,7 @@ Example response:
     "id": 1,
     "runner_controller_id": 1,
     "description": "Token for runner controller",
+    "last_used_at": null,
     "created_at": "2026-01-01T00:00:00Z",
     "updated_at": "2026-01-01T00:00:00Z",
     "token": "glrct-<token>"
@@ -237,6 +245,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) with the
 | `id`                    | integer | The unique identifier of the runner controller token. |
 | `runner_controller_id`  | integer | The ID of the associated runner controller. |
 | `description`           | string  | A description for the token. |
+| `last_used_at`          | datetime| The date and time when the token was last used. |
 | `created_at`            | datetime| The date and time when the token was created. |
 | `updated_at`            | datetime| The date and time when the token was last updated. |
 | `token`                 | string  | The actual token value used for authentication. |
@@ -256,6 +265,7 @@ Example response:
     "id": 1,
     "runner_controller_id": 1,
     "description": "Token for runner controller",
+    "last_used_at": "2026-01-05T00:00:00Z",
     "created_at": "2026-01-01T00:00:00Z",
     "updated_at": "2026-01-01T00:00:00Z",
     "token": "glrct-<token>"

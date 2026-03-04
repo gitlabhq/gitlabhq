@@ -55025,7 +55025,13 @@ definitions:
       name:
         type: string
         example: John Doe
+      active:
+        type: boolean
       revoked:
+        type: boolean
+      expired:
+        type: boolean
+      granular:
         type: boolean
       created_at:
         type: string
@@ -55045,8 +55051,6 @@ definitions:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
       expires_at:
         type: string
         format: date-time
@@ -55076,13 +55080,15 @@ definitions:
     required:
     - id
     - name
+    - active
     - revoked
+    - expired
+    - granular
     - created_at
     - description
     - scopes
     - user_id
     - last_used_at
-    - active
     - expires_at
     - access_level
     - resource_type
@@ -74360,7 +74366,13 @@ definitions:
       name:
         type: string
         example: John Doe
+      active:
+        type: boolean
       revoked:
+        type: boolean
+      expired:
+        type: boolean
+      granular:
         type: boolean
       created_at:
         type: string
@@ -74380,8 +74392,6 @@ definitions:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
       expires_at:
         type: string
         format: date-time
@@ -74395,13 +74405,15 @@ definitions:
     required:
     - id
     - name
+    - active
     - revoked
+    - expired
+    - granular
     - created_at
     - description
     - scopes
     - user_id
     - last_used_at
-    - active
     - expires_at
     - last_used_ips
     description: API_Entities_PersonalAccessTokenWithLastUsedIps model
@@ -74415,7 +74427,13 @@ definitions:
       name:
         type: string
         example: John Doe
+      active:
+        type: boolean
       revoked:
+        type: boolean
+      expired:
+        type: boolean
+      granular:
         type: boolean
       created_at:
         type: string
@@ -74435,8 +74453,6 @@ definitions:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
       expires_at:
         type: string
         format: date-time
@@ -74444,13 +74460,15 @@ definitions:
     required:
     - id
     - name
+    - active
     - revoked
+    - expired
+    - granular
     - created_at
     - description
     - scopes
     - user_id
     - last_used_at
-    - active
     - expires_at
     description: API_Entities_PersonalAccessToken model
   postApiV4PersonalAccessTokensSelfRotate:
@@ -74472,7 +74490,13 @@ definitions:
       name:
         type: string
         example: John Doe
+      active:
+        type: boolean
       revoked:
+        type: boolean
+      expired:
+        type: boolean
+      granular:
         type: boolean
       created_at:
         type: string
@@ -74492,8 +74516,6 @@ definitions:
         type: string
         format: date-time
         example: '2020-08-31T15:53:00.073Z'
-      active:
-        type: boolean
       expires_at:
         type: string
         format: date-time
@@ -74503,13 +74525,15 @@ definitions:
     required:
     - id
     - name
+    - active
     - revoked
+    - expired
+    - granular
     - created_at
     - description
     - scopes
     - user_id
     - last_used_at
-    - active
     - expires_at
     - token
     description: API_Entities_PersonalAccessTokenWithToken model

@@ -1053,6 +1053,27 @@ variables:
 | `CACHE_COMPRESSION_LEVEL`    | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) must also be enabled. |
 | `CACHE_REQUEST_TIMEOUT`      | Configure the maximum duration of cache upload and download operations for a single job in minutes. Default is `10` minutes. |
 
+### Tune TCP settings for high-latency connections
+
+If significant network latency exists between the runner and the GitLab instance,
+the default TCP window size might limit throughput. On the runner host,
+increase the TCP window size to allow more data in flight.
+
+For example, on Linux, increase the maximum TCP buffer sizes:
+
+```shell
+sudo sysctl -w net.core.rmem_max=16777216
+sudo sysctl -w net.core.wmem_max=16777216
+sudo sysctl -w net.ipv4.tcp_rmem="4096 87380 16777216"
+sudo sysctl -w net.ipv4.tcp_wmem="4096 65536 16777216"
+```
+
+To make these changes persistent across reboots, add them to `/etc/sysctl.conf`.
+
+> [!note]
+> TCP tuning is a host-level change that affects all network connections on the
+> runner machine. Test changes in a non-production environment first.
+
 ## Artifact provenance metadata
 
 {{< history >}}

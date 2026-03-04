@@ -700,6 +700,17 @@ Grants the ability to drop Sidekiq jobs.
 | ------ | ------ | ------ | ---- |
 | Drop | Instance | `DELETE` | `/admin/sidekiq/queues/:queue_name` |
 
+#### Sidekiq Metric
+
+Grants the ability to read Sidekiq metrics.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Instance | `GET` | `/sidekiq/queue_metrics` |
+| Read | Instance | `GET` | `/sidekiq/process_metrics` |
+| Read | Instance | `GET` | `/sidekiq/job_stats` |
+| Read | Instance | `GET` | `/sidekiq/compound_metrics` |
+
 ### Note resources
 
 #### Vulnerability Note

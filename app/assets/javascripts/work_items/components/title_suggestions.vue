@@ -95,10 +95,12 @@ export default {
     :count="issues.length"
     class="!-gl-mt-4 gl-mb-5"
   >
-    <div
-      class="gl-mx-3 gl-mt-3 gl-rounded-base gl-bg-strong gl-px-3 gl-py-2 gl-text-sm gl-font-semibold gl-text-subtle"
-    >
-      {{ helpIconTitle }}
+    <div class="gl-px-3 gl-pt-3">
+      <div
+        class="gl-rounded-base gl-bg-strong gl-px-3 gl-py-2 gl-text-sm gl-font-semibold gl-text-subtle"
+      >
+        {{ helpIconTitle }}
+      </div>
     </div>
     <ul class="content-list">
       <li

@@ -10642,7 +10642,7 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/APIEntitiesCiRunnerController"
+                "$ref": "#/components/schemas/APIEntitiesCiRunnerControllerDetail"
         '403':
           description: Forbidden
         '404':
@@ -65362,6 +65362,9 @@ components:
         description:
           type: string
           example: Controller for managing runner
+        last_used_at:
+          type: string
+          format: date-time
         created_at:
           type: string
           format: date-time
@@ -68292,7 +68295,13 @@ components:
         name:
           type: string
           example: John Doe
+        active:
+          type: boolean
         revoked:
+          type: boolean
+        expired:
+          type: boolean
+        granular:
           type: boolean
         created_at:
           type: string
@@ -68311,8 +68320,6 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
         expires_at:
           type: string
           format: date-time
@@ -72748,6 +72755,9 @@ components:
         description:
           type: string
           example: Controller for managing runner
+        last_used_at:
+          type: string
+          format: date-time
         created_at:
           type: string
           format: date-time
@@ -72756,6 +72766,27 @@ components:
           format: date-time
         token:
           type: string
+    APIEntitiesCiRunnerControllerDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        description:
+          type: string
+          example: Controller for managing runner
+        state:
+          type: string
+          example: enabled
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        connected:
+          type: boolean
+          example: true
     APIEntitiesGroupsRepositoryStorageMove:
       type: object
       properties:
@@ -73428,7 +73459,13 @@ components:
         name:
           type: string
           example: John Doe
+        active:
+          type: boolean
         revoked:
+          type: boolean
+        expired:
+          type: boolean
+        granular:
           type: boolean
         created_at:
           type: string
@@ -73447,8 +73484,6 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
         expires_at:
           type: string
           format: date-time
@@ -73464,7 +73499,13 @@ components:
         name:
           type: string
           example: John Doe
+        active:
+          type: boolean
         revoked:
+          type: boolean
+        expired:
+          type: boolean
+        granular:
           type: boolean
         created_at:
           type: string
@@ -73483,8 +73524,6 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
         expires_at:
           type: string
           format: date-time
@@ -73507,7 +73546,13 @@ components:
         name:
           type: string
           example: John Doe
+        active:
+          type: boolean
         revoked:
+          type: boolean
+        expired:
+          type: boolean
+        granular:
           type: boolean
         created_at:
           type: string
@@ -73526,8 +73571,6 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
         expires_at:
           type: string
           format: date-time
@@ -73543,7 +73586,13 @@ components:
         name:
           type: string
           example: John Doe
+        active:
+          type: boolean
         revoked:
+          type: boolean
+        expired:
+          type: boolean
+        granular:
           type: boolean
         created_at:
           type: string
@@ -73562,8 +73611,6 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
         expires_at:
           type: string
           format: date-time
@@ -73583,7 +73630,13 @@ components:
         name:
           type: string
           example: John Doe
+        active:
+          type: boolean
         revoked:
+          type: boolean
+        expired:
+          type: boolean
+        granular:
           type: boolean
         created_at:
           type: string
@@ -73602,8 +73655,6 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
         expires_at:
           type: string
           format: date-time
@@ -73628,7 +73679,13 @@ components:
         name:
           type: string
           example: John Doe
+        active:
+          type: boolean
         revoked:
+          type: boolean
+        expired:
+          type: boolean
+        granular:
           type: boolean
         created_at:
           type: string
@@ -73647,8 +73704,6 @@ components:
           type: string
           format: date-time
           example: '2020-08-31T15:53:00.073Z'
-        active:
-          type: boolean
         expires_at:
           type: string
           format: date-time

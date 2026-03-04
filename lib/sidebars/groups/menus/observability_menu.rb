@@ -85,7 +85,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :services,
-            container_html_options: { class: 'shortcuts-services' }
+            container_html_options: { class: 'shortcuts-services js-observability-nav' }
           )
         end
 
@@ -97,7 +97,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :traces_explorer,
-            container_html_options: { class: 'shortcuts-traces' }
+            container_html_options: { class: 'shortcuts-traces js-observability-nav' }
           )
         end
 
@@ -109,7 +109,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :logs_explorer,
-            container_html_options: { class: 'shortcuts-logs' }
+            container_html_options: { class: 'shortcuts-logs js-observability-nav' }
           )
         end
 
@@ -121,7 +121,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :metrics_explorer,
-            container_html_options: { class: 'shortcuts-metrics' }
+            container_html_options: { class: 'shortcuts-metrics js-observability-nav' }
           )
         end
 
@@ -133,7 +133,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :infrastructure_monitoring,
-            container_html_options: { class: 'shortcuts-infrastructure' }
+            container_html_options: { class: 'shortcuts-infrastructure js-observability-nav' }
           )
         end
 
@@ -145,7 +145,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :dashboard,
-            container_html_options: { class: 'shortcuts-dashboard' }
+            container_html_options: { class: 'shortcuts-dashboard js-observability-nav' }
           )
         end
 
@@ -157,7 +157,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :messaging_queues,
-            container_html_options: { class: 'shortcuts-messaging-queues' }
+            container_html_options: { class: 'shortcuts-messaging-queues js-observability-nav' }
           )
         end
 
@@ -169,7 +169,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :api_monitoring,
-            container_html_options: { class: 'shortcuts-api-monitoring' }
+            container_html_options: { class: 'shortcuts-api-monitoring js-observability-nav' }
           )
         end
 
@@ -181,7 +181,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :alerts,
-            container_html_options: { class: 'shortcuts-alerts' }
+            container_html_options: { class: 'shortcuts-alerts js-observability-nav' }
           )
         end
 
@@ -193,7 +193,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :exceptions,
-            container_html_options: { class: 'shortcuts-exceptions' }
+            container_html_options: { class: 'shortcuts-exceptions js-observability-nav' }
           )
         end
 
@@ -205,7 +205,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :service_map,
-            container_html_options: { class: 'shortcuts-service-map' }
+            container_html_options: { class: 'shortcuts-service-map js-observability-nav' }
           )
         end
 
@@ -217,7 +217,7 @@ module Sidebars
             active_routes: { page: link },
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::ObservabilityMenu,
             item_id: :notification_channels,
-            container_html_options: { class: 'shortcuts-notification-channels' }
+            container_html_options: { class: 'shortcuts-notification-channels js-observability-nav' }
           )
         end
 
