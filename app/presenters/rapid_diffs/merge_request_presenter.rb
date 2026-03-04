@@ -47,12 +47,50 @@ module RapidDiffs
       )
     end
 
+    def discussions_endpoint
+      discussions_project_merge_request_path(resource.project, resource)
+    end
+
     def sorted?
       true
     end
 
     def mr_path
       project_merge_request_path(resource.project, resource)
+    end
+
+    def user_permissions
+      {
+        can_create_note: can?(@current_user, :create_note, resource)
+      }
+    end
+
+    def noteable_type
+      resource.class.name
+    end
+
+    def preview_markdown_endpoint
+      project_preview_markdown_path(resource.project)
+    end
+
+    def markdown_docs_path
+      help_page_path('user/markdown.md')
+    end
+
+    def register_path
+      new_user_registration_path(redirect_to_referer: 'yes')
+    end
+
+    def sign_in_path
+      new_user_session_path(redirect_to_referer: 'yes')
+    end
+
+    def report_abuse_path
+      add_category_abuse_reports_path
+    end
+
+    def code_review_enabled
+      !!@current_user
     end
 
     protected

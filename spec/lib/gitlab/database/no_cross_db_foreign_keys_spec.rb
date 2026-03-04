@@ -41,6 +41,9 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       'audit_events_streaming_instance_namespace_filters.external_streaming_destination_id',
       'audit_events_streaming_http_instance_namespace_filters.namespace_id',
 
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/592220
+      'ai_instance_accessible_entity_rules.through_namespace_id',
+
       # Subscription add-ons are static/deprecated tables to be removed
       # https://gitlab.com/groups/gitlab-org/-/work_items/19981
       'subscription_add_on_purchases.subscription_add_on_id',

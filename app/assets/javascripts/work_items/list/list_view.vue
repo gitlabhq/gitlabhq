@@ -41,9 +41,6 @@ import {
   NAMESPACE_PROJECT,
 } from '~/issues/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
-import EmptyStateWithAnyTickets from '~/issues/service_desk/components/empty_state_with_any_issues.vue';
-import EmptyStateWithoutAnyTickets from '~/issues/service_desk/components/empty_state_without_any_issues.vue';
-import InfoBanner from '~/issues/service_desk/components/info_banner.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
@@ -155,6 +152,9 @@ import WorkItemsSavedViewsNotFoundModal from './components/work_items_saved_view
 import WorkItemsSavedViewsLimitWarningModal from './components/work_items_saved_views_limit_warning_modal.vue';
 import EmptyStateWithAnyIssues from './components/empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from './components/empty_state_without_any_issues.vue';
+import EmptyStateWithAnyTickets from './components/empty_state_with_any_tickets.vue';
+import EmptyStateWithoutAnyTickets from './components/empty_state_without_any_tickets.vue';
+import InfoBanner from './components/info_banner.vue';
 import searchProjectsQuery from './graphql/search_projects.query.graphql';
 
 const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');

@@ -31,6 +31,7 @@ When you select a project, the **Project overview** page shows the project conte
 - Topics
 - Badges
 - Number of stars, forks, commits, branches, tags, releases, and environments in the project
+  - The commit count is calculated from the project’s default branch, not from all branches
 - Project storage size
 - Optional files and configurations
 - `README` or index file

@@ -128,34 +128,6 @@ module IssuesHelper
     }
   end
 
-  def common_issues_list_data(namespace, current_user)
-    {
-      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
-      calendar_path: url_for(safe_params.merge(calendar_url_options)),
-      full_path: namespace.full_path,
-      has_issue_date_filter_feature: has_issue_date_filter_feature?(namespace, current_user).to_s,
-      initial_sort: current_user&.user_preference&.issues_sort,
-      is_issue_repositioning_disabled: issue_repositioning_disabled?.to_s,
-      is_public_visibility_restricted:
-        Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
-      is_signed_in: current_user.present?.to_s,
-      rss_path: url_for(safe_params.merge(rss_url_options)),
-      sign_in_path: new_user_session_path,
-      wi: work_items_data(namespace, current_user),
-      has_subepics_feature: has_subepics_feature?(namespace).to_s
-    }
-  end
-
-  def has_subepics_feature?(namespace)
-    if namespace.is_a?(Group)
-      return namespace.licensed_feature_available?(:subepics)
-    elsif namespace.respond_to?(:group) && namespace.group
-      return namespace.group.licensed_feature_available?(:subepics)
-    end
-
-    false
-  end
-
   def has_issue_date_filter_feature?(namespace, current_user)
     enabled_for_user = Feature.enabled?(:issue_date_filter, current_user)
     return true if enabled_for_user
@@ -164,34 +136,6 @@ module IssuesHelper
     return true if enabled_for_group
 
     Feature.enabled?(:issue_date_filter, namespace)
-  end
-
-  def project_issues_list_data(project, current_user)
-    common_issues_list_data(project, current_user).merge(
-      can_bulk_update: can?(current_user, :admin_issue, project).to_s,
-      can_create_issue: can?(current_user, :create_issue, project).to_s,
-      can_edit: can?(current_user, :admin_project, project).to_s,
-      can_import_issues: can?(current_user, :import_issues, @project).to_s,
-      can_read_crm_contact: can?(current_user, :read_crm_contact, project.crm_group).to_s,
-      can_read_crm_organization: can?(current_user, :read_crm_organization, project.crm_group).to_s,
-      email: current_user&.notification_email_or_default,
-      emails_help_page_path: help_page_path('development/emails.md', anchor: 'email-namespace'),
-      export_csv_path: export_csv_project_issues_path(project),
-      has_any_issues: project_issues(project).exists?.to_s,
-      import_csv_issues_path: import_csv_namespace_project_issues_path,
-      initial_email: project.new_issuable_address(current_user, 'issue'),
-      is_project: true.to_s,
-      markdown_help_path: help_page_path('user/markdown.md'),
-      max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
-      new_issue_path: new_project_issue_path(project),
-      project_import_jira_path: project_import_jira_path(project),
-      quick_actions_help_path: help_page_path('user/project/quick_actions.md'),
-      releases_path: project_releases_path(project, format: :json),
-      reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
-      project_namespace_full_path: project.namespace.full_path,
-      show_new_issue_link: show_new_issue_link?(project).to_s,
-      time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s
-    )
   end
 
   def dashboard_issues_list_data(current_user)
@@ -210,11 +154,6 @@ module IssuesHelper
       is_signed_in: current_user.present?.to_s,
       rss_path: url_for(safe_params.merge(rss_url_options))
     }
-  end
-
-  # Overridden in EE
-  def scoped_labels_available?(parent)
-    false
   end
 
   def award_emoji_issue_api_path(issue)

@@ -403,18 +403,18 @@ SETTINGS index_granularity = 8192;
 
 CREATE TABLE contributions_new
 (
-    `id` UInt64 DEFAULT 0,
-    `path` String DEFAULT '',
-    `author_id` UInt64 DEFAULT 0,
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
+    `path` String CODEC(ZSTD(3)),
+    `author_id` Int64 CODEC(DoubleDelta, ZSTD(1)),
     `target_type` LowCardinality(String) DEFAULT '',
-    `action` UInt8 DEFAULT 0,
-    `created_at` Date DEFAULT toDate(now64()),
+    `action` Int16 DEFAULT 0,
+    `created_at` DateTime64(6, 'UTC') DEFAULT now64(),
     `updated_at` DateTime64(6, 'UTC') DEFAULT now64(),
-    `version` DateTime64(6, 'UTC') DEFAULT now(),
-    `deleted` Bool DEFAULT false
+    `version` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+    `deleted` Bool DEFAULT false CODEC(ZSTD(1))
 )
 ENGINE = ReplacingMergeTree(version, deleted)
-PARTITION BY toYear(created_at)
+PARTITION BY toYYYYMM(created_at)
 ORDER BY (path, created_at, author_id, id)
 SETTINGS index_granularity = 8192;
 
@@ -479,25 +479,6 @@ CREATE TABLE events
     `updated_at` DateTime64(6, 'UTC') DEFAULT now()
 )
 ENGINE = ReplacingMergeTree(updated_at, deleted)
-PARTITION BY toYear(created_at)
-PRIMARY KEY id
-ORDER BY id
-SETTINGS index_granularity = 8192;
-
-CREATE TABLE events_new
-(
-    `id` Int64 DEFAULT 0,
-    `path` String DEFAULT '0/',
-    `author_id` UInt64 DEFAULT 0,
-    `action` UInt8 DEFAULT 0,
-    `target_type` LowCardinality(String) DEFAULT '',
-    `target_id` UInt64 DEFAULT 0,
-    `created_at` DateTime64(6, 'UTC') DEFAULT now(),
-    `updated_at` DateTime64(6, 'UTC') DEFAULT now(),
-    `version` DateTime64(6, 'UTC') DEFAULT now(),
-    `deleted` Bool DEFAULT false
-)
-ENGINE = ReplacingMergeTree(version, deleted)
 PARTITION BY toYear(created_at)
 PRIMARY KEY id
 ORDER BY id
@@ -932,23 +913,30 @@ CREATE TABLE siphon_events
 (
     `project_id` Nullable(Int64),
     `author_id` Int64,
-    `created_at` DateTime64(6, 'UTC'),
-    `updated_at` DateTime64(6, 'UTC'),
-    `action` Int8,
+    `created_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `updated_at` DateTime64(6, 'UTC') CODEC(Delta(8), ZSTD(1)),
+    `action` Int16,
     `target_type` LowCardinality(String) DEFAULT '',
     `group_id` Nullable(Int64),
     `fingerprint` Nullable(String),
-    `id` Int64,
+    `id` Int64 CODEC(DoubleDelta, ZSTD(1)),
     `target_id` Nullable(Int64),
-    `imported_from` Int8 DEFAULT 0,
+    `imported_from` Int16 DEFAULT 0,
     `personal_namespace_id` Nullable(Int64),
-    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
-    `_siphon_deleted` Bool DEFAULT false
+    `path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), coalesce(group_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict', 'traversal_path', group_id, '0/'), coalesce(personal_namespace_id, 0) != 0, dictGetOrDefault('namespace_traversal_paths_dict', 'traversal_path', personal_namespace_id, '0/'), '0/') CODEC(ZSTD(3)),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
+    `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    PROJECTION pg_pkey_ordered
+    (
+        SELECT *
+        ORDER BY id
+    )
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
-PRIMARY KEY id
-ORDER BY id
-SETTINGS index_granularity = 8192;
+PARTITION BY toYear(created_at)
+PRIMARY KEY (path, id)
+ORDER BY (path, id)
+SETTINGS index_granularity = 2048, deduplicate_merge_projection_mode = 'rebuild';
 
 CREATE TABLE siphon_group_audit_events
 (
@@ -1806,6 +1794,7 @@ CREATE TABLE siphon_security_findings
     `traversal_path` String DEFAULT multiIf(coalesce(project_id, 0) != 0, dictGetOrDefault('project_traversal_paths_dict', 'traversal_path', project_id, '0/'), '0/') CODEC(ZSTD(3)),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now() CODEC(ZSTD(1)),
     `_siphon_deleted` Bool DEFAULT false CODEC(ZSTD(1)),
+    `scanner_reported_severity` Int16 DEFAULT 0,
     PROJECTION pg_pkey_ordered
     (
         SELECT *
@@ -2584,27 +2573,31 @@ CREATE MATERIALIZED VIEW contributions_new_mv TO contributions_new
 (
     `id` Int64,
     `path` String,
-    `author_id` UInt64,
-    `target_type` String,
-    `action` UInt8,
-    `created_at` Date,
-    `updated_at` Date,
-    `deleted` Bool,
-    `version` DateTime64(6, 'UTC')
+    `author_id` Int64,
+    `target_type` LowCardinality(String),
+    `action` Int16,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `version` DateTime64(6, 'UTC'),
+    `deleted` Bool
 )
-AS SELECT
-    id,
-    argMax(path, events_new.version) AS path,
-    argMax(author_id, events_new.version) AS author_id,
-    argMax(target_type, events_new.version) AS target_type,
-    argMax(action, events_new.version) AS action,
-    argMax(DATE(created_at), events_new.version) AS created_at,
-    argMax(DATE(updated_at), events_new.version) AS updated_at,
-    argMax(deleted, events_new.version) AS deleted,
-    max(events_new.version) AS version
-FROM events_new
-WHERE ((events_new.action IN (5, 6)) AND (events_new.target_type = '')) OR ((events_new.action IN (1, 3, 7, 12)) AND (events_new.target_type IN ('MergeRequest', 'Issue', 'WorkItem')))
-GROUP BY id;
+AS WITH base AS
+    (
+        SELECT *
+        FROM siphon_events
+        WHERE ((action IN (5, 6)) AND (target_type = '')) OR ((action IN (1, 3, 7, 12)) AND (target_type IN ('MergeRequest', 'Issue', 'WorkItem')))
+    )
+SELECT
+    base.id AS id,
+    base.path AS path,
+    base.author_id AS author_id,
+    base.target_type AS target_type,
+    base.action AS action,
+    base.created_at AS created_at,
+    base.updated_at AS updated_at,
+    base._siphon_replicated_at AS version,
+    base._siphon_deleted AS deleted
+FROM base;
 
 CREATE MATERIALIZED VIEW duo_chat_events_daily_mv TO duo_chat_events_daily
 (
@@ -2652,62 +2645,6 @@ FROM events
 GROUP BY
     namespace_id,
     path;
-
-CREATE MATERIALIZED VIEW events_new_mv TO events_new
-(
-    `id` Int64,
-    `path` String,
-    `author_id` Int64,
-    `action` Int8,
-    `target_type` LowCardinality(String),
-    `target_id` Nullable(Int64),
-    `created_at` DateTime64(6, 'UTC'),
-    `updated_at` DateTime64(6, 'UTC'),
-    `version` DateTime64(6, 'UTC'),
-    `deleted` Bool
-)
-AS WITH
-    cte AS
-    (
-        SELECT *
-        FROM siphon_events
-    ),
-    group_lookups AS
-    (
-        SELECT
-            id,
-            traversal_path
-        FROM namespace_traversal_paths
-        WHERE id IN (
-            SELECT DISTINCT group_id
-            FROM cte
-        )
-    ),
-    project_lookups AS
-    (
-        SELECT
-            id,
-            traversal_path
-        FROM project_namespace_traversal_paths
-        WHERE id IN (
-            SELECT DISTINCT project_id
-            FROM cte
-        )
-    )
-SELECT
-    cte.id AS id,
-    multiIf(cte.project_id != 0, project_lookups.traversal_path, cte.group_id != 0, group_lookups.traversal_path, '0/') AS path,
-    cte.author_id AS author_id,
-    cte.action AS action,
-    cte.target_type AS target_type,
-    cte.target_id AS target_id,
-    cte.created_at AS created_at,
-    cte.updated_at AS updated_at,
-    cte._siphon_replicated_at AS version,
-    cte._siphon_deleted AS deleted
-FROM cte
-LEFT JOIN group_lookups ON group_lookups.id = cte.group_id
-LEFT JOIN project_lookups ON project_lookups.id = cte.project_id;
 
 CREATE MATERIALIZED VIEW hierarchy_audit_events_mv TO hierarchy_audit_events
 (

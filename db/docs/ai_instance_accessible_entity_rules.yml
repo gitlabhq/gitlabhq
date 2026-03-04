@@ -9,7 +9,5 @@ description: Stores instance-level AI accessible entity rules that define which 
   within a root namespace
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216917
 milestone: '18.8'
-gitlab_schema: gitlab_main_org
-sharding_key:
-  through_namespace_id: namespaces
+gitlab_schema: gitlab_main_cell_setting
 table_size: small

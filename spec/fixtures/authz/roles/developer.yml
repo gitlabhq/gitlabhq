@@ -1,0 +1,8 @@
+---
+name: developer
+description: Test developer role
+inherits_from:
+  - reporter
+raw_permissions:
+  - push_code
+  - create_pipeline

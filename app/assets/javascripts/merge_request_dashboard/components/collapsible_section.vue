@@ -161,7 +161,7 @@ export default {
       </template>
 
       <template v-if="!hasMergeRequests && !loading && !error" #empty>
-        <p class="gl-pt-1 gl-text-center gl-text-subtle">
+        <p class="gl-mt-5 gl-text-center gl-text-subtle">
           {{ __('No merge requests match this list.') }}
         </p>
         <slot name="drafts"></slot>

@@ -886,10 +886,6 @@ module ProjectsHelper
     view_path == "projects/issues" ? "gl-mt-3" : "project-show-#{view_path}"
   end
 
-  def project_issues(project)
-    IssuesFinder.new(current_user, project_id: project.id).execute
-  end
-
   def project_merge_requests(project)
     MergeRequestsFinder.new(current_user, project_id: project.id).execute
   end

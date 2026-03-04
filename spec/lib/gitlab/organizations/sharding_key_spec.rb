@@ -10,7 +10,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_be_missing_sharding_key) do
     [
       'ai_settings', # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
-      'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
       'group_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
       'merge_request_diff_files_99208b8fac', # https://gitlab.com/gitlab-org/gitlab/-/issues/422767
       'project_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
@@ -295,7 +294,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "user_agent_details" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/574387",
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
       "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
-      "award_emoji_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/580326",
       "slack_integrations_scopes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/584705",
       "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694",
       "keys" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553463",

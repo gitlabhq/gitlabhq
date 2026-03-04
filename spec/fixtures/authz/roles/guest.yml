@@ -1,0 +1,7 @@
+---
+name: guest
+description: Test guest role
+inherits_from: []
+raw_permissions:
+  - read_issue
+  - create_issue

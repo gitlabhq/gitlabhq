@@ -5,10 +5,10 @@ module ClickHouseHelpers
 
   def insert_events_into_click_house(events = Event.all)
     # Insert into both events table until legacy table is removed
-    %i[events events_new].each do |clickhouse_table_name|
+    %i[events siphon_events].each do |clickhouse_table_name|
       clickhouse_fixture(clickhouse_table_name, events.map do |event|
         project_namespace = event.project.reload.project_namespace
-        include_organization_on_path = clickhouse_table_name == :events_new
+        include_organization_on_path = clickhouse_table_name == :siphon_events
         path = project_namespace.traversal_path(with_organization: include_organization_on_path)
 
         {

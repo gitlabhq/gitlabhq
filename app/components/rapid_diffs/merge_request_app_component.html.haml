@@ -1,4 +1,4 @@
-- if current_user && mr_path
+- if code_review_enabled && mr_path
   -# haml-lint:disable InlineJavaScript
   - helpers.content_for :startup_js do
     - javascript_tag nonce: content_security_policy_nonce do
@@ -15,7 +15,7 @@
           });
         }
 
-= render RapidDiffs::AppComponent.new(@presenter, extra_app_data: { mr_path: mr_path, code_review_enabled: current_user.present? }) do |c|
+= render RapidDiffs::AppComponent.new(@presenter, extra_app_data:) do |c|
   - c.with_diffs_list do
     = render RapidDiffs::MergeRequestDiffFileComponent.with_collection(c.diff_collection, merge_request: @presenter.resource, parallel_view: c.parallel_view?)
 

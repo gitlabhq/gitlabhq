@@ -3,7 +3,7 @@
 class Projects::ConfluencesController < Projects::ApplicationController
   before_action :ensure_confluence
 
-  feature_category :integrations
+  feature_category :wiki
 
   def show; end
 

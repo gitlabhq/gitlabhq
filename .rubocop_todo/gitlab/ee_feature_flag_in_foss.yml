@@ -1,4 +1,3 @@
 ---
 Gitlab/EeFeatureFlagInFoss:
   Exclude:
-    - 'app/views/devise/sessions/successful_verification.haml'

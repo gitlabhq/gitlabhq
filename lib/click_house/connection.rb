@@ -29,6 +29,10 @@ module ClickHouse
       configuration.databases[database] || raise(ClickHouse::Client::ConfigurationError)
     end
 
+    def version
+      @version ||= select("SELECT version() AS version").first['version']
+    end
+
     def database_name
       database_config.database
     end

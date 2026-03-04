@@ -1,0 +1,8 @@
+---
+name: reporter
+description: Test reporter role
+inherits_from:
+  - guest
+raw_permissions:
+  - read_code
+  - download_code

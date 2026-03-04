@@ -8,10 +8,16 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
   let(:diff_files_endpoint) { '/diff_files_metadata' }
   let(:diff_file_endpoint) { '/diff_file' }
   let(:mr_path) { '/group/project/-/merge_requests/1' }
-
   let(:merge_request) { build_stubbed(:merge_request) }
-
-  let(:current_user) { nil }
+  let(:code_review_enabled) { false }
+  let(:discussions_endpoint) { '/discussions' }
+  let(:user_permissions) { { can_create_note: true } }
+  let(:noteable_type) { 'MergeRequest' }
+  let(:preview_markdown_endpoint) { '/preview_markdown' }
+  let(:register_path) { '/register' }
+  let(:sign_in_path) { '/sign_in' }
+  let(:markdown_docs_path) { '/markdown_docs' }
+  let(:report_abuse_path) { '/report_abuse' }
 
   let(:presenter) do
     instance_double(
@@ -19,10 +25,18 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
       diffs_stats_endpoint: diffs_stats_endpoint,
       diff_files_endpoint: diff_files_endpoint,
       diff_file_endpoint: diff_file_endpoint,
+      discussions_endpoint: discussions_endpoint,
+      user_permissions: user_permissions,
+      noteable_type: noteable_type,
+      preview_markdown_endpoint: preview_markdown_endpoint,
+      register_path: register_path,
+      sign_in_path: sign_in_path,
+      markdown_docs_path: markdown_docs_path,
+      report_abuse_path: report_abuse_path,
+      code_review_enabled: code_review_enabled,
       environment: nil,
       resource: merge_request,
-      mr_path: mr_path,
-      current_user: current_user
+      mr_path: mr_path
     )
   end
 
@@ -35,12 +49,20 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
     allow(app_component).to receive_messages(diff_collection: [], parallel_view?: false)
   end
 
-  it "renders app with mr_path and code_review_enabled in extra_app_data" do
+  it "renders app with correct arguments" do
     expect(RapidDiffs::AppComponent).to receive(:new).with(
       presenter,
       extra_app_data: {
         mr_path: mr_path,
-        code_review_enabled: false
+        code_review_enabled: false,
+        user_permissions: user_permissions,
+        discussions_endpoint: discussions_endpoint,
+        noteable_type: noteable_type,
+        preview_markdown_endpoint: preview_markdown_endpoint,
+        register_path: register_path,
+        sign_in_path: sign_in_path,
+        report_abuse_path: report_abuse_path,
+        markdown_docs_path: markdown_docs_path
       }
     )
 
@@ -71,16 +93,16 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
   end
 
   describe 'viewed FOUC prevention' do
-    let(:current_user) { build_stubbed(:user) }
+    let(:code_review_enabled) { true }
 
-    it 'includes startup_js for FOUC prevention when user is logged in' do
+    it 'includes startup_js for FOUC prevention when code review is enabled' do
       render_component
 
       expect(component.helpers.content_for?(:startup_js)).to be(true)
     end
 
-    context 'when user is not logged in' do
-      let(:current_user) { nil }
+    context 'when code review is disabled' do
+      let(:code_review_enabled) { false }
 
       it 'does not include startup_js for FOUC prevention' do
         render_component

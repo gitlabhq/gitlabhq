@@ -17,6 +17,7 @@ module ClickHouse
 
     def execute(query)
       query = ReplicatedTableEnginePatcher.patch_replicated(query) if connection.replicated_engine?
+      query = TableSettingsNormalizer.run(query, connection.version)
       connection.execute(query)
     end
 

@@ -41,6 +41,18 @@ module Gitlab
         client.list_leases(request, deadline: deadline)
       end
 
+      def list_records(source_type: nil, bucket_types: nil, source_id_gt: nil, source_id_lte: nil, deadline: nil)
+        request = Gitlab::Cells::TopologyService::Claims::V1::ListRecordsRequest.new(
+          source_type: source_type,
+          bucket_types: bucket_types,
+          source_id_gt: source_id_gt,
+          source_id_lte: source_id_lte,
+          cell_id: cell_id
+        )
+
+        client.list_records(request, deadline: deadline)
+      end
+
       private
 
       def service_class

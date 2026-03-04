@@ -324,14 +324,6 @@ describe('SuperSidebar component', () => {
     });
   });
 
-  describe('showTierBadge computed property', () => {
-    it('returns false when tier_badge_href is omitted', () => {
-      createWrapper({ sidebarData: mockSidebarData });
-
-      expect(wrapper.vm.showTierBadge).toBe(false);
-    });
-  });
-
   describe('focusing first focusable element', () => {
     const findFirstFocusableElement = () => findSidebarMenu().find('a');
     let focusSpy;

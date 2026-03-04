@@ -28,7 +28,6 @@ export default {
     SidebarPortalTarget,
     ScrollScrim,
     TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
-    TierBadge: () => import('ee_component/vue_shared/components/tier_badge/tier_badge.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -41,7 +40,6 @@ export default {
   provide() {
     return {
       isIconOnly: computed(() => this.isIconOnly),
-      primaryCtaLink: this.sidebarData.tier_badge_href,
     };
   },
   props: {
@@ -82,9 +80,6 @@ export default {
     },
     isIconOnly() {
       return this.canIconOnly && this.sidebarState.isIconOnly;
-    },
-    showTierBadge() {
-      return Boolean(this.sidebarData.tier_badge_href);
     },
   },
   watch: {
@@ -211,10 +206,9 @@ export default {
         <div
           v-if="sidebarData.current_context_header && !isIconOnly"
           id="super-sidebar-context-header"
-          class="super-sidebar-context-header gl-m-0 gl-flex gl-justify-between gl-px-5 gl-py-3 gl-font-bold gl-leading-reset"
+          class="super-sidebar-context-header gl-m-0 gl-px-5 gl-py-3 gl-font-bold gl-leading-reset"
         >
           {{ sidebarData.current_context_header }}
-          <tier-badge v-if="showTierBadge" data-testid="sidebar-tier-badge" is-upgrade />
         </div>
         <scroll-scrim class="gl-grow" data-testid="nav-container">
           <sidebar-menu

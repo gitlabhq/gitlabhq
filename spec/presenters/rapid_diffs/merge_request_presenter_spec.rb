@@ -180,6 +180,72 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     it { is_expected.to be(true) }
   end
 
+  describe '#discussions_endpoint' do
+    subject(:url) { presenter.discussions_endpoint }
+
+    it { is_expected.to eq("#{base_path}/discussions") }
+  end
+
+  describe '#user_permissions' do
+    let(:current_user) { build_stubbed(:user) }
+    let(:can_create_note) { false }
+    let(:presenter_with_user) do
+      described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+        request_params: request_params, current_user: current_user)
+    end
+
+    subject(:method) { presenter_with_user.user_permissions }
+
+    before do
+      allow(presenter_with_user).to receive(:can?).with(current_user, :create_note,
+        merge_request).and_return(can_create_note)
+    end
+
+    it { is_expected.to eq({ can_create_note: false }) }
+
+    context 'when user can create notes' do
+      let(:can_create_note) { true }
+
+      it { is_expected.to eq({ can_create_note: true }) }
+    end
+  end
+
+  describe '#noteable_type' do
+    subject(:method) { presenter.noteable_type }
+
+    it { is_expected.to eq('MergeRequest') }
+  end
+
+  describe '#preview_markdown_endpoint' do
+    subject(:method) { presenter.preview_markdown_endpoint }
+
+    it { is_expected.to eq("/#{namespace.to_param}/#{project.to_param}/-/preview_markdown") }
+  end
+
+  describe '#markdown_docs_path' do
+    subject(:method) { presenter.markdown_docs_path }
+
+    it { is_expected.to eq('/help/user/markdown.md') }
+  end
+
+  describe '#register_path' do
+    subject(:method) { presenter.register_path }
+
+    it { is_expected.to eq('/users/sign_up?redirect_to_referer=yes') }
+  end
+
+  describe '#sign_in_path' do
+    subject(:method) { presenter.sign_in_path }
+
+    it { is_expected.to eq('/users/sign_in?redirect_to_referer=yes') }
+  end
+
+  describe '#report_abuse_path' do
+    subject(:method) { presenter.report_abuse_path }
+
+    it { is_expected.to eq('/-/abuse_reports/add_category') }
+  end
+
   describe 'stream urls with skip parameters' do
     describe '#reload_stream_url' do
       subject(:url) { presenter.reload_stream_url(skip_old_path: 'old.txt', skip_new_path: 'new.txt') }

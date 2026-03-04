@@ -49120,7 +49120,6 @@ definitions:
               items:
                 type: string
           required:
-          - through_namespace
           - features
     description: Update a group. Available only for users who can administrate groups.
   API_Entities_GroupDetail:

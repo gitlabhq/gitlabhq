@@ -35470,7 +35470,7 @@ GPG signature for a signed commit.
 | <a id="group-allowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean!`](#boolean) | Indicates whether to regularly prune stale group runners. Defaults to false. |
 | <a id="group-amazons3configurations"></a>`amazonS3Configurations` {{< icon name="warning-solid" >}} | [`AmazonS3ConfigurationTypeConnection`](#amazons3configurationtypeconnection) | **Deprecated** in GitLab 18.10. Use `externalAuditEventStreamingDestinations` with `amazonS3` category instead. |
 | <a id="group-analyzerstatuses"></a>`analyzerStatuses` | [`[AnalyzerGroupStatusType!]`](#analyzergroupstatustype) | Status for all analyzers in the group. |
-| <a id="group-archived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if the group or any ancestor is archived. |
+| <a id="group-archived"></a>`archived` | [`Boolean`](#boolean) | Indicates if the group or any ancestor is archived. |
 | <a id="group-autodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within the group. |
 | <a id="group-availablefeatures"></a>`availableFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.3. **Status**: Experiment. Features available on the namespace. |
 | <a id="group-avatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
@@ -35517,7 +35517,7 @@ GPG signature for a signed commit.
 | <a id="group-groupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of the group. |
 | <a id="group-id"></a>`id` | [`ID`](#id) | ID of the group. |
 | <a id="group-islinkedtosubscription"></a>`isLinkedToSubscription` | [`Boolean`](#boolean) | Indicates if group is linked to a subscription. |
-| <a id="group-isselfarchived"></a>`isSelfArchived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.6. **Status**: Experiment. Indicates if the group is archived. |
+| <a id="group-isselfarchived"></a>`isSelfArchived` | [`Boolean`](#boolean) | Indicates if the group is archived. |
 | <a id="group-isselfdeletioninprogress"></a>`isSelfDeletionInProgress` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group deletion is in progress. |
 | <a id="group-isselfdeletionscheduled"></a>`isSelfDeletionScheduled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group deletion is scheduled. |
 | <a id="group-lfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |

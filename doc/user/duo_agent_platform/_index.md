@@ -93,4 +93,5 @@ These features are either beta or experiment and do not consume GitLab Credits.
 | [SAST False Positive Detection Flow](flows/foundational_flows/sast_false_positive_detection.md) | Automatically identify and filter out false positives in SAST security scans. |
 | [SAST Vulnerability Resolution Flow](flows/foundational_flows/agentic_sast_vulnerability_resolution.md) | Automatically generate fixes and remediation steps for SAST vulnerabilities. |
 | [MCP server](../gitlab_duo/model_context_protocol/mcp_server.md) | Securely connect AI tools and applications to your GitLab instance. |
+| [External MCP servers](../gitlab_duo/model_context_protocol/ai_catalog_mcp_servers.md) | Connect custom agents to external data sources and third-party services using MCP servers. |
 | [Knowledge Graph](../project/repository/knowledge_graph/_index.md) | Create structured, queryable representations of code repositories to power AI features. |
