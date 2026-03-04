@@ -29,6 +29,7 @@ The granular token authorization system adds fine-grained permission checks to G
   - `permissions`: Array of required permission strings (e.g., `['READ_ISSUE']`)
   - `boundary`: Method name to extract boundary from resolved object
   - `boundary_argument`: Argument name containing the boundary
+  - `boundary_type`: The type of authorization boundary (`project`, `group`, `user`, `instance`). Used for validation and documentation of the permission boundary
 
 ### 3. Directive Finder
 
@@ -52,7 +53,7 @@ The granular token authorization system adds fine-grained permission checks to G
 - **Location**: `lib/gitlab/graphql/authz/authorize_granular_token.rb`
 - **Purpose**: Provides the `authorize_granular_token` helper method for cleaner directive syntax
 - **Included in**: `Types::BaseObject` and `Mutations::BaseMutation`
-- **Method**: `authorize_granular_token(permissions:, boundary: nil, boundary_argument: nil)`
+- **Method**: `authorize_granular_token(permissions:, boundary_type:, boundary: nil, boundary_argument: nil)`
 - **Validation**: Permissions are validated at boot time against `Authz::PermissionGroups::Assignable.all_permissions`. Using an invalid permission raises `ArgumentError`.
 
 ## Request Flow Timeline
@@ -112,7 +113,8 @@ The `DirectiveFinder` checks for directives in this priority order, **returning 
    field :project, Types::ProjectType,
      directives: granular_scope_directive(
        permissions: :read_project,
-       boundary_argument: :full_path
+       boundary_argument: :full_path,
+       boundary_type: :project
      ) do
        argument :full_path, GraphQL::Types::ID, required: true
      end
@@ -124,7 +126,7 @@ The `DirectiveFinder` checks for directives in this priority order, **returning 
 
    ```ruby
    class IssueType < BaseObject
-     authorize_granular_token permissions: :read_issue, boundary: :project
+     authorize_granular_token permissions: :read_issue, boundary: :project, boundary_type: :project
    end
    ```
 
@@ -134,7 +136,7 @@ The `DirectiveFinder` checks for directives in this priority order, **returning 
    module Mutations
      module Issues
        class Create < BaseMutation
-         authorize_granular_token permissions: :create_issue, boundary_argument: :project_path
+         authorize_granular_token permissions: :create_issue, boundary_argument: :project_path, boundary_type: :project
        end
      end
    end
@@ -314,7 +316,7 @@ mutation {
 
 ```ruby
 class Create < BaseMutation
-  authorize_granular_token permissions: :create_issue, boundary_argument: :project_path
+  authorize_granular_token permissions: :create_issue, boundary_argument: :project_path, boundary_type: :project
 end
 ```
 
@@ -350,7 +352,7 @@ query {
 
 ```ruby
 class IssueType < BaseObject
-  authorize_granular_token permissions: :read_issue, boundary: :project
+  authorize_granular_token permissions: :read_issue, boundary: :project, boundary_type: :project
 end
 ```
 
@@ -381,7 +383,7 @@ query {
 
 ```ruby
 class IssueType < BaseObject
-  authorize_granular_token permissions: :read_issue, boundary: :project
+  authorize_granular_token permissions: :read_issue, boundary: :project, boundary_type: :project
 end
 ```
 
@@ -544,7 +546,7 @@ Available on all GraphQL types (via `Types::BaseObject`) and mutations (via `Mut
 **Method Signature:**
 
 ```ruby
-authorize_granular_token(permissions:, boundary: nil, boundary_argument: nil)
+authorize_granular_token(permissions:, boundary_type:, boundary: nil, boundary_argument: nil)
 ```
 
 **Parameters:**
@@ -552,12 +554,13 @@ authorize_granular_token(permissions:, boundary: nil, boundary_argument: nil)
 - `permissions`: Symbol representing the required permission (e.g., `:read_issue`). Can also be an array of permissions. Must be a valid permission from `Authz::PermissionGroups::Assignable.all_permissions` — an `ArgumentError` is raised at boot time if not.
 - `boundary`: Symbol representing the method to call on the resolved object to extract the boundary (e.g., `:project`). Use `:user` or `:instance` for standalone resources.
 - `boundary_argument`: Symbol representing the argument name containing the boundary path (e.g., `:project_path`).
+- `boundary_type`: **(Required)** Symbol declaring the type of authorization boundary (`:project`, `:group`, `:user`, `:instance`). Validated against the assignable permission boundaries by the `gitlab:permissions:validate` Rake task.
 
 **Example:**
 
 ```ruby
 class IssueType < BaseObject
-  authorize_granular_token permissions: :read_issue, boundary: :project
+  authorize_granular_token permissions: :read_issue, boundary: :project, boundary_type: :project
 end
 ```
 
@@ -568,7 +571,7 @@ For applying directives to individual fields, use the class method on `Types::Ba
 **Method Signature:**
 
 ```ruby
-granular_scope_directive(permissions:, boundary: nil, boundary_argument: nil)
+granular_scope_directive(permissions:, boundary_type:, boundary: nil, boundary_argument: nil)
 ```
 
 **Parameters:** Same as `authorize_granular_token`
@@ -579,7 +582,8 @@ granular_scope_directive(permissions:, boundary: nil, boundary_argument: nil)
 field :project, Types::ProjectType,
   directives: granular_scope_directive(
     permissions: :read_project,
-    boundary_argument: :full_path
+    boundary_argument: :full_path,
+    boundary_type: :project
   )
 ```
 
@@ -595,7 +599,8 @@ The `GranularScope` directive can be applied at two locations:
    field :project, Types::ProjectType,
      directives: granular_scope_directive(
        permissions: :read_project,
-       boundary_argument: :full_path
+       boundary_argument: :full_path,
+       boundary_type: :project
      )
    ```
 
@@ -606,7 +611,7 @@ The `GranularScope` directive can be applied at two locations:
 
    ```ruby
    class IssueType < BaseObject
-     authorize_granular_token permissions: :read_issue, boundary: :project
+     authorize_granular_token permissions: :read_issue, boundary: :project, boundary_type: :project
    end
    ```
 
@@ -633,7 +638,7 @@ Use `boundary: 'user'` or `boundary: 'instance'` for resources that don't belong
 
 ```ruby
 class UserSettingType < BaseObject
-  authorize_granular_token permissions: :read_user_settings, boundary: :user
+  authorize_granular_token permissions: :read_user_settings, boundary: :user, boundary_type: :user
 end
 ```
 

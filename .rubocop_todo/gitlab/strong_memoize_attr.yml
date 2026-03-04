@@ -117,7 +117,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/services/alert_management/alerts/update_service.rb'
     - 'app/services/alert_management/create_alert_issue_service.rb'
     - 'app/services/alert_management/process_prometheus_alert_service.rb'
-    - 'app/services/auth/dependency_proxy_authentication_service.rb'
     - 'app/services/authorized_project_update/project_recalculate_service.rb'
     - 'app/services/auto_merge/base_service.rb'
     - 'app/services/award_emojis/add_service.rb'

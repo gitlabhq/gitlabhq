@@ -4309,14 +4309,11 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       group_issue = create(:issue, :group_level, namespace: group)
       no_close_issue = create(:issue, project: project_without_auto_close)
       issue = create(:issue, project: project)
-      mr = merge_request.tap do |mr|
-        mr.update_attribute(
-          :description,
-          "Closes #{issue.to_reference(mr.project)} Closes #{group_issue.to_reference(mr.project)} " \
-            "Closes #{no_close_issue.to_reference(mr.project)}"
-        )
-        mr.cache_merge_request_closes_issues!
-      end
+      description = "Closes #{issue.to_reference(project)} " \
+        "Closes #{group_issue.to_reference(project)} " \
+        "Closes #{no_close_issue.to_reference(project)}"
+      mr = create(:merge_request, :simple, author: user, source_project: project,
+        target_project: project, description: description)
 
       get api("/projects/#{project.id}/merge_requests/#{mr.iid}/closes_issues", user)
 

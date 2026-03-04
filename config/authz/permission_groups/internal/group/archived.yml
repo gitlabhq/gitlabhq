@@ -10,6 +10,8 @@ permissions:
   - admin_compliance_pipeline_configuration
   - admin_custom_field
   - admin_epic
+  - admin_epic_board
+  - admin_epic_board_list
   - admin_integrations
   - admin_issue
   - admin_issue_board
@@ -18,6 +20,7 @@ permissions:
   - admin_iteration_cadence
   - admin_label
   - admin_member_access_request
+  - admin_member_role
   - admin_merge_request
   - admin_milestone
   - admin_namespace
@@ -29,11 +32,14 @@ permissions:
   - admin_runners
   - admin_software_license_policy
   - admin_tag
+  - admin_value_stream
   - admin_vulnerability
+  - admin_web_hook
   - admin_wiki
   - admin_work_item
   - award_achievement
   - award_emoji
+  - bulk_admin_epic
   - change_group
   - change_new_user_signups_cap
   - change_prevent_sharing_groups_outside_hierarchy
@@ -56,8 +62,11 @@ permissions:
   - create_projects
   - create_resource_access_tokens
   - create_runners
+  - create_saved_replies
+  - create_service_account
   - create_subgroup
   - create_test_case
+  - create_vulnerability_export
   - create_wiki
   - destroy_deploy_token
   - destroy_epic
@@ -81,6 +90,7 @@ permissions:
   - set_note_created_at
   - set_show_diff_preview_in_email
   - transfer_projects
+  - update_approval_rule
   - update_cluster
   - update_default_branch_protection
   - update_epic
@@ -88,5 +98,9 @@ permissions:
   - update_issue
   - update_max_artifacts_size
   - update_o11y_settings
+  - update_runner
   - update_runners_registration_token
+  - update_saved_replies
+  - update_security_orchestration_policy_project
+  - update_wiki
   - upload_file

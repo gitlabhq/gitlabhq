@@ -19,7 +19,8 @@ module JwtAuthenticatable
     authenticate_with_http_token do |token, _|
       @authentication_result = EMPTY_AUTH_RESULT
 
-      user_or_token = ::DependencyProxy::AuthTokenService.user_or_token_from_jwt(token)
+      result = ::DependencyProxy::AuthTokenService.token_result_from_jwt(token)
+      user_or_token = result&.dig(:user_or_token) if valid_service_type?(result&.dig(:service_type))
 
       case user_or_token
       when User
@@ -65,6 +66,12 @@ module JwtAuthenticatable
 
   def handle_personal_access_token(token)
     # Controllers can override this
+  end
+
+  def valid_service_type?(_service_type)
+    # Default: reject all service types for security.
+    # Controllers must override to specify which service types they accept.
+    false
   end
 end
 # rubocop:enable Gitlab/ModuleWithInstanceVariables

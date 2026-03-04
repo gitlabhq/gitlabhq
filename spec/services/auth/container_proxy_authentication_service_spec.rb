@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :virtual_registry do
+RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :virtual_registry do
   let_it_be(:user) { create(:user) }
 
   let(:params) { {} }
@@ -14,27 +14,18 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
   end
 
   describe '#execute' do
-    let(:expected_log) do
-      {
-        message: described_class::MISSING_ABILITIES_MESSAGE,
-        username: user.username,
-        user_id: user.id,
-        authentication_abilities: authentication_abilities
-      }
-    end
-
-    subject { service.execute(authentication_abilities: authentication_abilities) }
+    subject(:result) { service.execute(authentication_abilities: authentication_abilities) }
 
     shared_examples 'returning' do |status:, message:|
       it "returns #{message}", :aggregate_failures do
-        expect(subject[:http_status]).to eq(status)
-        expect(subject[:message]).to eq(message)
+        expect(result[:http_status]).to eq(status)
+        expect(result[:message]).to eq(message)
       end
     end
 
     shared_examples 'returning a token with an encoded field' do |field|
       it 'returns a token with encoded field' do
-        token = subject[:token]
+        token = result[:token]
         expect(token).not_to be_nil
 
         decoded_token = decode(token)
@@ -54,7 +45,7 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
       end
     end
 
-    context 'dependency proxy is not enabled' do
+    context 'when dependency proxy is not enabled' do
       before do
         stub_config(dependency_proxy: { enabled: false })
       end
@@ -155,7 +146,7 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
       it_behaves_like 'a token with sufficient authentication abilities', token_type: 'group_access_token'
     end
 
-    context 'all other user types' do
+    context 'with all other user types' do
       User::USER_TYPES.except(:human, :project_bot).each_value do |user_type|
         context "with user_type #{user_type}" do
           let_it_be_with_reload(:token) { create(:personal_access_token, user: user) }
@@ -167,6 +158,48 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
           it_behaves_like 'returning', status: 403, message: 'access forbidden'
 
           it_behaves_like 'a token with sufficient authentication abilities', token_type: 'user_id'
+        end
+      end
+    end
+
+    describe 'service_type claim' do
+      let(:authentication_abilities) { described_class::REQUIRED_USER_ABILITIES }
+
+      context 'when no scopes are provided' do
+        it 'does not include service_type in the token' do
+          decoded_token = decode(result[:token])
+
+          expect(decoded_token['service_type']).to be_nil
+        end
+      end
+
+      context 'when scopes include virtual_registries/container/' do
+        let(:params) { { scopes: ['repository:virtual_registries/container/1/library/alpine:pull'] } }
+
+        it 'sets service_type to virtual_registry' do
+          decoded_token = decode(result[:token])
+
+          expect(decoded_token['service_type']).to eq(described_class::SERVICE_TYPE_VIRTUAL_REGISTRY)
+        end
+      end
+
+      context 'when scopes include dependency_proxy/containers/' do
+        let(:params) { { scopes: ['repository:flightjs/dependency_proxy/containers/alpine:pull'] } }
+
+        it 'sets service_type to dependency_proxy' do
+          decoded_token = decode(result[:token])
+
+          expect(decoded_token['service_type']).to eq(described_class::SERVICE_TYPE_DEPENDENCY_PROXY)
+        end
+      end
+
+      context 'when scopes do not match any known pattern' do
+        let(:params) { { scopes: ['repository:some/other/path:pull'] } }
+
+        it 'sets service_type to dependency_proxy as default' do
+          decoded_token = decode(result[:token])
+
+          expect(decoded_token['service_type']).to eq(described_class::SERVICE_TYPE_DEPENDENCY_PROXY)
         end
       end
     end

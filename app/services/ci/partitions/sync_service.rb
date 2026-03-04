@@ -15,13 +15,6 @@ module Ci
         next_ci_partition = next_available_partition
         return unless next_ci_partition.present? && partition.exceed_time_window?
 
-        Gitlab::AppLogger.info(
-          message: 'Running CI partition sync service to switch write to the next one',
-          strategy: Feature.enabled?(:ci_time_based_partitioning, :instance) ? 'time' : 'size',
-          current_partition_id: partition.id,
-          next_partition_id: next_ci_partition.id
-        )
-
         next_ci_partition.switch_writes!
       end
 

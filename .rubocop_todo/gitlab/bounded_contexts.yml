@@ -1342,7 +1342,6 @@ Gitlab/BoundedContexts:
     - 'app/services/applications/create_service.rb'
     - 'app/services/audit_event_service.rb'
     - 'app/services/auth/container_registry_authentication_service.rb'
-    - 'app/services/auth/dependency_proxy_authentication_service.rb'
     - 'app/services/authorized_project_update/find_records_due_for_refresh_service.rb'
     - 'app/services/authorized_project_update/periodic_recalculate_service.rb'
     - 'app/services/authorized_project_update/project_access_changed_service.rb'

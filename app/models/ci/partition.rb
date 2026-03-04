@@ -76,7 +76,6 @@ module Ci
     end
 
     def exceed_time_window?(time_window = ::Gitlab::CurrentSettings.ci_partitions_in_seconds_limit)
-      return above_threshold? if Feature.disabled?(:ci_time_based_partitioning, :instance)
       return false if current_from.blank?
       return false if time_window.blank?
 

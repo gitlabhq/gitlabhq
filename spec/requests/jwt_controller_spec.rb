@@ -711,7 +711,7 @@ RSpec.describe JwtController, feature_category: :system_access do
     context 'with IAM JWT token' do
       let(:user) { create(:user) }
       let(:iam_scopes) { %w[api read_virtual_registry write_virtual_registry] }
-      let(:service_class) { Auth::DependencyProxyAuthenticationService }
+      let(:service_class) { Auth::ContainerProxyAuthenticationService }
 
       let(:credential_user) { user.username }
       let(:credential_password) { iam_jwt_token }
@@ -720,7 +720,7 @@ RSpec.describe JwtController, feature_category: :system_access do
       let(:parameters) { params }
 
       before do
-        allow(Auth::DependencyProxyAuthenticationService).to receive(:new).and_call_original
+        allow(Auth::ContainerProxyAuthenticationService).to receive(:new).and_call_original
       end
 
       it_behaves_like 'IAM JWT authentication'

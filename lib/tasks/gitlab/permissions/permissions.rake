@@ -9,10 +9,12 @@ namespace :gitlab do
       require_relative './validate_task'
       require_relative './assignable/validate_task'
       require_relative './routes/validate_task'
+      require_relative './graphql/validate_task'
 
       Tasks::Gitlab::Permissions::ValidateTask.new.run
       Tasks::Gitlab::Permissions::Assignable::ValidateTask.new.run
       Tasks::Gitlab::Permissions::Routes::ValidateTask.new.run
+      Tasks::Gitlab::Permissions::Graphql::ValidateTask.new.run
       Tasks::Gitlab::Permissions::Routes::DocsTask.new.check_docs
     end
 

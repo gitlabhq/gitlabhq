@@ -1,7 +1,7 @@
 = content_tag @container_tag, **options_attrs, id: id do
   %header.crud-header.gl-relative.gl-flex.gl-flex-wrap.gl-justify-between.gl-gap-x-5.gl-gap-y-2.gl-rounded-t-lg.gl-py-0.gl-pr-2.gl-pl-3{ class: [('gl-pr-9' if @is_collapsible), '@md/panel:gl-flex-nowrap'] }
     .gl-flex.gl-grow.gl-flex-col.gl-self-center.gl-py-3
-      %h2.gl-mx-0.gl-my-2.gl-inline-flex.gl-items-center.gl-gap-3.gl-text-base.gl-font-bold.gl-leading-normal.gl-text-heading{ data: { testid: 'crud-title' } }
+      = content_tag @title_tag, class: 'gl-mx-0 gl-my-2 gl-inline-flex gl-items-center gl-gap-3 gl-text-base gl-font-bold gl-leading-normal gl-text-heading', data: { testid: 'crud-title' } do
         = @title
         - if @count
           %span.crud-count.gl-inline-flex.gl-items-center.gl-gap-2.gl-text-sm.gl-text-subtle.gl-font-normal{ data: { testid: 'crud-count' } }

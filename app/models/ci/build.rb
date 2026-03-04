@@ -914,8 +914,6 @@ module Ci
 
     override :run_steps
     def run_steps
-      return execution_config&.run_steps || [] if Feature.disabled?(:read_from_ci_job_definition_run_steps, project)
-
       read_job_definition_attribute(:run_steps) || execution_config&.run_steps || []
     end
 

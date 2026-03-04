@@ -23,6 +23,19 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     it { is_expected.to have_gitlab_http_status(:unauthorized) }
   end
 
+  shared_examples 'rejects virtual_registry service_type' do
+    context 'with a token with virtual_registry service_type' do
+      let(:jwt) do
+        build_jwt(
+          user,
+          service_type: ::Auth::ContainerProxyAuthenticationService::SERVICE_TYPE_VIRTUAL_REGISTRY
+        )
+      end
+
+      it { is_expected.to have_gitlab_http_status(:unauthorized) }
+    end
+  end
+
   shared_examples 'with invalid path' do
     context 'with invalid image' do
       let(:image) { '../path_traversal' }
@@ -323,6 +336,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     context 'feature enabled' do
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
+      it_behaves_like 'rejects virtual_registry service_type'
 
       context 'remote token request fails' do
         let(:token_response) do
@@ -504,6 +518,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     context 'feature enabled' do
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
+      it_behaves_like 'rejects virtual_registry service_type'
 
       context 'a valid user' do
         before do

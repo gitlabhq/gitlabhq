@@ -2315,32 +2315,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
       end
     end
-
-    context 'when feature flag read_from_ci_job_definition_run_steps is disabled' do
-      before do
-        stub_feature_flags(read_from_ci_job_definition_run_steps: false)
-      end
-
-      it 'returns run_steps from execution config' do
-        expect(subject).to eq(job_execution_config_run_steps)
-      end
-
-      context 'with nil run_steps' do
-        let(:job_execution_config_run_steps) { nil }
-
-        it 'returns an empty array' do
-          expect(subject).to eq([])
-        end
-      end
-
-      context 'with nil job_execution_config' do
-        let(:job_execution_config) { nil }
-
-        it 'returns an empty array' do
-          expect(subject).to eq([])
-        end
-      end
-    end
   end
 
   describe '#tag_list' do

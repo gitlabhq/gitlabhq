@@ -299,20 +299,5 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
         expect(exceeded).to eq(false)
       end
     end
-
-    context 'when ci_time_based_partitioning feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_time_based_partitioning: false)
-      end
-
-      it 'uses size-based strategy' do
-        stub_application_setting(ci_partitions_size_limit: 1.byte)
-        expect(exceeded).to eq(true)
-      end
-
-      it 'returns false when size threshold not exceeded' do
-        expect(exceeded).to eq(false)
-      end
-    end
   end
 end

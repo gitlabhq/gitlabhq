@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop:disable Gitlab/BoundedContexts -- this is an existing class
 module Auth
-  class DependencyProxyAuthenticationService < BaseService
+  class ContainerProxyAuthenticationService < BaseService
     AUDIENCE = 'dependency_proxy'
     HMAC_KEY = 'gitlab-dependency-proxy'
     DEFAULT_EXPIRE_TIME = 1.minute
@@ -9,7 +10,9 @@ module Auth
     REQUIRED_USER_ABILITIES = %i[read_container_image create_container_image].freeze
     REQUIRED_USER_VR_ABILITIES = %i[read_dependency_proxy write_dependency_proxy].freeze
 
-    MISSING_ABILITIES_MESSAGE = 'Dependency proxy missing authentication abilities'
+    SERVICE_TYPE_VIRTUAL_REGISTRY = 'virtual_registry'
+    SERVICE_TYPE_DEPENDENCY_PROXY = 'dependency_proxy'
+    VIRTUAL_REGISTRY_SCOPE_PATTERN = %r{virtual_registries/container/}
 
     def execute(authentication_abilities:)
       @authentication_abilities = authentication_abilities
@@ -24,14 +27,13 @@ module Auth
       include ::Gitlab::Utils::StrongMemoize
 
       def secret
-        strong_memoize(:secret) do
-          OpenSSL::HMAC.hexdigest(
-            'sha256',
-            ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret,
-            HMAC_KEY
-          )
-        end
+        OpenSSL::HMAC.hexdigest(
+          'sha256',
+          ::Gitlab::Encryption::KeyProvider[:db_key_base].encryption_key.secret,
+          HMAC_KEY
+        )
       end
+      strong_memoize_attr :secret
 
       def token_expire_at
         Time.current + Gitlab::CurrentSettings.container_registry_token_expire_delay.minutes
@@ -62,8 +64,19 @@ module Auth
         token['deploy_token'] = deploy_token.token if deploy_token
         token['personal_access_token'] = raw_token if personal_access_token_user?
         token['group_access_token'] = raw_token if group_access_token_user?
+        token['service_type'] = detect_service_type if scopes.present?
         token.expire_time = self.class.token_expire_at
       end
+    end
+
+    def detect_service_type
+      return SERVICE_TYPE_VIRTUAL_REGISTRY if scopes.any? { |scope| scope.match?(VIRTUAL_REGISTRY_SCOPE_PATTERN) }
+
+      SERVICE_TYPE_DEPENDENCY_PROXY
+    end
+
+    def scopes
+      params[:scopes] || []
     end
 
     def deploy_token
@@ -85,3 +98,4 @@ module Auth
     end
   end
 end
+# rubocop:enable Gitlab/BoundedContexts

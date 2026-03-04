@@ -19,7 +19,7 @@ class DependencyProxy::Registry
     end
 
     def authenticate_header
-      "Bearer realm=\"#{PROXY_AUTH_URL}\",service=\"#{::Auth::DependencyProxyAuthenticationService::AUDIENCE}\""
+      "Bearer realm=\"#{PROXY_AUTH_URL}\",service=\"#{::Auth::ContainerProxyAuthenticationService::AUDIENCE}\""
     end
 
     private

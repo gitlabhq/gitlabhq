@@ -265,27 +265,52 @@ AWS offers two approaches for this architecture:
 - **Network Load Balancer (NLB) only**: A simpler setup suitable for smaller deployments. The NLB handles all traffic (SSH on port 22, HTTP on port 80, and HTTPS on port 443) directly to the Rails nodes, with SSL/TLS termination at the NLB.
 - **Hybrid NLB->ALB approach**: A more scalable setup that separates concerns. The NLB handles TCP traffic (SSH on port 22), while an Application Load Balancer (ALB) handles HTTP/HTTPS traffic with SSL/TLS termination. This approach enables AWS WAF integration and better traffic management.
 
-Choose the approach that best fits your deployment.
+Choose the approach that best fits your deployment:
+
+- NLB Only:
+
+  ```mermaid
+  graph TB
+      subgraph Diagram1["NLB Only"]
+        U1["Users"]
+        NLB1["Network Load Balancer<br/>(Port 22, 80, 443)"]
+        R1A["Rails Node 1<br/>(Port 22, 80)"]
+        R1B["Rails Node 2<br/>(Port 22, 80)"]
+
+        U1 -->|SSH| NLB1
+        U1 -->|HTTP| NLB1
+        U1 -->|HTTPS| NLB1
+        NLB1 -->|Port 22| R1A
+        NLB1 -->|Port 22| R1B
+        NLB1 -->|"Port 80, 443"| R1A
+        NLB1 -->|"Port 80, 443"| R1B
+    end
+    ```
+
+- Hybrid NLB/ALB:
+
+  ```mermaid
+  graph TB
+      subgraph Diagram2["Hybrid NLB/ALB"]
+          U2["Users"]
+          NLB2["Network Load Balancer<br/>(Port 22, 443)"]
+          ALB["Application Load Balancer<br/>(Port 443)"]
+          R2A["Rails Node 1<br/>(Port 22, 80)"]
+          R2B["Rails Node 2<br/>(Port 22, 80)"]
+
+          U2 -->|SSH| NLB2
+          U2 -->|HTTPS| NLB2
+          NLB2 -->|Port 22| R2A
+          NLB2 -->|Port 22| R2B
+          NLB2 -->|Port 443| ALB
+          ALB -->|Port 80| R2A
+          ALB -->|Port 80| R2B
+      end
+  ```
 
 {{< tabs >}}
 
 {{< tab title="Network Load Balancer (NLB) Only" >}}
-
-```mermaid
-graph TB
-    Users["Users"]
-    NLB["Network Load Balancer<br/>(Port 22, 80, 443)"]
-    Rails1["Rails Node 1<br/>(Port 22, 80)"]
-    Rails2["Rails Node 2<br/>(Port 22, 80)"]
-    
-    Users -->|SSH| NLB
-    Users -->|HTTP| NLB
-    Users -->|HTTPS| NLB
-    NLB -->|Port 22| Rails1
-    NLB -->|Port 22| Rails2
-    NLB -->|Port 80, 443| Rails1
-    NLB -->|Port 80, 443| Rails2
-```
 
 This section describes the simpler NLB-only approach where a single Network Load Balancer handles all traffic types, routing SSH, HTTP, and HTTPS directly to Rails nodes.
 
@@ -373,23 +398,6 @@ Create the network load balancer:
 {{< /tab >}}
 
 {{< tab title="Hybrid NLB->ALB Approach" >}}
-
-```mermaid
-graph TB
-    Users["Users"]
-    NLB["Network Load Balancer<br/>(Port 22, 443)"]
-    ALB["Application Load Balancer<br/>(Port 443)"]
-    Rails1["Rails Node 1<br/>(Port 22, 80)"]
-    Rails2["Rails Node 2<br/>(Port 22, 80)"]
-    
-    Users -->|SSH| NLB
-    Users -->|HTTPS| NLB
-    NLB -->|Port 22| Rails1
-    NLB -->|Port 22| Rails2
-    NLB -->|Port 443| ALB
-    ALB -->|Port 80| Rails1
-    ALB -->|Port 80| Rails2
-```
 
 This section describes a hybrid approach where a Network Load Balancer handles SSH traffic and an Application Load Balancer handles HTTP/HTTPS traffic. The NLB routes TCP port 22 (SSH) directly to Rails nodes and TCP port 443 (HTTPS) to the ALB, and the ALB terminates SSL/TLS and routes HTTP traffic to Rails nodes on port 80. This approach enables AWS WAF integration and better separation of concerns.
 

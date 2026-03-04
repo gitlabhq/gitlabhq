@@ -28,7 +28,7 @@ RSpec.describe DependencyProxy::AuthTokenService, feature_category: :virtual_reg
 
     context 'with an expired signature error' do
       it 'returns nil' do
-        travel_to(Time.zone.now + Auth::DependencyProxyAuthenticationService.token_expire_at + 1.minute) do
+        travel_to(Time.zone.now + Auth::ContainerProxyAuthenticationService.token_expire_at + 1.minute) do
           expect(subject).to eq(nil)
         end
       end
@@ -57,7 +57,7 @@ RSpec.describe DependencyProxy::AuthTokenService, feature_category: :virtual_reg
 
       context 'with an expired signature error' do
         it 'returns nil' do
-          travel_to(Time.zone.now + Auth::DependencyProxyAuthenticationService.token_expire_at + 1.minute) do
+          travel_to(Time.zone.now + Auth::ContainerProxyAuthenticationService.token_expire_at + 1.minute) do
             expect(subject).to eq(nil)
           end
         end
@@ -178,6 +178,50 @@ RSpec.describe DependencyProxy::AuthTokenService, feature_category: :virtual_reg
       let_it_be(:token) { build_jwt(nil) }
 
       it { is_expected.to eq(nil) }
+    end
+  end
+
+  describe '.token_result_from_jwt' do
+    subject { described_class.token_result_from_jwt(token.encoded) }
+
+    context 'with a user' do
+      let_it_be(:token) { build_jwt(user) }
+
+      it 'returns a hash with user_or_token and service_type' do
+        expect(subject).to eq({ user_or_token: user, service_type: nil })
+      end
+    end
+
+    context 'with a deploy token' do
+      let_it_be(:token) { build_jwt(deploy_token) }
+
+      it 'returns a hash with user_or_token and service_type' do
+        expect(subject).to eq({ user_or_token: deploy_token, service_type: nil })
+      end
+    end
+
+    context 'with service_type claim' do
+      let(:token) do
+        build_jwt(user) do |jwt|
+          jwt['user_id'] = user.id
+          jwt['service_type'] = 'virtual_registry'
+          jwt.expire_time = jwt.issued_at + 1.minute
+        end
+      end
+
+      it 'returns the service_type' do
+        expect(subject).to eq({ user_or_token: user, service_type: 'virtual_registry' })
+      end
+    end
+
+    context 'with a decoding error' do
+      before do
+        allow(JWT).to receive(:decode).and_raise(JWT::DecodeError)
+      end
+
+      let(:token) { build_jwt(user) }
+
+      it { is_expected.to be_nil }
     end
   end
 end

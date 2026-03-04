@@ -16,11 +16,12 @@ module Layouts
     # @param [Hash] footer_options
     # @param [Boolean] is_collapsible
     # @param [String] container_tag
+    # @param [String] title_tag
     def initialize(
       title, description: nil, count: nil, icon: nil, icon_class: nil,
       toggle_text: nil, options: {}, count_options: {}, body_options: {},
       form_options: {}, toggle_options: {}, footer_options: {},
-      is_collapsible: false, container_tag: 'section'
+      is_collapsible: false, container_tag: 'section', title_tag: 'h2'
     )
       @title = title
       @description = description
@@ -36,6 +37,7 @@ module Layouts
       @footer_options = footer_options
       @is_collapsible = is_collapsible
       @container_tag = container_tag
+      @title_tag = title_tag
     end
 
     renders_one :description

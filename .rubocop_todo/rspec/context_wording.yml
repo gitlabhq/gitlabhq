@@ -2198,7 +2198,6 @@ RSpec/ContextWording:
     - 'spec/services/alert_management/process_prometheus_alert_service_spec.rb'
     - 'spec/services/application_settings/update_service_spec.rb'
     - 'spec/services/audit_event_service_spec.rb'
-    - 'spec/services/auth/dependency_proxy_authentication_service_spec.rb'
     - 'spec/services/authorized_project_update/find_records_due_for_refresh_service_spec.rb'
     - 'spec/services/boards/issues/list_service_spec.rb'
     - 'spec/services/boards/issues/move_service_spec.rb'
