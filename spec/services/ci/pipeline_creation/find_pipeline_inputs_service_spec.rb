@@ -354,8 +354,8 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
       end
 
       context 'with reactive caching' do
-        it 'sets reactive_cache_work_type to external_dependency' do
-          expect(described_class.reactive_cache_work_type).to eq(:external_dependency)
+        it 'sets reactive_cache_work_type to no_dependency' do
+          expect(described_class.reactive_cache_work_type).to eq(:no_dependency)
         end
 
         it 'uses custom reactive_cache_key' do

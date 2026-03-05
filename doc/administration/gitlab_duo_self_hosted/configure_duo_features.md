@@ -111,6 +111,7 @@ To access the Agent Platform service from your GitLab instance:
 1. Under **Local URL for the GitLab Duo Agent Platform service**, enter the URL for the local Agent Platform service.
    - The URL is typically the same as the **Local AI Gateway URL** but on gRPC port :50052.
    - Do not include a URL prefix such as `http://` or `https://`.
+   - If you have set up SSL with an [NGINX reverse proxy as recommended](../../install/install_ai_gateway.md#set-up-docker-with-nginx-and-ssl), or use the [Helm chart with Ingress enabled](../../install/install_ai_gateway.md#install-by-using-helm-chart) do not specify port. The NGINX Ingress handles port-forwarding.
 
    - If the URL is not set up with TLS, you must set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance:
 

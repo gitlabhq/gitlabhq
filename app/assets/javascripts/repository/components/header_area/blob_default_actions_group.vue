@@ -49,6 +49,7 @@ export default {
       required: true,
     },
   },
+  emits: ['copy'],
   computed: {
     copyFileContentsItem() {
       return {

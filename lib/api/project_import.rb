@@ -168,6 +168,49 @@ module API
       end
 
       params do
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :import_url, type: String, desc: 'The URL from which the project is imported'
+        optional :import_url_user, type: String, desc: 'Username for the import URL'
+        optional :import_url_password, type: String, desc: 'Password for the import URL'
+      end
+      desc 'Import a project from a Git URL' do
+        detail 'This feature was introduced in GitLab 18.10.'
+        success code: 201, model: Entities::ProjectImportStatus
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' },
+          { code: 409, message: 'Conflict' },
+          { code: 422, message: 'Unprocessable Entity' }
+        ]
+        tags ['project_import']
+      end
+      route_setting :authorization, permissions: :create_project_import, boundary_type: :project
+      post ':id/import/git' do
+        authorize_admin_project
+
+        conflict!('Import already in progress') if user_project.import_in_progress?
+        conflict!('Project already has a repository') if user_project.repository_exists?
+
+        import_url = Gitlab::UrlSanitizer.new(
+          params[:import_url],
+          credentials: {
+            user: params[:import_url_user],
+            password: params[:import_url_password]
+          }
+        ).full_url
+
+        validate_git_import_url!(import_url)
+
+        user_project.update(import_url: import_url, import_type: 'git')
+        user_project.import_state.reset.schedule
+
+        status :created
+        present user_project, with: Entities::ProjectImportStatus, current_user: current_user
+      end
+
+      params do
         requires :url, type: String, desc: 'The URL for the file.'
         requires :path, type: String, desc: 'The new project path and name'
         optional :name, type: String, desc: 'The name of the project to be imported. Defaults to the path of the project if not provided.'

@@ -2288,6 +2288,7 @@ Grants the ability to authorize and create project imports.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Authorize | Instance | `POST` | `/projects/import/authorize` |
+| Create | Project | `POST` | `/projects/:id/import/git` |
 | Create | Group | `POST` | `/projects/import` |
 | Create | Group | `POST` | `/projects/remote-import` |
 | Create | Group | `POST` | `/projects/remote-import-s3` |

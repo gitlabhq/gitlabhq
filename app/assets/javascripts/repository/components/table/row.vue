@@ -110,6 +110,7 @@ export default {
       default: '',
     },
   },
+  emits: ['row-appear'],
   data() {
     return {
       hasRowAppeared: false,

@@ -511,6 +511,45 @@ describe('MergeRequestTabs', () => {
         });
       });
     });
+
+    describe('destroyPipelines', () => {
+      beforeEach(() => {
+        testContext.class.mergeRequestTabs = document.createElement('div');
+        testContext.class.mergeRequestTabPanes = document.createElement('div');
+        testContext.class.currentTab = 'pipelines';
+        testContext.class.commitsTab = document.createElement('div');
+        testContext.class.mergeRequestPipelinesTable = { $destroy: jest.fn() };
+        document.body.innerHTML += '<div id="commit-pipeline-table-view"></div>';
+      });
+
+      afterEach(() => {
+        document.querySelector('#commit-pipeline-table-view')?.remove();
+      });
+
+      it.each`
+        tab
+        ${'commits'}
+        ${'new'}
+        ${'diffs'}
+        ${'reports'}
+        ${'show'}
+      `('destroys pipelines when switching to $tab tab', ({ tab }) => {
+        const { $destroy } = testContext.class.mergeRequestPipelinesTable;
+
+        testContext.class.tabShown(tab, 'foobar');
+
+        expect($destroy).toHaveBeenCalled();
+        expect(testContext.class.mergeRequestPipelinesTable).toBeNull();
+      });
+
+      it('does not destroy pipelines when switching to pipelines tab', () => {
+        const { $destroy } = testContext.class.mergeRequestPipelinesTable;
+
+        testContext.class.tabShown('pipelines', 'foobar');
+
+        expect($destroy).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe('tabs <-> diff interactions', () => {

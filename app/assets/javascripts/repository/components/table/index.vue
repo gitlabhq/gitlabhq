@@ -18,11 +18,6 @@ export default {
     GlButton,
   },
   mixins: [getRefMixin],
-  apollo: {
-    projectPath: {
-      query: projectPathQuery,
-    },
-  },
   props: {
     commits: {
       type: Array,
@@ -50,6 +45,12 @@ export default {
     hasMore: {
       type: Boolean,
       required: true,
+    },
+  },
+  emits: ['showMore'],
+  apollo: {
+    projectPath: {
+      query: projectPathQuery,
     },
   },
   data() {

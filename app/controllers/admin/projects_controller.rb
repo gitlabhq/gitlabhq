@@ -24,7 +24,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def destroy
-    ::Projects::DestroyService.new(@project, current_user, {}).async_execute
+    ::Projects::DestroyService.new(@project, current_user, {}).async_execute # rubocop:disable Gitlab/HardDeleteCalls -- hard delete by admin is intentional
     flash[:toast] = format(_("Project '%{project_name}' is being deleted."), project_name: @project.full_name)
 
     redirect_to admin_projects_path, status: :found

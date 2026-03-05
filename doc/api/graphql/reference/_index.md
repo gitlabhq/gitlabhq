@@ -27273,6 +27273,7 @@ An AI catalog agent.
 | <a id="aicatalogagent-foundational"></a>`foundational` | [`Boolean!`](#boolean) | Whether the item is a foundational item. |
 | <a id="aicatalogagent-foundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Foundational flow reference. |
 | <a id="aicatalogagent-id"></a>`id` | [`ID!`](#id) | ID of the item. |
+| <a id="aicatalogagent-isenabledinmanagedbyproject"></a>`isEnabledInManagedByProject` | [`Boolean!`](#boolean) | Whether the item is enabled in the project it is managed by. This field can only be resolved for one AiCatalogItem in any single request. |
 | <a id="aicatalogagent-itemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
 | <a id="aicatalogagent-name"></a>`name` | [`String!`](#string) | Name of the item. |
 | <a id="aicatalogagent-project"></a>`project` | [`Project`](#project) | Project for the item. |
@@ -27380,6 +27381,7 @@ An AI catalog flow.
 | <a id="aicatalogflow-foundational"></a>`foundational` | [`Boolean!`](#boolean) | Whether the item is a foundational item. |
 | <a id="aicatalogflow-foundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Foundational flow reference. |
 | <a id="aicatalogflow-id"></a>`id` | [`ID!`](#id) | ID of the item. |
+| <a id="aicatalogflow-isenabledinmanagedbyproject"></a>`isEnabledInManagedByProject` | [`Boolean!`](#boolean) | Whether the item is enabled in the project it is managed by. This field can only be resolved for one AiCatalogItem in any single request. |
 | <a id="aicatalogflow-itemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
 | <a id="aicatalogflow-name"></a>`name` | [`String!`](#string) | Name of the item. |
 | <a id="aicatalogflow-project"></a>`project` | [`Project`](#project) | Project for the item. |
@@ -27546,6 +27548,7 @@ An AI catalog third party flow.
 | <a id="aicatalogthirdpartyflow-foundational"></a>`foundational` | [`Boolean!`](#boolean) | Whether the item is a foundational item. |
 | <a id="aicatalogthirdpartyflow-foundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Foundational flow reference. |
 | <a id="aicatalogthirdpartyflow-id"></a>`id` | [`ID!`](#id) | ID of the item. |
+| <a id="aicatalogthirdpartyflow-isenabledinmanagedbyproject"></a>`isEnabledInManagedByProject` | [`Boolean!`](#boolean) | Whether the item is enabled in the project it is managed by. This field can only be resolved for one AiCatalogItem in any single request. |
 | <a id="aicatalogthirdpartyflow-itemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
 | <a id="aicatalogthirdpartyflow-name"></a>`name` | [`String!`](#string) | Name of the item. |
 | <a id="aicatalogthirdpartyflow-project"></a>`project` | [`Project`](#project) | Project for the item. |
@@ -59837,6 +59840,7 @@ Implementations:
 | <a id="aicatalogitem-foundational"></a>`foundational` | [`Boolean!`](#boolean) | Whether the item is a foundational item. |
 | <a id="aicatalogitem-foundationalflowreference"></a>`foundationalFlowReference` | [`String`](#string) | Foundational flow reference. |
 | <a id="aicatalogitem-id"></a>`id` | [`ID!`](#id) | ID of the item. |
+| <a id="aicatalogitem-isenabledinmanagedbyproject"></a>`isEnabledInManagedByProject` | [`Boolean!`](#boolean) | Whether the item is enabled in the project it is managed by. This field can only be resolved for one AiCatalogItem in any single request. |
 | <a id="aicatalogitem-itemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
 | <a id="aicatalogitem-name"></a>`name` | [`String!`](#string) | Name of the item. |
 | <a id="aicatalogitem-project"></a>`project` | [`Project`](#project) | Project for the item. |

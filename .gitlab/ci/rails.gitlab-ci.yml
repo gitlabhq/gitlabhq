@@ -476,7 +476,10 @@ gitlab:setup:
     paths:
       - log/*.log
 
-# also extended in .gitlab/ci/artifact-collector/as-if-foss.gitlab-ci.yml which is added conditionally
+# The jobs built upon `.artifact-collector` are to work around the
+# needs: [] limit of a maximum of 50 dependencies.
+# These intermediate jobs allow us to collect the artifacts of
+# more than 50 jobs and still use `needs:` to ensure a timely execution
 .artifact-collector:
   extends: .base-artifacts
   stage: post-test
@@ -484,13 +487,125 @@ gitlab:setup:
     GIT_STRATEGY: none
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:3.17
   script:
-    - echo "No-op artifact collection job"
-  when: always
+    - ls -R
 
-rspec:artifact-collector:
+rspec:artifact-collector unit:
   extends:
     - .artifact-collector
-    - .rails:rules:artifact-collector
+    - .rails:rules:artifact-collector-unit
+  needs:
+    - job: rspec unit pg17  # 44 jobs
+      optional: true
+    - job: rspec unit clickhouse23  # 2 jobs
+      optional: true
+    - job: rspec unit clickhouse24  # 2 jobs
+      optional: true
+    - job: rspec unit clickhouse25  # 2 jobs
+      optional: true
+
+rspec:artifact-collector part-a:
+  extends:
+    - .artifact-collector
+    - .rails:rules:artifact-collector-part-a
+  needs:
+    - job: rspec system pg17  # 32 jobs
+      optional: true
+    - job: rspec background_migration pg17  # 17 jobs
+      optional: true
+
+rspec:artifact-collector part-b:
+  extends:
+    - .artifact-collector
+    - .rails:rules:artifact-collector-part-b
+  needs:
+    - job: rspec integration pg17  # 20 jobs
+      optional: true
+    - job: rspec integration pg17 clickhouse25  # 3 jobs
+      optional: true
+    - job: rspec migration pg17  # 26 jobs
+      optional: true
+
+rspec:artifact-collector unit single-redis:
+  extends:
+    - .artifact-collector
+    - .rails:rules:single-redis
+  needs:
+    - job: rspec unit pg17 single-redis  # 44 jobs
+      optional: true
+
+rspec:artifact-collector system single-redis:
+  extends:
+    - .artifact-collector
+    - .rails:rules:single-redis
+  needs:
+    - job: rspec system pg17 single-redis  # 32 jobs
+      optional: true
+
+rspec:artifact-collector remainder single-redis:
+  extends:
+    - .artifact-collector
+    - .rails:rules:single-redis
+  needs:
+    - job: rspec integration pg17 single-redis  # 20 jobs
+      optional: true
+
+rspec:artifact-collector ee unit single-redis:
+  extends:
+    - .artifact-collector
+    - .rails:rules:single-redis
+  needs:
+    - job: rspec-ee unit pg17 single-redis  # 39 jobs
+      optional: true
+
+rspec:artifact-collector ee remainder single-redis:
+  extends:
+    - .artifact-collector
+    - .rails:rules:single-redis
+  needs:
+    - job: rspec-ee integration pg17 single-redis  # 9 jobs
+      optional: true
+    - job: rspec-ee system pg17 single-redis  # 16 jobs
+      optional: true
+
+rspec:artifact-collector ee unit:
+  extends:
+    - .artifact-collector
+  needs:
+    - job: rspec-ee unit pg17  # 39 jobs
+      optional: true
+  rules:
+    - !reference ['.rails:rules:ee-only-unit', rules]
+
+rspec:artifact-collector ee remainder:
+  extends:
+    - .artifact-collector
+  needs:
+    - job: rspec-ee migration pg17  # 2 jobs
+      optional: true
+    - job: rspec-ee background_migration pg17  # 6 jobs
+      optional: true
+    - job: rspec-ee unit clickhouse23  # 2 jobs
+      optional: true
+    - job: rspec-ee unit clickhouse24  # 2 jobs
+      optional: true
+    - job: rspec-ee unit clickhouse25  # 2 jobs
+      optional: true
+    - job: rspec-ee integration pg17  # 9 jobs
+      optional: true
+    - job: rspec-ee integration pg17 clickhouse25  # 3 jobs
+      optional: true
+    - job: rspec-ee system pg17  # 16 jobs
+      optional: true
+    - job: rspec fail-fast  # 1 job
+      optional: true
+    - job: rspec-ee fail-fast  # 1 job
+      optional: true
+  rules:
+    - !reference ['.rails:rules:rspec fail-fast', rules]
+    - !reference ['.rails:rules:ee-only-migration', rules]
+    - !reference ['.rails:rules:ee-only-background-migration', rules]
+    - !reference ['.rails:rules:ee-only-integration', rules]
+    - !reference ['.rails:rules:ee-only-system', rules]
 
 rspec:coverage:
   extends:
@@ -501,10 +616,29 @@ rspec:coverage:
     - job: setup-test-env
       artifacts: false
     # FOSS/EE jobs
-    - job: rspec:artifact-collector
+    - job: rspec:artifact-collector unit
+      optional: true
+    - job: rspec:artifact-collector part-a
+      optional: true
+    - job: rspec:artifact-collector part-b
+      optional: true
+    - job: rspec:artifact-collector unit single-redis
+      optional: true
+    - job: rspec:artifact-collector system single-redis
+      optional: true
+    - job: rspec:artifact-collector remainder single-redis
       optional: true
     # as-if-foss jobs
     - job: rspec:artifact-collector as-if-foss
+      optional: true
+    # EE jobs
+    - job: rspec:artifact-collector ee unit single-redis
+      optional: true
+    - job: rspec:artifact-collector ee remainder single-redis
+      optional: true
+    - job: rspec:artifact-collector ee unit
+      optional: true
+    - job: rspec:artifact-collector ee remainder
       optional: true
   script:
     - bundle exec scripts/merge-simplecov

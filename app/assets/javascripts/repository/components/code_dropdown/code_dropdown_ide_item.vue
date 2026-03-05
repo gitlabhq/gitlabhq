@@ -16,6 +16,7 @@ export default {
       required: true,
     },
   },
+  emits: ['close-dropdown'],
   computed: {
     shortcutsDisabled() {
       return shouldDisableShortcuts();

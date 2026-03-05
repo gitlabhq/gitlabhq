@@ -403,6 +403,27 @@ This combination is called a [composite identity](../composite_identity.md).
 
 If you'd prefer, you can [create an external agent manually](#create-an-external-agent-manually).
 
+### Agent visibility
+
+{{< history >}}
+
+- Roles that can view private agents [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
+
+{{< /history >}}
+
+When you create a custom external agent, you select a project to manage it and choose
+whether the agent is public or private.
+
+Public agents:
+
+- Can be viewed by anyone and can be enabled in any project that meets the prerequisites.
+
+Private agents:
+
+- Can be viewed only by members of the managing project who have the Guest, Planner,
+  Reporter, Developer, Maintainer, or Owner role.
+- Cannot be enabled in projects other than the managing project.
+
 ### Create the agent in the AI Catalog
 
 Start by creating the external agent in the AI Catalog.

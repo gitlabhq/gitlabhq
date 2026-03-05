@@ -54,6 +54,7 @@ export default {
       default: '',
     },
   },
+  emits: ['click'],
   computed: {
     timeAgo() {
       return this.timeFormatted(this.time, this.dateTimeFormat, {

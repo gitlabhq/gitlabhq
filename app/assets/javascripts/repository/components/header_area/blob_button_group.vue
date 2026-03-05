@@ -50,6 +50,7 @@ export default {
       required: true,
     },
   },
+  emits: ['showForkSuggestion'],
   computed: {
     replaceFileItem() {
       return {

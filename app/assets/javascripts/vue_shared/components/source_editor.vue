@@ -64,6 +64,7 @@ export default {
       default: true,
     },
   },
+  emits: ['input', EDITOR_READY_EVENT],
   data() {
     return {
       editor: null,

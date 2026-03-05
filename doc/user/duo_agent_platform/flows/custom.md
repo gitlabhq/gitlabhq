@@ -37,6 +37,12 @@ automate complex, multi-step tasks across your GitLab projects.
 
 ## Flow visibility
 
+{{< history >}}
+
+- Roles that can view private flows [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
+
+{{< /history >}}
+
 When you create a custom flow, you select a project to manage it and choose whether the flow is public or private.
 
 Public flows:
@@ -45,8 +51,12 @@ Public flows:
 
 Private flows:
 
-- Can be viewed only by members of the managing project who have the Developer, Maintainer, or Owner role, and by users with the Owner role for the top-level group.
-- Cannot be enabled in projects other than the managing project, or in groups other than the top-level group.
+- Can be viewed only by:
+  - Members of the managing project who have the Guest, Planner, Reporter, Developer,
+    Maintainer, or Owner role.
+  - Users with the Owner role for the top-level group.
+- Cannot be enabled in projects other than the managing project, or in groups
+  other than the top-level group.
 
 You cannot change a public flow to private if the flow is enabled.
 

@@ -25,7 +25,7 @@ RSpec.describe Banzai::Filter::SuggestionFilter, feature_category: :markdown do
   end
 
   context 'multi-line suggestions' do
-    let(:data_attr) { Banzai::Filter::CodeLanguageFilter::LANG_PARAMS_ATTR }
+    let(:data_attr) { 'data-lang-params' }
     let(:input) { %(<pre class="code highlight js-syntax-highlight language-suggestion" #{data_attr}="-3+2"><code>foo\n</code></pre>) }
 
     it 'element has correct data-lang-params' do

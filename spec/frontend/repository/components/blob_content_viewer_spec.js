@@ -659,7 +659,7 @@ describe('Blob content viewer component', () => {
   });
 
   describe('edit blob', () => {
-    beforeEach(() => createComponent({}, mount));
+    beforeEach(() => createComponent());
 
     it('simple edit redirects to the simple editor', () => {
       findBlobHeader().vm.$emit('edit', 'simple');

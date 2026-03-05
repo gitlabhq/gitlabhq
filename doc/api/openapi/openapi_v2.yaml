@@ -32413,6 +32413,45 @@ paths:
       tags:
       - project_import
       operationId: getApiV4ProjectsIdImport
+  "/api/v4/projects/{id}/import/git":
+    post:
+      summary: Import a project from a Git URL
+      description: This feature was introduced in GitLab 18.10.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - name: postApiV4ProjectsIdImportGit
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4ProjectsIdImportGit"
+      responses:
+        '201':
+          description: Import a project from a Git URL
+          schema:
+            "$ref": "#/definitions/API_Entities_ProjectImportStatus"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '400':
+          description: Bad request
+        '404':
+          description: Not found
+        '409':
+          description: Conflict
+        '422':
+          description: Unprocessable Entity
+      tags:
+      - project_import
+      operationId: postApiV4ProjectsIdImportGit
   "/api/v4/projects/remote-import":
     post:
       summary: Create a new project import using a remote object storage path
@@ -66556,6 +66595,21 @@ definitions:
     - exception_message
     - relation_name
     - line_number
+  postApiV4ProjectsIdImportGit:
+    type: object
+    properties:
+      import_url:
+        type: string
+        description: The URL from which the project is imported
+      import_url_user:
+        type: string
+        description: Username for the import URL
+      import_url_password:
+        type: string
+        description: Password for the import URL
+    required:
+    - import_url
+    description: Import a project from a Git URL
   API_Entities_RelationImportTracker:
     type: object
     properties:

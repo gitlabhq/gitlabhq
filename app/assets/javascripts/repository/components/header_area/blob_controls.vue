@@ -54,6 +54,34 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [getRefMixin, glFeatureFlagMixin(), InternalEvents.mixin()],
+  inject: ['currentRef', 'showWebIdeButton', 'showPipelineEditorButton'],
+  provide() {
+    return {
+      blobInfo: computed(() => this.blobInfo ?? DEFAULT_BLOB_INFO.repository.blobs.nodes[0]),
+      currentRef: computed(() => this.currentRef ?? this.blobInfo.ref),
+    };
+  },
+  props: {
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    projectIdAsNumber: {
+      type: Number,
+      required: true,
+    },
+    refType: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    isBinary: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  emits: ['lockedFile'],
   apollo: {
     project: {
       query: blobControlsQuery,
@@ -99,33 +127,6 @@ export default {
         );
         Sentry.captureException(error);
       },
-    },
-  },
-  inject: ['currentRef', 'showWebIdeButton', 'showPipelineEditorButton'],
-  provide() {
-    return {
-      blobInfo: computed(() => this.blobInfo ?? DEFAULT_BLOB_INFO.repository.blobs.nodes[0]),
-      currentRef: computed(() => this.currentRef ?? this.blobInfo.ref),
-    };
-  },
-  props: {
-    projectPath: {
-      type: String,
-      required: true,
-    },
-    projectIdAsNumber: {
-      type: Number,
-      required: true,
-    },
-    refType: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    isBinary: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   data() {

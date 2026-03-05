@@ -29142,6 +29142,47 @@ paths:
           - type: string
           - type: integer
         in: path
+  "/api/v4/projects/{id}/import/git":
+    post:
+      operationId: postApiV4ProjectsIdImportGit
+      summary: Import a project from a Git URL
+      description: This feature was introduced in GitLab 18.10.
+      tags:
+      - Project import
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesProjectImportStatus"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '400':
+          description: Bad request
+        '404':
+          description: Not found
+        '409':
+          description: Conflict
+        '422':
+          description: Unprocessable Entity
+      parameters:
+      - name: id
+        required: true
+        description: The ID or URL-encoded path of the project
+        schema:
+          oneOf:
+          - type: string
+          - type: integer
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RequestBody_7d5ef6c9c670"
   "/api/v4/projects/remote-import":
     post:
       operationId: postApiV4ProjectsRemoteImport
@@ -87871,6 +87912,20 @@ components:
       required:
       - path
       - file
+    RequestBody_7d5ef6c9c670:
+      type: object
+      properties:
+        import_url:
+          type: string
+          description: The URL from which the project is imported
+        import_url_user:
+          type: string
+          description: Username for the import URL
+        import_url_password:
+          type: string
+          description: Password for the import URL
+      required:
+      - import_url
     RequestBody_9cc413fdd6a4:
       type: object
       properties:

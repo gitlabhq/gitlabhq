@@ -27,6 +27,7 @@ export default {
       required: false,
     },
   },
+  emits: [CONTENT_LOADED_EVENT],
   data() {
     return {
       isLoading: true,

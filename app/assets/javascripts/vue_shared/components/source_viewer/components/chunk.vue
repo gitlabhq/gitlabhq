@@ -64,6 +64,7 @@ export default {
       default: false,
     },
   },
+  emits: ['appear', 'disappear'],
   data() {
     return {
       number: undefined,

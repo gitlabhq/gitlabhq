@@ -476,7 +476,8 @@ module GraphqlHelpers
   end
 
   DEFAULT_EXCLUSIONS = [
-    'aiCatalogItems' # FieldCallCount limit
+    'aiCatalogItems', # FieldCallCount limit
+    'isEnabledInManagedByProject'
   ].freeze
 
   def all_graphql_fields_for(class_name, max_depth: 3, excluded: [])

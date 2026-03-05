@@ -48,6 +48,7 @@ export default {
       default: false,
     },
   },
+  emits: ['showForkSuggestion'],
   computed: {
     deleteFileItem() {
       return {

@@ -23,6 +23,7 @@ export default {
       required: true,
     },
   },
+  emits: ['template-selected'],
   data() {
     return {
       filename: this.inputOptions.value || '',

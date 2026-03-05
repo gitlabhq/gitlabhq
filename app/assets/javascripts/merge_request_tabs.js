@@ -396,6 +396,7 @@ export default class MergeRequestTabs {
         this.mountPipelinesView();
       } else if (action === 'reports') {
         this.resetViewContainer();
+        this.mergeRequestPipelinesTable = destroyPipelines(this.mergeRequestPipelinesTable);
       } else {
         const notesTab = this.mergeRequestTabs.querySelector('.notes-tab');
         const notesPane = this.mergeRequestTabPanes.querySelector('#notes');

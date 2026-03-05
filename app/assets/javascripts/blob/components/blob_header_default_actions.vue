@@ -70,6 +70,7 @@ export default {
       default: false,
     },
   },
+  emits: ['copy'],
   computed: {
     downloadUrl() {
       return setUrlParams(

@@ -1,7 +1,11 @@
 <script>
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { BLOB_RENDER_ERRORS } from './constants';
+import {
+  BLOB_RENDER_ERRORS,
+  BLOB_RENDER_EVENT_LOAD,
+  BLOB_RENDER_EVENT_SHOW_SOURCE,
+} from './constants';
 
 export default {
   components: {
@@ -19,6 +23,7 @@ export default {
       default: () => ({}),
     },
   },
+  emits: [BLOB_RENDER_EVENT_LOAD, BLOB_RENDER_EVENT_SHOW_SOURCE],
   computed: {
     notStoredExternally() {
       return this.viewerError !== BLOB_RENDER_ERRORS.REASONS.EXTERNAL.id;
