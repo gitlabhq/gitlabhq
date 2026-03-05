@@ -112,7 +112,7 @@ class AwardEmoji < ApplicationRecord
                           awardable.namespace_id
                         when MergeRequest
                           awardable.project.project_namespace_id
-                        when Note
+                        when Note, WikiPage::Meta
                           awardable.project&.project_namespace_id || awardable.namespace_id
                         when ProjectSnippet
                           awardable.project&.project_namespace_id

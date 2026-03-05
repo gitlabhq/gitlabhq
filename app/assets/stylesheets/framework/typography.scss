@@ -67,6 +67,10 @@
     background-color: inherit;
   }
 
+  img.md-img-checkerboard {
+    @include checkerboard-bg;
+  }
+
   details {
     @apply gl-mb-5;
 

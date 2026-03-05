@@ -19,6 +19,7 @@ const defaultProps = {
   initialDuoRemoteFlowsAvailability: false,
   initialDuoFoundationalFlowsAvailability: false,
   initialDuoSastFpDetectionEnabled: false,
+  initialDuoSecretDetectionFpEnabled: false,
   initialDuoSastVrWorkflowEnabled: false,
 };
 
@@ -36,6 +37,7 @@ describe('GitlabDuoSettings', () => {
       provide: {
         glFeatures: {
           aiExperimentSastFpDetection: true,
+          duoSecretDetectionFalsePositive: true,
           ...provide,
         },
       },
@@ -63,6 +65,8 @@ describe('GitlabDuoSettings', () => {
   const findDuoFoundationalFlowsCascadingLockIcon = () =>
     wrapper.findByTestId('duo-foundational-flows-cascading-lock-icon');
   const findDuoSastFpDetectionToggle = () => wrapper.findByTestId('duo-sast-fp-detection-enabled');
+  const findDuoSecretDetectionFpToggle = () =>
+    wrapper.findByTestId('duo-secret-detection-fp-enabled');
   const findDuoSastVrWorkflowToggle = () => wrapper.findByTestId('duo-sast-vr-workflow-enabled');
   const findAutoReviewToggle = () => wrapper.findByTestId('amazon-q-auto-review-enabled');
 
@@ -353,6 +357,74 @@ describe('GitlabDuoSettings', () => {
           expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
 
           await findDuoSastFpDetectionToggle().vm.$emit('change', false);
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
+        });
+      });
+
+      describe('Duo Secret Detection FP Detection settings', () => {
+        it('shows Secret Detection FP Detection toggle when feature flag is enabled', () => {
+          wrapper = createWrapper(
+            { duoFeaturesEnabled: true, amazonQAvailable: false },
+            { duoSecretDetectionFalsePositive: true },
+          );
+
+          expect(findDuoSecretDetectionFpToggle().exists()).toBe(true);
+          expect(findDuoSecretDetectionFpToggle().props('disabled')).toBe(false);
+        });
+
+        it('does not show Secret Detection FP Detection toggle when feature flag is disabled', () => {
+          wrapper = createWrapper(
+            { duoFeaturesEnabled: true, amazonQAvailable: false },
+            { duoSecretDetectionFalsePositive: false },
+          );
+
+          expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
+        });
+
+        it('disables Secret Detection FP Detection toggle when Duo features are locked', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              duoFeaturesLocked: true,
+              amazonQAvailable: false,
+            },
+            { duoSecretDetectionFalsePositive: true },
+          );
+
+          expect(findDuoSecretDetectionFpToggle().props('disabled')).toBe(true);
+        });
+
+        it('does not render Secret Detection FP Detection toggle when Duo features are not enabled', () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: false,
+              amazonQAvailable: false,
+            },
+            { duoSecretDetectionFalsePositive: true },
+          );
+
+          expect(findDuoSecretDetectionFpToggle().exists()).toBe(false);
+        });
+
+        it('updates the hidden input value when toggled', async () => {
+          wrapper = createWrapper(
+            {
+              duoFeaturesEnabled: true,
+              amazonQAvailable: false,
+              initialDuoSecretDetectionFpEnabled: true,
+            },
+            { duoSecretDetectionFalsePositive: true },
+          );
+
+          const findHiddenInput = () =>
+            wrapper.find(
+              'input[name="project[project_setting_attributes][duo_secret_detection_fp_enabled]"]',
+            );
+
+          expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(true);
+
+          await findDuoSecretDetectionFpToggle().vm.$emit('change', false);
 
           expect(parseBoolean(findHiddenInput().attributes('value'))).toBe(false);
         });

@@ -237,7 +237,7 @@ export default {
     :is="containerTag"
     :id="anchorId"
     ref="crudComponent"
-    class="crud gl-border gl-rounded-xl gl-border-transparent gl-bg-strong gl-px-2 contrast-more:gl-border-strong"
+    class="crud gl-border gl-flex gl-flex-col gl-rounded-xl gl-border-transparent gl-bg-strong gl-px-2 contrast-more:gl-border-strong"
     :class="{ 'gl-mt-3': isCollapsible, 'gl-pb-2': isContentVisible }"
   >
     <header
@@ -322,7 +322,7 @@ export default {
 
     <div
       v-if="isFormUsedAndVisible"
-      class="gl-mx-4 gl-mb-4 gl-rounded-lg gl-bg-default gl-p-4 gl-shadow-sm"
+      class="gl-mb-2 gl-rounded-lg gl-bg-default gl-p-3"
       data-testid="crud-form"
     >
       <slot name="form" :hide-form="hideForm"></slot>

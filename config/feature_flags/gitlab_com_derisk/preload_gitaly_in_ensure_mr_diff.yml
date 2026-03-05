@@ -1,0 +1,10 @@
+---
+name: preload_gitaly_in_ensure_mr_diff
+description: Preload Gitaly data in ensure_merge_request_diff to reduce idle in transaction time
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592182
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225840
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592182
+milestone: '18.10'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

@@ -8,7 +8,14 @@ module Gitlab
 
       GITLAB_HOSTED_RUNNER = 'gitlab-hosted'
       SELF_HOSTED_RUNNER = 'self-hosted'
-      ADDITIONAL_SUBJECT_CLAIMS = [:ref_type, :ref, :project_path, :environment_protected, :deployment_tier].freeze
+      ADDITIONAL_SUBJECT_CLAIMS = [
+        :project_path,
+        :ref_type,
+        :ref,
+        :ref_protected,
+        :environment_protected,
+        :deployment_tier
+      ].freeze
 
       def self.for_build(
         build, aud:, sub_components: [:project_path, :ref_type,

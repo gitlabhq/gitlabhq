@@ -8,11 +8,13 @@ class WikiPagePolicy < BasePolicy
     enable :read_note
     enable :create_note
     enable :update_subscription
+    enable :award_emoji
   end
 
   rule { ~can?(:read_wiki) }.policy do
     prevent :read_note
     prevent :create_note
+    prevent :award_emoji
   end
 
   rule { can?(:read_wiki) & can?(:reporter_access) }.policy do

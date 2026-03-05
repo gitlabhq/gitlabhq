@@ -45,10 +45,19 @@ module Mutations
           required: true,
           description: 'Sort option associated with the saved view.'
 
+        # TODO: Remove once frontend has migrated to use is_private
         argument :private,
           GraphQL::Types::Boolean,
           required: false,
-          default_value: true,
+          description: 'Whether the saved view is private. Default is true.',
+          deprecated: {
+            reason: 'Replaced by `isPrivate` argument',
+            milestone: '18.10'
+          }
+
+        argument :is_private,
+          GraphQL::Types::Boolean,
+          required: false,
           description: 'Whether the saved view is private. Default is true.'
 
         field :saved_view,
@@ -62,8 +71,16 @@ module Mutations
           scopes: [:api],
           description: 'Errors encountered during the mutation.'
 
+        validates mutually_exclusive: [:private, :is_private]
+
         def resolve(namespace_path:, **attrs)
           container = authorized_find!(namespace_path)
+
+          if attrs.key?(:is_private)
+            attrs[:private] = attrs.delete(:is_private)
+          elsif !attrs.key?(:private)
+            attrs[:private] = true
+          end
 
           result = ::WorkItems::SavedViews::CreateService.new(
             current_user: current_user,

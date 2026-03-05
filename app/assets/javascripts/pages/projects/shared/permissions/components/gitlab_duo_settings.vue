@@ -82,6 +82,11 @@ export default {
       required: false,
       default: false,
     },
+    initialDuoSecretDetectionFpEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     initialDuoSastVrWorkflowEnabled: {
       type: Boolean,
       required: false,
@@ -101,6 +106,7 @@ export default {
       duoRemoteFlowsAvailability: this.initialDuoRemoteFlowsAvailability,
       duoFoundationalFlowsAvailability: this.initialDuoFoundationalFlowsAvailability,
       duoSastFpDetectionEnabled: this.initialDuoSastFpDetectionEnabled,
+      duoSecretDetectionFpEnabled: this.initialDuoSecretDetectionFpEnabled,
       duoSastVrWorkflowEnabled: this.initialDuoSastVrWorkflowEnabled,
     };
   },
@@ -315,6 +321,26 @@ export default {
             label-position="hidden"
             name="project[project_setting_attributes][duo_sast_fp_detection_enabled]"
             data-testid="duo-sast-fp-detection-enabled"
+          />
+        </project-setting-row>
+        <project-setting-row
+          v-if="glFeatures.duoSecretDetectionFalsePositive"
+          :label="s__('DuoSecretDetection|Turn on Secret Detection false positive detection')"
+          class="gl-mt-5"
+          :help-text="
+            s__(
+              'DuoSecretDetection|Use false positive detection for Secret Detection vulnerabilities on the default branch',
+            )
+          "
+        >
+          <gl-toggle
+            v-model="duoSecretDetectionFpEnabled"
+            class="gl-mt-2"
+            :disabled="duoFeaturesLocked || !duoEnabled"
+            :label="s__('DuoSecretDetection|Turn on Secret Detection false positive detection')"
+            label-position="hidden"
+            name="project[project_setting_attributes][duo_secret_detection_fp_enabled]"
+            data-testid="duo-secret-detection-fp-enabled"
           />
         </project-setting-row>
         <project-setting-row

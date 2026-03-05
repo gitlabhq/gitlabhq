@@ -217,6 +217,7 @@ In this context, accelerated reads refer to read requests served from the second
 
 | Feature / component                                 | Accelerated reads?                   | Notes |
 |:----------------------------------------------------|:-------------------------------------|-------|
+| Rails static assets (JavaScript, CSS, fonts, images) | {{< icon name="check-circle" >}} Yes | Assets under `/assets/` are served directly from the secondary site's local file system by Workhorse, without being proxied to the primary. This applies to all secondary sites regardless of whether a unified URL or separate URLs are used. After the initial browser request, these assets are also typically cached by the browser. |
 | Project, wiki, design repository (using the web UI) | {{< icon name="dotted-circle" >}} No |       |
 | Project, wiki repository (using Git)                | {{< icon name="check-circle" >}} Yes | Git reads are served from the local secondary while pushes get proxied to the primary. Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error. |
 | Project, Personal Snippet (using the web UI)        | {{< icon name="dotted-circle" >}} No |       |

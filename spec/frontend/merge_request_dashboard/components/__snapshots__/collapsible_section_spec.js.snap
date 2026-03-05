@@ -6,7 +6,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
   storagekey="mr_list_list"
 >
   <section
-    class="contrast-more:gl-border-strong crud gl-bg-strong gl-border gl-border-transparent gl-mt-3 gl-pb-2 gl-px-2 gl-rounded-xl"
+    class="contrast-more:gl-border-strong crud gl-bg-strong gl-border gl-border-transparent gl-flex gl-flex-col gl-mt-3 gl-pb-2 gl-px-2 gl-rounded-xl"
     id="reference-0"
   >
     <header

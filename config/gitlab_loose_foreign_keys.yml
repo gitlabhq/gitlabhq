@@ -493,6 +493,9 @@ group_wiki_repository_states:
   - table: namespaces
     column: group_id
     on_delete: async_delete
+  - table: group_wiki_repositories
+    column: group_wiki_repository_id
+    on_delete: async_delete
 groups_visits:
   - table: namespaces
     column: entity_id

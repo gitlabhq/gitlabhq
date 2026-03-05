@@ -101,6 +101,7 @@ module Integrations
         # - #1234
         # - https://app.asana.com/0/{project_gid}/{task_gid}
         # - https://app.asana.com/1/{workspace_id}/project/{project_gid}/task/{task_gid}
+        # - https://app.asana.com/1/{workspace_id}/task/{task_gid}
         # optionally preceded with:
         # - fix/ed/es/ing
         # - close/s/d
@@ -109,6 +110,7 @@ module Integrations
           (?:
             https://app\.asana\.com/0/\d+/ |
             https://app\.asana\.com/1/\d+/project/\d+/task/ |
+            https://app\.asana\.com/1/\d+/task/ |
             \#
           )
           (\w+)

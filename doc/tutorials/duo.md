@@ -34,4 +34,5 @@ Extend GitLab Duo capabilities by connecting with external tools.
 
 | Topic | Description | Good for beginners | Try it out |
 |-------|-------------|--------------------|------------|
-| [Model Context Protocol integration](https://about.gitlab.com/blog/duo-agent-platform-with-mcp/) | Discover how MCP can help you connect GitLab Duo features to external sources, and connect AI tools to your GitLab instance. | | Explore the [client workflow](https://gitlab.navattic.com/mcp) and [server workflow](https://gitlab.navattic.com/gitlab-mcp-server)|
+| [Model Context Protocol (MCP) integration](https://about.gitlab.com/blog/duo-agent-platform-with-mcp/) | Discover how MCP can help you connect GitLab Duo features to external sources, and connect AI tools to your GitLab instance. | | Explore the [client workflow](https://gitlab.navattic.com/mcp) and [server workflow](https://gitlab.navattic.com/gitlab-mcp-server)|
+| [Integrate Claude Desktop with the GitLab MCP server](connect_claude_desktop_with_gitlab_mcp_server/_index.md) | Learn how to connect Claude Desktop to the GitLab MCP server, and interact with your GitLab instance. | {{< icon name="star" >}} | |

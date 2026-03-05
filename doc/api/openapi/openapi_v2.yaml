@@ -32287,6 +32287,12 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[duo_secret_detection_fp_enabled]
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
+        type: boolean
+        required: false
+      - in: formData
         name: override_params[duo_sast_vr_workflow_enabled]
         description: Enable GitLab Duo SAST vulnerability resolution workflow for
           this project
@@ -33007,6 +33013,12 @@ paths:
       - in: formData
         name: override_params[duo_sast_fp_detection_enabled]
         description: Enable GitLab Duo SAST false positive detection for this project
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[duo_secret_detection_fp_enabled]
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
         type: boolean
         required: false
       - in: formData
@@ -33809,6 +33821,12 @@ paths:
       - in: formData
         name: override_params[duo_sast_fp_detection_enabled]
         description: Enable GitLab Duo SAST false positive detection for this project
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[duo_secret_detection_fp_enabled]
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
         type: boolean
         required: false
       - in: formData
@@ -49760,6 +49778,8 @@ definitions:
       duo_foundational_flows_enabled:
         type: string
       duo_sast_fp_detection_enabled:
+        type: string
+      duo_secret_detection_fp_enabled:
         type: string
       duo_sast_vr_workflow_enabled:
         type: string
@@ -67404,6 +67424,10 @@ definitions:
       duo_sast_fp_detection_enabled:
         type: boolean
         description: Enable GitLab Duo SAST false positive detection for this project
+      duo_secret_detection_fp_enabled:
+        type: boolean
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
       duo_sast_vr_workflow_enabled:
         type: boolean
         description: Enable GitLab Duo SAST vulnerability resolution workflow for
@@ -67854,6 +67878,10 @@ definitions:
       duo_sast_fp_detection_enabled:
         type: boolean
         description: Enable GitLab Duo SAST false positive detection for this project
+      duo_secret_detection_fp_enabled:
+        type: boolean
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
       duo_sast_vr_workflow_enabled:
         type: boolean
         description: Enable GitLab Duo SAST vulnerability resolution workflow for
@@ -68317,6 +68345,8 @@ definitions:
       duo_foundational_flows_enabled:
         type: string
       duo_sast_fp_detection_enabled:
+        type: string
+      duo_secret_detection_fp_enabled:
         type: string
       duo_sast_vr_workflow_enabled:
         type: string
@@ -68898,6 +68928,10 @@ definitions:
       duo_sast_fp_detection_enabled:
         type: boolean
         description: Enable GitLab Duo SAST false positive detection for this project
+      duo_secret_detection_fp_enabled:
+        type: boolean
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
       duo_sast_vr_workflow_enabled:
         type: boolean
         description: Enable GitLab Duo SAST vulnerability resolution workflow for

@@ -3183,6 +3183,38 @@ Input type: `AiCatalogMcpServerCreateInput`
 | <a id="mutation-aicatalogmcpservercreate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-aicatalogmcpservercreate-mcpserver"></a>`mcpServer` | [`AiCatalogMcpServer`](#aicatalogmcpserver) | MCP server created. |
 
+### `Mutation.aiCatalogMcpServerUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogMcpServerUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-aicatalogmcpserverupdate-authtype"></a>`authType` | [`AiCatalogMcpServerAuthType`](#aicatalogmcpserverauthtype) | Authentication type for the MCP server. |
+| <a id="mutation-aicatalogmcpserverupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-aicatalogmcpserverupdate-description"></a>`description` | [`String`](#string) | Description for the MCP server. |
+| <a id="mutation-aicatalogmcpserverupdate-homepageurl"></a>`homepageUrl` | [`String`](#string) | Homepage URL for the MCP server. |
+| <a id="mutation-aicatalogmcpserverupdate-id"></a>`id` | [`AiCatalogMcpServerID!`](#aicatalogmcpserverid) | Global ID of the MCP server to update. |
+| <a id="mutation-aicatalogmcpserverupdate-name"></a>`name` | [`String`](#string) | Name for the MCP server. |
+| <a id="mutation-aicatalogmcpserverupdate-oauthclientid"></a>`oauthClientId` | [`String`](#string) | OAuth client ID for the MCP server. |
+| <a id="mutation-aicatalogmcpserverupdate-oauthclientsecret"></a>`oauthClientSecret` | [`String`](#string) | OAuth client secret for the MCP server. |
+| <a id="mutation-aicatalogmcpserverupdate-transport"></a>`transport` | [`AiCatalogMcpServerTransport`](#aicatalogmcpservertransport) | Transport type for the MCP server. |
+| <a id="mutation-aicatalogmcpserverupdate-url"></a>`url` | [`String`](#string) | URL for the MCP server. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-aicatalogmcpserverupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-aicatalogmcpserverupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-aicatalogmcpserverupdate-mcpserver"></a>`mcpServer` | [`AiCatalogMcpServer`](#aicatalogmcpserver) | MCP server that was updated. |
+
 ### `Mutation.aiCatalogThirdPartyFlowCreate`
 
 {{< details >}}
@@ -5424,10 +5456,11 @@ Input type: `ContainerUpstreamTestInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutation-containerupstreamtest-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutation-containerupstreamtest-grouppath"></a>`groupPath` | [`ID!`](#id) | Full path of the group with which the resource is associated. |
-| <a id="mutation-containerupstreamtest-password"></a>`password` | [`String`](#string) | Password of the upstream registry. |
-| <a id="mutation-containerupstreamtest-url"></a>`url` | [`String!`](#string) | URL of the upstream registry. |
-| <a id="mutation-containerupstreamtest-username"></a>`username` | [`String`](#string) | Username of the upstream registry. |
+| <a id="mutation-containerupstreamtest-grouppath"></a>`groupPath` | [`ID`](#id) | Full path of the group to test the upstream registry against. Required when `id` is not provided. |
+| <a id="mutation-containerupstreamtest-id"></a>`id` | [`VirtualRegistriesContainerUpstreamID`](#virtualregistriescontainerupstreamid) | ID of the upstream registry to test. When provided, `groupPath`, `url`, `username`, and `password` are ignored. |
+| <a id="mutation-containerupstreamtest-password"></a>`password` | [`String`](#string) | Password for authenticating with the upstream registry. Used when `id` is not provided. |
+| <a id="mutation-containerupstreamtest-url"></a>`url` | [`String`](#string) | URL of the upstream registry to test. Required when `GraphqlExplorerControllerid` is not provided. |
+| <a id="mutation-containerupstreamtest-username"></a>`username` | [`String`](#string) | Username for authenticating with the upstream registry. Used when `id` is not provided. |
 
 #### Fields
 
@@ -16580,9 +16613,10 @@ Input type: `WorkItemSavedViewCreateInput`
 | <a id="mutation-workitemsavedviewcreate-description"></a>`description` | [`String`](#string) | Description of the saved view. |
 | <a id="mutation-workitemsavedviewcreate-displaysettings"></a>`displaySettings` | [`JSON!`](#json) | Display settings associated with the saved view. |
 | <a id="mutation-workitemsavedviewcreate-filters"></a>`filters` | [`WorkItemSavedViewFilterInput!`](#workitemsavedviewfilterinput) | Filters associated with the saved view. |
+| <a id="mutation-workitemsavedviewcreate-isprivate"></a>`isPrivate` | [`Boolean`](#boolean) | Whether the saved view is private. Default is true. |
 | <a id="mutation-workitemsavedviewcreate-name"></a>`name` | [`String!`](#string) | Name of the saved view. |
 | <a id="mutation-workitemsavedviewcreate-namespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace to create the saved view in. |
-| <a id="mutation-workitemsavedviewcreate-private"></a>`private` | [`Boolean`](#boolean) | Whether the saved view is private. Default is true. |
+| <a id="mutation-workitemsavedviewcreate-private"></a>`private` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: Replaced by `isPrivate` argument. Deprecated in GitLab 18.10. |
 | <a id="mutation-workitemsavedviewcreate-sort"></a>`sort` | [`WorkItemSort!`](#workitemsort) | Sort option associated with the saved view. |
 
 #### Fields
@@ -16719,8 +16753,9 @@ Input type: `WorkItemSavedViewUpdateInput`
 | <a id="mutation-workitemsavedviewupdate-displaysettings"></a>`displaySettings` | [`JSON`](#json) | Display settings associated with the saved view. |
 | <a id="mutation-workitemsavedviewupdate-filters"></a>`filters` | [`WorkItemSavedViewFilterInput`](#workitemsavedviewfilterinput) | Filters associated with the saved view. |
 | <a id="mutation-workitemsavedviewupdate-id"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | Global ID of the saved view. |
+| <a id="mutation-workitemsavedviewupdate-isprivate"></a>`isPrivate` | [`Boolean`](#boolean) | Whether the saved view is private. |
 | <a id="mutation-workitemsavedviewupdate-name"></a>`name` | [`String`](#string) | Name of the saved view. |
-| <a id="mutation-workitemsavedviewupdate-private"></a>`private` | [`Boolean`](#boolean) | Whether the saved view is private. |
+| <a id="mutation-workitemsavedviewupdate-private"></a>`private` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: Replaced by `isPrivate` argument. Deprecated in GitLab 18.10. |
 | <a id="mutation-workitemsavedviewupdate-sort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sorting option associated with the saved view. |
 
 #### Fields
@@ -44176,6 +44211,7 @@ Represents policy violation for `scan_finding` report_type.
 | <a id="policyscope-excludingprojects"></a>`excludingProjects` | [`ProjectConnection!`](#projectconnection) | Projects to which the policy should not be applied. (see [Connections](#connections)) |
 | <a id="policyscope-includinggroups"></a>`includingGroups` | [`GroupConnection!`](#groupconnection) | Groups to which the policy should be applied. (see [Connections](#connections)) |
 | <a id="policyscope-includingprojects"></a>`includingProjects` | [`ProjectConnection!`](#projectconnection) | Projects to which the policy should be applied. (see [Connections](#connections)) |
+| <a id="policyscope-matchmode"></a>`matchMode` {{< icon name="warning-solid" >}} | [`PolicyScopeMatchMode!`](#policyscopematchmode) | **Introduced** in GitLab 18.10. **Status**: Experiment. Specifies how multiple policy scope conditions are combined. |
 
 ### `PolicyViolationDetails`
 
@@ -51932,6 +51968,7 @@ A wiki page.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="wikipage-awardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the wiki page. (see [Connections](#connections)) |
 | <a id="wikipage-commenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on the noteable. (see [Connections](#connections)) |
 | <a id="wikipage-discussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on the noteable. (see [Connections](#connections)) |
 | <a id="wikipage-id"></a>`id` | [`WikiPageMetaID!`](#wikipagemetaid) | Global ID of the wiki page metadata record. |
@@ -51965,6 +52002,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="wikipagepermissions-awardemoji"></a>`awardEmoji` | [`Boolean!`](#boolean) | If `true`, the user can perform `award_emoji` on this resource. |
 | <a id="wikipagepermissions-createnote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
 | <a id="wikipagepermissions-marknoteasinternal"></a>`markNoteAsInternal` | [`Boolean!`](#boolean) | If `true`, the user can perform `mark_note_as_internal` on this resource. |
 | <a id="wikipagepermissions-readwikipage"></a>`readWikiPage` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_wiki_page` on this resource. |
@@ -52184,17 +52222,21 @@ Check permissions for the current user on a work item.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemsavedviewtype-author"></a>`author` | [`UserCore`](#usercore) | Author of the saved view. |
 | <a id="workitemsavedviewtype-description"></a>`description` | [`String`](#string) | Description of the saved view. |
 | <a id="workitemsavedviewtype-displaysettings"></a>`displaySettings` | [`JSON`](#json) | Display settings associated with the saved view. |
 | <a id="workitemsavedviewtype-filterwarnings"></a>`filterWarnings` | [`[WorkItemSavedViewFilterWarningType!]`](#workitemsavedviewfilterwarningtype) | Warnings associated with the filter values. This field can only be resolved for one saved view in any single request. |
 | <a id="workitemsavedviewtype-filters"></a>`filters` | [`JSON`](#json) | Filters associated with the saved view. This field can only be resolved for one saved view in any single request. |
 | <a id="workitemsavedviewtype-id"></a>`id` | [`WorkItemsSavedViewsSavedViewID!`](#workitemssavedviewssavedviewid) | ID of the saved view. |
+| <a id="workitemsavedviewtype-isprivate"></a>`isPrivate` | [`Boolean!`](#boolean) | Whether the saved view is private. |
+| <a id="workitemsavedviewtype-lastupdatedby"></a>`lastUpdatedBy` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | **Introduced** in GitLab 18.10. **Status**: Experiment. User who last updated the saved view. |
 | <a id="workitemsavedviewtype-name"></a>`name` | [`String!`](#string) | Name of the saved view. |
 | <a id="workitemsavedviewtype-namespaceid"></a>`namespaceId` | [`TypesNamespaceID!`](#typesnamespaceid) | ID of the namespace of the saved view. |
-| <a id="workitemsavedviewtype-private"></a>`private` | [`Boolean!`](#boolean) | Whether the saved view is private. |
+| <a id="workitemsavedviewtype-private"></a>`private` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Deprecated** in GitLab 18.10. Replaced by `isPrivate` field. |
 | <a id="workitemsavedviewtype-shareurl"></a>`shareUrl` | [`String!`](#string) | URL to auto subscribe users to the view. |
 | <a id="workitemsavedviewtype-sort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort option associated with the saved view. |
 | <a id="workitemsavedviewtype-subscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Whether the current user is subscribed to the saved view. |
+| <a id="workitemsavedviewtype-updatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the saved view was last updated. |
 | <a id="workitemsavedviewtype-userpermissions"></a>`userPermissions` | [`SavedViewPermissions!`](#savedviewpermissions) | Permissions for the current user on the resource. |
 | <a id="workitemsavedviewtype-workitems"></a>`workItems` {{< icon name="warning-solid" >}} | [`WorkItemConnection`](#workitemconnection) | **Introduced** in GitLab 18.8. **Status**: Experiment. Work items associated with the saved view. This field can only be resolved for one saved view in any single request. |
 
@@ -56543,6 +56585,15 @@ Types of security policy project created status.
 | ----- | ----------- |
 | <a id="policyprojectcreatedstatus-error"></a>`ERROR` | Creating the security policy project faild. |
 | <a id="policyprojectcreatedstatus-success"></a>`SUCCESS` | Creating the security policy project was successful. |
+
+### `PolicyScopeMatchMode`
+
+Specifies how multiple policy scope conditions are combined.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="policyscopematchmode-all"></a>`ALL` | All specified conditions must match (AND logic). This is the default behavior. |
+| <a id="policyscopematchmode-any"></a>`ANY` | At least one specified condition must match (OR logic). |
 
 ### `PolicyStatus`
 

@@ -4,6 +4,8 @@ module Resolvers
   module WorkItems
     module SavedViews
       class SavedViewsResolver < BaseResolver
+        include ::LooksAhead
+
         argument :id,
           ::Types::GlobalIDType[::WorkItems::SavedViews::SavedView],
           required: false,
@@ -28,9 +30,20 @@ module Resolvers
 
         type Types::WorkItems::SavedViews::SavedViewType.connection_type, null: true
 
-        def resolve(**args)
-          ::WorkItems::SavedViews::SavedViewsFinder.new(user: current_user, namespace: object,
-            params: args).execute.preload_namespace
+        def resolve_with_lookahead(**args)
+          apply_lookahead(
+            ::WorkItems::SavedViews::SavedViewsFinder.new(
+              user: current_user, namespace: object, params: args
+            ).execute.preload_namespace
+          )
+        end
+
+        private
+
+        def preloads
+          {
+            author: [:author]
+          }
         end
       end
     end

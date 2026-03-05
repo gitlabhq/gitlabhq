@@ -51,6 +51,7 @@ Merge checks include a passing CI/CD pipeline, and much more:
 - If your project
   [requires merge requests to reference a Jira issue](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged),
   the merge request title or description contains a Jira issue link.
+- If a [title validation pattern](title_validation.md) is configured, the merge request title must match the pattern.
 - If the merge request has a **Merge after** date set, the current time must be after the configured date.
 
 For a full list of checks and their API equivalents, see

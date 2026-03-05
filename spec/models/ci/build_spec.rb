@@ -6401,24 +6401,27 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       stub_application_setting(ci_jwt_signing_key: OpenSSL::PKey::RSA.generate(3072).to_s)
 
       project.ci_cd_settings.update!(
-        id_token_sub_claim_components: %w[project_path environment_protected deployment_tier]
+        id_token_sub_claim_components: %w[project_path ref_protected environment_protected deployment_tier]
       )
     end
 
-    it 'generates JWT with environment_protected and deployment_tier in sub claim' do
+    it 'generates JWT with ref_protected, environment_protected and deployment_tier in sub claim' do
       expect(build.id_tokens).to eq({ 'ID_TOKEN_1' => { 'aud' => 'https://example.com' } })
 
       expect(project.ci_cd_settings.id_token_sub_claim_components)
-        .to eq(%w[project_path environment_protected deployment_tier])
+        .to eq(%w[project_path ref_protected environment_protected deployment_tier])
 
       id_token = build.variables.find { |v| v[:key] == 'ID_TOKEN_1' }
       expect(id_token).not_to be_nil
 
       token = JWT.decode(id_token[:value], nil, false).first
       expect(token['sub']).to include('project_path')
+      expect(token['sub']).to include('ref_protected')
       expect(token['sub']).to include('environment_protected')
       expect(token['sub']).to include('deployment_tier')
-      expect(token['sub']).to eq("project_path:#{project.full_path}:environment_protected:false:deployment_tier:production")
+      expect(token['sub']).to eq(
+        "project_path:#{project.full_path}:ref_protected:false:environment_protected:false:deployment_tier:production"
+      )
     end
   end
 

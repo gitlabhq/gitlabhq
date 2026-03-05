@@ -54,8 +54,8 @@ module Layouts
     def options_attrs
       default_testid = 'haml-crud'
       default_classes = [
-        'crud', 'gl-bg-strong', 'gl-border', 'gl-border-transparent', 'gl-rounded-xl',
-        'gl-px-2', 'gl-pb-2', 'contrast-more:gl-border-strong',
+        'crud', 'gl-flex', 'gl-flex-col', 'gl-bg-strong', 'gl-border', 'gl-border-transparent',
+        'gl-rounded-xl', 'gl-px-2', 'gl-pb-2', 'contrast-more:gl-border-strong',
         ('js-toggle-container' if @toggle_text),
         ('js-crud-collapsible-section gl-mt-3' if @is_collapsible)
       ]

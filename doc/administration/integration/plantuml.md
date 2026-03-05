@@ -135,7 +135,7 @@ The **PlantUML URL** is the hostname of the server running the container.
 When running GitLab in Docker, it must have access to the PlantUML container.
 To achieve that, use [Docker Compose](https://docs.docker.com/compose/).
 In this basic `docker-compose.yml` file, PlantUML is accessible to GitLab at the URL
-`http://plantuml:8005/`:
+`http://plantuml:8080/`:
 
 ```yaml
 services:
@@ -143,7 +143,7 @@ services:
     image: 'gitlab/gitlab-ee:18.9.1-ee.0'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n    proxy_pass  http://plantuml:8005/; \n}\n"
+        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
 
   plantuml:
     image: 'plantuml/plantuml-server:tomcat'

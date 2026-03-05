@@ -46,6 +46,12 @@ with GitLab Duo Chat in the GitLab UI, VS Code, and JetBrains IDEs.
 
 ## Agent visibility
 
+{{< history >}}
+
+- Roles that can view private agents [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
+
+{{< /history >}}
+
 When you create a custom agent, you select a project to manage it and choose whether the agent is public or private.
 
 Public agents:
@@ -54,7 +60,7 @@ Public agents:
 
 Private agents:
 
-- Can be viewed only by members of the managing project who have the Developer, Maintainer, or Owner role.
+- Can be viewed only by members of the managing project who have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 - Cannot be enabled in projects other than the managing project.
 
 You cannot make a public agent private if the agent is currently enabled.

@@ -24,6 +24,7 @@ Create fundamental scans to identify vulnerabilities.
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
 | [Set up dependency scanning](dependency_scanning.md) | Learn how to detect vulnerabilities in an application's dependencies. | {{< icon name="star" >}} |
+| [Set up dependency scanning using the SBOM method](dependency_scanning/dependency_scanning_by_sbom.md) | Learn how to detect vulnerabilities in an application's dependencies using the SBOM method. | {{< icon name="star" >}} |
 | [Scan a Docker container for vulnerabilities](container_scanning/_index.md) | Learn how to use container scanning templates to add container scanning to your projects. | {{< icon name="star" >}} |
 | [A comprehensive guide to GitLab DAST](https://about.gitlab.com/blog/comprehensive-guide-to-gitlab-dast/) | Learn how to configure dynamic application security testing, perform scans, and implement security policies. | {{< icon name="star" >}} |
 

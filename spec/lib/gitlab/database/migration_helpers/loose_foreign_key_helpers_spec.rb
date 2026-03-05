@@ -238,7 +238,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers, featu
 
     describe '#untrack_record_deletions' do
       it 'stops tracking deletions when given a custom trigger name' do
-        migration.track_record_deletions_with_custom_column(table_name, column: :group_id)
+        migration.track_record_deletions_with_custom_column(table_name, column: :group_id, trigger_name: "#{table_name}_loose_fk")
         migration.untrack_record_deletions(table_name, trigger_name: "#{table_name}_loose_fk")
 
         expect do

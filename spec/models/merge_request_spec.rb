@@ -1024,6 +1024,43 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
           expect(merge_request.merge_request_diff).not_to be_empty
         end
+
+        context 'when preload_gitaly_in_ensure_mr_diff is enabled' do
+          before do
+            stub_feature_flags(preload_gitaly_in_ensure_mr_diff: true)
+          end
+
+          it 'preloads gitaly data to avoid idle in transaction' do
+            expect(merge_request).to receive(:create_merge_request_diff).with(preload_gitaly: true).and_call_original
+
+            merge_request.save!
+          end
+        end
+
+        context 'when preload_gitaly_in_ensure_mr_diff is disabled' do
+          before do
+            stub_feature_flags(preload_gitaly_in_ensure_mr_diff: false)
+          end
+
+          it 'does not preload gitaly data' do
+            expect(merge_request).to receive(:create_merge_request_diff).with(preload_gitaly: false).and_call_original
+
+            merge_request.save!
+          end
+        end
+
+        context 'when importing' do
+          before do
+            merge_request.importing = true
+            stub_feature_flags(preload_gitaly_in_ensure_mr_diff: true)
+          end
+
+          it 'does not preload gitaly data' do
+            expect(merge_request).to receive(:create_merge_request_diff).with(preload_gitaly: false).and_call_original
+
+            merge_request.save!
+          end
+        end
       end
     end
 

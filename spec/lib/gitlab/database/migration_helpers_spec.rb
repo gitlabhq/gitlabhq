@@ -354,6 +354,30 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
             model.rename_column_concurrently(:users, :old, :new)
           end
         end
+
+        context 'when the type is bigint' do
+          it 'passes limit: nil to add_column even when the original column has a limit' do
+            expect(Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection).to receive(:with_suppressed).and_yield
+
+            expect(model).to receive(:check_trigger_permissions!).with(:users)
+            expect(model).to receive(:install_rename_triggers).with(:users, :old, :new)
+
+            expect(model).to receive(:add_column)
+              .with(:users, :new, :bigint,
+                limit: nil,
+                precision: old_column.precision,
+                scale: old_column.scale)
+
+            expect(model).to receive(:change_column_default).with(:users, :new, old_column.default)
+            expect(model).to receive(:update_column_in_batches)
+            expect(model).to receive(:add_not_null_constraint).with(:users, :new)
+            expect(model).to receive(:copy_indexes).with(:users, :old, :new)
+            expect(model).to receive(:copy_foreign_keys).with(:users, :old, :new)
+            expect(model).to receive(:copy_check_constraints).with(:users, :old, :new)
+
+            model.rename_column_concurrently(:users, :old, :new, type: :bigint)
+          end
+        end
       end
 
       context 'when the table in the other database is write-locked' do

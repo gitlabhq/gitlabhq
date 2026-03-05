@@ -10,6 +10,7 @@ module Gitlab
 
         INSERT_FUNCTION_NAME = 'insert_into_loose_foreign_keys_deleted_records'
         INSERT_FUNCTION_NAME_OVERRIDE_TABLE = 'insert_into_loose_foreign_keys_deleted_records_override_table'
+        INSERT_FUNCTION_NAME_CUSTOM_COLUMN = 'insert_into_loose_foreign_keys_deleted_records_with'
 
         # This adds a LFK standard trigger to tables, where the loose_foreign_keys_deleted_records
         # record is referencing the table. This should be used for non-partitioned tables.
@@ -57,8 +58,8 @@ module Gitlab
           table_name = table.to_s.split('.').last
           parent_table ||= table_name
 
-          function_name ||= "lfk_deleted_records_for_#{column}"
-          trigger_name ||= "#{table_name}_loose_fk"
+          function_name ||= "#{INSERT_FUNCTION_NAME_CUSTOM_COLUMN}_#{column}"
+          trigger_name ||= record_deletion_trigger_name(table_name)
 
           validate_identifier_length!(function_name)
           validate_identifier_length!(trigger_name)

@@ -734,6 +734,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
     let(:files) { [conflict_file] }
 
     before do
+      stub_feature_flags(preload_gitaly_in_ensure_mr_diff: false)
       allow(helper).to receive(:merge_request).and_return(merge_request)
 
       allow(conflict_file)

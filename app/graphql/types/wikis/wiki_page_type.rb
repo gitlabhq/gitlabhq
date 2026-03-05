@@ -14,6 +14,10 @@ module Types
 
       expose_permissions Types::PermissionTypes::Wikis::WikiPage
 
+      field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
+        null: true,
+        description: 'List of emoji reactions associated with the wiki page.'
+
       field :id, Types::GlobalIDType[::WikiPage::Meta],
         null: false, description: 'Global ID of the wiki page metadata record.'
 

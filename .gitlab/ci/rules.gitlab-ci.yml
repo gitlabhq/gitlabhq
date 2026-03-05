@@ -380,8 +380,7 @@
 
 .if-tech-docs-localization: &if-tech-docs-localization
   if: '($CI_PROJECT_PATH == "gitlab-com/localization" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH) ||
-      ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") ||
-      ($CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^docs-i18n-/ || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /-docs-i18n$/)'
+      ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train")'
 
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/breaking_windows.md"
@@ -2665,24 +2664,21 @@
     - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
 
-.rails:rules:artifact-collector-unit:
+.rails:rules:artifact-collector:
   rules:
     # Always run for as-if-foss to work around not having needs.optional for
     # cross project pipeline. See .gitlab/ci/artifact-collector/as-if-foss.gitlab-ci.yml
     - if: '$START_AS_IF_FOSS == "true"'
+    - !reference ['.rails:rules:rspec fail-fast', rules]
     - !reference [".rails:rules:ee-and-foss-unit", rules]
-
-.rails:rules:artifact-collector-part-a:
-  rules:
-    - if: '$START_AS_IF_FOSS == "true"'
-    - !reference [".rails:rules:ee-and-foss-system", rules]
-    - !reference ['.rails:rules:ee-and-foss-background-migration', rules]
-
-.rails:rules:artifact-collector-part-b:
-  rules:
-    - if: '$START_AS_IF_FOSS == "true"'
     - !reference ['.rails:rules:ee-and-foss-integration', rules]
     - !reference ['.rails:rules:ee-and-foss-migration', rules]
+    - !reference [".rails:rules:ee-and-foss-system", rules]
+    - !reference ['.rails:rules:ee-and-foss-background-migration', rules]
+    - !reference ['.rails:rules:ee-only-migration', rules]
+    - !reference ['.rails:rules:ee-only-background-migration', rules]
+    - !reference ['.rails:rules:ee-only-integration', rules]
+    - !reference ['.rails:rules:ee-only-system', rules]
 
 .rails:rules:rspec-ci-config-validation:
   rules:

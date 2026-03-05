@@ -1286,8 +1286,8 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
 
       it 'saves empty state' do
-        allow_any_instance_of(described_class).to receive_message_chain(:compare, :commits)
-          .and_return([])
+        compare = instance_double(Gitlab::Git::Compare, commits: [], generated_files: Set.new, diffs: Gitlab::Git::DiffCollection.new([]))
+        allow_any_instance_of(described_class).to receive(:compare).and_return(compare)
 
         mr_diff = create(:merge_request).merge_request_diff
 

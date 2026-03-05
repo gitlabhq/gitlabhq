@@ -26759,7 +26759,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_09ec0cc0df56"
+              "$ref": "#/components/schemas/RequestBody_d10614a002b8"
   "/api/v4/projects/user/{user_id}":
     post:
       operationId: postApiV4ProjectsUserUserId
@@ -26792,7 +26792,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_214b18a68b33"
+              "$ref": "#/components/schemas/RequestBody_f027a2eb6587"
   "/api/v4/projects/{id}/share_locations":
     get:
       operationId: getApiV4ProjectsIdShareLocations
@@ -26896,7 +26896,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_ca3a01836d21"
+              "$ref": "#/components/schemas/RequestBody_7c5ada9509a3"
     delete:
       operationId: deleteApiV4ProjectsId
       summary: Delete a project
@@ -29108,7 +29108,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_57085cd83be4"
+              "$ref": "#/components/schemas/RequestBody_ccd853536875"
   "/api/v4/projects/{id}/import":
     get:
       operationId: getApiV4ProjectsIdImport
@@ -29173,7 +29173,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_429993058803"
+              "$ref": "#/components/schemas/RequestBody_9cc413fdd6a4"
   "/api/v4/projects/import-relation/authorize":
     post:
       operationId: postApiV4ProjectsImportRelationAuthorize
@@ -29278,7 +29278,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              "$ref": "#/components/schemas/RequestBody_c4542ddac44d"
+              "$ref": "#/components/schemas/RequestBody_398197a0c0ae"
   "/api/v4/projects/{id}/hooks/{hook_id}/url_variables/{key}":
     put:
       operationId: putApiV4ProjectsIdHooksHookIdUrlVariablesKey
@@ -77207,6 +77207,8 @@ components:
           type: string
         duo_sast_fp_detection_enabled:
           type: string
+        duo_secret_detection_fp_enabled:
+          type: string
         duo_sast_vr_workflow_enabled:
           type: string
         web_based_commit_signing_enabled:
@@ -77594,6 +77596,8 @@ components:
         duo_foundational_flows_enabled:
           type: string
         duo_sast_fp_detection_enabled:
+          type: string
+        duo_secret_detection_fp_enabled:
           type: string
         duo_sast_vr_workflow_enabled:
           type: string
@@ -85661,7 +85665,7 @@ components:
             to create protected branches
       required:
       - name
-    RequestBody_09ec0cc0df56:
+    RequestBody_d10614a002b8:
       type: object
       properties:
         name:
@@ -86068,6 +86072,10 @@ components:
         duo_sast_fp_detection_enabled:
           type: boolean
           description: Enable GitLab Duo SAST false positive detection for this project
+        duo_secret_detection_fp_enabled:
+          type: boolean
+          description: Enable GitLab Duo Secret Detection false positive detection
+            for this project
         duo_sast_vr_workflow_enabled:
           type: boolean
           description: Enable GitLab Duo SAST vulnerability resolution workflow for
@@ -86110,7 +86118,7 @@ components:
         template_project_id:
           type: integer
           description: Project ID of template from which to create project
-    RequestBody_214b18a68b33:
+    RequestBody_f027a2eb6587:
       type: object
       properties:
         name:
@@ -86517,6 +86525,10 @@ components:
         duo_sast_fp_detection_enabled:
           type: boolean
           description: Enable GitLab Duo SAST false positive detection for this project
+        duo_secret_detection_fp_enabled:
+          type: boolean
+          description: Enable GitLab Duo Secret Detection false positive detection
+            for this project
         duo_sast_vr_workflow_enabled:
           type: boolean
           description: Enable GitLab Duo SAST vulnerability resolution workflow for
@@ -86561,7 +86573,7 @@ components:
           description: Project ID of template from which to create project
       required:
       - name
-    RequestBody_ca3a01836d21:
+    RequestBody_7c5ada9509a3:
       type: object
       properties:
         name:
@@ -86968,6 +86980,10 @@ components:
         duo_sast_fp_detection_enabled:
           type: boolean
           description: Enable GitLab Duo SAST false positive detection for this project
+        duo_secret_detection_fp_enabled:
+          type: boolean
+          description: Enable GitLab Duo Secret Detection false positive detection
+            for this project
         duo_sast_vr_workflow_enabled:
           type: boolean
           description: Enable GitLab Duo SAST vulnerability resolution workflow for
@@ -87366,7 +87382,7 @@ components:
           example: 2
       required:
       - target_group_id
-    RequestBody_57085cd83be4:
+    RequestBody_ccd853536875:
       type: object
       properties:
         path:
@@ -87802,6 +87818,10 @@ components:
               type: boolean
               description: Enable GitLab Duo SAST false positive detection for this
                 project
+            duo_secret_detection_fp_enabled:
+              type: boolean
+              description: Enable GitLab Duo Secret Detection false positive detection
+                for this project
             duo_sast_vr_workflow_enabled:
               type: boolean
               description: Enable GitLab Duo SAST vulnerability resolution workflow
@@ -87851,7 +87871,7 @@ components:
       required:
       - path
       - file
-    RequestBody_429993058803:
+    RequestBody_9cc413fdd6a4:
       type: object
       properties:
         url:
@@ -88286,6 +88306,10 @@ components:
               type: boolean
               description: Enable GitLab Duo SAST false positive detection for this
                 project
+            duo_secret_detection_fp_enabled:
+              type: boolean
+              description: Enable GitLab Duo Secret Detection false positive detection
+                for this project
             duo_sast_vr_workflow_enabled:
               type: boolean
               description: Enable GitLab Duo SAST vulnerability resolution workflow
@@ -88353,7 +88377,7 @@ components:
       - path
       - file
       - relation
-    RequestBody_c4542ddac44d:
+    RequestBody_398197a0c0ae:
       type: object
       properties:
         region:
@@ -88800,6 +88824,10 @@ components:
               type: boolean
               description: Enable GitLab Duo SAST false positive detection for this
                 project
+            duo_secret_detection_fp_enabled:
+              type: boolean
+              description: Enable GitLab Duo Secret Detection false positive detection
+                for this project
             duo_sast_vr_workflow_enabled:
               type: boolean
               description: Enable GitLab Duo SAST vulnerability resolution workflow

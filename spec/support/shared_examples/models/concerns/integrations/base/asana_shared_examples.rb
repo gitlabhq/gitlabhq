@@ -143,91 +143,109 @@ RSpec.shared_examples Integrations::Base::Asana do
       end
     end
 
-    context 'when closing via url (v1 format)' do
-      let(:message) { 'closes https://app.asana.com/1/19292/project/956299/task/42' }
+    message_with_v1_url_cases = [
+      "closes https://app.asana.com/1/19292/task/42",
+      "closes https://app.asana.com/1/19292/project/956299/task/42"
+    ]
 
-      it 'calls Asana integration to close via url' do
-        expect(Gitlab::HTTP)
-          .to receive(:post)
-          .with("https://app.asana.com/api/1.0/tasks/42/stories", anything).once.and_return(asana_task)
-        expect(Gitlab::HTTP)
-          .to receive(:put)
-          .with("https://app.asana.com/api/1.0/tasks/42", completed_message).once.and_return(asana_task)
+    multi_match_messages = [
+      "<<~MESSAGE
+    minor bigfix, refactoring, fixed #123 and Closes #456 work on #789
+    ref https://app.asana.com/0/956299/42 and closing https://app.asana.com/1/19292/project/956299/task/12,
+    bug fixing and worked on #11, will be fixed
+    in #222
+      MESSAGE",
+      "<<~MESSAGE
+    minor bigfix, refactoring, fixed #123 and Closes #456 work on #789
+    ref https://app.asana.com/0/956299/42 and closing https://app.asana.com/1/19292/task/12,
+    bug fixing and worked on #11, will be fixed
+    in #222
+      MESSAGE"
+    ]
 
-        execute_integration
+    message_with_v1_url_cases.each do |message_with_v1_url|
+      context 'when closing via url (v1 old format)' do
+        let(:message) { message_with_v1_url }
+
+        it 'calls Asana integration to close via url' do
+          expect(Gitlab::HTTP)
+            .to receive(:post)
+            .with("https://app.asana.com/api/1.0/tasks/42/stories", anything).once.and_return(asana_task)
+          expect(Gitlab::HTTP)
+            .to receive(:put)
+            .with("https://app.asana.com/api/1.0/tasks/42", completed_message).once.and_return(asana_task)
+
+          execute_integration
+        end
       end
     end
 
-    context 'with multiple matches per line' do
-      let(:message) do
-        <<-MESSAGE
-        minor bigfix, refactoring, fixed #123 and Closes #456 work on #789
-        ref https://app.asana.com/0/956299/42 and closing https://app.asana.com/1/19292/project/956299/task/12,
-        bug fixing and worked on #11, will be fixed
-        in #222
-        MESSAGE
-      end
+    multi_match_messages.each do |commit_message|
+      context 'with multiple matches per line' do
+        let(:message) do
+          commit_message
+        end
 
-      it 'allows multiple matches per line' do
-        expect(Gitlab::HTTP)
-          .to receive(:post)
-          .with("https://app.asana.com/api/1.0/tasks/123/stories", anything).once.and_return(asana_task)
-        expect(Gitlab::HTTP)
-          .to receive(:put)
-          .with("https://app.asana.com/api/1.0/tasks/123", completed_message).once.and_return(asana_task)
+        it 'allows multiple matches per line' do
+          expect(Gitlab::HTTP)
+            .to receive(:post)
+            .with("https://app.asana.com/api/1.0/tasks/123/stories", anything).once.and_return(asana_task)
+          expect(Gitlab::HTTP)
+            .to receive(:put)
+            .with("https://app.asana.com/api/1.0/tasks/123", completed_message).once.and_return(asana_task)
 
-        asana_task_2 = double(double(data: { gid: 456 }))
+          asana_task_2 = double(double(data: { gid: 456 }))
 
-        expect(Gitlab::HTTP)
-          .to receive(:post)
-          .with("https://app.asana.com/api/1.0/tasks/456/stories", anything).once.and_return(asana_task_2)
-        expect(Gitlab::HTTP)
-          .to receive(:put)
-          .with("https://app.asana.com/api/1.0/tasks/456", completed_message).once.and_return(asana_task_2)
+          expect(Gitlab::HTTP)
+            .to receive(:post)
+            .with("https://app.asana.com/api/1.0/tasks/456/stories", anything).once.and_return(asana_task_2)
+          expect(Gitlab::HTTP)
+            .to receive(:put)
+            .with("https://app.asana.com/api/1.0/tasks/456", completed_message).once.and_return(asana_task_2)
 
-        asana_task_3 = double(double(data: { gid: 789 }))
+          asana_task_3 = double(double(data: { gid: 789 }))
 
-        expect(Gitlab::HTTP)
-          .to receive(:post)
-          .with("https://app.asana.com/api/1.0/tasks/789/stories", anything).once.and_return(asana_task_3)
+          expect(Gitlab::HTTP)
+            .to receive(:post)
+            .with("https://app.asana.com/api/1.0/tasks/789/stories", anything).once.and_return(asana_task_3)
 
-        asana_task_4 = double(double(data: { gid: 42 }))
+          asana_task_4 = double(double(data: { gid: 42 }))
 
-        expect(Gitlab::HTTP)
-          .to receive(:post)
-          .with("https://app.asana.com/api/1.0/tasks/42/stories", anything).once.and_return(asana_task_4)
+          expect(Gitlab::HTTP)
+            .to receive(:post)
+            .with("https://app.asana.com/api/1.0/tasks/42/stories", anything).once.and_return(asana_task_4)
 
-        asana_task_5 = double(double(data: { gid: 12 }))
+          asana_task_5 = double(double(data: { gid: 12 }))
 
-        expect(Gitlab::HTTP)
-          .to receive(:post)
-          .with("https://app.asana.com/api/1.0/tasks/12/stories", anything).once.and_return(asana_task_5)
-        expect(Gitlab::HTTP)
-          .to receive(:put)
-          .with("https://app.asana.com/api/1.0/tasks/12", completed_message).once.and_return(asana_task_5)
+          expect(Gitlab::HTTP)
+            .to receive(:post)
+            .with("https://app.asana.com/api/1.0/tasks/12/stories", anything).once.and_return(asana_task_5)
+          expect(Gitlab::HTTP)
+            .to receive(:put)
+            .with("https://app.asana.com/api/1.0/tasks/12", completed_message).once.and_return(asana_task_5)
 
-        asana_task_5 = double(double(data: { gid: 11 }))
+          asana_task_6 = double(double(data: { gid: 11 }))
 
-        expect(Gitlab::HTTP)
-          .to receive(:post)
-          .with("https://app.asana.com/api/1.0/tasks/11/stories", anything).once.and_return(asana_task_5)
-        expect(Gitlab::HTTP)
-          .not_to receive(:put)
-          .with("https://app.asana.com/api/1.0/tasks/11", completed_message)
+          expect(Gitlab::HTTP)
+            .to receive(:post)
+            .with("https://app.asana.com/api/1.0/tasks/11/stories", anything).once.and_return(asana_task_6)
+          expect(Gitlab::HTTP)
+            .not_to receive(:put)
+            .with("https://app.asana.com/api/1.0/tasks/11", completed_message)
 
-        asana_task_6 = double(double(data: { gid: 222 }))
+          asana_task_7 = double(double(data: { gid: 222 }))
 
-        expect(Gitlab::HTTP)
-          .to receive(:post)
-          .with("https://app.asana.com/api/1.0/tasks/222/stories", anything).once.and_return(asana_task_6)
-        expect(Gitlab::HTTP)
-          .not_to receive(:put)
-          .with("https://app.asana.com/api/1.0/tasks/222", completed_message)
+          expect(Gitlab::HTTP)
+            .to receive(:post)
+            .with("https://app.asana.com/api/1.0/tasks/222/stories", anything).once.and_return(asana_task_7)
+          expect(Gitlab::HTTP)
+            .not_to receive(:put)
+            .with("https://app.asana.com/api/1.0/tasks/222", completed_message)
 
-        execute_integration
+          execute_integration
+        end
       end
     end
-
     context 'when processing a large commit message' do
       let(:message) { '#' * 2_000_000 }
 

@@ -29,6 +29,25 @@ RSpec.describe Mutations::WorkItems::SavedViews::Update, feature_category: :port
     end
   end
 
+  context 'with privacy settings' do
+    let_it_be(:authored_saved_view) do
+      create(:saved_view, namespace: project.project_namespace, name: 'Authored', author: current_user, private: false)
+    end
+
+    let(:arguments) { { id: authored_saved_view.to_gid, name: 'Another Saved View Name' } }
+
+    before_all do
+      project.add_planner(current_user)
+    end
+
+    it 'correctly sets private when is_private parameter is passed' do
+      result = mutation.resolve(**arguments.merge(is_private: true))
+
+      expect(result[:errors]).to be_empty
+      expect(result[:saved_view].private).to be true
+    end
+  end
+
   context 'when the user has permission' do
     before_all do
       project.add_planner(current_user)

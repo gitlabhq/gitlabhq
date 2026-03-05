@@ -2750,6 +2750,9 @@ msgstr ""
 msgid "AICatalog|Could not update %{itemType}."
 msgstr ""
 
+msgid "AICatalog|Could not update MCP server. Please try again."
+msgstr ""
+
 msgid "AICatalog|Could not update agent. Try again."
 msgstr ""
 
@@ -2817,6 +2820,9 @@ msgid "AICatalog|Duplicate flow"
 msgstr ""
 
 msgid "AICatalog|Duplicate this flow with all its settings and configuration."
+msgstr ""
+
+msgid "AICatalog|Edit MCP server"
 msgstr ""
 
 msgid "AICatalog|Edit agent"
@@ -3041,7 +3047,10 @@ msgstr ""
 msgid "AICatalog|MCP server created."
 msgstr ""
 
-msgid "AICatalog|MCP server not found"
+msgid "AICatalog|MCP server not found."
+msgstr ""
+
+msgid "AICatalog|MCP server updated."
 msgstr ""
 
 msgid "AICatalog|MCP servers"
@@ -3363,6 +3372,9 @@ msgid "AICatalog|Unlisted"
 msgstr ""
 
 msgid "AICatalog|Update available"
+msgstr ""
+
+msgid "AICatalog|Update the settings for this MCP server."
 msgstr ""
 
 msgid "AICatalog|Update to %{version}"
@@ -5816,9 +5828,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|Model added. Select it for a feature to start using it."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Model configuration"
-msgstr ""
-
 msgid "AdminSelfHostedModels|Model family"
 msgstr ""
 
@@ -5829,6 +5838,9 @@ msgid "AdminSelfHostedModels|Model identifier must be less than 255 characters."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model identifier must start with \"%{identifierPrefix}\""
+msgstr ""
+
+msgid "AdminSelfHostedModels|Model selection"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model uses an API token"
@@ -7638,6 +7650,9 @@ msgid "AiPowered|Members of group"
 msgstr ""
 
 msgid "AiPowered|Model Selection"
+msgstr ""
+
+msgid "AiPowered|Model selection"
 msgstr ""
 
 msgid "AiPowered|Monitor, manage, and customize AI-powered features to ensure efficient utilization and alignment."
@@ -26987,6 +27002,12 @@ msgstr ""
 msgid "DuoSAST|Use vulnerability resolution workflow for vulnerabilities on the default branch"
 msgstr ""
 
+msgid "DuoSecretDetection|Turn on Secret Detection false positive detection"
+msgstr ""
+
+msgid "DuoSecretDetection|Use false positive detection for Secret Detection vulnerabilities on the default branch"
+msgstr ""
+
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr ""
 
@@ -44234,9 +44255,6 @@ msgid "ModelSelection|If you select a specific model, this feature will continue
 msgstr ""
 
 msgid "ModelSelection|Manage GitLab Duo by configuring and assigning models to AI-native features."
-msgstr ""
-
-msgid "ModelSelection|Model Selection"
 msgstr ""
 
 msgid "ModelSelection|Model Selection is enabled for GitLab Duo, which requires a default namespace to be set. You must select a default namespace in profile preferences to continue using GitLab Duo features."
@@ -71923,6 +71941,9 @@ msgid "Toggle the Performance Bar"
 msgstr ""
 
 msgid "Toggle the navigation sidebar"
+msgstr ""
+
+msgid "Toggle transparency checkerboard"
 msgstr ""
 
 msgid "Toggled :%{name}: emoji reaction."

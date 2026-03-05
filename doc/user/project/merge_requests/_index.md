@@ -498,3 +498,4 @@ Enabling this feature flag moves the notifications and to-do item buttons to the
 - [Suggest code changes](reviews/suggestions.md)
 - [CI/CD pipelines](../../../ci/_index.md)
 - [Push options](../../../topics/git/commit.md) for merge requests
+- [Merge request title validation](title_validation.md)

@@ -31,18 +31,21 @@ RSpec.describe WikiPagePolicy, feature_category: :wiki do
           expect(policy).to be_allowed(:read_note)
           expect(policy).to be_allowed(:create_note)
           expect(policy).to be_allowed(:update_subscription)
+          expect(policy).to be_allowed(:award_emoji)
         elsif expected_count == 1
           expect(policy).to be_disallowed(:mark_note_as_internal)
           expect(policy).to be_allowed(:read_wiki_page)
           expect(policy).to be_allowed(:read_note)
           expect(policy).to be_allowed(:create_note)
           expect(policy).to be_allowed(:update_subscription)
+          expect(policy).to be_allowed(:award_emoji)
         else
           expect(policy).to be_disallowed(:mark_note_as_internal)
           expect(policy).to be_disallowed(:read_wiki_page)
           expect(policy).to be_disallowed(:read_note)
           expect(policy).to be_disallowed(:create_note)
           expect(policy).to be_disallowed(:update_subscription)
+          expect(policy).to be_disallowed(:award_emoji)
         end
       end
     end

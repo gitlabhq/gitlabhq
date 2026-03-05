@@ -18,6 +18,15 @@ RSpec.describe Types::WorkItems::SavedViews::SavedViewType, feature_category: :p
 
   specify { expect(described_class).to require_graphql_authorizations(:read_saved_view) }
 
+  it 'has the expected fields' do
+    expected_fields = %w[
+      id namespace_id name description filters filter_warnings display_settings sort private is_private share_url
+      subscribed work_items updated_at author last_updated_by
+    ]
+
+    expect(described_class).to include_graphql_fields(*expected_fields)
+  end
+
   describe 'field call count limits' do
     it 'limits filters field to 1 call' do
       extension = described_class.fields['filters'].extensions.find do |ext|

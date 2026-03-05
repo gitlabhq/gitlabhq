@@ -1226,6 +1226,7 @@ in the rendered output.
 {{< history >}}
 
 - Opening images in an overlay [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377398) in GitLab 18.6.
+- Transparency checkerboard toggle [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224872) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -1251,6 +1252,11 @@ In image links:
 To learn about creating accessible alt text, see [Accessible images and videos](#accessible-images-and-videos).
 
 When an image is selected, it opens in an overlay.
+
+If an image has transparent areas, hover over it and select **Toggle transparency checkerboard**
+to show a checkerboard background.
+The checkerboard makes transparent areas visible against any theme.
+**Toggle transparency checkerboard** appears only on PNG images that contain transparent pixels.
 
 ### Videos
 

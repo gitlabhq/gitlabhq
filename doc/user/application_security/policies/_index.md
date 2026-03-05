@@ -50,9 +50,51 @@ frameworks, or a combination, that you specify.
 
 | Field                   | Type     | Possible values          | Description |
 |-------------------------|----------|--------------------------|-------------|
+| `match_mode` | `string` | `all`, `any` | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569793) in GitLab 18.10. Determines how the policy handles multiple scope conditions. Use `all` (default) to require that all conditions match, or `any` to require that at least one condition matches. |
 | `compliance_frameworks` | `array`  | Not applicable           | List of IDs of the compliance frameworks in scope for enforcement, in an array of objects with key `id`. |
 | `projects`              | `object` | `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. You can also exclude projects by type using `type: personal` for personal projects or `type: archived` for archived projects. |
 | `groups`                | `object` | `including`              | Use `including:` then list the IDs of the groups you wish to include, in an array of objects with key `id`. Only groups linked to the same security policy project can be listed in the policy. |
+
+### Understanding `match_mode`
+
+When you specify multiple scope conditions (for example, both `projects` and `groups`), the `match_mode`
+field determines how these conditions are combined:
+
+- **`all` (default)**: The policy applies only to projects that match all of the specified conditions.
+  This mode is more restrictive and maintains backward compatibility with existing policies.
+- **`any`**: The policy applies to projects that match any of the specified conditions.
+  This mode is more permissive and useful when you want to target different sets of projects with a single policy.
+
+For example, if you specify both a list of including projects and a list of including groups:
+
+- With `match_mode: all`, a project must be in the projects list **and** belong to one of the specified groups.
+- With `match_mode: any`, a project is in scope if it's in the projects list **or** belongs to one of the specified groups.
+
+When you combine `excluding` and `including` conditions with `match_mode: any`, be aware that
+the `excluding` condition broadens the policy's reach. Because OR logic means the policy applies
+if any condition matches, an excluding groups condition (which matches all projects
+except those in the excluded groups) means the policy applies to most projects,
+regardless of what is specified in `including` conditions.
+
+For example, a policy that excludes `group-2` from the groups list and includes specific projects `group-1/project-1-1` and `group-2/project-2-1`:
+
+ ```yaml
+policy_scope:
+  match_mode: any
+  groups:
+    excluding:
+      - id: 200  # group-2
+  projects:
+    including:
+      - id: 101  # group-1/project-1-1
+      - id: 201  # group-2/project-2-1
+```
+
+With this configuration, the policy applies not only to the two explicitly included projects, but
+also to all other projects outside `group-2` (such as `group-1/project-1-2`, which is not
+listed in the including projects). The excluding groups condition matches any
+project not in `group-2`, and with OR logic, a single match is sufficient for the policy to
+apply.
 
 ### Scope examples
 
@@ -118,6 +160,33 @@ projects. This is useful when you have many archived projects that should not be
     projects:
       excluding:
         - type: archived
+```
+
+In this example, the scan execution policy uses `match_mode: any` to enforce a secret detection
+scan on either specific high-priority projects or on all projects within specific groups. Without
+`match_mode: any`, a project must be in the projects list and in one of the specified
+groups for the policy to apply.
+
+```yaml
+- name: Enforce secret detection on priority projects or security groups
+  description: This policy enforces secret detection on specific projects or all projects in security-focused groups
+  enabled: true
+  rules:
+  - type: pipeline
+    branches:
+    - main
+  actions:
+  - scan: secret_detection
+  policy_scope:
+    match_mode: any
+    projects:
+      including:
+        - id: 123  # High-priority project outside of security groups
+        - id: 456  # Another critical project
+    groups:
+      including:
+        - id: 78   # Security team's group
+        - id: 90   # Compliance team's group
 ```
 
 ## Separation of duties

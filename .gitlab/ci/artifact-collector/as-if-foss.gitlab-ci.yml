@@ -10,15 +10,4 @@ rspec:artifact-collector as-if-foss:
     - job: start-as-if-foss
     - project: "${CI_PROJECT_NAMESPACE}/gitlab-foss"
       ref: as-if-foss/${CI_COMMIT_REF_NAME}
-      job: rspec:artifact-collector unit
-      # optional is not supported. Error:
-      # jobs:rspec:artifact-collector as-if-foss:needs:need config contains unknown keys: optional
-      # optional: true
-    - project: "${CI_PROJECT_NAMESPACE}/gitlab-foss"
-      ref: as-if-foss/${CI_COMMIT_REF_NAME}
-      job: rspec:artifact-collector part-a
-      # optional: true
-    - project: "${CI_PROJECT_NAMESPACE}/gitlab-foss"
-      ref: as-if-foss/${CI_COMMIT_REF_NAME}
-      job: rspec:artifact-collector part-b
-      # optional: true
+      job: rspec:artifact-collector

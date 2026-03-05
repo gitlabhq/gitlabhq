@@ -342,7 +342,7 @@ module Gitlab
       def cleanup_concurrent_column_type_change(table, column, temp_column: nil)
         temp_column ||= "#{column}_for_type_change"
 
-        transaction do
+        with_lock_retries do
           # This has to be performed in a transaction as otherwise we might have
           # inconsistent data.
           cleanup_concurrent_column_rename(table, column, temp_column)
@@ -815,6 +815,9 @@ into similar problems in the future (e.g. when new tables are created).
         old_col = column_for(table, old)
         new_type = type || old_col.type
         new_limit = limit || old_col.limit
+
+        # PostgreSQL doesn't support limit for bigint type
+        new_limit = nil if new_type == :bigint
 
         add_column(table, new, new_type,
           limit: new_limit,
