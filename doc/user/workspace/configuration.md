@@ -131,7 +131,7 @@ To choose a method that fits your platform requirements, see [Configure sudo acc
 
 Development environments often require building and running containers to manage and use dependencies
 during runtime.
-To build and run containers in a workspace, see [configure sudo access for a workspace with Sysbox](#with-sysbox).
+To build and run containers in a workspace, see [configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
 
 ## Configure support for private container registries
 

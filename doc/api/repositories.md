@@ -21,8 +21,8 @@ Lists all repository files and directories in a specified project. This endpoint
 be accessed without authentication if the repository is publicly accessible.
 
 This command provides essentially the same features as the `git ls-tree`
-command. For more information, refer to the section
-[Tree Objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects.html#_tree_objects)
+command. For more information, see
+[tree objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects.html#_tree_objects)
 in the Git internals documentation.
 
 > [!warning]
@@ -44,7 +44,7 @@ Supported attributes:
 | `page_token` | string            | No       | Tree record ID at which to fetch the next page. Used only with keyset pagination. |
 | `pagination` | string            | No       | If `keyset`, use the [keyset-based pagination method](rest/_index.md#keyset-based-pagination). |
 | `path`       | string            | No       | Path inside the repository. Used to get content of subdirectories. |
-| `per_page`   | integer           | No       | Number of results to show per page. If not specified, defaults to `20`. For more information, see [Pagination](rest/_index.md#pagination). |
+| `per_page`   | integer           | No       | Number of results to show per page. If not specified, defaults to `20`. For more information, see [pagination](rest/_index.md#pagination). |
 | `recursive`  | boolean           | No       | If `true`, get a recursive tree. Default is `false`. |
 | `ref`        | string            | No       | Name of a repository branch or tag. If not specified, uses the default branch. |
 
@@ -537,7 +537,7 @@ For performance and security reasons, parsing the changelog configuration is lim
 This limitation helps prevent potential DoS attacks from malformed changelog templates.
 If the request times out, consider reducing the size of your `changelog_config.yml` file.
 
-For user-facing documentation, see [Changelogs](../user/project/changelogs.md).
+For user-facing documentation, see [changelogs](../user/project/changelogs.md).
 
 ```plaintext
 POST /projects/:id/repository/changelog

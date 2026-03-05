@@ -91,7 +91,7 @@ The following keys are available for `optional_stages`:
 - `single_endpoint_issue_events_import`, for issue and pull request events import. This optional stage was removed in GitLab 16.9.
 - `single_endpoint_notes_import`, for an alternative and more thorough comments import.
 
-For more information, see [Select additional items to import](../user/project/import/github.md#select-additional-items-to-import).
+For more information, see [select additional items to import](../user/project/import/github.md#select-additional-items-to-import).
 
 Example response:
 

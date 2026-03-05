@@ -66,7 +66,7 @@ The following configuration options can be included in the YAML:
 
 | Option    | Type    | Required | Description |
 |-----------|---------|----------|-------------|
-| `fields`  | string  | No       | Comma-separated list of fields to return. Default: `title`. See [Available fields](#available-fields). |
+| `fields`  | string  | No       | Comma-separated list of fields to return. Default: `title`. See [available fields](#available-fields). |
 | `group`   | string  | No       | Scope the query to a specific group. Cannot be used with `project`. If `group` is also specified in the query, the query value takes precedence. |
 | `limit`   | integer | No       | Maximum number of results to return. Must be between 1 and 100. Default: `100`. |
 | `project` | string  | No       | Scope the query to a specific project. Format: `group/project`. If `project` is also specified in the query, the query value takes precedence. |

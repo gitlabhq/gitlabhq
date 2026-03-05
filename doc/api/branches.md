@@ -330,7 +330,7 @@ curl --request DELETE \
 > [!note]
 > Deleting a branch does not completely erase all related data.
 > Some information persists to maintain project history and to support recovery processes.
-> For more information, see [Handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
+> For more information, see [handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
 
 ## Delete all merged branches
 

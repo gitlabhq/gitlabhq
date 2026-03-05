@@ -534,7 +534,7 @@ The following example response includes:
 Elements in the `allowed_to_push` array should take the form `{user_id: integer}`, `{group_id: integer}`,
 `{deploy_key_id: integer}`, or `{access_level: integer}`.
 The deploy key must be enabled for your project and it must have write access to your project repository.
-For other requirements, see [Allow deploy keys to push to a protected branch](../user/project/repository/branches/protected.md#enable-deploy-key-access).
+For other requirements, see [allow deploy keys to push to a protected branch](../user/project/repository/branches/protected.md#enable-deploy-key-access).
 
 Example request:
 
@@ -771,7 +771,7 @@ Supported attributes:
 | `code_owner_approval_required` | boolean           | No       | If `true`, prevents pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Premium and Ultimate only. |
 
 For information about how access levels interact when you set multiple values,
-see [Protect repository branches](#protect-repository-branches).
+see [protect repository branches](#protect-repository-branches).
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:

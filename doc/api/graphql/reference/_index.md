@@ -2453,6 +2453,17 @@ Returns [`WorkItemDescriptionTemplate`](#workitemdescriptiontemplate).
 | ---- | ---- | ----------- |
 | <a id="query-workitemdescriptiontemplatecontent-templatecontentinput"></a>`templateContentInput` | [`WorkItemDescriptionTemplateContentInput!`](#workitemdescriptiontemplatecontentinput) | Input for fetching a specific description template. |
 
+### `Query.workItemTypeIconDefinitions`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Available icon definitions for work item types.
+
+Returns [`[WorkItemTypeIconDefinition!]!`](#workitemtypeicondefinition).
+
 ### `Query.workItemsByReference`
 
 {{< details >}}
@@ -52319,6 +52330,17 @@ Represents Depth limit reached for the allowed work item type.
 | ---- | ---- | ----------- |
 | <a id="workitemtypedepthlimitreachedbytype-depthlimitreached"></a>`depthLimitReached` | [`Boolean!`](#boolean) | Indicates if maximum allowed depth has been reached for the descendant type. |
 | <a id="workitemtypedepthlimitreachedbytype-workitemtype"></a>`workItemType` | [`WorkItemType!`](#workitemtype) | Work item type. |
+
+### `WorkItemTypeIconDefinition`
+
+Represents an available icon for work item types.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtypeicondefinition-label"></a>`label` | [`String!`](#string) | Human-readable screen reader label for the icon. |
+| <a id="workitemtypeicondefinition-name"></a>`name` | [`String!`](#string) | Name of the icon. |
 
 ### `WorkItemTypesUserPreference`
 

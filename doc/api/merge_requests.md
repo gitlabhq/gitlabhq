@@ -40,7 +40,7 @@ All API calls to non-public information require authentication.
 ## Removals in API v5
 
 The `approvals_before_merge` attribute is deprecated, and [is scheduled for removal](rest/deprecations.md)
-in API v5 in favor of the [Merge request approvals API](merge_request_approvals.md).
+in API v5 in favor of the [merge request approvals API](merge_request_approvals.md).
 
 ## List merge requests
 
@@ -113,7 +113,7 @@ returns a subset of fields. Otherwise, response attributes include:
 |------------------------------------------|----------|-------------|
 | `allow_collaboration`                    | boolean  | If `true`, this fork allows collaboration from members who can merge to the target branch. Used only for merge requests from forks. |
 | `allow_maintainer_to_push`               | boolean  | Deprecated. Use `allow_collaboration` instead. |
-| `approvals_before_merge`                 | integer  | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md) instead. GitLab Premium and Ultimate only. |
+| `approvals_before_merge`                 | integer  | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see the [merge request approvals API](merge_request_approvals.md) instead. GitLab Premium and Ultimate only. |
 | `assignee[]`                             | object   | Deprecated. Use `assignees` instead. |
 | `assignees[]`                            | array    | Users assigned to the merge request. |
 | `assignees.avatar_url`                   | string   | Full URL to the assignee's avatar image. |
@@ -167,7 +167,7 @@ returns a subset of fields. Otherwise, response attributes include:
 | `labels.text_color`                      | string   | If `with_labels_details` is `true`, the text color for the label. |
 | `merge_after`                            | dateTime | If set, timestamp after which the merge request can be merged. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510992) in GitLab 17.8. |
 | `merge_commit_sha`                       | string   | If set, the SHA of the merge request commit. Returns `null` until merged. |
-| `merge_status`                           | string   | Status of the merge request. Use `detailed_merge_status` instead, which accounts for all potential statuses. Affects the `has_conflicts` property. For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. <!-- Do not remove line until field is actually removed --> |
+| `merge_status`                           | string   | Status of the merge request. Use `detailed_merge_status` instead, which accounts for all potential statuses. Affects the `has_conflicts` property. For important notes on response data, see [single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. <!-- Do not remove line until field is actually removed --> |
 | `merge_user`                             | object   | Object with information about the user who merged the merge request, set it to auto-merge, or `null`. |
 | `merge_when_pipeline_succeeds`           | boolean  | If `true`, the merge request is set to auto-merge. |
 | `merged_at`                              | dateTime | Timestamp of when the merge request merged. |
@@ -367,7 +367,7 @@ Example response:
   not proactively update `merge_status` (which also affects the `has_conflicts`), as this can be an expensive operation.
   If you need the value of these fields from this endpoint, set the `with_merge_status_recheck` parameter to
   `true` in the query.
-- For notes on merge request object fields, see [Single merge request response notes](#single-merge-request-response-notes).
+- For notes on merge request object fields, see [single merge request response notes](#single-merge-request-response-notes).
 
 ## List project merge requests
 
@@ -614,7 +614,7 @@ Example response:
 ]
 ```
 
-For important notes on response data, see [Merge requests list response notes](#merge-requests-list-response-notes).
+For important notes on response data, see [merge requests list response notes](#merge-requests-list-response-notes).
 
 ## List group merge requests
 
@@ -683,7 +683,7 @@ returns a subset of fields. Otherwise, response attributes include:
 |------------------------------------------|----------|-------------|
 | `allow_collaboration`                    | boolean  | If `true`, this fork allows collaboration from members who can merge to the target branch. Used only for merge requests from forks. |
 | `allow_maintainer_to_push`               | boolean  | Deprecated. Use `allow_collaboration` instead. |
-| `approvals_before_merge`                 | integer  | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md) instead. GitLab Premium and Ultimate only. |
+| `approvals_before_merge`                 | integer  | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see the [merge request approvals API](merge_request_approvals.md) instead. GitLab Premium and Ultimate only. |
 | `assignee[]`                             | object   | Deprecated. Use `assignees` instead. |
 | `assignees[]`                            | array    | Users assigned to the merge request. |
 | `assignees.avatar_url`                   | string   | Full URL to the assignee's avatar image. |
@@ -736,7 +736,7 @@ returns a subset of fields. Otherwise, response attributes include:
 | `labels.text_color`                      | string   | If `with_labels_details` is `true`, the text color for the label. |
 | `merge_after`                            | dateTime | If set, timestamp after which the merge request can be merged. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510992) in GitLab 17.8. |
 | `merge_commit_sha`                       | string   | If set, the SHA of the merge request commit. Returns `null` until merged. |
-| `merge_status`                           | string   | Status of the merge request. Use `detailed_merge_status` instead, which accounts for all potential statuses. Affects the `has_conflicts` property. For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. <!-- Do not remove line until field is actually removed --> |
+| `merge_status`                           | string   | Status of the merge request. Use `detailed_merge_status` instead, which accounts for all potential statuses. Affects the `has_conflicts` property. For important notes on response data, see [single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. <!-- Do not remove line until field is actually removed --> |
 | `merge_user`                             | object   | Object with information about the user who merged the merge request, set it to auto-merge, or `null`. |
 | `merge_when_pipeline_succeeds`           | boolean  | If `true`, the merge request is set to auto-merge. |
 | `merged_at`                              | dateTime | Timestamp of when the merge request merged. |
@@ -929,7 +929,7 @@ Example response:
 ]
 ```
 
-For important notes on response data, see [Merge requests list response notes](#merge-requests-list-response-notes).
+For important notes on response data, see [merge requests list response notes](#merge-requests-list-response-notes).
 
 ## Retrieve a merge request
 
@@ -965,7 +965,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). Other p
 |-------------------------------------------------------------|----------|-------------|
 | `allow_collaboration`                                       | boolean  | If `true`, this fork allows collaboration from members who can merge to the target branch. Used only for merge requests from forks. |
 | `allow_maintainer_to_push`                                  | boolean  | Deprecated. Use `allow_collaboration` instead. |
-| `approvals_before_merge`                                    | integer  | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md) instead. GitLab Premium and Ultimate only. |
+| `approvals_before_merge`                                    | integer  | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see the [merge request approvals API](merge_request_approvals.md) instead. GitLab Premium and Ultimate only. |
 | `assignee[]`                                                | object   | Deprecated. Use `assignees` instead. |
 | `assignees[]`                                               | array    | Users assigned to the merge request. |
 | `assignees.avatar_url`                                      | string   | Full URL to the assignee's avatar image. |
@@ -986,7 +986,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). Other p
 | `author.username`                                           | string   | Username of the merge request author. |
 | `author.web_url`                                            | string   | Full URL to the author's profile page. |
 | `blocking_discussions_resolved`                             | boolean  | If `true`, all discussion threads in the merge request must be resolved before merging. |
-| `changes_count`                                             | string   | If set, the number of changes made on the merge request. Empty when the merge request is created. Populates asynchronously. A string, not an integer. When a merge request has too many changes to display and store, the value is capped at 1000 and returns the string `"1000+"`. See [Empty API Fields for new merge requests](#empty-api-fields-for-new-merge-requests). |
+| `changes_count`                                             | string   | If set, the number of changes made on the merge request. Empty when the merge request is created. Populates asynchronously. A string, not an integer. When a merge request has too many changes to display and store, the value is capped at 1000 and returns the string `"1000+"`. See [empty API fields for new merge requests](#empty-api-fields-for-new-merge-requests). |
 | `closed_at`                                                 | dateTime | Timestamp of when the merge request was closed. |
 | `closed_by[]`                                               | object   | Object with information about the user who closed the merge request. If `null`, the merge request is open. |
 | `closed_by.avatar_url`                                      | string   | Full URL to the closing user's avatar image. |
@@ -1000,7 +1000,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). Other p
 | `created_at`                                                | datetime | Timestamp of when the merge request was created. |
 | `description`                                               | string   | Description of the merge request. Contains Markdown rendered as HTML for caching. |
 | `detailed_merge_status`                                     | string   | Detailed merge status information. See [merge status](#merge-status) for a list of potential values. |
-| `diff_refs[]`                                               | object   | Object with references of the base, head, and start SHAs for this merge request. Corresponds to the latest diff version of the merge request. Empty when the merge request is created, and populates asynchronously. See [Empty API fields for new merge requests](#empty-api-fields-for-new-merge-requests). |
+| `diff_refs[]`                                               | object   | Object with references of the base, head, and start SHAs for this merge request. Corresponds to the latest diff version of the merge request. Empty when the merge request is created, and populates asynchronously. See [empty API fields for new merge requests](#empty-api-fields-for-new-merge-requests). |
 | `diff_refs.base_sha`                                        | string   | SHA of the merge base commit where the source and target branches diverged. |
 | `diff_refs.start_sha`                                       | string   | SHA of the target branch commit. The starting point for the diff. Usually the same as `base_sha`. |
 | `diff_refs.head_sha`                                        | string   | SHA of the head commit in the source branch. The latest commit in the merge request. |
@@ -1078,7 +1078,7 @@ If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). Other p
 | `merge_after`                                               | dateTime | If set, timestamp after which the merge request can be merged. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510992) in GitLab 17.8. |
 | `merge_commit_sha`                                          | string   | If set, the SHA of the merge request commit. Returns `null` until merged. |
 | `merge_error`                                               | string   | If set, the error message shown when a merge fails. To check mergeability, use `detailed_merge_status` instead. |
-| `merge_status`                                              | string   | Status of the merge request. Use `detailed_merge_status` instead, which accounts for all potential statuses. Affects the `has_conflicts` property. For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. <!-- Do not remove line until field is actually removed --> |
+| `merge_status`                                              | string   | Status of the merge request. Use `detailed_merge_status` instead, which accounts for all potential statuses. Affects the `has_conflicts` property. For important notes on response data, see [single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. <!-- Do not remove line until field is actually removed --> |
 | `merge_user[]`                                              | object   | The user who merged this merge request, the user who set it to auto-merge, or `null`. |
 | `merge_when_pipeline_succeeds`                              | boolean  | If `true`, the merge request is set to auto-merge. |
 | `merged_at`                                                 | dateTime | Timestamp of when the merge request merged. |
@@ -1313,7 +1313,7 @@ Use `detailed_merge_status` instead of `merge_status` to account for all potenti
   - `discussions_not_resolved`: All discussions must be resolved before merge.
   - `draft_status`: Can't merge because the merge request is a draft.
   - `jira_association_missing`: The title or description must reference a Jira issue. To configure, see
-    [Require associated Jira issue for merge requests to be merged](../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
+    [require associated Jira issue for merge requests to be merged](../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
   - `mergeable`: The branch can merge cleanly into the target branch.
   - `merge_request_blocked`: Blocked by another merge request.
   - `merge_time`: May not be merged until after the specified time.
@@ -2165,7 +2165,7 @@ Example response:
 > [!warning]
 > This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/322117) in GitLab 15.7
 > and [is scheduled for removal](rest/deprecations.md) in API v5. Use the
-> [List merge request diffs](#list-merge-request-diffs) endpoint instead.
+> [list merge request diffs](#list-merge-request-diffs) endpoint instead.
 > <!-- Do not remove line until endpoint is actually removed -->
 
 Retrieve information about a merge request, including its files and changes.
@@ -2385,7 +2385,7 @@ Example response:
 ```
 
 > [!note]
-> This endpoint is subject to [Merge requests diff limits](../administration/instance_limits.md#diff-limits).
+> This endpoint is subject to [merge requests diff limits](../administration/instance_limits.md#diff-limits).
 > Merge requests that exceed the diff limits return limited results.
 
 ## Show merge request raw diffs
@@ -2446,7 +2446,7 @@ index e02d9eea1852f19fe5311acda6aa17465eeb422e..f32b38585398a18fea75c11d7b8ebb73
 ```
 
 > [!note]
-> This endpoint is subject to [Merge requests diff limits](../administration/instance_limits.md#diff-limits).
+> This endpoint is subject to [merge requests diff limits](../administration/instance_limits.md#diff-limits).
 > Merge requests that exceed the diff limits return limited results.
 
 ## List merge request pipelines
@@ -2560,7 +2560,7 @@ POST /projects/:id/merge_requests
 | `target_branch`            | string            | Yes      | The target branch. |
 | `title`                    | string            | Yes      | Title of MR. |
 | `allow_collaboration`      | boolean           | No       | Allow commits from members who can merge to the target branch. |
-| `approvals_before_merge`   | integer           | No       | Number of approvals required before this merge request can merge (see below). To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. Premium and Ultimate only. |
+| `approvals_before_merge`   | integer           | No       | Number of approvals required before this merge request can merge (see below). To configure approval rules, see the [merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. Premium and Ultimate only. |
 | `allow_maintainer_to_push` | boolean           | No       | Alias of `allow_collaboration`. |
 | `assignee_id`              | integer           | No       | Assignee user ID. |
 | `assignee_ids`             | integer array     | No       | The ID of the users to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees. |
@@ -2700,7 +2700,7 @@ Example response:
 }
 ```
 
-For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes).
+For important notes on response data, see [single merge request response notes](#single-merge-request-response-notes).
 
 ## Update a merge request
 
@@ -2875,7 +2875,7 @@ Example response:
 }
 ```
 
-For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes).
+For important notes on response data, see [single merge request response notes](#single-merge-request-response-notes).
 
 ## Delete a merge request
 
@@ -2927,7 +2927,7 @@ This API returns specific HTTP status codes on failure:
 | `409`       | `SHA does not match HEAD of source branch` | The provided `sha` parameter does not match the HEAD of the source. |
 | `422`       | `Branch cannot be merged`                  | The merge request failed to merge. |
 
-For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes).
+For important notes on response data, see [single merge request response notes](#single-merge-request-response-notes).
 
 Example response:
 
@@ -3129,7 +3129,7 @@ This API returns specific HTTP status codes:
 | `201`       | _(none)_ | Success, or the merge request has already merged. |
 | `406`       | `Can't cancel the automatic merge` | The merge request is closed. |
 
-For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes).
+For important notes on response data, see [single merge request response notes](#single-merge-request-response-notes).
 
 Example response:
 
@@ -3311,7 +3311,7 @@ If the request is added to the queue successfully, the response contains:
 }
 ```
 
-You can poll the [Retrieve a merge request](#retrieve-a-merge-request) endpoint with the
+You can poll the [retrieve a merge request](#retrieve-a-merge-request) endpoint with the
 `include_rebase_in_progress` parameter to check the status of the
 asynchronous request.
 
@@ -3745,7 +3745,7 @@ Example response:
 }
 ```
 
-For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes).
+For important notes on response data, see [single merge request response notes](#single-merge-request-response-notes).
 
 ## Unsubscribe from a merge request
 
@@ -3910,7 +3910,7 @@ Example response:
 }
 ```
 
-For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes).
+For important notes on response data, see [single merge request response notes](#single-merge-request-response-notes).
 
 ## Create a to-do item
 
@@ -4403,12 +4403,12 @@ Example response:
 
 ## Approvals
 
-For approvals, see [Merge request approvals](merge_request_approvals.md).
+For approvals, see [merge request approvals](merge_request_approvals.md).
 
 ## List merge request state events
 
-To track which state was set, who did it, and when it happened, check out
-[Resource state events API](resource_state_events.md#merge-requests).
+To track which state was set, who did it, and when it happened, see the
+[resource state events API](resource_state_events.md#merge-requests).
 
 ## Troubleshooting
 

@@ -15,9 +15,9 @@ variables:
   # Retry failed specs in separate process
   QA_RETRY_FAILED_SPECS: "true"
   # Helm chart ref used by test-on-cng pipeline
-  GITLAB_HELM_CHART_REF: "fe2b8ea7f8cc572e247766200c772df4523bc8f9"
+  GITLAB_HELM_CHART_REF: "84ceaea78a1e599d88cf80f3c7e1dc17b55a9598"
   # Specific ref for cng-mirror project to trigger builds for
-  GITLAB_CNG_MIRROR_REF: "e3e533345ab64c2d10dd8ee2f7b8ba20e5375944"
+  GITLAB_CNG_MIRROR_REF: "a2a0ae5286f8bb7863796d7a0afb2ad023e23c8b"
   # Makes sure some of the common scripts from pipeline-common use bundler to execute commands
   RUN_WITH_BUNDLE: "true"
   # Makes sure reporting script defined in .gitlab-qa-report from pipeline-common is executed from correct folder

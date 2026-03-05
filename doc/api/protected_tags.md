@@ -219,7 +219,7 @@ Example response:
 Elements in the `allowed_to_create` array should take the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`.
 Each user must have access to the project and each group must [have this project shared](../user/project/members/sharing_projects_groups.md).
 These access levels allow more granular control over protected tag access.
-For more information, see [Add a group to protected tags](../user/project/protected_tags.md#add-a-group-to-protected-tags).
+For more information, see [add a group to protected tags](../user/project/protected_tags.md#add-a-group-to-protected-tags).
 
 This example request demonstrates how to create a protected tag that allows creation access
 to a specific user and group:

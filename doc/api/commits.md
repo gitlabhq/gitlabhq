@@ -173,7 +173,7 @@ POST /projects/:id/repository/commits
    In that case, `force` has no effect because the result is the same as a regular commit.
 
 > [!note]
-> Large requests with many actions may be subject to size limits. For more information, see [Commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).
+> Large requests with many actions may be subject to size limits. For more information, see [commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).
 
 | `actions[]` Attribute | Type    | Required | Description |
 |-----------------------|---------|----------|-------------|
@@ -788,9 +788,9 @@ In any of the previous cases, the response of `line`, `line_type` and `path` is
 set to `null`.
 
 For other approaches to commenting on a merge request, see
-[Create a merge request note](notes.md#create-a-merge-request-note) in the Notes API,
-and [Create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
-in the Discussions API.
+[create a merge request note](notes.md#create-a-merge-request-note) in the notes API,
+and [create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
+in the discussions API.
 
 ```plaintext
 POST /projects/:id/repository/commits/:sha/comments

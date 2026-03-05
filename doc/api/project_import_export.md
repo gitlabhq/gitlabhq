@@ -19,7 +19,7 @@ you can preserve group-level relationships, such as connections between project 
 
 After using this API, you might want to use the [project-level CI/CD variables API](project_level_variables.md) to preserve the CI/CD variables for the project.
 
-You must still migrate your [Container Registry](../user/packages/container_registry/_index.md)
+You must still migrate your [container registry](../user/packages/container_registry/_index.md)
 over a series of Docker pulls and pushes. Re-run any CI/CD pipelines to retrieve any build artifacts.
 
 Prerequisites:
@@ -44,11 +44,11 @@ project to a web server or to any S3-compatible platform. For exports, GitLab:
   - [GitLab UI](../administration/settings/import_and_export_settings.md).
   - [Application settings API](settings.md#update-application-settings)
 - Has a fixed limit for the maximum import file size on GitLab.com. For more information, see
-  [Account and limit settings](../user/gitlab_com/_index.md#account-and-limit-settings).
+  [account and limit settings](../user/gitlab_com/_index.md#account-and-limit-settings).
 
 The `upload[url]` parameter is required if the `upload` parameter is present.
 
-For uploads to Amazon S3, refer to [Generating a pre-signed URL for uploading objects](https://docs.aws.amazon.com/AmazonS3/latest/userguide/PresignedUrlUploadObject.html)
+For uploads to Amazon S3, refer to [generating a pre-signed URL for uploading objects](https://docs.aws.amazon.com/AmazonS3/latest/userguide/PresignedUrlUploadObject.html)
 documentation scripts to generate the `upload[url]`.
 Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430277), you can only upload files with a maximum file size of 5 GB to Amazon S3.
 
@@ -174,7 +174,7 @@ POST /projects/import
 | `namespace`       | integer or string | No       | (Deprecated) The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. Use `namespace_id` or `namespace_path` instead. |
 | `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
 | `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
-| `override_params` | hash              | No       | Supports all fields defined in the [Project API](projects.md). |
+| `override_params` | hash              | No       | Supports all fields defined in the [project API](projects.md). |
 | `overwrite`       | boolean           | No       | If there is a project with the same path the import overwrites it. Defaults to `false`. |
 
 The override parameters passed take precedence over all values defined inside the export file.
@@ -228,7 +228,7 @@ requests.post(url, headers=headers, data=data, files=files)
 
 > [!note]
 > The maximum import file size can be set by the Administrator. It defaults to `0` (unlimited).
-> As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#update-application-settings) or the [**Admin** area](../administration/settings/account_and_limit_settings.md).
+> As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [application settings API](settings.md#update-application-settings) or the [**Admin** area](../administration/settings/account_and_limit_settings.md).
 
 ## Import a file from a remote object storage
 
@@ -261,7 +261,7 @@ POST /projects/remote-import
 | `namespace_id`    | integer           | No       | The ID of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
 | `namespace_path`  | string            | No       | The path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires the Maintainer or Owner role on the destination group. |
 | `overwrite`       | boolean           | No       | Whether to overwrite a project with the same path when importing. Defaults to `false`. |
-| `override_params` | hash              | No       | Supports all fields defined in the [Project API](projects.md). |
+| `override_params` | hash              | No       | Supports all fields defined in the [project API](projects.md). |
 
 The passed override parameters take precedence over all values defined in the export file.
 
@@ -306,7 +306,7 @@ merge requests, pipelines, or milestones) and re-imports that relation, skipping
 items that have already been imported.
 
 The required project export file adheres to the same structure and size requirements described in
-[Import a file](#import-a-file).
+[import a file](#import-a-file).
 
 - The extracted files must adhere to the structure of a GitLab project export.
 - The archive must not exceed the maximum import file size configured by the Administrator.

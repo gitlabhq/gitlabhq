@@ -397,7 +397,22 @@ is being discussed in [issue #17517](https://gitlab.com/gitlab-org/gitlab/-/issu
 
 ## Restoring an incremental repository backup
 
-Each backup archive contains a full self-contained backup, including those created through the [incremental repository backup procedure](backup_gitlab.md#incremental-repository-backups). To restore an incremental repository backup, use the same instructions as restoring any other regular backup archive.
+When you create an [incremental repository backup](backup_gitlab.md#incremental-repository-backups) by using
+`gitlab-backup`, the resulting backup archive contains all repository data needed for a complete restore.
+To restore, use the same instructions as [restoring any other regular backup archive](#restore-for-linux-package-installations).
+
+Internally, incremental repository backups store only the changes made after the previous backup.
+When you create an incremental backup, `gitlab-backup` bundles every step from the original full backup
+onward into the backup archive. This means the archive is self-contained, even though the individual repository
+backup bundles depend on each other.
+
+With [server-side repository backups](backup_gitlab.md#create-server-side-repository-backups),
+the backup archive does not contain repository data. Instead, repository data is stored in
+object storage by each Gitaly node, and each increment is stored as a separate object. In a
+server-side restore, Gitaly reads the backup manifest and applies each increment in order.
+
+> [!warning]
+> Do not delete incremental backup files from object storage. If an intermediate file is deleted (for example, through an object storage lifecycle policy), the backup chain is broken and the backup cannot be restored.
 
 ## Restore options
 

@@ -20,7 +20,7 @@ see [GitLab container registry administration](../../../administration/packages/
 
 > [!note]
 > If you pull container images from Docker Hub, you can use the
-> [GitLab Dependency Proxy](../dependency_proxy/_index.md#use-the-dependency-proxy-for-docker-images) to avoid
+> [GitLab dependency proxy](../dependency_proxy/_index.md#use-the-dependency-proxy-for-docker-images) to avoid
 > rate limits and speed up your pipelines.
 
 ## View the container registry
@@ -51,7 +51,7 @@ You can share a filtered view by copying the URL from your browser.
 
 View container registry storage usage to track and manage the size of your container repositories across projects and groups.
 
-For more information, see [View container registry usage](reduce_container_registry_storage.md#view-container-registry-usage).
+For more information, see [view container registry usage](reduce_container_registry_storage.md#view-container-registry-usage).
 
 ## Use container images from the container registry
 
@@ -140,7 +140,7 @@ By default, the container registry is visible to everyone with access to the pro
 You can, however, change the visibility of the container registry for a project.
 
 For more information about the permissions that this setting grants to users,
-see [Container registry visibility permissions](#container-registry-visibility-permissions).
+see the [container registry visibility permissions](#container-registry-visibility-permissions).
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
@@ -165,7 +165,7 @@ or the [API](../../../api/container_registry.md#change-the-visibility-of-the-con
 
 Other permissions, such as updating the container registry and pushing or deleting container images, are not affected by
 this setting. However, disabling the container registry disables all container registry operations. For more information,
-see [Roles and permissions](../../permissions.md).
+see [roles and permissions](../../permissions.md).
 
 |                                                                                                                   |                                               | Anonymous<br/>(Everyone on internet) | Guest | Reporter, Developer, Maintainer, Owner |
 |-------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|--------------------------------------|-------|----------------------------------------|

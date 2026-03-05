@@ -29,7 +29,7 @@ Some system-generated notes are tracked as separate resource events:
 - [Resource iteration events](resource_iteration_events.md)
 
 By default, `GET` requests return 20 results at a time, because the API results are paginated.
-For more information, see [Pagination](rest/_index.md#pagination).
+For more information, see [pagination](rest/_index.md#pagination).
 
 ## Resource events
 
@@ -51,7 +51,7 @@ Read more on [pagination](rest/_index.md#pagination).
 ## Rate limits
 
 To help avoid abuse, you can limit your users to a specific number of `Create` request per minute.
-See [Notes rate limits](../administration/settings/rate_limit_on_notes_creation.md).
+For more information, see [Rate limits on note creation](../administration/settings/rate_limit_on_notes_creation.md).
 
 ## Issues
 
@@ -432,9 +432,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Creates a note for a specified merge request. Notes are not attached to specific
 lines in a merge request. For other approaches with more granular control, see
-[Post comment to commit](commits.md#post-comment-to-commit) in the Commits API,
-and [Create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
-in the Discussions API.
+[post comment to commit](commits.md#post-comment-to-commit) in the commits API,
+and [create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
+in the discussions API.
 
 If you create a note where the body only contains an emoji reaction, GitLab returns this object.
 
@@ -451,7 +451,7 @@ Parameters:
 | `merge_request_iid`           | integer           | yes      | The IID of a project merge request |
 | `created_at`                  | string            | no       | Date time string, ISO 8601 formatted. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 | `internal`                    | boolean           | no       | The internal flag of a note. Default is false. |
-| `merge_request_diff_head_sha` | string            | no       | Required for the [`/merge` quick action](../user/project/quick_actions.md#merge). The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
+| `merge_request_diff_head_sha` | string            | no       | Required for the [`/merge`](../user/project/quick_actions.md#merge) quick action. The SHA of the head commit, which ensures the merge request wasn't updated after the API request was sent. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \

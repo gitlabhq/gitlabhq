@@ -5,11 +5,14 @@ require 'spec_helper'
 RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
-  it_behaves_like 'can collect git garbage' do
-    let(:resource) { project }
-    let(:statistics_service_klass) { Projects::UpdateStatisticsService }
-    let(:statistics_keys) { [:repository_size, :lfs_objects_size] }
-    let(:expected_default_lease) { "projects:#{resource.id}" }
+  context 'with quarantine',
+    quarantine: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/34478" do
+    it_behaves_like 'can collect git garbage' do
+      let(:resource) { project }
+      let(:statistics_service_klass) { Projects::UpdateStatisticsService }
+      let(:statistics_keys) { [:repository_size, :lfs_objects_size] }
+      let(:expected_default_lease) { "projects:#{resource.id}" }
+    end
   end
 
   context 'when is able to get the lease' do
