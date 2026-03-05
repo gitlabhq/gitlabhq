@@ -7,6 +7,7 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
   let_it_be(:package_name) { '@root/test' }
 
   it { is_expected.to be_a FileStoreMounter }
+  it { is_expected.to be_a ObjectStorable }
   it { is_expected.to be_a Packages::Downloadable }
 
   it_behaves_like 'destructible', factory: :npm_metadata_cache

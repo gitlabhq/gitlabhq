@@ -22,18 +22,29 @@ namespace :gitlab do
         raise 'Object store is disabled for packages feature'
       end
 
-      scope, storage_target = if is_remote
-                                [::Packages::PackageFile.with_files_stored_locally, ::Packages::PackageFileUploader::Store::REMOTE]
-                              else
-                                [::Packages::PackageFile.with_files_stored_remotely, ::Packages::PackageFileUploader::Store::LOCAL]
-                              end
+      storage_target = is_remote ? ::Packages::PackageFileUploader::Store::REMOTE : ::Packages::PackageFileUploader::Store::LOCAL
 
-      scope.find_each(batch_size: 10) do |package_file|
-        package_file.file.migrate!(storage_target)
-
-        logger.info("Transferred package file #{package_file.id} of size #{package_file.size.to_i.bytes} to #{target} storage")
-      rescue StandardError => e
-        logger.error("Failed to transfer package file #{package_file.id} with error: #{e.message}")
+      # All package-related models with file_store (ObjectStorable)
+      migrate_configs = [
+        [::Packages::PackageFile, 'package file'],
+        [::Packages::Helm::MetadataCache, 'Helm metadata cache'],
+        [::Packages::Npm::MetadataCache, 'NPM metadata cache'],
+        [::Packages::Nuget::Symbol, 'NuGet symbol']
+      ]
+      migrate_configs.each do |model, name|
+        scope = is_remote ? model.with_files_stored_locally : model.with_files_stored_remotely
+        scope.find_each(batch_size: 10) do |record|
+          record.file.migrate!(storage_target)
+          extra = case record
+                  when ::Packages::PackageFile then " of size #{record.size.to_i.bytes}"
+                  when ::Packages::Helm::MetadataCache then " (project #{record.project_id}, channel #{record.channel})"
+                  when ::Packages::Npm::MetadataCache then " (project #{record.project_id}, package #{record.package_name})"
+                  else ""
+                  end
+          logger.info("Transferred #{name} #{record.id}#{extra} to #{target} storage")
+        rescue StandardError => e
+          logger.error("Failed to transfer #{name} #{record.id} with error: #{e.message}")
+        end
       end
     end
   end
