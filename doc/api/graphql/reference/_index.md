@@ -6945,6 +6945,32 @@ Input type: `DeleteConversationThreadInput`
 | <a id="mutation-deleteconversationthread-errors"></a>`errors` | [`[String!]!`](#string) | List of errors that occurred whilst trying to delete the thread. |
 | <a id="mutation-deleteconversationthread-success"></a>`success` | [`Boolean!`](#boolean) | Returns true if thread was successfully deleted. |
 
+### `Mutation.deleteCustomDashboard`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Deletes a custom dashboard.
+
+Input type: `DeleteCustomDashboardInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-deletecustomdashboard-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-deletecustomdashboard-id"></a>`id` | [`AnalyticsCustomDashboardsDashboardID!`](#analyticscustomdashboardsdashboardid) | Global ID of the dashboard to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-deletecustomdashboard-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-deletecustomdashboard-dashboard"></a>`dashboard` | [`CustomDashboard`](#customdashboard) | Deleted dashboard. |
+| <a id="mutation-deletecustomdashboard-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during deletion. |
+
 ### `Mutation.deleteDuoWorkflowsWorkflow`
 
 {{< details >}}
@@ -14938,6 +14964,35 @@ Input type: `UpdateContainerProtectionTagRuleInput`
 | <a id="mutation-updatecontainerprotectiontagrule-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutation-updatecontainerprotectiontagrule-containerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.8. |
 | <a id="mutation-updatecontainerprotectiontagrule-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.updateCustomDashboard`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Updates a custom dashboard.
+
+Input type: `UpdateCustomDashboardInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-updatecustomdashboard-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-updatecustomdashboard-config"></a>`config` | [`JSON`](#json) | Dashboard layout/config JSON. |
+| <a id="mutation-updatecustomdashboard-description"></a>`description` | [`String`](#string) | Dashboard description. |
+| <a id="mutation-updatecustomdashboard-id"></a>`id` | [`AnalyticsCustomDashboardsDashboardID!`](#analyticscustomdashboardsdashboardid) | Global ID of the dashboard to update. |
+| <a id="mutation-updatecustomdashboard-name"></a>`name` | [`String`](#string) | Dashboard name. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-updatecustomdashboard-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-updatecustomdashboard-dashboard"></a>`dashboard` | [`CustomDashboard`](#customdashboard) | Updated dashboard. |
+| <a id="mutation-updatecustomdashboard-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during update. |
 
 ### `Mutation.updateDependencyProxyImageTtlGroupPolicy`
 

@@ -9,7 +9,7 @@ title: Conan 1 packages in the package registry
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 

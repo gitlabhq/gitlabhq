@@ -1,0 +1,26 @@
+# @feature_category: continuous_integration
+subscription stageJobsUpdated($stageId: CiStageID!) {
+  ciStageUpdated(stageId: $stageId) {
+    id
+    detailedStatus {
+      id
+      action {
+        id
+        confirmationMessage
+        icon
+        path
+        title
+      }
+      detailsPath
+      deploymentDetailsPath
+      group
+      hasDetails
+      icon
+      tooltip
+      label
+    }
+    name
+    scheduled
+    scheduledAt
+  }
+}

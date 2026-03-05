@@ -153,7 +153,7 @@ class Repository
       repo: raw_repository,
       ref: ref,
       path: opts[:path],
-      author: opts[:author],
+      author: expand_author_with_user_emails(opts[:author]),
       follow: Array(opts[:path]).length == 1 && Feature.disabled?(:remove_file_commit_history_following, type: :ops),
       limit: opts[:limit],
       offset: opts[:offset],
@@ -211,7 +211,7 @@ class Repository
     response = raw_repository.list_commits(
       ref: ref,
       query: query,
-      author: author,
+      author: expand_author_with_user_emails(author),
       committed_before: committed_before,
       committed_after: committed_after,
       pagination_params: pagination_params
@@ -1424,6 +1424,21 @@ class Repository
   end
 
   private
+
+  def expand_author_with_user_emails(author)
+    return author if author.blank?
+
+    users = User.by_name(author).or(User.by_username(author))
+                .with_emails
+                .limit(10)
+
+    return author if users.empty?
+
+    emails = users.flat_map { |user| user.verified_emails(include_private_email: true) }.uniq
+    return author if emails.empty?
+
+    (emails.map { |e| Regexp.escape(e) } + [Regexp.escape(author)]).join('\|')
+  end
 
   def empty_commit_collection_with_next_cursor
     Repositories::CommitCollectionWithNextCursor.new(container, [], nil)

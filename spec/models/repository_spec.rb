@@ -782,6 +782,47 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#expand_author_with_user_emails' do
+    let_it_be(:gitlab_user) { create(:user, name: 'Test User', email: 'test@example.com') }
+
+    before_all do
+      create(:email, :confirmed, user: gitlab_user, email: 'secondary@example.com')
+    end
+
+    it 'returns original author when author is blank' do
+      expect(repository.send(:expand_author_with_user_emails, nil)).to be_nil
+      expect(repository.send(:expand_author_with_user_emails, '')).to eq('')
+    end
+
+    it 'returns original author when no matching users found' do
+      expect(repository.send(:expand_author_with_user_emails, 'Nonexistent User')).to eq('Nonexistent User')
+    end
+
+    it 'returns original author when user has no verified emails' do
+      create(:user, :unconfirmed, name: 'Unverified User')
+      allow_any_instance_of(User).to receive(:verified_emails).and_return([])
+
+      expect(repository.send(:expand_author_with_user_emails, 'Unverified User')).to eq('Unverified User')
+    end
+
+    it 'returns original author when search term is not an exact match' do
+      # User exists but search term does not match exactly (no fuzzy fallback)
+      # Note: by_name and by_username use case-insensitive matching, so 'test user' will match 'Test User'
+      expect(repository.send(:expand_author_with_user_emails, 'Test')).to eq('Test')
+      expect(repository.send(:expand_author_with_user_emails, 'User')).to eq('User')
+      expect(repository.send(:expand_author_with_user_emails, 'Partial Name')).to eq('Partial Name')
+    end
+
+    it 'expands author to include escaped user emails when user is found' do
+      result = repository.send(:expand_author_with_user_emails, 'Test User')
+
+      expect(result).to include('test@example\.com')
+      expect(result).to include('secondary@example\.com')
+      expect(result).to include('Test\ User')
+      expect(result).to include('\|')
+    end
+  end
+
   describe '#blob_at' do
     context 'blank sha' do
       subject { repository.blob_at(Gitlab::Git::SHA1_BLANK_SHA, '.gitignore') }

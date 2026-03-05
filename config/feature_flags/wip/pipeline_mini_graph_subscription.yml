@@ -1,0 +1,10 @@
+---
+name: pipeline_mini_graph_subscription
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/515846
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225321
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591935
+milestone: '18.10'
+group: group::pipeline execution
+type: wip
+default_enabled: false

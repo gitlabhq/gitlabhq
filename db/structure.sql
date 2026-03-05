@@ -14396,8 +14396,6 @@ CREATE TABLE application_settings (
     terraform_state_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     duo_foundational_flows_enabled boolean DEFAULT true NOT NULL,
     lock_duo_foundational_flows_enabled boolean DEFAULT false NOT NULL,
-    duo_sast_fp_detection_enabled boolean DEFAULT true NOT NULL,
-    lock_duo_sast_fp_detection_enabled boolean DEFAULT false NOT NULL,
     iframe_rendering_enabled boolean DEFAULT false NOT NULL,
     iframe_rendering_allowlist text,
     database_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
@@ -19612,6 +19610,7 @@ CREATE TABLE duo_workflows_workflows (
     merge_request_id bigint,
     service_account_id bigint,
     tool_call_approvals jsonb DEFAULT '{}'::jsonb NOT NULL,
+    ai_catalog_item_id bigint,
     CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),
     CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),
     CONSTRAINT check_73884a5839 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
@@ -23820,8 +23819,6 @@ CREATE TABLE namespace_settings (
     disable_ssh_keys boolean DEFAULT false NOT NULL,
     duo_foundational_flows_enabled boolean,
     lock_duo_foundational_flows_enabled boolean DEFAULT false NOT NULL,
-    duo_sast_fp_detection_enabled boolean,
-    lock_duo_sast_fp_detection_enabled boolean DEFAULT false NOT NULL,
     usage_billing jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_d9644d516f CHECK ((char_length(step_up_auth_required_oauth_provider) <= 255)),
@@ -45279,6 +45276,8 @@ CREATE INDEX index_duo_workflows_events_on_project_id ON duo_workflows_events US
 
 CREATE INDEX index_duo_workflows_events_on_workflow_id ON duo_workflows_events USING btree (workflow_id);
 
+CREATE INDEX index_duo_workflows_workflows_on_ai_catalog_item_id ON duo_workflows_workflows USING btree (ai_catalog_item_id);
+
 CREATE INDEX index_duo_workflows_workflows_on_ai_catalog_item_version_id ON duo_workflows_workflows USING btree (ai_catalog_item_version_id);
 
 CREATE INDEX index_duo_workflows_workflows_on_issue_id ON duo_workflows_workflows USING btree (issue_id);
@@ -56505,6 +56504,9 @@ ALTER TABLE ONLY work_item_number_field_values
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_df75a7c8b8 FOREIGN KEY (promoted_to_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY duo_workflows_workflows
+    ADD CONSTRAINT fk_duo_workflows_workflows_ai_catalog_item_id FOREIGN KEY (ai_catalog_item_id) REFERENCES ai_catalog_items(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY duo_workflows_workflows
     ADD CONSTRAINT fk_duo_workflows_workflows_service_account_id FOREIGN KEY (service_account_id) REFERENCES users(id) ON DELETE SET NULL NOT VALID;

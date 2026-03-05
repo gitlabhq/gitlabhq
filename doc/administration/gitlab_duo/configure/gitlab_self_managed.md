@@ -87,6 +87,42 @@ If your organization cannot allow access to the public npm registry, you can use
 [custom Docker image](../../../user/duo_agent_platform/flows/execution.md#change-the-default-docker-image)
 with the required dependencies already installed.
 
+## Share usage data with GitLab
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587976) in GitLab 18.9.1.
+
+{{< /history >}}
+
+To help improve service quality, you can share usage data about GitLab Duo Agent Platform features with GitLab.
+
+When you turn on data collection, GitLab logs information about GitLab Duo feature usage.
+This data is used exclusively for service improvement and debugging, and not for training AI models.
+
+For more information about what data is collected, see [Agent Platform usage data](../../../user/gitlab_duo/data_usage.md#agent-platform-usage-data).
+
+Prerequisites:
+
+- Have GitLab 18.9.1 or later
+
+To turn on extended logging:
+
+1. In the upper-right corner, select **Admin**.
+1. On the left sidebar, select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Select the **Collect usage data** checkbox.
+1. Select **Save changes**.
+
+### Data usage with self-hosted models
+
+If you use a self-hosted AI gateway and self-hosted models, detailed logs are stored
+on your infrastructure and are not shared with GitLab. To share data with GitLab, you must
+configure your self-hosted AI Gateway to send traces to an external observability service.
+
+You can use [Service Ping](../../settings/usage_statistics.md#service-ping)
+to send usage data to GitLab. This data is different from the [telemetry data](../../../user/gitlab_duo/data_usage.md#telemetry).
+
 ## Run a health check for GitLab Duo
 
 {{< details >}}

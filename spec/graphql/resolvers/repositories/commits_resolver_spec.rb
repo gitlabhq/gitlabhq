@@ -304,4 +304,68 @@ RSpec.describe Resolvers::Repositories::CommitsResolver, feature_category: :sour
       it { expect_graphql_error_to_be_created(error_class, error_msg) { resolved } }
     end
   end
+
+  describe 'commits filtering with author display name' do
+    let_it_be_with_reload(:user) { create(:user, name: 'Original Name', email: 'original@example.com') }
+
+    let_it_be(:project_with_user_commits) do
+      project = create(:project, :repository)
+      project.repository.create_file(
+        user,
+        'test.txt',
+        'test content',
+        message: 'Test commit',
+        branch_name: 'master'
+      )
+      project
+    end
+
+    before do
+      user.update!(name: 'Updated Display Name')
+    end
+
+    it 'returns commits when searching by the original git author name' do
+      field = ::Types::BaseField.from_options(
+        'field_value',
+        name: 'commits',
+        owner: resolver_parent,
+        resolver_class: described_class,
+        connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
+        calls_gitaly: true,
+        null: true,
+        max_page_size: 100
+      )
+
+      resolved_with_original_name = resolve_field(
+        field,
+        project_with_user_commits.repository,
+        args: { ref: 'master', author: 'Original Name' },
+        object_type: resolver_parent,
+        schema: GitlabSchema
+      )
+      expect(resolved_with_original_name.items).not_to be_empty
+    end
+
+    it 'returns commits when searching by the updated display name' do
+      field = ::Types::BaseField.from_options(
+        'field_value',
+        name: 'commits',
+        owner: resolver_parent,
+        resolver_class: described_class,
+        connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
+        calls_gitaly: true,
+        null: true,
+        max_page_size: 100
+      )
+
+      resolved_with_updated_name = resolve_field(
+        field,
+        project_with_user_commits.repository,
+        args: { ref: 'master', author: 'Updated Display Name' },
+        object_type: resolver_parent,
+        schema: GitlabSchema
+      )
+      expect(resolved_with_updated_name.items).not_to be_empty
+    end
+  end
 end

@@ -383,7 +383,7 @@ RSpec.describe 'Email Verification On Login', :with_current_organization, :clean
     end
   end
 
-  describe 'skip verification during grace period' do
+  describe 'skip verification during warning period' do
     let(:today) { Time.zone.parse('2025-09-01') }
 
     before do
@@ -398,7 +398,7 @@ RSpec.describe 'Email Verification On Login', :with_current_organization, :clean
       travel_back
     end
 
-    context 'when user is not in email otp grace period' do
+    context 'when user is not in email otp warning period' do
       let(:yesterday) { today - 1.day }
       let(:user) { create(:user, email_otp_required_after: yesterday) }
 
@@ -433,7 +433,7 @@ RSpec.describe 'Email Verification On Login', :with_current_organization, :clean
       end
     end
 
-    context 'when user is not locked, has a safe IP address, and is in email otp grace period' do
+    context 'when user is not locked, has a safe IP address, and is in email otp warning period' do
       let(:tomorrow) { today + 1.day }
       let(:user) { create(:user, email_otp_required_after: tomorrow) }
       let(:parsed_date) { 'September 02, 2025' }

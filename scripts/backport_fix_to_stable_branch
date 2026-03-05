@@ -9,85 +9,163 @@ require 'rainbow/refinement'
 require 'tty-prompt'
 using Rainbow
 
-class Backport
-  SECURITY_REPO_URLS = {
-    ssh: 'git@gitlab.com:gitlab-org/security/gitlab.git',
-    http: 'https://gitlab.com/gitlab-org/security/gitlab.git'
-  }.freeze
-
-  DEFAULT_OPTIONS = {
-    base: {
-      version: nil, branch: nil, sha: nil, merge_request: false, stable_branch_suffix: 'stable'
+class BackportOptions
+  REPO_URLS = {
+    canonical: {
+      ssh: 'git@gitlab.com:gitlab-org/gitlab.git',
+      http: 'https://gitlab.com/gitlab-org/gitlab.git'
     },
     security: {
-      branch_prefix: 'security',
+      ssh: 'git@gitlab.com:gitlab-org/security/gitlab.git',
+      http: 'https://gitlab.com/gitlab-org/security/gitlab.git'
+    }
+  }.freeze
+  DEFAULT_OPTIONS = {
+    base: {
+      version: nil, branch: nil, sha: nil, merge_request: false
+    },
+    security: {
+      branch_prefix: 'security-',
       new_merge_request_url: 'https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/new',
       merge_request_template: 'Security Fix'
     },
     bugfix: {
-      branch_prefix: 'backport',
+      branch_prefix: 'backport-',
       new_merge_request_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/new',
       merge_request_template: 'Stable Branch'
     }
   }.freeze
-
   BACKPORT_TYPE_CHOICES = [
     { name: 'Security Fix', value: :security }.freeze,
     { name: 'Bug Fix', value: :bugfix }.freeze
   ].freeze
+  FETCH_COLORS = %i[cyan magenta yellow green].freeze
 
-  def initialize
-    @prompt = TTY::Prompt.new(help_color: :cyan)
-    @options = build_options
+  def initialize(prompt)
+    @prompt = prompt
+    options = DEFAULT_OPTIONS[:base].dup
+    parse_options(options)
+    @git_remotes = list_git_remotes
+    prompt_for_missing_options(options)
+    @backport_type = confirm_backport_type
+    options.merge!(DEFAULT_OPTIONS[@backport_type])
+    @branch = options[:branch]
+    @branch_prefix = options[:branch_prefix]
+    @merge_request = options[:merge_request]
+    @merge_request_template = options[:merge_request_template]
+    @new_merge_request_url = options[:new_merge_request_url]
+    @remote = options[:remote]
+    @sha = options[:sha]
+    @dry_run = options[:dry_run]
+    @version = options[:version]
   end
 
-  attr_reader :prompt
+  attr_reader :branch, :branch_prefix, :merge_request_template,
+    :new_merge_request_url, :remote, :sha, :version
 
-  def create!
-    correct_repository_check!
+  def dry_run?
+    !!@dry_run
+  end
 
-    return dry_run if dry_run?
+  def create_merge_request?
+    !!@merge_request
+  end
 
-    pick_commits
-    push_commits
+  def security_backport?
+    @backport_type == :security
+  end
+
+  def bugfix_backport?
+    @backport_type == :bugfix
+  end
+
+  def canonical_remote?
+    remote == canonical_remote_name
+  end
+
+  def security_remote?
+    remote == security_remote_name
   end
 
   private
 
-  def correct_repository_check!
-    if security_backport? && !pushing_to_security_remote?
-      abort('⛔️ Can only push security backports to the security repository ⛔️'.red)
-    elsif !security_backport? && pushing_to_security_remote?
-      abort('⛔️ Bugfixes should be pushed to the canonical repository ⛔️'.red)
-    end
-  end
+  attr_reader :prompt, :git_remotes
 
-  def pushing_to_security_remote?
-    @options[:remote] == security_remote_name
-  end
-
-  def build_options
-    options = DEFAULT_OPTIONS[:base].dup
-    parse_options(options)
-
+  def prompt_for_missing_options(options)
     options[:sha] ||= git_head_sha
     options[:branch] ||= git_current_branch
     options[:remote] ||= select_git_remote
-    options[:version] ||= select_version
-
-    options.merge(DEFAULT_OPTIONS[confirmed_backport_type!])
+    options[:version] ||= select_version(options[:remote])
   end
 
-  def confirmed_backport_type!
-    backport_type = prompt.select('⚠️ What type of fix are you backporting? ⚠️'.red, BACKPORT_TYPE_CHOICES)
+  def parse_options(options)
+    parser = OptionParser.new do |opts|
+      opts.banner = <<~BANNER
+        Usage: #{$PROGRAM_NAME} [options]
 
-    @security_backport = backport_type == :security
+        This tool requires confirmation for the backport type and will prompt
+        for the remote and version unless specified.
 
-    backport_type
+      BANNER
+
+      opts.on('-v', '--version 10.0', 'Version to target (opens prompt if not passed)') do |version_arg|
+        options[:version] = version_arg
+      end
+
+      opts.on('-r', '--remote dev', "Git remote name of repository (opens prompt if not passed)") do |remote_arg|
+        options[:remote] = remote_arg
+      end
+
+      opts.on(
+        '-b', '--branch branch-name', 'Branch name to pick from (optional, defaults to current branch)'
+      ) do |branch_arg|
+        options[:branch] = branch_arg
+      end
+
+      opts.on('-s', '--sha abcd', 'SHA or SHA range to cherry pick (optional, defaults to HEAD SHA)') do |sha_arg|
+        options[:sha] = sha_arg
+      end
+
+      opts.on('--mr', '--merge-request', 'Create a Merge Request targeting the stable branch') do
+        options[:merge_request] = true
+      end
+
+      opts.on('-d', '--dry-run', 'Display the Git commands this script will run without calling them') do
+        options[:dry_run] = true
+      end
+
+      opts.on('-h', '--help', 'Displays Help') do
+        puts opts
+
+        exit
+      end
+    end
+
+    parser.parse!
   end
 
-  def security_backport?
-    @security_backport
+  def confirm_backport_type
+    prompt.select('⚠️ What type of fix are you backporting? ⚠️'.red, BACKPORT_TYPE_CHOICES)
+  end
+
+  def git_head_sha
+    `git rev-parse HEAD`.strip
+  end
+
+  def git_current_branch
+    `git rev-parse --abbrev-ref HEAD`.strip
+  end
+
+  def select_git_remote
+    prompt.select("Which remote do you want to push to?", remote_choices)
+  end
+
+  def select_version(remote)
+    selected = prompt_to_select_version(version_choices)
+
+    return select_version_after_fetch(remote) if selected == :check_for_new_stable_branch
+
+    selected
   end
 
   def add_security_remote
@@ -99,7 +177,7 @@ class Backport
   end
 
   def attempt_to_add_security_remote
-    security_repo_url = prompt.select('Which remote format do you normally use?', git_remote_style_choices)
+    security_repo_url = prompt.select('Which remote format do you normally use?', git_remote_style_choices(:security))
     stdin, stdout, stderr, wait_thr = Open3.popen3("git remote add security #{security_repo_url}")
 
     if wait_thr.value.success? # rubocop:disable Cop/LineBreakAroundConditionalBlock -- https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/merge_requests/258
@@ -121,71 +199,53 @@ class Backport
 
   def print_security_remote_config_instructions_and_exit
     puts "Please add the gitlab security remote to git with:".white
-    puts "git remote add security #{SECURITY_REPO_URLS[:ssh]}".cyan
+    puts "git remote add security #{REPO_URLS.dig(:security, :ssh)}".cyan
     puts "or".white
-    puts "git remote add security #{SECURITY_REPO_URLS[:http]}".cyan
+    puts "git remote add security #{REPO_URLS.dig(:security, :http)}".cyan
     puts "and then try again".white
     exit 1
   end
 
-  def parse_options(options)
-    parser = OptionParser.new do |opts|
-      opts.banner = <<~BANNER
-        Usage: #{$PROGRAM_NAME} [options]
+  def add_canonical_remote
+    puts "⚠️ You do not have the canonical remote configured ⚠️".red
 
-        This tool requires confirmation for the backport type and will prompt
-        for the remote and version unless specified.
+    return attempt_to_add_canonical_remote if prompt.yes?('Would you like me to add the remote for you now?')
 
-      BANNER
+    print_canonical_remote_config_instructions_and_exit
+  end
 
-      opts.on('-v', '--version 10.0', 'Version to target (opens prompt if not passed)') do |version|
-        options[:version] = version&.tr('.', '-')
-      end
+  def attempt_to_add_canonical_remote
+    canonical_repo_url = prompt.select('Which remote format do you normally use?', git_remote_style_choices(:canonical))
+    stdin, stdout, stderr, wait_thr = Open3.popen3("git remote add origin #{canonical_repo_url}")
 
-      opts.on('-r', '--remote dev', "Git remote name of repository (opens prompt if not passed)") do |remote|
-        options[:remote] = remote
-      end
+    if wait_thr.value.success? # rubocop:disable Cop/LineBreakAroundConditionalBlock -- https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/merge_requests/258
+      @canonical_remote_name = 'origin'
+      puts '✅ Successfully created `origin` remote'.white
+    else
+      puts "⛔️ Could not create `origin` remote ⛔️".red
+      puts ('-' * 80).red
+      puts "\n#{stderr.read}".red
+      puts ('-' * 80).red
 
-      opts.on('-b', '--branch branch-name', 'Original branch name (optional, defaults to current branch)') do |branch|
-        options[:branch] = branch
-      end
-
-      opts.on('-s', '--sha abcd', 'SHA or SHA range to cherry pick (optional, defaults to HEAD SHA)') do |sha|
-        options[:sha] = sha
-      end
-
-      opts.on('--mr', '--merge-request', 'Create a Merge Request targeting the stable branch') do
-        options[:merge_request] = true
-      end
-
-      opts.on('-d', '--dry-run', 'Display the Git commands this script will run without calling them') do
-        options[:try] = true
-      end
-
-      opts.on('-h', '--help', 'Displays Help') do
-        puts opts
-
-        exit
-      end
+      print_canonical_remote_config_instructions_and_exit
     end
-
-    parser.parse!
+  ensure
+    stdin.close
+    stdout.close
+    stderr.close
   end
 
-  def git_head_sha
-    `git rev-parse HEAD`.strip
+  def print_canonical_remote_config_instructions_and_exit
+    puts "Please add the gitlab canonical remote to git with:".white
+    puts "git remote add origin #{REPO_URLS.dig(:canonical, :ssh)}".cyan
+    puts "or".white
+    puts "git remote add origin #{REPO_URLS.dig(:canonical, :http)}".cyan
+    puts "and then try again".white
+    exit 1
   end
 
-  def git_current_branch
-    `git rev-parse --abbrev-ref HEAD`.strip
-  end
-
-  def select_git_remote
-    prompt.select("Which remote do you want to push to?", remote_choices)
-  end
-
-  def git_remotes
-    @git_remotes ||= `git remote -v`.strip.split("\n").each_with_object({}) do |line, output|
+  def list_git_remotes
+    `git remote -v`.strip.split("\n").each_with_object({}) do |line, output|
       name, url, _type = line.split(/\s+/)
       output[name] = url
     end
@@ -194,9 +254,17 @@ class Backport
   def security_remote_name
     return @security_remote_name if defined?(@security_remote_name)
 
-    @security_remote_name = git_remotes.find { |_k, url| SECURITY_REPO_URLS.value?(url) }&.first
+    @security_remote_name = git_remotes.find { |_k, url| REPO_URLS[:security].value?(url) }&.first
     add_security_remote if @security_remote_name.nil?
     @security_remote_name
+  end
+
+  def canonical_remote_name
+    return @canonical_remote_name if defined?(@canonical_remote_name)
+
+    @canonical_remote_name = git_remotes.find { |_k, url| REPO_URLS[:canonical].value?(url) }&.first
+    add_canonical_remote if @canonical_remote_name.nil?
+    @canonical_remote_name
   end
 
   # Sorts git remotes so the security remote is first in the list
@@ -204,12 +272,8 @@ class Backport
     [security_remote_name] + (git_remotes.keys - [security_remote_name])
   end
 
-  def git_remote_style_choices
-    SECURITY_REPO_URLS.map { |style, url| { name: "#{style}: #{url}", value: url } }
-  end
-
-  def select_version
-    prompt.select('Which version are you targeting?', version_choices)
+  def git_remote_style_choices(remote_type = :security)
+    REPO_URLS[remote_type].map { |style, url| { name: "#{style}: #{url}", value: url } }
   end
 
   def current_version
@@ -222,7 +286,27 @@ class Backport
   def version_choices
     major, minor = current_version
 
-    Array.new(3) do
+    major, minor = increment_version(major, minor) while stable_branch_exists_locally?("#{major}-#{minor}-stable-ee")
+
+    build_version_list(major, minor)
+  end
+
+  def prompt_to_select_version(choices)
+    prompt.select('Which version are you targeting?', choices)
+  end
+
+  def select_version_after_fetch(remote)
+    major, minor = current_version
+
+    major, minor = increment_version(major, minor) while stable_branch_exists_locally?("#{major}-#{minor}-stable-ee")
+    major, minor = increment_version(major, minor) while fetch_remote_stable_branch(remote, major, minor)
+
+    choices = build_version_list(major, minor, checked: true)
+    prompt_to_select_version(choices)
+  end
+
+  def build_version_list(major, minor, checked: false)
+    choices = Array.new(3) do
       minor -= 1
 
       if minor < 0
@@ -230,64 +314,87 @@ class Backport
         minor = 11
       end
 
-      { name: "#{major}.#{minor}", value: "#{major}-#{minor}" }
+      { name: "#{major}.#{minor}", value: "#{major}.#{minor}" }
+    end
+
+    choices << { name: 'Check for new stable branch...', value: :check_for_new_stable_branch } unless checked
+
+    choices
+  end
+
+  def increment_version(major, minor)
+    if minor >= 11
+      [major + 1, 0]
+    else
+      [major, minor + 1]
     end
   end
 
-  def dry_run?
-    @options[:try] == true
+  def stable_branch_exists_locally?(branch)
+    canonical_refspec = "refs/remotes/#{canonical_remote_name}/#{branch}"
+    return true if `git rev-parse --verify #{canonical_refspec} 2>/dev/null`.strip != ''
+
+    security_refspec = "refs/remotes/#{security_remote_name}/#{branch}"
+    `git rev-parse --verify #{security_refspec} 2>/dev/null`.strip != ''
+  end
+
+  def fetch_remote_stable_branch(remote, major, minor)
+    @fetch_color_index = (@fetch_color_index || -1) + 1
+    color = FETCH_COLORS[@fetch_color_index % FETCH_COLORS.length]
+    stable_branch = "#{major}-#{minor}-stable-ee"
+    print "\r#{' ' * 80}\r"
+    print "Fetching refs/remotes/#{remote}/#{stable_branch}...".color(color)
+    refspec = "+refs/heads/#{stable_branch}:refs/remotes/#{remote}/#{stable_branch}"
+    stable_branch_exists = system("git", "fetch", remote, refspec, out: File::NULL, err: File::NULL)
+    print "\r#{' ' * 80}\r" unless stable_branch_exists
+    stable_branch_exists
+  end
+end
+
+class Backport
+  def initialize
+    @prompt = TTY::Prompt.new(help_color: :cyan)
+    @opts = BackportOptions.new(prompt)
+  end
+
+  def create!
+    correct_repository_check!
+
+    return dry_run if opts.dry_run?
+
+    pick_commits
+    push_commits
+  end
+
+  private
+
+  attr_reader :prompt, :opts
+
+  def correct_repository_check!
+    if pushing_security_fix_to_canonical_remote?
+      abort('⛔️ Security backports must be pushed to the security repository ⛔️'.red)
+    elsif pushing_bug_fix_to_security_remote?
+      abort('⛔️ Bugfixes should be pushed to the canonical repository ⛔️'.red)
+    end
+  end
+
+  def pushing_security_fix_to_canonical_remote?
+    opts.security_backport? && opts.canonical_remote?
+  end
+
+  def pushing_bug_fix_to_security_remote?
+    opts.bugfix_backport? && opts.security_remote?
   end
 
   def dry_run
     puts "\nGit commands:".blue
     puts git_commands.join("\n")
     puts "\nMerge request URL:".blue
-    puts new_merge_request_url
+    puts create_merge_request_url
   end
 
-  def pick_commits
-    cmd = git_pick_commands.join(' && ')
-    stdin, stdout, stderr, wait_thr = Open3.popen3(cmd)
-
-    puts stdout.read.green
-    puts stderr.read.red
-
-    unless wait_thr.value.success? # rubocop:disable Cop/LineBreakAroundConditionalBlock -- https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/merge_requests/258
-      puts <<~MSG
-        It looks like cherry pick failed!
-        Open a new terminal and fix the conflicts.
-        Once fixed run `git cherry-pick --continue`
-
-        After you are done, return here and continue. (Press n to cancel)
-
-        Ready to continue? (Y/n)
-      MSG
-
-      unless ['', 'Y', 'y'].include?(gets.chomp)
-        puts "\nRemaining git commands:".blue
-        puts 'git cherry-pick --continue'
-        puts git_push_commands.join("\n")
-        exit 1
-      end
-    end
-  ensure
-    stdin.close
-    stdout.close
-    stderr.close
-  end
-
-  def push_commits
-    cmd = git_push_commands.join(' && ')
-    stdin, stdout, stderr, wait_thr = Open3.popen3(cmd)
-
-    puts stdout.read.green
-    puts stderr.read.red
-
-    puts new_merge_request_url.blue if wait_thr.value.success? && !@options[:merge_request]
-  ensure
-    stdin.close
-    stdout.close
-    stderr.close
+  def git_commands
+    git_pick_commands + git_push_commands
   end
 
   def git_pick_commands
@@ -298,6 +405,28 @@ class Backport
     ]
   end
 
+  def fetch_stable_branch
+    "git fetch #{opts.remote} #{stable_branch}"
+  end
+
+  def stable_branch
+    "#{opts.version.tr('.', '-')}-stable-ee"
+  end
+
+  def create_backport_branch
+    "git checkout -B #{source_branch} #{opts.remote}/#{stable_branch} --no-track"
+  end
+
+  def source_branch
+    "#{opts.branch}-#{opts.version.tr('.', '-')}".tap do |source_branch|
+      source_branch.prepend(opts.branch_prefix) unless source_branch.start_with?(opts.branch_prefix)
+    end
+  end
+
+  def cherry_pick_commit
+    "git cherry-pick #{opts.sha}"
+  end
+
   def git_push_commands
     [
       push_to_remote,
@@ -305,66 +434,89 @@ class Backport
     ]
   end
 
-  def git_commands
-    git_pick_commands + git_push_commands
-  end
-
-  def fetch_stable_branch
-    "git fetch #{@options[:remote]} #{stable_branch}"
-  end
-
-  def create_backport_branch
-    "git checkout -B #{source_branch} #{@options[:remote]}/#{stable_branch} --no-track"
-  end
-
-  def cherry_pick_commit
-    "git cherry-pick #{@options[:sha]}"
-  end
-
   def push_to_remote
     [
-      "git push #{@options[:remote]} #{source_branch} --no-verify",
+      "git push #{opts.remote} #{source_branch} --no-verify",
       *merge_request_push_options
     ].join(' ')
   end
 
+  def merge_request_push_options
+    return [] unless opts.create_merge_request?
+
+    [
+      "-o mr.create",
+      "-o mr.target='#{stable_branch}'",
+      "-o mr.description='Please apply `#{opts.merge_request_template}` template.'",
+      "-o mr.milestone='#{opts.version}'"
+    ]
+  end
+
   def checkout_original_branch
-    "git checkout #{@options[:branch]}"
+    "git checkout #{opts.branch}"
+  end
+
+  def pick_commits
+    cmd_exit_status = execute_command(git_pick_commands.join(' && '))
+
+    return if cmd_exit_status.success?
+
+    picked_successfully = manually_cherry_pick
+
+    return if picked_successfully
+
+    puts "\nRemaining git commands:".blue
+    puts 'git cherry-pick --continue'
+    puts git_push_commands.join("\n")
+
+    exit 1
+  end
+
+  def execute_command(cmd)
+    output, error, status = Open3.capture3(cmd)
+    puts output.green
+    puts error.red
+    status
+  end
+
+  def manually_cherry_pick
+    puts <<~MSG
+        It looks like cherry pick failed!
+        Open a new terminal and fix the conflicts.
+        Once fixed run `git cherry-pick --continue`
+
+        After you are done, return here and continue. (Press n to cancel)
+
+        Ready to continue? (Y/n)
+    MSG
+    ['', 'Y', 'y'].include?(gets.chomp)
+  end
+
+  def print_command_output(stdout, stderr)
+    puts stdout.read.green
+    puts stderr.read.red
+  end
+
+  def push_commits
+    cmd_exit_status = execute_command(git_push_commands.join(' && '))
+
+    return unless cmd_exit_status.success? && !opts.create_merge_request?
+
+    puts create_merge_request_url.blue
+  end
+
+  def create_merge_request_url
+    "#{opts.new_merge_request_url}?#{gitlab_params.to_query}"
   end
 
   def gitlab_params
     {
-      issuable_template: @options[:merge_request_template],
+      issuable_template: opts.merge_request_template,
       merge_request: {
         source_branch: source_branch,
         target_branch: stable_branch
       }
     }
-  end
-
-  def merge_request_push_options
-    return [] unless @options[:merge_request]
-
-    [
-      "-o mr.create",
-      "-o mr.target='#{stable_branch}'",
-      "-o mr.description='Please apply `#{@options[:merge_request_template]}` template.'",
-      "-o mr.milestone='#{@options[:version].tr('-', '.')}'"
-    ]
-  end
-
-  def source_branch
-    branch = "#{@options[:branch]}-#{@options[:version]}"
-    branch = "#{@options[:branch_prefix]}-#{branch}" unless branch.start_with?("#{@options[:branch_prefix]}-")
-    branch
-  end
-
-  def stable_branch
-    "#{@options[:version]}-#{@options[:stable_branch_suffix]}-ee"
-  end
-
-  def new_merge_request_url
-    "#{@options[:new_merge_request_url]}?#{gitlab_params.to_query}"
   end
 end
 

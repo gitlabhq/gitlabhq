@@ -2892,8 +2892,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           keys -= %w[
             approvals_before_merge
             compliance_frameworks
-            merge_request_title_regex
-            merge_request_title_regex_description
             mirror
             requirements_access_level
             requirements_enabled

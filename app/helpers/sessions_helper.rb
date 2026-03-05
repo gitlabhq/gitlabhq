@@ -27,7 +27,7 @@ module SessionsHelper
   end
 
   def verification_data(user)
-    permitted_to_skip = permitted_to_skip_email_otp_in_grace_period?(user)
+    permitted_to_skip = permitted_to_skip_email_otp_in_warning_period?(user)
 
     {
       username: user.username,

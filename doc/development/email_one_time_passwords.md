@@ -34,7 +34,7 @@ json.message: "Email Verification" AND json.username:replace_username_here
 Add the `json.event` column to see event types. These logs appear when:
 
 - Account requires Email OTP.
-- Account is in grace period (`email_otp_required_after` is 7 days or less)
+- Account is in warning period (`email_otp_required_after` is 7 days or less)
 - Account is locked (pre-existing `VerifiesWithEmail` behavior)
 
 Example log showing successful sign-in flow, searching by IP address:
@@ -141,7 +141,7 @@ registration flow.
 The `email_otp_required_after` value is automatically managed by
 [`Users::EmailOtpEnrollment#set_email_otp_required_after_based_on_restrictions`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/users/email_otp_enrollment.rb).
 Enrollment states include nil (not enrolled), a future date (upcoming or
-current grace period), or a past date (enforcement active).
+current warning period), or a past date (enforcement active).
 
 Updating a User through
 [`Users::UpdateService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/users/update_service.rb)
@@ -259,7 +259,7 @@ user.update(email_otp_required_after: date) # nil to unenroll
 
 View emails at `https://gdk.test:3443/rails/letter_opener`.
 
-Grace period phases are defined in code - see
+Warning period phases are defined in code - see
 [`VerifiesWithEmail`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/concerns/verifies_with_email.rb)
 and
 [`VerifiesWithEmailHelper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/helpers/verifies_with_email_helper.rb)

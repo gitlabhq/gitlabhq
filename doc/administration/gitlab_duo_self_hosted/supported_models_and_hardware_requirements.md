@@ -122,7 +122,7 @@ To choose which features use GitLab-managed models, see [Configure GitLab-manage
 When enabled for a specific feature:
 
 - All calls to those features configured with a GitLab-managed model use the GitLab-hosted AI Gateway, not the self-hosted AI Gateway.
-- No detailed logs are generated in the GitLab-hosted AI Gateway, even when [AI logs are enabled](logging.md#enable-logging). This prevents unintended leaks of sensitive information.
+- No detailed logs are generated in the GitLab-hosted AI Gateway, even when [AI logs are enabled](logging.md#turn-on-logging-for-gitlab-duo-usage-data). This prevents unintended leaks of sensitive information.
 
 ## Hardware requirements
 

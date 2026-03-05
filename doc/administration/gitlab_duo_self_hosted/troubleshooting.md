@@ -31,7 +31,7 @@ Before you begin troubleshooting, you should:
 - Know the endpoint where your:
   - AI Gateway is hosted.
   - Model is hosted.
-- [Enable logging](logging.md#enable-logging) to make sure that requests and responses from GitLab to the AI Gateway are being logged to [`llm.log`](../logs/_index.md#llmlog).
+- [Enable logging](logging.md#turn-on-logging-for-gitlab-duo-usage-data) to make sure that requests and responses from GitLab to the AI Gateway are being logged to [`llm.log`](../logs/_index.md#llmlog).
 
 For more information on troubleshooting GitLab Duo, see:
 
@@ -406,7 +406,7 @@ gitlab-rake gitlab:duo:verify_self_hosted_setup
 
 If no logs are generated in the AI Gateway server, follow these steps to troubleshoot:
 
-1. Ensure that [AI logs are enabled](logging.md#enable-logging).
+1. Ensure that [AI logs are enabled](logging.md#turn-on-logging-for-gitlab-duo-usage-data).
 1. Run the following commands to view the GitLab Rails logs for any errors:
 
    ```shell

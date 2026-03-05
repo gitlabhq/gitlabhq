@@ -1,0 +1,10 @@
+---
+name: defer_notify_conflict_to_after_commit
+description: Defer notify_conflict? and related services to after_commit to avoid Gitaly RPCs inside DB transaction
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592209
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225850
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592209
+milestone: '18.10'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

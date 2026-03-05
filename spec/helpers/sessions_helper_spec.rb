@@ -35,7 +35,7 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
     context 'when user is permitted to skip email otp' do
       before do
         allow(helper).to receive(
-          :permitted_to_skip_email_otp_in_grace_period?
+          :permitted_to_skip_email_otp_in_warning_period?
         ).and_return(true)
       end
 

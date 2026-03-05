@@ -3668,6 +3668,9 @@ msgstr ""
 msgid "AI|Use GitLab Duo Agent Platform to generate a merge request with a suggested solution."
 msgstr ""
 
+msgid "AI|Use GitLab Duo to check whether this secret detection vulnerability might be a false positive."
+msgstr ""
+
 msgid "AI|Use GitLab Duo to check whether this vulnerability might be a false positive."
 msgstr ""
 
@@ -11582,6 +11585,9 @@ msgstr ""
 msgid "BillingPlans|Control who can approve merge requests to ensure code quality and compliance."
 msgstr ""
 
+msgid "BillingPlans|Credits"
+msgstr ""
+
 msgid "BillingPlans|Cross-team project management"
 msgstr ""
 
@@ -11684,6 +11690,12 @@ msgstr ""
 msgid "BillingPlans|Get unlimited user licenses, which includes guest user licenses, up from a maximum of 5 users on the Free plan."
 msgstr ""
 
+msgid "BillingPlans|GitLab Credits"
+msgstr ""
+
+msgid "BillingPlans|GitLab Credits - Monthly committed pool"
+msgstr ""
+
 msgid "BillingPlans|GitLab Duo Agent Platform"
 msgstr ""
 
@@ -11715,6 +11727,9 @@ msgid "BillingPlans|Includes $12 in GitLab Credits per user per month"
 msgstr ""
 
 msgid "BillingPlans|Includes $24 in GitLab Credits per user per month"
+msgstr ""
+
+msgid "BillingPlans|Increase credits"
 msgstr ""
 
 msgid "BillingPlans|Introducing GitLab Duo Enterprise"
@@ -11756,6 +11771,9 @@ msgstr ""
 msgid "BillingPlans|Merge trains"
 msgstr ""
 
+msgid "BillingPlans|Monthly commitments offer significant discounts off list price. Pool GitLab Credits across your namespace for flexibility and predictable monthly costs."
+msgstr ""
+
 msgid "BillingPlans|Multi-region support"
 msgstr ""
 
@@ -11789,6 +11807,15 @@ msgstr ""
 msgid "BillingPlans|Protected Environments"
 msgstr ""
 
+msgid "BillingPlans|Purchase credits"
+msgstr ""
+
+msgid "BillingPlans|Purchase monthly commitment"
+msgstr ""
+
+msgid "BillingPlans|Purchase monthly credits for your group and unlock AI capabilities. Credits start at $1, with volume discounts available."
+msgstr ""
+
 msgid "BillingPlans|Push Rules"
 msgstr ""
 
@@ -11805,6 +11832,9 @@ msgid "BillingPlans|Repository pull mirroring"
 msgstr ""
 
 msgid "BillingPlans|Safeguard testing and production environments by restricting deployment access to authorized users only."
+msgstr ""
+
+msgid "BillingPlans|Save on GitLab Credits with monthly commitments"
 msgstr ""
 
 msgid "BillingPlans|Scale with Confidence"
@@ -11927,6 +11957,9 @@ msgstr ""
 msgid "BillingPlans|Value Stream Management"
 msgstr ""
 
+msgid "BillingPlans|View Usage"
+msgstr ""
+
 msgid "BillingPlans|Visibility & Incident Response"
 msgstr ""
 
@@ -11948,7 +11981,16 @@ msgstr ""
 msgid "BillingPlans|Your AI companion throughout development"
 msgstr ""
 
+msgid "BillingPlans|Your group is on %{planName}"
+msgstr ""
+
+msgid "BillingPlans|Your monthly credit commitment is shared across all members of the group. Credits reset at the start of each billing cycle."
+msgstr ""
+
 msgid "BillingPlans|Your trial has %{days} days left."
+msgstr ""
+
+msgid "BillingPlans|a trial of GitLab Ultimate"
 msgstr ""
 
 msgid "BillingPlans|a trial of Ultimate"

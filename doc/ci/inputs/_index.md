@@ -800,37 +800,61 @@ test-job:
 
 ## Troubleshooting
 
-### YAML syntax errors when using `inputs`
+### YAML syntax errors when using `inputs` in `rules`
 
-[CI/CD variable expressions](../jobs/job_rules.md#cicd-variable-expressions)
-in `rules:if` expect a comparison of a CI/CD variable with a string, otherwise
-[a variety of syntax errors could be returned](../jobs/job_troubleshooting.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions).
+When you use input to modify `rules:if` expressions, you might get one of
+[a variety of syntax errors](../jobs/job_troubleshooting.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions).
 
-You must ensure that expressions remain properly formatted after input values are
-inserted into the configuration, which might require the use of additional quote characters.
+These errors are often related to how strings are handled in [CI/CD variable expressions](../jobs/job_rules.md#cicd-variable-expressions).
+Expressions in `rules:if` expect a CI/CD variable compared to a quoted string (`'` or `"`) or another variable.
+When input values are inserted into the `rules` configuration at pipeline runtime,
+the resulting value might not be a quoted string or variable, which causes the error.
 
-For example:
+For example, in the configuration to include:
 
 ```yaml
 spec:
   inputs:
     branch:
       default: $CI_DEFAULT_BRANCH
+    branch2:
+      default: $CI_DEFAULT_BRANCH
 ---
 
 job-name:
   rules:
     - if: $CI_COMMIT_REF_NAME == $[[ inputs.branch ]]
+    - if: $CI_COMMIT_REF_NAME == $[[ inputs.branch2 ]]
+```
+
+Then, in the main configuration file:
+
+```yaml
+include:
+  inputs:
+    branch: $CI_DEFAULT_BRANCH  # Valid
+    branch2: main               # Invalid
 ```
 
 In this example:
 
-- Using `include: inputs: branch: $CI_DEFAULT_BRANCH` is valid. The `if:` clause evaluates to
+- Using `branch: $CI_DEFAULT_BRANCH` is valid. The `if:` clause evaluates to
   `if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH`, which is a valid variable expression.
-- Using `include: inputs: branch: main` is **invalid**. The `if:` clause evaluates to
+  The variable does not need to be quoted.
+- Using `branch2: main` is invalid. The `if:` clause evaluates to
   `if: $CI_COMMIT_REF_NAME == main`, which is invalid because `main` is a string but is not quoted.
 
-Alternatively, add quotes to resolve some variable expression issues. For example:
+To resolve this issue, make sure expressions remain properly formatted after input values
+are inserted into the configuration. This might require additional quote characters.
+For example, add quotes to the rules that use string values:
+
+```yaml
+rules:
+  if: $CI_COMMIT_REF_NAME == "$[[ inputs.branch2 ]]"
+```
+
+For interpolation functions like [`expand_vars`](#expand_vars),
+you might also need to quote the entire `if:` expression. For example:
 
 ```yaml
 spec:
@@ -845,8 +869,8 @@ $[[ inputs.environment | expand_vars ]] job:
     - if: '"$[[ inputs.environment | expand_vars ]]" == "production"'
 ```
 
-In this example, quoting the input block and also the entire variable expression
-ensures valid `if:` syntax after the input is evaluated. The internal and external quotes
-in the expression must not be the same character. You can use `"` for the internal quotes
-and `'` for the external quotes, or the inverse. On the other hand, the job name does
-not require any quoting.
+In this example, quoting both the input and the entire `if:` expression ensures valid
+syntax after the input is evaluated. When quotes are nested, use `"` for the inner
+quotes and `'` for the outer quotes, or the inverse.
+
+Jobs names do not need to be quoted.

@@ -293,7 +293,7 @@ Feature names should be lowercase.
 
 However, in a few rare cases, features can be title case. These exceptions are:
 
-- Added as a proper name to [markdownlint](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.yml),
+- Added as a proper name to [markdownlint](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint-cli2.yaml),
   so they can be consistently applied across all documentation.
 - Added to the [word list](word_list.md).
 

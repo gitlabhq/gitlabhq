@@ -94,12 +94,12 @@ module VerifiesWithEmail
 
   def skip_verification_for_now
     return respond_422 unless user = find_verification_user
-    return render_403 unless permitted_to_skip_email_otp_in_grace_period?(user)
+    return render_403 unless permitted_to_skip_email_otp_in_warning_period?(user)
 
     handle_verification_success(
       user,
       :skipped,
-      'user chose to skip verification in grace period'
+      'user chose to skip verification in warning period'
     )
 
     render json: {
@@ -251,7 +251,7 @@ module VerifiesWithEmail
       # creation), to avoid double email verification with
       # Devise::Confirmable
       user.last_sign_in_at.present? &&
-      (user.email_based_otp_required? || in_email_otp_grace_period?(user))
+      (user.email_based_otp_required? || in_email_otp_warning_period?(user))
   end
 
   def verify_token(user, token)
@@ -323,7 +323,7 @@ module VerifiesWithEmail
   def permitted_to_view_skip_verification_confirmation?
     current_user &&
       Feature.enabled?(:email_based_mfa, current_user) &&
-      permitted_to_skip_email_otp_in_grace_period?(current_user) &&
+      permitted_to_skip_email_otp_in_warning_period?(current_user) &&
       # User should not be able to visit users_skip_verification_confirmation_path after
       # finishing token verification OR after completing the skip verification workflow
       session[:verifies_with_email_user_id]

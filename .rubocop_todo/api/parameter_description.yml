@@ -1,7 +1,6 @@
 ---
 API/ParameterDescription:
   Exclude:
-    - 'ee/lib/api/admin/data_management.rb'
     - 'ee/lib/api/audit_events.rb'
     - 'ee/lib/api/scim/group_scim.rb'
     - 'ee/lib/api/vulnerability_exports.rb'

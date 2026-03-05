@@ -1,3 +1,0 @@
----
-name: read_dap_external_trigger_usage_rule
-description: This rule gates Duo external triggers for usage based billing.

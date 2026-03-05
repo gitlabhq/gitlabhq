@@ -4,12 +4,12 @@ module VerifiesWithEmailHelper
   include Gitlab::Utils::StrongMemoize
 
   # Used by frontend to decide if we should render the "skip for now" button
-  def permitted_to_skip_email_otp_in_grace_period?(user)
+  def permitted_to_skip_email_otp_in_warning_period?(user)
     Feature.enabled?(:email_based_mfa, user) &&
       !user.two_factor_enabled? &&
       trusted_ip_address?(user) &&
       !treat_as_locked?(user) &&
-      in_email_otp_grace_period?(user)
+      in_email_otp_warning_period?(user)
   end
 
   def trusted_ip_address?(user)
@@ -27,7 +27,7 @@ module VerifiesWithEmailHelper
 
   private
 
-  def in_email_otp_grace_period?(user)
+  def in_email_otp_warning_period?(user)
     return false unless user.email_otp_required_after.present?
 
     days_until_enrollment = (user.email_otp_required_after.to_date - Date.current).to_i

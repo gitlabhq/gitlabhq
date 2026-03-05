@@ -868,18 +868,18 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
   end
 
   describe 'skip_verification_for_now' do
-    let(:permitted_to_skip_email_otp_in_grace_period) { true }
+    let(:permitted_to_skip_email_otp_in_warning_period) { true }
 
     before do
       stub_session(session_data: { verifies_with_email_user_id: user.id })
       allow_next_instance_of(SessionsController) do |controller|
         allow(controller).to receive(
-          :permitted_to_skip_email_otp_in_grace_period?
-        ).with(user).and_return(permitted_to_skip_email_otp_in_grace_period)
+          :permitted_to_skip_email_otp_in_warning_period?
+        ).with(user).and_return(permitted_to_skip_email_otp_in_warning_period)
       end
     end
 
-    context 'when user is permitted to skip email OTP in grace period' do
+    context 'when user is permitted to skip email OTP in warning period' do
       it 'returns success status and redirects to skip verification confirmation path' do
         post(users_skip_verification_for_now_path(user: { login: user.username }))
 
@@ -910,7 +910,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
             message: 'Email Verification',
             event: 'Skipped',
             username: user.username,
-            reason: 'user chose to skip verification in grace period',
+            reason: 'user chose to skip verification in warning period',
             ip: '127.0.0.1'
           )
         )
@@ -938,8 +938,8 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       end
     end
 
-    context 'when user is not permitted to skip email OTP in grace period' do
-      let(:permitted_to_skip_email_otp_in_grace_period) { false }
+    context 'when user is not permitted to skip email OTP in warning period' do
+      let(:permitted_to_skip_email_otp_in_warning_period) { false }
 
       it 'returne a 403 status code and does not remove verifies_with_email_user_id session key' do
         post(users_skip_verification_for_now_path(user: { login: user.username }))
@@ -963,7 +963,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
   end
 
   describe 'skip_verification_confirmation' do
-    let(:permitted_to_skip_email_otp_in_grace_period) { true }
+    let(:permitted_to_skip_email_otp_in_warning_period) { true }
     let(:email_otp_required_after) { 1.day.from_now }
     let(:expected_redirect_url) { root_path }
 
@@ -972,8 +972,8 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
 
       allow_next_instance_of(SessionsController) do |controller|
         allow(controller).to receive(
-          :permitted_to_skip_email_otp_in_grace_period?
-        ).with(user).and_return(permitted_to_skip_email_otp_in_grace_period)
+          :permitted_to_skip_email_otp_in_warning_period?
+        ).with(user).and_return(permitted_to_skip_email_otp_in_warning_period)
 
         allow(controller).to receive(:after_sign_in_path_for)
           .with(user).and_return(expected_redirect_url)
@@ -982,7 +982,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       sign_in(user) # to ensure that current_user is populated
     end
 
-    context 'when user is permitted to skip email OTP in grace period' do
+    context 'when user is permitted to skip email OTP in warning period' do
       context 'when verifies_with_email_user_id session exists' do
         before do
           stub_session(session_data: { verifies_with_email_user_id: user.id })
@@ -1038,7 +1038,7 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
     end
 
     context 'when user is not permitted to skip email OTP' do
-      let(:permitted_to_skip_email_otp_in_grace_period) { false }
+      let(:permitted_to_skip_email_otp_in_warning_period) { false }
 
       it 'returns error and does not render the template' do
         get(users_skip_verification_confirmation_path)

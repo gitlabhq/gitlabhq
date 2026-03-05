@@ -14,9 +14,11 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import { graphqlEtagStagePath } from '~/ci/pipeline_details/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { PIPELINE_POLL_INTERVAL_DEFAULT, FAILED_STATUS } from '~/ci/constants';
 import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import getPipelineStageJobsQuery from './graphql/queries/get_pipeline_stage_jobs.query.graphql';
+import stageJobsUpdatedSubscription from './graphql/subscriptions/stage_jobs_updated.subscription.graphql';
 
 const searchItemsThreshold = 12;
 
@@ -34,6 +36,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     isMergeTrain: {
       type: Boolean,
@@ -51,11 +54,18 @@ export default {
       isDropdownOpen: false,
       stageJobs: [],
       search: '',
+      isSubscribed: false,
     };
   },
   apollo: {
     stageJobs: {
       context() {
+        if (this.useRealTime) {
+          return {
+            featureCategory: 'continuous_integration',
+          };
+        }
+
         return {
           ...getQueryHeaders(this.graphqlEtag),
           featureCategory: 'continuous_integration',
@@ -72,7 +82,20 @@ export default {
       },
       pollInterval: PIPELINE_POLL_INTERVAL_DEFAULT,
       update(data) {
+        if (this.useRealTime) {
+          this.$apollo.queries.stageJobs.stopPolling();
+        }
         return data?.ciPipelineStage?.jobs?.nodes || [];
+      },
+      result({ data }) {
+        if (
+          this.useRealTime &&
+          this.isDropdownOpen &&
+          !this.isSubscribed &&
+          data?.ciPipelineStage
+        ) {
+          this.subscribeToJobUpdates();
+        }
       },
       error(error) {
         createAlert({
@@ -115,22 +138,74 @@ export default {
     searchVisible() {
       return !this.isLoading && this.stageJobs.length > searchItemsThreshold;
     },
+    useRealTime() {
+      return this.glFeatures?.pipelineMiniGraphSubscription;
+    },
+  },
+  watch: {
+    isDropdownOpen(isOpen) {
+      if (this.useRealTime && !isOpen) {
+        this.unsubscribeFromJobUpdates();
+      }
+    },
   },
   mounted() {
-    toggleQueryPollingByVisibility(this.$apollo.queries.stageJobs);
+    if (!this.useRealTime) {
+      toggleQueryPollingByVisibility(this.$apollo.queries.stageJobs);
+    }
+  },
+  beforeDestroy() {
+    this.unsubscribeFromJobUpdates();
   },
   methods: {
-    onHideDropdown() {
-      this.isDropdownOpen = false;
-      this.$apollo.queries.stageJobs.stopPolling();
-      this.search = '';
-    },
     onShowDropdown() {
       this.isDropdownOpen = true;
-      this.$apollo.queries.stageJobs.startPolling(PIPELINE_POLL_INTERVAL_DEFAULT);
-
       // used for tracking in the pipeline table
       this.$emit('mini-graph-stage-click');
+      if (!this.useRealTime) {
+        this.$apollo.queries.stageJobs.startPolling(PIPELINE_POLL_INTERVAL_DEFAULT);
+      }
+    },
+    onHideDropdown() {
+      this.isDropdownOpen = false;
+      this.search = '';
+      this.$apollo.queries.stageJobs.stopPolling();
+    },
+    subscribeToJobUpdates() {
+      if (!this.stage.id || this.isSubscribed) return;
+
+      this.isSubscribed = true;
+
+      this.jobSubscription = this.$apollo.queries.stageJobs.subscribeToMore({
+        document: stageJobsUpdatedSubscription,
+        variables: { stageId: this.stage.id },
+        updateQuery: (previousData, { subscriptionData }) => {
+          const updatedJob = subscriptionData.data?.ciStageUpdated;
+          if (!updatedJob || !previousData?.ciPipelineStage) {
+            return previousData;
+          }
+
+          return {
+            ...previousData,
+            ciPipelineStage: {
+              ...previousData.ciPipelineStage,
+              jobs: {
+                ...previousData.ciPipelineStage.jobs,
+                nodes: previousData.ciPipelineStage.jobs.nodes.map((job) =>
+                  job.name === updatedJob.name ? updatedJob : job,
+                ),
+              },
+            },
+          };
+        },
+      });
+    },
+    unsubscribeFromJobUpdates() {
+      if (this.jobSubscription) {
+        this.jobSubscription?.unsubscribe();
+        this.isSubscribed = false;
+        this.jobSubscription = null;
+      }
     },
     stageAriaLabel(title) {
       return sprintf(__('View Stage: %{title}'), { title });

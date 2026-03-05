@@ -128,7 +128,7 @@ Secret scanning runs in the following scenarios:
 > [!note]
 > Secret scanning does not occur when you interact with GitLab Duo Chat through the web interface.
 
-## Collecting usage data
+## Share group usage data with GitLab
 
 {{< history >}}
 
@@ -136,30 +136,12 @@ Secret scanning runs in the following scenarios:
 
 {{< /history >}}
 
-To help improve service quality, you can share GitLab Duo interaction data with GitLab.
+To help improve service quality, you can share usage data about GitLab Duo Agent Platform features with GitLab.
 
-When you turn on data collection, GitLab logs information about GitLab Duo feature usage.
+After you turn on data collection, AI interactions from all projects and subgroups in your namespace are logged with GitLab.
 This data is used exclusively for service improvement and debugging, and not for training AI models.
 
-### Which data is logged
-
-When data collection is enabled, the following data is logged:
-
-- Full prompt and response text from interactions with GitLab Duo.
-- Session context, including sessions that were ongoing at the time the setting is enabled.
-- Model metadata (model version, token counts, latency).
-- Tool calls and their results.
-- Session IDs to correlate with user feedback.
-
-The following information is not included in logs, as long as users don't include it in their own prompts:
-
-- User IDs or usernames.
-- Email addresses or personal identifiers.
-- Project or namespace identifiers.
-
-GitLab does not remove identifiers that users have included in their prompt.
-
-### Configure data collection for a group
+You can also turn on usage data collection [for an instance](../../administration/gitlab_duo/configure/gitlab_self_managed.md#share-usage-data-with-gitlab)
 
 Prerequisites:
 
@@ -175,18 +157,20 @@ To turn on data collection for your group:
 1. Under **Data collection**, select the **Collect usage data** checkbox.
 1. Select **Save changes**.
 
-After you turn on data collection, AI interactions from all projects and subgroups in your namespace are logged with GitLab.
+### Agent Platform usage data
 
-### Configure data collection for an instance
+When you turn on data collection, the following data is logged:
 
-To configure data collection for GitLab Self-Managed, see [these instructions](../../administration/gitlab_duo_self_hosted/configure_duo_features.md#enable-extended-logging-for-debugging).
+- Full prompt and response text from interactions with GitLab Duo.
+- Session context, including sessions that were ongoing at the time the setting is enabled.
+- Model metadata (model version, token counts, latency).
+- Tool calls and their results.
+- Session IDs to correlate with user feedback.
 
-When you turn on logging in a fully self-hosted configuration, detailed logs are stored on your infrastructure and are not shared with GitLab unless your self-hosted AI Gateway is explicitly configured to send traces to an external observability service.
+The following information is not included in logs, unless users include it in their own prompts:
 
-## GitLab Duo Self-Hosted
+- User IDs or usernames.
+- Email addresses or personal identifiers.
+- Project or namespace identifiers.
 
-When you are using [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
-and the self-hosted AI Gateway, you do not share any data with GitLab.
-
-GitLab Self-Managed administrators can use [Service Ping](../../administration/settings/usage_statistics.md#service-ping)
-to send usage statistics to GitLab. This is separate to the [telemetry data](#telemetry).
+GitLab does not remove identifiers that users have included in their prompt.

@@ -10821,6 +10821,7 @@ paths:
       parameters:
       - name: model_name
         required: true
+        description: The name of the model
         schema:
           type: string
           enum:
@@ -10847,6 +10848,7 @@ paths:
         in: path
       - name: record_identifier
         required: true
+        description: The identifier of the model record
         schema:
           oneOf:
           - type: integer
@@ -10877,6 +10879,7 @@ paths:
       parameters:
       - name: model_name
         required: true
+        description: The name of the model
         schema:
           type: string
           enum:
@@ -10903,6 +10906,7 @@ paths:
         in: path
       - name: record_identifier
         required: true
+        description: The identifier of the model record
         schema:
           type: integer
         in: path
@@ -10931,6 +10935,7 @@ paths:
       parameters:
       - name: model_name
         required: true
+        description: The name of the model
         schema:
           type: string
           enum:
@@ -11035,6 +11040,7 @@ paths:
       parameters:
       - name: model_name
         required: true
+        description: The name of the model
         schema:
           type: string
           enum:

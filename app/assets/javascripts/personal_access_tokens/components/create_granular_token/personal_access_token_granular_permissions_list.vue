@@ -118,7 +118,7 @@ export default {
 };
 </script>
 <template>
-  <crud-component class="gl-w-2/3">
+  <crud-component class="gl-flex gl-w-2/3 gl-flex-col">
     <template #title>
       {{ permissionsTitle }}
     </template>
@@ -137,8 +137,9 @@ export default {
       v-for="category in selectedResourcesGroupedByCategory"
       :key="category.key"
       :data-testid="`category-${category.key}`"
+      class="gl-pl-3"
     >
-      <div class="gl-heading-5 gl-font-bold" data-testid="category-heading">
+      <div class="gl-heading-5 gl-mt-4 gl-font-bold" data-testid="category-heading">
         {{ category.name }}
       </div>
       <div
@@ -151,7 +152,7 @@ export default {
             {{ resource.name }}
           </div>
           <div
-            class="gl-mt-3 gl-line-clamp-2 gl-max-w-62 gl-text-sm gl-leading-20 gl-text-subtle"
+            class="gl-mt-1 gl-line-clamp-2 gl-max-w-62 gl-text-sm gl-leading-20 gl-text-subtle"
             data-testid="resource-description"
           >
             {{ resource.description }}

@@ -66,13 +66,8 @@ class ProjectSetting < ApplicationRecord
     presence: { if: :require_unique_domain? }
 
   validate :validates_mr_default_target_self
-  validate :presence_of_merge_request_title_regex_settings,
-    if: -> { Feature.enabled?(:merge_request_title_regex, project) }
 
   validate :pages_unique_domain_availability, if: :pages_unique_domain_changed?
-
-  after_update :enqueue_auto_merge_workers,
-    if: -> { Feature.enabled?(:merge_request_title_regex, project) && saved_change_to_merge_request_title_regex }
 
   attribute :legacy_open_source_license_available, default: -> do
     Feature.enabled?(:legacy_open_source_license_available, type: :ops)

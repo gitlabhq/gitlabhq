@@ -4,8 +4,9 @@ module Gitlab
   module GitalyClient
     class CommitCollectionWithNextCursor < SimpleDelegator
       def initialize(response, repository)
-        commits = response.flat_map.with_index do |message, index|
-          @next_cursor = message.pagination_cursor&.next_cursor if index == 0
+        commits = response.flat_map do |message|
+          cursor = message.pagination_cursor&.next_cursor
+          @next_cursor = cursor if cursor.present?
 
           message.commits.map do |gitaly_commit|
             Gitlab::Git::Commit.new(repository, gitaly_commit)

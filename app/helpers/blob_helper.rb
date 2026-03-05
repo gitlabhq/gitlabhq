@@ -334,15 +334,18 @@ module BlobHelper
   def edit_blob_app_data(project, id, blob, ref, action)
     is_update = action == 'update'
     is_create = action == 'create'
+    can_push_to_project = can?(current_user, :push_code, project)
     can_push_to_branch = project.present(current_user: current_user).can_current_user_push_to_branch?(ref)
+    can_push_to_project_or_branch = can_push_to_project || can_push_to_branch
+    next_fork_branch_name = edit_blob_next_fork_branch_name(project, can_push_to_project_or_branch)
 
-    {
+    data = {
       action: action.to_s,
       update_path: edit_blob_update_path(project, id, is_update, is_create),
       cancel_path: edit_blob_cancel_path(project, id, is_update, is_create),
       original_branch: ref,
       target_branch: selected_branch,
-      can_push_code: can?(current_user, :push_code, project).to_s,
+      can_push_code: can_push_to_project.to_s,
       can_push_to_branch: can_push_to_branch.to_s,
       empty_repo: project.empty_repo?.to_s,
       blob_name: is_update ? blob.name : nil,
@@ -351,22 +354,26 @@ module BlobHelper
       project_id: project.id,
       project_path: project.full_path,
       new_merge_request_path: project_new_merge_request_path(project),
-      target_project_id: edit_blob_target_project_id(project, ref, can_push_to_branch),
-      target_project_path: edit_blob_target_project_path(project, can_push_to_branch),
-      next_fork_branch_name: edit_blob_fork_project(project)&.repository&.next_branch('patch')
+      target_project_id: edit_blob_target_project_id(project, ref, can_push_to_project_or_branch),
+      target_project_path: edit_blob_target_project_path(project, can_push_to_project_or_branch)
     }
+
+    # Only include next_fork_branch_name if we're actually using a fork
+    data[:next_fork_branch_name] = next_fork_branch_name if next_fork_branch_name
+
+    data
   end
 
   private
 
-  def edit_blob_target_project_id(project, ref, can_push_to_branch)
-    return project.id if can_push_to_branch
+  def edit_blob_target_project_id(project, ref, can_push_to_project_or_branch)
+    return project.id if can_push_to_project_or_branch
 
     edit_blob_fork_project_id(project, ref) || project.id
   end
 
-  def edit_blob_target_project_path(project, can_push_to_branch)
-    return project.full_path if can_push_to_branch
+  def edit_blob_target_project_path(project, can_push_to_project_or_branch)
+    return project.full_path if can_push_to_project_or_branch
 
     edit_blob_fork_project_path(project) || project.full_path
   end
@@ -406,6 +413,12 @@ module BlobHelper
     return unless current_user&.namespace
 
     current_user.fork_of(project)
+  end
+
+  def edit_blob_next_fork_branch_name(project, can_push_to_project_or_branch)
+    return if can_push_to_project_or_branch
+
+    edit_blob_fork_project(project)&.repository&.next_branch('patch')
   end
 
   def archive_download_links(project, ref, archive_prefix)

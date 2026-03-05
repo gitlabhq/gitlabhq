@@ -25,8 +25,8 @@ The package registry supports the following package manager types:
 | Package type                                      | Status |
 |---------------------------------------------------|--------|
 | [Composer](../composer_repository/_index.md)      | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6817) |
-| [Conan 1](../conan_1_repository/_index.md)            | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6816) |
-| [Conan 2](../conan_2_repository/_index.md)            | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/8258) |
+| [Conan 1](../conan_1_repository/_index.md)            | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6816) |
+| [Conan 2](../conan_2_repository/_index.md)            | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/8258) |
 | [Debian](../debian_repository/_index.md)          | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6057) |
 | [Generic packages](../generic_packages/_index.md) | Generally available     |
 | [Go](../go_proxy/_index.md)                       | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3043) |

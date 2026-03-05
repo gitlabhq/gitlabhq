@@ -30,6 +30,9 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
       let_it_be(:pool) { create(:pool_repository, :ready, source_project: project) }
 
       it 'ensures the repositories are linked' do
+        allow(subject).to receive(:gitaly_call)
+        allow(subject).to receive(:flush_ref_caches)
+
         expect(project.pool_repository).to receive(:link_repository).once
 
         subject.perform(*params)
@@ -58,6 +61,8 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
 
       before do
         stub_lfs_setting(enabled: true)
+        allow(subject).to receive(:gitaly_call)
+        allow(subject).to receive(:flush_ref_caches)
       end
 
       it 'cleans up unreferenced LFS objects' do
@@ -74,6 +79,7 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
 
       context 'when optimize repository call fails' do
         before do
+          allow(subject).to receive(:gitaly_call).and_call_original
           allow(project.repository.gitaly_repository_client).to receive(:optimize_repository).and_raise('Boom')
         end
 

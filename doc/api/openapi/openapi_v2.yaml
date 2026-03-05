@@ -49918,8 +49918,6 @@ definitions:
     - requirements_access_level
     - security_and_compliance_enabled
     - compliance_frameworks
-    - merge_request_title_regex
-    - merge_request_title_regex_description
     description: API_Entities_Project model
   API_Entities_LicenseBasic:
     type: object
@@ -68510,8 +68508,6 @@ definitions:
     - requirements_access_level
     - security_and_compliance_enabled
     - compliance_frameworks
-    - merge_request_title_regex
-    - merge_request_title_regex_description
     - permissions
     description: API_Entities_ProjectWithAccess model
   API_Entities_ProjectAccess:
