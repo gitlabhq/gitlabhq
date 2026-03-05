@@ -238,6 +238,7 @@ class MergeRequestDiff < ApplicationRecord
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
+  after_create_commit :enqueue_keep_around_commits, unless: :importing?
   after_create_commit :set_patch_id_sha, unless: :importing?
   after_create_commit :set_as_latest_diff, unless: :importing?
   after_create_commit :trigger_diff_generated_subscription, unless: :importing?
@@ -274,6 +275,8 @@ class MergeRequestDiff < ApplicationRecord
     # of `after_save` hooks that come after this `after_create` hook. Otherwise, the
     # hooks that run when an attribute was changed are run twice.
     reset
+
+    return if async_keep_around_refs?
 
     keep_around_commits unless importing?
   end
@@ -991,6 +994,24 @@ class MergeRequestDiff < ApplicationRecord
     return unless head_commit_sha && start_commit_sha
 
     project.merge_base_commit(head_commit_sha, start_commit_sha).try(:sha)
+  end
+
+  def enqueue_keep_around_commits
+    return unless async_keep_around_refs?
+    return if merge_head?
+
+    project_ids = [project.id, merge_request.source_project_id].compact.uniq
+    MergeRequests::KeepAroundRefsWorker.perform_async(
+      project_ids,
+      [start_commit_sha, head_commit_sha],
+      self.class.name
+    )
+  end
+
+  def async_keep_around_refs?
+    strong_memoize(:async_keep_around_refs) do
+      Feature.enabled?(:async_keep_around_refs_for_merge_request_diffs, project, type: :gitlab_com_derisk)
+    end
   end
 
   def keep_around_commits

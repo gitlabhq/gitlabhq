@@ -1,0 +1,10 @@
+---
+name: async_keep_around_refs_for_merge_request_diffs
+description: Moves keep-around ref creation for MergeRequestDiff to an async Sidekiq worker to reduce idle-in-transaction time
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/589480
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223665
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590817
+milestone: '18.10'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

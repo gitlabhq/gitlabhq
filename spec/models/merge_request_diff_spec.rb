@@ -89,17 +89,43 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       merge_request.create_merge_request_diff
     end
 
-    it 'creates hidden refs' do
-      hidden_refs = subject.project.repository.raw.list_refs(["refs/#{Repository::REF_MERGE_REQUEST}/", "refs/#{Repository::REF_KEEP_AROUND}/"])
+    context 'when creating a new merge request' do
+      context 'when async_keep_around_refs_for_merge_request_diffs is enabled' do
+        before do
+          stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: true)
+        end
 
-      expect(hidden_refs).to match_array([
-        Gitaly::ListRefsResponse::Reference.new(name: subject.merge_request.ref_path, target: subject.head_commit_sha),
-        Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{subject.head_commit_sha}", target: subject.head_commit_sha),
-        Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{subject.start_commit_sha}", target: subject.start_commit_sha)
-      ])
+        it 'calls enqueue_keep_around_commits' do
+          expect_any_instance_of(described_class).to receive(:enqueue_keep_around_commits)
+
+          create(:merge_request)
+        end
+      end
+
+      context 'when async_keep_around_refs_for_merge_request_diffs is disabled' do
+        before do
+          stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: false)
+        end
+
+        it 'creates hidden refs' do
+          hidden_refs = subject.project.repository.raw.list_refs(["refs/#{Repository::REF_MERGE_REQUEST}/", "refs/#{Repository::REF_KEEP_AROUND}/"])
+
+          expect(hidden_refs).to match_array([
+            Gitaly::ListRefsResponse::Reference.new(name: subject.merge_request.ref_path, target: subject.head_commit_sha),
+            Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{subject.head_commit_sha}", target: subject.head_commit_sha),
+            Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{subject.start_commit_sha}", target: subject.start_commit_sha)
+          ])
+        end
+
+        it 'does not enqueue KeepAroundRefsWorker' do
+          expect(MergeRequests::KeepAroundRefsWorker).not_to receive(:perform_async)
+
+          create(:merge_request)
+        end
+      end
     end
 
-    context 'when diff_type is merge_head' do
+    context 'when diff_type is merge_head', :sidekiq_inline do
       let(:merge_request) { create(:merge_request) }
 
       let!(:merge_head) do
@@ -118,15 +144,49 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       it { expect(merge_head.base_commit_sha).to eq(merge_request.merge_ref_head.diff_refs.base_sha) }
       it { expect(merge_head.start_commit_sha).to eq(merge_request.target_branch_sha) }
 
-      it 'creates hidden refs' do
-        hidden_refs = merge_request.project.repository.raw.list_refs(["refs/#{Repository::REF_MERGE_REQUEST}/", "refs/#{Repository::REF_KEEP_AROUND}/"])
+      context 'when async_keep_around_refs_for_merge_request_diffs is enabled' do
+        before do
+          stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: true)
+        end
 
-        expect(hidden_refs).to match_array([
-          Gitaly::ListRefsResponse::Reference.new(name: merge_request.ref_path, target: merge_request.source_branch_sha),
-          Gitaly::ListRefsResponse::Reference.new(name: merge_request.merge_ref_path, target: merge_head.head_commit_sha),
-          Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{merge_head.start_commit_sha}", target: merge_head.start_commit_sha),
-          Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{merge_request.source_branch_sha}", target: merge_request.source_branch_sha)
-        ])
+        it 'does not enqueue KeepAroundRefsWorker for merge_head diffs' do
+          mr = create(:merge_request)
+          MergeRequests::MergeToRefService
+            .new(project: mr.project, current_user: mr.author)
+            .execute(mr)
+
+          expect(MergeRequests::KeepAroundRefsWorker).not_to receive(:perform_async)
+
+          mr.create_merge_head_diff
+        end
+      end
+
+      context 'when async_keep_around_refs_for_merge_request_diffs is disabled' do
+        before do
+          stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: false)
+        end
+
+        it 'creates hidden refs' do
+          hidden_refs = merge_request.project.repository.raw.list_refs(["refs/#{Repository::REF_MERGE_REQUEST}/", "refs/#{Repository::REF_KEEP_AROUND}/"])
+
+          expect(hidden_refs).to match_array([
+            Gitaly::ListRefsResponse::Reference.new(name: merge_request.ref_path, target: merge_request.source_branch_sha),
+            Gitaly::ListRefsResponse::Reference.new(name: merge_request.merge_ref_path, target: merge_head.head_commit_sha),
+            Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{merge_head.start_commit_sha}", target: merge_head.start_commit_sha),
+            Gitaly::ListRefsResponse::Reference.new(name: "refs/#{Repository::REF_KEEP_AROUND}/#{merge_request.source_branch_sha}", target: merge_request.source_branch_sha)
+          ])
+        end
+
+        it 'does not enqueue KeepAroundRefsWorker for merge_head diffs' do
+          mr = create(:merge_request)
+          MergeRequests::MergeToRefService
+            .new(project: mr.project, current_user: mr.author)
+            .execute(mr)
+
+          expect(MergeRequests::KeepAroundRefsWorker).not_to receive(:perform_async)
+
+          mr.create_merge_head_diff
+        end
       end
     end
 
@@ -1059,6 +1119,58 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
             diffs
           end
+        end
+      end
+    end
+
+    describe '#enqueue_keep_around_commits' do
+      let(:merge_request) { create(:merge_request) }
+      let(:merge_request_diff) { merge_request.merge_request_diff }
+
+      context 'when async_keep_around_refs_for_merge_request_diffs is enabled' do
+        before do
+          stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: true)
+        end
+
+        it 'enqueues KeepAroundRefsWorker with project IDs, SHAs, and source' do
+          project_ids = [merge_request_diff.project.id, merge_request.source_project_id].compact.uniq
+          expect(MergeRequests::KeepAroundRefsWorker).to receive(:perform_async).with(
+            project_ids,
+            [merge_request_diff.start_commit_sha, merge_request_diff.head_commit_sha],
+            'MergeRequestDiff'
+          )
+
+          merge_request_diff.send(:enqueue_keep_around_commits)
+        end
+
+        it 'does not call keep_around_commits synchronously' do
+          allow(MergeRequests::KeepAroundRefsWorker).to receive(:perform_async)
+
+          expect(merge_request_diff).not_to receive(:keep_around_commits)
+
+          merge_request_diff.send(:enqueue_keep_around_commits)
+        end
+
+        context 'when diff is a merge_head diff' do
+          it 'does not enqueue KeepAroundRefsWorker' do
+            allow(merge_request_diff).to receive(:merge_head?).and_return(true)
+
+            expect(MergeRequests::KeepAroundRefsWorker).not_to receive(:perform_async)
+
+            merge_request_diff.send(:enqueue_keep_around_commits)
+          end
+        end
+      end
+
+      context 'when async_keep_around_refs_for_merge_request_diffs is disabled' do
+        before do
+          stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: false)
+        end
+
+        it 'does not enqueue KeepAroundRefsWorker' do
+          expect(MergeRequests::KeepAroundRefsWorker).not_to receive(:perform_async)
+
+          merge_request_diff.send(:enqueue_keep_around_commits)
         end
       end
     end

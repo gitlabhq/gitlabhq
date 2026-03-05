@@ -1053,6 +1053,52 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    describe '#enqueue_keep_around_commit' do
+      let(:merge_request) { build_stubbed(:merge_request) }
+
+      context 'when merge_commit_sha is not present' do
+        it 'does not enqueue KeepAroundRefsWorker' do
+          expect(MergeRequests::KeepAroundRefsWorker).not_to receive(:perform_async)
+
+          merge_request.send(:enqueue_keep_around_commit)
+        end
+      end
+
+      context 'when merge_commit_sha is present' do
+        before do
+          allow(merge_request).to receive(:merge_commit_sha).and_return('abc123')
+        end
+
+        context 'when async_keep_around_refs_for_merge_request_diffs is enabled' do
+          before do
+            stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: true)
+          end
+
+          it 'enqueues KeepAroundRefsWorker' do
+            expect(MergeRequests::KeepAroundRefsWorker).to receive(:perform_async).with(
+              [merge_request.project.id],
+              ['abc123'],
+              'MergeRequest'
+            )
+
+            merge_request.send(:enqueue_keep_around_commit)
+          end
+        end
+
+        context 'when async_keep_around_refs_for_merge_request_diffs is disabled' do
+          before do
+            stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: false)
+          end
+
+          it 'does not enqueue KeepAroundRefsWorker' do
+            expect(MergeRequests::KeepAroundRefsWorker).not_to receive(:perform_async)
+
+            merge_request.send(:enqueue_keep_around_commit)
+          end
+        end
+      end
+    end
+
     describe '#ensure_merge_request_metrics' do
       let(:merge_request) { create(:merge_request) }
 

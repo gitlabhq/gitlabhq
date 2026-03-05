@@ -174,6 +174,7 @@ class MergeRequest < ApplicationRecord
   after_update :reload_diff_if_branch_changed
   after_save :keep_around_commit, unless: :importing?
   after_save :save_merge_data_changes
+  after_commit :enqueue_keep_around_commit, unless: :importing?
   after_commit :ensure_metrics!, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
 
@@ -2448,7 +2449,26 @@ class MergeRequest < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def keep_around_commit
+    return if async_keep_around_refs?
+
     project.repository.keep_around(self.merge_commit_sha, source: self.class.name)
+  end
+
+  def enqueue_keep_around_commit
+    return unless merge_commit_sha.present?
+    return unless async_keep_around_refs?
+
+    MergeRequests::KeepAroundRefsWorker.perform_async(
+      [project.id],
+      [merge_commit_sha],
+      self.class.name
+    )
+  end
+
+  def async_keep_around_refs?
+    strong_memoize(:async_keep_around_refs) do
+      Feature.enabled?(:async_keep_around_refs_for_merge_request_diffs, project, type: :gitlab_com_derisk)
+    end
   end
 
   def has_commits?

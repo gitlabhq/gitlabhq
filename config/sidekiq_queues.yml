@@ -685,6 +685,8 @@
   - 1
 - - merge_requests_handle_assignees_change
   - 1
+- - merge_requests_keep_around_refs
+  - 1
 - - merge_requests_mergeability_check_batch
   - 1
 - - merge_requests_notify_approvers

@@ -2,6 +2,7 @@
 
 module DiffPositionableNote
   extend ActiveSupport::Concern
+  include Gitlab::Utils::StrongMemoize
 
   included do
     before_validation :set_original_position, on: :create
@@ -103,6 +104,22 @@ module DiffPositionableNote
     errors.add(:commit_id, 'does not match the diff refs')
   end
 
+  def sync_keep_around_commits
+    return if async_keep_around_refs?
+
+    repository.keep_around(*shas, source: "#{noteable_type}/#{self.class.name}")
+  end
+
+  def enqueue_keep_around_commits
+    return unless async_keep_around_refs?
+
+    MergeRequests::KeepAroundRefsWorker.perform_async(
+      [project.id],
+      shas,
+      "#{noteable_type}/#{self.class.name}"
+    )
+  end
+
   def keep_around_commits
     repository.keep_around(*shas, source: "#{noteable_type}/#{self.class.name}")
   end
@@ -110,6 +127,11 @@ module DiffPositionableNote
   def repository
     noteable.respond_to?(:repository) ? noteable.repository : project.repository
   end
+
+  def async_keep_around_refs?
+    Feature.enabled?(:async_keep_around_refs_for_merge_request_diffs, project, type: :gitlab_com_derisk)
+  end
+  strong_memoize_attr :async_keep_around_refs?
 
   def shas
     [

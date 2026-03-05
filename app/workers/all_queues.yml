@@ -302,7 +302,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace: :container_repository
 - :name: container_repository:container_expiration_policies_cleanup_container_repository
   :worker_name: ContainerExpirationPolicies::CleanupContainerRepositoryWorker
@@ -323,7 +323,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace: :container_repository
 - :name: container_repository_delete:container_registry_delete_container_repository
   :worker_name: ContainerRegistry::DeleteContainerRepositoryWorker
@@ -334,7 +334,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace: :container_repository_delete
 - :name: cronjob:adjourned_group_deletion
   :worker_name: AdjournedGroupDeletionWorker
@@ -505,7 +505,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :clickhouse
+    - :clickhouse
   :queue_namespace: :cronjob
 - :name: cronjob:ci_delete_expired_trigger_token
   :worker_name: Ci::DeleteExpiredTriggerTokenWorker
@@ -1566,7 +1566,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace: :dependency_proxy_blob
 - :name: dependency_proxy_manifest:dependency_proxy_cleanup_manifest
   :worker_name: DependencyProxy::CleanupManifestWorker
@@ -1577,7 +1577,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace: :dependency_proxy_manifest
 - :name: deployment:deployments_archive_in_project
   :worker_name: Deployments::ArchiveInProjectWorker
@@ -2438,7 +2438,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_cleanup_package_file
   :worker_name: Packages::CleanupPackageFileWorker
@@ -2449,7 +2449,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_helm_cleanup_stale_metadata_cache
   :worker_name: Packages::Helm::CleanupStaleMetadataCacheWorker
@@ -2460,7 +2460,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_mark_package_files_for_destruction
   :worker_name: Packages::MarkPackageFilesForDestructionWorker
@@ -2481,7 +2481,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_nuget_cleanup_stale_symbols
   :worker_name: Packages::Nuget::CleanupStaleSymbolsWorker
@@ -2492,7 +2492,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace: :package_cleanup
 - :name: package_repositories:packages_conan_process_package_file
   :worker_name: Packages::Conan::ProcessPackageFileWorker
@@ -3063,7 +3063,7 @@
   :weight: 1
   :idempotent: false
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace: :repository_check
 - :name: repository_check:repository_check_clear
   :worker_name: RepositoryCheck::ClearWorker
@@ -3244,7 +3244,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: anti_abuse_ban_duplicate_users
   :worker_name: AntiAbuse::BanDuplicateUsersWorker
@@ -3635,7 +3635,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :import_shared_storage
+    - :import_shared_storage
   :queue_namespace:
 - :name: bulk_imports_relation_export
   :worker_name: BulkImports::RelationExportWorker
@@ -3646,7 +3646,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :import_shared_storage
+    - :import_shared_storage
   :queue_namespace:
 - :name: bulk_imports_transform_references
   :worker_name: BulkImports::TransformReferencesWorker
@@ -3717,7 +3717,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :clickhouse
+    - :clickhouse
   :queue_namespace:
 - :name: ci_delete_objects
   :worker_name: Ci::DeleteObjectsWorker
@@ -3728,7 +3728,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: ci_destroy_old_pipelines
   :worker_name: Ci::DestroyOldPipelinesWorker
@@ -3739,7 +3739,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: ci_execute_build_hooks
   :worker_name: Ci::ExecuteBuildHooksWorker
@@ -3870,7 +3870,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: ci_update_build_names
   :worker_name: Ci::UpdateBuildNamesWorker
@@ -4571,7 +4571,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: members_prune_deletions
   :worker_name: Members::PruneDeletionsWorker
@@ -4582,7 +4582,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: merge
   :worker_name: MergeWorker
@@ -4603,7 +4603,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: merge_request_mergeability_check
   :worker_name: MergeRequestMergeabilityCheckWorker
@@ -4677,6 +4677,16 @@
   :queue_namespace:
 - :name: merge_requests_handle_assignees_change
   :worker_name: MergeRequests::HandleAssigneesChangeWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: merge_requests_keep_around_refs
+  :worker_name: MergeRequests::KeepAroundRefsWorker
   :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :high
@@ -4924,7 +4934,7 @@
   :weight: 1
   :idempotent: false
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: pages_domain_verification
   :worker_name: PagesDomainVerificationWorker
@@ -4935,7 +4945,7 @@
   :weight: 1
   :idempotent: false
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: pages_reset_pages_default_domain_redirect
   :worker_name: Pages::ResetPagesDefaultDomainRedirectWorker
@@ -4996,7 +5006,7 @@
   :weight: 1
   :idempotent: false
   :tags:
-  - :import_shared_storage
+    - :import_shared_storage
   :queue_namespace:
 - :name: projects_after_import
   :worker_name: Projects::AfterImportWorker
@@ -5087,7 +5097,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :import_shared_storage
+    - :import_shared_storage
   :queue_namespace:
 - :name: projects_import_export_relation_export
   :worker_name: Projects::ImportExport::RelationExportWorker
@@ -5098,7 +5108,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :import_shared_storage
+    - :import_shared_storage
   :queue_namespace:
 - :name: projects_import_export_relation_import
   :worker_name: Projects::ImportExport::RelationImportWorker
@@ -5139,7 +5149,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: projects_post_creation
   :worker_name: Projects::PostCreationWorker
@@ -5180,7 +5190,7 @@
   :weight: 1
   :idempotent: true
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: projects_schedule_bulk_repository_shard_moves
   :worker_name: Projects::ScheduleBulkRepositoryShardMovesWorker
@@ -5301,7 +5311,7 @@
   :weight: 1
   :idempotent: false
   :tags:
-  - :cronjob_child
+    - :cronjob_child
   :queue_namespace:
 - :name: remote_mirror_notification
   :worker_name: RemoteMirrorNotificationWorker
