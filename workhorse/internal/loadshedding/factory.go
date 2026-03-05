@@ -14,14 +14,10 @@ func NewLoadSheddingService(cfg *config.LoadSheddingConfig, logger *logrus.Logge
 	}
 
 	// Create the load shedder
-	strategy := NewBacklogStrategy(cfg.Strategy)
 	loadShedder := NewLoadShedder(
-		cfg.BacklogThreshold,
-		cfg.BacklogHysteresis,
-		cfg.RetryAfterSeconds,
+		cfg,
 		logger,
 		prometheus.DefaultRegisterer,
-		strategy,
 	)
 	loadShedder.InitializeMetrics()
 

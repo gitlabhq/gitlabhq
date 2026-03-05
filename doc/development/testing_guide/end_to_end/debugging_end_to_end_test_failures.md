@@ -126,7 +126,7 @@ gitlab/gitlab-ee:nightly
 ```
 
 The commit SHA can be determined by visiting the <http://localhost/help> page after sign-in
-or by calling the [`/api/v4/version` API](../../../api/version.md) where it is displayed as a value of the `revision` attribute.
+or by calling the [`/api/v4/version` API](../../../api/metadata.md) where it is displayed as a value of the `revision` attribute.
 
 #### By inspecting the pipeline that created the nightly image
 

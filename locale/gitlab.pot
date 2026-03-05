@@ -4564,6 +4564,9 @@ msgstr ""
 msgid "AccessTokens|Select a role"
 msgstr ""
 
+msgid "AccessTokens|Select at least one scope."
+msgstr ""
+
 msgid "AccessTokens|Select permissions"
 msgstr ""
 
@@ -14074,6 +14077,9 @@ msgstr ""
 msgid "CSV is being generated and will be emailed to you upon completion."
 msgstr ""
 
+msgid "CVE"
+msgstr ""
+
 msgid "CVE|As a maintainer, requesting a CVE for a vulnerability in your project will help your users stay secure and informed."
 msgstr ""
 
@@ -14105,6 +14111,9 @@ msgid "CVS|Container Scanning for Registry is enabled"
 msgstr ""
 
 msgid "CVS|Only a project maintainer or owner can toggle this feature."
+msgstr ""
+
+msgid "CWE"
 msgstr ""
 
 msgid "Cache search results for %{label}"
@@ -35848,7 +35857,7 @@ msgstr ""
 msgid "IdentityVerification|You've reached the maximum amount of tries. Wait %{interval} or send a new code and try again."
 msgstr ""
 
-msgid "IdentityVerification|Your account has been successfully verified. You'll be redirected to your account in just a moment. You can also %{redirect_url_start}refresh the page%{redirect_url_end}."
+msgid "IdentityVerification|Your account has been successfully verified. You'll be redirected to your account in just a moment. You can also %{link_start}refresh the page%{link_end}."
 msgstr ""
 
 msgid "IdentityVerification|Your verification code expires after %{expires_in_minutes} minutes."
@@ -46584,6 +46593,9 @@ msgstr ""
 msgid "Number of parallel processes per indexing task"
 msgstr ""
 
+msgid "Number of projects"
+msgstr ""
+
 msgid "Number of references exceeds the limit. Please provide no more than %{refs_limit} references at the same time."
 msgstr ""
 
@@ -46621,6 +46633,9 @@ msgid "OKRs|%{author_link}'s OKR %{work_item_link} requires an update."
 msgstr ""
 
 msgid "OKRs|An update is due on: %{update_due_date}"
+msgstr ""
+
+msgid "OWASP"
 msgstr ""
 
 msgid "Object does not exist on the server or you don't have permissions to access it"
@@ -58963,6 +58978,9 @@ msgstr ""
 msgid "Runners|Token expiry"
 msgstr ""
 
+msgid "Runners|Token rotation deadline has passed"
+msgstr ""
+
 msgid "Runners|Top projects consuming group runners"
 msgstr ""
 
@@ -59090,6 +59108,24 @@ msgid "Runners|Zone must have the right format."
 msgstr ""
 
 msgid "Runners|documentation"
+msgstr ""
+
+msgid "Runners|token_expires_at is too far in the future (maximum is %{maximum})"
+msgstr ""
+
+msgid "Runners|token_expires_at must be a valid time"
+msgstr ""
+
+msgid "Runners|token_expires_at must be at least %{minimum} in the future"
+msgstr ""
+
+msgid "Runners|token_rotation_deadline cannot be in the past"
+msgstr ""
+
+msgid "Runners|token_rotation_deadline must be a valid time"
+msgstr ""
+
+msgid "Runners|token_rotation_deadline must be less than or equal to token_expires_at"
 msgstr ""
 
 msgid "Runner|1 day selected"
@@ -61903,6 +61939,9 @@ msgstr ""
 msgid "SecurityOrchestration|Add regular branches"
 msgstr ""
 
+msgid "SecurityOrchestration|Add values"
+msgstr ""
+
 msgid "SecurityOrchestration|Additional configuration"
 msgstr ""
 
@@ -62390,6 +62429,9 @@ msgid "SecurityOrchestration|If one or more %{securityPoliciesPathStart}security
 msgstr ""
 
 msgid "SecurityOrchestration|If vulnerabilities are automatically dismissed when found under following criteria:"
+msgstr ""
+
+msgid "SecurityOrchestration|If vulnerabilities have one of the following identifiers:"
 msgstr ""
 
 msgid "SecurityOrchestration|In each pipeline, a %{boldStart}maximum of 1000%{boldEnd} vulnerabilities that are %{italicStart}no longer detected%{italicEnd} will be set to status %{italicStart}Resolved%{italicEnd} until all have been auto-resolved."
@@ -62883,6 +62925,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select frameworks"
 msgstr ""
 
+msgid "SecurityOrchestration|Select identifier type"
+msgstr ""
+
 msgid "SecurityOrchestration|Select list type"
 msgstr ""
 
@@ -63301,6 +63346,9 @@ msgid "SecurityOrchestration|You can't unprotect this branch because its protect
 msgstr ""
 
 msgid "SecurityOrchestration|You can't unprotect this branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."
+msgstr ""
+
+msgid "SecurityOrchestration|You cannot use auto-dismiss rules with override rules."
 msgstr ""
 
 msgid "SecurityOrchestration|You do not have the permission required to edit policies"
@@ -83101,6 +83149,9 @@ msgid "is not a descendant of the Group owning the template"
 msgstr ""
 
 msgid "is not a valid X509 certificate."
+msgstr ""
+
+msgid "is not a valid icon name. Valid icon names are: %{valid_names}"
 msgstr ""
 
 msgid "is not allowed for sign-up. Please use your regular email address."

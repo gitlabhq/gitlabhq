@@ -1548,7 +1548,7 @@ branch. This is run automatically as part of `gdk update`.
 
 #### Mocking Apollo Client
 
-To test the components with Apollo operations, we need to mock an Apollo Client in our unit tests. We use [`mock-apollo-client`](https://www.npmjs.com/package/mock-apollo-client) library to mock Apollo client and [`createMockApollo` helper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/__helpers__/mock_apollo_helper.js) we created on top of it.
+To test the components with Apollo operations, we need to mock an Apollo Client in our unit tests. We use the [`mock_apollo_helper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/frontend/__helpers__/mock_apollo_helper.js) which provides a custom Apollo Link implementation with controlled query resolution.
 
 We need to inject `VueApollo` into the Vue instance by calling `Vue.use(VueApollo)`. This will install `VueApollo` globally for all the tests in the file. It is recommended to call `Vue.use(VueApollo)` just after the imports.
 
@@ -1980,6 +1980,124 @@ mockApollo = createMockApollo(
   },
 );
 ```
+
+#### Mock Apollo helper (controlled resolution)
+
+`mock_apollo_helper` replaces the `mock-apollo-client` library with a custom Apollo Link.
+Queries and mutations are held pending until explicitly resolved, enabling precise control over loading states. Use it for all new tests.
+
+##### Import and return shape
+
+The helper provides two exports:
+
+- `createControlledMockApollo` (named) — **controlled mode**: queries hang until explicitly resolved.
+- `createMockApollo` (default) — **legacy mode**: queries resolve immediately.
+
+Both accept `(handlers, resolvers, cacheOptions)`.
+
+##### Controlled mode (`createControlledMockApollo` named export)
+
+Queries and mutations are held pending until you explicitly resolve them,
+enabling precise assertions on loading states.
+
+```javascript
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
+
+const handler = jest.fn().mockResolvedValue(mockResponse);
+const { apolloProvider, resolveQuery } = createControlledMockApollo([[projectQuery, handler]]);
+
+wrapper = shallowMount(Component, { apolloProvider });
+await waitForPromises();
+// Component is still in loading state
+
+await resolveQuery(projectQuery);
+// Component now shows data
+```
+
+Resolution methods are type-safe: `resolveQuery`/`rejectQuery` accept only query documents,
+and `resolveMutation`/`rejectMutation` accept only mutation documents. Passing the wrong type
+throws an error. All resolution methods return a promise (internally calling `waitForPromises()`),
+so you can `await` them directly.
+
+##### Legacy mode (default export)
+
+The default export resolves handlers immediately. This matches the behavior of the
+old `mock-apollo-client` based implementation. Use it for existing tests.
+
+```javascript
+import createMockApollo from 'helpers/mock_apollo_helper';
+
+const handler = jest.fn().mockResolvedValue({ data: { project: { id: '1' } } });
+const apolloProvider = createMockApollo([[projectQuery, handler]]);
+
+wrapper = shallowMount(Component, { apolloProvider });
+await waitForPromises();
+expect(handler).toHaveBeenCalledWith({ id: '1' });
+```
+
+Use `resolveAll()` to resolve all pending operations recursively. It resolves
+the current wave, waits for promises, and repeats if new operations appeared.
+This handles cascading queries where resolving one query triggers another.
+`resolveAll()` throws if no operations are pending. Use `waitForPromises()`
+to flush microtasks without pending operations.
+
+Use `rejectQuery(queryDoc, error)` or `rejectMutation(mutationDoc, error)` to simulate a failure.
+
+Operations without a registered handler throw an error, which helps catch missing handler setup early.
+
+##### Handler formats
+
+Handlers can be mock functions or plain data objects.
+
+```javascript
+// Function handler (recommended when you need to assert on calls)
+const handler = jest.fn().mockResolvedValue({ data: { project: { id: '1' } } });
+
+// Plain data handler (simpler, no assertion support)
+const handlers = [[projectQuery, { data: { project: { id: '1' } } }]];
+```
+
+##### Migrate from legacy mode to controlled mode
+
+Tests using the default import get legacy mode (auto-resolution). To migrate to controlled mode:
+
+1. Use named import and destructure the return value:
+
+   ```javascript
+   // Legacy mode (default export)
+   import createMockApollo from 'helpers/mock_apollo_helper';
+   const apolloProvider = createMockApollo([...]);
+
+   // Controlled mode (named export)
+   import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
+   const { apolloProvider, resolveQuery } = createControlledMockApollo([...]);
+   ```
+
+1. Update mount calls to use the destructured provider:
+
+   ```javascript
+   wrapper = shallowMount(SomeComponent, { apolloProvider });
+   ```
+
+1. Replace `await waitForPromises()` with explicit resolution:
+
+   ```javascript
+   // Legacy mode
+   await waitForPromises();
+
+   // Controlled mode
+   await resolveQuery(projectQuery);
+   // or resolve all pending operations:
+   await resolveAll();
+   ```
+
+1. Cache options still work as the third argument:
+
+   ```javascript
+   const { apolloProvider } = createControlledMockApollo(handlers, resolvers, {
+     dataIdFromObject: (object) => object.iid,
+   });
+   ```
 
 ## Handling errors
 

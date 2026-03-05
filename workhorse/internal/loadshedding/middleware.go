@@ -25,19 +25,21 @@ func Middleware(loadShedder *LoadShedder, logger *logrus.Logger) func(http.Handl
 				backlog := loadShedder.GetLastBacklog()
 				threshold := loadShedder.GetThreshold()
 				retryAfter := loadShedder.GetRetryAfterSeconds()
+				statusCode := loadShedder.GetStatusCode()
 
 				logger.WithFields(map[string]interface{}{
 					"backlog":     backlog,
 					"threshold":   threshold,
 					"retry_after": retryAfter,
+					"status_code": statusCode,
 					"path":        r.URL.Path,
 					"method":      r.Method,
 				}).Debug("Shedding load due to high backlog")
 
-				// Return 503 Service Unavailable with Retry-After header
+				// Return configured status code with Retry-After header
 				// NGINX will retry the request per proxy_next_upstream configuration
 				w.Header().Set("Retry-After", strconv.Itoa(retryAfter))
-				http.Error(w, "Service Unavailable: High backlog", http.StatusServiceUnavailable)
+				http.Error(w, "Service Unavailable: High backlog", statusCode)
 				return
 			}
 

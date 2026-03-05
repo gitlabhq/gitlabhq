@@ -31,6 +31,9 @@ module Ci
         should_mark_hosted = params.delete(:hosted_runner)
         runner = ::Ci::Runner.new(params)
 
+        error = validate_token_expiration_params(runner)
+        return ServiceResponse.error(message: error, reason: :validation_error) if error
+
         create_runner(runner, should_mark_hosted)
       end
 
@@ -40,11 +43,18 @@ module Ci
         params[:creator] = user
 
         strategy.normalize_params
+        normalize_token_expiration_params
       end
 
       private
 
       attr_reader :user, :scope, :params, :strategy
+
+      # Overridden in EE to normalize token expiration params (e.g. rename keys)
+      def normalize_token_expiration_params; end
+
+      # Overridden in EE to validate token expiration params
+      def validate_token_expiration_params(_runner); end
 
       def create_runner(runner, should_mark_hosted)
         ApplicationRecord.transaction do

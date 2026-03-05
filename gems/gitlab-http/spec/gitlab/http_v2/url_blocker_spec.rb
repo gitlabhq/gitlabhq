@@ -608,6 +608,10 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
       expect(described_class.blocked_url?('http://:8080', schemes: schemes)).to be true
     end
 
+    it 'returns true for single-slash malformed URL with nil hostname' do
+      expect(described_class.blocked_url?('http:/localhost:9201', schemes: schemes)).to be true
+    end
+
     it 'returns false for legitimate URL' do
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', schemes: schemes)).to be false
     end
@@ -1049,6 +1053,16 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
       ip_addresses.each do |ip|
         expect { described_class.send(:validate_hostname, ip) }.not_to raise_error
       end
+    end
+
+    it 'raises BlockedUrlError for nil hostname' do
+      expect { described_class.send(:validate_hostname, nil) }
+        .to raise_error(described_class::BlockedUrlError, 'Hostname or IP address invalid')
+    end
+
+    it 'raises BlockedUrlError for empty string hostname' do
+      expect { described_class.send(:validate_hostname, '') }
+        .to raise_error(described_class::BlockedUrlError, 'Hostname or IP address invalid')
     end
   end
 end

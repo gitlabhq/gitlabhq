@@ -132,6 +132,59 @@ RSpec.describe Gitlab::Ci::Config::External::File::Local, feature_category: :pip
       end
     end
 
+    context 'when included file uses spec:include' do
+      let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
+
+      before do
+        allow_any_instance_of(described_class)
+          .to receive(:fetch_local_content)
+          .and_return("spec:\n  include:\n    - local: /shared-inputs.yml\n---\njob:\n  script: echo\n")
+      end
+
+      it 'returns false and adds an error message about spec:include not being supported' do
+        expect(valid?).to be_falsy
+        expect(local_file.errors).to include(
+          "Included file `lib/gitlab/ci/templates/existent-file.yml` cannot use `spec:include`. " \
+            "This keyword is not supported in included configuration files"
+        )
+      end
+
+      context 'when the file is an internal include (trigger:include)' do
+        let(:pipeline_config) { instance_double(Gitlab::Ci::ProjectConfig::Bridge, internal_include_prepended?: true) }
+        let(:context_params) do
+          {
+            project: project,
+            sha: sha,
+            user: user,
+            parent_pipeline: parent_pipeline,
+            variables: variables,
+            pipeline_config: pipeline_config
+          }
+        end
+
+        it 'does not add a spec:include validation error' do
+          local_file.validate_spec_include!
+
+          expect(local_file.errors).not_to include(
+            a_string_matching(/cannot use `spec:include`/)
+          )
+        end
+
+        context 'when the file is included by the child pipeline config (nested include)' do
+          let(:nested_context) { context.mutate(project: project, sha: sha, user: user, variables: variables) }
+          let(:nested_file) { described_class.new(params, nested_context) }
+
+          it 'blocks spec:include because internal_include? is not preserved for nested contexts' do
+            nested_file.validate_spec_include!
+
+            expect(nested_file.errors).to include(
+              a_string_matching(/cannot use `spec:include`/)
+            )
+          end
+        end
+      end
+    end
+
     context 'when the given sha is not valid' do
       let(:location) { '/lib/gitlab/ci/templates/existent-file.yml' }
       let(:sha) { ':' }

@@ -5,17 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Permissions Conventions
 ---
 
-## Historical Context
-
-We utilize the [`DeclarativePolicy` framework for authorization in GitLab](../policies.md), making it straightforward to add new permissions. Until 2024, there was no clear guidance on when to introduce new permissions and how to name them. This lack of direction is a significant reason why the number of permissions has become unmanageable.
-
-The purpose of this document is to provide guidance on:
-
-- When to introduce a new permission and when to reuse an existing one
-- How to name new permissions
-- What should be included in the `Policy` classes and what should not
-
-### Introducing New Permissions
+## Introducing New Permissions
 
 Introduce a new permission only when absolutely necessary. Always try to use an existing one first. For example, there's no need for a `read_issue_description` permission when we already have `read_issue`, and both require the same level of access. As a general guideline, a permission can be reused when the subject and action are the same. In the previous example the subject would be an `issue` and the action would be `read`. There is no need to create a new permission for each attribute of an issue a user may be able to read.
 
@@ -24,7 +14,7 @@ In theory, this permission can be used to control access to manage CI/CD variabl
 Additionally using permissions such as `admin_cicd_variable` or `manage_cicd_variable` should be avoided because they imply different actions that are being authorized. Instead, the action should be specific such as `create_cicd_variable` or `read_cicd_variable`.
 Implementing granular permissions allows us to adhere to the principle of least privilege for custom roles and provides much more fine grained options for standard roles.
 
-### Permission Definition File
+## Permission Definition File
 
 Each permission should have a corresponding definition file. These files are used to build documentation and enable a permissions-first architecture around authorization logic.
 
@@ -50,11 +40,11 @@ bin/permission force_delete_ai_catalog_item -a force_delete -r ai_catalog_item -
 
 For a full guide on using the command, see [Create Permission Definition Files](granular_access/rest_api_implementation_guide.md#step-3-create-permission-definition-files).
 
-### Naming Permissions
+## Naming Permissions
 
 Our goal is for all permissions to follow a consistent pattern: **`action_resource(_subresource)`**. These guidelines apply to both Assignable Permissions and Raw Permissions, but most strictly be followed with Assignable Permissions as they are public facing.
 
-#### Preferred Actions
+### Preferred Actions
 
 If you are introducing a new permission, prefer to use one of the following actions:
 
@@ -67,7 +57,7 @@ If you are introducing a new permission, prefer to use one of the following acti
 
 We recognize that this set of actions is limited and not applicable to every feature. Actions are [situationally allowed from outside this set](#when-to-introduce-new-actions), but require approval from the [Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authorization/#group-members).
 
-#### Disallowed Actions
+### Disallowed Actions
 
 The following action patterns are examples of those that should not be introduced into the permission catalog:
 
@@ -85,9 +75,9 @@ The following action patterns are examples of those that should not be introduce
 | `view`    | Ambiguous read semantics; use `read` |
 | `write`   | Encompasses create, update, and delete operations, causing unintentional privilege escalation that results in security incidents where users accidentally receive delete access when only needing create or update permissions. Use specific actions like `create`, `update`, or `delete` |
 
-While you may see permissions with these actions, they were likely introduced before these [conventions were established](#historical-context) and will eventually be refactored to align with the current guidelines.
+While you may see permissions with these actions, they were likely introduced before these conventions were established and will eventually be refactored to align with the current guidelines.
 
-#### When to Introduce New Actions
+### When to Introduce New Actions
 
 There are actions outside of [the preferred set](#preferred-actions) that are necessary for providing users with a secure and intuitive permissions model.
 
@@ -99,7 +89,7 @@ A new action may be introduced when:
 
 1. The action is high-impact or irreversible and carries distinct domain meaning. For example, `purge_maven_virtual_registry_cache` uses the action `purge` which is irreversible and has established meaning when discussing caching in the broader software industry.
 
-#### Resource Naming Conventions
+### Resource Naming Conventions
 
 The resource (and optional subresource) in a permission name should always:
 
@@ -109,7 +99,7 @@ The resource (and optional subresource) in a permission name should always:
 
 1. Use user-facing domain terminology instead of exposing implementation details. (e.g., if a customer would have no way of knowing about your resource, it probably shouldn't be in the permission name)
 
-#### Avoiding Resource Boundaries in Permission Names
+### Avoiding Resource Boundaries in Permission Names
 
 Permissions **should NOT encode the resource boundary** (such as `project`, `group`, or `user`) directly into the permission name.
 
@@ -123,34 +113,6 @@ can?(:read_insights_dashboard, project)
 can?(:read_insights_dashboard, group)
 ```
 
-#### Exceptions
+### Exceptions
 
-If you believe a new permission is needed that does not follow these conventions, consult the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authorization/). We're always open to discussion, these guidelines are meant to make the work of Engineers easier, not to complicate it.
-
-### What to Include in Policy Classes
-
-#### Role
-
-Policy classes should include checks for both predefined and custom roles.
-
-Examples:
-
-```ruby
-rule { developer } # Static role check
-rule { can?(:developer_access) } # Another approach used in some classes
-rule { custom_role_enables_read_dependency } # Custom role check
-```
-
-#### Checks Related to the Current User
-
-Include checks that vary based on the current user's relationship with the object, such as being an assignee or author.
-
-Examples:
-
-```ruby
-rule { is_author }.policy do
-  enable :read_note
-  enable :update_note
-  enable :delete_note
-end
-```
+If you believe a new permission is needed that does not follow these conventions, consult the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authorization). We're always open to discussion, these guidelines are meant to make the work of Engineers easier, not to complicate it.

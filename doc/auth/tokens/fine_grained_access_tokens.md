@@ -747,6 +747,7 @@ Grants the ability to read and delete container repositories.
 | Delete | Project | `DELETE` | `/projects/:id/registry/repositories/:repository_id` |
 | Delete | Project | `DELETE` | `/projects/:id/registry/repositories/:repository_id/tags` |
 | Delete | Project | `DELETE` | `/projects/:id/registry/repositories/:repository_id/tags/:tag_name` |
+| Read | Project | `GET` | `/registry/repositories/:id` |
 | Read | Project | `GET` | `/projects/:id/registry/repositories` |
 | Read | Project | `GET` | `/projects/:id/registry/repositories/:repository_id/tags` |
 | Read | Project | `GET` | `/projects/:id/registry/repositories/:repository_id/tags/:tag_name` |

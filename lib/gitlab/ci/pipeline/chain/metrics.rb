@@ -35,13 +35,13 @@ module Gitlab
             return unless yaml_result
 
             {
-              run: yaml_result.uses_keyword?(:run),
-              only: yaml_result.uses_keyword?(:only),
-              except: yaml_result.uses_keyword?(:except),
-              artifacts_reports_junit: yaml_result.uses_nested_keyword?(%i[artifacts reports junit]),
-              job_inputs: yaml_result.uses_keyword?(:inputs),
-              inputs: yaml_result.uses_inputs?,
-              input_rules: yaml_result.uses_input_rules?
+              'run' => yaml_result.uses_keyword?(:run),
+              'only' => yaml_result.uses_keyword?(:only),
+              'except' => yaml_result.uses_keyword?(:except),
+              'artifacts_reports_junit' => yaml_result.uses_nested_keyword?(%i[artifacts reports junit]),
+              'job_inputs' => yaml_result.uses_keyword?(:inputs),
+              'inputs' => yaml_result.uses_inputs?,
+              'input_rules' => yaml_result.uses_input_rules?
             }
           end
         end

@@ -189,5 +189,46 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         end
       end
     end
+
+    context 'when included file uses spec:include' do
+      let(:config) do
+        <<~YAML
+        include:
+          - local: 'templates/job.yml'
+            inputs:
+              env: staging
+
+        test:
+          script: exit 0
+        YAML
+      end
+
+      let(:project_files) do
+        {
+          '.gitlab-ci.yml' => config,
+          'templates/job.yml' => <<~YAML,
+            spec:
+              include:
+                - local: /templates/shared-inputs.yml
+            ---
+            deploy:
+              script: echo "deploying to $[[ inputs.env ]]"
+          YAML
+          'templates/shared-inputs.yml' => <<~YAML
+            inputs:
+              env:
+                type: string
+                default: production
+          YAML
+        }
+      end
+
+      it 'fails pipeline creation with spec:include not supported error' do
+        expect(pipeline.errors.full_messages).to include(
+          a_string_matching(/cannot use `spec:include`/)
+        )
+        expect(pipeline).not_to be_created_successfully
+      end
+    end
   end
 end

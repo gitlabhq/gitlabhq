@@ -39,11 +39,27 @@ On GitLab.com, group Owners can
 [restrict personal snippet creation](group/manage.md#restrict-personal-snippets-for-enterprise-users)
 for [enterprise users](enterprise_user/_index.md).
 
+## Snippet visibility
+
+For project snippets, the project's visibility always takes precedence over the snippet's
+visibility setting. A snippet marked as public is not accessible to anyone who cannot already
+access the project.
+
+| Project visibility | Who can access public snippets | Who can access private snippets |
+|--------------------|-------------------------------|--------------------------------|
+| Private            | Project members only          | Project members only           |
+| Internal           | Authenticated users (except external users) | Project members only |
+| Public             | Everyone                      | Project members only           |
+
 > [!note]
-> From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
-> and snippets on GitLab.com. Existing snippets using the `Internal`
-> visibility setting keep this setting. You can read more about the change in the
-> [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+> On GitLab.com, the `Internal` visibility setting is disabled for new projects, groups,
+> and snippets. Existing snippets using the `Internal` visibility setting keep this setting.
+> You can read more about the change in the [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+
+For personal snippets, the snippet's visibility setting controls access directly:
+
+- **Public**: Anyone can access the snippet without authentication.
+- **Private**: Only you can access the snippet.
 
 ## Create snippets
 
@@ -70,6 +86,9 @@ You can create snippets in multiple ways, depending on whether you want to creat
    If you do not provide a filename, GitLab [creates a name for you](#filenames).
 1. Optional. Add [multiple files](#add-or-remove-multiple-files) to your snippet.
 1. Select a visibility level, and select **Create snippet**.
+
+For project snippets, the project's visibility acts as the outer boundary.
+For more information, see [snippet visibility](#snippet-visibility).
 
 After you create a snippet, you can still [add more files to it](#add-or-remove-multiple-files).
 Snippets are [versioned by default](#versioned-snippets).
@@ -191,10 +210,16 @@ is reflected in the embedded snippets. When embedded, users can download it, or 
 To embed a snippet:
 
 1. Confirm your snippet is publicly visible:
-   - If it's a project snippet, the project must be public.
-   - The snippet is publicly visible.
-   - In your project, go to **Settings** > **General**. Expand the **Visibility, project features, permissions**
-     section, and scroll to **Snippets**. Set the snippet permission to **Everyone with access**.
+   - For project snippets:
+     1. Both the project and the snippet must be public. A public snippet in a
+        private or internal project cannot be embedded.
+     1. In your project, go to **Settings** > **General**. Expand the
+        **Visibility, project features, permissions** section, and scroll to
+        **Snippets**. Set the snippet permission to **Everyone with access**.
+   - For personal snippets:
+     1. Go to your snippet.
+     1. Select **Edit**.
+     1. Set the visibility to **Public**, and select **Save changes**.
 1. In your snippet's **Embed** section, select **Copy** to copy a one-line script
    you can add to any website or blog post. For example:
 

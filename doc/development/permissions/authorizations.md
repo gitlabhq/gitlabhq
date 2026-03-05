@@ -2,13 +2,12 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
-title: Authorization
+title: Where to check permissions
 ---
 
 ## Where should permissions be checked?
 
-When deciding where to check permissions, apply defense-in-depth by implementing multiple checks at
-different layers. Starting with low-level layers, such as finders and services,
+When deciding where to check permissions, apply defense-in-depth by implementing multiple checks at different layers. Starting with low-level layers, such as finders and services,
 followed by high-level layers, such as GraphQL, public REST API, and controllers.
 
 For more information, see [guidelines for reusing abstractions](../reusing_abstractions.md).
@@ -78,7 +77,7 @@ To check for an ability in a Vue template, see the
 
 ### Tips
 
-If a class accepts `current_user`, then it may be responsible for authorization.
+- If a class accepts `current_user`, then it may be responsible for authorization.
 
 ### Example: Adding a new API endpoint
 

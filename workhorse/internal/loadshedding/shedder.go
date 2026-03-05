@@ -7,6 +7,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/sirupsen/logrus"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/puma"
 )
 
@@ -68,6 +69,7 @@ type LoadShedder struct {
 	backlogThreshold    int
 	backlogHysteresis   float64 // Factor for deactivation (e.g., 0.8 means deactivate at 80% of threshold)
 	retryAfterSeconds   int
+	statusCode          int // HTTP status code to return when shedding load
 	lastBacklogSnapshot atomic.Int64
 	shouldShed          atomic.Bool
 	strategy            BacklogStrategy
@@ -80,26 +82,18 @@ type LoadShedder struct {
 	allowLoadCounter prometheus.Counter
 }
 
-// NewLoadShedder creates a new load shedder with the specified backlog threshold, hysteresis, and strategy
-// If strategy is nil, MaxBacklogStrategy is used by default
-// backlogHysteresis should be between 0 and 1 (e.g., 0.8 means deactivate at 80% of threshold)
-func NewLoadShedder(backlogThreshold int, backlogHysteresis float64, retryAfterSeconds int, logger *logrus.Logger, reg prometheus.Registerer, strategy BacklogStrategy) *LoadShedder {
-	if strategy == nil {
-		strategy = &MaxBacklogStrategy{}
-	}
-
-	// Validate hysteresis (must be between 0 and 1, where 1.0 means no hysteresis effect)
-	if backlogHysteresis <= 0 || backlogHysteresis > 1 {
-		backlogHysteresis = 0.8
-	}
+// NewLoadShedder creates a new load shedder from the provided configuration.
+func NewLoadShedder(cfg *config.LoadSheddingConfig, logger *logrus.Logger, reg prometheus.Registerer) *LoadShedder {
+	strategy := NewBacklogStrategy(cfg.Strategy)
 
 	promFactory := promauto.With(reg)
 
 	return &LoadShedder{
 		logger:            logger,
-		backlogThreshold:  backlogThreshold,
-		backlogHysteresis: backlogHysteresis,
-		retryAfterSeconds: retryAfterSeconds,
+		backlogThreshold:  cfg.BacklogThreshold,
+		backlogHysteresis: cfg.BacklogHysteresis,
+		retryAfterSeconds: cfg.RetryAfterSeconds,
+		statusCode:        cfg.StatusCode,
 		strategy:          strategy,
 		backlogGauge: promFactory.NewGauge(prometheus.GaugeOpts{
 			Name: "workhorse_puma_backlog",
@@ -202,6 +196,11 @@ func (ls *LoadShedder) GetThreshold() int {
 // GetRetryAfterSeconds returns the configured Retry-After header value in seconds
 func (ls *LoadShedder) GetRetryAfterSeconds() int {
 	return ls.retryAfterSeconds
+}
+
+// GetStatusCode returns the configured HTTP status code for load shedding
+func (ls *LoadShedder) GetStatusCode() int {
+	return ls.statusCode
 }
 
 // InitializeMetrics sets the threshold gauge (should be called once after creation)

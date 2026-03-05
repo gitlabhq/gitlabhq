@@ -35,6 +35,14 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
     it_behaves_like 'rejected container repository access', :guest, :forbidden
     it_behaves_like 'rejected container repository access', :anonymous, :unauthorized
 
+    it_behaves_like 'authorizing granular token permissions', :read_container_repository do
+      let(:boundary_object) { project }
+      let(:user) { reporter }
+      let(:request) do
+        get api(url, personal_access_token: pat)
+      end
+    end
+
     context 'for allowed user' do
       it 'returns a repository' do
         subject

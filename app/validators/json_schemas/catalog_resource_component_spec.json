@@ -41,6 +41,10 @@
         ]
       },
       "uniqueItems": true
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 256
     }
   },
   "additionalProperties": false

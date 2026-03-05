@@ -4,9 +4,11 @@ exports[`DiffsColorsPreview component renders diff colors preview 1`] = `
 <div
   class="form-group"
 >
-  <label>
+  <h3
+    class="gl-heading-3"
+  >
     Preview
-  </label>
+  </h3>
   <table
     class="code code-syntax-highlight-theme"
   >

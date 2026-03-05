@@ -224,7 +224,6 @@ The following API resources are available outside of project and group contexts 
 | [Topics](topics.md)                                                                          | `/topics` |
 | [Users](users.md)                                                                            | `/users` |
 | [Web commits](web_commits.md)                                                                | `/web_commits/public_key` |
-| [Version](version.md)                                                                        | `/version` |
 
 ## Template resources
 

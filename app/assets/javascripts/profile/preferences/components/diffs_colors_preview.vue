@@ -9,7 +9,7 @@ export default {
 </script>
 <template>
   <div class="form-group">
-    <label>{{ $options.i18n.previewLabel }}</label>
+    <h3 class="gl-heading-3">{{ $options.i18n.previewLabel }}</h3>
     <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
     <table class="code code-syntax-highlight-theme">
       <tbody>

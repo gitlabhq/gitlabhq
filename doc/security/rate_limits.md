@@ -186,7 +186,7 @@ GET /groups/:id/members/all
 GET /projects/:id/members/all
 ```
 
-Administrators can [configure the rate limit](../administration/settings/rate_limit_on_members_api.md)
+Administrators can [configure the rate limit](../administration/settings/rate_limit_on_groups_api.md)
 for the projects endpoint.
 
 ### Repository blob and file access

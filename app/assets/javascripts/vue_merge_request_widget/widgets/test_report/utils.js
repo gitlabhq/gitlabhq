@@ -24,7 +24,7 @@ const textBuilder = (results, boldNumbers = false) => {
     resultsString = resolvedString;
   }
 
-  return `${resultsString}, ${totalString}`;
+  return totalString ? `${resultsString}, ${totalString}` : resultsString;
 };
 
 export const summaryTextBuilder = (name = '', results = {}) => {

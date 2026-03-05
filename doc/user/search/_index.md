@@ -39,7 +39,7 @@ The following scopes are available for basic search:
 | Epics          |     {{< no >}}      | {{< yes >}} | {{< no >}} |
 | Issues         |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
 | Merge requests |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
-| Milestones     |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
+| Milestones <sup>2</sup> |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
 | Projects       |     {{< yes >}}     | {{< yes >}} | {{< no >}} |
 | Users          |     {{< yes >}}     | {{< yes >}} | {{< yes >}} |
 | Wikis          |     {{< no >}}      | {{< no >}}  | {{< yes >}} |
@@ -47,6 +47,7 @@ The following scopes are available for basic search:
 **Footnotes**:
 
 1. An administrator can [disable global search scopes](#disable-global-search-scopes).
+1. Global basic search returns only project milestones, not group milestones.
 
 ## Specify a search type
 

@@ -174,6 +174,29 @@ RSpec.describe Gitlab::Ci::Config::External::File::Project, feature_category: :p
       end
     end
 
+    context 'when included file uses spec:include' do
+      let(:params) do
+        { project: project.full_path, ref: 'master', file: '/spec-include-file.yml' }
+      end
+
+      around do |example|
+        create_and_delete_files(project, {
+          '/spec-include-file.yml' =>
+            "spec:\n  include:\n    - local: /shared-inputs.yml\n---\njob:\n  script: echo\n"
+        }) do
+          example.run
+        end
+      end
+
+      it 'returns false and adds an error message about spec:include not being supported' do
+        expect(valid?).to be_falsy
+        expect(project_file.error_message).to eq(
+          "Included file `spec-include-file.yml` cannot use `spec:include`. " \
+            "This keyword is not supported in included configuration files"
+        )
+      end
+    end
+
     context 'when non-existing ref is used' do
       let(:params) do
         { project: project.full_path, ref: 'I-Do-Not-Exist', file: '/file.yml' }

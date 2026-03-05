@@ -76,7 +76,7 @@ The following scopes are available for advanced search:
 | Epics                       | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
 | Issues <sup>3</sup>         | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Merge requests <sup>3</sup> | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
-| Milestones                  | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Milestones <sup>4</sup>     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Projects                    | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
 | Users                       | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Wikis                       | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
@@ -89,6 +89,9 @@ The following scopes are available for advanced search:
 1. On GitLab.com, global search is not enabled for code, commits, and wikis.
 1. When you search issues and merge requests, results
    include comments that match your search term.
+1. Advanced search returns only project milestones because group milestones are not indexed
+   in Elasticsearch. For more information, see
+   [issue 428589](https://gitlab.com/gitlab-org/gitlab/-/issues/428589).
 
 ## Syntax
 

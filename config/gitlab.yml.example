@@ -235,9 +235,14 @@ production: &base
   ##
   ## If internal_url is not specified, the Rails application will use the external URL
   ## If neither is specified, defaults to GitLab's host with port 8200
+  ##
+  ## - jwt_audience: JWT audience claim for OpenBao authentication. Use when secondary Geo sites
+  ##   have different OpenBao URLs - set a consistent audience across all sites for JWT validation.
+  ##   Defaults to url when not specified. Example: https://openbao.shared.example.com:8200
   # openbao:
     # url: https://vault.company.com:8200  # External URL for runners and external clients
     # internal_url: https://vault.company-internal.com:8200 # Internal URL for Rails application
+    # jwt_audience: https://openbao.shared.example.com:8200  # Optional: for Geo with different URLs per site
     # authentication_token_secret_file_path: /home/git/gitlab/.gitlab_openbao_authentication_token_secret
 
   ## Custom claim values for JWT ID Tokens

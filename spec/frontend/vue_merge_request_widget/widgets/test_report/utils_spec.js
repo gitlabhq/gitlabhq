@@ -2,6 +2,14 @@ import * as utils from '~/vue_merge_request_widget/widgets/test_report/utils';
 
 describe('test report widget extension utils', () => {
   describe('summaryTextbuilder', () => {
+    it('should render text for no changed results with no total', () => {
+      const name = 'Test summary';
+      const data = { total: 0 };
+      const result = utils.summaryTextBuilder(name, data);
+
+      expect(result).toBe('Test summary: %{strong_start}no%{strong_end} changed test results');
+    });
+
     it('should render text for no changed results in multiple tests', () => {
       const name = 'Test summary';
       const data = { total: 10 };
@@ -95,6 +103,13 @@ describe('test report widget extension utils', () => {
 
   describe('reportTextBuilder', () => {
     const name = 'Rspec';
+
+    it('should render text for no changed results with no total', () => {
+      const data = { name, summary: { total: 0 } };
+      const result = utils.reportTextBuilder(data);
+
+      expect(result).toBe('Rspec: no changed test results');
+    });
 
     it('should render text for no changed results in multiple tests', () => {
       const data = { name, summary: { total: 10 } };

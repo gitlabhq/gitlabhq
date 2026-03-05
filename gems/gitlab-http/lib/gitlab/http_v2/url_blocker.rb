@@ -330,7 +330,6 @@ module Gitlab
         end
 
         def validate_hostname(value)
-          return if value.blank?
           return if IPAddress.valid?(value)
           return if /\A\p{Alnum}/.match?(value)
 

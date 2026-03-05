@@ -568,9 +568,12 @@ module QA
       def wait_for_gitlab_to_respond
         wait_until(sleep_interval: 5, message: '502 - GitLab is taking too much time to respond') do
           Capybara.page.has_no_text?(/GitLab is taking too much time to respond|Waiting for GitLab to boot/)
-        rescue Capybara::ElementNotFound
+        rescue Capybara::ElementNotFound, Selenium::WebDriver::Error::StaleElementReferenceError
           # In Chrome 138 we occasionally get `Unable to find xpath "/html"`
           # https://github.com/teamcapybara/capybara/issues/2800
+          # StaleElementReferenceError can occur when the page navigates mid-check
+          # (e.g. after clicking sign-in), replacing the DOM before Selenium finishes
+          # querying it. Returning false causes the waiter to sleep and retry.
           false
         end
       end

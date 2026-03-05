@@ -35,7 +35,7 @@ module Gitlab
           def set_total_time_from_xml(root, test_suite)
             return unless root
 
-            if root.dig('testsuites', 'time')
+            if root['testsuites'].is_a?(Hash) && root.dig('testsuites', 'time')
               test_suite.total_time = root['testsuites']['time'].to_f
               return
             end
@@ -51,7 +51,7 @@ module Gitlab
           def collect_all_testsuites(root)
             testsuites = []
 
-            testsuites.concat(Array.wrap(root.dig('testsuites', 'testsuite')))
+            testsuites.concat(Array.wrap(root['testsuites'].is_a?(Hash) ? root['testsuites']['testsuite'] : nil))
             testsuites.concat(Array.wrap(root['testsuite']))
 
             testsuites.compact

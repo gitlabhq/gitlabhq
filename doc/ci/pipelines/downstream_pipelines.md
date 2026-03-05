@@ -425,8 +425,10 @@ In this example:
 
 ### Mirror the status of a downstream pipeline in the trigger job
 
-You can mirror the status of the downstream pipeline in the trigger job
-by using [`strategy: mirror`](../yaml/_index.md#triggerstrategy):
+You can mirror the status of the downstream pipeline in the trigger job by using
+[`trigger: strategy`](../yaml/_index.md#triggerstrategy):
+
+With `strategy: mirror`, the trigger job always has the same status as the downstream pipeline.
 
 {{< tabs >}}
 
@@ -454,6 +456,9 @@ trigger_job:
 {{< /tab >}}
 
 {{< /tabs >}}
+
+`strategy: depend` is not recommended, because the trigger job status does not always match the status of
+the downstream pipeline. See the [additional details in the `trigger:strategy` reference](../yaml/_index.md#triggerstrategy).
 
 ### View multi-project pipelines in pipeline graphs
 

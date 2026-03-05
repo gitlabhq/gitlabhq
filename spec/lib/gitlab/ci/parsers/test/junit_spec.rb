@@ -44,6 +44,23 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         end
       end
 
+      context 'when <testsuites> is empty' do
+        let(:junit) do
+          <<-EOF.strip_heredoc
+            <?xml version="1.0" encoding="utf-8"?>
+            <testsuites>
+            </testsuites>
+          EOF
+        end
+
+        it 'parses without error and returns no test cases' do
+          expect { subject }.not_to raise_error
+
+          expect(test_cases.count).to eq(0)
+          expect(test_suite.suite_error).to be_nil
+        end
+      end
+
       context 'when there is only one <testsuite> in <testsuites>' do
         let(:junit) do
           <<-EOF.strip_heredoc

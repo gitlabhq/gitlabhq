@@ -204,7 +204,7 @@ RSpec.describe Ci::PipelineCreationMetricsWorker, feature_category: :continuous_
     end
 
     context 'when tracking keyword usage' do
-      let(:keyword_usage) { { run: true, only: true, except: false } }
+      let(:keyword_usage) { { 'run' => true, 'only' => true, 'except' => false } }
 
       subject(:perform) { described_class.new.perform(pipeline.id, nil, nil, keyword_usage) }
 

@@ -388,6 +388,7 @@ To prevent invitations:
 - Instance setting to allow the display of user data
   [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214538) in GitLab 18.7
   [with a flag](../feature_flags/_index.md) named `usage_billing_dev`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215714).
+- Feature flag `usage_billing_dev` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/566581) in GitLab 18.10.
 
 {{< /history >}}
 

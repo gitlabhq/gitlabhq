@@ -31,6 +31,10 @@ module API
           optional :tags_count, type: Boolean, default: false, desc: 'Determines if the tags count should be included'
           optional :size, type: Boolean, default: false, desc: 'Determines if the size should be included'
         end
+        route_setting :authorization,
+          permissions: :read_container_repository,
+          boundary: -> { repository.project },
+          boundary_type: :project
         get ':id' do
           authorize!(:read_container_image, repository)
 

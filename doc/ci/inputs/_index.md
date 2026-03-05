@@ -617,6 +617,10 @@ spec:
 
 > [!note]
 > You cannot use `spec:include` for [CI/CD component](../components/_index.md#component-spec-section) inputs.
+> You also cannot use `spec:include` in configuration files added by using the
+> [`include`](../yaml/_index.md#include) keyword. You can only use `spec:include`
+> in the main pipeline configuration file or in files referenced by
+> [`trigger:include`](../yaml/_index.md#triggerinclude).
 
 #### Override inputs from an external file
 

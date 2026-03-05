@@ -117,6 +117,23 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
         it { is_expected.to be_falsy }
       end
     end
+
+    context 'when included file uses spec:include' do
+      before do
+        stub_full_request(location).to_return(
+          body: "spec:\n  include:\n    - local: /shared-inputs.yml\n---\njob:\n  script: echo\n"
+        )
+      end
+
+      it 'returns false and adds an error message about spec:include not being supported' do
+        expect(valid?).to be_falsy
+        expect(remote_file.errors).to include(
+          "Included file `https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml` " \
+            "cannot use `spec:include`. " \
+            "This keyword is not supported in included configuration files"
+        )
+      end
+    end
   end
 
   describe "#content" do

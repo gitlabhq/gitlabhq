@@ -80,13 +80,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Metrics, feature_category: :continuo
           nil,
           template_names,
           {
-            run: false,
-            only: false,
-            except: false,
-            artifacts_reports_junit: false,
-            job_inputs: false,
-            inputs: false,
-            input_rules: false
+            'run' => false,
+            'only' => false,
+            'except' => false,
+            'artifacts_reports_junit' => false,
+            'job_inputs' => false,
+            'inputs' => false,
+            'input_rules' => false
           }
         )
 
@@ -121,13 +121,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Metrics, feature_category: :continuo
           nil,
           nil,
           {
-            run: true,
-            only: false,
-            except: true,
-            artifacts_reports_junit: false,
-            job_inputs: false,
-            inputs: false,
-            input_rules: false
+            'run' => true,
+            'only' => false,
+            'except' => true,
+            'artifacts_reports_junit' => false,
+            'job_inputs' => false,
+            'inputs' => false,
+            'input_rules' => false
           }
         )
 

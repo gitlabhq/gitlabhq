@@ -13,8 +13,6 @@ import {
   TRACKING_PROPERTY_QUICK_ACCESS_PROJECT_LINK,
 } from '../tracking_constants';
 
-const MAX_ITEMS = 10;
-
 export default {
   name: 'ProjectsList',
   components: {
@@ -29,6 +27,11 @@ export default {
       required: false,
       default: () => [PROJECT_SOURCE_FRECENT],
     },
+    projectLimit: {
+      type: Number,
+      required: false,
+      default: 10,
+    },
   },
   data() {
     return {
@@ -41,7 +44,7 @@ export default {
       query: userProjectsQuery,
       variables() {
         return {
-          limit: MAX_ITEMS,
+          limit: this.projectLimit,
           includeFrecent: this.selectedSources.includes(PROJECT_SOURCE_FRECENT),
           includeStarred: this.selectedSources.includes(PROJECT_SOURCE_STARRED),
         };
@@ -49,10 +52,11 @@ export default {
       update(data) {
         const projects = [];
         const seenIds = new Set();
+        const limit = this.projectLimit;
 
         const addProjects = (projectList) => {
           for (const project of projectList) {
-            if (projects.length >= MAX_ITEMS) break;
+            if (projects.length >= limit) break;
             if (!seenIds.has(project.id)) {
               projects.push({
                 id: project.id,
@@ -107,7 +111,6 @@ export default {
       });
     },
   },
-  MAX_ITEMS,
   PROJECT_SOURCE_FRECENT,
   PROJECT_SOURCE_STARRED,
 };
@@ -126,7 +129,7 @@ export default {
     <template v-else-if="isLoading">
       <div class="gl-flex gl-flex-col gl-gap-y-4 gl-pt-3">
         <gl-skeleton-loader
-          v-for="i in $options.MAX_ITEMS"
+          v-for="i in projectLimit"
           :key="i"
           :lines="1"
           :equal-width-lines="true"

@@ -298,6 +298,7 @@ You can also use component context to [reference versioned resources](examples.m
 The `spec` section in a component template defines the component's configuration and inputs.
 You can use the following keywords in the `spec` section:
 
+- [`description`](../yaml/_index.md#specdescription): Provide a short description of the component that is displayed in the CI/CD Catalog.
 - [`inputs`](../yaml/_index.md#specinputs): Define input parameters for users to customize component configuration.
 - [`component`](../yaml/_index.md#speccomponent): Declare which component context fields to make available for interpolation (like `name`, `sha`, `version`, and `reference`).
 
@@ -441,7 +442,7 @@ ensure that your component also works when used on another instance, for example
 ### Do not assume API resources are always public
 
 Ensure that the component and its testing pipeline work also [on GitLab Self-Managed](#use-a-gitlabcom-component-on-gitlab-self-managed).
-While some API resources of public projects on GitLab.com could be accessed via unauthenticated requests
+While some API resources of public projects on GitLab.com could be accessed with unauthenticated requests,
 on a GitLab Self-Managed instance a component project could be mirrored as private or internal project.
 
 It's important that an access token can optionally be provided via inputs or variables to

@@ -2,19 +2,38 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
-title: Permission development guidelines
+title: Authorization development guidelines
 ---
 
-There are multiple types of permissions across GitLab, and when implementing
-anything that deals with permissions, all of them should be considered.
+Authorization controls what users are allowed to do in GitLab.
+When implementing any feature that reads, creates, modifies, or deletes data,
+you must consider how access is controlled and enforced consistently across all
+entry points.
 
-As a pre-requisite, familiarize yourself with our [glossary](../auth/auth_glossary.md) first.
+## Reviews
 
-For more information, see:
+- [Adding a new permission](permissions/conventions.md): How to name new permissions and what to include in policy classes.
+- [Authorization review guidelines](permissions/review_guidelines.md): A checklist for preparing a merge request that involve policy changes, permission definitions, and authorization logic for review.
+- If you need [guidance on whether a new permission](permissions/conventions.md#introducing-new-permissions) is needed or which team to involve, contact the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/software-supply-chain-security/authorization).
 
-- [Authorization](permissions/authorizations.md): Guidance on where to check permissions.
+## Concepts
+
+- [DeclarativePolicy framework](policies.md): Introduction to `DeclarativePolicy` framework used for authorization.
+- [Default roles](permissions/predefined_roles.md): Overview of default roles, user types, and how abilities are assigned.
 - [Custom roles](permissions/custom_roles.md): Guidance on how to work on custom role, how to introduce a new ability for custom roles, how to refactor permissions.
-- [`DeclarativePolicy` framework](policies.md): Introduction to `DeclarativePolicy` framework used for authorization.
-- [Granular access](permissions/granular_access/_index.md): Development guidelines for granular access control, including job tokens and granular Personal Access Tokens.
-- [Permissions conventions](permissions/conventions.md): Guidance on how to name new permissions and what should be included in policy classes.
-- [Predefined system of user roles](permissions/predefined_roles.md): General overview about predefined roles, user types, feature specific permissions, and permissions dependencies.
+- [Roles and permissions matrix](../user/permissions.md): The full reference of what each role can do across GitLab features.
+- [Glossary](../auth/auth_glossary.md): Definitions of key authentication and authorization terms used across GitLab.
+
+## Where to check permissions
+
+- [Where to check permissions](permissions/authorizations.md): Guidance on where to check permissions.
+- [GraphQL authorization](graphql_guide/authorization.md): How to authorize types, resolvers, and fields in the GraphQL API.
+
+## Token permissions
+
+- [Job token guidelines](permissions/granular_access/job_tokens.md): Development guidelines for CI/CD job token permissions.
+- [Granular Personal Access Tokens](permissions/granular_access/_index.md): Development guidelines for granular personal access tokens.
+
+## Testing
+
+- [Testing](permissions/testing_guidelines.md): Guidance for how to write specs for permission checks.

@@ -196,12 +196,11 @@ docs-i18n-lint links:
     - .docs-markdown-lint-image
     - .lint-base
   stage: lint
-  when: manual
   allow_failure: true
   before_script:
     - source scripts/utils.sh
   script:
-    - lychee --offline --no-progress --include-fragments doc-locale
+    - lychee --offline --include-fragments --exclude "\.(png|jpg|gif|svg)$" --exclude "ja-jp/development.*#" doc-locale
 
 # Japanese-specific Vale linting with language-specific rules
 docs-i18n-lint japanese-vale:
