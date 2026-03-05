@@ -100,7 +100,11 @@ export default {
             :href="commit.webPath"
             :class="{ 'gl-italic': !commit.message }"
             class="commit-row-message item-title gl-line-clamp-1 gl-whitespace-normal !gl-break-all"
+            aria-describedby="recent-commit-description"
           />
+          <p id="recent-commit-description" class="gl-sr-only">
+            {{ __('Most recent commit.') }}
+          </p>
           <gl-button
             v-if="commit.descriptionHtml"
             v-gl-tooltip

@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: User lookup via OpenSSH's AuthorizedPrincipalsCommand
+title: User lookup with the OpenSSH AuthorizedPrincipalsCommand
 ---
 
 {{< details >}}
@@ -12,19 +12,21 @@ title: User lookup via OpenSSH's AuthorizedPrincipalsCommand
 
 {{< /details >}}
 
-The default SSH authentication for GitLab requires users to upload their SSH
+The default SSH authentication for GitLab Self-Managed instances requires users to upload their SSH
 public keys before they can use the SSH transport.
 
-In centralized (for example, corporate) environments this can be a hassle
-operationally, particularly if the SSH keys are temporary keys issued to the
-user, including ones that expire 24 hours after issuing.
+In centralized environments, such as corporate environments, this requirement can create
+operational overhead. This is particularly true when SSH keys are temporary, such as keys
+that expire 24 hours after they are issued.
 
-In such setups some external automated process is needed to constantly
-upload the new keys to GitLab.
+In these setups, an external automated process must constantly upload new keys to GitLab.
 
 > [!warning]
 > OpenSSH version 6.9+ is required because `AuthorizedKeysCommand` must be
 > able to accept a fingerprint. Check the version of OpenSSH on your server.
+
+If you are a GitLab.com group owner, you should instead use a group-scoped SSH certificate feature that uses the GitLab SSH server instead and doesn't require OpenSSH
+configuration. For more information, see [manage group SSH certificates](../../user/group/ssh_certificates.md).
 
 ## Why use OpenSSH certificates?
 

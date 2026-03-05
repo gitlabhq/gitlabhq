@@ -7,6 +7,7 @@ import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
 let wrapper;
+const COMMIT_DESCRIPTION_ID = 'recent-commit-description';
 const commit = {
   title: 'Commit title',
   titleHtml: 'Commit title html',
@@ -24,6 +25,8 @@ const findUserAvatarImages = () => wrapper.findAllComponents(UserAvatarImage);
 const findTimeagoTooltips = () => wrapper.findAllComponents(TimeagoTooltip);
 const findCommitRowDescription = () => wrapper.find('pre');
 const findTitleHtml = () => wrapper.findByText(commit.titleHtml);
+const findCommitDescriptionParagraph = () => wrapper.find(`#${COMMIT_DESCRIPTION_ID}`);
+const findCommitTitleLink = () => wrapper.find('.commit-row-message');
 
 const createComponent = async ({ commitMock = {}, span = 3 } = {}) => {
   wrapper = shallowMountExtended(CommitInfo, {
@@ -109,6 +112,26 @@ describe('Repository last commit component', () => {
     createComponent({ commitMock: { message: '' } });
 
     expect(findTitleHtml().classes()).toContain('gl-italic');
+  });
+
+  describe('accessibility attributes', () => {
+    it('renders the commit description paragraph with correct id', () => {
+      createComponent();
+
+      expect(findCommitDescriptionParagraph().exists()).toBe(true);
+    });
+
+    it('sets aria-describedby attribute on commit title link', () => {
+      createComponent();
+
+      expect(findCommitTitleLink().attributes('aria-describedby')).toBe(COMMIT_DESCRIPTION_ID);
+    });
+
+    it('commit description paragraph is hidden from visual display', () => {
+      createComponent();
+
+      expect(findCommitDescriptionParagraph().classes()).toContain('gl-sr-only');
+    });
   });
 
   describe('when committer is different from author', () => {

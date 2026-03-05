@@ -13,12 +13,14 @@ title: Manage group SSH certificates
 
 {{< /details >}}
 
-You can control and manage Git access to your projects and groups with SSH certificates.
+Control and manage Git access to your projects and groups hosted on GitLab.com with SSH certificates.
 
 SSH certificates are cryptographically signed documents that authenticate a user's identity and
-permissions.
-They are issued by a trusted Certificate Authority (CA) and contain information such as
-the user's identity, validity period, and permissions.
+permissions. SSH certificates are issued by a trusted Certificate Authority (CA) and contain
+information such as the user's identity, validity period, and permissions.
+
+If you are a GitLab Self-Managed instance administrator, you should instead use an instance-wide SSH certificate approach configured using the system OpenSSH daemon.
+For more information, see [user lookup with the OpenSSH `AuthorizedPrincipalsCommand`](../../administration/operations/ssh_certificates.md).
 
 The benefits of SSH certificate authentication are:
 
