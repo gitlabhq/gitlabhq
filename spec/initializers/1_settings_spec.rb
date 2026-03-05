@@ -311,6 +311,7 @@ RSpec.describe '1_settings', feature_category: :settings do
         cleanup_dangling_debian_package_files_worker
         cleanup_dependency_proxy_worker
         cleanup_package_registry_worker
+        concurrency_limit_resume_worker
         container_expiration_policy_worker
         database_monitor_locked_tables_cron_worker
         deactivated_pages_deployments_delete_cron_worker
