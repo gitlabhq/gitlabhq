@@ -49,6 +49,7 @@ export const I18N_DISCONNECTED_TOOLTIP = s__(
   "Runners|Runner hasn't contacted GitLab in more than %{elapsedTime} and last contact was %{timeAgo}",
 );
 
+export const I18N_ALL = __('All');
 // Default online/stale status timeouts, actual values
 export const ONLINE_CONTACT_TIMEOUT_SECS = 2 * 60 * 60; // 2 hours
 export const STALE_TIMEOUT_SECS = 604800; // 7.days

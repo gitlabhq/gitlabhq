@@ -32,8 +32,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   desc "User is a project bot"
   condition(:project_bot) { user.project_bot? && access_level >= GroupMember::GUEST }
 
-  condition(:has_projects) do
-    group_projects_for(user: @user, group: @subject).any?
+  condition(:has_projects, score: 100) do
+    has_projects = group_projects_for(user: @user, group: @subject).any?
+    Gitlab::AppLogger.info("has_projects condition evaluated as true") if has_projects
+
+    has_projects
   end
 
   desc "User owns the group's organization"
@@ -329,6 +332,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_counts
     enable :read_issue
     enable :read_work_item
+    enable :read_work_item_type
     enable :read_namespace
     enable :read_upload
     enable :read_group_metadata

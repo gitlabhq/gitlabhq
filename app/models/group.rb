@@ -1301,17 +1301,17 @@ class Group < Namespace
   end
 
   def unarchive_descendants!
-    NamespaceSetting
-      .where(namespace_id: descendant_ids, archived: true)
-      .update_all(archived: false)
+    NamespaceSetting.where(namespace_id: descendant_ids, archived: true).update_all(archived: false)
+    Namespace.where(id: descendant_ids, state: :archived).update_all(state: :ancestor_inherited)
   end
 
   def unarchive_all_projects!
-    Project
+    archived_projects = Project
       .joins(:namespace)
       .where("namespaces.traversal_ids @> '{?}'", id)
-      .where(archived: true)
-      .update_all(archived: false)
+
+    archived_projects.where(archived: true).update_all(archived: false)
+    Namespace.where(id: archived_projects.select(:project_namespace_id), state: :archived).update_all(state: :ancestor_inherited)
   end
 
   private

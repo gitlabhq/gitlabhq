@@ -12,6 +12,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { upgradeStatusTokenConfig } from 'ee_else_ce/ci/runner/components/search_tokens/upgrade_status_token_config';
 import { createLocalState } from '~/ci/runner/graphql/list/local_state';
@@ -43,6 +44,8 @@ import {
   PARAM_KEY_TAG,
   PARAM_KEY_VERSION,
   PARAM_KEY_CREATOR,
+  PARAM_KEY_GROUP,
+  PARAM_KEY_PROJECT,
   STATUS_ONLINE,
   DEFAULT_MEMBERSHIP,
   RUNNER_PAGE_SIZE,
@@ -72,7 +75,6 @@ const mockRunnersHandler = jest.fn();
 const mockRunnersCountHandler = jest.fn();
 const mockRunnerJobCountHandler = jest.fn();
 const mockUsersSearchAllHandler = jest.fn();
-
 jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -129,6 +131,7 @@ describe('AdminRunnersApp', () => {
         ...defaultProps,
         ...props,
       },
+      mixins: [glFeatureFlagMixin()],
       provide: {
         localMutations,
         ...provide,
@@ -299,24 +302,32 @@ describe('AdminRunnersApp', () => {
 
       expect(findRunnerFilteredSearchBar().props('tokens')).toEqual([
         expect.objectContaining({
+          type: PARAM_KEY_CREATOR,
+          title: 'Creator',
+        }),
+        expect.objectContaining({
+          type: PARAM_KEY_GROUP,
+          title: 'Group',
+        }),
+        expect.objectContaining({
           type: PARAM_KEY_PAUSED,
           options: expect.any(Array),
+        }),
+        expect.objectContaining({
+          type: PARAM_KEY_PROJECT,
+          title: 'Project',
         }),
         expect.objectContaining({
           type: PARAM_KEY_STATUS,
           options: expect.any(Array),
         }),
         expect.objectContaining({
-          type: PARAM_KEY_VERSION,
-          title: 'Version starts with',
-        }),
-        expect.objectContaining({
-          type: PARAM_KEY_CREATOR,
-          title: 'Creator',
-        }),
-        expect.objectContaining({
           type: PARAM_KEY_TAG,
           recentSuggestionsStorageKey: `${ADMIN_FILTERED_SEARCH_NAMESPACE}-recent-tags`,
+        }),
+        expect.objectContaining({
+          type: PARAM_KEY_VERSION,
+          title: 'Version starts with',
         }),
         upgradeStatusTokenConfig,
       ]);
@@ -363,6 +374,107 @@ describe('AdminRunnersApp', () => {
         expect(mockUsersSearchAllHandler).toHaveBeenCalledWith({ first: null, search: 'search' });
 
         expect(suggestions).toEqual([loggedInUser, otherUser]);
+      });
+    });
+
+    describe('group suggestions', () => {
+      const getGroupToken = () =>
+        findRunnerFilteredSearchBar()
+          .props('tokens')
+          .find((t) => t?.type === PARAM_KEY_GROUP);
+
+      describe('when feature flag is disabled', () => {
+        beforeEach(async () => {
+          await createComponent({
+            provide: {
+              glFeatures: { filterRunnersByProjectAndGroup: false },
+            },
+          });
+        });
+
+        it('does not appear as a filter', () => {
+          expect(getGroupToken().disabled).toBe(true);
+        });
+      });
+
+      describe('when feature flag is enabled', () => {
+        beforeEach(async () => {
+          await createComponent({
+            provide: {
+              glFeatures: { filterRunnersByProjectAndGroup: true },
+            },
+          });
+        });
+        it('does appear as a filter', () => {
+          expect(getGroupToken().disabled).toBe(false);
+        });
+
+        describe('when a project filter is selected', () => {
+          it('does not appear as a filter', async () => {
+            expect(getGroupToken().disabled).toBe(false);
+
+            findRunnerFilteredSearchBar().vm.$emit('input', {
+              runnerType: null,
+              membership: DEFAULT_MEMBERSHIP,
+              filters: [{ type: PARAM_KEY_PROJECT, value: { data: 'toolBox', operator: '=' } }],
+              sort: CREATED_ASC,
+            });
+
+            await nextTick();
+            expect(getGroupToken().disabled).toBe(true);
+          });
+        });
+      });
+    });
+
+    describe('project suggestions', () => {
+      const getProjectToken = () =>
+        findRunnerFilteredSearchBar()
+          .props('tokens')
+          .find((t) => t?.type === PARAM_KEY_PROJECT);
+
+      describe('when feature flag is disabled', () => {
+        beforeEach(async () => {
+          await createComponent({
+            provide: {
+              glFeatures: { filterRunnersByProjectAndGroup: false },
+            },
+          });
+        });
+
+        it('does not appear as a filter', () => {
+          expect(getProjectToken().disabled).toBe(true);
+        });
+      });
+
+      describe('when feature flag is enabled', () => {
+        beforeEach(async () => {
+          await createComponent({
+            provide: {
+              glFeatures: { filterRunnersByProjectAndGroup: true },
+            },
+          });
+        });
+
+        it('does appear as a filter', () => {
+          expect(getProjectToken().disabled).toBe(false);
+        });
+
+        describe('when a project filter is selected', () => {
+          it('does not appear as a filter', async () => {
+            expect(getProjectToken().disabled).toBe(false);
+
+            findRunnerFilteredSearchBar().vm.$emit('input', {
+              runnerType: null,
+              membership: DEFAULT_MEMBERSHIP,
+              filters: [{ type: PARAM_KEY_GROUP, value: { data: 'toolBox', operator: '=' } }],
+              sort: CREATED_ASC,
+            });
+
+            await nextTick();
+            expect(getProjectToken().disabled).toBe(true);
+          });
+        });
       });
     });
   });

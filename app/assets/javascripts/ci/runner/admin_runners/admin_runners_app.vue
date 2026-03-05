@@ -14,6 +14,7 @@ import allRunnersQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners.query
 import allRunnersCountQuery from 'ee_else_ce/ci/runner/graphql/list/all_runners_count.query.graphql';
 import usersSearchAllQuery from '~/graphql_shared/queries/users_search_all.query.graphql';
 
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import RunnerListHeader from '../components/runner_list_header.vue';
 import RegistrationDropdown from '../components/registration/registration_dropdown.vue';
 import RunnerFilteredSearchBar from '../components/runner_filtered_search_bar.vue';
@@ -30,11 +31,16 @@ import { statusTokenConfig } from '../components/search_tokens/status_token_conf
 import { tagTokenConfig } from '../components/search_tokens/tag_token_config';
 import { versionTokenConfig } from '../components/search_tokens/version_token_config';
 import { creatorTokenConfig } from '../components/search_tokens/creator_token_config';
+import { groupTokenConfig } from '../components/search_tokens/group_token_config';
+import { projectTokenConfig } from '../components/search_tokens/project_token_config';
 import {
   ADMIN_FILTERED_SEARCH_NAMESPACE,
   INSTANCE_TYPE,
   I18N_FETCH_ERROR,
   FILTER_CSS_CLASSES,
+  PARAM_KEY_PROJECT,
+  PARAM_KEY_GROUP,
+  I18N_ALL,
 } from '../constants';
 import { captureException } from '../sentry_utils';
 
@@ -56,6 +62,7 @@ export default {
     RunnerDashboardLink: () =>
       import('ee_component/ci/runner/components/runner_dashboard_link.vue'),
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     newRunnerPath: {
       type: String,
@@ -77,8 +84,11 @@ export default {
     },
   },
   data() {
+    const search = fromUrlQueryToSearch();
     return {
-      search: fromUrlQueryToSearch(),
+      search,
+      projectTokenPreselected: search.filters.some((f) => f.type === PARAM_KEY_PROJECT),
+      groupTokenPreselected: search.filters.some((f) => f.type === PARAM_KEY_GROUP),
       runners: {
         items: [],
         pageInfo: {},
@@ -136,9 +146,6 @@ export default {
       }
 
       return [
-        pausedTokenConfig,
-        statusTokenConfig,
-        versionTokenConfig,
         {
           ...creatorTokenConfig,
           fetchUsers: (search) => {
@@ -153,9 +160,22 @@ export default {
           preloadedUsers,
         },
         {
+          ...groupTokenConfig,
+          tokenType: I18N_ALL,
+          skipIdPrefix: true,
+          disabled: this.projectTokenPreselected || !this.glFeatures.filterRunnersByProjectAndGroup,
+        },
+        pausedTokenConfig,
+        {
+          ...projectTokenConfig,
+          disabled: this.groupTokenPreselected || !this.glFeatures.filterRunnersByProjectAndGroup,
+        },
+        statusTokenConfig,
+        {
           ...tagTokenConfig,
           recentSuggestionsStorageKey: `${this.$options.filteredSearchNamespace}-recent-tags`,
         },
+        versionTokenConfig,
         upgradeStatusTokenConfig,
       ];
     },
@@ -195,6 +215,25 @@ export default {
     onPaginationInput(value) {
       this.search.pagination = value;
     },
+    onInput(value) {
+      this.search = value;
+      this.projectTokenPreselected = this.search.filters.some((f) => f.type === PARAM_KEY_PROJECT);
+      this.groupTokenPreselected = this.search.filters.some((f) => f.type === PARAM_KEY_GROUP);
+    },
+    onTokenComplete(token) {
+      if (token.type === PARAM_KEY_PROJECT) {
+        this.projectTokenPreselected = true;
+      } else if (token.type === PARAM_KEY_GROUP) {
+        this.groupTokenPreselected = true;
+      }
+    },
+    onTokenDestroy(token) {
+      if (token.type === PARAM_KEY_PROJECT) {
+        this.projectTokenPreselected = false;
+      } else if (token.type === PARAM_KEY_GROUP) {
+        this.groupTokenPreselected = false;
+      }
+    },
   },
   filteredSearchNamespace: ADMIN_FILTERED_SEARCH_NAMESPACE,
   INSTANCE_TYPE,
@@ -226,10 +265,13 @@ export default {
     />
 
     <runner-filtered-search-bar
-      v-model="search"
+      :value="search"
       :class="$options.FILTER_CSS_CLASSES"
       :tokens="searchTokens"
       :namespace="$options.filteredSearchNamespace"
+      @input="onInput"
+      @token-destroy="onTokenDestroy"
+      @token-complete="onTokenComplete"
     />
 
     <runner-stats :scope="$options.INSTANCE_TYPE" :variables="countVariables" />

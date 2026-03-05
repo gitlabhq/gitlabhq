@@ -25,7 +25,7 @@ RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects 
 
     context 'when user is authorized to archive project' do
       before_all do
-        project.add_owner(user)
+        group.add_owner(user)
       end
 
       context 'when project is already archived' do
@@ -105,6 +105,41 @@ RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects 
 
             expect(result).to be_error
             expect(result.message).to eq('Failed to archive project.')
+          end
+        end
+
+        context 'when project state is archived but archived attribute is false' do
+          before do
+            project.project_namespace.update!(state: :archived)
+          end
+
+          it 'allows archiving and skips state transition' do
+            result = service.execute
+
+            expect(result).to be_success
+            expect(project.reload.archived).to be(true)
+            expect(project.state).to eq('archived')
+          end
+        end
+
+        context 'when project was archived before group was archived' do
+          it 'allows re-archiving project after group archive and unarchive cycle' do
+            result = service.execute
+            expect(result).to be_success
+            expect(project.reload.archived).to be(true)
+
+            result = Namespaces::Groups::ArchiveService.new(group.reload, user).execute
+            expect(result).to be_success
+
+            result = Namespaces::Groups::UnarchiveService.new(group.reload, user).execute
+            expect(result).to be_success
+
+            project.reload
+
+            result = service.execute
+            expect(result).to be_success
+            expect(project.reload.archived).to be(true)
+            expect(project.project_namespace.state).to eq('archived')
           end
         end
 

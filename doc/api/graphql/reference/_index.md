@@ -892,6 +892,36 @@ Get information about current user.
 
 Returns [`CurrentUser`](#currentuser).
 
+### `Query.customDashboard`
+
+Find a custom dashboard by ID.
+
+Returns [`CustomDashboard`](#customdashboard).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="query-customdashboard-id"></a>`id` | [`AnalyticsCustomDashboardsDashboardID!`](#analyticscustomdashboardsdashboardid) | Dashboard ID. |
+
+### `Query.customDashboards`
+
+Find custom dashboards for an organization.
+
+Returns [`CustomDashboardConnection`](#customdashboardconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="query-customdashboards-createdbyid"></a>`createdById` | [`UserID`](#userid) | Filter by dashboard creator. |
+| <a id="query-customdashboards-namespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Filter by namespace. |
+| <a id="query-customdashboards-organizationid"></a>`organizationId` | [`OrganizationsOrganizationID!`](#organizationsorganizationid) | Organization ID to filter dashboards. |
+
 ### `Query.customField`
 
 {{< details >}}
@@ -20064,6 +20094,29 @@ The edge type for [`CoverageFuzzingCorpus`](#coveragefuzzingcorpus).
 | <a id="coveragefuzzingcorpusedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="coveragefuzzingcorpusedge-node"></a>`node` | [`CoverageFuzzingCorpus`](#coveragefuzzingcorpus) | The item at the end of the edge. |
 
+#### `CustomDashboardConnection`
+
+The connection type for [`CustomDashboard`](#customdashboard).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customdashboardconnection-edges"></a>`edges` | [`[CustomDashboardEdge]`](#customdashboardedge) | A list of edges. |
+| <a id="customdashboardconnection-nodes"></a>`nodes` | [`[CustomDashboard]`](#customdashboard) | A list of nodes. |
+| <a id="customdashboardconnection-pageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CustomDashboardEdge`
+
+The edge type for [`CustomDashboard`](#customdashboard).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customdashboardedge-cursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="customdashboardedge-node"></a>`node` | [`CustomDashboard`](#customdashboard) | The item at the end of the edge. |
+
 #### `CustomEmojiConnection`
 
 The connection type for [`CustomEmoji`](#customemoji).
@@ -32574,7 +32627,7 @@ Customizable analytics dashboard.
 | ---- | ---- | ----------- |
 | <a id="customdashboard-config"></a>`config` | [`JSON!`](#json) | Dashboard layout and widget configuration. |
 | <a id="customdashboard-createdat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the dashboard was created. |
-| <a id="customdashboard-createdby"></a>`createdBy` | [`UserCore!`](#usercore) | User who created the dashboard. |
+| <a id="customdashboard-createdby"></a>`createdBy` | [`UserCore`](#usercore) | User who created the dashboard. |
 | <a id="customdashboard-description"></a>`description` | [`String`](#string) | Optional summary or purpose of the dashboard. |
 | <a id="customdashboard-id"></a>`id` | [`AnalyticsCustomDashboardsDashboardID!`](#analyticscustomdashboardsdashboardid) | Global ID of the custom dashboard. |
 | <a id="customdashboard-lockversion"></a>`lockVersion` | [`Int!`](#int) | Version used for optimistic concurrency control. |

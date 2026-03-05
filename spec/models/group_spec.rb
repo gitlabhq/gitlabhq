@@ -4698,6 +4698,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       expect(sub_subgroup.namespace_settings.reload.archived).to be(false)
     end
 
+    it 'resets the state to ancestor_inherited for archived descendants', :aggregate_failures do
+      group.unarchive_descendants!
+
+      expect(subgroup.reload.state).to eq('ancestor_inherited')
+      expect(sub_subgroup.reload.state).to eq('ancestor_inherited')
+    end
+
     it 'does not unarchive parent groups' do
       parent_group.namespace_settings.update!(archived: true)
 
@@ -4712,6 +4719,12 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       expect { group.unarchive_descendants! }.not_to change {
         unarchived_group.namespace_settings.reload.archived
       }
+    end
+
+    it 'does not change state for non-archived descendants' do
+      unarchived_group = create(:group, parent: group)
+
+      expect { group.unarchive_descendants! }.not_to change { unarchived_group.reload.state }
     end
   end
 
@@ -4733,10 +4746,24 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       expect(subgroup_archived_project.reload.archived).to be(false)
     end
 
+    it 'resets the project namespace state to ancestor_inherited', :aggregate_failures do
+      group.unarchive_all_projects!
+
+      expect(archived_project_1.reload.project_namespace.state).to eq('ancestor_inherited')
+      expect(archived_project_2.reload.project_namespace.state).to eq('ancestor_inherited')
+      expect(subgroup_archived_project.reload.project_namespace.state).to eq('ancestor_inherited')
+    end
+
     it 'does not affect projects that are not archived' do
       expect { group.unarchive_all_projects! }
         .to not_change { non_archived_project.reload.archived }
           .and not_change { subgroup_non_archived_project.reload.archived }
+    end
+
+    it 'does not change state for non-archived project namespaces' do
+      expect { group.unarchive_all_projects! }
+        .to not_change { non_archived_project.reload.project_namespace.state }
+          .and not_change { subgroup_non_archived_project.reload.project_namespace.state }
     end
   end
 end

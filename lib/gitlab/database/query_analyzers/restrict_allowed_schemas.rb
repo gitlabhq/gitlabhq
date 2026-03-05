@@ -16,6 +16,7 @@ module Gitlab
         #     Inidicates that changes made to this schema are ignored and always allowed
         SCHEMA_MAPPING = {
           gitlab_shared: nil,
+          gitlab_shared_cell_local: nil,
           gitlab_internal: nil,
 
           # Cells specific changes

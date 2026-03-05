@@ -1,0 +1,9 @@
+---
+name: search_commits_use_traversal_ids_query
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/491215
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225359
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591806
+milestone: '18.10'
+group: group::global search
+type: gitlab_com_derisk
+default_enabled: false

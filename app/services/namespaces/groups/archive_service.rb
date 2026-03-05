@@ -44,7 +44,7 @@ module Namespaces
 
       def archive_group
         Namespace.transaction do
-          group.archive!(transition_user: current_user)
+          group.archive!(transition_user: current_user) unless group.state == 'archived'
           group.namespace_settings.update!(archived: true)
         end
       end

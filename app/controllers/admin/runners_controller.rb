@@ -6,6 +6,10 @@ class Admin::RunnersController < Admin::ApplicationController
   TAGS_LIMIT = 20
 
   before_action :runner, only: [:show, :edit, :register, :update]
+  before_action only: [:index] do
+    push_frontend_feature_flag(:filter_runners_by_project_and_group, current_user)
+  end
+
   before_action only: [:new] do
     push_frontend_feature_flag(:runner_create_wizard_admin, current_user)
   end

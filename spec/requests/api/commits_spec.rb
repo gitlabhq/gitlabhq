@@ -1460,6 +1460,20 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           end
         end
 
+        context 'when start_project is the same as the current project' do
+          before do
+            valid_c_params[:start_project] = project.id
+            valid_c_params[:start_branch] = 'master'
+            valid_c_params[:branch] = "#{new_branch_name}-same-project"
+          end
+
+          it 'allows the commit and returns a 201', :sidekiq_might_not_need_inline do
+            expect_request_with_status(201) { workhorse_body_upload(url, valid_c_params) }
+              .to change { last_commit_id(project, valid_c_params[:branch]) }
+              .and not_change { last_commit_id(project, valid_c_params[:start_branch]) }
+          end
+        end
+
         context 'when start_sha is provided' do
           let(:start_sha) { project.repository.commit.parent.sha }
 

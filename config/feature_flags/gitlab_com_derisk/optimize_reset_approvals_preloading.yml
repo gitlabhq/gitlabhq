@@ -1,0 +1,13 @@
+---
+name: optimize_reset_approvals_preloading
+description: |
+  Optimizes N+1 queries in MergeRequestResetApprovalsWorker by eagerly preloading
+  approvals, approval_rules, users, and group_users associations, and by preserving
+  loaded state across approval cache resets.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579591
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224891
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591783
+milestone: '18.10'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

@@ -85,6 +85,41 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
       end
     end
 
+    context 'when group state is archived but archived attribute is false' do
+      before do
+        group.update!(state: :archived)
+      end
+
+      it 'allows archiving and skips state transition' do
+        result = service_response
+
+        expect(result).to be_success
+        expect(group.reload.namespace_settings.archived).to be(true)
+        expect(group.state).to eq('archived')
+      end
+    end
+
+    context 'when subgroup was archived before parent group was archived' do
+      let(:subgroup) { create(:group, parent: group) }
+
+      it 'allows re-archiving subgroup after parent group archive and unarchive cycle' do
+        result = described_class.new(subgroup, user).execute
+        expect(result).to be_success
+        expect(subgroup.reload.namespace_settings.archived).to be(true)
+
+        result = described_class.new(group.reload, user).execute
+        expect(result).to be_success
+
+        result = Namespaces::Groups::UnarchiveService.new(group.reload, user).execute
+        expect(result).to be_success
+
+        result = described_class.new(subgroup.reload, user).execute
+        expect(result).to be_success
+        expect(subgroup.reload.namespace_settings.archived).to be(true)
+        expect(subgroup.state).to eq('archived')
+      end
+    end
+
     context 'when archiving succeeds' do
       it 'archives the group' do
         service_response

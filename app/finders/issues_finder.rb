@@ -227,7 +227,7 @@ class IssuesFinder < IssuableFinder
   strong_memoize_attr :types_filter
 
   def by_service_desk(items)
-    return items unless params[:author_username] == "support-bot"
+    return items unless support_bot_username?(params[:author_username])
 
     # Delete param so we don't additionally filter by author username
     params.delete(:author_username)
@@ -236,6 +236,12 @@ class IssuesFinder < IssuableFinder
     original_params.delete(:author_username)
 
     items.service_desk
+  end
+
+  def support_bot_username?(username)
+    return false if username.blank?
+
+    User.find_by_username(username)&.support_bot?
   end
 
   def by_negated_issue_types(items)

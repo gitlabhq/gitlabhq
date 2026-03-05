@@ -62,6 +62,24 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
       it_behaves_like 'valid permissions'
     end
+
+    it 'logs a message' do
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        "has_projects condition evaluated as true"
+      )
+
+      expect_allowed(:read_group)
+    end
+
+    context 'when the user does not have access' do
+      let(:current_user) { build(:user) }
+
+      it 'does not emit a log' do
+        expect(Gitlab::AppLogger).not_to receive(:info)
+
+        expect_disallowed(:read_group)
+      end
+    end
   end
 
   shared_examples 'deploy token does not get confused with user' do

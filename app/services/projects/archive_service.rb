@@ -41,7 +41,8 @@ module Projects
 
     def archive_project
       ApplicationRecord.transaction do
-        project.archive(transition_user: current_user) && project.update(archived: true)
+        (project.state == 'archived' || project.archive(transition_user: current_user)) &&
+          project.update(archived: true)
       end
     end
 
