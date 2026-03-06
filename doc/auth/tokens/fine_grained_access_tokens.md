@@ -2459,5 +2459,13 @@ job token policies or resource-specific access controls.
 | `GET` | `/projects/:project_id/packages/nuget/v2/FindPackagesById\(\)` |
 | `GET` | `/projects/:project_id/packages/nuget/v2/Packages\(Id='*package_name',Version='*package_version'\)` |
 | `GET` | `/projects/:project_id/packages/nuget/v2/Packages\(\)` |
+| `GET` | `/templates/dockerfiles` |
+| `GET` | `/templates/dockerfiles/:name` |
+| `GET` | `/templates/gitignores` |
+| `GET` | `/templates/gitignores/:name` |
+| `GET` | `/templates/gitlab_ci_ymls` |
+| `GET` | `/templates/gitlab_ci_ymls/:name` |
+| `GET` | `/templates/licenses` |
+| `GET` | `/templates/licenses/:name` |
 | `GET` | `/usage_data/metric_definitions` |
 | `GET` | `/usage_data/metric_definitions` |

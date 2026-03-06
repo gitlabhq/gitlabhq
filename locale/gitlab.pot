@@ -82677,6 +82677,9 @@ msgstr ""
 msgid "ciReport|No code quality issues found"
 msgstr ""
 
+msgid "ciReport|No license compliance enabled."
+msgstr ""
+
 msgid "ciReport|No new vulnerabilities were found."
 msgstr ""
 

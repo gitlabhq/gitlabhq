@@ -45,6 +45,11 @@ export default {
       required: false,
       default: null,
     },
+    loadingText: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     hasActionButtons() {
@@ -61,7 +66,10 @@ export default {
   <section class="media-section" data-testid="report">
     <div class="gl-flex gl-px-5 gl-py-4">
       <status-icon :level="1" :is-loading="isLoading" :icon-name="statusIconName" name="Report" />
-      <template v-if="!isLoading">
+      <div v-if="isLoading" class="media-body gl-flex !gl-flex-row gl-self-center">
+        <div class="gl-grow" data-testid="loading-text">{{ loadingText }}</div>
+      </div>
+      <template v-else>
         <div class="media-body gl-flex !gl-flex-row gl-self-center">
           <div class="gl-grow">
             <span v-if="summary.title" v-safe-html="summary.title" data-testid="summary"></span>

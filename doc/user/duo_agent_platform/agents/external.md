@@ -100,6 +100,9 @@ without additional agent configuration necessary.
 Required steps to enable and use managed agents:
 
 1. Access the agent in the AI Catalog. Search for the agent name, or use the direct URL.
+
+   GitLab-managed external agents display a GitLab-maintained badge ({{< icon name="tanuki-verified" >}}).
+
 1. [Enable the agent](#enable-the-agent).
 1. [Use the external agent](#use-an-external-agent) in issues, epics or merge requests.
 

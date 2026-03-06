@@ -28,13 +28,12 @@ RSpec.describe Gitlab::Octokit::UrlValidation, feature_category: :importers do
 
       context 'with failed address check' do
         before do
-          allow(Addrinfo).to receive(:getaddrinfo).and_raise(SocketError)
+          allow(Addrinfo).to receive(:getaddrinfo)
+            .with('public-url.com', anything, anything, :STREAM, any_args)
+            .and_raise(SocketError)
         end
 
-        context 'with quarantine',
-          quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9443' do
-          it_behaves_like 'Blocked URL'
-        end
+        it_behaves_like 'Blocked URL'
 
         context 'with disabled dns rebinding check' do
           before do

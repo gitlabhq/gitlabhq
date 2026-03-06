@@ -532,7 +532,7 @@ group :development, :test do
   gem 'benchmark-memory', '~> 0.1', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
   gem 'knapsack', '~> 4.0.0', feature_category: :tooling
-  gem 'gitlab-crystalball', '~> 1.1.0', require: false, feature_category: :tooling
+  gem 'gitlab-crystalball', '~> 1.1.3', require: false, feature_category: :tooling
   gem 'test_file_finder', '~> 0.3.1', feature_category: :tooling
 
   gem 'simple_po_parser', '~> 1.1.6', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
@@ -604,7 +604,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
-  gem 'gitlab_quality-test_tooling', '~> 3.8.0', require: false, feature_category: :tooling
+  gem 'gitlab_quality-test_tooling', '~> 3.9.0', require: false, feature_category: :tooling
 end
 
 gem 'octokit', '~> 9.0', feature_category: :importers

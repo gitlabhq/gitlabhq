@@ -26,7 +26,10 @@ module BrowserConsoleHelpers
       'net::ERR_CONNECTION',
 
       # GitLab UI translation fallback warnings
-      '@gitlab/ui.*translations have not been given.*fall back to their default US English strings'
+      '@gitlab/ui.*translations have not been given.*fall back to their default US English strings',
+
+      # ProjectSelect initialization warning when element is not present on the page
+      'Attempted to initialize ProjectSelect'
     ]
   )
 

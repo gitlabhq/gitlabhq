@@ -1460,10 +1460,10 @@
   dependencies:
     format-graphql "^1.5.0"
 
-"@gitlab/stylelint-config@6.2.2":
-  version "6.2.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/stylelint-config/-/stylelint-config-6.2.2.tgz#1ccd1ddbc921a538f5490894078dad11980ecede"
-  integrity sha512-W0taQTQHQxE9sDWh8cdUDYMVjNgOZcHJTe/EOv+7G4meeiGLG2W3YsWGSe9PrTvM9AremBIUz2mB2ybUQXOlqw==
+"@gitlab/stylelint-config@6.3.0":
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/stylelint-config/-/stylelint-config-6.3.0.tgz#4ec433e588d1ee3a39056c9e9abed3a3408de9ba"
+  integrity sha512-vB+GPyiHZNaHzy9Qg75F0gApR3ObLWqyCvQOmlHd4/hqKjlEc4miTZbbLrwX/+5bz5K6F90P8a/3atyTjg4Gjg==
   dependencies:
     postcss-scss "4.0.9"
     stylelint-declaration-strict-value "1.10.4"

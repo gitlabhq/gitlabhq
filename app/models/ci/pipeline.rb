@@ -1090,8 +1090,6 @@ module Ci
     end
 
     def variables
-      return super if Feature.disabled?(:ci_read_pipeline_variables_from_artifact, project)
-
       # TODO: Replace super with [] when Ci::PipelineVariable is dropped
       # https://gitlab.com/gitlab-org/gitlab/-/issues/587237
       read_variables_from_pipeline_artifact || super

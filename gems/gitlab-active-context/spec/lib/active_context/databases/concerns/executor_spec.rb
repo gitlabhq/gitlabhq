@@ -147,4 +147,53 @@ RSpec.describe ActiveContext::Databases::Concerns::Executor do
         .to raise_error(NotImplementedError)
     end
   end
+
+  describe '#nullify_field' do
+    let(:collection_name) { 'test_collection' }
+    let(:field_name) { 'description' }
+
+    before do
+      allow(adapter).to receive(:full_collection_name).with(collection_name).and_return(full_name)
+    end
+
+    context 'when collection exists' do
+      before do
+        allow(collections).to receive(:find_by).with(name: full_name).and_return(collection)
+      end
+
+      it 'calls do_nullify_field with correct parameters' do
+        expect(executor).to receive(:do_nullify_field).with(collection, field_name, batch_size: 1000)
+
+        executor.nullify_field(collection_name, field_name, batch_size: 1000)
+      end
+
+      it 'returns the result from do_nullify_field' do
+        allow(executor).to receive(:do_nullify_field).and_return(42)
+
+        result = executor.nullify_field(collection_name, field_name, batch_size: 1000)
+
+        expect(result).to eq(42)
+      end
+    end
+
+    context 'when collection does not exist' do
+      before do
+        allow(collections).to receive(:find_by).with(name: full_name).and_return(nil)
+      end
+
+      it 'raises an error' do
+        expect do
+          executor.nullify_field(collection_name, field_name, batch_size: 1000)
+        end.to raise_error(/Collection .* not found/)
+      end
+    end
+  end
+
+  describe '#do_nullify_field' do
+    it 'raises NotImplementedError if not implemented in a subclass' do
+      executor = incomplete_class.new(adapter)
+      expect { executor.send(:do_nullify_field, collection, 'field_name', batch_size: 1000) }
+        .to raise_error(NotImplementedError)
+    end
+  end
 end

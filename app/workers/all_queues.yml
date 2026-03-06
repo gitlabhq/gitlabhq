@@ -5202,6 +5202,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: projects_transfer
+  :worker_name: Projects::TransferWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace:
 - :name: projects_update_repository_storage
   :worker_name: Projects::UpdateRepositoryStorageWorker
   :feature_category: :gitaly

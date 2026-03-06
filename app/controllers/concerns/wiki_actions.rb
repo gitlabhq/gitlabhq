@@ -36,10 +36,6 @@ module WikiActions
       push_frontend_feature_flag(:wiki_immersive_editor, container)
       push_frontend_feature_flag(:wiki_floating_sidebar_toggle, container)
 
-      if Feature.enabled?(:glql_work_items, container) || Feature.enabled?(:glql_work_items, current_user)
-        push_force_frontend_feature_flag(:glql_work_items, true)
-      end
-
       push_force_frontend_feature_flag(:glql_load_on_click, !!container&.glql_load_on_click_feature_flag_enabled?)
     end
 

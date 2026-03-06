@@ -280,6 +280,11 @@ ul.wiki-pages-list.content-list {
   }
 }
 
+.content:has(.wiki-overview),
+.panel-content:has(.wiki-overview) {
+  padding-bottom: 0;
+}
+
 .panel-content-inner:has(.wiki-overview) {
   padding-left: 0;
   padding-right: 0;

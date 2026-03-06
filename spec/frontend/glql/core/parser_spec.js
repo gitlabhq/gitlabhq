@@ -35,8 +35,20 @@ assignee = currentUser()`;
 });
 
 describe('parse', () => {
+  let originalLocation;
+
   beforeEach(() => {
     gon.current_username = 'root';
+    originalLocation = window.location;
+    delete window.location;
+    window.location = {
+      href: 'https://gitlab.example.com/gitlab-org/gitlab/-/wikis/page',
+      origin: 'https://gitlab.example.com',
+    };
+  });
+
+  afterEach(() => {
+    window.location = originalLocation;
   });
 
   it('parses a simple query correctly', async () => {
@@ -54,23 +66,25 @@ describe('parse', () => {
     },
   ],
   "query": "query GLQL($before: String, $after: String, $limit: Int) {
-  issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
-    nodes {
-      id
-      iid
-      title
-      webUrl
-      reference
-      state
-      title
+  project(fullPath: "gitlab-org/gitlab") {
+    workItems(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
+      nodes {
+        id
+        iid
+        title
+        webUrl
+        reference
+        state
+        title
+      }
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      count
     }
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
-    }
-    count
   }
 }
 ",
@@ -124,33 +138,45 @@ assignee = currentUser()`),
     },
   ],
   "query": "query GLQL($before: String, $after: String, $limit: Int) {
-  issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
-    nodes {
-      id
-      iid
-      title
-      webUrl
-      reference
-      state
-      title
-      assignees {
-        nodes {
-          id
-          avatarUrl
-          username
-          name
-          webUrl
+  project(fullPath: "gitlab-org/gitlab") {
+    workItems(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
+      nodes {
+        id
+        iid
+        title
+        webUrl
+        reference
+        state
+        title
+        widgets {
+          ... on WorkItemWidgetAssignees {
+            type
+            assignees {
+              nodes {
+                id
+                avatarUrl
+                username
+                name
+                webUrl
+              }
+            }
+          }
+        }
+        widgets {
+          ... on WorkItemWidgetStartAndDueDate {
+            type
+            dueDate
+          }
         }
       }
-      dueDate
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      count
     }
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
-    }
-    count
   }
 }
 ",
@@ -205,33 +231,45 @@ query: assignee = currentUser()
     },
   ],
   "query": "query GLQL($before: String, $after: String, $limit: Int) {
-  issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
-    nodes {
-      id
-      iid
-      title
-      webUrl
-      reference
-      state
-      title
-      assignees {
-        nodes {
-          id
-          avatarUrl
-          username
-          name
-          webUrl
+  project(fullPath: "gitlab-org/gitlab") {
+    workItems(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
+      nodes {
+        id
+        iid
+        title
+        webUrl
+        reference
+        state
+        title
+        widgets {
+          ... on WorkItemWidgetAssignees {
+            type
+            assignees {
+              nodes {
+                id
+                avatarUrl
+                username
+                name
+                webUrl
+              }
+            }
+          }
+        }
+        widgets {
+          ... on WorkItemWidgetStartAndDueDate {
+            type
+            dueDate
+          }
         }
       }
-      dueDate
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      count
     }
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
-    }
-    count
   }
 }
 ",
@@ -285,42 +323,44 @@ describe('parseQuery', () => {
 
   it('parses a simple query by converting it to GraphQL', async () => {
     const query = 'assignee = currentUser()';
-    const config = { fields: MOCK_FIELDS, limit: 50 };
+    const config = { fields: MOCK_FIELDS, limit: 50, project: 'gitlab-org/gitlab' };
     const { query: result } = await parseQuery(query, config);
 
     expect(prettify(result)).toMatchInlineSnapshot(`
 "query GLQL($before: String, $after: String, $limit: Int) {
-  issues(
-    assigneeUsernames: "foobar"
-    before: $before
-    after: $after
-    first: $limit
-  ) {
-    nodes {
-      id
-      iid
-      title
-      webUrl
-      reference
-      state
-      title
-      author {
+  project(fullPath: "gitlab-org/gitlab") {
+    workItems(
+      assigneeUsernames: "foobar"
+      before: $before
+      after: $after
+      first: $limit
+    ) {
+      nodes {
         id
-        avatarUrl
-        username
-        name
+        iid
+        title
         webUrl
+        reference
+        state
+        title
+        author {
+          id
+          avatarUrl
+          username
+          name
+          webUrl
+        }
+        state
+        descriptionHtml
       }
-      state
-      descriptionHtml
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      count
     }
-    pageInfo {
-      startCursor
-      endCursor
-      hasNextPage
-      hasPreviousPage
-    }
-    count
   }
 }"
 `);
@@ -334,7 +374,7 @@ describe('parseQuery', () => {
     expect(prettify(result)).toMatchInlineSnapshot(`
 "query GLQL($before: String, $after: String, $limit: Int) {
   project(fullPath: "gitlab-org/gitlab") {
-    issues(
+    workItems(
       assigneeUsernames: "foobar"
       or: {labelNames: ["bug", "feature"]}
       before: $before

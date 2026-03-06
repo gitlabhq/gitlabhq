@@ -431,6 +431,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :sidekiq do
         'Projects::InactiveProjectsDeletionNotificationWorker' => 3,
         'Projects::PostCreationWorker' => 3,
         'Projects::ScheduleBulkRepositoryShardMovesWorker' => 3,
+        'Projects::TransferWorker' => 3,
         'Projects::UpdateRepositoryStorageWorker' => 3,
         'Projects::RefreshBuildArtifactsSizeStatisticsWorker' => 0,
         'PropagateIntegrationGroupWorker' => 3,

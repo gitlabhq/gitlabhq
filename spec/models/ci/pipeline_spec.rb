@@ -2109,34 +2109,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           ])
         end
       end
-
-      context 'when the FF `ci_read_pipeline_variables_from_artifact` is disabled' do
-        before do
-          stub_feature_flags(ci_read_pipeline_variables_from_artifact: false)
-        end
-
-        it 'returns an array of Ci::PipelineVariable objects' do
-          expect(pipeline.variables).to match_array([
-            have_attributes(class: Ci::PipelineVariable, **variables_attributes.first),
-            have_attributes(class: Ci::PipelineVariable, **variables_attributes.last)
-          ])
-        end
-      end
     end
 
     shared_examples 'when pipeline does not have pipeline variables' do
       it 'returns an empty result' do
         expect(pipeline.variables).to be_empty
-      end
-
-      context 'when the FF `ci_read_pipeline_variables_from_artifact` is disabled' do
-        before do
-          stub_feature_flags(ci_read_pipeline_variables_from_artifact: false)
-        end
-
-        it 'returns an empty result' do
-          expect(pipeline.variables).to be_empty
-        end
       end
     end
 

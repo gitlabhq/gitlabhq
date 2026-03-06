@@ -863,6 +863,8 @@
   - 1
 - - projects_schedule_bulk_repository_shard_moves
   - 1
+- - projects_transfer
+  - 1
 - - projects_update_repository_storage
   - 1
 - - propagate_integration

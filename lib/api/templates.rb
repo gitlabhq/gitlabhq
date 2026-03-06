@@ -38,6 +38,8 @@ module API
       optional :popular, type: Boolean, desc: 'If passed, returns only popular licenses'
       use :pagination
     end
+
+    route_setting :authorization, skip_granular_token_authorization: true
     get "templates/licenses", feature_category: :source_code_management do
       popular = declared(params)[:popular]
       popular = to_boolean(popular) if popular.present?
@@ -57,6 +59,8 @@ module API
       optional :project, type: String, desc: 'The copyrighted project name'
       optional :fullname, type: String, desc: 'The full-name of the copyright holder'
     end
+
+    route_setting :authorization, skip_granular_token_authorization: true
     get "templates/licenses/:name", requirements: { name: /[\w\.-]+/ }, feature_category: :source_code_management do
       template = TemplateFinder.build(:licenses, nil, name: params[:name]).execute
 
@@ -82,6 +86,8 @@ module API
       params do
         use :pagination
       end
+
+      route_setting :authorization, skip_granular_token_authorization: true
       get "templates/#{template_type}", feature_category: properties[:feature_category] do
         templates = ::Kaminari.paginate_array(TemplateFinder.build(template_type, nil).execute)
         present paginate(templates), with: Entities::TemplatesList
@@ -95,6 +101,8 @@ module API
       params do
         requires :name, type: String, desc: "The name of the #{file_type} template"
       end
+
+      route_setting :authorization, skip_granular_token_authorization: true
       get "templates/#{template_type}/:name", requirements: { name: /[\w\.-]+/ }, feature_category: properties[:feature_category] do
         finder = TemplateFinder.build(template_type, nil, name: declared(params)[:name])
         new_template = finder.execute

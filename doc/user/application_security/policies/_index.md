@@ -55,6 +55,30 @@ frameworks, or a combination, that you specify.
 | `projects`              | `object` | `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. You can also exclude projects by type using `type: personal` for personal projects or `type: archived` for archived projects. |
 | `groups`                | `object` | `including`              | Use `including:` then list the IDs of the groups you wish to include, in an array of objects with key `id`. Only groups linked to the same security policy project can be listed in the policy. |
 
+### Empty collections in `policy_scope`
+
+When a `policy_scope` field is set to an empty collection (`[]`), it is treated as if the field
+were omitted entirely. This means the policy applies to all projects without any restrictions.
+
+Specifically:
+
+- `projects: { including: [] }` applies the policy to all projects, not to zero projects.
+- `groups: { including: [] }` applies the policy to all groups, not to zero groups.
+- `compliance_frameworks: []` applies the policy to all projects, not to projects with no framework.
+
+This behavior maintains backward compatibility with existing policies that rely on having empty collections being treated as if the filter was not provided.
+
+To prevent a policy from applying to any project, set `enabled: false` instead of
+using an empty collection:
+
+```yaml
+policy_scope:
+  projects:
+    including:
+      - id: 123
+enabled: false  # Disables the policy entirely
+```
+
 ### Understanding `match_mode`
 
 When you specify multiple scope conditions (for example, both `projects` and `groups`), the `match_mode`

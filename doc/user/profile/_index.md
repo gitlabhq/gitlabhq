@@ -263,7 +263,7 @@ To add a Mastodon handle:
    1. In the upper-right corner, select your avatar.
    1. Select your name or username.
    1. On the right side, select your Mastodon handle.
-   1, Copy the URI from the page that opens.
+   1. Copy the URI from the page that opens.
 1. Add verification to Mastodon.
    1. Go to your Mastodon profile settings.
    1. In the **Extra fields** section, enter the URI from earlier.

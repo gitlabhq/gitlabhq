@@ -307,3 +307,188 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		require.Equal(t, int32(200), result.GetActionResponse().GetHttpResponse().StatusCode)
 	})
 }
+
+func TestHeaderParsing(t *testing.T) {
+	t.Run("response headers are correctly parsed and joined", func(t *testing.T) {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			w.Header().Set("X-Custom-Header", "custom-value")
+			w.Header().Set("Cache-Control", "no-cache")
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `{"status": "ok"}`)
+		}))
+		defer server.Close()
+
+		serverURL, err := url.Parse(server.URL)
+		require.NoError(t, err)
+
+		action := &pb.Action{
+			RequestID: "req-headers",
+			Action: &pb.Action_RunHTTPRequest{
+				RunHTTPRequest: &pb.RunHTTPRequest{
+					Method: "GET",
+					Path:   "/api/test",
+				},
+			},
+		}
+
+		handler := &runHTTPActionHandler{
+			rails: &api.API{
+				Client: server.Client(),
+				URL:    serverURL,
+			},
+			backend:     createBackendHandler(server.Client()),
+			action:      action,
+			token:       "test-token",
+			originalReq: &http.Request{},
+		}
+
+		result, err := handler.Execute(context.Background())
+
+		require.NoError(t, err)
+		require.NotNil(t, result)
+
+		headers := result.GetActionResponse().GetHttpResponse().Headers
+		require.NotNil(t, headers)
+		require.Equal(t, "application/json", headers["Content-Type"])
+		require.Equal(t, "custom-value", headers["X-Custom-Header"])
+		require.Equal(t, "no-cache", headers["Cache-Control"])
+	})
+
+	t.Run("multiple header values are joined with comma and space", func(t *testing.T) {
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.Header().Add("Set-Cookie", "session=abc123")
+			w.Header().Add("Set-Cookie", "user=john")
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `{}`)
+		}))
+		defer server.Close()
+
+		serverURL, err := url.Parse(server.URL)
+		require.NoError(t, err)
+
+		action := &pb.Action{
+			RequestID: "req-multi-headers",
+			Action: &pb.Action_RunHTTPRequest{
+				RunHTTPRequest: &pb.RunHTTPRequest{
+					Method: "GET",
+					Path:   "/api/test",
+				},
+			},
+		}
+
+		handler := &runHTTPActionHandler{
+			rails: &api.API{
+				Client: server.Client(),
+				URL:    serverURL,
+			},
+			backend:     createBackendHandler(server.Client()),
+			action:      action,
+			token:       "test-token",
+			originalReq: &http.Request{},
+		}
+
+		result, err := handler.Execute(context.Background())
+
+		require.NoError(t, err)
+		require.NotNil(t, result)
+
+		headers := result.GetActionResponse().GetHttpResponse().Headers
+		require.NotNil(t, headers)
+		// Multiple header values should be joined with ", "
+		require.Equal(t, "session=abc123, user=john", headers["Set-Cookie"])
+	})
+
+	t.Run("X-Forwarded-For header with existing prior value", func(t *testing.T) {
+		var capturedHeaders http.Header
+
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			capturedHeaders = r.Header
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `{}`)
+		}))
+		defer server.Close()
+
+		serverURL, err := url.Parse(server.URL)
+		require.NoError(t, err)
+
+		action := &pb.Action{
+			RequestID: "req-forwarded",
+			Action: &pb.Action_RunHTTPRequest{
+				RunHTTPRequest: &pb.RunHTTPRequest{
+					Method: "GET",
+					Path:   "/api/test",
+				},
+			},
+		}
+
+		originalReq := httptest.NewRequest("GET", "/ws", nil)
+		originalReq.RemoteAddr = testRemoteAddr
+		originalReq.Header.Set("X-Forwarded-For", "10.0.0.1, 10.0.0.2")
+
+		handler := &runHTTPActionHandler{
+			rails: &api.API{
+				Client: server.Client(),
+				URL:    serverURL,
+			},
+			backend:     createBackendHandler(server.Client()),
+			action:      action,
+			token:       "test-token",
+			originalReq: originalReq,
+		}
+
+		result, err := handler.Execute(context.Background())
+
+		require.NoError(t, err)
+		require.NotNil(t, result)
+
+		// X-Forwarded-For should contain prior values plus the new client IP
+		require.Equal(t, "10.0.0.1, 10.0.0.2, 192.0.2.1", capturedHeaders.Get("X-Forwarded-For"))
+	})
+
+	t.Run("X-Forwarded-For header without prior value", func(t *testing.T) {
+		var capturedHeaders http.Header
+
+		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			capturedHeaders = r.Header
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprint(w, `{}`)
+		}))
+		defer server.Close()
+
+		serverURL, err := url.Parse(server.URL)
+		require.NoError(t, err)
+
+		action := &pb.Action{
+			RequestID: "req-forwarded-new",
+			Action: &pb.Action_RunHTTPRequest{
+				RunHTTPRequest: &pb.RunHTTPRequest{
+					Method: "GET",
+					Path:   "/api/test",
+				},
+			},
+		}
+
+		originalReq := httptest.NewRequest("GET", "/ws", nil)
+		originalReq.RemoteAddr = testRemoteAddr
+
+		handler := &runHTTPActionHandler{
+			rails: &api.API{
+				Client: server.Client(),
+				URL:    serverURL,
+			},
+			backend:     createBackendHandler(server.Client()),
+			action:      action,
+			token:       "test-token",
+			originalReq: originalReq,
+		}
+
+		result, err := handler.Execute(context.Background())
+
+		require.NoError(t, err)
+		require.NotNil(t, result)
+
+		// X-Forwarded-For should contain only the client IP
+		require.Equal(t, "192.0.2.1", capturedHeaders.Get("X-Forwarded-For"))
+	})
+}

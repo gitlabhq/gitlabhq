@@ -94,6 +94,11 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 	nrw := &nullResponseWriter{header: make(http.Header)}
 	a.backend.ServeHTTP(nrw, req)
 
+	headers := make(map[string]string, len(nrw.Header()))
+	for k, v := range nrw.Header() {
+		headers[k] = strings.Join(v, ", ")
+	}
+
 	clientEvent := &pb.ClientEvent{
 		Response: &pb.ClientEvent_ActionResponse{
 			ActionResponse: &pb.ActionResponse{
@@ -102,6 +107,7 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 					HttpResponse: &pb.HttpResponse{
 						Body:       nrw.body.String(),
 						StatusCode: int32(nrw.status),
+						Headers:    headers,
 					},
 				},
 			},

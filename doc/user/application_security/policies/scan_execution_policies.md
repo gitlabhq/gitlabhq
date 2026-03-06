@@ -498,6 +498,12 @@ To customize policy enforcement, you can define a policy's scope to either inclu
 specified projects, groups, or compliance framework labels. For more details, see
 [Scope](_index.md#configure-the-policy-scope).
 
+> [!note]
+> Setting a `policy_scope` field to an empty collection (for example, `including: []`) is treated
+> the same as omitting the field, so the policy applies to all projects for that scope dimension.
+> To disable a policy entirely, use `enabled: false`. For more details, see
+> [Empty collections in `policy_scope`](_index.md#empty-collections-in-policy_scope).
+
 ## Policy update propagation
 
 When you update a policy, the changes propagate differently depending on how you update the policy:

@@ -11,6 +11,7 @@ describe('ReportSection', () => {
   const findActionButtons = () => wrapper.findComponent(ActionButtons);
   const findHelpPopover = () => wrapper.findComponent(HelpPopover);
   const findSummary = () => wrapper.findByTestId('summary');
+  const findLoadingText = () => wrapper.findByTestId('loading-text');
 
   const DEFAULT_PROPS = {
     summary: { title: 'Detected 3 new licenses' },
@@ -35,6 +36,12 @@ describe('ReportSection', () => {
       createComponent({ isLoading: true });
 
       expect(findHeaderStatusIcon().props('isLoading')).toBe(true);
+    });
+
+    it('shows loading text when loading', () => {
+      createComponent({ isLoading: true, loadingText: 'Loading message' });
+
+      expect(findLoadingText().text()).toBe('Loading message');
     });
 
     it('hides summary, help popover, and action buttons when loading', () => {

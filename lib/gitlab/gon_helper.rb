@@ -101,7 +101,6 @@ module Gitlab
       push_frontend_feature_flag(:remove_monitor_metrics)
       push_frontend_feature_flag(:new_project_creation_form, current_user, type: :wip)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
-      push_frontend_feature_flag(:glql_work_items, current_user)
       push_frontend_feature_flag(:glql_aggregation, current_user, type: :wip)
       push_frontend_feature_flag(:glql_typescript, current_user, type: :wip)
 

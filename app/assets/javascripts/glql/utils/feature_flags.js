@@ -1,12 +1,3 @@
-export const glqlWorkItemsFeatureFlagEnabled = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('glqlWorkItems') === 'false') {
-    return false;
-  }
-
-  return Boolean(gon.features?.glqlWorkItems);
-};
-
 export const glqlTypescriptFeatureFlagEnabled = () => {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('glqlTypescript') === 'false') {
@@ -21,6 +12,6 @@ export const glqlAggregationEnabled = () => {
 };
 
 export const glqlFeatureFlags = () => ({
-  glqlWorkItems: glqlWorkItemsFeatureFlagEnabled(),
+  glqlWorkItems: true,
   glqlTypescript: glqlTypescriptFeatureFlagEnabled(),
 });

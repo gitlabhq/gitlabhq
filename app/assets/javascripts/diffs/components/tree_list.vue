@@ -268,6 +268,7 @@ export default {
           v-gl-tooltip.hover
           icon="list-bulleted"
           :selected="!renderTreeList"
+          :aria-current="!renderTreeList ? 'true' : null"
           :title="__('List view')"
           :aria-label="__('List view')"
           data-testid="list-view-toggle"
@@ -277,6 +278,7 @@ export default {
           v-gl-tooltip.hover
           icon="file-tree"
           :selected="renderTreeList"
+          :aria-current="renderTreeList ? 'true' : null"
           :title="__('Tree view')"
           :aria-label="__('Tree view')"
           data-testid="tree-view-toggle"

@@ -342,6 +342,12 @@ To customize policy enforcement, you can define a policy's scope to either inclu
 specified projects, groups, or compliance framework labels. For more details, see
 [Scope](_index.md#configure-the-policy-scope).
 
+> [!note]
+> Setting a `policy_scope` field to an empty collection (for example, `including: []`) is treated
+> the same as omitting the field, so the policy applies to all projects for that scope dimension.
+> To disable a policy entirely, use `enabled: false`. For more details, see
+> [Empty collections in `policy_scope`](_index.md#empty-collections-in-policy_scope).
+
 ## Manage access to the CI/CD configuration
 
 When you enforce pipeline execution policies on a project, users that trigger pipelines must have at least read-only access to the project that contains the policy CI/CD configuration. You can grant access to the project manually or automatically.

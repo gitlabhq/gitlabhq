@@ -436,6 +436,22 @@ describe('Diffs tree list component', () => {
         expect(wrapper.findByTestId(selectedToggle).props('selected')).toBe(true);
       },
     );
+
+    it.each`
+      selectedToggle        | deselectedToggle      | renderTreeList
+      ${'list-view-toggle'} | ${'tree-view-toggle'} | ${false}
+      ${'tree-view-toggle'} | ${'list-view-toggle'} | ${true}
+    `(
+      'sets aria-current on $selectedToggle when renderTreeList is $renderTreeList',
+      ({ selectedToggle, deselectedToggle, renderTreeList }) => {
+        useFileBrowser().renderTreeList = renderTreeList;
+
+        createComponent();
+
+        expect(wrapper.findByTestId(deselectedToggle).attributes('aria-current')).toBeUndefined();
+        expect(wrapper.findByTestId(selectedToggle).attributes('aria-current')).toBe('true');
+      },
+    );
   });
 
   describe('loading state', () => {

@@ -674,6 +674,12 @@ To customize policy enforcement, you can define a policy's scope to either inclu
 specified projects, groups, or compliance framework labels. For more details, see
 [Scope](_index.md#configure-the-policy-scope).
 
+> [!note]
+> Setting a `policy_scope` field to an empty collection (for example, `including: []`) is treated
+> the same as omitting the field, so the policy applies to all projects for that scope dimension.
+> To disable a policy entirely, use `enabled: false`. For more details, see
+> [Empty collections in `policy_scope`](_index.md#empty-collections-in-policy_scope).
+
 ## `bypass_settings`
 
 The `bypass_settings` field allows you to specify exceptions to the policy for certain branches, access tokens, or service accounts. When a bypass condition is met, the policy is not enforced for the matching merge request or branch.

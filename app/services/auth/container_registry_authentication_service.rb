@@ -407,7 +407,21 @@ module Auth
         params: { repository_path: repository_path }
       ).execute
 
-      raise ArgumentError, service_response.message if service_response.error?
+      # TODO: Remove this logging in !195939 when the error path is handled gracefully
+      if service_response.error?
+        Gitlab::AuthLogger.warn(
+          {
+            message: 'Container registry push protection rule check failed',
+            reason: service_response.reason,
+            error_message: service_response.message,
+            repository_path: repository_path,
+            project_path: project&.full_path,
+            username: current_user.is_a?(User) ? current_user.username : nil,
+            deploy_token_id: current_user.is_a?(DeployToken) ? current_user.id : nil
+          }.compact_blank
+        )
+        raise ArgumentError, service_response.message
+      end
 
       service_response[:protection_rule_exists?]
     end

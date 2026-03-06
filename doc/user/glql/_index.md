@@ -42,6 +42,7 @@ Share your feedback in the [embedded views, powered by GLQL, feedback issue](htt
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210854) in GitLab 18.6 as a [beta](../../policy/development_stages_support.md#beta) with [feature flags](../../administration/feature_flags/_index.md) named `glql_work_items` and `glql_es_integration`. Enabled by default.
+- [Feature flag `glql_work_items`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225241) removed in GitLab 18.10.
 
 {{< /history >}}
 
