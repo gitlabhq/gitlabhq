@@ -397,4 +397,74 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       expect(page).to have_content('Changes 0')
     end
   end
+
+  context 'when maintainer has fork and default branch is fully protected', :js do
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:upstream_project) do
+      create(:project, :repository, name: 'Upstream Project').tap do |project|
+        project.add_maintainer(maintainer)
+      end
+    end
+
+    let_it_be(:forked_project) { fork_project(upstream_project, maintainer, repository: true) }
+
+    before do
+      create(:protected_branch, :no_one_can_push,
+        name: upstream_project.default_branch,
+        project: upstream_project)
+
+      sign_in(maintainer)
+    end
+
+    shared_examples 'maintainer can commit to new branch in upstream' do |branch_name|
+      it 'allows maintainer to edit file and commit to a new branch in upstream project' do
+        visit project_edit_blob_path(upstream_project, tree_join(upstream_project.default_branch, 'README.md'))
+        wait_for_requests
+
+        find('.file-editor', match: :first)
+
+        editor_set_value('Updated README content')
+
+        click_button('Commit changes')
+
+        within_testid('commit-change-modal') do
+          fill_in(:commit_message, with: 'Update README', visible: true)
+          fill_in(:branch_name, with: branch_name, visible: true)
+          check('Create a merge request for this change')
+
+          click_button('Commit changes')
+        end
+
+        wait_for_requests
+
+        expect(page).to have_current_path(project_new_merge_request_path(upstream_project), ignore_query: true)
+        expect(upstream_project.repository.branch_exists?(branch_name)).to be true
+        expect(forked_project.repository.branch_exists?(branch_name)).to be false
+      end
+    end
+
+    context 'with blob_edit_refactor feature flag enabled' do
+      before do
+        stub_feature_flags(blob_edit_refactor: true)
+      end
+
+      it_behaves_like 'maintainer can commit to new branch in upstream', 'feature-branch'
+
+      it 'shows correct project context in the UI' do
+        visit project_edit_blob_path(upstream_project, tree_join(upstream_project.default_branch, 'README.md'))
+        wait_for_requests
+
+        expect(page).to have_content(upstream_project.name)
+        expect(page).not_to have_content(forked_project.name)
+      end
+    end
+
+    context 'with blob_edit_refactor feature flag disabled (old controller flow)' do
+      before do
+        stub_feature_flags(blob_edit_refactor: false)
+      end
+
+      it_behaves_like 'maintainer can commit to new branch in upstream', 'feature-branch-old'
+    end
+  end
 end
