@@ -57,3 +57,9 @@ RSpec.configure do |rspec|
   rspec.include_context 'with current_organization setting', with_current_organization: true
   rspec.include_context 'with Organization URL helpers', with_organization_url_helpers: true
 end
+
+def seed_internal_bot(bot_type)
+  before do
+    Users::Internal.in_organization(current_organization).public_send(bot_type)
+  end
+end

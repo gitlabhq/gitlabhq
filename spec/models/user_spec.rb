@@ -7362,25 +7362,30 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     subject { user.assigned_open_merge_requests_count(force: true, cached_only: cached_only) }
 
     let_it_be_with_refind(:user) { create(:user) }
-    let_it_be_with_refind(:project) { create(:project, :public) }
-    let_it_be_with_refind(:archived_project) { create(:project, :public, :archived) }
+    let_it_be_with_refind(:project) { create(:project, :public, organization: user.organization) }
+    let_it_be_with_refind(:archived_project) { create(:project, :public, :archived, organization: user.organization) }
     let(:cached_only) { false }
 
     before do
+      # Included
       create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
       create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
       create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
+
+      # Exclude because project is archived
       create(:merge_request, source_project: archived_project, author: user, assignees: [user])
 
+      # Excluded because already reviewed
       mr = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
-      mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
-
       mr.merge_request_reviewers.update_all(state: :reviewed)
+
+      # Excluded because already requested changes
+      mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
       mr2.merge_request_reviewers.update_all(state: :requested_changes)
     end
 
     it 'returns number of open merge requests from non-archived projects where there are no reviewers' do
-      is_expected.to eq 4
+      is_expected.to eq(3)
     end
 
     context 'when merge_request_dashboard_list_type is role_based' do

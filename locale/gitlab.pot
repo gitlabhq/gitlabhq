@@ -7403,6 +7403,9 @@ msgstr ""
 msgid "AiImpactAnalytics|Duo features usage"
 msgstr ""
 
+msgid "AiImpactAnalytics|Duo users"
+msgstr ""
+
 msgid "AiImpactAnalytics|Number of Duo Code Review comments."
 msgstr ""
 
@@ -7419,6 +7422,9 @@ msgid "AiImpactAnalytics|Number of chat sessions initiated through GitLab Duo Ag
 msgstr ""
 
 msgid "AiImpactAnalytics|Number of contributors who used any GitLab Duo feature."
+msgstr ""
+
+msgid "AiImpactAnalytics|Number of users that used at least one GitLab Duo feature."
 msgstr ""
 
 msgid "AiImpactAnalytics|The usage data may be incomplete due to backend calculations starting after upgrade to GitLab 16.11. For more information, see %{linkStart}epic 12978%{linkEnd}."
@@ -67184,6 +67190,9 @@ msgstr ""
 msgid "Squash commits when merging"
 msgstr ""
 
+msgid "Squash option cannot be used with wildcard branch rules. Use an exact branch name."
+msgstr ""
+
 msgid "SquashSettings|Allow"
 msgstr ""
 
@@ -72705,9 +72714,6 @@ msgid "Trial|Select a country or region"
 msgstr ""
 
 msgid "Trial|Select state or province"
-msgstr ""
-
-msgid "Trial|Start your free Ultimate and GitLab Duo Agent Platform trial"
 msgstr ""
 
 msgid "Trial|Start your free Ultimate and GitLab Duo Enterprise trial"
@@ -82440,9 +82446,6 @@ msgid "cannot be used because it belongs to a compromised private key. Stop usin
 msgstr ""
 
 msgid "cannot be used for user namespace"
-msgstr ""
-
-msgid "cannot be used with wildcard branch rules. Use an exact branch name."
 msgstr ""
 
 msgid "cannot contain HTML/XML tags, including any word between angle brackets (&lt;,&gt;)."

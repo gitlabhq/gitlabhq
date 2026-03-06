@@ -156,6 +156,8 @@ RSpec.describe Todo, feature_category: :notifications do
     end
 
     context 'when bypassing activerecord' do
+      let(:duo_code_review_bot) { Users::Internal.in_organization(user.organization_id).duo_code_review_bot }
+
       it 'prefers project_id' do
         todos_attributes = [{
           state: :pending,
@@ -163,7 +165,7 @@ RSpec.describe Todo, feature_category: :notifications do
           target_id: user.id,
           target_type: ::User,
           action: ::Todo::DUO_ENTERPRISE_ACCESS_GRANTED,
-          author_id: ::Users::Internal.duo_code_review_bot.id,
+          author_id: duo_code_review_bot.id,
           organization_id: user.organization_id,
           group_id: group.id,
           project_id: project.id
@@ -183,7 +185,7 @@ RSpec.describe Todo, feature_category: :notifications do
           target_id: user.id,
           target_type: ::User,
           action: ::Todo::DUO_ENTERPRISE_ACCESS_GRANTED,
-          author_id: ::Users::Internal.duo_code_review_bot.id,
+          author_id: duo_code_review_bot.id,
           organization_id: user.organization_id,
           group_id: group.id,
           project_id: nil
@@ -203,7 +205,7 @@ RSpec.describe Todo, feature_category: :notifications do
           target_id: user.id,
           target_type: ::User,
           action: ::Todo::DUO_ENTERPRISE_ACCESS_GRANTED,
-          author_id: ::Users::Internal.duo_code_review_bot.id,
+          author_id: duo_code_review_bot.id,
           organization_id: nil,
           group_id: nil,
           project_id: nil

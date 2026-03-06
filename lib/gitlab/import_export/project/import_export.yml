@@ -717,6 +717,7 @@ included_attributes:
     - :issues_template
     - :jobs_cache_index
     - :last_repository_check_failed
+    - :name
     - :merge_requests_author_approval
     - :merge_requests_disable_committers_approval
     - :merge_requests_ff_only_enabled
@@ -808,7 +809,6 @@ included_attributes:
 # Do not include the following attributes for the models specified.
 excluded_attributes:
   project:
-    - :name
     - :path
     - :namespace_id
     - :project_namespace_id

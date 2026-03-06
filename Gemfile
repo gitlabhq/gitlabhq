@@ -290,7 +290,7 @@ gem 'rack', '~> 2.2.9', feature_category: :shared # rubocop:todo Gemfile/Missing
 gem 'rack-timeout', '~> 0.7.0', require: 'rack/timeout/base', feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 
 group :puma do
-  gem 'puma', '~> 7.1', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
+  gem 'puma', '~> 7.2', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
   gem 'sd_notify', '~> 0.1.0', require: false, feature_category: :shared # rubocop:todo Gemfile/MissingFeatureCategory -- https://gitlab.com/gitlab-org/gitlab/-/issues/581839
 end
 

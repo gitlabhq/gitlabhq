@@ -30,6 +30,11 @@ export default {
     GlDropdownItem,
   },
   props: {
+    ariaLabelledBy: {
+      type: String,
+      required: false,
+      default: '',
+    },
     areEnvironmentsLoading: {
       type: Boolean,
       required: true,
@@ -58,10 +63,10 @@ export default {
       required: false,
       default: '',
     },
-    ariaLabelledBy: {
-      type: String,
+    state: {
+      type: Boolean,
       required: false,
-      default: '',
+      default: null,
     },
   },
   emits: ['search-environment-scope', 'select-environment'],
@@ -171,6 +176,7 @@ export default {
     :items="searchedEnvironments"
     :loading="isDropdownLoading"
     :searching="isDropdownSearching"
+    :state="state"
     :toggle-text="toggleText"
     :toggle-aria-labelled-by="ariaLabelledBy"
     @search="debouncedSearch"

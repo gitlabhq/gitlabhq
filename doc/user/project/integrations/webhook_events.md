@@ -2865,6 +2865,7 @@ Payload example:
       }
     ],
     "report_type": "dependency_scanning",
+    "scanner_external_id": "gitlab-sbom-vulnerability-scanner",
     "confidence": "unknown",
     "confidence_overridden": false,
     "confirmed_at": "2025-01-08T00:46:14.413Z",

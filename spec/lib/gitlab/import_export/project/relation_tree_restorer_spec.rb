@@ -43,6 +43,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, :clean_gitla
 
         project = Project.find_by_path('project')
 
+        expect(project.name).to eq('Project name')
         expect(project.description).to eq('Nisi et repellendus ut enim quo accusamus vel magnam.')
         expect(project.labels.count).to eq(3)
         expect(project.boards.count).to eq(1)

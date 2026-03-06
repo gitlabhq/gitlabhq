@@ -45,6 +45,10 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
   include TermsHelper
   using RSpec::Parameterized::TableSyntax
 
+  # Make sure duo_code_review_bot is seeded before tests run to avoid
+  # flaky tests when testing signups.
+  seed_internal_bot(:duo_code_review_bot)
+
   let(:new_user) { build_stubbed(:user) }
 
   let(:terms_text) do

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: インポートのSidekiq設定
 description: GitLabにインポートまたは移行するためのSidekiq設定を最適化します。
 ---
@@ -15,7 +15,7 @@ description: GitLabにインポートまたは移行するためのSidekiq設定
 
 インポーターは、グループとプロジェクトのインポートおよびエクスポートを処理するために、Sidekiqジョブに大きく依存しています。これらのジョブの中には、大量のリソース（CPUとメモリ）を消費し、完了までに長い時間がかかるものがあり、他のジョブの実行に影響を与える可能性があります。
 
-このイシューを解決するには、インポータージョブを専任のSidekiqキューにルーティングし、そのキューを処理するために専任のSidekiqプロセスを割り当てる必要があります。
+この問題を解決するには、インポータージョブを専用のSidekiqキューにルーティングし、そのキューを処理するために専用のSidekiqプロセスを割り当てる必要があります。
 
 たとえば、次の設定を使用できます:
 
@@ -41,9 +41,9 @@ sidekiq['queue_groups'] = [
 
 この設定では、次のようになります:
 
-- 専任のSidekiqプロセスは、インポーターキューを介してインポートおよびエクスポートジョブを処理します。
-- 別のSidekiqプロセスは、他のすべてのジョブ（デフォルトキューとメーラーキュー）を処理します。
-- 両方のSidekiqプロセスは、デフォルトで20スレッドの同時実行をするように設定されています。メモリが制約された環境では、この数値を減らすことをお勧めします。
+- 専用のSidekiqプロセスは、インポーターキューを介してインポートジョブとエクスポートジョブを処理します。
+- 別のSidekiqプロセスが、他のすべてのジョブ（デフォルトキューとメーラーキュー）を処理します。
+- 両方のSidekiqプロセスは、デフォルトで20個の同時スレッドを処理するように設定されています。メモリが制約された環境では、この数値を減らすことをお勧めします。
 
 ## 追加の処理を設定する {#configure-additional-processes}
 
@@ -69,11 +69,11 @@ sidekiq['queue_groups'] = [
 ]
 ```
 
-この設定では、複数のSidekiqプロセスがインポートおよびエクスポートジョブを同時に処理するため、インスタンスに十分なリソースがある限り、移行が高速化されます。
+この設定では、複数のSidekiqプロセスがインポートジョブとエクスポートジョブを同時に処理するため、インスタンスに十分なリソースがある限り、移行が高速化されます。
 
 ## 関連トピック {#related-topics}
 
-- [GitLabへのインポートと移行](../../user/import/_index.md)。
-- [インポートおよびエクスポート設定](../settings/import_and_export_settings.md)。
-- [複数のSidekiq処理の実行](extra_sidekiq_processes.md)。
+- [GitLabにインポートおよび移行する](../../user/import/_index.md)。
+- [インポートとエクスポートの設定](../settings/import_and_export_settings.md)。
+- [複数のSidekiqプロセスの実行](extra_sidekiq_processes.md)。
 - [特定のジョブクラスの処理](processing_specific_job_classes.md)。

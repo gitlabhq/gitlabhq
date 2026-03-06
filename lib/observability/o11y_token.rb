@@ -103,7 +103,7 @@ module Observability
         return
       end
 
-      data = Gitlab::Json.parse(response.body)
+      data = Gitlab::Json.safe_parse(response.body)
       data.dig('data', 'orgs', 0, 'id')
     end
 
@@ -124,7 +124,7 @@ module Observability
       response_body = response.body.to_s.strip
       raise AuthenticationError, "Empty response from O11y service" if response_body.blank?
 
-      data = Gitlab::Json.parse(response.body)
+      data = Gitlab::Json.safe_parse(response.body)
       TokenResponse.from_json(data).to_h
     rescue JSON::ParserError => e
       raise AuthenticationError, "Invalid response format from O11y service: #{e.message}"

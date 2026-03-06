@@ -65,6 +65,10 @@ module WorkItems
               true
             end
 
+            def creatable?
+              false
+            end
+
             def can_be_conversion_target?
               false
             end

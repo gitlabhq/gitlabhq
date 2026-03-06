@@ -229,7 +229,7 @@ module Gitlab
         end
 
         def modify_attributes
-          # no-op to be overridden on inheritance
+          @importable.state = :ancestor_inherited if @importable.read_attribute(:state).nil?
         end
 
         def build_relations(relation_key, relation_definition, relation_index, data_hashes)

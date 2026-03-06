@@ -25,7 +25,8 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js,
     expect(page).to have_content('https://android-review.googlesource.com/platform/build/blueprint')
   end
 
-  it 'imports a project successfully', :sidekiq_inline, :js do
+  it 'imports a project successfully', :sidekiq_inline, :js,
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/592154' do
     visit new_import_manifest_path
 
     attach_file('manifest', Rails.root.join('spec/fixtures/aosp_manifest.xml'))

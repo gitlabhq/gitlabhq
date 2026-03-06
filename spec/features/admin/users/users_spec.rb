@@ -7,6 +7,8 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
   include Spec::Support::Helpers::ModalHelpers
   include ListboxHelpers
 
+  seed_internal_bot(:duo_code_review_bot)
+
   let_it_be(:admin) { create(:admin, organizations: [current_organization]) }
   let_it_be_with_reload(:user) do
     create(:omniauth_user, provider: 'twitter', extern_uid: '123456', organizations: [current_organization])
@@ -152,7 +154,7 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
 
         expect(has_user?(text: user.email)).to be(true)
         expect(has_user?(text: admin.email)).to be(true)
-        expect(all_users.length).to be(2)
+        expect(all_users.length).to be(3) # user + admin + pre-seeded duo_code_review_bot
       end
     end
 

@@ -1144,6 +1144,106 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
     end
   end
 
+  describe 'resolved type configuration' do
+    it_behaves_like 'work item type configuration', :creatable?, {
+      issue: true,
+      task: true,
+      incident: true,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :configurable?, {
+      issue: true,
+      task: true,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :visible_in_settings?, {
+      issue: true,
+      task: true,
+      incident: true,
+      ticket: true
+    }
+
+    it_behaves_like 'work item type configuration', :show_project_selector?, {
+      issue: true,
+      task: true,
+      incident: true,
+      ticket: true
+    }
+
+    it_behaves_like 'work item type configuration', :can_be_conversion_target?, {
+      issue: true,
+      task: true,
+      incident: true,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :filterable?, {
+      issue: true,
+      task: true,
+      incident: true,
+      ticket: true
+    }
+
+    it_behaves_like 'work item type configuration', :archived?, {
+      issue: false,
+      task: false,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :only_for_group?, {
+      issue: false,
+      task: false,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :supports_roadmap_view?, {
+      issue: false,
+      task: false,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :use_legacy_view?, {
+      issue: false,
+      task: false,
+      incident: true,
+      ticket: true
+    }
+
+    it_behaves_like 'work item type configuration', :supports_move_action?, {
+      issue: true,
+      task: false,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :can_promote_to_objective?, {
+      issue: false,
+      task: false,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :service_desk?, {
+      issue: false,
+      task: false,
+      incident: false,
+      ticket: true
+    }
+
+    it_behaves_like 'work item type configuration', :incident_management?, {
+      issue: false,
+      task: false,
+      incident: true,
+      ticket: false
+    }
+  end
+
   describe '.base_types' do
     it 'includes all types from .all' do
       base_types = described_class.base_types

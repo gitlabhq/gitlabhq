@@ -2393,7 +2393,7 @@ class User < ApplicationRecord
         include_assigned: true,
         author_id: id,
         review_states: %w[reviewed requested_changes],
-        ignored_reviewer_username: ::Users::Internal.duo_code_review_bot.username
+        ignored_reviewer_username: ::Users::Internal.in_organization(organization_id).duo_code_review_bot.username
       }
 
       begin
@@ -2416,6 +2416,8 @@ class User < ApplicationRecord
     Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', user_preference.role_based?, merge_request_dashboard_show_drafts?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
       return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
 
+      duo_code_review_bot_username = ::Users::Internal.in_organization(organization_id).duo_code_review_bot.username
+
       params = {
         state: 'opened',
         non_archived: true,
@@ -2424,12 +2426,19 @@ class User < ApplicationRecord
       }
 
       unless user_preference.role_based?
-        params[:or] = { reviewer_wildcard: 'none', review_states: %w[reviewed requested_changes], only_reviewer_username: 'GitLabDuo' }
+        params[:or] = {
+          reviewer_wildcard: 'none',
+          review_states: %w[reviewed requested_changes],
+          only_reviewer_username: duo_code_review_bot_username
+        }
       end
 
       unless merge_request_dashboard_show_drafts?
         params[:draft] = false
-        params[:or] = { reviewer_wildcard: 'NONE', only_reviewer_username: ::Users::Internal.duo_code_review_bot.username }
+        params[:or] = {
+          reviewer_wildcard: 'NONE',
+          only_reviewer_username: duo_code_review_bot_username
+        }
       end
 
       begin

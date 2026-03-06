@@ -18,7 +18,7 @@ module HomepageData
       assigned_work_items_path: issues_dashboard_path(assignee_username: user.username),
       authored_work_items_path: issues_dashboard_path(author_username: user.username),
       preferences_path: profile_preferences_path(anchor: 'behavior'),
-      duo_code_review_bot_username: duo_code_review_bot.username,
+      duo_code_review_bot_username: duo_code_review_bot_username(user),
       merge_requests_review_requested_title: dashboard_list_title(mr_requested_id),
       merge_requests_your_merge_requests_title: dashboard_list_title(mr_requests_id),
       last_push_event: prepare_last_push_event_data(last_push_event)&.to_json,
@@ -69,8 +69,9 @@ module HomepageData
     end
   end
 
-  def duo_code_review_bot
-    ::Users::Internal.duo_code_review_bot
+  def duo_code_review_bot_username(user)
+    strong_memoize_with(:duo_code_review_bot_username, user) do
+      ::Users::Internal.in_organization(user.organization_id).duo_code_review_bot.username
+    end
   end
-  strong_memoize_attr :duo_code_review_bot
 end

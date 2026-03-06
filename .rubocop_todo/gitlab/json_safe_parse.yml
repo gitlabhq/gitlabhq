@@ -316,7 +316,6 @@ Gitlab/JsonSafeParse:
     - 'lib/gitlab/usage/metric_definition.rb'
     - 'lib/gitlab/webpack/manifest.rb'
     - 'lib/kramdown/parser/atlassian_document_format.rb'
-    - 'lib/observability/o11y_token.rb'
     - 'lib/tasks/ci/validate_id_token_configuration_task.rb'
     - 'lib/tasks/gitlab/background_migrations.rake'
     - 'lib/tasks/gitlab/openapi/v2.rake'
