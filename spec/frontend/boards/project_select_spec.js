@@ -1,9 +1,8 @@
 import { GlCollapsibleListbox, GlListboxItem, GlLoadingIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 import groupProjectsQuery from '~/boards/graphql/group_projects.query.graphql';
 import ProjectSelect from '~/boards/components/project_select.vue';
 
@@ -14,6 +13,7 @@ Vue.use(VueApollo);
 describe('ProjectSelect component', () => {
   let wrapper;
   let mockApollo;
+  let resolveQuery;
 
   const findLabel = () => wrapper.find("[data-testid='header-label']");
   const findGlCollapsibleListBox = () => wrapper.findComponent(GlCollapsibleListbox);
@@ -28,10 +28,12 @@ describe('ProjectSelect component', () => {
   const findEmptySearchMessage = () => wrapper.find("[data-testid='listbox-no-results-text']");
 
   const projectsQueryHandler = jest.fn().mockResolvedValue(mockGroupProjectsResponse());
-  const emptyProjectsQueryHandler = jest.fn().mockResolvedValue(mockGroupProjectsResponse([]));
+  const emptyProjectsQueryHandler = () => mockGroupProjectsResponse([]);
 
   const createWrapper = ({ queryHandler = projectsQueryHandler, selectedProject = {} } = {}) => {
-    mockApollo = createMockApollo([[groupProjectsQuery, queryHandler]]);
+    ({ apolloProvider: mockApollo, resolveQuery } = createControlledMockApollo([
+      [groupProjectsQuery, queryHandler],
+    ]));
     wrapper = mountExtended(ProjectSelect, {
       apolloProvider: mockApollo,
       propsData: {
@@ -54,7 +56,7 @@ describe('ProjectSelect component', () => {
     it('displays a loading icon while projects are being fetched', async () => {
       expect(findGlDropdownLoadingIcon().exists()).toBe(true);
 
-      await waitForPromises();
+      await resolveQuery(groupProjectsQuery);
 
       expect(findGlDropdownLoadingIcon().exists()).toBe(false);
       expect(projectsQueryHandler).toHaveBeenCalled();
@@ -70,7 +72,7 @@ describe('ProjectSelect component', () => {
     });
 
     it('passes down non archived projects to dropdown', async () => {
-      await waitForPromises();
+      await resolveQuery(groupProjectsQuery);
       findGlCollapsibleListBox().vm.$emit('shown');
       await nextTick();
       expect(findGlCollapsibleListBox().props('items')).toHaveLength(mockProjects.length - 1);
@@ -81,7 +83,7 @@ describe('ProjectSelect component', () => {
     describe('by default', () => {
       beforeEach(async () => {
         createWrapper();
-        await waitForPromises();
+        await resolveQuery(groupProjectsQuery);
       });
 
       it('shows GlListboxSearchInput with placeholder text', () => {
@@ -106,7 +108,7 @@ describe('ProjectSelect component', () => {
     describe('when no projects are being returned', () => {
       it('renders empty search result message', async () => {
         createWrapper({ queryHandler: emptyProjectsQueryHandler });
-        await waitForPromises();
+        await resolveQuery(groupProjectsQuery);
 
         expect(findEmptySearchMessage().exists()).toBe(true);
       });
@@ -115,7 +117,7 @@ describe('ProjectSelect component', () => {
     describe('when a project is selected', () => {
       beforeEach(async () => {
         createWrapper({ selectedProject: mockProjects[0] });
-        await waitForPromises();
+        await resolveQuery(groupProjectsQuery);
       });
 
       it('renders the name of the selected project', () => {

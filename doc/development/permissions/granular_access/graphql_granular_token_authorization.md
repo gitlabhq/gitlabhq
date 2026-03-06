@@ -54,7 +54,7 @@ The granular token authorization system adds fine-grained permission checks to G
 - **Purpose**: Provides the `authorize_granular_token` helper method for cleaner directive syntax
 - **Included in**: `Types::BaseObject` and `Mutations::BaseMutation`
 - **Method**: `authorize_granular_token(permissions:, boundary_type:, boundary: nil, boundary_argument: nil)`
-- **Validation**: Permissions are validated at boot time against `Authz::PermissionGroups::Assignable.all_permissions`. Using an invalid permission raises `ArgumentError`.
+- **Validation**: Permissions are validated by the `gitlab:permissions:validate` Rake task against `Authz::PermissionGroups::Assignable.all_permissions`.
 
 ## Request Flow Timeline
 
@@ -524,10 +524,9 @@ raise_resource_not_available_error!(response.message)
      ```
 
 1. **Invalid permission name**
-   - **Behavior**: Raises `ArgumentError` at boot time
-   - **Error message**: `"Invalid granular scope permission(s): not_a_real_permission. Permissions must exist in assignable permission groups."`
+   - **Behavior**: Detected by the `gitlab:permissions:validate` Rake task
    - **Cause**: Using a permission symbol that doesn't exist in `Authz::PermissionGroups::Assignable.all_permissions`
-   - **Note**: This validation happens in the helper methods (`authorize_granular_token` / `granular_scope_directive`) when the class is loaded, ensuring invalid permissions are caught early
+   - **Note**: This validation runs as part of CI to ensure all directive permissions reference valid assignable permissions
 
 1. **Multiple directives found**
    - **Behavior**: Uses first match in priority order (field → owner → implementing type → return type)
@@ -551,7 +550,7 @@ authorize_granular_token(permissions:, boundary_type:, boundary: nil, boundary_a
 
 **Parameters:**
 
-- `permissions`: Symbol representing the required permission (e.g., `:read_issue`). Can also be an array of permissions. Must be a valid permission from `Authz::PermissionGroups::Assignable.all_permissions` — an `ArgumentError` is raised at boot time if not.
+- `permissions`: Symbol representing the required permission (e.g., `:read_issue`). Can also be an array of permissions. Must be a valid permission from `Authz::PermissionGroups::Assignable.all_permissions` — validated by the `gitlab:permissions:validate` Rake task.
 - `boundary`: Symbol representing the method to call on the resolved object to extract the boundary (e.g., `:project`). Use `:user` or `:instance` for standalone resources.
 - `boundary_argument`: Symbol representing the argument name containing the boundary path (e.g., `:project_path`).
 - `boundary_type`: **(Required)** Symbol declaring the type of authorization boundary (`:project`, `:group`, `:user`, `:instance`). Validated against the assignable permission boundaries by the `gitlab:permissions:validate` Rake task.

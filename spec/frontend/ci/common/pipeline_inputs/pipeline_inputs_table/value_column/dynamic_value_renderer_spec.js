@@ -74,6 +74,23 @@ describe('DynamicValueRenderer', () => {
         expect(findDropdown().exists()).toBe(true);
         expect(findInput().exists()).toBe(false);
       });
+
+      it('converts numeric options to string text', () => {
+        createComponent({
+          props: {
+            item: {
+              ...defaultProps.item,
+              options: [1, 50, 100],
+            },
+          },
+        });
+
+        const dropdownItems = findDropdown().props('items');
+        expect(dropdownItems).toHaveLength(3);
+        expect(dropdownItems[0]).toEqual({ value: 1, text: '1' });
+        expect(dropdownItems[1]).toEqual({ value: 50, text: '50' });
+        expect(dropdownItems[2]).toEqual({ value: 100, text: '100' });
+      });
     });
 
     describe('array type handling', () => {

@@ -1062,5 +1062,272 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
       end
     end
   end
+
+  describe "coercer mappings" do
+    let(:converter) { described_class.new(name, options: options, validations: validations, route: route) }
+
+    before do
+      Gitlab::GrapeOpenapi.configuration.coercer_mappings = {
+        "CommaSeparatedToArray" => {
+          type: "array",
+          items_type: "string",
+          style: "form",
+          explode: false
+        },
+        "CommaSeparatedToIntegerArray" => {
+          type: "array",
+          items_type: "integer",
+          style: "form",
+          explode: false
+        },
+        "HashOfIntegerValues" => {
+          type: "object",
+          additional_properties: { type: "integer" }
+        },
+        "HashWithDirectAdditionalProperties" => {
+          type: "object",
+          additional_properties: { type: "string", format: "date-time" }
+        },
+        "urlsafe_decode64" => {
+          type: "string",
+          format: "byte"
+        }
+      }
+    end
+
+    after do
+      Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+    end
+
+    context "when coerce_with matches CommaSeparatedToArray" do
+      let(:options) { { type: "[String]", desc: "Comma-separated labels" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:labels],
+            options: {
+              type: Array,
+              method: TestValidations::Types::CommaSeparatedToArray.coerce
+            },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "generates array schema with string items" do
+        expect(converter.schema).to eq({ type: "array", items: { type: "string" } })
+      end
+
+      it "sets style on converted parameter" do
+        expect(converter.convert.style).to eq("form")
+      end
+
+      it "sets explode to false on converted parameter" do
+        expect(converter.convert.explode).to be(false)
+      end
+
+      it "includes style and explode in to_h output" do
+        hash = converter.convert.to_h
+        expect(hash[:style]).to eq("form")
+        expect(hash[:explode]).to be(false)
+      end
+    end
+
+    context "when coerce_with matches CommaSeparatedToIntegerArray" do
+      let(:options) { { type: "[Integer]", desc: "Comma-separated IDs" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:ids],
+            options: {
+              type: Array,
+              method: TestValidations::Types::CommaSeparatedToIntegerArray.coerce
+            },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "generates array schema with integer items" do
+        expect(converter.schema).to eq({ type: "array", items: { type: "integer" } })
+      end
+
+      it "sets style on converted parameter" do
+        expect(converter.convert.style).to eq("form")
+      end
+
+      it "sets explode to false on converted parameter" do
+        expect(converter.convert.explode).to be(false)
+      end
+
+      it "includes style and explode in to_h output" do
+        hash = converter.convert.to_h
+        expect(hash[:style]).to eq("form")
+        expect(hash[:explode]).to be(false)
+      end
+    end
+
+    context "when coerce_with matches HashOfIntegerValues" do
+      let(:options) { { type: "Hash", desc: "Counts by category" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:counts],
+            options: {
+              type: Hash,
+              method: TestValidations::Types::HashOfIntegerValues.coerce
+            },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "generates object schema with additional_properties" do
+        expect(converter.schema).to eq({ type: "object", additional_properties: { type: "integer" } })
+      end
+    end
+
+    context "when coerce_with matches urlsafe_decode64" do
+      let(:options) { { type: "String", desc: "Base64-encoded data" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:encoded_data],
+            options: { type: String, method: Struct.new(:name).new(:urlsafe_decode64) },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "generates string schema with byte format" do
+        expect(converter.schema).to eq({ type: "string", format: "byte" })
+      end
+
+      it "does not set style (not applicable for simple strings)" do
+        expect(converter.convert.style).to be_nil
+      end
+    end
+
+    context "when no coercer mapping matches a named coercer" do
+      let(:options) { { type: "String", desc: "Some data" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:data],
+            options: {
+              type: String,
+              method: TestValidations::Types::SomeUnknownCoercer.coerce
+            },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "raises an error" do
+        expect do
+          converter.schema
+        end.to raise_error(Gitlab::GrapeOpenapi::GenerationError, /No OpenAPI schema mapping found for coercer/)
+      end
+    end
+
+    context "when no coercer mapping matches an inline lambda" do
+      let(:options) { { type: "String", desc: "Some data" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:data],
+            options: { type: String, method: ->(v) { v.downcase } },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "falls back to default schema generation" do
+        expect(converter.schema).to eq({ type: "string" })
+      end
+    end
+
+    context "when no coerce validation exists" do
+      let(:options) { { type: "String", desc: "A name" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:name],
+            options: /^[a-z]+$/,
+            validator_class: Grape::Validations::Validators::RegexpValidator
+          }
+        ]
+      end
+
+      it "falls back to default schema generation with pattern" do
+        expect(converter.schema).to eq({ type: "string", pattern: "^[a-z]+$" })
+      end
+    end
+
+    context "when validations is nil" do
+      let(:validations) { nil }
+      let(:options) { { type: "String" } }
+
+      it "falls back to default schema generation" do
+        expect(converter.schema).to eq({ type: "string" })
+      end
+    end
+
+    context "when coercer_mappings is empty with a named coercer" do
+      before do
+        Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+      end
+
+      let(:options) { { type: "[String]", desc: "Labels" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:labels],
+            options: {
+              type: Array,
+              method: TestValidations::Types::CommaSeparatedToArray.coerce
+            },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "raises an error" do
+        expect do
+          converter.schema
+        end.to raise_error(Gitlab::GrapeOpenapi::GenerationError, /No OpenAPI schema mapping found for coercer/)
+      end
+    end
+
+    context "when coercer_mappings is empty with an inline lambda" do
+      before do
+        Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+      end
+
+      let(:options) { { type: "[String]", desc: "Labels" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:labels],
+            options: { type: Array, method: ->(v) { v } },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "falls back to default schema generation (array schema for bracket notation)" do
+        expect(converter.schema).to eq({ type: "array", items: { type: "string" } })
+      end
+    end
+  end
   # rubocop:enable RSpec/MultipleMemoizedHelpers, RSpec/VerifiedDoubles
 end

@@ -154,6 +154,35 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
     end
   end
 
+  describe '#validate_permission_exists' do
+    before do
+      allow(Authz::PermissionGroups::Assignable).to receive(:all_permissions)
+        .and_return([:read_project])
+    end
+
+    context 'when permission exists in assignable permissions' do
+      it 'does not add a violation' do
+        expect do
+          task.send(:validate_permission_exists, { kind: 'type', name: 'Test' }, :read_project)
+        end.not_to change { task.send(:violations)[:invalid_permission].length }
+      end
+    end
+
+    context 'when permission does not exist in assignable permissions' do
+      it 'adds a violation' do
+        expect do
+          task.send(:validate_permission_exists, { kind: 'type', name: 'Test' }, :not_a_real_permission)
+        end.to change { task.send(:violations)[:invalid_permission].length }.by(1)
+      end
+    end
+  end
+
+  describe '#format_invalid_permission_errors' do
+    it 'returns empty string when there are no violations' do
+      expect(task.send(:format_invalid_permission_errors)).to eq('')
+    end
+  end
+
   describe '#validate_boundary_type' do
     context 'when boundary_type is nil' do
       it 'returns without adding a violation' do
@@ -186,6 +215,8 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
 
     before do
       allow(GitlabSchema).to receive(:types).and_return({ 'Mutation' => empty_mutation_type })
+      allow(Authz::PermissionGroups::Assignable).to receive(:all_permissions)
+        .and_return([:read_project, :update_project, :create_issue, :read_something])
     end
 
     context 'when there are no directives' do
@@ -493,6 +524,23 @@ RSpec.describe Tasks::Gitlab::Permissions::Graphql::ValidateTask, feature_catego
 
       it 'skips the field and completes successfully' do
         expect { run }.to output(/GraphQL permissions are valid/).to_stdout
+      end
+    end
+
+    context 'when a type has an invalid permission' do
+      let(:directive) { mock_directive(permissions: :not_a_real_permission, boundary_type: :project) }
+      let(:type) { mock_type('BadType', directive: directive) }
+
+      before do
+        allow(GitlabSchema).to receive(:types).and_return(
+          'BadType' => type, 'Mutation' => empty_mutation_type
+        )
+      end
+
+      it 'returns an error listing the invalid permission' do
+        expect { run }.to raise_error(SystemExit).and output(
+          /not included in any assignable permission.*\[type\] BadType: not_a_real_permission/m
+        ).to_stdout
       end
     end
 

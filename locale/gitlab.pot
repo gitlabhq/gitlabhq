@@ -11855,6 +11855,9 @@ msgstr ""
 msgid "BillingPlans|See all %{plan_name} features"
 msgstr ""
 
+msgid "BillingPlans|See all features"
+msgstr ""
+
 msgid "BillingPlans|Software Supply Chain Security"
 msgstr ""
 
@@ -11868,6 +11871,9 @@ msgid "BillingPlans|Start a free GitLab Duo Enterprise Trial"
 msgstr ""
 
 msgid "BillingPlans|Start a free trial of GitLab Ultimate"
+msgstr ""
+
+msgid "BillingPlans|Start a free trial of Ultimate with advanced enterprise security, no credit card required."
 msgstr ""
 
 msgid "BillingPlans|Start an Ultimate trial to try the complete set of features from GitLab."
@@ -11934,6 +11940,9 @@ msgid "BillingPlans|Trusted by"
 msgstr ""
 
 msgid "BillingPlans|Try GitLab Duo Pro"
+msgstr ""
+
+msgid "BillingPlans|Try for free"
 msgstr ""
 
 msgid "BillingPlans|Ultimate"
@@ -12030,6 +12039,9 @@ msgid "BillingPlans|per user"
 msgstr ""
 
 msgid "BillingPlans|per user/month,"
+msgstr ""
+
+msgid "BillingPlans|per user/month, billed annually"
 msgstr ""
 
 msgid "BillingPlans|projects"
@@ -33233,9 +33245,6 @@ msgstr ""
 msgid "Go to the milestone list"
 msgstr ""
 
-msgid "Go to the pipeline editor"
-msgstr ""
-
 msgid "Go to the project's activity feed"
 msgstr ""
 
@@ -51061,9 +51070,6 @@ msgid "Pipelines|Use a template based on your project's language or framework to
 msgstr ""
 
 msgid "Pipelines|Use template"
-msgstr ""
-
-msgid "Pipelines|Using %{codeStart}inputs%{codeEnd} to control pipeline behavior offers improved security and flexibility. Consider updating your pipelines to use %{codeStart}inputs%{codeEnd} instead."
 msgstr ""
 
 msgid "Pipelines|Validate"
@@ -73560,6 +73566,15 @@ msgid "Upgrade"
 msgstr ""
 
 msgid "Upgrade to Premium"
+msgstr ""
+
+msgid "UpgradeSubscription|An error occurred while assigning your project to a group for billing. Try again or %{linkStart}learn more about pricing%{linkEnd}."
+msgstr ""
+
+msgid "UpgradeSubscription|Billing page is not available"
+msgstr ""
+
+msgid "UpgradeSubscription|Try again"
 msgstr ""
 
 msgid "Upload"

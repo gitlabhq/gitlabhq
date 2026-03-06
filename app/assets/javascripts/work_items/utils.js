@@ -620,3 +620,40 @@ export const getHiddenMetadataKeysFromLocalStorage = (key) => {
 
   return [];
 };
+
+export const isCurrentViewWorkItem = () => {
+  const page = document.body.dataset.page || '';
+  const descriptionWrapper = document.querySelector('.js-issuable-description-wrapper');
+
+  // Early return for Incident and Ticket pages as those are not work items
+  if (['ticket', 'incident'].includes(descriptionWrapper?.dataset.issuableType)) return false;
+
+  // Check page type for possible work items
+  return [
+    // Group Work Items/Epics List View
+    'groups:work_items:index',
+    'groups:epics:index',
+
+    // Group Issues List/Detail View
+    'groups:issues',
+
+    // Group Issues/Epics Board View
+    'groups:boards:index',
+    'groups:epic_boards:index',
+
+    // Project Work Items/Issues list View
+    'projects:work_items:index',
+    'projects:issues:index',
+
+    // Project Issues Board View
+    'projects:boards:index',
+
+    // Group Work Items/Epics Detail View
+    'groups:work_items:show',
+    'groups:epics:show',
+
+    // Project Work Items/Issues Detail View
+    'projects:work_items:show',
+    'projects:issues:show',
+  ].includes(page);
+};

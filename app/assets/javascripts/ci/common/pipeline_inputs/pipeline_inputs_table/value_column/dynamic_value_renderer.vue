@@ -121,7 +121,7 @@ export default {
       },
     },
     dropdownOptions() {
-      return this.item.options?.map((option) => ({ value: option, text: option.toString() })) || [];
+      return this.item.options?.map((option) => ({ value: option, text: String(option) })) || [];
     },
     hasArrayFormatError() {
       const field = this.form.fields[this.item.name];

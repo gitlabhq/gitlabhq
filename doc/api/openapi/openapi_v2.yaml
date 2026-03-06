@@ -8843,7 +8843,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - packages
+      - pypi_packages
       operationId: getApiV4GroupsIdPackagesPypiFilesSha256*fileIdentifier
   "/api/v4/groups/{id}/-/packages/pypi/simple":
     get:

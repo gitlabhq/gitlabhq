@@ -2,13 +2,20 @@ import { pinia } from '~/pinia/instance';
 import { RapidDiffsFacade } from '~/rapid_diffs/app';
 import { adapters } from '~/rapid_diffs/app/adapter_configs/merge_request';
 import { useCodeReview } from '~/diffs/stores/code_review';
+import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
 
 class MergeRequestRapidDiffsApp extends RapidDiffsFacade {
   adapterConfig = adapters;
 
-  init() {
+  async init() {
     this.#initCodeReview();
     super.init();
+    await this.#initDiscussions();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  #initDiscussions() {
+    return useMergeRequestDiscussions().fetchNotes();
   }
 
   #initCodeReview() {

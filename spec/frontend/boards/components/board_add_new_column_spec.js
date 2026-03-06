@@ -1,7 +1,7 @@
 import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BoardAddNewColumn from '~/boards/components/board_add_new_column.vue';
@@ -25,9 +25,7 @@ describe('BoardAddNewColumn', () => {
   const createBoardListQueryHandler = jest.fn().mockResolvedValue(createBoardListResponse);
   const labelsQueryHandler = jest.fn().mockResolvedValue(labelsQueryResponse);
   const errorMessage = 'Failed to create list';
-  const createBoardListQueryHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
   const errorMessageLabels = 'Failed to fetch labels';
-  const labelsQueryHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessageLabels));
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findAddNewColumnForm = () => wrapper.findComponent(BoardAddNewColumnForm);
@@ -43,13 +41,13 @@ describe('BoardAddNewColumn', () => {
     labelsHandler = labelsQueryHandler,
     createHandler = createBoardListQueryHandler,
   } = {}) => {
-    mockApollo = createMockApollo([
+    mockApollo = createControlledMockApollo([
       [boardLabelsQuery, labelsHandler],
       [createBoardListMutation, createHandler],
     ]);
 
     wrapper = mountExtended(BoardAddNewColumn, {
-      apolloProvider: mockApollo,
+      apolloProvider: mockApollo.apolloProvider,
       propsData: {
         listQueryVariables: {
           isGroup: false,
@@ -86,10 +84,10 @@ describe('BoardAddNewColumn', () => {
     }
 
     // Necessary for cache update
-    mockApollo.clients.defaultClient.cache.readQuery = jest
+    mockApollo.apolloProvider.clients.defaultClient.cache.readQuery = jest
       .fn()
       .mockReturnValue(boardListsQueryResponse.data);
-    mockApollo.clients.defaultClient.cache.writeQuery = jest.fn();
+    mockApollo.apolloProvider.clients.defaultClient.cache.writeQuery = jest.fn();
   };
 
   beforeEach(() => {
@@ -97,14 +95,17 @@ describe('BoardAddNewColumn', () => {
   });
 
   describe('when list is new', () => {
-    beforeEach(() => {
-      mountComponent({ selectedId: mockLabelList.label.id });
+    beforeEach(async () => {
+      await mountComponent({ selectedId: mockLabelList.label.id });
     });
 
     it('fetches labels and adds list', async () => {
       findDropdown().vm.$emit('show');
 
       await nextTick();
+
+      await mockApollo.resolveQuery(boardLabelsQuery);
+
       expect(labelsQueryHandler).toHaveBeenCalled();
 
       selectLabel(mockLabelList.label.id);
@@ -123,8 +124,8 @@ describe('BoardAddNewColumn', () => {
   });
 
   describe('when list already exists in board', () => {
-    beforeEach(() => {
-      mountComponent({
+    beforeEach(async () => {
+      await mountComponent({
         lists: {
           [mockLabelList.id]: mockLabelList,
         },
@@ -136,6 +137,9 @@ describe('BoardAddNewColumn', () => {
       findDropdown().vm.$emit('show');
 
       await nextTick();
+
+      await mockApollo.resolveQuery(boardLabelsQuery);
+
       expect(labelsQueryHandler).toHaveBeenCalled();
 
       selectLabel(mockLabelList.label.id);
@@ -150,25 +154,9 @@ describe('BoardAddNewColumn', () => {
   });
 
   describe('when fetch labels query fails', () => {
-    beforeEach(() => {
-      mountComponent({
-        labelsHandler: labelsQueryHandlerFailure,
-      });
-    });
-
-    it('sets error', async () => {
-      findDropdown().vm.$emit('show');
-
-      await waitForPromises();
-      expect(cacheUpdates.setError).toHaveBeenCalled();
-    });
-  });
-
-  describe('when create list mutation fails', () => {
-    beforeEach(() => {
-      mountComponent({
-        selectedId: mockLabelList.label.id,
-        createHandler: createBoardListQueryHandlerFailure,
+    beforeEach(async () => {
+      await mountComponent({
+        labelsHandler: () => labelsQueryResponse,
       });
     });
 
@@ -176,21 +164,42 @@ describe('BoardAddNewColumn', () => {
       findDropdown().vm.$emit('show');
 
       await nextTick();
+
+      await mockApollo.rejectQuery(boardLabelsQuery, new Error(errorMessageLabels));
+      expect(cacheUpdates.setError).toHaveBeenCalled();
+    });
+  });
+
+  describe('when create list mutation fails', () => {
+    beforeEach(async () => {
+      await mountComponent({
+        selectedId: mockLabelList.label.id,
+        createHandler: () => createBoardListResponse,
+      });
+    });
+
+    it('sets error', async () => {
+      findDropdown().vm.$emit('show');
+
+      await nextTick();
+
+      await mockApollo.resolveQuery(boardLabelsQuery);
+
       expect(labelsQueryHandler).toHaveBeenCalled();
 
       selectLabel(mockLabelList.label.id);
 
       findAddNewColumnForm().vm.$emit('add-list');
 
-      await waitForPromises();
+      await mockApollo.rejectMutation(createBoardListMutation, new Error(errorMessage));
 
       expect(cacheUpdates.setError).toHaveBeenCalled();
     });
   });
 
   describe('Accessibility features', () => {
-    beforeEach(() => {
-      mountComponent();
+    beforeEach(async () => {
+      await mountComponent();
     });
 
     it('has the dropdown button with correct ID attribute', () => {

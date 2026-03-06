@@ -102,8 +102,8 @@ module Users
       pipl_compliance_alert: 98,
       # 99 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221009
       # 100 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220975
-      pipeline_new_inputs_adoption_banner: 101,
-      pipeline_schedules_inputs_adoption_banner: 102,
+      # 101 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225070
+      # 102 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225070
       # 103 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222229
       # 104 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218816
       # 105 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218816

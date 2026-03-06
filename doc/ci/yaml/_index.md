@@ -1383,9 +1383,6 @@ deploy:
 **Additional details**:
 
 - You cannot use `spec:include` in [CI/CD components](../components/_index.md#component-spec-section).
-- You cannot use `spec:include` in configuration files added by using the [`include`](#include) keyword.
-  You can only use `spec:include` in the main pipeline configuration file or in
-  files referenced by [`trigger:include`](#triggerinclude).
 - External input files must contain only the `inputs` key. Other keys cause validation errors.
 - External inputs are merged first, then inline inputs are applied.
 - Inline inputs take precedence over external inputs with the same name.

@@ -4,6 +4,8 @@ module Gitlab
   module GrapeOpenapi
     module Converters
       class ParameterConverter
+        include CoercerResolver
+
         attr_reader :name, :options, :validations, :route
 
         def self.convert(name, options:, route:, validations: [])
@@ -25,11 +27,17 @@ module Gitlab
           @options.dig(:documentation, :example)
         end
 
+        def coercer_mapping
+          @coercer_mapping ||= coercer_mapping_for(validations)
+        end
+
         def schema
           object_type = TypeResolver.resolve_type(options[:type]) || 'string'
           object_format = TypeResolver.resolve_format(nil, options[:type])
           type_str = options[:type].to_s
 
+          mapping = coercer_mapping
+          return build_coerced_schema(mapping) if mapping
           return build_simple_array_schema if type_str.start_with?('[') && type_str.exclude?(',')
           return build_union_schema(object_type) if type_str.start_with?('[')
           return build_range_schema(object_type) if options[:values].is_a?(Range)
@@ -111,7 +119,19 @@ module Gitlab
           method = route.instance_variable_get(:@options)[:method]
           return nil if method != 'GET' && method != 'DELETE' && in_value != 'path'
 
-          Gitlab::GrapeOpenapi::Models::Parameter.new(name, options: options, schema: schema, in_value: in_value)
+          param = Gitlab::GrapeOpenapi::Models::Parameter.new(
+            name,
+            options: options,
+            schema: schema,
+            in_value: in_value
+          )
+
+          mapping = coercer_mapping
+          return param unless mapping
+
+          param.style = mapping[:style] if mapping[:style]
+          param.explode = mapping[:explode] if mapping.key?(:explode)
+          param
         end
 
         private

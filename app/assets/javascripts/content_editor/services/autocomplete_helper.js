@@ -3,9 +3,15 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { newDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
-import { currentAssignees, linkedItems, availableStatuses } from '~/graphql_shared/issuable_client';
+import {
+  currentAssignees,
+  appliedLabels,
+  linkedItems,
+  availableStatuses,
+} from '~/graphql_shared/issuable_client';
 import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
-import { COMMANDS } from '../constants';
+import { isCurrentViewWorkItem } from '~/work_items/utils';
+import { COMMANDS, COMMANDS_WITH_LOCAL_DATA } from '../constants';
 
 export function defaultSorter(searchFields) {
   return (items, query) => {
@@ -85,22 +91,38 @@ export function createDataSource({
   cache = true,
   limit = 15,
   filterOnBackend = false,
+  isWorkItemsView,
 }) {
-  const fetchData = async (query) => {
+  const fetchData = async ({ prefixCommand, query }) => {
     try {
       const queryOptions = filterOnBackend ? { params: { search: query } } : {};
+
+      // We only want to fetch autocomplete data over the network
+      // if it is not available locally in Apollo Cache for Work Items.
+      // eg; `/unassign` shows list of currently assigned users (available locally)
+      //     Same is the case with `/unlabel` and `/unlink`.
+      if (isWorkItemsView && COMMANDS_WITH_LOCAL_DATA.includes(prefixCommand)) return [];
+
       return source ? (await axios.get(source, queryOptions)).data : [];
     } catch {
       return [];
     }
   };
 
-  const cacheTimeoutFn = () => (cache ? 0 : Math.floor(Date.now() / 1e4));
+  // We want to make sure that cache doesn't default to same
+  // result as original call by including `prefixCommand` and `query`
+  // to the cache key of memoized function.
+  const cacheTimeoutFn = ({ prefixCommand, query }) => {
+    const timeKey = cache ? 0 : Math.floor(Date.now() / 1e4);
+    return `${prefixCommand}-${query}-${timeKey}`;
+  };
   const memoizedFetchData = memoize(fetchData, cacheTimeoutFn);
 
   return {
-    search: async (query) => {
-      let results = filterOnBackend ? await fetchData(query) : await memoizedFetchData();
+    search: async (prefixCommand = '', query) => {
+      let results = filterOnBackend
+        ? await fetchData({ prefixCommand, query })
+        : await memoizedFetchData({ prefixCommand, query });
 
       results = results.map(mapper);
       if (filter) results = filter(results, query);
@@ -129,6 +151,8 @@ export default class AutocompleteHelper {
   tiptapEditor;
 
   constructor({ dataSourceUrls, sidebarMediator }) {
+    this.isWorkItemsView = isCurrentViewWorkItem();
+
     this.updateDataSources(dataSourceUrls);
 
     this.sidebarMediator = sidebarMediator;
@@ -185,29 +209,50 @@ export default class AutocompleteHelper {
     };
 
     const filters = {
-      label: (items) =>
-        items.filter((item) => {
+      label: (items) => {
+        const { workItemId } =
+          this.tiptapEditor?.view.dom.closest('.js-gfm-wrapper')?.dataset || {};
+
+        if (this.isWorkItemsView && command === COMMANDS.UNLABEL && workItemId) {
+          return appliedLabels()[workItemId] || [];
+        }
+
+        return items.filter((item) => {
           if (command === COMMANDS.UNLABEL) return item.set;
           if (command === COMMANDS.LABEL) return !item.set;
 
           return true;
-        }),
-      user: (items) =>
-        items.filter((item) => {
-          let assigned = this.sidebarMediator?.store?.assignees.some(
+        });
+      },
+      user: (items) => {
+        const { workItemId } =
+          this.tiptapEditor?.view.dom.closest('.js-gfm-wrapper')?.dataset || {};
+
+        // For work items, read from its cache to handle both /assign and /unassign
+        if (this.isWorkItemsView && workItemId) {
+          const cachedAssignees = currentAssignees()[workItemId] || [];
+
+          // Return assigned users as present in work item cache
+          if (command === COMMANDS.UNASSIGN) {
+            return cachedAssignees;
+          }
+
+          // For /assign, filter out already-assigned users from network results
+          if (command === COMMANDS.ASSIGN) {
+            return items.filter(
+              (item) => !cachedAssignees.some((assignee) => assignee.username === item.username),
+            );
+          }
+        }
+
+        // Non-work-items path (uses sidebarMediator)
+        return items.filter((item) => {
+          const assigned = this.sidebarMediator?.store?.assignees.some(
             (assignee) => assignee.username === item.username,
           );
           const assignedReviewer = this.sidebarMediator?.store?.reviewers.some(
             (reviewer) => reviewer.username === item.username,
           );
-
-          const { workItemId } =
-            this.tiptapEditor?.view.dom.closest('.js-gfm-wrapper')?.dataset || {};
-
-          if (workItemId) {
-            const assignees = currentAssignees()[workItemId] || [];
-            assigned = assignees.some((assignee) => assignee.username === item.username);
-          }
 
           if (command === COMMANDS.ASSIGN) return !assigned;
           if (command === COMMANDS.ASSIGN_REVIEWER) return !assignedReviewer;
@@ -215,7 +260,8 @@ export default class AutocompleteHelper {
           if (command === COMMANDS.UNASSIGN_REVIEWER) return assignedReviewer;
 
           return true;
-        }),
+        });
+      },
       /**
        * We're overriding returned items instead of filtering out
        * irrelavent items because for `/unlink #`, it should show
@@ -281,6 +327,7 @@ export default class AutocompleteHelper {
       mapper: mappers[referenceType] || mappers.default,
       sorter: sorters[referenceType] || sorters.default,
       filter: filters[referenceType],
+      isWorkItemsView: this.isWorkItemsView,
       command,
 
       ...options,

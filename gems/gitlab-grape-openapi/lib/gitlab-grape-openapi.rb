@@ -11,6 +11,7 @@ require_relative "gitlab/grape_openapi/tag_registry"
 require_relative "gitlab/grape_openapi/serializers/time"
 
 # Converters
+require_relative "gitlab/grape_openapi/converters/coercer_resolver"
 require_relative "gitlab/grape_openapi/converters/entity_converter"
 require_relative "gitlab/grape_openapi/converters/type_resolver"
 require_relative "gitlab/grape_openapi/converters/tag_converter"
@@ -36,6 +37,8 @@ require_relative "gitlab/grape_openapi/models/parameter"
 
 module Gitlab
   module GrapeOpenapi
+    GenerationError = Class.new(StandardError)
+
     class << self
       attr_writer :configuration
 

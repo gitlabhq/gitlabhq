@@ -92,6 +92,38 @@ Gitlab::GrapeOpenapi.configure do |config|
     'Vscode' => 'VSCode'
   }.freeze
 
+  # CONFIGURE COERCER MAPPINGS
+  # Maps coerce_with classes to OpenAPI schema properties.
+  # When a parameter uses coerce_with and the coercer matches a pattern below,
+  # the OpenAPI schema will be generated according to the mapping.
+  # For query parameters, style and explode control URL serialization format.
+  config.coercer_mappings = {
+    # Comma-separated string -> Array of strings (e.g., "bug,feature" -> ["bug", "feature"])
+    "CommaSeparatedToArray" => {
+      type: "array",
+      items_type: "string",
+      style: "form",
+      explode: false
+    },
+    # Comma-separated string -> Array of integers (e.g., "1,2,3" -> [1, 2, 3])
+    "CommaSeparatedToIntegerArray" => {
+      type: "array",
+      items_type: "integer",
+      style: "form",
+      explode: false
+    },
+    # Hash with string keys -> Hash with integer values
+    "HashOfIntegerValues" => {
+      type: "object",
+      additional_properties: { type: "integer" }
+    },
+    # Base64-encoded string -> Decoded bytes
+    "urlsafe_decode64" => {
+      type: "string",
+      format: "byte"
+    }
+  }.freeze
+
   # CONFIGURE EXCLUDED APIs
   # API endpoints can be excluded from OpenApi spec generation and the resulting
   # documentation by adding their API classes to the excluded_api_classes array.

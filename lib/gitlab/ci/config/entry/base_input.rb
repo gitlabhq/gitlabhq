@@ -31,6 +31,10 @@ module Gitlab
                 if input_options&.size.to_i > ALLOWED_OPTIONS_LIMIT
                   errors.add(:config, "cannot define more than #{ALLOWED_OPTIONS_LIMIT} options")
                 end
+
+                if input_options.is_a?(Array) && input_options.any?(&:nil?)
+                  errors.add(:config, "options array cannot contain null values")
+                end
               end
             end
           end

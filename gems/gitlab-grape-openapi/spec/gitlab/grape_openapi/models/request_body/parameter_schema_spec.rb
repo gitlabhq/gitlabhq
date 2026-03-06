@@ -636,6 +636,241 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         end
       end
     end
+
+    describe "coercer mappings" do
+      before do
+        Gitlab::GrapeOpenapi.configuration.coercer_mappings = {
+          "CommaSeparatedToArray" => {
+            type: "array",
+            items_type: "string",
+            style: "form",
+            explode: false
+          },
+          "CommaSeparatedToIntegerArray" => {
+            type: "array",
+            items_type: "integer",
+            style: "form",
+            explode: false
+          },
+          "HashOfIntegerValues" => {
+            type: "object",
+            additional_properties: { type: "integer" }
+          },
+          "HashWithDirectAdditionalProperties" => {
+            type: "object",
+            additional_properties: { type: "string", format: "date-time" }
+          },
+          "urlsafe_decode64" => {
+            type: "string",
+            format: "byte"
+          }
+        }
+      end
+
+      after do
+        Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+      end
+
+      context "when coerce_with matches CommaSeparatedToArray" do
+        let(:key) { :labels }
+        let(:param_options) { { type: "[String]", desc: "Comma-separated labels", required: false } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:labels],
+              options: {
+                type: Array,
+                method: TestValidations::Types::CommaSeparatedToArray.coerce
+              },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "generates array schema with string items" do
+          expect(method_call).to eq({ type: "array", items: { type: "string" }, description: "Comma-separated labels" })
+        end
+      end
+
+      context "when coerce_with matches CommaSeparatedToIntegerArray" do
+        let(:key) { :ids }
+        let(:param_options) { { type: "[Integer]", desc: "Comma-separated IDs", required: true } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:ids],
+              options: {
+                type: Array,
+                method: TestValidations::Types::CommaSeparatedToIntegerArray.coerce
+              },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "generates array schema with integer items" do
+          expect(method_call).to eq({ type: "array", items: { type: "integer" }, description: "Comma-separated IDs" })
+        end
+      end
+
+      context "when coerce_with matches HashOfIntegerValues" do
+        let(:key) { :counts }
+        let(:param_options) { { type: "Hash", desc: "Counts by category", required: false } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:counts],
+              options: {
+                type: Hash,
+                method: TestValidations::Types::HashOfIntegerValues.coerce
+              },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "generates object schema with additionalProperties" do
+          expect(method_call).to eq(
+            { type: "object", additional_properties: { type: "integer" }, description: "Counts by category" }
+          )
+        end
+      end
+
+      context "when coerce_with matches urlsafe_decode64" do
+        let(:key) { :encoded_data }
+        let(:param_options) { { type: "String", desc: "Base64-encoded data", required: false } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:encoded_data],
+              options: { type: String, method: Struct.new(:name).new(:urlsafe_decode64) },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "generates string schema with byte format" do
+          expect(method_call).to eq({ type: "string", format: "byte", description: "Base64-encoded data" })
+        end
+      end
+
+      context "when no coercer mapping matches a named coercer" do
+        let(:key) { :data }
+        let(:param_options) { { type: "String", desc: "Some data", required: true } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:data],
+              options: {
+                type: String,
+                method: TestValidations::Types::SomeUnknownCoercer.coerce
+              },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "raises an error" do
+          expect do
+            method_call
+          end.to raise_error(Gitlab::GrapeOpenapi::GenerationError, /No OpenAPI schema mapping found for coercer/)
+        end
+      end
+
+      context "when no coercer mapping matches an inline lambda" do
+        let(:key) { :data }
+        let(:param_options) { { type: "String", desc: "Some data", required: true } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:data],
+              options: { type: String, method: ->(v) { v.downcase } },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "falls back to default schema generation" do
+          expect(method_call).to eq({ type: "string", description: "Some data" })
+        end
+      end
+
+      context "when no coerce validation exists" do
+        let(:key) { :name }
+        let(:param_options) { { type: "String", desc: "A name", required: true } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:name],
+              options: /^[a-z]+$/,
+              validator_class: Grape::Validations::Validators::RegexpValidator
+            }
+          ]
+        end
+
+        it "falls back to default schema generation with pattern" do
+          expect(method_call).to eq({ type: "string", description: "A name", pattern: "^[a-z]+$" })
+        end
+      end
+
+      context "when coercer_mappings is empty with a named coercer" do
+        before do
+          Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+        end
+
+        let(:key) { :labels }
+        let(:param_options) { { type: "[String]", desc: "Labels", required: false } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:labels],
+              options: {
+                type: Array,
+                method: TestValidations::Types::CommaSeparatedToArray.coerce
+              },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "raises an error" do
+          expect do
+            method_call
+          end.to raise_error(Gitlab::GrapeOpenapi::GenerationError, /No OpenAPI schema mapping found for coercer/)
+        end
+      end
+
+      context "when coercer_mappings is empty with an inline lambda" do
+        before do
+          Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+        end
+
+        let(:key) { :labels }
+        let(:param_options) { { type: "[String]", desc: "Labels", required: false } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:labels],
+              options: { type: Array, method: ->(v) { v } },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "falls back to default schema generation (array for bracket notation)" do
+          expect(method_call).to eq({ type: "array", items: { type: "string" }, description: "Labels" })
+        end
+      end
+    end
   end
 end
 # rubocop:enable RSpec/VerifiedDoubles

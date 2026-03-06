@@ -12,6 +12,11 @@ require "fixtures/apis/deprecated_api"
 require "fixtures/apis/special_tags_api"
 require "fixtures/apis/excluded_api"
 require "fixtures/apis/hidden_api"
+require "fixtures/apis/coerced_params_api"
+require "fixtures/validations/types/comma_separated_to_array"
+require "fixtures/validations/types/comma_separated_to_integer_array"
+require "fixtures/validations/types/hash_of_integer_values"
+require "fixtures/validations/types/some_unknown_coercer"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

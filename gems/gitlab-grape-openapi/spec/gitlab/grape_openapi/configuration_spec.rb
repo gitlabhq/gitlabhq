@@ -52,4 +52,26 @@ RSpec.describe Gitlab::GrapeOpenapi::Configuration do
       expect(configuration.excluded_api_classes).to eq([])
     end
   end
+
+  describe "#coercer_mappings" do
+    it "has default value" do
+      expect(configuration.coercer_mappings).to eq({})
+    end
+  end
+
+  describe "#coercer_mappings=" do
+    it "sets coercer_mappings" do
+      mappings = {
+        "CommaSeparatedToArray" => {
+          type: "array",
+          items_type: "string",
+          style: "form",
+          explode: false
+        }
+      }
+      configuration.coercer_mappings = mappings
+
+      expect(configuration.coercer_mappings).to eq(mappings)
+    end
+  end
 end

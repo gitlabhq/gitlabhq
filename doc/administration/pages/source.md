@@ -91,11 +91,12 @@ because that is needed in all configurations.
 
 ### Wildcard domains
 
+Each site gets its own subdomain (for example, `<namespace>.example.io/<project_slug>`).
+This subdomain requires a wildcard DNS record (`*.example.io`) and is the recommended setup for most instances.
+
 Prerequisites:
 
 - [Wildcard DNS setup](#dns-configuration)
-
-URL scheme: `http://<namespace>.example.io/<project_slug>`
 
 This setup is the minimum you can use Pages with. It is the base for all
 other setups as described below. NGINX proxies all requests to the daemon.

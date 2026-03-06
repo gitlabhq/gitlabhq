@@ -86,15 +86,16 @@ function createSuggestionPlugin({
       if (CODE_NODE_TYPES.some((type) => tiptapEditor.isActive(type))) return [];
       const slice = tiptapEditor.state.doc.slice(0, tiptapEditor.state.selection.to);
       const markdownLine = serializer.serialize({ doc: slice.content }).split('\n').pop();
+      const prefixCommand = markdownLine.match(/\/\w+/)?.[0];
 
       return autocompleteHelper
         .getDataSource(referenceType, {
-          command: markdownLine.match(/\/\w+/)?.[0],
+          command: prefixCommand,
           cache,
           limit,
           ...options,
         })
-        .search(query)
+        .search(prefixCommand, query)
         .then((data) => {
           if (!query) {
             return prioritizeCommandsWithFrequent(data);

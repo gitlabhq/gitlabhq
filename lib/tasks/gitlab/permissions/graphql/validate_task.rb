@@ -7,7 +7,8 @@ module Tasks
         class ValidateTask < ::Tasks::Gitlab::Permissions::BaseValidateTask
           def initialize
             @violations = {
-              boundary_mismatch: []
+              boundary_mismatch: [],
+              invalid_permission: []
             }
           end
 
@@ -21,6 +22,7 @@ module Tasks
               boundary_type = directive.arguments[:boundary_type]&.to_sym
 
               permissions.each do |permission|
+                validate_permission_exists(item, permission)
                 validate_boundary_type(item, permission, boundary_type)
               end
             end
@@ -105,6 +107,16 @@ module Tasks
             directive
           end
 
+          def valid_permissions
+            @valid_permissions ||= Authz::PermissionGroups::Assignable.all_permissions.to_set
+          end
+
+          def validate_permission_exists(item, permission)
+            return if valid_permissions.include?(permission)
+
+            violations[:invalid_permission] << item.merge(permission: permission)
+          end
+
           def validate_boundary_type(item, permission, boundary_type)
             return unless boundary_type
 
@@ -122,7 +134,19 @@ module Tasks
           end
 
           def format_all_errors
-            format_boundary_mismatch_errors
+            format_invalid_permission_errors + format_boundary_mismatch_errors
+          end
+
+          def format_invalid_permission_errors
+            return '' if violations[:invalid_permission].empty?
+
+            out = "#{error_messages[:invalid_permission]}\n\n"
+
+            violations[:invalid_permission].each do |violation|
+              out += "  - [#{violation[:kind]}] #{violation[:name]}: #{violation[:permission]}\n"
+            end
+
+            "#{out}\n"
           end
 
           def format_boundary_mismatch_errors
@@ -141,6 +165,11 @@ module Tasks
 
           def error_messages
             {
+              invalid_permission: <<~MSG.chomp,
+                The following GraphQL types/mutations/fields reference permissions not included in any assignable permission.
+                Add the permission to an assignable permission group in config/authz/permission_groups/assignable_permissions/.
+                #{implementation_guide_link(anchor: 'step-4-assign-permissions-to-assignable-permissions')}
+              MSG
               boundary_mismatch: <<~MSG.chomp
                 The following GraphQL types/mutations/fields have a boundary_type that doesn't match the assignable permission boundaries.
                 Update the assignable permission to include the directive's boundary_type, or fix the directive's boundary_type.

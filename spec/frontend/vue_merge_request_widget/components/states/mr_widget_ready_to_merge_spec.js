@@ -348,6 +348,25 @@ describe('ReadyToMerge', () => {
         expect(findSourceBranchDeletedText().text()).toBe(output);
       },
     );
+
+    describe('when source branch is protected', () => {
+      it.each`
+        mrShould | description
+        ${true}  | ${'removeSourceBranch is true'}
+        ${false} | ${'removeSourceBranch is false'}
+      `('returns "Source branch will not be deleted." when $description', ({ mrShould }) => {
+        createComponent({
+          mr: {
+            state: 'literally-anything-else',
+            shouldRemoveSourceBranch: mrShould,
+            autoMergeEnabled: true,
+            sourceBranchProtected: true,
+          },
+        });
+
+        expect(findSourceBranchDeletedText().text()).toBe(shouldNot);
+      });
+    });
   });
 
   describe('Merge Button Variant', () => {

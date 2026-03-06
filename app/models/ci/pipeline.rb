@@ -1061,7 +1061,7 @@ module Ci
 
     # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability
     def set_status(new_status)
-      Gitlab::OptimisticLocking.retry_lock_with_transaction(self, name: 'ci_pipeline_set_status') do
+      Gitlab::OptimisticLocking.retry_lock(self, name: 'ci_pipeline_set_status') do
         case new_status
         when 'created' then nil
         when 'waiting_for_resource' then request_resource

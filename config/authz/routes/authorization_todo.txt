@@ -28,7 +28,6 @@ DELETE /projects/:id/managed_licenses/:managed_license_id
 DELETE /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/delete
 DELETE /projects/:id/packages/:package_id/package_files/:package_file_id
 DELETE /projects/:id/packages/protection/rules/:package_protection_rule_id
-DELETE /projects/:id/registry/protection/tag/rules/:protection_rule_id
 DELETE /projects/:id/service_accounts/:user_id
 DELETE /projects/:id/service_accounts/:user_id/personal_access_tokens/:token_id
 DELETE /projects/:id/services/:slug
@@ -51,8 +50,6 @@ DELETE /users/:user_id/impersonation_tokens/:impersonation_token_id
 DELETE /vscode/settings_sync(/:settings_context_hash)/v1/collection
 DELETE /vulnerabilities/:id/issue_links/:issue_link_id
 GET /admin/active_context/connections
-GET /admin/batched_background_migrations
-GET /admin/batched_background_migrations/:id
 GET /admin/data_management/:model_name
 GET /admin/data_management/:model_name/:record_identifier
 GET /admin/databases/:database_name/dictionary/tables/:table_name
@@ -208,7 +205,6 @@ GET /projects/:id/packages/rpm/*package_file_id/*file_name
 GET /projects/:id/packages/rpm/repodata/*file_name
 GET /projects/:id/packages/rubygems/:file_name
 GET /projects/:id/packages/rubygems/quick/Marshal.4.8/:file_name
-GET /projects/:id/registry/protection/tag/rules
 GET /projects/:id/repository/commits/:sha/statuses
 GET /projects/:id/service_accounts
 GET /projects/:id/service_accounts/:user_id/personal_access_tokens
@@ -237,10 +233,6 @@ GET /security/vulnerability_archive_exports/:id
 GET /security/vulnerability_archive_exports/:id/download
 GET /security/vulnerability_exports/:id
 GET /security/vulnerability_exports/:id/download
-GET /sidekiq/compound_metrics
-GET /sidekiq/job_stats
-GET /sidekiq/process_metrics
-GET /sidekiq/queue_metrics
 GET /snippets
 GET /snippets/:id
 GET /snippets/:id/files/:ref/:file_path/raw
@@ -287,7 +279,6 @@ PATCH /projects/:id/managed_licenses/:managed_license_id
 PATCH /projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/update
 PATCH /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/update
 PATCH /projects/:id/packages/protection/rules/:package_protection_rule_id
-PATCH /projects/:id/registry/protection/tag/rules/:protection_rule_id
 PATCH /projects/:id/service_accounts/:user_id
 PATCH /users/:id/disable_two_factor
 POST /admin/ai_catalog/seed_external_agents
@@ -305,7 +296,6 @@ POST /api/scim/:version/application/Groups
 POST /api/scim/:version/application/Users
 POST /api/scim/:version/groups/:group/Users
 POST /broadcast_messages
-POST /container_registry_event/events
 POST /duo_code_review/evaluations
 POST /features/:name
 POST /geo/node_proxy/:id/graphql
@@ -416,7 +406,6 @@ POST /projects/:id/ml/mlflow/api/2.0/mlflow/runs/update
 POST /projects/:id/packages/protection/rules
 POST /projects/:id/packages/rpm
 POST /projects/:id/packages/rpm/authorize
-POST /projects/:id/registry/protection/tag/rules
 POST /projects/:id/security_scans/sast/:sast_endpoint
 POST /projects/:id/service_accounts
 POST /projects/:id/service_accounts/:user_id/personal_access_tokens
@@ -473,8 +462,6 @@ PUT /admin/active_context/code/enabled_namespaces
 PUT /admin/active_context/collections/:id
 PUT /admin/active_context/connections/activate
 PUT /admin/active_context/connections/deactivate
-PUT /admin/batched_background_migrations/:id/pause
-PUT /admin/batched_background_migrations/:id/resume
 PUT /admin/data_management/:model_name/:record_identifier/checksum
 PUT /admin/data_management/:model_name/checksum
 PUT /admin/knowledge_graph/namespaces/:id

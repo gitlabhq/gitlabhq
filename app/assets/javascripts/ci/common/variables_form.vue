@@ -9,7 +9,6 @@ import {
 } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { s__, __ } from '~/locale';
-import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import { CI_VARIABLE_TYPE_FILE, CI_VARIABLE_TYPE_ENV_VAR } from '../pipeline_new/constants';
 import VariableValuesListbox from '../pipeline_new/components/variable_values_listbox.vue';
@@ -35,7 +34,6 @@ export default {
     GlFormInput,
     GlFormTextarea,
     GlLoadingIcon,
-    InputsAdoptionBanner,
     Markdown,
     VariableValuesListbox,
   },
@@ -54,10 +52,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    userCalloutsFeatureName: {
-      type: String,
-      required: true,
     },
   },
   emits: ['validity-change', 'update-variables'],
@@ -200,7 +194,6 @@ export default {
   <gl-form-group id="pipeline-form-ci-variables" class="gl-mb-0" :label="s__('Pipeline|Variables')">
     <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="md" />
     <template v-else>
-      <inputs-adoption-banner :feature-name="userCalloutsFeatureName" />
       <gl-form-group class="gl-mb-0">
         <template v-for="(variable, index) in variables">
           <div

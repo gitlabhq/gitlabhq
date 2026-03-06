@@ -84,6 +84,15 @@ RSpec.shared_examples 'BaseInput' do
     end
   end
 
+  context 'when options contain null' do
+    let(:config) { { options: ['option1', 'option2', nil] }.merge(required_config) }
+
+    it 'reports error about null values' do
+      expect(entry).not_to be_valid
+      expect(entry.errors.join).to include('options array cannot contain null values')
+    end
+  end
+
   context 'when regex is not a string' do
     let(:config) { { regex: 123 }.merge(required_config) }
 

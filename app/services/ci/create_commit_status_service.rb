@@ -116,7 +116,8 @@ module Ci
         sha: sha,
         ref: ref,
         user: current_user,
-        protected: project.protected_for?(ref)
+        protected: project.protected_for?(ref),
+        tag: repository.tag_exists?(ref)
       ).tap do |new_pipeline|
         new_pipeline.ensure_project_iid!
         new_pipeline.save!

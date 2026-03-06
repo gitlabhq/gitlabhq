@@ -110,13 +110,11 @@ module Tasks
             end
 
             assignable_boundaries = assignables.flat_map(&:boundaries).uniq.map(&:to_sym)
-            missing_boundaries = boundary_types.map(&:to_sym) - assignable_boundaries
-            return if missing_boundaries.empty?
+            return if (boundary_types.map(&:to_sym) - assignable_boundaries).empty?
 
             violations[:boundary_mismatch] << base_error(route).merge(
               permission: permission,
               route_boundaries: boundary_types,
-              missing_boundaries: missing_boundaries,
               assignable_boundaries: assignable_boundaries
             )
           end

@@ -527,7 +527,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="js-issuable-description-wrapper" :data-issuable-type="issuableType">
     <div v-if="canUpdate && showForm">
       <h1 class="gl-sr-only">{{ __('Edit issue') }}</h1>
       <form-component

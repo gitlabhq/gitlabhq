@@ -263,6 +263,13 @@ exports[`AutocompleteHelper for reference type "wiki", searches for "ho" correct
 ]
 `;
 
+exports[`AutocompleteHelper for work items filters labels using apollo cache for command "/unlabel" 1`] = `
+[
+  "bug",
+  "feature",
+]
+`;
+
 exports[`AutocompleteHelper for work items filters statuses using apollo cache for command "/status "" 1`] = `
 [
   "To do",
@@ -278,7 +285,14 @@ exports[`AutocompleteHelper for work items filters statuses using apollo cache f
 ]
 `;
 
-exports[`AutocompleteHelper for work items filters users using apollo cache for command "/assign" 1`] = `
+exports[`AutocompleteHelper for work items filters work items using apollo cache for command "/unlink" 1`] = `
+[
+  31,
+  30,
+]
+`;
+
+exports[`AutocompleteHelper for work items for /assign, filters out assigned users using apollo cache 1`] = `
 [
   "florida.schoen",
   "root",
@@ -298,17 +312,10 @@ exports[`AutocompleteHelper for work items filters users using apollo cache for 
 ]
 `;
 
-exports[`AutocompleteHelper for work items filters users using apollo cache for command "/unassign" 1`] = `
+exports[`AutocompleteHelper for work items for /unassign, returns only assigned users from apollo cache 1`] = `
 [
   "errol",
   "evelynn_olson",
-]
-`;
-
-exports[`AutocompleteHelper for work items filters work items using apollo cache for command "/unlink" 1`] = `
-[
-  31,
-  30,
 ]
 `;
 

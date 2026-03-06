@@ -10,13 +10,19 @@ import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
-import { currentAssignees, currentReviewers, linkedItems } from '~/graphql_shared/issuable_client';
+import {
+  currentAssignees,
+  currentReviewers,
+  appliedLabels,
+  linkedItems,
+} from '~/graphql_shared/issuable_client';
 import { ISSUABLE_EPIC, NAME_TO_ICON_MAP, WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 import { InternalEvents } from '~/tracking';
 import {
   prioritizeCommandsWithFrequent,
   recordFrequentCommandUsage,
 } from '~/editor/quick_action_suggestions';
+import { isCurrentViewWorkItem } from '~/work_items/utils';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { newDate } from './lib/utils/datetime_utility';
@@ -210,16 +216,7 @@ export const defaultAutocompleteConfig = {
 
 class GfmAutoComplete {
   constructor(dataSources = {}) {
-    // Ensure that all possible work item paths are included
-    const page = document.body.dataset.page || '';
-    this.isWorkItemsView =
-      page.includes('groups:work_items') ||
-      page.includes('projects:work_items') ||
-      page.includes('groups:issues') ||
-      page.includes('projects:issues') ||
-      page.includes('groups:epics') ||
-      page.includes('issues:show') ||
-      page.includes('epics:show');
+    this.isWorkItemsView = isCurrentViewWorkItem();
 
     this.dataSources = dataSources;
     this.cachedData = {};
@@ -587,23 +584,42 @@ class GfmAutoComplete {
             return null;
           });
 
-          // Cache assignees & reviewers list for easier filtering later
-          if (instance.isWorkItemsView) {
-            const element = this.$inputor.get(0).closest('.js-gfm-wrapper');
-            if (element) {
-              const { workItemId } = element.dataset;
-              assignees = (currentAssignees()[`${workItemId}`] || []).map(createMemberSearchString);
-            }
-          } else {
-            assignees =
-              SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
-          }
+          assignees =
+            SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
           reviewers = currentReviewers().map(createMemberSearchString);
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;
         },
         filter(query, data) {
+          // For work items, read from its cache to handle both /assign and /unassign
+          if (instance.isWorkItemsView) {
+            const gfmWrapper = this.$inputor.get(0).closest('.js-gfm-wrapper');
+            if (gfmWrapper?.dataset.workItemId) {
+              const { workItemId } = gfmWrapper.dataset;
+              const workItemCurrentAssignees = currentAssignees()[`${workItemId}`] || [];
+              const cachedAssignees = workItemCurrentAssignees.map(createMemberSearchString);
+
+              // Return assigned users as present in work item cache
+              if (command === MEMBER_COMMAND.UNASSIGN) {
+                return membersBeforeSave(workItemCurrentAssignees);
+              }
+
+              if (command === MEMBER_COMMAND.ASSIGN) {
+                if (GfmAutoComplete.isLoading(data) || instance.previousQuery !== query) {
+                  instance.previousQuery = query;
+                  fetchData(this.$inputor, this.at, query);
+                  return data.filter((member) => !member.disabled);
+                }
+
+                // For /assign, filter out already-assigned users from network results
+                return data
+                  .filter((member) => !member.disabled)
+                  .filter((member) => !cachedAssignees.includes(member.search));
+              }
+            }
+          }
+
           if (GfmAutoComplete.isLoading(data) || instance.previousQuery !== query) {
             instance.previousQuery = query;
 
@@ -981,6 +997,14 @@ class GfmAutoComplete {
           return match && match.length ? match[1] : null;
         },
         filter(query, data, searchKey) {
+          if (instance.isWorkItemsView && command === LABEL_COMMAND.UNLABEL) {
+            const gfmWrapper = this.$inputor.get(0).closest('.js-gfm-wrapper');
+            if (gfmWrapper?.dataset.workItemId) {
+              const { workItemId } = gfmWrapper.dataset;
+              return appliedLabels()[`${workItemId}`] || [];
+            }
+          }
+
           if (GfmAutoComplete.isLoading(data)) {
             fetchData(this.$inputor, this.at);
             return data;

@@ -6,6 +6,7 @@ module Gitlab
       class Parameter
         # https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.0.md#parameter-object
         attr_reader :name, :required, :in_value, :description, :options, :schema, :example
+        attr_accessor :style, :explode
 
         def initialize(name, options:, schema:, in_value:)
           @options = options
@@ -17,17 +18,24 @@ module Gitlab
           @schema = schema
           @in_value = in_value
           @example = options.dig(:documentation, :example)
+          @default = options.dig(:documentation, :default)
+          @style = nil
+          @explode = nil
         end
 
         def to_h
-          {
+          result = {
             name: name,
             required: required,
             description: description,
             schema: schema,
             in: in_value,
             example: example
-          }.compact
+          }
+
+          result[:style] = style if style
+          result[:explode] = explode unless explode.nil?
+          result.compact
         end
       end
     end

@@ -237,4 +237,34 @@ RSpec.describe Gitlab::GitalyClient::CircuitBreaker, :clean_gitlab_redis_rate_li
       end
     end
   end
+
+  context 'when database schema is not initialized' do
+    context 'when table_exists? returns false' do
+      before do
+        allow(Feature::FlipperFeature).to receive(:table_exists?).and_return(false)
+      end
+
+      it 'disables circuit breaker to avoid database errors' do
+        # Verifies fix for https://gitlab.com/gitlab-org/gitlab/-/issues/591292
+        # During `gitlab:setup` on a fresh database, Feature.enabled? would raise
+        # ActiveRecord::StatementInvalid because the feature_gates table doesn't exist.
+        # The table_exists? check prevents this by disabling the circuit breaker early.
+        expect(Feature).not_to receive(:enabled?)
+
+        expect { circuit_breaker.call { 'success' } }.not_to raise_error
+        expect { circuit_breaker.check! }.not_to raise_error
+      end
+    end
+
+    context 'when table_exists? raises an error' do
+      before do
+        allow(Feature::FlipperFeature).to receive(:table_exists?).and_raise(ActiveRecord::NoDatabaseError)
+      end
+
+      it 'disables circuit breaker' do
+        expect { circuit_breaker.call { 'success' } }.not_to raise_error
+        expect { circuit_breaker.check! }.not_to raise_error
+      end
+    end
+  end
 end

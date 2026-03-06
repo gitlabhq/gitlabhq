@@ -5,7 +5,7 @@ import { cloneDeep } from 'lodash';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { clearDraft, updateDraft } from '~/lib/utils/autosave';
 import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
@@ -72,13 +72,15 @@ describe('Create work item component', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   const originalFeatures = gon.features;
   let wrapper;
-  let mockApollo;
+  let apolloProvider;
+  let resolveMutation;
+  let resolveAll;
 
   useLocalStorageSpy();
 
-  const createWorkItemSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
-  const mutationErrorHandler = jest.fn().mockResolvedValue(createWorkItemMutationErrorResponse);
-  const workItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse());
+  const createWorkItemSuccessHandler = jest.fn().mockReturnValue(createWorkItemMutationResponse);
+  const mutationErrorHandler = () => createWorkItemMutationErrorResponse;
+  const workItemQuerySuccessHandler = () => createWorkItemQueryResponse();
   const namespaceWorkItemTypes =
     namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes;
   const mockRelatedItem = {
@@ -128,9 +130,9 @@ describe('Create work item component', () => {
     namespaceResponseCopy.data.namespace.id = 'gid://gitlab/Group/33';
     const namespaceResponse = isGroupWorkItem ? namespaceResponseCopy : namespaceQueryResponse;
 
-    namespaceWorkItemTypesHandler = jest.fn().mockResolvedValue(namespaceResponse);
+    namespaceWorkItemTypesHandler = jest.fn().mockReturnValue(namespaceResponse);
 
-    mockApollo = createMockApollo(
+    const mockResult = createControlledMockApollo(
       [
         [workItemByIidQuery, workItemQuerySuccessHandler],
         [createWorkItemMutation, mutationHandler],
@@ -139,8 +141,10 @@ describe('Create work item component', () => {
       resolvers,
     );
 
+    ({ apolloProvider, resolveMutation, resolveAll } = mockResult);
+
     wrapper = shallowMountExtended(CreateWorkItem, {
-      apolloProvider: mockApollo,
+      apolloProvider: mockResult.apolloProvider,
       propsData: {
         creationContext: CREATION_CONTEXT_LIST_ROUTE,
         fullPath,
@@ -168,7 +172,7 @@ describe('Create work item component', () => {
 
   const submitCreateForm = async () => {
     wrapper.find('form').trigger('submit');
-    await waitForPromises();
+    await resolveMutation(createWorkItemMutation);
   };
 
   const mockCurrentUser = {
@@ -197,7 +201,8 @@ describe('Create work item component', () => {
           relatedItem: mockRelatedItem,
         },
       });
-      await waitForPromises();
+      await resolveAll();
+      await nextTick();
     });
 
     it('does not render error by default', () => {
@@ -206,7 +211,7 @@ describe('Create work item component', () => {
     });
 
     it('calls `updateNewWorkItemMutation` mutation when any widget emits `updateWidgetDraft` event', () => {
-      jest.spyOn(mockApollo.defaultClient, 'mutate');
+      jest.spyOn(apolloProvider.defaultClient, 'mutate');
       const mockInput = {
         assignees: [
           {
@@ -221,7 +226,7 @@ describe('Create work item component', () => {
       };
 
       findAssigneesWidget().vm.$emit('updateWidgetDraft', mockInput);
-      expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
+      expect(apolloProvider.defaultClient.mutate).toHaveBeenCalledWith({
         mutation: updateNewWorkItemMutation,
         variables: {
           input: {
@@ -262,7 +267,7 @@ describe('Create work item component', () => {
           fullPath,
         });
 
-        await waitForPromises();
+        await resolveAll();
 
         expect(findParentWidget().props().groupPath).toBe(expectedGroupPath);
       },
@@ -272,7 +277,7 @@ describe('Create work item component', () => {
   describe('Cache clearing', () => {
     it('Default', async () => {
       createComponent();
-      await waitForPromises();
+      await resolveAll();
       const typeSpecificAutosaveKey = 'new-full-path-list-route-epic-draft';
       const sharedWidgetsAutosaveKey = 'new-full-path-list-route-widgets-draft';
 
@@ -308,7 +313,7 @@ describe('Create work item component', () => {
             relatedItem: mockRelatedItem,
           },
         });
-        await waitForPromises();
+        await resolveAll();
 
         findCancelButton().vm.$emit('click');
         await nextTick();
@@ -329,9 +334,9 @@ describe('Create work item component', () => {
   });
 
   describe('When there is no work item type', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent({ props: { preselectedWorkItemType: null } });
-      return waitForPromises();
+      await resolveAll();
     });
 
     it('shows the select dropdown with the valid work item types', () => {
@@ -348,7 +353,7 @@ describe('Create work item component', () => {
       'renders based on value of showProjectSelector prop',
       async (showProjectSelector) => {
         createComponent({ props: { showProjectSelector } });
-        await waitForPromises();
+        await resolveAll();
 
         expect(findProjectsSelector().exists()).toBe(showProjectSelector);
       },
@@ -359,7 +364,7 @@ describe('Create work item component', () => {
       createComponent({
         props: { showProjectSelector: true, namespaceFullName },
       });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findProjectsSelector().props('currentProjectName')).toBe(namespaceFullName);
       expect(findProjectsSelector().props('selectedProjectFullPath')).toBe('full-path');
@@ -372,7 +377,7 @@ describe('Create work item component', () => {
         props: { isGroup: true },
         provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
       });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findGroupProjectSelector().exists()).toBe(true);
       expect(findGroupProjectSelector().props('fullPath')).toBe('full-path');
@@ -398,7 +403,7 @@ describe('Create work item component', () => {
           provide: { workItemPlanningViewEnabled, hasEpicsFeature },
         });
 
-        await waitForPromises();
+        await resolveAll();
         expect(findGroupProjectSelector().exists()).toBe(expected);
       },
     );
@@ -408,11 +413,11 @@ describe('Create work item component', () => {
         props: { isGroup: true },
         provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
       });
-      await waitForPromises();
+      await resolveAll();
 
       findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
-
-      await waitForPromises();
+      await nextTick();
+      await resolveAll();
 
       expect(namespaceWorkItemTypesHandler).toHaveBeenCalledWith({
         onlyAvailable: true,
@@ -424,7 +429,7 @@ describe('Create work item component', () => {
   describe('Work item types dropdown', () => {
     it('renders with loading icon when namespaceWorkItemTypes query is loading', async () => {
       createComponent({ props: { preselectedWorkItemType: null, showProjectSelector: true } });
-      await waitForPromises();
+      await resolveAll();
 
       findProjectsSelector().vm.$emit('selectProject', 'fullPath');
       await nextTick();
@@ -435,7 +440,7 @@ describe('Create work item component', () => {
 
     it('displays a list of work item types, excluding "Ticket" and including "Select type" options, when preselectedWorkItemType is not provided', async () => {
       createComponent({ props: { preselectedWorkItemType: null } });
-      await waitForPromises();
+      await resolveAll();
       const expectedOptions = namespaceWorkItemTypes
         .filter((type) => type.name !== 'Ticket')
         .concat({ name: 'Select type' }).length;
@@ -445,7 +450,7 @@ describe('Create work item component', () => {
 
     it('hides the type selector if preselectedWorkItemType is provided', async () => {
       createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC } });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findSelect().exists()).toBe(false);
     });
@@ -457,7 +462,7 @@ describe('Create work item component', () => {
           alwaysShowWorkItemTypeSelect: true,
         },
       });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findSelect().exists()).toBe(true);
     });
@@ -469,7 +474,7 @@ describe('Create work item component', () => {
           alwaysShowWorkItemTypeSelect: true,
         },
       });
-      await waitForPromises();
+      await resolveAll();
       const expectedOptions = namespaceWorkItemTypes.filter(
         (type) => type.name !== 'Ticket',
       ).length;
@@ -479,7 +484,7 @@ describe('Create work item component', () => {
 
     it('selects a work item type on click', async () => {
       createComponent({ props: { preselectedWorkItemType: null } });
-      await waitForPromises();
+      await resolveAll();
       const mockId = 'Issue';
 
       findSelect().vm.$emit('input', mockId);
@@ -490,7 +495,7 @@ describe('Create work item component', () => {
 
     it('sets new work item cache and emits changeType on select', async () => {
       createComponent({ props: { preselectedWorkItemType: null, relatedItem: mockRelatedItem } });
-      await waitForPromises();
+      await resolveAll();
       const mockId = 'Issue';
 
       findSelect().vm.$emit('change', mockId);
@@ -513,7 +518,7 @@ describe('Create work item component', () => {
 
     it('sets selected work item type in localStorage draft', async () => {
       createComponent({ props: { preselectedWorkItemType: null, relatedItem: mockRelatedItem } });
-      await waitForPromises();
+      await resolveAll();
       const mockId = 'Issue';
 
       findSelect().vm.$emit('change', mockId);
@@ -533,14 +538,14 @@ describe('Create work item component', () => {
 
     it('hides title if set', async () => {
       createComponent({ props: { hideFormTitle: true } });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findFormTitle().exists()).toBe(false);
     });
 
     it('filters work item type based on route parameter', async () => {
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       expect(findSelect().exists()).toBe(false);
       expect(findFormTitle().text()).toBe('New epic');
@@ -549,7 +554,7 @@ describe('Create work item component', () => {
     it('emits "changeType" with the type name when "selectedWorkItemTypeId" changes', async () => {
       // Initialize component without a preselected type so the dropdown is active
       createComponent({ props: { preselectedWorkItemType: null } });
-      await waitForPromises();
+      await resolveAll();
 
       const mockIssueType = namespaceWorkItemTypes.find(
         (type) => type.name === WORK_ITEM_TYPE_NAME_ISSUE,
@@ -574,7 +579,7 @@ describe('Create work item component', () => {
       delete workItem.promotedToEpicUrl;
 
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       findTitleInput().vm.$emit('updateDraft', 'Test title');
       await waitForPromises();
@@ -600,7 +605,7 @@ describe('Create work item component', () => {
           relatedItem: mockRelatedItem,
         },
       });
-      await waitForPromises();
+      await resolveAll();
 
       findTitleInput().vm.$emit('updateDraft', 'Test title');
       await waitForPromises();
@@ -613,12 +618,12 @@ describe('Create work item component', () => {
 
     it('emits work-item-created for confidential work item', async () => {
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       findConfidentialCheckbox().vm.$emit('change', true);
       await updateWorkItemTitle();
       wrapper.find('form').trigger('submit');
-      await waitForPromises();
+      await resolveAll();
 
       expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
         input: expect.objectContaining({
@@ -632,7 +637,7 @@ describe('Create work item component', () => {
     it('creates work item with parent when parentId exists', async () => {
       const parentId = 'gid://gitlab/WorkItem/456';
       createComponent({ props: { parentId } });
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle();
       wrapper.find('form').trigger('submit');
@@ -648,7 +653,7 @@ describe('Create work item component', () => {
     it('creates work item within a specific namespace when project is selected', async () => {
       const fullPath = 'chosen/full/path';
       createComponent({ props: { showProjectSelector: true } });
-      await waitForPromises();
+      await resolveAll();
 
       findProjectsSelector().vm.$emit('selectProject', fullPath);
       await updateWorkItemTitle();
@@ -665,7 +670,7 @@ describe('Create work item component', () => {
     it('correct fullPath is provided to components when project is selected', async () => {
       const fullPath = 'chosen/full/path';
       createComponent({ props: { showProjectSelector: true } });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findAssigneesWidget().props('fullPath')).toBe('full-path');
 
@@ -678,7 +683,7 @@ describe('Create work item component', () => {
 
     it('does not commit when title is empty', async () => {
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle('');
       wrapper.find('form').trigger('submit');
@@ -690,7 +695,7 @@ describe('Create work item component', () => {
 
     it('updates work item title on update mutation', async () => {
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle();
 
@@ -699,7 +704,7 @@ describe('Create work item component', () => {
 
     it('when title input field has a text renders Create button when work item type is selected', async () => {
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle();
 
@@ -708,7 +713,7 @@ describe('Create work item component', () => {
 
     it('when title input text is deleted after typed, title is not valid anymore to submit', async () => {
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle();
 
@@ -724,8 +729,8 @@ describe('Create work item component', () => {
     });
 
     it('shows an alert on mutation top-level error', async () => {
-      createComponent({ mutationHandler: jest.fn().mockRejectedValue() });
-      await waitForPromises();
+      createComponent({ mutationHandler: () => Promise.reject() });
+      await resolveAll();
 
       await updateWorkItemTitle();
       await submitCreateForm();
@@ -735,7 +740,7 @@ describe('Create work item component', () => {
 
     it('shows an alert on mutation error', async () => {
       createComponent({ mutationHandler: mutationErrorHandler });
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle();
       await submitCreateForm();
@@ -749,7 +754,7 @@ describe('Create work item component', () => {
           createSource: WORK_ITEM_CREATE_SOURCES.WORK_ITEM_LIST,
         },
       });
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle();
       await submitCreateForm();
@@ -765,7 +770,7 @@ describe('Create work item component', () => {
     it('uses VULNERABILITY source when vulnerability_id param exists', async () => {
       setWindowLocation('?vulnerability_id=123');
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle();
       await submitCreateForm();
@@ -780,7 +785,7 @@ describe('Create work item component', () => {
 
     it('does not include createSource when neither prop nor vulnerability_id exists', async () => {
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle();
       await submitCreateForm();
@@ -800,7 +805,7 @@ describe('Create work item component', () => {
           createSource: WORK_ITEM_CREATE_SOURCES.GLOBAL_NAV,
         },
       });
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle();
       await submitCreateForm();
@@ -818,7 +823,7 @@ describe('Create work item component', () => {
     describe('default', () => {
       beforeEach(async () => {
         createComponent();
-        await waitForPromises();
+        await resolveAll();
       });
 
       it('renders the work item title widget', () => {
@@ -850,7 +855,7 @@ describe('Create work item component', () => {
       beforeEach(async () => {
         createComponent({
           provide: {
-            getWorkItemTypeConfiguration: jest.fn().mockReturnValue({
+            getWorkItemTypeConfiguration: () => ({
               widgetDefinitions: [
                 {
                   type: WIDGET_TYPE_START_AND_DUE_DATE,
@@ -860,7 +865,7 @@ describe('Create work item component', () => {
             }),
           },
         });
-        await waitForPromises();
+        await resolveAll();
       });
 
       it('renders the dates widget', () => {
@@ -871,7 +876,7 @@ describe('Create work item component', () => {
     it('uses the description prop as the initial description value when defined', async () => {
       const description = 'i am a description';
       createComponent({ props: { description } });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findDescriptionWidget().props('description')).toBe(description);
     });
@@ -879,7 +884,7 @@ describe('Create work item component', () => {
     it('uses the title prop as the initial title value when defined', async () => {
       const title = 'i am a title';
       createComponent({ props: { title } });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findTitleInput().props('title')).toBe(title);
     });
@@ -889,7 +894,7 @@ describe('Create work item component', () => {
     describe('default', () => {
       beforeEach(async () => {
         createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
-        await waitForPromises();
+        await resolveAll();
       });
 
       it('renders the work item title widget', () => {
@@ -922,7 +927,7 @@ describe('Create work item component', () => {
     describe('default', () => {
       beforeEach(async () => {
         createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_INCIDENT } });
-        await waitForPromises();
+        await resolveAll();
       });
 
       it('renders the work item title widget', () => {
@@ -958,10 +963,10 @@ describe('Create work item component', () => {
       beforeEach(async () => {
         createComponent({
           provide: {
-            getWorkItemTypeConfiguration: jest.fn().mockReturnValue({ isIncidentManagement: true }),
+            getWorkItemTypeConfiguration: () => ({ isIncidentManagement: true }),
           },
         });
-        await waitForPromises();
+        await resolveAll();
       });
 
       it('does not renders the work item parent widget', () => {
@@ -974,7 +979,7 @@ describe('Create work item component', () => {
     it('is checked when parameter issue[confidential]=true', async () => {
       setWindowLocation('?issue[confidential]=true');
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       expect(findConfidentialCheckbox().attributes('checked')).toBe('true');
     });
@@ -982,7 +987,7 @@ describe('Create work item component', () => {
     it('is not checked when parameter issue[confidential]!=true', async () => {
       setWindowLocation('?issue[confidential]=tru');
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       expect(findConfidentialCheckbox().attributes('checked')).toBeUndefined();
     });
@@ -990,7 +995,7 @@ describe('Create work item component', () => {
     it('is checked when parameter vulnerability_id exists', async () => {
       setWindowLocation('?vulnerability_id=123');
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       expect(findConfidentialCheckbox().attributes('checked')).toBe('true');
     });
@@ -998,7 +1003,7 @@ describe('Create work item component', () => {
     it('is not checked when parameter vulnerability_id does not exist', async () => {
       setWindowLocation('?vulnerability_id_is_not_here=123');
       createComponent();
-      await waitForPromises();
+      await resolveAll();
 
       expect(findConfidentialCheckbox().attributes('checked')).toBeUndefined();
     });
@@ -1010,7 +1015,7 @@ describe('Create work item component', () => {
         },
       });
 
-      await waitForPromises();
+      await resolveAll();
 
       const confidentialCheckbox = findConfidentialCheckbox();
 
@@ -1022,7 +1027,7 @@ describe('Create work item component', () => {
     it('renders confidentiality checkbox for a project', async () => {
       createComponent();
 
-      await waitForPromises();
+      await resolveAll();
 
       const confidentialCheckbox = findConfidentialCheckbox();
 
@@ -1042,7 +1047,7 @@ describe('Create work item component', () => {
       createComponent({
         props: { relatedItem: { id, type, reference, webUrl }, showProjectSelector: true },
       });
-      await waitForPromises();
+      await resolveAll();
     });
 
     it('renders the correct text for the checkbox', () => {
@@ -1103,7 +1108,7 @@ describe('Create work item component', () => {
   describe('form buttons', () => {
     it('shows buttons on right and sticky when isModal', async () => {
       createComponent({ props: { isModal: true } });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
       expect(findFormButtons().classes('gl-justify-between')).toBe(true);
@@ -1113,7 +1118,7 @@ describe('Create work item component', () => {
 
     it('shows buttons on left and sticky when not isModal', async () => {
       createComponent({ props: { isModal: false } });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
       expect(findFormButtons().classes('gl-justify-between')).toBe(true);
@@ -1123,7 +1128,7 @@ describe('Create work item component', () => {
 
     it('shows contribution guidelines link when contributing.md exists', async () => {
       createComponent({ provide: { contributionGuidePath: 'contribution/guide/path' } });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findFormButtons().findComponent(GlLink).text()).toBe('contribution guidelines');
       expect(findFormButtons().findComponent(GlLink).attributes('href')).toBe(
@@ -1133,7 +1138,7 @@ describe('Create work item component', () => {
 
     it('does not show contribution guidelines link when contributing.md does not exist', async () => {
       createComponent({ provide: { contributionGuidePath: undefined } });
-      await waitForPromises();
+      await resolveAll();
 
       expect(findFormButtons().findComponent(GlLink).exists()).toBe(false);
     });
@@ -1142,7 +1147,7 @@ describe('Create work item component', () => {
   describe('Keyboard submit events', () => {
     beforeEach(async () => {
       createComponent();
-      await waitForPromises();
+      await resolveAll();
       await updateWorkItemTitle();
     });
 
@@ -1163,7 +1168,7 @@ describe('Create work item component', () => {
 
   it('renders work item title suggestions below work item title', async () => {
     createComponent();
-    await waitForPromises();
+    await resolveAll();
 
     await updateWorkItemTitle();
 
@@ -1188,7 +1193,7 @@ describe('Create work item component', () => {
     };
 
     createComponent({ namespaceQueryResponse });
-    await waitForPromises();
+    await resolveAll();
 
     const widgetsContainer = wrapper.findByTestId('work-item-overview-right-sidebar');
     expect(widgetsContainer.exists()).toBe(true);
@@ -1221,7 +1226,7 @@ describe('Create work item component', () => {
           relatedItem: mockRelatedItem,
         },
       });
-      await waitForPromises();
+      await resolveAll();
 
       expect(setNewWorkItemCache).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -1246,7 +1251,7 @@ describe('Create work item component', () => {
   describe('New work item to resolve threads', () => {
     it('when not resolving any thread, does not pass resolve params to mutation', async () => {
       createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle();
       await submitCreateForm();
@@ -1264,7 +1269,7 @@ describe('Create work item component', () => {
       );
 
       createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
-      await waitForPromises();
+      await resolveAll();
 
       await updateWorkItemTitle();
       await submitCreateForm();
@@ -1305,7 +1310,7 @@ describe('Create work item component', () => {
           '?discussion_to_resolve=13&merge_request_to_resolve_discussions_of=112&merge_request_id=13',
         );
         createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
-        await waitForPromises();
+        await resolveAll();
       });
 
       it('renders text', () => {
@@ -1342,7 +1347,7 @@ describe('Create work item component', () => {
     describe('when the form is submitted', () => {
       it('stores the last used work item type against the selected namespace on submit', async () => {
         createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
-        await waitForPromises();
+        await resolveAll();
         await updateWorkItemTitle();
         await submitCreateForm();
 
@@ -1358,14 +1363,15 @@ describe('Create work item component', () => {
           props: { isGroup: true },
           provide: { workItemPlanningViewEnabled: true, hasEpicsFeature: true },
         });
-        await waitForPromises();
+        await resolveAll();
       });
       it('when the form loads', () => {
         expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:full-path');
       });
       it('when selecting a different namespace', async () => {
         findGroupProjectSelector().vm.$emit('selectNamespace', 'other-namespace/path');
-        await waitForPromises();
+        await nextTick();
+        await resolveAll();
         expect(localStorage.getItem).toHaveBeenCalledWith('freq-wi-type:other-namespace/path');
       });
     });

@@ -98,3 +98,5 @@ export const COMMANDS = {
   UNLINK: '/unlink',
   STATUS: '/status',
 };
+
+export const COMMANDS_WITH_LOCAL_DATA = [COMMANDS.UNASSIGN, COMMANDS.UNLABEL, COMMANDS.UNLINK];

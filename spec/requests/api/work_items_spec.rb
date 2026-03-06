@@ -43,14 +43,16 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
     end
 
     context 'when listing project work items' do
-      let(:namespace_record) { project.project_namespace }
+      let_it_be(:namespace_record) { project.project_namespace }
       let(:primary_work_item) { project_work_item }
       let(:secondary_work_item) { project_work_item2 }
       let(:label) { project_label }
       let(:milestone) { project_milestone }
       let(:expected_work_item_ids) { [primary_work_item.id, secondary_work_item.id].uniq }
+      let(:api_request_path) { "/namespaces/#{CGI.escape(namespace_record.full_path)}/-/work_items" }
 
       it_behaves_like 'work item listing endpoint'
+      it_behaves_like 'work item listing filters'
 
       it 'supports unescaped namespace full paths' do
         get api("/namespaces/#{namespace_record.full_path}/-/work_items", user)
@@ -116,7 +118,7 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
   end
 
   describe 'GET /projects/:id/-/work_items' do
-    let(:namespace_record) { project.project_namespace }
+    let_it_be(:namespace_record) { project.project_namespace }
     let(:primary_work_item) { project_work_item }
     let(:secondary_work_item) { project_work_item2 }
     let(:label) { project_label }
@@ -125,6 +127,7 @@ RSpec.describe API::WorkItems, feature_category: :portfolio_management do
     let(:expected_work_item_ids) { [primary_work_item.id, secondary_work_item.id].uniq }
 
     it_behaves_like 'work item listing endpoint'
+    it_behaves_like 'work item listing filters'
 
     it 'supports unescaped project full paths' do
       get api("/projects/#{project.full_path}/-/work_items", user)

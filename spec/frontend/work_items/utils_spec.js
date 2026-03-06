@@ -51,6 +51,7 @@ import {
   setLastUsedWorkItemTypeIdForNamespace,
   getLastUsedWorkItemTypeIdForNamespace,
   combineWorkItemLists,
+  isCurrentViewWorkItem,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -917,5 +918,64 @@ describe('combineWorkItemLists', () => {
         });
       });
     });
+  });
+});
+
+describe('isCurrentViewWorkItem', () => {
+  const createDescriptionWrapper = (issuableType) => {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('js-issuable-description-wrapper');
+    if (issuableType) {
+      wrapper.dataset.issuableType = issuableType;
+    }
+    document.body.appendChild(wrapper);
+    return wrapper;
+  };
+
+  afterEach(() => {
+    document.body.dataset.page = '';
+    document.querySelector('.js-issuable-description-wrapper')?.remove();
+  });
+
+  it.each`
+    issuableType  | description
+    ${'incident'} | ${'Incident'}
+    ${'ticket'}   | ${'Ticket'}
+  `('returns false for $description pages', ({ issuableType }) => {
+    document.body.dataset.page = 'projects:issues:show';
+    createDescriptionWrapper(issuableType);
+
+    expect(isCurrentViewWorkItem()).toBe(false);
+  });
+
+  it.each`
+    page                           | description
+    ${'groups:work_items:index'}   | ${'Group Work Items list'}
+    ${'groups:epics:index'}        | ${'Group Epics list'}
+    ${'groups:issues'}             | ${'Group Issues'}
+    ${'groups:boards:index'}       | ${'Group Issues Board'}
+    ${'groups:epic_boards:index'}  | ${'Group Epics Board'}
+    ${'projects:work_items:index'} | ${'Project Work Items list'}
+    ${'projects:issues:index'}     | ${'Project Issues list'}
+    ${'projects:boards:index'}     | ${'Project Issues Board'}
+    ${'groups:work_items:show'}    | ${'Group Work Item detail'}
+    ${'groups:epics:show'}         | ${'Group Epic detail'}
+    ${'projects:work_items:show'}  | ${'Project Work Item detail'}
+    ${'projects:issues:show'}      | ${'Project Issue detail'}
+  `('returns true for $description view ($page)', ({ page }) => {
+    document.body.dataset.page = page;
+
+    expect(isCurrentViewWorkItem()).toBe(true);
+  });
+
+  it.each`
+    page                              | description
+    ${'projects:merge_requests:show'} | ${'Merge Request detail'}
+    ${'projects:pipelines:show'}      | ${'Pipeline detail'}
+    ${''}                             | ${'empty page'}
+  `('returns false for $description view ($page)', ({ page }) => {
+    document.body.dataset.page = page;
+
+    expect(isCurrentViewWorkItem()).toBe(false);
   });
 });

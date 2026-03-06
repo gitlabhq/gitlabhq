@@ -69,6 +69,9 @@ This section describes the prerequisites for configuring GitLab Pages.
 
 ### Wildcard domains
 
+Each site gets its own subdomain (for example, `<namespace>.example.io/<project_slug>`).
+This subdomain requires a wildcard DNS record (`*.example.io`) and is the recommended setup for most instances.
+
 Before configuring Pages for wildcard domains, you must:
 
 1. Have a domain for Pages that is not a subdomain of your GitLab instance domain.
@@ -92,6 +95,10 @@ Before configuring Pages for wildcard domains, you must:
 1. For custom domains, have a **secondary IP**.
 
 ### Single-domain sites
+
+All sites share one domain, with the namespace and project slug as path segments
+(for example, `example.io/<namespace>/<project_slug>`).
+This domain requires only a single DNS `A` record.
 
 Before configuring Pages for single-domain sites, you must:
 

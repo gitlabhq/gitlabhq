@@ -77,6 +77,22 @@ jest.mock('~/graphql_shared/issuable_client', () => ({
       },
     ],
   }),
+  appliedLabels: jest.fn().mockReturnValue({
+    1: [
+      {
+        id: 'gid://gitlab/Label/1',
+        title: 'bug',
+        color: '#d9534f',
+        textColor: '#FFFFFF',
+      },
+      {
+        id: 'gid://gitlab/Label/2',
+        title: 'feature',
+        color: '#428bca',
+        textColor: '#FFFFFF',
+      },
+    ],
+  }),
   availableStatuses: jest.fn().mockReturnValue({
     'gitlab-org/gitlab-test': {
       'gid://gitlab/WorkItems::Type/1': [
@@ -186,7 +202,7 @@ describe('createDataSource', () => {
     it('fetches data from source and filters based on query', async () => {
       const dataSource = createDataSource(dataSourceParams);
 
-      const results = await dataSource.search('b');
+      const results = await dataSource.search('', 'b');
       expect(results).toEqual([
         { name: 'bcd', description: 'wxy' },
         { name: 'abc', description: 'xyz' },
@@ -203,7 +219,7 @@ describe('createDataSource', () => {
       sorter: (items) => items,
     });
 
-    const results = await dataSource.search('b');
+    const results = await dataSource.search('', 'b');
     expect(results).toEqual([]);
   });
 });
@@ -286,7 +302,7 @@ describe('AutocompleteHelper', () => {
     'for reference type "$referenceType", searches for "$query" correctly',
     async ({ referenceType, query }) => {
       const dataSource = autocompleteHelper.getDataSource(referenceType);
-      const results = await dataSource.search(query);
+      const results = await dataSource.search('', query);
 
       expect(
         results.map(({ title, name, username }) => username || name || title),
@@ -319,6 +335,8 @@ describe('AutocompleteHelper', () => {
 
   describe('for work items', () => {
     beforeEach(() => {
+      document.body.dataset.page = 'projects:work_items:show';
+
       autocompleteHelper = new AutocompleteHelper({
         dataSourceUrls,
         sidebarMediator: {
@@ -333,8 +351,8 @@ describe('AutocompleteHelper', () => {
               dataset: {
                 workItemFullPath: 'gitlab-org/gitlab-test',
                 workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
-                workItemId: 1,
-                workItemIid: 1,
+                workItemId: '1',
+                workItemIid: '1',
               },
             }),
           },
@@ -342,13 +360,20 @@ describe('AutocompleteHelper', () => {
       };
     });
 
-    it.each`
-      command
-      ${'/assign'}
-      ${'/unassign'}
-    `('filters users using apollo cache for command "$command"', async ({ command }) => {
-      const dataSource = autocompleteHelper.getDataSource('user', { command });
-      const results = await dataSource.search();
+    afterEach(() => {
+      delete document.body.dataset.page;
+    });
+
+    it('for /unassign, returns only assigned users from apollo cache', async () => {
+      const dataSource = autocompleteHelper.getDataSource('user', { command: '/unassign' });
+      const results = await dataSource.search('/unassign');
+
+      expect(results.map(({ username }) => username)).toMatchSnapshot();
+    });
+
+    it('for /assign, filters out assigned users using apollo cache', async () => {
+      const dataSource = autocompleteHelper.getDataSource('user', { command: '/assign' });
+      const results = await dataSource.search('/assign');
 
       expect(results.map(({ username }) => username)).toMatchSnapshot();
     });
@@ -364,6 +389,16 @@ describe('AutocompleteHelper', () => {
     });
 
     it.each`
+      command
+      ${'/unlabel'}
+    `('filters labels using apollo cache for command "$command"', async ({ command }) => {
+      const dataSource = autocompleteHelper.getDataSource('label', { command });
+      const results = await dataSource.search();
+
+      expect(results.map(({ title }) => title)).toMatchSnapshot();
+    });
+
+    it.each`
       command      | query
       ${'/status'} | ${''}
       ${'/status'} | ${'pro'}
@@ -371,7 +406,7 @@ describe('AutocompleteHelper', () => {
       'filters statuses using apollo cache for command "$command "$query"',
       async ({ command, query }) => {
         const dataSource = autocompleteHelper.getDataSource('status', { command });
-        const results = await dataSource.search(query);
+        const results = await dataSource.search(command, query);
         expect(results.map(({ name }) => name)).toMatchSnapshot();
       },
     );
@@ -380,7 +415,7 @@ describe('AutocompleteHelper', () => {
   it('filters labels using fuzzy search', async () => {
     const filterSpy = jest.spyOn(fuzzaldrinPlus, 'filter');
     const dataSource = autocompleteHelper.getDataSource('label', { command: '/label' });
-    await dataSource.search('bc');
+    await dataSource.search('', 'bc');
 
     expect(filterSpy).toHaveBeenCalledWith(
       expect.any(Array),
@@ -438,7 +473,7 @@ describe('AutocompleteHelper', () => {
     autocompleteHelper = new AutocompleteHelper({});
 
     const dataSource = autocompleteHelper.getDataSource('emoji');
-    const results = await dataSource.search('');
+    const results = await dataSource.search('', '');
 
     expect(results).toEqual([{ emoji: { name: EMOJI_THUMBS_UP }, fieldValue: EMOJI_THUMBS_UP }]);
   });
@@ -465,7 +500,7 @@ describe('AutocompleteHelper', () => {
   it('returns expected results before and after updating data sources', async () => {
     // Retrieve the initial data source and search for 'user'
     let dataSource = autocompleteHelper.getDataSource('user');
-    let results = await dataSource.search('');
+    let results = await dataSource.search('', '');
 
     expect(results.map(({ username }) => username)).toMatchSnapshot();
 
@@ -477,7 +512,7 @@ describe('AutocompleteHelper', () => {
 
     // Retrieve the updated data source and search for 'user'
     dataSource = autocompleteHelper.getDataSource('user');
-    results = await dataSource.search('');
+    results = await dataSource.search('', '');
 
     expect(results.map(({ username }) => username)).toMatchSnapshot();
   });
@@ -486,7 +521,7 @@ describe('AutocompleteHelper', () => {
     it('fetches data passing a `search` param', async () => {
       const dataSource = autocompleteHelper.getDataSource('user', { filterOnBackend: true });
 
-      await dataSource.search('bcd');
+      await dataSource.search('', 'bcd');
 
       expect(mock.history.get[0].params).toEqual({ search: 'bcd' });
     });

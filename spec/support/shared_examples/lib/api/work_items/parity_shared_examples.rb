@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'work item API parity' do
+RSpec.shared_examples 'work item API field parity' do
   let(:rest_field_names) do
     API::Entities::WorkItemBasic.root_exposures.map { |exposure| exposure.key.to_s }.to_set
   end
@@ -189,5 +189,63 @@ RSpec.shared_examples 'work item API parity' do
 
   def unwrap_type(type)
     type.respond_to?(:unwrap) ? type.unwrap : type
+  end
+end
+
+RSpec.shared_examples 'work item API filter parity' do
+  # These are filters that we have not yet migrated to the REST API. See EE parity_spec where we override them.
+  let(:filter_parity_wip) do
+    %w[exclude_group_work_items exclude_projects include_ancestors include_archived include_descendants timeframe]
+  end
+
+  let(:not_filter_parity_wip) { [] }
+  let(:or_filter_parity_wip) { [] }
+  let(:parity_wip) { Set.new(%w[in search sort]).merge(filter_parity_wip).to_a }
+
+  let(:graphql_filter_params) do
+    # instad of `iid` we have `iids`
+    # `or`, `not` is just a key in GraphQL
+    # `hierarchy_filters` is deprecated
+    known_exceptions = %w[iid not or hierarchy_filters]
+
+    ::Resolvers::Namespaces::WorkItemsResolver.arguments.keys.map(&:underscore) - known_exceptions - parity_wip
+  end
+
+  let(:graphql_not_filter_params) do
+    ::Types::WorkItems::NegatedWorkItemFilterInputType.arguments.keys.map(&:underscore) - not_filter_parity_wip
+  end
+
+  let(:graphql_or_filter_params) do
+    ::Types::WorkItems::UnionedWorkItemFilterInputType.arguments.keys.map(&:underscore) - or_filter_parity_wip
+  end
+
+  let(:rest_params) do
+    non_filter_params = %w[id page per_page cursor fields features]
+
+    route = API::API.routes.find do |r|
+      r.request_method == 'GET' && r.path == '/api/:version/namespaces/:id/-/work_items(.:format)'
+    end
+
+    route.params.keys - non_filter_params
+  end
+
+  let(:rest_filter_params) do
+    rest_params.reject { |key| key.starts_with?("or") || key.starts_with?("not") }
+  end
+
+  let(:rest_not_filter_params) do
+    rest_params.select { |key| key.starts_with?("not[") }.map { |s| s[/\[(.+)\]/, 1] }
+  end
+
+  let(:rest_or_filter_params) do
+    rest_params.select { |key| key.starts_with?("or[") }.map { |s| s[/\[(.+)\]/, 1] }
+  end
+
+  describe 'REST filter params vs GraphQL filter arguments' do
+    it 'keeps filter parameters in sync with known exceptions', :aggregate_failures do
+      expect(graphql_filter_params).to match_array(rest_filter_params)
+      expect(graphql_or_filter_params).to match_array(rest_or_filter_params)
+      expect(graphql_not_filter_params).to match_array(rest_not_filter_params)
+    end
   end
 end

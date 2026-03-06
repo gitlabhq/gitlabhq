@@ -1,0 +1,12 @@
+---
+name: ensure_pipeline_policy_pre_succeeds
+description:
+  'When enabled, a failed .pipeline-policy-pre stage skips all later jobs unconditionally.
+  When disabled, only DAG jobs are blocked.'
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/558233
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225559
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592207
+milestone: '18.10'
+group: group::security policies
+type: beta
+default_enabled: true

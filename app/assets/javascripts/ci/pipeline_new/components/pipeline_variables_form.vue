@@ -17,7 +17,6 @@ export default {
   learnMorePath: helpPagePath('ci/variables/_index', {
     anchor: 'cicd-variable-precedence',
   }),
-  userCalloutsFeatureName: 'pipeline_new_inputs_adoption_banner',
   components: {
     GlLink,
     GlSprintf,
@@ -205,7 +204,6 @@ export default {
   <variables-form
     :initial-variables="currentRefVariables"
     :is-loading="isLoading"
-    :user-callouts-feature-name="$options.userCalloutsFeatureName"
     @update-variables="onVariablesUpdate"
     @validity-change="onValidityChange"
   >

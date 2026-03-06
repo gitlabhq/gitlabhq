@@ -134,3 +134,18 @@ export const mockAssignees = [
     webPath: '/nancee_simonis',
   },
 ];
+
+export const mockLabels = [
+  {
+    id: 'gid://gitlab/Label/1',
+    title: 'bug',
+    color: '#d9534f',
+    textColor: '#FFFFFF',
+  },
+  {
+    id: 'gid://gitlab/Label/2',
+    title: 'feature',
+    color: '#428bca',
+    textColor: '#FFFFFF',
+  },
+];

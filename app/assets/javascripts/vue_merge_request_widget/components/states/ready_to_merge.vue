@@ -325,7 +325,7 @@ export default {
       return this.mr.canMerge && !this.mr.autoMergeEnabled && this.mr.state === 'readyToMerge';
     },
     sourceBranchPreMergeText() {
-      return this.removeSourceBranch
+      return this.removeSourceBranch && !this.mr.sourceBranchProtected
         ? __('Source branch will be deleted.')
         : __('Source branch will not be deleted.');
     },

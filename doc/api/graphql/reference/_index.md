@@ -29078,7 +29078,7 @@ An emoji awarded by a user.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="awardemoji-description"></a>`description` | [`String!`](#string) | Emoji description. |
-| <a id="awardemoji-emoji"></a>`emoji` | [`String!`](#string) | Emoji as an icon. |
+| <a id="awardemoji-emoji"></a>`emoji` | [`String`](#string) | Emoji as an icon. |
 | <a id="awardemoji-name"></a>`name` | [`String!`](#string) | Emoji name. |
 | <a id="awardemoji-unicode"></a>`unicode` | [`String!`](#string) | Emoji in Unicode. |
 | <a id="awardemoji-unicodeversion"></a>`unicodeVersion` | [`String!`](#string) | Unicode version for the emoji. |
@@ -57607,8 +57607,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenum-personal_project_limitations_banner"></a>`PERSONAL_PROJECT_LIMITATIONS_BANNER` | Callout feature name for personal_project_limitations_banner. |
 | <a id="usercalloutfeaturenameenum-pipeline_needs_banner"></a>`PIPELINE_NEEDS_BANNER` | Callout feature name for pipeline_needs_banner. |
 | <a id="usercalloutfeaturenameenum-pipeline_needs_hover_tip"></a>`PIPELINE_NEEDS_HOVER_TIP` | Callout feature name for pipeline_needs_hover_tip. |
-| <a id="usercalloutfeaturenameenum-pipeline_new_inputs_adoption_banner"></a>`PIPELINE_NEW_INPUTS_ADOPTION_BANNER` | Callout feature name for pipeline_new_inputs_adoption_banner. |
-| <a id="usercalloutfeaturenameenum-pipeline_schedules_inputs_adoption_banner"></a>`PIPELINE_SCHEDULES_INPUTS_ADOPTION_BANNER` | Callout feature name for pipeline_schedules_inputs_adoption_banner. |
 | <a id="usercalloutfeaturenameenum-pipl_compliance_alert"></a>`PIPL_COMPLIANCE_ALERT` | Callout feature name for pipl_compliance_alert. |
 | <a id="usercalloutfeaturenameenum-preview_user_over_limit_free_plan_alert"></a>`PREVIEW_USER_OVER_LIMIT_FREE_PLAN_ALERT` | Callout feature name for preview_user_over_limit_free_plan_alert. |
 | <a id="usercalloutfeaturenameenum-profile_personal_access_token_expiry"></a>`PROFILE_PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for profile_personal_access_token_expiry. |

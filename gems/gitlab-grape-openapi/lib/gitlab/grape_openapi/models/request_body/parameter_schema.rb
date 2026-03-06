@@ -5,14 +5,21 @@ module Gitlab
     module Models
       module RequestBody
         class ParameterSchema
+          include Converters::CoercerResolver
+
           attr_reader :route
 
           def initialize(route:)
             @route = route
           end
 
+          # rubocop:disable Metrics/CyclomaticComplexity -- TODO: find a way to split this method
           def build(key, param_options)
             type_str = param_options[:type].to_s
+            validations = validations_for(key.to_sym)
+
+            mapping = coercer_mapping_for(validations)
+            return build_coerced_schema_with_description(mapping, param_options) if mapping
 
             # Handle array types like [String] (single type in brackets)
             if type_str.start_with?('[') && type_str.exclude?(',')
@@ -47,6 +54,13 @@ module Gitlab
 
             # Build basic schema
             build_basic_schema(object_type, object_format, param_options, validations)
+          end
+          # rubocop:enable Metrics/CyclomaticComplexity
+
+          def build_coerced_schema_with_description(mapping, param_options)
+            schema = build_coerced_schema(mapping)
+            schema[:description] = param_options[:desc] if param_options[:desc]
+            schema
           end
 
           def build_simple_array_from_bracket_notation(param_options)

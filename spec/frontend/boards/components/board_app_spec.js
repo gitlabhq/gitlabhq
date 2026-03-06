@@ -2,8 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 
-import createMockApollo from 'helpers/mock_apollo_helper';
-import waitForPromises from 'helpers/wait_for_promises';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import BoardApp from '~/boards/components/board_app.vue';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
 import BoardContent from '~/boards/components/board_content.vue';
@@ -15,13 +14,14 @@ import { rawIssue, boardListsQueryResponse } from '../mock_data';
 describe('BoardApp', () => {
   let wrapper;
   let mockApollo;
+  let resolveQuery;
+  let rejectQuery;
 
   const findBoardTopBar = () => wrapper.findComponent(BoardTopBar);
   const findBoardContent = () => wrapper.findComponent(BoardContent);
 
   const errorMessage = 'Failed to fetch lists';
   const boardListQueryHandler = jest.fn().mockResolvedValue(boardListsQueryResponse);
-  const boardListQueryHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
 
   Vue.use(VueApollo);
 
@@ -30,7 +30,11 @@ describe('BoardApp', () => {
     handler = boardListQueryHandler,
     isIssueBoard = true,
   } = {}) => {
-    mockApollo = createMockApollo([[boardListsQuery, handler]]);
+    ({
+      apolloProvider: mockApollo,
+      resolveQuery,
+      rejectQuery,
+    } = createControlledMockApollo([[boardListsQuery, handler]]));
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: activeBoardItemQuery,
       data: {
@@ -86,16 +90,16 @@ describe('BoardApp', () => {
 
   it('refetches lists when top bar emits updateBoard event', async () => {
     createComponent();
-    await waitForPromises();
+    await resolveQuery(boardListsQuery);
     findBoardTopBar().vm.$emit('updateBoard');
 
     expect(boardListQueryHandler).toHaveBeenCalled();
   });
 
   it('sets error on fetch lists failure', async () => {
-    createComponent({ handler: boardListQueryHandlerFailure });
+    createComponent();
 
-    await waitForPromises();
+    await rejectQuery(boardListsQuery, new Error(errorMessage));
 
     expect(cacheUpdates.setError).toHaveBeenCalled();
   });

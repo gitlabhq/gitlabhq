@@ -18,7 +18,7 @@ describe('content_editor/extensions/suggestions', () => {
   const buildEditorWithExtension = (autocompleteResults) => {
     const mockAutocompleteHelper = {
       getDataSource: jest.fn().mockReturnValue({
-        search: jest.fn().mockResolvedValue(autocompleteResults),
+        search: jest.fn().mockImplementation(() => Promise.resolve(autocompleteResults)),
       }),
     };
 

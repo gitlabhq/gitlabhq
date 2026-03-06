@@ -1,7 +1,7 @@
 import { GlButtonGroup, GlAnimatedChevronLgRightDownIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
@@ -29,18 +29,18 @@ jest.mock('@gitlab/ui/src/components/base/icon/icon.vue', () => ({
 
 describe('Board List Header Component', () => {
   let wrapper;
-  let fakeApollo;
 
   const mockClientToggleListCollapsedResolver = jest.fn();
   const updateListHandlerSuccess = jest.fn().mockResolvedValue(updateBoardListResponse);
+
+  let mockApollo;
 
   beforeEach(() => {
     cacheUpdates.setError = jest.fn();
   });
 
   afterEach(() => {
-    fakeApollo = null;
-
+    wrapper?.destroy();
     localStorage.clear();
   });
 
@@ -76,20 +76,21 @@ describe('Board List Header Component', () => {
       );
     }
 
-    const apolloMocks = [
-      [listQuery, listQueryHandler],
-      [updateBoardListMutation, updateListHandler],
-      ...additionalApolloMocks,
-    ];
-
-    fakeApollo = createMockApollo(apolloMocks, {
-      Mutation: {
-        clientToggleListCollapsed: mockClientToggleListCollapsedResolver,
+    mockApollo = createControlledMockApollo(
+      [
+        [listQuery, listQueryHandler],
+        [updateBoardListMutation, updateListHandler],
+        ...additionalApolloMocks,
+      ],
+      {
+        Mutation: {
+          clientToggleListCollapsed: mockClientToggleListCollapsedResolver,
+        },
       },
-    });
+    );
 
     const mountOptions = {
-      apolloProvider: fakeApollo,
+      apolloProvider: mockApollo.apolloProvider,
       propsData: {
         list: listMock,
         filterParams: {},
@@ -121,7 +122,7 @@ describe('Board List Header Component', () => {
   const findMilestoneTrigger = () => wrapper.findByTestId('milestone-trigger');
   const findMilestonePopover = () => wrapper.findComponent(MilestonePopover);
 
-  it('renders border when label color is present', () => {
+  it('renders border when label color is present', async () => {
     const expected = [
       'gl-border-t-solid',
       'gl-border-4',
@@ -129,7 +130,7 @@ describe('Board List Header Component', () => {
       'gl-rounded-tr-base',
     ];
 
-    createComponent({ listType: ListType.label });
+    await createComponent({ listType: ListType.label });
 
     expect(findBoardListHeader().classes()).toEqual(expect.arrayContaining(expected));
   });
@@ -145,21 +146,21 @@ describe('Board List Header Component', () => {
       ListType.status,
     ];
 
-    it.each(hasNoAddButton)('does not render dropdown when List Type is `%s`', (listType) => {
-      createComponent({ listType });
+    it.each(hasNoAddButton)('does not render dropdown when List Type is `%s`', async (listType) => {
+      await createComponent({ listType });
 
       expect(findButtonGroup().exists()).toBe(false);
     });
 
-    it.each(hasAddButton)('does render when List Type is `%s`', (listType) => {
-      createComponent({ listType });
+    it.each(hasAddButton)('does render when List Type is `%s`', async (listType) => {
+      await createComponent({ listType });
 
       expect(findButtonGroup().exists()).toBe(true);
       expect(findNewIssueButton().exists()).toBe(true);
     });
 
-    it('does not render dropdown when logged out', () => {
-      createComponent({
+    it('does not render dropdown when logged out', async () => {
+      await createComponent({
         currentUserId: null,
       });
 
@@ -168,15 +169,15 @@ describe('Board List Header Component', () => {
   });
 
   describe('Milestone popover', () => {
-    const createMilestoneComponent = (props = {}) => {
+    const createMilestoneComponent = async (props = {}) => {
       const milestoneListMock = {
         ...mockMilestoneQueryList,
         ...props,
       };
 
-      const milestoneQueryHandler = jest.fn().mockResolvedValue(mockMilestoneQueryResponse);
+      const milestoneQueryHandler = () => mockMilestoneQueryResponse;
 
-      createComponent({
+      await createComponent({
         list: milestoneListMock,
         listType: ListType.milestone,
         mountFn: mountExtended,
@@ -184,13 +185,13 @@ describe('Board List Header Component', () => {
       });
     };
 
-    it('does not render MilestonePopover initially', () => {
-      createMilestoneComponent();
+    it('does not render MilestonePopover initially', async () => {
+      await createMilestoneComponent();
       expect(findMilestonePopover().exists()).toBe(false);
     });
 
     it('renders MilestonePopover when hovering over milestone trigger', async () => {
-      createMilestoneComponent();
+      await createMilestoneComponent();
 
       const milestoneTrigger = findMilestoneTrigger();
       await milestoneTrigger.trigger('mouseenter');
@@ -204,7 +205,7 @@ describe('Board List Header Component', () => {
     });
 
     it('hides MilestonePopover when mouse leaves milestone trigger', async () => {
-      createMilestoneComponent();
+      await createMilestoneComponent();
 
       const milestoneTrigger = findMilestoneTrigger();
 
@@ -219,8 +220,8 @@ describe('Board List Header Component', () => {
       expect(findMilestonePopover().exists()).toBe(false);
     });
 
-    it('does not render for non-milestone lists', () => {
-      createComponent({ listType: ListType.label });
+    it('does not render for non-milestone lists', async () => {
+      await createComponent({ listType: ListType.label });
       expect(findMilestonePopover().exists()).toBe(false);
     });
   });
@@ -228,21 +229,21 @@ describe('Board List Header Component', () => {
   describe('Settings Button', () => {
     const hasSettings = [ListType.assignee, ListType.milestone, ListType.iteration, ListType.label];
 
-    it.each(hasSettings)('does render for List Type `%s`', (listType) => {
-      createComponent({ listType });
+    it.each(hasSettings)('does render for List Type `%s`', async (listType) => {
+      await createComponent({ listType });
 
       expect(findButtonGroup().exists()).toBe(true);
       expect(findSettingsButton().exists()).toBe(true);
     });
 
-    it('does not render dropdown when ListType `closed`', () => {
-      createComponent({ listType: ListType.closed });
+    it('does not render dropdown when ListType `closed`', async () => {
+      await createComponent({ listType: ListType.closed });
 
       expect(findButtonGroup().exists()).toBe(false);
     });
 
-    it('renders dropdown but not the Settings button when ListType `backlog`', () => {
-      createComponent({ listType: ListType.backlog });
+    it('renders dropdown but not the Settings button when ListType `backlog`', async () => {
+      await createComponent({ listType: ListType.backlog });
 
       expect(findButtonGroup().exists()).toBe(true);
       expect(findSettingsButton().exists()).toBe(false);
@@ -250,8 +251,8 @@ describe('Board List Header Component', () => {
   });
 
   describe('expanding / collapsing the column', () => {
-    it('should display collapse icon when column is expanded', () => {
-      createComponent();
+    it('should display collapse icon when column is expanded', async () => {
+      await createComponent();
 
       const icon = findCaret().findComponent(GlAnimatedChevronLgRightDownIcon);
 
@@ -259,8 +260,8 @@ describe('Board List Header Component', () => {
       expect(icon.props('isOn') ?? parseBoolean(icon.attributes('is-on'))).toBe(true);
     });
 
-    it('should display expand icon when column is collapsed', () => {
-      createComponent({ collapsed: true });
+    it('should display expand icon when column is collapsed', async () => {
+      await createComponent({ collapsed: true });
 
       const icon = findCaret().findComponent(GlAnimatedChevronLgRightDownIcon);
 
@@ -269,7 +270,7 @@ describe('Board List Header Component', () => {
     });
 
     it('set active board item on client when clicking on card', async () => {
-      createComponent({ listType: ListType.label });
+      await createComponent({ listType: ListType.label });
       await nextTick();
 
       findCaret().vm.$emit('click');
@@ -287,7 +288,7 @@ describe('Board List Header Component', () => {
     });
 
     it("when logged in it doesn't set localStorage", async () => {
-      createComponent({ withLocalStorage: false, currentUserId: 1 });
+      await createComponent({ withLocalStorage: false, currentUserId: 1 });
 
       findCaret().vm.$emit('click');
       await nextTick();
@@ -296,7 +297,7 @@ describe('Board List Header Component', () => {
     });
 
     it('when logged out it sets localStorage', async () => {
-      createComponent({
+      await createComponent({
         currentUserId: null,
       });
 
@@ -315,15 +316,15 @@ describe('Board List Header Component', () => {
 
     it.each(cannotDragList)(
       'does not have gl-cursor-grab class so user cannot drag list',
-      (listType) => {
-        createComponent({ listType });
+      async (listType) => {
+        await createComponent({ listType });
 
         expect(findTitle().classes()).not.toContain('gl-cursor-grab');
       },
     );
 
-    it.each(canDragList)('has gl-cursor-grab class so user can drag list', (listType) => {
-      createComponent({ listType });
+    it.each(canDragList)('has gl-cursor-grab class so user can drag list', async (listType) => {
+      await createComponent({ listType });
 
       expect(findTitle().classes()).toContain('gl-cursor-grab');
     });
@@ -331,7 +332,7 @@ describe('Board List Header Component', () => {
 
   describe('collapse/expand mutations', () => {
     it('does not call update list mutation when user is not logged in', async () => {
-      createComponent({ currentUserId: null });
+      await createComponent({ currentUserId: null });
 
       findCaret().vm.$emit('click');
       await nextTick();
@@ -340,7 +341,7 @@ describe('Board List Header Component', () => {
     });
 
     it('calls update list mutation when user is logged in', async () => {
-      createComponent({ currentUserId: 1 });
+      await createComponent({ currentUserId: 1 });
 
       findCaret().vm.$emit('click');
       await nextTick();
@@ -355,38 +356,31 @@ describe('Board List Header Component', () => {
   });
 
   describe('when fetch list query fails', () => {
-    const errorMessage = 'Failed to fetch list';
-    const listQueryHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
-
-    beforeEach(() => {
-      createComponent({
-        listQueryHandler: listQueryHandlerFailure,
-      });
+    beforeEach(async () => {
+      await createComponent();
     });
 
     it('sets error', async () => {
-      await waitForPromises();
+      await mockApollo.rejectQuery(listQuery, new Error('Failed to fetch list'));
 
       expect(cacheUpdates.setError).toHaveBeenCalled();
     });
   });
 
   describe('when update list mutation fails', () => {
-    const errorMessage = 'Failed to update list';
-    const updateListHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
-
-    beforeEach(() => {
-      createComponent({
+    beforeEach(async () => {
+      await createComponent({
         currentUserId: 1,
-        updateListHandler: updateListHandlerFailure,
       });
+
+      await mockApollo.resolveQuery(listQuery);
     });
 
     it('sets error', async () => {
-      await waitForPromises();
-
       findCaret().vm.$emit('click');
       await waitForPromises();
+
+      await mockApollo.rejectMutation(updateBoardListMutation, new Error('Failed to update list'));
 
       expect(cacheUpdates.setError).toHaveBeenCalled();
     });

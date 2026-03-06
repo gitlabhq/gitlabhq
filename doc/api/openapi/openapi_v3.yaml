@@ -255,6 +255,8 @@ tags:
   description: Operations related to provider identities.
 - name: Push rules
   description: Operations related to push rules.
+- name: PyPi packages
+  description: Operations related to PyPi packages.
 - name: Releases
   description: Operations related to releases.
 - name: Remote mirrors
@@ -749,6 +751,10 @@ paths:
   "/api/v4/chat/completions":
     post:
       operationId: postApiV4ChatCompletions
+      summary: Get chat completions
+      description: Generates chat completions using GitLab Duo
+      tags:
+      - GitLab Duo
       responses:
         '201':
           description: Created
@@ -2464,6 +2470,8 @@ paths:
       operationId: getApiV4GroupRepositoryStorageMoves
       summary: Get a list of all group repository storage moves
       description: This feature was introduced in GitLab 13.9.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -2492,6 +2500,8 @@ paths:
       operationId: postApiV4GroupRepositoryStorageMoves
       summary: Schedule bulk group repository storage moves
       description: This feature was introduced in GitLab 13.9.
+      tags:
+      - Storage moves
       responses:
         '202':
           description: Accepted
@@ -2506,6 +2516,8 @@ paths:
       operationId: getApiV4GroupRepositoryStorageMovesRepositoryStorageMoveId
       summary: Get a group repository storage move
       description: This feature was introduced in GitLab 13.9.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -2525,6 +2537,8 @@ paths:
       operationId: getApiV4GroupsIdRepositoryStorageMoves
       summary: Get a list of all group repository storage moves
       description: This feature was introduced in GitLab 13.9.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -2559,6 +2573,8 @@ paths:
       operationId: postApiV4GroupsIdRepositoryStorageMoves
       summary: Schedule a group repository storage move
       description: This feature was introduced in GitLab 13.9.
+      tags:
+      - Storage moves
       responses:
         '201':
           description: Created
@@ -2584,6 +2600,8 @@ paths:
       operationId: getApiV4GroupsIdRepositoryStorageMovesRepositoryStorageMoveId
       summary: Get a group repository storage move
       description: This feature was introduced in GitLab 13.9.
+      tags:
+      - Storage moves
       responses:
         '200':
           description: OK
@@ -3710,6 +3728,8 @@ paths:
         example:
         - feature
         - bug
+        style: form
+        explode: false
       - name: milestone_title
         required: false
         description: Milestone title to filter by
@@ -3798,6 +3818,8 @@ paths:
             type: string
         in: query
         example: maven,yarn
+        style: form
+        explode: false
       - name: page
         required: false
         description: Current page number
@@ -4327,6 +4349,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: scope
         required: false
         description: 'Return vulnerabilities for the given scope: `dismissed` or `all`'
@@ -4345,6 +4369,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: pipeline_id
         required: false
         description: The ID of the pipeline
@@ -6098,6 +6124,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: per_page
         required: false
         description: Number of items per page
@@ -6955,6 +6983,7 @@ paths:
       description: Retrieves agent info for agentw for the given workspace token
       tags:
       - Workspaces
+      - Internal operations
       responses:
         '200':
           description: OK
@@ -6965,6 +6994,7 @@ paths:
       description: Returns whether the user is authorized to access the workspace.
       tags:
       - Workspaces
+      - Internal operations
       responses:
         '200':
           description: OK
@@ -6988,6 +7018,7 @@ paths:
       description: Returns configuration for Workspaces HTTP Server.
       tags:
       - OAuth applications
+      - Internal operations
       responses:
         '200':
           description: OK
@@ -8487,6 +8518,8 @@ paths:
             type: string
         in: query
         example: bug,reproduced
+        style: form
+        explode: false
       - name: with_labels_details
         required: false
         description: Return titles of labels and other details
@@ -8684,6 +8717,8 @@ paths:
             type: string
         in: query
         example: bug,reproduced
+        style: form
+        explode: false
       - name: with_labels_details
         required: false
         description: Return titles of labels and other details
@@ -15134,7 +15169,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/RequestBody_d8ccccb4bfdf"
+              "$ref": "#/components/schemas/RequestBody_3a6e612f7c1d"
   "/api/v4/projects/{id}/issues/{eventable_id}/resource_state_events":
     get:
       operationId: getApiV4ProjectsIdIssuesEventableIdResourceStateEvents
@@ -15800,6 +15835,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: title
         required: false
         description: The title of the milestones
@@ -17685,6 +17722,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: title
         required: false
         description: The title of the milestones
@@ -22921,6 +22960,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: exclude_forks
         required: false
         description: Excludes forked projects in the search. Available with exact
@@ -23024,6 +23065,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: exclude_forks
         required: false
         description: Excludes forked projects in the search. Available with exact
@@ -23127,6 +23170,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: regex
         required: false
         description: Performs a regex code search. Available with exact code search.
@@ -23322,6 +23367,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
   "/api/v4/projects/{id}/packages/rpm":
     post:
       operationId: postApiV4ProjectsIdPackagesRpm
@@ -24231,6 +24278,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
   "/api/v4/projects/{id}/repository/compare":
     get:
       operationId: getApiV4ProjectsIdRepositoryCompare
@@ -24416,6 +24465,8 @@ paths:
             type: string
         in: query
         example: main
+        style: form
+        explode: false
   "/api/v4/projects/{id}/repository/changelog":
     get:
       operationId: getApiV4ProjectsIdRepositoryChangelog
@@ -25939,6 +25990,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: topic_id
         required: false
         description: Limit results to projects with the assigned topic given by the
@@ -26293,6 +26346,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: topic_id
         required: false
         description: Limit results to projects with the assigned topic given by the
@@ -26641,6 +26696,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: topic_id
         required: false
         description: Limit results to projects with the assigned topic given by the
@@ -27160,6 +27217,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: topic_id
         required: false
         description: Limit results to projects with the assigned topic given by the
@@ -27613,6 +27672,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: page
         required: false
         description: Current page number
@@ -27670,6 +27731,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: with_shared
         required: false
         description: Include shared groups
@@ -27741,6 +27804,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: search
         required: false
         description: Search for a specific group
@@ -29628,6 +29693,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: per_page
         required: false
         description: Number of items per page
@@ -30161,6 +30228,8 @@ paths:
             type: string
         in: query
         example: main
+        style: form
+        explode: false
       - name: architectures
         required: false
         description: The list of Architectures
@@ -30170,6 +30239,8 @@ paths:
             type: string
         in: query
         example: amd64
+        style: form
+        explode: false
   "/api/v4/projects/{id}/debian_distributions/{codename}":
     get:
       operationId: getApiV4ProjectsIdDebianDistributionsCodename
@@ -30348,6 +30419,8 @@ paths:
             type: string
         in: query
         example: main
+        style: form
+        explode: false
       - name: architectures
         required: false
         description: The list of Architectures
@@ -30357,6 +30430,8 @@ paths:
             type: string
         in: query
         example: amd64
+        style: form
+        explode: false
   "/api/v4/projects/{id}/debian_distributions/{codename}/key.asc":
     get:
       operationId: getApiV4ProjectsIdDebianDistributionsCodenameKeyAsc
@@ -33197,6 +33272,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: milestone
         required: false
         description: Returns merge requests for a specific milestone. `None` returns
@@ -33633,6 +33710,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: milestone
         required: false
         description: Returns merge requests for a specific milestone. `None` returns
@@ -34256,6 +34335,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: milestone
         required: false
         description: Returns merge requests for a specific milestone. `None` returns
@@ -34620,6 +34701,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
     post:
       operationId: postApiV4ProjectsIdMergeRequests
       summary: Create merge request
@@ -34961,6 +35044,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/changes":
     get:
       operationId: getApiV4ProjectsIdMergeRequestsMergeRequestIidChanges
@@ -35375,6 +35460,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: skip_users
         required: false
         description: Array of user ids to be skipped for membership
@@ -35383,6 +35470,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: show_seat_info
         required: false
         description: Show seat information for members
@@ -35471,6 +35560,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: show_seat_info
         required: false
         description: Show seat information for members
@@ -35656,6 +35747,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: skip_users
         required: false
         description: Array of user ids to be skipped for membership
@@ -35664,6 +35757,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: show_seat_info
         required: false
         description: Show seat information for members
@@ -35752,6 +35847,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: show_seat_info
         required: false
         description: Show seat information for members
@@ -36676,6 +36773,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: milestone
         required: false
         description: Milestone title
@@ -36702,6 +36801,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: search
         required: false
         description: Search issues for text present in the title, description, or
@@ -37037,6 +37138,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: milestone
         required: false
         description: Milestone title
@@ -37063,6 +37166,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: search
         required: false
         description: Search issues for text present in the title, description, or
@@ -37449,6 +37554,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: milestone
         required: false
         description: Milestone title
@@ -37475,6 +37582,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: search
         required: false
         description: Search issues for text present in the title, description, or
@@ -37754,6 +37863,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: milestone
         required: false
         description: Milestone title
@@ -37780,6 +37891,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: search
         required: false
         description: Search issues for text present in the title, description, or
@@ -38304,6 +38417,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: milestone
         required: false
         description: Milestone title
@@ -38330,6 +38445,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: search
         required: false
         description: Search issues for text present in the title, description, or
@@ -38637,6 +38754,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: milestone
         required: false
         description: Milestone title
@@ -38663,6 +38782,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: search
         required: false
         description: Search issues for text present in the title, description, or
@@ -45830,6 +45951,8 @@ paths:
             type: string
         in: query
         example: main
+        style: form
+        explode: false
       - name: architectures
         required: false
         description: The list of Architectures
@@ -45839,6 +45962,8 @@ paths:
             type: string
         in: query
         example: amd64
+        style: form
+        explode: false
   "/api/v4/groups/{id}/-/debian_distributions/{codename}":
     get:
       operationId: getApiV4GroupsIdDashDebianDistributionsCodename
@@ -46017,6 +46142,8 @@ paths:
             type: string
         in: query
         example: main
+        style: form
+        explode: false
       - name: architectures
         required: false
         description: The list of Architectures
@@ -46026,6 +46153,8 @@ paths:
             type: string
         in: query
         example: amd64
+        style: form
+        explode: false
   "/api/v4/groups/{id}/-/debian_distributions/{codename}/key.asc":
     get:
       operationId: getApiV4GroupsIdDashDebianDistributionsCodenameKeyAsc
@@ -48729,6 +48858,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: milestone
         required: false
         description: Returns merge requests for a specific milestone. `None` returns
@@ -56496,6 +56627,8 @@ paths:
             type: string
         in: query
         example: "['macos', 'shell']"
+        style: form
+        explode: false
       - name: version_prefix
         required: false
         description: The version prefix of runners to return
@@ -56639,6 +56772,8 @@ paths:
             type: string
         in: query
         example: "['macos', 'shell']"
+        style: form
+        explode: false
       - name: version_prefix
         required: false
         description: The version prefix of runners to return
@@ -57035,6 +57170,8 @@ paths:
             type: string
         in: query
         example: "['macos', 'shell']"
+        style: form
+        explode: false
       - name: version_prefix
         required: false
         description: The version prefix of runners to return
@@ -57202,6 +57339,8 @@ paths:
             type: string
         in: query
         example: "['macos', 'shell']"
+        style: form
+        explode: false
       - name: version_prefix
         required: false
         description: The version prefix of runners to return
@@ -58168,6 +58307,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: all_available
         required: false
         description: When `true`, returns all accessible groups. When `false`, returns
@@ -58468,6 +58609,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: visibility
         required: false
         description: Limit by visibility
@@ -58573,6 +58716,8 @@ paths:
           items:
             type: string
         in: query
+        style: form
+        explode: false
       - name: search
         required: false
         description: Search for a specific group
@@ -58958,6 +59103,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: all_available
         required: false
         description: When `true`, returns all accessible groups. When `false`, returns
@@ -59113,6 +59260,8 @@ paths:
           items:
             type: integer
         in: query
+        style: form
+        explode: false
       - name: all_available
         required: false
         description: When `true`, returns all accessible groups. When `false`, returns
@@ -82440,7 +82589,7 @@ components:
           description: The avatar file (generated by Multipart middleware)
       required:
       - avatar
-    RequestBody_d8ccccb4bfdf:
+    RequestBody_3a6e612f7c1d:
       type: object
       properties:
         admin_mode:
@@ -82872,6 +83021,8 @@ components:
             wiki repositories to look for silent disk corruption issues.
         repository_storages_weighted:
           type: object
+          additional_properties:
+            type: integer
           description: Storage paths for new projects with a weighted value ranging
             from 0 to 100
         require_two_factor_authentication:

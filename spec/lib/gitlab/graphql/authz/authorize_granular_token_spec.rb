@@ -146,11 +146,5 @@ RSpec.describe Gitlab::Graphql::Authz::AuthorizeGranularToken, feature_category:
         }
       })
     end
-
-    it 'raises ArgumentError for invalid permissions' do
-      expect do
-        test_type.granular_scope_directive(permissions: :not_a_real_permission, boundary_type: :project)
-      end.to raise_error(ArgumentError, /Invalid granular scope permission\(s\): not_a_real_permission/)
-    end
   end
 end

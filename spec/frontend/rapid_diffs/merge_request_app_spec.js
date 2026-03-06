@@ -5,6 +5,7 @@ import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { useCodeReview } from '~/diffs/stores/code_review';
+import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
 
 jest.mock('~/lib/graphql');
 jest.mock('~/rapid_diffs/app/view_settings');
@@ -102,5 +103,11 @@ describe('Merge Request Rapid Diffs app', () => {
     buildApp({ mr_path: '/namespace/project/-/merge_requests/1' });
     await app.init();
     expect(useCodeReview().setMrPath).not.toHaveBeenCalled();
+  });
+
+  it('fetches notes on init', async () => {
+    buildApp();
+    await app.init();
+    expect(useMergeRequestDiscussions().fetchNotes).toHaveBeenCalled();
   });
 });

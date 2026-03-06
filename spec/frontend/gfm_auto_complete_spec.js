@@ -20,12 +20,18 @@ import waitForPromises from 'helpers/wait_for_promises';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { linkedItems, currentAssignees, currentReviewers } from '~/graphql_shared/issuable_client';
+import {
+  linkedItems,
+  currentAssignees,
+  currentReviewers,
+  appliedLabels,
+} from '~/graphql_shared/issuable_client';
 import {
   eventlistenersMockDefaultMap,
   crmContactsMock,
   mockIssues,
   mockAssignees,
+  mockLabels,
 } from 'ee_else_ce_jest/gfm_auto_complete/mock_data';
 import { InternalEvents } from '~/tracking';
 
@@ -35,6 +41,7 @@ jest.mock('~/graphql_shared/issuable_client', () => ({
   linkedItems: jest.fn(),
   currentAssignees: jest.fn(),
   currentReviewers: jest.fn().mockReturnValue([]),
+  appliedLabels: jest.fn(),
 }));
 
 jest.mock('fuzzaldrin-plus', () => ({
@@ -1494,6 +1501,14 @@ describe('GfmAutoComplete', () => {
           expect(getDropdownItems()).toEqual([mockAssignees[1]].map(assigneeMatcher));
           expect(currentAssignees).toHaveBeenCalled();
         });
+
+        it('using "/assign @" excludes current assignees', () => {
+          triggerDropdown($textarea, '/assign @');
+
+          expect(getDropdownItems()).toHaveLength(mockAssignees.length - 1);
+          expect(getDropdownItems()).not.toContainEqual(assigneeMatcher(mockAssignees[1]));
+          expect(currentAssignees).toHaveBeenCalled();
+        });
       });
 
       describe('with disabled members', () => {
@@ -1596,6 +1611,59 @@ describe('GfmAutoComplete', () => {
           expect(getDropdownItems()).toHaveLength(1);
           expect(getDropdownItems()).toEqual([mockAssignees[1]].map(reviewerMatcher));
           expect(currentReviewers).toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('unlabel', () => {
+      const getDropdownItems = () => getAutocompleteDropdownItems('at-view-labels');
+      const labelMatcher = (label) => label.title;
+
+      beforeEach(() => {
+        appliedLabels.mockImplementation(() => ({
+          [`${mockWorkItemId}`]: [],
+        }));
+
+        autocomplete.setup($textarea, { labels: true });
+        autocomplete.cachedData['~'] = [...mockLabels];
+      });
+
+      describe('without any labels applied', () => {
+        it('using "~" shows all the labels', () => {
+          triggerDropdown($textarea, '~');
+
+          expect(getDropdownItems()).toHaveLength(mockLabels.length);
+          expect(getDropdownItems()).toEqual(mockLabels.map(labelMatcher));
+        });
+
+        it('using "/unlabel ~" shows no labels', () => {
+          triggerDropdown($textarea, '/unlabel ~');
+
+          expect(getDropdownItems()).toHaveLength(0);
+          expect(appliedLabels).toHaveBeenCalled();
+        });
+      });
+
+      describe('with labels applied', () => {
+        beforeEach(() => {
+          appliedLabels.mockImplementation(() => ({
+            [`${mockWorkItemId}`]: [mockLabels[0]],
+          }));
+        });
+
+        it('using "~" shows all the labels', () => {
+          triggerDropdown($textarea, '~');
+
+          expect(getDropdownItems()).toHaveLength(mockLabels.length);
+          expect(getDropdownItems()).toEqual(mockLabels.map(labelMatcher));
+        });
+
+        it('using "/unlabel ~" shows only applied labels', () => {
+          triggerDropdown($textarea, '/unlabel ~');
+
+          expect(getDropdownItems()).toHaveLength(1);
+          expect(getDropdownItems()).toEqual([mockLabels[0]].map(labelMatcher));
+          expect(appliedLabels).toHaveBeenCalled();
         });
       });
     });

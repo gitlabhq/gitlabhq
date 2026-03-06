@@ -33,6 +33,7 @@ Use pipeline execution policies to manage and enforce CI/CD jobs for multiple pr
 
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159858) the `suffix` field in GitLab 17.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165096) pipeline execution so later stages wait for the `.pipeline-policy-pre` stage to complete in GitLab 17.7.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558233) pipeline execution so that when a `.pipeline-policy-pre` stage fails, all later jobs are skipped in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ensure_pipeline_policy_pre_succeeds`. Enabled by default.
 
 {{< /history >}}
 
@@ -80,40 +81,44 @@ Note the following:
 
 ### `.pipeline-policy-pre` stage
 
-Jobs in the `.pipeline-policy-pre` stage always execute. This stage is designed for security and compliance use cases.
-Jobs in the pipeline do not begin until the `.pipeline-policy-pre` stage completes.
-
-If you don't require this behavior for your workflow, you can use the `.pre` stage or a custom stage instead.
-
-#### Ensure that `.pipeline-policy-pre` succeeds
-
 {{< details >}}
 
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558233) pipeline execution so that when a `.pipeline-policy-pre` stage fails, all later jobs are skipped
+in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ensure_pipeline_policy_pre_succeeds`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Jobs in the `.pipeline-policy-pre` stage always execute.
+This stage is designed for security and compliance use cases.
+Jobs in the pipeline do not begin until the `.pipeline-policy-pre` stage completes.
+
+If the `.pipeline-policy-pre` stage fails or all jobs in the stage are skipped,
+all jobs in later stages are skipped, including:
+
+- Jobs with `needs: []`.
+- Jobs with `when: always`.
+
+If you do not require this behavior for your workflow,
+use the `.pre` stage or a custom stage instead.
+
 > [!note]
-> This feature is experimental and might change in future releases. Test it thoroughly in
-> non-production environments only, as it might be unstable in production.
-
-To ensure that `.pipeline-policy-pre` completes and succeeds, enable the `ensure_pipeline_policy_pre_succeeds`
-experiment in the security policy configuration. The `.gitlab/security-policies/policy.yml` YAML
-configuration file is stored in your security policy project:
-
-```yaml
-experiments:
-  ensure_pipeline_policy_pre_succeeds:
-    enabled: true
-```
-
-If the `.pipeline-policy-pre` stage fails or all jobs in the stage are skipped, all jobs in later stages are skipped, including:
-
-- Jobs with `needs: []`
-- Jobs with `when: always`
-
-When multiple pipeline execution policies apply, the experiment takes effect if enabled in any of them,
-ensuring that `.pipeline-policy-pre` must succeed.
+> In GitLab 18.9 and earlier, jobs with `needs: []` or `when: always`
+> could bypass a failed `.pipeline-policy-pre` stage unless you enabled
+> the `ensure_pipeline_policy_pre_succeeds` experiment.
+> This experiment is no longer required. The behavior is now the default.
+> On GitLab Self-Managed, an administrator
+> can [disable this feature flag](../../../administration/feature_flags/_index.md)
+> to revert to the previous behavior where only `needs` jobs are blocked.
 
 ### Job naming best practice
 
@@ -892,9 +897,9 @@ For more information about `changes:` behavior, see [jobs or pipelines run unexp
 
 ### Use the `.pipeline-policy-pre` stage for critical security checks
 
-Jobs in the `.pipeline-policy-pre` stage are designed for security and compliance use cases. All other pipeline jobs wait until this stage completes before they start.
-
-For improved security, consider enabling the experimental `ensure_pipeline_policy_pre_succeeds` feature to ensure that if the `.pipeline-policy-pre` stage fails, all subsequent jobs are skipped.
+Jobs in the `.pipeline-policy-pre` stage are designed for security and compliance use cases.
+All other pipeline jobs wait until this stage completes before they start.
+If the `.pipeline-policy-pre` stage fails, all subsequent jobs are skipped.
 
 #### Detect duplicate security configurations
 

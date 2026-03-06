@@ -100,9 +100,6 @@ module Gitlab
             end
 
             def load_and_validate_expanded_hash!
-              validate_spec_include!
-              return if errors.any?
-
               return errors.push("`#{masked_location}`: #{content_result.error}") unless content_result.valid?
 
               if content_result.interpolated? && context.user.present?
@@ -129,26 +126,9 @@ module Gitlab
               errors.push("Header include file `#{masked_location}` contains unknown keys: #{unknown_keys}")
             end
 
-            def validate_spec_include!
-              return if context.internal_include?
-              return unless content.present?
-
-              yaml_result = load_uninterpolated_yaml
-              return unless yaml_result.valid? && yaml_result.has_header?
-
-              spec = yaml_result.spec
-              return unless spec.is_a?(Hash) && spec.key?(:include)
-
-              errors.push(
-                "Included file `#{masked_location}` cannot use `spec:include`. " \
-                  "This keyword is not supported in included configuration files"
-              )
-            end
-
             def load_uninterpolated_yaml
               ::Gitlab::Ci::Config::Yaml::Loader.new(content).load_uninterpolated_yaml
             end
-            strong_memoize_attr :load_uninterpolated_yaml
 
             protected
 

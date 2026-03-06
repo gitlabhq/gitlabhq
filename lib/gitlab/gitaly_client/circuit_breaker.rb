@@ -60,7 +60,11 @@ module Gitlab
       attr_reader :service, :rpc, :storage
 
       def enabled?
+        return false unless Feature::FlipperFeature.table_exists?
+
         Feature.enabled?(:add_circuit_breaker_to_gitaly, Feature.current_request)
+      rescue StandardError
+        false
       end
 
       def circuit

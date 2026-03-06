@@ -267,10 +267,6 @@
     display: block;
     overflow-x: auto;
 
-    tbody {
-      @apply gl-bg-default;
-    }
-
     td,
     th {
       @apply gl-border;

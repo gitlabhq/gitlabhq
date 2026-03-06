@@ -2,7 +2,7 @@ import { GlLabel, GlLoadingIcon } from '@gitlab/ui';
 import { range } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -57,7 +57,7 @@ describe('Board card component', () => {
   const findUserAvatar = () => wrapper.findComponent(UserAvatarLink);
   const findRelationshipIcons = () => wrapper.findComponent(WorkItemRelationshipIcons);
 
-  const mockApollo = createMockApollo();
+  const { apolloProvider: mockApollo } = createControlledMockApollo([]);
 
   const createWrapper = ({ props = {}, isGroupBoard = true } = {}) => {
     mockApollo.clients.defaultClient.cache.writeQuery({

@@ -264,7 +264,13 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
         end
 
         context 'event at forth level of the tree' do
-          let(:event) { Event.find_by(action: 6) }
+          let(:event) do
+            Event
+              .where(action: :commented, target_type: 'Note')
+              .joins('INNER JOIN notes ON notes.id = events.target_id')
+              .where(notes: { noteable_type: 'MergeRequest' })
+              .first
+          end
 
           it 'restores the event' do
             expect(event).not_to be_nil
@@ -274,7 +280,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
             expect(event.action).not_to be_nil
           end
 
-          it 'event belongs to note, belongs to merge request, belongs to a project', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9482' do
+          it 'event belongs to note, belongs to merge request, belongs to a project' do
             expect(event.note.noteable.project).not_to be_nil
           end
         end
