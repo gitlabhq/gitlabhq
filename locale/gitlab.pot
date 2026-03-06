@@ -1700,6 +1700,9 @@ msgstr ""
 msgid "'%{lock_path}' is locked in Git LFS by @%{lock_user_name}"
 msgstr ""
 
+msgid "'%{name}' is a reserved name and cannot be used"
+msgstr ""
+
 msgid "'%{name}' is already taken"
 msgstr ""
 
