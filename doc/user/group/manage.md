@@ -494,7 +494,7 @@ You can still independently configure [project sharing for the group and its sub
 When restricted access is enabled and no subscription seats are available, users provisioned through SAML, SCIM, or LDAP are assigned the Minimal Access role instead of their configured access level.
 This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and Self-Managed Ultimate.
 
-Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../../user/permissions.md#users-with-minimal-access).
+Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../permissions.md#users-with-minimal-access).
 When seats become available, they can be promoted to their intended access level.
 Existing users with billable roles are not affected by this behavior.
 
@@ -607,7 +607,7 @@ or project is shared externally, it is shared outside of the namespace hierarchy
 in the hierarchy.
 
 To ensure that the user cap applies when groups, subgroups, or projects are shared externally,
-[restrict group sharing only in the top-level namespace](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy).
+[restrict group sharing only in the top-level namespace](../project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy).
 A top-level namespace restriction allows invitations in the same namespace and prevents new user (seat) additions from external shares.
 
 GitLab.com Ultimate has a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add guest users to a group when billable users exceed the user cap. For example, suppose you have a user cap of 5, with 3 developers, and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.

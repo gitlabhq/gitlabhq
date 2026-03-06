@@ -152,7 +152,7 @@ you've discovered a cross-organization data leak. This is particularly useful wh
 
 ### Automated testing
 
-For automated testing strategies, see [Testing with Organizations](../../development/testing_guide/testing_with_organizations.md).
+For automated testing strategies, see [Testing with Organizations](../testing_guide/testing_with_organizations.md).
 
 ## Frontend guidelines
 
@@ -172,5 +172,5 @@ The current organization context is available on the frontend via `window.gon.cu
 
 - [Sharding guidelines](sharding/_index.md)
 - [Organization user documentation](../../user/organization/_index.md)
-- [Testing with Organizations](../../development/testing_guide/testing_with_organizations.md)
+- [Testing with Organizations](../testing_guide/testing_with_organizations.md)
 - [Consolidating groups and projects](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/) architecture documentation

@@ -69,18 +69,31 @@ associated Pages domain. GitLab also renews it automatically.
 
 ### Something went wrong while obtaining the Let's Encrypt certificate
 
-If you get an error **Something went wrong while obtaining the Let's Encrypt certificate**, first, make sure that your pages site is set to "Everyone" in your project's **Settings** > **General** > **Visibility**. This allows the Let's Encrypt Servers reach your pages site. Once this is confirmed, you can try obtaining the certificate again by following these steps:
+You might get an error that states **Something went wrong while obtaining the Let's Encrypt certificate**.
+
+This issue occurs when Let's Encrypt cannot reach or validate your domain.
+
+To resolve this issue:
 
 1. On the top bar, select **Search or go to** and find your project.
-1. Select **Deploy** > **Pages**.
+1. Select **Settings** > **General** > **Visibility** and make sure **Pages** is
+   set to **Everyone**.
+1. Select **Deploy** > **Pages** > **Domains & settings**.
 1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 1. In **Verification status**, select **Retry verification** ({{< icon name="retry" >}}).
-1. If you're still getting the same error:
-   1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
-   1. Make sure your domain **doesn't have** an `AAAA` DNS record.
-   1. If you have a `CAA` DNS record for your domain or any higher level domains, make sure [it includes `letsencrypt.org`](https://letsencrypt.org/docs/caa/).
-   1. Make sure [your domain is verified](_index.md#step-1-add-a-custom-domain).
-   1. Go to step 1.
+
+If you get the same error, check the following:
+
+- Make sure you have set only one `CNAME` or `A` DNS record for your domain.
+- Make sure your domain doesn't have an `AAAA` DNS record.
+- If you have a `CAA` DNS record for your domain or any higher level domains,
+  make sure it includes [`letsencrypt.org`](https://letsencrypt.org/docs/caa/).
+- Make sure your [domain is verified](_index.md#step-1-add-a-custom-domain).
+- If you use [parallel deployments](../parallel_deployments.md), make sure your primary
+  deployment has an empty `path_prefix`. A non-empty `path_prefix` (for example, `latest`)
+  prevents the `/.well-known/acme-challenge` path from being served.
+
+Go back to the **Deploy** > **Pages** settings, and retry the verification.
 
 ### Obtaining a certificate hangs for more than an hour
 

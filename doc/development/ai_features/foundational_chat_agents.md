@@ -363,12 +363,12 @@ With the changes to `FoundationalChatAgentsDefinitions.rb` and the fetched confi
 
 ## Architecture design
 
-[Foundational Chat Agents](../../development/ai_features/glossary.md#agent-types) are developed by GitLab and must be available to all GitLab deployments (GitLab.com, Self-Managed, and Dedicated).
+[Foundational Chat Agents](glossary.md#agent-types) are developed by GitLab and must be available to all GitLab deployments (GitLab.com, Self-Managed, and Dedicated).
 
 The architecture of how Foundational Agents are made available avoids connecting to AI Catalog to fetch definitions at runtime and allows GitLab engineering teams full control over when they are released.
 
 This design could also be extended to support
-[Foundational flows](../../development/ai_features/glossary.md#flow-types).
+[Foundational flows](glossary.md#flow-types).
 
 ### Foundational Agents in Monolith
 

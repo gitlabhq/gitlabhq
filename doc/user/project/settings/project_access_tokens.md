@@ -250,7 +250,7 @@ Bot users have the following properties:
   and do not count towards your license limit.
 - Their contributions are associated with the bot user account.
 - When removed, their contributions are moved to a
-  [ghost user](../../../user/profile/account/delete_account.md#associated-records).
+  [ghost user](../../profile/account/delete_account.md#associated-records).
 
 When the bot user is created, the following attributes are defined:
 
@@ -272,7 +272,7 @@ By default, GitLab deletes group and project access tokens and their
 [token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) 30 days after the
 last active token in the token family becomes inactive. This deletion removes all tokens in the
 token family, the associated bot user, and moves any bot contributions to a
-[ghost user](../../../user/profile/account/delete_account.md#associated-records).
+[ghost user](../../profile/account/delete_account.md#associated-records).
 
 Prerequisites:
 

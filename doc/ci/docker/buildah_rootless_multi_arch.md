@@ -32,7 +32,7 @@ To build multi-platform images with Buildah:
 Running jobs on their respective architectures avoids performance issues from CPU instruction translation.
 However, you can run both builds on a single architecture if needed. Building for non-native architecture may result in slower build times.
 
-The following example uses two [GitLab-hosted runners on Linux](../../ci/runners/hosted_runners/linux.md):
+The following example uses two [GitLab-hosted runners on Linux](../runners/hosted_runners/linux.md):
 
 - `saas-linux-small-arm64`
 - `saas-linux-small-amd64`

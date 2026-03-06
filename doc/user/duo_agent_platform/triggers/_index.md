@@ -55,7 +55,7 @@ To create a trigger:
    - **Assign reviewer**: When the service account user is assigned
      as a reviewer to a merge request.
 1. From the **Service account** dropdown list,
-   select a user to be [the composite identity](../../duo_agent_platform/composite_identity.md).
+   select a user to be [the composite identity](../composite_identity.md).
 1. For **Configuration source**, select one of the following:
    - **AI Catalog**: From the flows configured for this project,
      select a flow for the trigger to execute.

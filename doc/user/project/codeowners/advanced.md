@@ -187,7 +187,7 @@ The eligible Code Owners are:
 
 To make members of a group eligible as Code Owners for projects they don't
 directly belong to, you can
-[invite the group](../../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)
+[invite the group](../members/sharing_projects_groups.md#invite-a-group-to-a-group)
 to a parent group of the project. When you invite a group, its direct members
 become eligible as Code Owners for all projects in the parent group's hierarchy.
 

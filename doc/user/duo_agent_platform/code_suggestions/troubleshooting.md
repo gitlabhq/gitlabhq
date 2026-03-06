@@ -72,7 +72,7 @@ For non-Code Suggestions troubleshooting for VS Code, see [troubleshooting GitLa
 
 ### Suggestions not displayed in VS Code or GitLab Web IDE
 
-If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab Web IDE](../../../user/project/web_ide/_index.md) is enabled. The same settings apply to VS Code as local IDE.
+If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab Web IDE](../../project/web_ide/_index.md) is enabled. The same settings apply to VS Code as local IDE.
 
 1. On the left sidebar, select **Extensions** > **GitLab**.
 1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
@@ -84,7 +84,7 @@ If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab 
 If Code Suggestions is enabled for the IDE, but suggestions are still not displayed:
 
 1. In your IDE, in the GitLab for VS Code **Extension Settings**, enable **GitLab: Debug**.
-   - For Web IDE, you must have the [marketplace extensions](../../../user/project/web_ide/_index.md#manage-extensions) enabled.
+   - For Web IDE, you must have the [marketplace extensions](../../project/web_ide/_index.md#manage-extensions) enabled.
 1. On the top menu, select **View** > **Output** to open the bottom panel, then either:
    - In the command palette, select `GitLab: Show Extension Logs`.
    - In the bottom panel, on the right, select the dropdown list to filter the logs. Select **GitLab**.

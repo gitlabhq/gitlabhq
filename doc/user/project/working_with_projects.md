@@ -622,7 +622,7 @@ manage them with the **Actions** menu.
 
 Prerequisites:
 
-- You must have the required [project permissions](../../user/permissions.md#projects) to perform the action.
+- You must have the required [project permissions](../permissions.md#projects) to perform the action.
 
 To manage projects with the **Actions** menu:
 

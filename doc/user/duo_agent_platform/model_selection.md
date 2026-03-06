@@ -76,7 +76,7 @@ Prerequisites:
 
 - You have the Owner role for the group.
 - The group that you select models for is a top-level group.
-- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 To select a model for a feature:
 
@@ -108,4 +108,4 @@ When using a GitLab Duo feature with a selected model, you might get an error th
 
 This issue occurs when you belong to multiple GitLab Duo namespaces, but have not chosen one as your default namespace.
 
-To resolve this, [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+To resolve this, [set a default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).

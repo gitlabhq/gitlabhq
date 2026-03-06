@@ -71,7 +71,7 @@ to the first viable path to provide quick results.
 Prerequisites:
 
 - Install and configure [an editor extension](../../../../editor_extensions/_index.md) for your IDE.
-- Ensure you meet [the other prerequisites](../../../duo_agent_platform/_index.md#prerequisites).
+- Ensure you meet [the other prerequisites](../../_index.md#prerequisites).
 
 To use the flow:
 
@@ -79,7 +79,7 @@ To use the flow:
 1. Select the **Flows** tab.
 1. In the text box, specify a code task in detail.
    - The flow is aware of all files available to Git in the project branch.
-   - You can provide additional [context](../../../duo_agent_platform/context.md#gitlab-duo-chat-agentic)
+   - You can provide additional [context](../../context.md#gitlab-duo-chat-agentic)
     for your chat.
    - The flow cannot access external sources or the web.
    - For example:

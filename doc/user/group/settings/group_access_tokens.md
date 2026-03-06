@@ -279,7 +279,7 @@ Bot users have the following properties:
   and do not count towards your license limit.
 - Their contributions are associated with the bot user account.
 - When removed, their contributions are moved to a
-  [ghost user](../../../user/profile/account/delete_account.md#associated-records).
+  [ghost user](../../profile/account/delete_account.md#associated-records).
 
 When the bot user is created, the following attributes are defined:
 

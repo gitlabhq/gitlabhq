@@ -702,4 +702,4 @@ For more custom review instructions use cases, see the following production exam
 ## Related topics
 
 - [GitLab Duo in merge requests](../../project/merge_requests/duo_in_merge_requests.md)
-- [GitLab Duo Code Review (Classic)](../../gitlab_duo/code_review_classic.md)
+- [GitLab Duo Code Review (Classic)](../code_review_classic.md)

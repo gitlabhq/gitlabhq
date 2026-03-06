@@ -40,7 +40,7 @@ To convert a Jenkinsfile, you must:
 
 - Have access to your Jenkins pipeline configuration.
 - Have the Developer, Maintainer, or Owner role in the target GitLab project.
-- Meet [the other prerequisites](../../../duo_agent_platform/_index.md#prerequisites).
+- Meet [the other prerequisites](../../_index.md#prerequisites).
 - [Ensure the GitLab Duo service account can create commits and branches](../../troubleshooting.md#session-is-stuck-in-created-state).
 - Ensure **Allow foundational flows** and **Convert to GitLab CI/CD** are [turned on](_index.md#turn-foundational-flows-on-or-off) for the top-level group.
 

@@ -303,6 +303,10 @@ LangSmith integration works with any tools, including [GitLab Centralized Evalua
 1. Observe project in the LangSmith [page](https://smith.langchain.com/) > Projects > \[Project name\]. 'Runs' tab should contain
    your last requests.
 
+### Sharing your LangSmith traces (for internal team members)
+
+You can share your trace URL with team members directly by copying the entire URL from the web browser. This is the preferred way of sharing your traces instead of the ["share" trace feature present in the LangSmith UI](https://docs.langchain.com/langsmith/share-trace). Sharing a trace publicly will make it accessible to anyone with the link, even if they don’t have a LangSmith access via OKTA. Traces contain sensitive information such as CI tokens.
+
 ## Evaluate your merge request in one click
 
 To evaluate your merge request with the [CEF](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library),

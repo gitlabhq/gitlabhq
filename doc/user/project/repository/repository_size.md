@@ -217,7 +217,7 @@ To remove blobs from your repository:
 1. On the confirmation dialog, enter your project path.
 1. Select **Yes, remove blobs**.
 1. Wait for the blob removal to complete before continuing:
-   - If [email notifications](../../../user/profile/notifications.md) are enabled,
+   - If [email notifications](../../profile/notifications.md) are enabled,
      wait until you receive an email stating that the repository history rewrite is completed.
    - If email notifications are not enabled, wait at least 5 minutes.
 1. On the left sidebar, select **Settings** > **General**.

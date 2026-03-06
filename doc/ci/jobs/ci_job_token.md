@@ -434,8 +434,8 @@ To fix this issue, use `base64 -w0` to disable automatically wrapping the token.
 When using JWT format job tokens in GitLab 18.8 and earlier, a job could fail with
 a `403 Forbidden` error. This can happen in:
 
-- Jobs that use [`needs`](../../ci/yaml/_index.md#needs).
-- Jobs triggered from [child pipelines](../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
+- Jobs that use [`needs`](../yaml/_index.md#needs).
+- Jobs triggered from [child pipelines](../pipelines/downstream_pipelines.md#parent-child-pipelines).
 - Jobs that run for longer than approximately 6 minutes without producing console output.
 
 The error typically appeared in runner logs as:

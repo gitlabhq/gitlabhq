@@ -147,7 +147,7 @@ Use these rules to validate users who make commits.
 - **Commit author's email**: Both the author and committer email addresses must match the regular expression.
   To allow any email address, leave empty.
 
-When using [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects)
+When using [bot users for projects](../settings/project_access_tokens.md#bot-users-for-projects)
 or [bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups),
 you must add the generated email suffix so that bot tokens can commit and push changes.
 

@@ -167,9 +167,9 @@ To resolve this issue:
 1. Update to GitLab for VS Code version 6.35.1 or later.
 1. Add `https://*.cdn.web-ide.gitlab-static.net` to your CORS policy.
 1. To troubleshoot further, check HAR files for logs. For more information, see
-   [create HAR files](../../user/application_security/api_fuzzing/create_har_files.md).
+   [create HAR files](../application_security/api_fuzzing/create_har_files.md).
 
-For more information, see [CORS issues](../../user/project/web_ide/_index.md#cors-issues).
+For more information, see [CORS issues](../project/web_ide/_index.md#cors-issues).
 
 ## GitLab Duo features not available for users
 

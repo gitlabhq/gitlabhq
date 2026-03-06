@@ -23,7 +23,7 @@ For GitLab to consider a commit verified:
   with a [usage type](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account)
   of **Authentication & Signing** or **Signing**.
 - The committer email address in your Git configuration must match a
-  [verified email address](../../../../user/profile/_index.md#change-your-primary-email)
+  [verified email address](../../../profile/_index.md#change-your-primary-email)
   associated with your GitLab account.
 
 If the signature is valid but the committer email does not match a verified
@@ -80,7 +80,7 @@ Prerequisites:
 - You've [created an SSH key](../../../ssh.md#generate-an-ssh-key-pair).
 - You've [added the key](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account) to your GitLab account.
 - You've [configured Git to sign commits](#configure-git-to-sign-commits-with-your-ssh-key) with your SSH key.
-- Your Git `user.email` matches a [verified email address](../../../../user/profile/_index.md#change-your-primary-email)
+- Your Git `user.email` matches a [verified email address](../../../profile/_index.md#change-your-primary-email)
   associated with your GitLab account.
 
 To sign a commit:

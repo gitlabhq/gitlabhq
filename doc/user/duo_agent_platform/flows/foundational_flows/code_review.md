@@ -28,7 +28,7 @@ title: Code Review Flow
 
 > [!note]
 > Depending on your add-on, you might have access to GitLab Duo Code Review (Classic) instead.
-> Learn how [the two features compare](../../../../user/project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code).
+> Learn how [the two features compare](../../../project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code).
 
 The Code Review Flow helps you streamline code reviews with agentic AI.
 
@@ -45,7 +45,7 @@ This flow is available in the GitLab UI only.
 
 Prerequisites:
 
-- Ensure you meet the [Agent Platform prerequisites](../../../../user/duo_agent_platform/_index.md#prerequisites).
+- Ensure you meet the [Agent Platform prerequisites](../../_index.md#prerequisites).
 - Ensure **Allow foundational flows** and **Code Review** are [turned on](_index.md#turn-foundational-flows-on-or-off) for the top-level group.
 - Ensure you have the Developer, Maintainer, or Owner [role](../../../permissions.md) for the project.
 
@@ -193,4 +193,4 @@ Try to restart the review. If the error persists, contact your administrator.
 
 ## Related topics
 
-- [GitLab Duo in merge requests](../../../../user/project/merge_requests/duo_in_merge_requests.md)
+- [GitLab Duo in merge requests](../../../project/merge_requests/duo_in_merge_requests.md)

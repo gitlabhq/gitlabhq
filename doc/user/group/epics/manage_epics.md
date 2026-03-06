@@ -462,7 +462,7 @@ You can filter the list of epics by:
 - Reaction emoji
 - Parent
 - Subscribed
-- [Custom fields](../../../user/work_items/custom_fields.md) enabled for epics
+- [Custom fields](../../work_items/custom_fields.md) enabled for epics
 
 To filter:
 

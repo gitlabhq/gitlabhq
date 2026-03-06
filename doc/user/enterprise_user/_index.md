@@ -184,8 +184,8 @@ You can restrict the specific authentication methods available to enterprise use
 reduce the security footprint of your users.
 
 - [Disable password authentication](../group/saml_sso/_index.md#disable-password-and-passkey-authentication-for-enterprise-users).
-- [Disable personal access tokens](../../user/profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
-- [Disable SSH Keys](../../user/ssh_advanced.md#disable-ssh-keys-for-enterprise-users).
+- [Disable personal access tokens](../profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
+- [Disable SSH Keys](../ssh_advanced.md#disable-ssh-keys-for-enterprise-users).
 - [Disable two-factor authentication](../../security/two_factor_authentication.md#enterprise-users).
 
 ### Restrict personal snippets
@@ -231,7 +231,7 @@ includes users' email addresses.
 ### Change the email addresses for an enterprise user
 
 Enterprise users can follow the same process as other GitLab users to
-[change their primary email address](../../user/profile/_index.md#change-your-primary-email).
+[change their primary email address](../profile/_index.md#change-your-primary-email).
 The new email address must be from a verified domain. If your organization has no verified
 domains, your enterprise users cannot change their primary email address.
 
@@ -253,7 +253,7 @@ releasing the user which only removes the enterprise management features from th
 the user, you can choose to either:
 
 - Permanently delete the user and their
-  [contributions](../../user/profile/account/delete_account.md#associated-records).
+  [contributions](../profile/account/delete_account.md#associated-records).
 - Keep their contributions and transfer them to a ghost user.
 
 ### Release an enterprise user

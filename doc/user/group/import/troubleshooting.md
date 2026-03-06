@@ -236,7 +236,7 @@ To resolve this issue:
 
 ## Milestone titles appended with `(imported-xx-datetime)`
 
-When importing a group, if any group and project milestone titles [clash with existing titles](../../../user/project/milestones/_index.md#milestone-title-rules) in the destination namespace, the imported milestones have
+When importing a group, if any group and project milestone titles [clash with existing titles](../../project/milestones/_index.md#milestone-title-rules) in the destination namespace, the imported milestones have
 a unique suffix appended to their title. For example, `18.0 (imported-3d-1770206299)`.
 
 To identify these milestones, search the `log/importer.log` file on the destination instance for the following:

@@ -476,7 +476,7 @@ To create a configuration file:
 
 #### Create a service account
 
-You must create [a service account](../../../user/profile/service_accounts.md) that has access to
+You must create [a service account](../../profile/service_accounts.md) that has access to
 the projects where you expect to use an external agent.
 
 When the agent runs, it uses a combination of the user's memberships and the service account memberships.
@@ -489,7 +489,7 @@ Prerequisites:
   - The Owner role for a top-level group and
     [permission to create service accounts](../../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
 
-Each project that mentions an external agent must have a unique [group service account](../../../user/profile/service_accounts.md).
+Each project that mentions an external agent must have a unique [group service account](../../profile/service_accounts.md).
 Mention the service account username when you assign tasks to the external agent.
 
 If you create an external agent from the AI Catalog and enable it in a top-level group, a service account is automatically created with the name `ai-<agent>-<group>`. For example, if you enable an agent named `Claude code agent` in the `GitLab Duo` group, the service account name is `ai-claude-code-agent-gitlab-duo`.
@@ -500,7 +500,7 @@ If you create an external agent from the AI Catalog and enable it in a top-level
 To set up the service account, take the following actions. If you do not have sufficient
 permissions, ask your instance administrator or top-level group Owner for help.
 
-1. For the top-level group, [create a service account](../../../user/profile/service_accounts.md#create-a-service-account).
+1. For the top-level group, [create a service account](../../profile/service_accounts.md#create-a-service-account).
    Service accounts created for the instance are not supported.
 
    > [!note]
@@ -508,11 +508,11 @@ permissions, ask your instance administrator or top-level group Owner for help.
    > no personal access tokens can be associated with that account.
    > This behavior is meant to keep service accounts secure.
 
-1. [Create a personal access token for the service account](../../../user/profile/service_accounts.md#create-a-personal-access-token-for-a-service-account) with the following [scopes](../../../user/profile/personal_access_tokens.md#personal-access-token-scopes):
+1. [Create a personal access token for the service account](../../profile/service_accounts.md#create-a-personal-access-token-for-a-service-account) with the following [scopes](../../profile/personal_access_tokens.md#personal-access-token-scopes):
    - `write_repository`
    - `api`
    - `ai_features`
-1. [Add the service account to your project](../../../user/project/members/_index.md#add-users-to-a-project)
+1. [Add the service account to your project](../../project/members/_index.md#add-users-to-a-project)
    with the Developer role. This ensures the service account has the minimum permissions necessary.
 
 When adding the service account to your project, you must enter the exact name

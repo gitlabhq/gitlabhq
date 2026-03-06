@@ -20,9 +20,10 @@ and running quickly.
 
 Onboard to an existing [project](../user/project/organize_work_with_projects.md) without any prerequisite software development knowledge. Assist with project management, issue tracking, reviews, and more.
 
-| Topic                                                                                                                                    | Description                                                                                         | Good for beginners |
-|------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|--------------------|
-| [Create an issue in an existing project](create_issue_in_existing_project/_index.md)                                                     | Use a project's issue board to track tasks and other work.                                          | {{< icon name="star" >}} |
+| Topic                                                                                | Description                                                | Good for beginners |
+|--------------------------------------------------------------------------------------|------------------------------------------------------------|--------------------|
+| [Create an issue in an existing project](create_issue_in_existing_project/_index.md) | Use a project's issue board to track tasks and other work. | {{< icon name="star" >}} |
+| [Edit a file using the Web Editor](edit_file_using_web_editor/_index.md)             | Use the web-based file editor to make simple changes directly in the UI. | {{< icon name="star" >}} |
 
 ## Find more tutorial content
 

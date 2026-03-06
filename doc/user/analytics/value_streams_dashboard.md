@@ -225,7 +225,7 @@ Prerequisites:
 - Overview background aggregation must be enabled.
 - To view the contributor count metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
 - To track deployment to production, the group or project must have an environment in the [production deployment tier](../../ci/environments/_index.md#deployment-tier-of-environments).
-- To measure the cycle time, [issues must be crosslinked from commit messages](../../user/project/issues/crosslinking_issues.md#from-commit-messages).
+- To measure the cycle time, [issues must be crosslinked from commit messages](../project/issues/crosslinking_issues.md#from-commit-messages).
 
 ### For groups
 

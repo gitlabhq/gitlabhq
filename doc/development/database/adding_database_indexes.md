@@ -295,7 +295,7 @@ Consult the Database team, reviewers, or maintainers to plan the work.
 
 ### All unique indexes needs to be scoped
 
-For more information, see [Unique constraints in Cells](../../development/cells/_index.md#unique-constraints).
+For more information, see [Unique constraints in Cells](../cells/_index.md#unique-constraints).
 
 ## Dropping unused indexes
 

@@ -27,6 +27,7 @@ RSpec.describe Admin::ApplicationSettingsController, '(JavaScript fixtures)', ty
   it 'application_settings/accounts_and_limit.html' do
     stub_application_setting(user_default_external: false)
     stub_licensed_features(personal_access_token_expiration_policy: true)
+    stub_feature_flags(service_accounts_available_on_free_or_unlicensed: false)
 
     get :general
 
