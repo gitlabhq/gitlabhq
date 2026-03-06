@@ -258,6 +258,8 @@ export default {
       :summary="summary"
       :fetch-collapsed-data="fetchCollapsedData"
       :is-collapsible="hasSuites"
+      :expand-button-label="s__('Reports|Expand test summary')"
+      :collapse-button-label="s__('Reports|Collapse test summary')"
     >
       <template #content>
         <mr-widget-row

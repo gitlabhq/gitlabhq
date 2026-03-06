@@ -25,7 +25,7 @@ Some [known issues](../_index.md#known-issues) exist.
 
 ## The `gitlab-cluster.json` file
 
-When you promote a secondary site to a primary site with `gitlab-ctl geo promote`, 
+When you promote a secondary site to a primary site with `gitlab-ctl geo promote`,
 the command automatically creates a `/etc/gitlab/gitlab-cluster.json` file on each node
 where it executes. In most circumstances, you don't need to manually edit this file.
 

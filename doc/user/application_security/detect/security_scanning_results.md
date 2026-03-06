@@ -211,10 +211,10 @@ For example, consider two pipelines with these scan results:
 - `V1` exists on both branches and is not shown on the merge request widget.
 
 To show the differences between the source branch and the target branch, security reports from both
-are required. The 10 most recent pipelines for the commit when the feature branch was created from
-the target branch are checked for a security report. If one can't be found in the 10 most recent
-pipelines then all findings are listed as new. Before enabling security scanning in merge requests
-ensure that security scanning is enabled for the default branch.
+are required. The system checks the last 10 commits on the target branch for valid security pipelines.
+For each commit, up to 10 of the most recent pipelines are checked for a security report. This approach ensures that a valid security report from an earlier commit is found, even if a commit skips the pipeline.
+If no security report is found, all findings are listed as new. Before enabling security scanning in
+merge requests, ensure that security scanning is enabled for the default branch.
 
 ### View security widget
 

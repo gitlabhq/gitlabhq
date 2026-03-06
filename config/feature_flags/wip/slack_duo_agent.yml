@@ -1,0 +1,10 @@
+---
+name: slack_duo_agent
+description: Enables handling of Slack app_mention events to respond when the GitLab bot is @mentioned
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/590434
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592185
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225325
+milestone: '18.10'
+group: group::agent foundations
+type: wip
+default_enabled: false

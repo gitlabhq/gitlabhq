@@ -41,7 +41,7 @@ describe('CollapsibleCommitInfo', () => {
   const findHistoryButton = () => wrapper.findByTestId('collapsible-commit-history');
   const findTextExpander = () => wrapper.findByTestId('text-expander');
   const findCommitRowDescription = () => wrapper.find('pre');
-  const findCommitTitle = () => wrapper.findByText('Initial commit');
+  const findCommitTitle = () => wrapper.findByTestId('commit-title');
   const findCommitterName = () => wrapper.findByText('John Doe');
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -123,6 +123,20 @@ describe('CollapsibleCommitInfo', () => {
       expect(findCommitRowDescription().html()).toBe(
         '<pre class="commit-row-description gl-mb-3 gl-whitespace-pre-wrap">This is a commit description</pre>',
       );
+    });
+
+    it('renders titleHtml as HTML using v-safe-html', async () => {
+      createComponent({
+        titleHtml:
+          'Fix issue <a href="/project/-/issues/1">#1</a> &amp; update <gl-emoji title="thumbs up" data-name="thumbsup" data-unicode-version="6.0">👍</gl-emoji>',
+      });
+      await findTextExpander().vm.$emit('click');
+      await nextTick();
+
+      const titleEl = findCommitTitle();
+      expect(titleEl.html()).toContain('<a href="/project/-/issues/1">#1</a>');
+      expect(titleEl.html()).toContain('<gl-emoji');
+      expect(titleEl.html()).toContain('&amp;');
     });
 
     it('sets correct CSS class if the commit message is empty', async () => {

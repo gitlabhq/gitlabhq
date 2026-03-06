@@ -13,7 +13,6 @@ export default {
     GlDisclosureDropdown,
   },
   i18n: {
-    label: s__('ciReport|Security scanning'),
     apiError: s__(
       'SecurityReports|Failed to get security report information. Please reload the page or try again later.',
     ),

@@ -126,11 +126,11 @@ export default {
     </div>
     <div v-if="showDescription" class="gl-mt-4">
       <p
+        v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
         :class="{ 'gl-italic': !commit.message }"
         class="commit-row-message gl-line-clamp-1 gl-whitespace-normal !gl-break-all gl-font-bold"
-      >
-        {{ commit.titleHtml }}
-      </p>
+        data-testid="commit-title"
+      ></p>
       <div class="committer gl-basis-full gl-truncate gl-text-sm" data-testid="committer">
         <gl-link
           v-if="commit.author"

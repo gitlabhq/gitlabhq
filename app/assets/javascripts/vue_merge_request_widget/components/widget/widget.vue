@@ -1,18 +1,18 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import {
+  GlAnimatedChevronLgDownUpIcon,
   GlButton,
   GlLink,
-  GlTooltipDirective,
   GlLoadingIcon,
-  GlAnimatedChevronLgDownUpIcon,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { markRaw } from 'vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { sprintf, __ } from '~/locale';
+import { __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
@@ -121,9 +121,22 @@ export default {
       default: 'neutral',
       validator: (value) => Object.keys(EXTENSION_ICONS).indexOf(value) > -1,
     },
+    /**
+     * When isCollapsible is true, expandButtonLabel and collapseButtonLabel should also be passed.
+     */
     isCollapsible: {
       type: Boolean,
       required: true,
+    },
+    expandButtonLabel: {
+      type: String,
+      required: false,
+      default: __('Show details'),
+    },
+    collapseButtonLabel: {
+      type: String,
+      required: false,
+      default: __('Hide details'),
     },
     /**
      * A button is composed of the following properties:
@@ -203,8 +216,8 @@ export default {
     generatedSubSummary() {
       return generateText(this.summary?.subtitle || '');
     },
-    collapseButtonLabel() {
-      return sprintf(this.isCollapsed ? __('Show details') : __('Hide details'));
+    toggleButtonLabel() {
+      return this.isCollapsed ? this.expandButtonLabel : this.collapseButtonLabel;
     },
     summaryStatusIcon() {
       return this.summaryError ? this.$options.failedStatusIcon : this.statusIconName;
@@ -392,9 +405,9 @@ export default {
         >
           <gl-button
             v-gl-tooltip
-            :title="collapseButtonLabel"
+            :title="toggleButtonLabel"
             :aria-expanded="`${!isCollapsed}`"
-            :aria-label="collapseButtonLabel"
+            :aria-label="toggleButtonLabel"
             category="tertiary"
             data-testid="toggle-button"
             size="small"

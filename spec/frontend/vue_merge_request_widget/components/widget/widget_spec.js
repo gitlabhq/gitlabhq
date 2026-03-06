@@ -307,6 +307,27 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(findToggleButton().attributes('aria-label')).toBe('Show details');
     });
 
+    it('displays custom button labels when provided', async () => {
+      await createComponent({
+        propsData: {
+          isCollapsible: true,
+          expandButtonLabel: 'Expand widget details',
+          collapseButtonLabel: 'Collapse widget details',
+        },
+        slots: {
+          content: '<b>More complex content</b>',
+        },
+      });
+
+      expect(findToggleButton().attributes('title')).toBe('Expand widget details');
+      expect(findToggleButton().attributes('aria-label')).toBe('Expand widget details');
+
+      findToggleButton().vm.$emit('click');
+      await nextTick();
+      expect(findToggleButton().attributes('title')).toBe('Collapse widget details');
+      expect(findToggleButton().attributes('aria-label')).toBe('Collapse widget details');
+    });
+
     it('displays the chevron correctly when toggle is clicked', async () => {
       await createComponent({
         propsData: {
@@ -327,7 +348,10 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(
         findToggleChevron().props('isOn') ?? parseBoolean(findToggleChevron().attributes('is-on')),
       ).toBe(true);
+      expect(findToggleButton().attributes('title')).toBe('Hide details');
+      expect(findToggleButton().attributes('aria-label')).toBe('Hide details');
     });
+
     it('does not display the content slot until toggle is clicked', async () => {
       await createComponent({
         propsData: {
@@ -344,7 +368,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(findExpandedSection().text()).toBe('More complex content');
     });
 
-    it('emits a toggle even when button is toggled', async () => {
+    it('emits a toggle event when button is toggled', async () => {
       await createComponent({
         propsData: {
           isCollapsible: true,

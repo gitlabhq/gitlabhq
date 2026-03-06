@@ -2,7 +2,7 @@
 stage: GitLab Dedicated
 group: US Public Sector Services
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>.
-title: GitLab Dedicated for Government secure configuration guide 
+title: GitLab Dedicated for Government secure configuration guide
 ---
 
 {{< details >}}
@@ -132,17 +132,17 @@ administrative activities occurring through your standard identity provider.
 
 FedRAMP requirement: Provide explanations of security-related settings that can be operated only by top-level administrative accounts and their security implications.
 
-This section enumerates configuration settings specifically available to Dedicated for Government and point customers to the broad documentation already available for [administering GitLab](../administration/_index.md). 
+This section enumerates configuration settings specifically available to Dedicated for Government and point customers to the broad documentation already available for [administering GitLab](../administration/_index.md).
 
 ### Infrastructure configurations by top-Level administrators
 
-GitLab Dedicated for Government allows for specific infrastructure-level security and architecture configurations to be requested by top-level customer administrators, triggered through requests to the GitLab Support team. 
+GitLab Dedicated for Government allows for specific infrastructure-level security and architecture configurations to be requested by top-level customer administrators, triggered through requests to the GitLab Support team.
 
-These configurations include: 
+These configurations include:
 
-- Establishing network connectivity with resources outside of the tenant, i.e. via PrivateLink. 
-- Bringing customer-supplied keys (Bring-Your-Own-Key) - Customers can request that the GitLab tenant uses customer-supplied keys. 
-- Setting Custom Domains - Customers can request that the GitLab tenant uses a customer-supplied domain, rather than the standard Dedicated for Government domain. It is the customer's responsibility to ensure that the supplied domain meets all relevant mandates for DNSSEC. 
+- Establishing network connectivity with resources outside of the tenant, i.e. via PrivateLink.
+- Bringing customer-supplied keys (Bring-Your-Own-Key) - Customers can request that the GitLab tenant uses customer-supplied keys.
+- Setting Custom Domains - Customers can request that the GitLab tenant uses a customer-supplied domain, rather than the standard Dedicated for Government domain. It is the customer's responsibility to ensure that the supplied domain meets all relevant mandates for DNSSEC.
 - Selecting a reference architecture
 - Selecting a total repository capacity
 - Selecting a tenant name

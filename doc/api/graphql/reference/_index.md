@@ -48968,6 +48968,24 @@ Returns [`[VulnerabilitiesByAge!]`](#vulnerabilitiesbyage).
 | ---- | ---- | ----------- |
 | <a id="securitymetrics-vulnerabilitiesbyage-severity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 
+##### `SecurityMetrics.vulnerabilitiesByIdentifier`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Vulnerability identifier statistics with filtering.
+This feature is currently under development and not yet available for general use.
+
+Returns [`[VulnerabilitiesByIdentifier!]`](#vulnerabilitiesbyidentifier).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitymetrics-vulnerabilitiesbyidentifier-severity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
+
 ##### `SecurityMetrics.vulnerabilitiesOverTime`
 
 Vulnerability metrics over time with filtering and grouping capabilities.
@@ -51101,6 +51119,18 @@ Represents vulnerability metrics by age with filtering and grouping capabilities
 | <a id="vulnerabilitiesbyage-byseverity"></a>`bySeverity` | [`[VulnerabilitySeverityCount!]`](#vulnerabilityseveritycount) | Vulnerability counts grouped by severity level. |
 | <a id="vulnerabilitiesbyage-count"></a>`count` | [`Int`](#int) | Number of vulnerabilities in the age band. |
 | <a id="vulnerabilitiesbyage-name"></a>`name` | [`String!`](#string) | Age band name ("< 7 days", "7 - 14 days", "15 - 30 days", "31 - 60 days", "61 - 90 days", "91 - 180 days", "> 180 days" ). |
+
+### `VulnerabilitiesByIdentifier`
+
+Represents vulnerability metrics by identifier with filtering.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitiesbyidentifier-byseverity"></a>`bySeverity` | [`[VulnerabilitySeverityCount!]`](#vulnerabilityseveritycount) | Vulnerability counts grouped by severity level. |
+| <a id="vulnerabilitiesbyidentifier-count"></a>`count` | [`Int`](#int) | Number of vulnerabilities for the identifier. |
+| <a id="vulnerabilitiesbyidentifier-name"></a>`name` | [`String!`](#string) | Identifier name. |
 
 ### `VulnerabilitiesCountByDay`
 

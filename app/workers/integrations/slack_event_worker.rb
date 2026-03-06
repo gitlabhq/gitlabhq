@@ -5,7 +5,8 @@ module Integrations
     include ApplicationWorker
 
     EVENTS = {
-      'app_home_opened' => SlackEvents::AppHomeOpenedService
+      'app_home_opened' => SlackEvents::AppHomeOpenedService,
+      'app_mention' => SlackEvents::AppMentionedService
     }.freeze
 
     feature_category :integrations

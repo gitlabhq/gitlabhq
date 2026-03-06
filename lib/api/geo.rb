@@ -22,6 +22,7 @@ module API
 
       # Workhorse calls this to determine if it is a Geo site that should proxy
       # requests. Workhorse doesn't know if it's in a FOSS/EE context.
+      route_setting :authorization, skip_granular_token_authorization: true
       get '/proxy' do
         require_gitlab_workhorse!
         check_rate_limit!(:geo_proxy, scope: [ip_address])

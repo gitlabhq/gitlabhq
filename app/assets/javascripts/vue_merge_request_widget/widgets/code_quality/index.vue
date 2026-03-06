@@ -6,16 +6,14 @@ import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import axios from '~/lib/utils/axios_utils';
 import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
-import { i18n, codeQualityPrefixes } from './constants';
-
-const translations = i18n;
+import { codeQualityPrefixes, i18n } from './constants';
 
 export default {
   name: 'WidgetCodeQuality',
   components: {
     MrWidget,
   },
-  i18n: translations,
+  i18n,
   props: {
     mr: {
       type: Object,
@@ -158,5 +156,7 @@ export default {
     :widget-name="$options.name"
     :status-icon-name="statusIcon"
     :is-collapsible="shouldCollapse"
+    :expand-button-label="s__('ciReport|Expand Code Quality details')"
+    :collapse-button-label="s__('ciReport|Collapse Code Quality details')"
   />
 </template>

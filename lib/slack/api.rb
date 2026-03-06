@@ -20,6 +20,13 @@ module Slack
       Integrations::Clients::HTTP.post(url, body: payload.to_json, headers: headers)
     end
 
+    def get(api_method, query = {})
+      url = "#{BASE_URL}/#{api_method}"
+      headers = BASE_HEADERS.merge('Authorization' => "Bearer #{token}")
+
+      Integrations::Clients::HTTP.get(url, query: query, headers: headers)
+    end
+
     private
 
     attr_reader :token

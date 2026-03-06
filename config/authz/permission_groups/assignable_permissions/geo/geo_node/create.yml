@@ -1,0 +1,7 @@
+---
+name: create_geo_node
+description: Grants the ability to create Geo nodes
+boundaries:
+  - instance
+permissions:
+  - create_geo_node

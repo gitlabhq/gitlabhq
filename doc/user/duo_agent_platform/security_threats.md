@@ -6,7 +6,7 @@ title: Security threats in agentic systems
 ---
 
 Common security threats can affect agentic systems.
-To improve your security posture, familiarize yourself with these threats and follow security 
+To improve your security posture, familiarize yourself with these threats and follow security
 best practices when deploying and using agents and flows.
 
 GitLab mitigates risks through built-in safeguards and security controls with the following mechanisms:
@@ -17,7 +17,7 @@ GitLab mitigates risks through built-in safeguards and security controls with th
 - [Tools output sanitization](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/duo_workflow_service/security/TOOL_RESPONSE_SECURITY.md).
 - [Human in the loop approvals for chat-based GitLab Duo Agent Platform sessions](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/duo_workflow/#workflow-agents-tools).
 - Integrated [prompt injection detection](#detect-prompt-injection-attempts) tools such
-  as [HiddenLayer](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors). 
+  as [HiddenLayer](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors).
 
 ## Prompt injection
 

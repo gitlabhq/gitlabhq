@@ -1440,15 +1440,6 @@ RSpec.shared_examples 'GET package references metadata endpoint' do |with_recipe
           reference2.reference => reference2.info
         )
       end
-
-      context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
-        before do
-          stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
-        end
-
-        it_behaves_like 'returning response status with message', status: :not_found,
-          message: '404 Revision Not Found'
-      end
     end
 
     context 'with different recipe revisions' do

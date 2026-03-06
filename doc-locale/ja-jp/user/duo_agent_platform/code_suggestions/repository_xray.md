@@ -1,8 +1,8 @@
 ---
 stage: AI-powered
 group: AI Coding
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: リポジトリX-Rayは、コード提案がプロジェクトのコードベースと依存関係をより深く理解できるようにします。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: リポジトリX-Rayは、コード提案がプロジェクトのコードベースや依存関係をより深く理解できるようにします。
 title: リポジトリX-Ray
 ---
 
@@ -20,18 +20,18 @@ title: リポジトリX-Ray
 
 {{< /history >}}
 
-リポジトリX-Rayは以下を自動的にエンリッチします:
+リポジトリX-Rayは、以下の情報を自動的に拡充します:
 
-- プロジェクトの依存関係に関する追加コンテキストを提供することにより、[GitLab Duo Code Suggestions](_index.md)のコード生成リクエストを強化し、コードレコメンデーションの精度と関連性を向上させます。
-- [コードをリファクタリング](../../gitlab_duo_chat/examples.md#refactor-code-in-the-ide) 、[コードを修正](../../gitlab_duo_chat/examples.md#fix-code-in-the-ide) 、[テストを記述](../../gitlab_duo_chat/examples.md#write-tests-in-the-ide)するためのリクエスト。
+- プロジェクトの依存関係に関する追加コンテキストを提供することにより、[GitLab Duoコード提案](_index.md)のコード生成リクエストを強化し、コードレコメンデーションの精度と関連性を向上させます。
+- [コードのリファクタリング](../../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)、[コードの修正](../../gitlab_duo_chat/examples.md#fix-code-in-the-ide)、[テストの作成](../../gitlab_duo_chat/examples.md#write-tests-in-the-ide)をリクエストします。
 
-このために、リポジトリX-Rayは、次の方法でコードアシスタントがプロジェクトのコードベースと依存関係をより深く理解できるようにします:
+これを実現するために、リポジトリX-Rayはコードアシスタントがプロジェクトのコードベースや依存関係をより深く理解できるよう、次の点を強化します:
 
-- 依存関係マネージャーの設定ファイル（例：`Gemfile.lock`、`package.json`、`go.mod`）を検索します。
-- ライブラリのリストをコンテンツから抽出します。
-- 抽出されたリストを、コード生成、コードをリファクタリング、コードを修正、およびテストリクエストの記述において、GitLab Duo Code Suggestionsで使用される追加のコンテキストとして提供します。
+- 依存関係マネージャーの設定ファイル（例: `Gemfile.lock`、`package.json`、`go.mod`）を検索する。
+- ライブラリのリストをコンテンツから抽出する。
+- 抽出されたリストを追加のコンテキストとして提供し、GitLab Duoコード提案がコード生成、リファクタリング、修正、テスト作成の各リクエストに活用できるようにする。
 
-リポジトリX-Rayは、使用中のライブラリやその他の依存関係を理解することで、コーディングパターン、スタイル、およびプロジェクトで使用されているテクノロジーに合わせてコードアシスタントが提案を調整できるようにします。これにより、よりシームレスに統合され、特定のスタックのベストプラクティスに従うコード提案が得られます。
+使用中のライブラリやその他の依存関係を把握することで、リポジトリX-Rayはコードアシスタントがプロジェクトで採用されているコードパターンやスタイル、技術に合わせた提案を行えるようにします。これにより、対象の技術スタックに即したベストプラクティスに従い、より自然に統合できるコード提案が可能になります。
 
 > [!note]
 > リポジトリX-Rayは、コード生成リクエストのみを強化し、コード補完リクエストは強化しません。
@@ -40,7 +40,7 @@ title: リポジトリX-Ray
 
 {{< history >}}
 
-- ライブラリの最大数：GitLab 17.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/500365)。
+- GitLab 17.6でライブラリの最大数が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/500365)されました。
 
 {{< /history >}}
 
@@ -59,11 +59,11 @@ title: リポジトリX-Ray
 
 {{< /history >}}
 
-プロジェクトが[GitLab Duo Code Suggestions](_index.md)にアクセスできる場合、リポジトリX-Rayサービスは自動的に有効になります。
+プロジェクトが[GitLab Duoコード提案](_index.md)にアクセスできる場合、リポジトリX-Rayサービスは自動的に有効になります。
 
 ## サポートされている言語と依存関係マネージャー {#supported-languages-and-dependency-managers}
 
-リポジトリX-Rayは、リポジトリのルートから最大2つのディレクトリレベルを検索します。たとえば、`Gemfile.lock`、`api/Gemfile.lock`、または`api/client/Gemfile.lock`はサポートされますが、`api/v1/client/Gemfile.lock`はサポートされません。言語ごとに、最初に一致する依存関係マネージャーのみが処理されます。利用可能な場合、ロックファイルは、ロックファイル以外の対応するものよりも優先されます。
+リポジトリX-Rayは、リポジトリのルートから最大2つのディレクトリレベルを検索します。たとえば、`Gemfile.lock`、`api/Gemfile.lock`、または`api/client/Gemfile.lock`はサポートされますが、`api/v1/client/Gemfile.lock`はサポートされません。言語ごとに、最初に一致する依存関係マネージャーのみが処理されます。ロックファイルが存在する場合は、対応する非ロックファイルよりもロックファイルが優先されます。
 
 | 言語   | 依存関係マネージャー | 設定ファイル                  | GitLabバージョン |
 | ---------- |--------------------| ----------------------------------- | -------------- |

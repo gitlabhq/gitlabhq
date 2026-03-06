@@ -407,7 +407,7 @@ We need three security groups for this architecture:
    - Inbound: TCP port 22 from anywhere (or restrict to trusted IP ranges for SSH)
    - Inbound: TCP port 443 from anywhere (or restrict to trusted IP ranges for HTTPS)
    - Outbound: TCP port 22 to `gitlab-rails-sec-group`
-   - Outbound: TCP port 443 to `gitlab-alb-sec-group` 
+   - Outbound: TCP port 443 to `gitlab-alb-sec-group`
 
 1. **ALB Security Group** (`gitlab-alb-sec-group`):
    - Inbound: TCP port 443 from `gitlab-nlb-sec-group`

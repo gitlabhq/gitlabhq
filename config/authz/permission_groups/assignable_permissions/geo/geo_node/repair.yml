@@ -1,0 +1,7 @@
+---
+name: repair_geo_node
+description: Grants the ability to repair Geo nodes
+boundaries:
+  - instance
+permissions:
+  - repair_geo_node

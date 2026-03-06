@@ -509,6 +509,38 @@ Grants the ability to read code suggestion enabled status.
 | ------ | ------ | ------ | ---- |
 | Read | Project | `POST` | `/code_suggestions/enabled` |
 
+### Geo resources
+
+#### Geo Node
+
+Grants the ability to read, create, update, and delete Geo nodes.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Instance | `POST` | `/geo_nodes` |
+| Delete | Instance | `DELETE` | `/geo_nodes/:id` |
+| Read | Instance | `GET` | `/geo_nodes` |
+| Read | Instance | `GET` | `/geo_nodes/status` |
+| Read | Instance | `GET` | `/geo_nodes/:id` |
+| Read | Instance | `GET` | `/geo_nodes/:id/status` |
+| Repair | Instance | `POST` | `/geo_nodes/:id/repair` |
+| Update | Instance | `PUT` | `/geo_nodes/:id` |
+
+#### Geo Site
+
+Grants the ability to read, create, update, and delete Geo sites.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Instance | `POST` | `/geo_sites` |
+| Delete | Instance | `DELETE` | `/geo_sites/:id` |
+| Read | Instance | `GET` | `/geo_sites` |
+| Read | Instance | `GET` | `/geo_sites/status` |
+| Read | Instance | `GET` | `/geo_sites/:id` |
+| Read | Instance | `GET` | `/geo_sites/:id/status` |
+| Repair | Instance | `POST` | `/geo_sites/:id/repair` |
+| Update | Instance | `PUT` | `/geo_sites/:id` |
+
 ### Groups resources
 
 #### Admin Member Role
@@ -1778,6 +1810,54 @@ Grants the ability to create, delete, and read tags.
 | Protect | Project | `POST` | `/projects/:id/protected_tags` |
 | Protect | Project | `DELETE` | `/projects/:id/protected_tags/:name` |
 
+### Search resources
+
+#### Global Search
+
+Grants the ability to use global search functionality.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Use | Project | `GET` | `/projects/:id/(-/)search` |
+| Use | Group | `GET` | `/groups/:id/(-/)search` |
+| Use | User | `GET` | `/search` |
+
+#### Search Migration
+
+Grants the ability to use global search functionality.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Instance | `GET` | `/admin/search/migrations` |
+| Read | Instance | `GET` | `/admin/search/migrations/:migration_id` |
+
+#### Zoekt Index
+
+Grants the ability to update Zoekt indexes
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Update | Instance | `PUT` | `/admin/zoekt/projects/:project_id/index` |
+
+#### Zoekt Namespace
+
+Grants the ability to create, read, update, and delete Zoekt namespace permissions
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Instance | `PUT` | `/admin/zoekt/shards/:node_id/indexed_namespaces/:namespace_id` |
+| Delete | Instance | `DELETE` | `/admin/zoekt/shards/:node_id/indexed_namespaces/:namespace_id` |
+| Update | Instance | `PATCH` | `/admin/zoekt/namespaces/:id` |
+
+#### Zoekt Node
+
+Grants the ability to read Zoekt nodes.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | Instance | `GET` | `/admin/zoekt/shards` |
+| Read | Instance | `GET` | `/admin/zoekt/shards/:node_id/indexed_namespaces` |
+
 ### System Access resources
 
 #### Access Request
@@ -1856,16 +1936,6 @@ Grants the ability to read experiments.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Read | Instance | `GET` | `/experiments` |
-
-#### Global Search
-
-Grants the ability to use global search functionality.
-
-| Action | Access | Method | Path |
-| ------ | ------ | ------ | ---- |
-| Use | Project | `GET` | `/projects/:id/(-/)search` |
-| Use | Group | `GET` | `/groups/:id/(-/)search` |
-| Use | User | `GET` | `/search` |
 
 #### Invitation
 
@@ -2433,6 +2503,7 @@ job token policies or resource-specific access controls.
 | `POST` | `/feature_flags/unleash/:project_id/client/metrics` |
 | `POST` | `/feature_flags/unleash/:project_id/client/register` |
 | `GET` | `/feature_flags/unleash/:project_id/features` |
+| `GET` | `/geo/proxy` |
 | `GET` | `/groups/:id/-/packages/npm/*package_name` |
 | `POST` | `/groups/:id/-/packages/npm/-/npm/v1/security/advisories/bulk` |
 | `POST` | `/groups/:id/-/packages/npm/-/npm/v1/security/audits/quick` |

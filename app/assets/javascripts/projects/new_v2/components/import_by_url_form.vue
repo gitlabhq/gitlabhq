@@ -9,13 +9,13 @@ import {
   GlLink,
   GlMultiStepFormTemplate,
 } from '@gitlab/ui';
-import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
 import { visitUrl, isReasonableGitUrl } from '~/lib/utils/url_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import SharedProjectCreationFields from './shared_project_creation_fields.vue';
+import { checkRepositoryConnection } from './utils';
 
 export default {
   components: {
@@ -57,9 +57,9 @@ export default {
       repositoryUrl: '',
       repositoryUsername: '',
       repositoryPassword: '',
-      isRepositoryUrlValid: null,
       repositoryMirror: false,
       isCheckingConnection: false,
+      urlValidationState: null,
     };
   },
   computed: {
@@ -72,29 +72,26 @@ export default {
   },
   methods: {
     async checkConnection() {
-      this.isRepositoryUrlValid = isReasonableGitUrl(this.repositoryUrl);
-      if (!this.isRepositoryUrlValid) return;
-
       this.isCheckingConnection = true;
-      try {
-        const { data } = await axios.post(this.importByUrlValidatePath, {
-          url: this.repositoryUrl,
-          user: this.repositoryUsername,
-          password: this.repositoryPassword,
-        });
 
-        if (data.success) {
-          this.$toast.show(s__('ProjectImportByURL|Connection successful.'));
-        } else {
-          this.$toast.show(
-            sprintf(s__('ProjectImportByURL|Connection failed: %{error}'), { error: data.message }),
-          );
-        }
-      } catch (error) {
-        this.$toast.show(sprintf(s__('ProjectImportByURL|Connection failed: %{error}'), { error }));
-      } finally {
+      const result = await checkRepositoryConnection(this.importByUrlValidatePath, {
+        url: this.repositoryUrl,
+        user: this.repositoryUsername,
+        password: this.repositoryPassword,
+      });
+
+      if (!result.isValid) {
         this.isCheckingConnection = false;
+        this.urlValidationState = false;
+        return;
       }
+
+      const message = result.success
+        ? s__('ProjectImportByURL|Connection successful.')
+        : sprintf(s__('ProjectImportByURL|Connection failed: %{error}'), { error: result.message });
+
+      this.$toast.show(message);
+      this.isCheckingConnection = false;
     },
     onSelectNamespace(newNamespace) {
       this.$emit('onSelectNamespace', newNamespace);
@@ -105,6 +102,17 @@ export default {
       } else {
         this.$emit('back');
       }
+    },
+    onBlur() {
+      // Only validate on blur if there's actually content
+      if (this.repositoryUrl.trim() === '') {
+        this.urlValidationState = null;
+      } else {
+        this.urlValidationState = isReasonableGitUrl(this.repositoryUrl);
+      }
+    },
+    onInput() {
+      this.urlValidationState = null;
     },
   },
   csrf,
@@ -127,7 +135,7 @@ export default {
           :label="__('Git repository URL')"
           label-for="repository-url"
           :invalid-feedback="s__('ProjectImportByURL|Enter a valid URL')"
-          :state="isRepositoryUrlValid"
+          :state="urlValidationState"
           data-testid="repository-url-form-group"
           :label-description="
             s__(
@@ -144,8 +152,10 @@ export default {
               data-testid="repository-url"
               type="url"
               required
-              :state="isRepositoryUrlValid"
+              :state="urlValidationState"
               :placeholder="$options.repositoryUrlPlaceholder"
+              @blur="onBlur"
+              @input="onInput"
             />
             <template #append>
               <gl-button

@@ -511,6 +511,80 @@ in parentheses evaluate first. For example:
 - `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
 - `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`
 
+## Migrate from `only` or `except` to `rules`
+
+Use `rules` and CI/CD variable expressions to reproduce the same behavior as the deprecated
+[`only` and `except` keywords](../yaml/deprecated_keywords.md#only--except).
+
+For example, starting with this deprecated configuration:
+
+```yaml
+job1:
+  script: echo
+  only:
+    - main
+    - /^stable-branch.*$/
+    - schedules
+
+job2:
+  script: echo
+  except:
+    - main
+    - /^issue-.*$/
+    - merge_requests
+```
+
+In this example:
+
+- `job1` uses `only` to run in pipelines when:
+  - The branch is the default branch (`main`).
+  - The branch name matches the pattern `/^stable-branch.*$/`.
+  - The pipeline runs on a schedule.
+- `job2` uses `except` to skip pipelines when:
+  - The branch is the default branch (`main`).
+  - The branch name matches the pattern `/^issue-.*$/`.
+  - The pipeline is a merge request pipeline.
+
+To create similar pipeline configuration with `rules`, use CI/CD variable expressions.
+For example, for a direct migration from `only` and `except` to `rules`:
+
+```yaml
+job1:
+  script: echo
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH =~ /^stable-branch.*$/
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+
+job2:
+  script: echo
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - if: $CI_COMMIT_BRANCH =~ /^issue-.*$/
+      when: never
+    - when: on_success
+```
+
+Both jobs behave the same way with `rules` as with `only` and `except`.
+However, you can simplify `job2` to avoid `when: never` rules.
+
+Define rules for when `job2` should run instead of when it should not run.
+For example, if `job2` should run for all branches except the default branch, and also for tags:
+
+```yaml
+job2:
+  script: echo
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
+```
+
+In this example, `job2` runs when the branch is not the default branch,
+and when a new Git tag is created. Otherwise, the job does not run.
+
 ## Troubleshooting
 
 ### Unexpected behavior from regular expression matching with `=~`

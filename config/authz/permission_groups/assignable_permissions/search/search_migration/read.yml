@@ -1,0 +1,7 @@
+---
+name: read_search_migration
+description: Grants the ability to read search migrations
+boundaries:
+  - instance
+permissions:
+  - read_search_migration

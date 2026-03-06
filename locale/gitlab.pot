@@ -4702,6 +4702,12 @@ msgstr ""
 msgid "AccessTokens|Your token"
 msgstr ""
 
+msgid "AccessibilityReport|Collapse accessibility details"
+msgstr ""
+
+msgid "AccessibilityReport|Expand accessibility details"
+msgstr ""
+
 msgid "AccessibilityReport|Message: %{message}"
 msgstr ""
 
@@ -40801,7 +40807,13 @@ msgstr ""
 msgid "LicenseCompliance|Allowed"
 msgstr ""
 
+msgid "LicenseCompliance|Collapse License Compliance details"
+msgstr ""
+
 msgid "LicenseCompliance|Denied"
+msgstr ""
+
+msgid "LicenseCompliance|Expand License Compliance details"
 msgstr ""
 
 msgid "LicenseCompliance|License Compliance detected %d license"
@@ -57128,10 +57140,22 @@ msgstr ""
 msgid "Reports|Base report parsing error:"
 msgstr ""
 
+msgid "Reports|Collapse metrics report details"
+msgstr ""
+
+msgid "Reports|Collapse test summary"
+msgstr ""
+
 msgid "Reports|Copy failed test names to run locally"
 msgstr ""
 
 msgid "Reports|Copy failed tests"
+msgstr ""
+
+msgid "Reports|Expand metrics report details"
+msgstr ""
+
+msgid "Reports|Expand test summary"
 msgstr ""
 
 msgid "Reports|Failed %{count} time in %{baseBranch} in the last 14 days"
@@ -57184,9 +57208,6 @@ msgid "Reports|Test summary results are being parsed"
 msgstr ""
 
 msgid "Reports|View partial report"
-msgstr ""
-
-msgid "Reports|metrics report"
 msgstr ""
 
 msgid "Repositories Analytics"
@@ -63977,6 +63998,9 @@ msgstr ""
 msgid "SecurityReports|Cluster"
 msgstr ""
 
+msgid "SecurityReports|Collapse security scanning details"
+msgstr ""
+
 msgid "SecurityReports|Coming soon: time-based data retention limits"
 msgstr ""
 
@@ -64094,6 +64118,9 @@ msgstr ""
 msgid "SecurityReports|Error parsing security reports"
 msgstr ""
 
+msgid "SecurityReports|Expand security scanning details"
+msgstr ""
+
 msgid "SecurityReports|Export"
 msgstr ""
 
@@ -64125,9 +64152,6 @@ msgid "SecurityReports|GitLab Duo FP detection"
 msgstr ""
 
 msgid "SecurityReports|GitLab Duo resolution"
-msgstr ""
-
-msgid "SecurityReports|Go to policies"
 msgstr ""
 
 msgid "SecurityReports|Group your vulnerabilities by one of the provided categories. Leave feedback or suggestions in %{feedbackIssueStart}this issue%{feedbackIssueEnd}."
@@ -64321,9 +64345,6 @@ msgstr ""
 msgid "SecurityReports|Reachable:"
 msgstr ""
 
-msgid "SecurityReports|Recommendation: Auto-resolve when no longer detected"
-msgstr ""
-
 msgid "SecurityReports|Remove project from dashboard"
 msgstr ""
 
@@ -64474,9 +64495,6 @@ msgid "SecurityReports|This selection is required."
 msgstr ""
 
 msgid "SecurityReports|Time period"
-msgstr ""
-
-msgid "SecurityReports|To ensure that open vulnerabilities include only vulnerabilities that are still detected, use a vulnerability management policy to automatically resolve vulnerabilities that are no longer detected."
 msgstr ""
 
 msgid "SecurityReports|To widen your search, change or remove filters above"
@@ -67453,6 +67471,9 @@ msgstr ""
 msgid "StatusCheck|Check for a status response in merge requests. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "StatusCheck|Collapse status checks"
+msgstr ""
+
 msgid "StatusCheck|Delete status check"
 msgstr ""
 
@@ -67460,6 +67481,9 @@ msgid "StatusCheck|Delete status check?"
 msgstr ""
 
 msgid "StatusCheck|Examples: QA, Security."
+msgstr ""
+
+msgid "StatusCheck|Expand status checks"
 msgstr ""
 
 msgid "StatusCheck|External API is already in use."
@@ -67529,9 +67553,6 @@ msgid "StatusCheck|What is status check?"
 msgstr ""
 
 msgid "StatusCheck|You are about to delete the %{name} status check."
-msgstr ""
-
-msgid "StatusCheck|status checks"
 msgstr ""
 
 msgid "StatusPage|AWS %{docsLink}"
@@ -68873,6 +68894,9 @@ msgstr ""
 msgid "Terraform|Cannot remove a locked state"
 msgstr ""
 
+msgid "Terraform|Collapse Terraform report details"
+msgstr ""
+
 msgid "Terraform|Copy Terraform init command"
 msgstr ""
 
@@ -68883,6 +68907,9 @@ msgid "Terraform|Details"
 msgstr ""
 
 msgid "Terraform|Download JSON"
+msgstr ""
+
+msgid "Terraform|Expand Terraform report details"
 msgstr ""
 
 msgid "Terraform|Explore documentation"
@@ -73699,6 +73726,14 @@ msgstr ""
 msgid "UsageBilling|Credits used after all included user credits and monthly commitment pool have been exhausted. Learn about %{linkStart}GitLab Credit pricing%{linkEnd}."
 msgstr ""
 
+msgid "UsageBilling|Credits used this month"
+msgstr ""
+
+msgid "UsageBilling|Credits used this month, resets in %{days} day"
+msgid_plural "UsageBilling|Credits used this month, resets in %{days} days"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "UsageBilling|Daily GitLab Credits usage"
 msgstr ""
 
@@ -73721,15 +73756,6 @@ msgid "UsageBilling|Explore GitLab Duo"
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits"
-msgstr ""
-
-msgid "UsageBilling|GitLab Credits - Monthly Waiver"
-msgstr ""
-
-msgid "UsageBilling|GitLab Credits - Monthly committed pool"
-msgstr ""
-
-msgid "UsageBilling|GitLab Credits - On Demand"
 msgstr ""
 
 msgid "UsageBilling|GitLab Credits dashboard"
@@ -73774,6 +73800,12 @@ msgstr ""
 msgid "UsageBilling|Location"
 msgstr ""
 
+msgid "UsageBilling|Monthly Committed Pool"
+msgstr ""
+
+msgid "UsageBilling|Monthly Waiver"
+msgstr ""
+
 msgid "UsageBilling|Monthly Waiver credits remaining"
 msgstr ""
 
@@ -73804,6 +73836,9 @@ msgstr ""
 msgid "UsageBilling|No users found"
 msgstr ""
 
+msgid "UsageBilling|On Demand"
+msgstr ""
+
 msgid "UsageBilling|On-demand"
 msgstr ""
 
@@ -73817,6 +73852,9 @@ msgid "UsageBilling|Save on GitLab Credits with monthly commitment"
 msgstr ""
 
 msgid "UsageBilling|Search for a user"
+msgstr ""
+
+msgid "UsageBilling|Shared pool of credits available to all users in the subscription."
 msgstr ""
 
 msgid "UsageBilling|This dashboard may not display all current subscription data. For complete visibility, please upgrade to the latest version of GitLab or visit the %{linkStart}Customer Portal%{linkEnd}."
@@ -73854,14 +73892,6 @@ msgstr ""
 
 msgid "UsageBilling|Usage trends"
 msgstr ""
-
-msgid "UsageBilling|Used this month"
-msgstr ""
-
-msgid "UsageBilling|Used this month, resets in %{days} day"
-msgid_plural "UsageBilling|Used this month, resets in %{days} days"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "UsageBilling|You are currently using temporary evaluation credits to access GitLab Duo features. Your subscription's included credits for users will be available after your evaluation ends. If you have access to the %{linkStart}Customers Portal%{linkEnd}, you can view your usage breakdown, remaining balance, and some usage details."
 msgstr ""
@@ -82502,9 +82532,6 @@ msgstr ""
 msgid "ciReport|Automatically apply the patch in a new branch"
 msgstr ""
 
-msgid "ciReport|Browser Performance"
-msgstr ""
-
 msgid "ciReport|Browser performance test metrics results are being parsed"
 msgstr ""
 
@@ -82529,6 +82556,15 @@ msgid "ciReport|Code Quality hasn't changed."
 msgstr ""
 
 msgid "ciReport|Code Quality is loading"
+msgstr ""
+
+msgid "ciReport|Collapse Code Quality details"
+msgstr ""
+
+msgid "ciReport|Collapse browser performance details"
+msgstr ""
+
+msgid "ciReport|Collapse load performance details"
 msgstr ""
 
 msgid "ciReport|Container Scanning"
@@ -82603,6 +82639,15 @@ msgstr ""
 msgid "ciReport|Error while fetching enabled scans. Please try again later."
 msgstr ""
 
+msgid "ciReport|Expand Code Quality details"
+msgstr ""
+
+msgid "ciReport|Expand browser performance details"
+msgstr ""
+
+msgid "ciReport|Expand load performance details"
+msgstr ""
+
 msgid "ciReport|Explain vulnerability"
 msgstr ""
 
@@ -82636,9 +82681,6 @@ msgstr ""
 msgid "ciReport|GitLab Duo Vulnerability Resolution, an AI feature, can suggest a possible fix."
 msgstr ""
 
-msgid "ciReport|License Compliance"
-msgstr ""
-
 msgid "ciReport|License Compliance failed loading results"
 msgstr ""
 
@@ -82646,9 +82688,6 @@ msgid "ciReport|License Compliance test metrics results are being parsed"
 msgstr ""
 
 msgid "ciReport|License scan results"
-msgstr ""
-
-msgid "ciReport|Load Performance"
 msgstr ""
 
 msgid "ciReport|Load performance test metrics detected %{strong_start}%{changesFound}%{strong_end} change"

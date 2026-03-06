@@ -19,7 +19,7 @@ rule { guest }.enable :read_issue
 rule { guest }.enable :read_project
 
 # good - all conditions first, then rules grouped by role
-rule { guest }.policy do 
+rule { guest }.policy do
   enable :read_issue
   enable :read_project
 end
@@ -33,7 +33,7 @@ end
 
 ### Avoid dynamic permission definitions
 
-Dynamically defined permissions are difficult to trace in the codebase. When permissions are generated at runtime rather than declared explicitly, searching for a permission name yields no results — making it impossible to verify that a rename or removal is complete. 
+Dynamically defined permissions are difficult to trace in the codebase. When permissions are generated at runtime rather than declared explicitly, searching for a permission name yields no results — making it impossible to verify that a rename or removal is complete.
 
 ```ruby
 # bad - permission name is constructed dynamically; cannot be searched,
@@ -143,7 +143,7 @@ rule { developer }.enable :write_model_registry
 rule { ~model_registry_enabled }.prevent :write_model_registry
 ```
 
-### Avoid  `admin | owner` rules 
+### Avoid  `admin | owner` rules
 
 `admin` users will now return true for `condition(:owner)` so we don't need to define the rule for `admin | owner` anymore. The same is true for organization owners.
 

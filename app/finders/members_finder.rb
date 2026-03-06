@@ -94,7 +94,13 @@ class MembersFinder
     end
 
     invited_groups_ids_including_ancestors = invited_groups_including_ancestors.select(:id)
-    invited_group_members = GroupMember.with_source_id(invited_groups_ids_including_ancestors).non_minimal_access
+    # Exclude access requests to prevent DISTINCT ON from non-deterministically
+    # picking request records over valid memberships in the union query.
+    # This matches the filtering behavior of direct_group_members via GroupMembersFinder.
+    invited_group_members = GroupMember
+      .with_source_id(invited_groups_ids_including_ancestors)
+      .non_minimal_access
+      .non_request
     return invited_group_members.select(member_columns_for_invited_members) if project.share_with_group_enabled?
 
     # Return no access for invited group members when project sharing with group is disabled

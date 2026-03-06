@@ -167,6 +167,8 @@ export default {
     :summary="summary"
     :content="content"
     :is-collapsible="shouldCollapse"
+    :expand-button-label="s__('AccessibilityReport|Expand accessibility details')"
+    :collapse-button-label="s__('AccessibilityReport|Collapse accessibility details')"
     :fetch-collapsed-data="fetchCollapsedData"
   />
 </template>

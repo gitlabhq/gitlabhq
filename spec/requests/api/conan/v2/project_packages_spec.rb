@@ -417,19 +417,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
           'time' => package.created_at.iso8601(3)
         )
       end
-
-      context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
-        before do
-          stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
-        end
-
-        it 'returns 404' do
-          request
-
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('404 Revision Not Found')
-        end
-      end
     end
 
     it_behaves_like 'enforcing read_packages job token policy'
@@ -661,14 +648,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
           'time' => package.created_at.iso8601(3)
         )
       end
-
-      context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
-        before do
-          stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
-        end
-
-        it_behaves_like 'returns 404 when resource does not exist'
-      end
     end
 
     context 'when package reference does not exist' do
@@ -682,14 +661,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
           'revision' => ::Packages::Conan::FileMetadatum::DEFAULT_REVISION,
           'time' => package.created_at.iso8601(3)
         )
-      end
-
-      context 'when packages_conan_v1_revisions_backward_compatibility is disabled' do
-        before do
-          stub_feature_flags(packages_conan_v1_revisions_backward_compatibility: false)
-        end
-
-        it_behaves_like 'returns 404 when resource does not exist'
       end
     end
 

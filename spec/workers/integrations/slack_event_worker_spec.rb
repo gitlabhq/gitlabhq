@@ -8,9 +8,11 @@ RSpec.describe Integrations::SlackEventWorker, :clean_gitlab_redis_shared_state,
     subject { described_class.event?(event) }
 
     context 'when event is known' do
-      let(:event) { 'app_home_opened' }
+      where(:event) { %w[app_home_opened app_mention] }
 
-      it { is_expected.to eq(true) }
+      with_them do
+        it { is_expected.to eq(true) }
+      end
     end
 
     context 'when event is not known' do
@@ -50,63 +52,74 @@ RSpec.describe Integrations::SlackEventWorker, :clean_gitlab_redis_shared_state,
       end
     end
 
-    it 'executes the correct service' do
-      expect_next_instance_of(service_class, params) do |service|
-        expect(service).to receive(:execute).and_return(ServiceResponse.success)
+    shared_examples 'handles slack event' do
+      it 'executes the correct service' do
+        expect_next_instance_of(service_class, params) do |service|
+          expect(service).to receive(:execute).and_return(ServiceResponse.success)
+        end
+
+        worker.perform(args)
       end
 
-      worker.perform(args)
+      it_behaves_like 'logs extra metadata on done'
+
+      it_behaves_like 'an idempotent worker' do
+        let(:job_args) { [args] }
+      end
+
+      it 'ensures idempotency when called twice by only executing service once' do
+        expect_next_instances_of(service_class, 1, params) do |service|
+          expect(service).to receive(:execute).and_return(ServiceResponse.success)
+        end
+
+        worker.perform(args)
+        worker.perform(args)
+      end
+
+      it 'executes service twice if service returned an error' do
+        expect_next_instances_of(service_class, 2, params) do |service|
+          expect(service).to receive(:execute).and_return(ServiceResponse.error(message: 'foo'))
+        end
+
+        worker.perform(args)
+        worker.perform(args)
+      end
+
+      it 'executes service twice if service raised an error' do
+        expect_next_instances_of(service_class, 2, params) do |service|
+          expect(service).to receive(:execute).and_raise(ArgumentError)
+        end
+
+        expect { worker.perform(args) }.to raise_error(ArgumentError)
+        expect { worker.perform(args) }.to raise_error(ArgumentError)
+      end
+
+      it 'executes service twice when event_id is different' do
+        second_params = params.dup
+        second_args = args.dup
+        second_params[:event_id] = 'foo'
+        second_args[:params] = second_params
+
+        expect_next_instances_of(service_class, 1, params) do |service|
+          expect(service).to receive(:execute).and_return(ServiceResponse.success)
+        end
+
+        expect_next_instances_of(service_class, 1, second_params) do |service|
+          expect(service).to receive(:execute).and_return(ServiceResponse.success)
+        end
+
+        worker.perform(args)
+        worker.perform(second_args)
+      end
     end
 
-    it_behaves_like 'logs extra metadata on done'
+    it_behaves_like 'handles slack event'
 
-    it_behaves_like 'an idempotent worker' do
-      let(:job_args) { [args] }
-    end
+    context 'when event is app_mention' do
+      let(:event) { 'app_mention' }
+      let(:service_class) { ::Integrations::SlackEvents::AppMentionedService }
 
-    it 'ensures idempotency when called twice by only executing service once' do
-      expect_next_instances_of(service_class, 1, params) do |service|
-        expect(service).to receive(:execute).and_return(ServiceResponse.success)
-      end
-
-      worker.perform(args)
-      worker.perform(args)
-    end
-
-    it 'executes service twice if service returned an error' do
-      expect_next_instances_of(service_class, 2, params) do |service|
-        expect(service).to receive(:execute).and_return(ServiceResponse.error(message: 'foo'))
-      end
-
-      worker.perform(args)
-      worker.perform(args)
-    end
-
-    it 'executes service twice if service raised an error' do
-      expect_next_instances_of(service_class, 2, params) do |service|
-        expect(service).to receive(:execute).and_raise(ArgumentError)
-      end
-
-      expect { worker.perform(args) }.to raise_error(ArgumentError)
-      expect { worker.perform(args) }.to raise_error(ArgumentError)
-    end
-
-    it 'executes service twice when event_id is different' do
-      second_params = params.dup
-      second_args = args.dup
-      second_params[:event_id] = 'foo'
-      second_args[:params] = second_params
-
-      expect_next_instances_of(service_class, 1, params) do |service|
-        expect(service).to receive(:execute).and_return(ServiceResponse.success)
-      end
-
-      expect_next_instances_of(service_class, 1, second_params) do |service|
-        expect(service).to receive(:execute).and_return(ServiceResponse.success)
-      end
-
-      worker.perform(args)
-      worker.perform(second_args)
+      it_behaves_like 'handles slack event'
     end
 
     context 'when event is not known' do
