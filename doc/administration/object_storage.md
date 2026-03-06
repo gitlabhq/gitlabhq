@@ -32,25 +32,48 @@ To configure the object storage, you have two options:
 If you store data locally, see how to
 [migrate to object storage](#migrate-to-object-storage).
 
-## Supported object storage providers
+## Object storage provider support
 
-GitLab is tightly integrated with the Fog library, so you can see which
-[providers](https://fog.github.io/about/provider_documentation.html) can be used
-with GitLab.
+GitLab uses the [Fog library](https://fog.github.io/about/supported_services.html) for object storage
+and supports the following three connection types. Other Fog providers are not supported.
 
-The following providers are known to work, though this list is not exhaustive:
+| Connection type      | `provider` value | Use with |
+|:---------------------|:-----------------|:---------|
+| S3-compatible        | `AWS`            | Amazon S3 and any S3-compatible service |
+| Google Cloud Storage | `Google`         | Google Cloud Storage |
+| Azure Blob Storage   | `AzureRM`        | Azure Blob Storage |
 
-- [Amazon S3](https://aws.amazon.com/s3/) ([Object Lock](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html)
-  is not supported, see [issue #335775](https://gitlab.com/gitlab-org/gitlab/-/issues/335775)
-  for more information)
-- [Google Cloud Storage](https://cloud.google.com/storage)
-- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces) (S3 compatible)
-- [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
-- [OpenStack Swift (S3 compatible mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
-- [Azure Blob storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
-- On-premises hardware and appliances from various storage vendors, whose list is not officially established.
+If your object storage service is compatible with one of these connection types, configure it using
+the corresponding connection settings below. The choice of provider is yours.
 
-Beyond the providers listed above, other services supported by the Fog library may also be compatible. Use them at your discretion. Any support is subject to commercially-reasonable efforts.
+### Providers with active test coverage
+
+GitLab actively tests the following providers:
+
+- [Amazon S3](https://aws.amazon.com/s3/) - `AWS` connection type. [Object Lock](https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html)
+  is not supported. For more information, see [issue 335775](https://gitlab.com/gitlab-org/gitlab/-/issues/335775).
+- [Google Cloud Storage](https://cloud.google.com/storage) - `Google` connection type.
+- [Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction) - `AzureRM`
+  connection type.
+
+### Community-documented providers
+
+The following providers have been documented by the community. GitLab does not test these providers.
+Configuration examples are provided as a convenience. If you use one of these providers and
+encounter issues, GitLab Support might be unable to help.
+
+- [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces). S3-compatible, see
+  [provider-specific configuration examples](#provider-specific-configuration-examples).
+- [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm).
+  S3-compatible, see [provider-specific configuration examples](#provider-specific-configuration-examples).
+- [OpenStack Swift](https://docs.openstack.org/swift/latest/s3_compat.html) (S3-compatible mode).
+- [Storj Gateway](https://www.storj.io/). S3-compatible, see
+  [provider-specific configuration examples](#provider-specific-configuration-examples).
+- [Ceph RGW](https://docs.ceph.com/en/reef/cephadm/services/rgw/). S3-compatible, see
+  [provider-specific configuration examples](#provider-specific-configuration-examples)
+- [Hitachi Vantara HCP](https://docs.hitachivantara.com/r/en-us/content-platform/9.7.x/mk-95hcph001/hcp-management-api-reference/introduction-to-the-hcp-management-api/support-for-the-amazon-s3-api).
+  S3-compatible, see [provider-specific configuration examples](#provider-specific-configuration-examples).
+- On-premises hardware and appliances that expose an S3-compatible API.
 
 ## Configure a single storage connection for all object types (consolidated form)
 
@@ -72,7 +95,7 @@ When the consolidated form is used,
 direct upload is enabled
 automatically. Thus, only the following providers can be used:
 
-- [Amazon S3-compatible providers](#amazon-s3)
+- [S3-compatible providers](#s3-compatible-providers)
 - [Google Cloud Storage](#google-cloud-storage-gcs)
 - [Azure Blob storage](#azure-blob-storage)
 
@@ -191,7 +214,18 @@ supported by the consolidated form, refer to the following guides:
 Both consolidated and storage-specific form must configure a connection. The following sections describe parameters that can be used
 in the `connection` setting.
 
-### Amazon S3
+### S3-compatible providers
+
+These settings apply to Amazon S3 and any S3-compatible service using the `AWS` connection type.
+When not using AWS directly, set `endpoint` to your provider's URL.
+
+S3-compatible services vary in how closely they implement the AWS S3 API. GitLab uses specific
+S3 behaviours, including pre-signed URLs, multipart uploads, and optionally chunked signature
+streaming, that not every S3-compatible implementation supports identically. If a provider works
+in other tools but not in GitLab, the settings that most likely need adjustment are:
+
+- `aws_signature_version`.
+- `enable_signature_v4_streaming`.
 
 The connection settings match those provided by [fog-aws](https://github.com/fog/fog-aws):
 
@@ -200,8 +234,8 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `provider`                                  | Always `AWS` for compatible hosts. | `AWS` |
 | `aws_access_key_id`                         | AWS credentials, or compatible.    | |
 | `aws_secret_access_key`                     | AWS credentials, or compatible.    | |
-| `aws_signature_version`                     | AWS signature version to use. `2` or `4` are valid options. Digital Ocean Spaces and other providers may need `2`. | `4` |
-| `enable_signature_v4_streaming`             | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be `false`. GitLab 17.4 changed the default from `true` to `false`.  | `false` |
+| `aws_signature_version`                     | AWS signature version to use. `2` or `4` are valid options. Some S3-compatible providers may need `2`. | `4` |
+| `enable_signature_v4_streaming`             | Set to `true` to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Some S3-compatible providers require this to be `false`. GitLab 17.4 changed the default from `true` to `false`. | `false` |
 | `region`                                    | AWS region.                        | |
 | `host`                                      | DEPRECATED: Use `endpoint` instead. S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
 | `endpoint`                                  | Can be used when configuring an S3-compatible service, by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. Always use `endpoint` for consolidated form. | (optional) |
@@ -209,6 +243,23 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `use_iam_profile`                           | Set to `true` to use IAM profile instead of access keys. | `false` |
 | `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) in seconds when using temporary credentials in IAM. | `15` |
 | `disable_imds_v2`                           | Force the use of IMDS v1 by disabling access to the IMDS v2 endpoint that retrieves `X-aws-ec2-metadata-token`. | `false` |
+
+#### S3 compatibility and known failure modes
+
+Claiming S3 compatibility does not guarantee a provider works correctly with GitLab. If you
+encounter errors with an S3-compatible provider, try the following adjustments before raising
+a support request:
+
+- **Signature streaming**: Some providers reject chunked transfer encoding used by AWS Signature
+  Version 4 streaming. Set `enable_signature_v4_streaming: false`.
+- **Signature version**: Some providers do not fully support Signature Version 4. Set
+  `aws_signature_version: 2`.
+- **Path-style URLs**: Some providers require path-style bucket addressing. Set `path_style: true`.
+- **ETag validation**: Some providers return ETags that do not match the MD5 of the uploaded
+  object, which GitLab validates. See [ETag mismatch](#etag-mismatch).
+
+GitLab Support can help troubleshoot configuration, but cannot guarantee resolution for issues
+specific to providers not in the [tested set](#providers-with-active-test-coverage).
 
 #### Use Amazon instance profiles
 
@@ -291,22 +342,6 @@ must be fulfilled:
 
 [ETag mismatch errors](#etag-mismatch) occur if server side
 encryption headers are used without enabling the Workhorse S3 client.
-
-### Oracle Cloud S3
-
-Oracle Cloud S3 must be sure to use the following settings:
-
-| Setting                         | Value   |
-|---------------------------------|---------|
-| `enable_signature_v4_streaming` | `false` |
-| `path_style`                    | `true`  |
-
-If `enable_signature_v4_streaming` is set to `true`, you may see the
-following error in `production.log`:
-
-```plaintext
-STREAMING-AWS4-HMAC-SHA256-PAYLOAD is not supported
-```
 
 ### Google Cloud Storage (GCS)
 
@@ -809,7 +844,29 @@ To use [Azure workload identities](https://azure.github.io/azure-workload-identi
 Ensure that the identity has the `Storage Blob Data Contributor` role
 assigned to it.
 
-### Storj Gateway (SJ)
+### Provider-specific configuration examples
+
+The following examples show configuration for specific S3-compatible providers that require
+non-default settings. For any S3-compatible provider not listed here, use the
+[base S3-compatible configuration](#s3-compatible-providers) with the appropriate `endpoint` for your provider.
+
+#### Oracle Cloud Infrastructure
+
+Oracle Cloud Infrastructure S3 requires the following settings:
+
+| Setting                         | Value |
+|:--------------------------------|:------|
+| `enable_signature_v4_streaming` | `false` |
+| `path_style`                    | `true` |
+
+If `enable_signature_v4_streaming` is set to `true`, you may see the
+following error in `production.log`:
+
+```plaintext
+STREAMING-AWS4-HMAC-SHA256-PAYLOAD is not supported
+```
+
+#### Storj Gateway (SJ)
 
 > [!note]
 > The Storj Gateway [does not support](https://github.com/storj/gateway-st/blob/4b74c3b92c63b5de7409378b0d1ebd029db9337d/docs/s3-compatibility.md) multi-threaded copying (see `UploadPartCopy` in the table).
@@ -833,7 +890,7 @@ gitlab_rails['object_store']['connection'] = {
 The signature version must be `2`. Using v4 results in an HTTP 411 Length Required error.
 For more information, see [issue #4419](https://gitlab.com/gitlab-org/gitlab/-/issues/4419).
 
-### Hitachi Vantara HCP
+#### Hitachi Vantara HCP
 
 > [!note]
 > Connections to HCP may return an error stating `SignatureDoesNotMatch - The request signature we calculated does not match the signature you provided. Check your HCP Secret Access key and signing method.` In these cases, set the `endpoint` to the URL of the tenant instead of the namespace, and ensure bucket paths are configured as `<namespace_name>/<bucket_name>`.
@@ -856,7 +913,7 @@ gitlab_rails['object_store']['connection'] = {
 gitlab_rails['object_store']['objects']['artifacts']['bucket'] = '<namespace_name>/<bucket_name>'
 ```
 
-### Ceph RGW
+#### Ceph RGW
 
 [Ceph RGW](https://docs.ceph.com/en/reef/cephadm/services/rgw/) is an S3-compatible API for Ceph.
 Use the following configuration example:
@@ -1271,12 +1328,11 @@ Helm-based installs require separate buckets to
 
 ### S3 API compatibility issues
 
-Not all S3 providers [are fully compatible](backup_restore/backup_gitlab.md#other-s3-providers)
-with the Fog library that GitLab uses. Symptoms include an error in `production.log`:
-
-```plaintext
-411 Length Required
-```
+If you encounter errors with an S3-compatible provider, see
+[S3 compatibility and known failure modes](#s3-compatibility-and-known-failure-modes)
+for common causes and configuration adjustments. A `411 Length Required` error in
+`production.log` is typically caused by signature streaming. Set
+`enable_signature_v4_streaming: false` to resolve it.
 
 ### Artifacts always downloaded with filename `download`
 
@@ -1339,9 +1395,11 @@ This can result in some of the following problems:
 
   See [the LFS documentation](lfs/_index.md#error-viewing-a-pdf-file) for more details.
 
-Additionally for a short time period users could share pre-signed, time-limited object storage URLs
-with others without authentication. Also bandwidth charges may be incurred
-between the object storage provider and the client.
+> [!warning]
+> Pre-signed URLs are time-limited but not tied to a specific user. Any user who obtains a
+> pre-signed URL can access the object without authentication for the duration of the URL's
+> validity. Direct downloads may also incur bandwidth charges between your object storage
+> provider and the client.
 
 ### ETag mismatch
 
@@ -1393,11 +1451,10 @@ To use CMEK, use the [consolidated form](#configure-a-single-storage-connection-
 ### Multi-threaded copying
 
 GitLab uses the [S3 Upload Part Copy API](https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPartCopy.html)
-to accelerate the copying of files within a bucket. Ceph S3 [prior to Kraken 11.0.2](https://ceph.com/releases/kraken-11-0-2-released/)
-does not support this and [returns a 404 error when files are copied during the upload process](https://gitlab.com/gitlab-org/gitlab/-/issues/300604).
+to accelerate copying files within a bucket. This feature is unsupported by some S3-compatible providers
+and they [return a 404 error during upload](https://gitlab.com/gitlab-org/gitlab/-/issues/300604).
 
-The feature can be disabled using the `:s3_multithreaded_uploads`
-feature flag. To disable the feature, ask a GitLab administrator with
+To disable multi-threaded copying, ask a GitLab administrator with
 [Rails console access](feature_flags/_index.md#how-to-enable-and-disable-features-behind-flags)
 to run the following command:
 
@@ -1407,7 +1464,8 @@ Feature.disable(:s3_multithreaded_uploads)
 
 ### Manual testing through Rails Console
 
-In some situations, it may be helpful to test object storage settings using the Rails Console. The following example tests a given set of connection settings, attempts to write a test object, and finally read it.
+Use this approach to verify object storage connectivity when you suspect a misconfiguration.
+The following example tests a connection, writes a test object, and reads it back.
 
 1. Start a [Rails console](operations/rails_console.md).
 1. Set up the object storage connection, using the same parameters you set up in `/etc/gitlab/gitlab.rb`, in the following example format:

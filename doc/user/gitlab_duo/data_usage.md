@@ -85,6 +85,18 @@ GitLab Duo collects aggregated or de-identified first-party usage data through a
   - Number of suggestions shown, accepted, rejected, or that had errors
   - Duration of time that a suggestion was shown
 
+## GitLab Model Context Protocol server
+
+The following information applies to [GitLab Model Context Protocol (MCP) server](model_context_protocol/mcp_server.md) usage in GitLab
+Self-Managed instances.
+
+GitLab does not transmit, store, retain, or process any data when the GitLab MCP server is used. All
+communication occurs directly between the MCP client and the GitLab MCP server in your environment.
+
+Repository data and metadata are not sent to GitLab.
+
+You control which MCP clients connect to your instance. Each client's own privacy and data retention policies apply.
+
 ## Model accuracy and quality
 
 Generative AI may produce unexpected results that may be:

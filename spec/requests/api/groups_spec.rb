@@ -2920,7 +2920,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context 'when authenticated as user' do
-      it_behaves_like 'authorizing granular token permissions', :read_sub_group do
+      it_behaves_like 'authorizing granular token permissions', :read_subgroup do
         let(:boundary_object) { group1 }
         let(:user) { user1 }
         let(:request) do

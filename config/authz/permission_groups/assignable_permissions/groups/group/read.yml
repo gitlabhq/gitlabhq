@@ -11,4 +11,4 @@ permissions:
   - read_group_transfer_location
   - read_shared_group
   - read_shared_project
-  - read_sub_group
+  - read_subgroup

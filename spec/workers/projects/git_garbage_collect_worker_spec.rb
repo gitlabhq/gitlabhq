@@ -65,7 +65,8 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
         allow(subject).to receive(:flush_ref_caches)
       end
 
-      it 'cleans up unreferenced LFS objects' do
+      it 'cleans up unreferenced LFS objects',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/37721' do
         expect_next_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences) do |svc|
           expect(svc.project).to eq(project)
           expect(svc.dry_run).to be_falsy

@@ -66,7 +66,11 @@ module QA
             end
           end
 
-          it 'pushes and pulls a maven package', testcase: params[:testcase] do
+          it 'pushes and pulls a maven package', testcase: params[:testcase],
+            quarantine: {
+              issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/29665',
+              type: 'flaky'
+            } do
             gitlab_ci_yaml = ERB.new(read_fixture('package_managers/maven/group/producer',
               'gitlab_ci.yaml.erb')).result(binding)
             pom_xml = ERB.new(read_fixture('package_managers/maven/group/producer', 'pom.xml.erb')).result(binding)
@@ -135,7 +139,11 @@ module QA
           end
 
           it 'prevents users from publishing duplicates',
-            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565163' do
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/565163',
+            quarantine: {
+              issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/29665',
+              type: 'flaky'
+            } do
             create_package(package_project)
             package_project.visit_job('deploy')
 

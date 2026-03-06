@@ -436,7 +436,7 @@ For example, to scan an image in AWS Elastic Container Registry:
       - ruby -r open-uri -e "IO.copy_stream(URI.open('https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip'), 'awscliv2.zip')"
       - unzip awscliv2.zip
       - sudo ./aws/install
-      - export AWS_ECR_PASSWORD=$(aws ecr get-login-password --region region)
+      - export AWS_ECR_PASSWORD=$(aws ecr get-login-password --region <region>)
 
   include:
     - template: Jobs/Container-Scanning.gitlab-ci.yml

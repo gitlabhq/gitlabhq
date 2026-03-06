@@ -491,7 +491,8 @@ Redis is primarily single threaded. For environments targeting the 200 RPS / 10,
 
 ### Best practices for object storage
 
-GitLab has been tested against [various object storage providers](../object_storage.md#supported-object-storage-providers) that are expected to work.
+GitLab has been tested against [various object storage providers](../object_storage.md#object-storage-provider-support)
+that are expected to work.
 
 Use a reputable solution that has full S3 compatibility.
 

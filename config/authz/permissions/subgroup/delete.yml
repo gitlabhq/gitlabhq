@@ -1,3 +1,7 @@
 ---
 name: delete_subgroup
-description: Grants the ability to delete subgroups
+description: >
+  Grants the ability to delete subgroups. This permission is only
+  used internally to grant the ability to delete a group if the
+  group has a parent. It should not be used to make access control
+  decisions in endpoints.

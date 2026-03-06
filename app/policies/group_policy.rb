@@ -253,6 +253,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :create_group_link
     enable :create_subgroup
     enable :delete_group_link
+    enable :delete_subgroup
     enable :destroy_deploy_token
     enable :destroy_issue
     enable :edit_billing

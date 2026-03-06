@@ -110,7 +110,7 @@ A valid SSL certificate (such as Let's Encrypt) must be configured for the GitLa
 
 GitLab provides a convenient automated SSL setup process:
 
-- During the GitLab installation, simply specify your URL with "https://" prefix
+- During the GitLab installation, simply specify your URL with `https://` prefix
 - GitLab will automatically:
   - Obtain a Let's Encrypt SSL certificate
   - Install the certificate

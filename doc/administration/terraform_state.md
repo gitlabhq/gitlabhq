@@ -105,7 +105,7 @@ For self-compiled installations:
 {{< /details >}}
 
 Instead of storing Terraform state files on disk, we recommend the use of
-[one of the supported object storage options](object_storage.md#supported-object-storage-providers).
+[one of the supported object storage options](object_storage.md#object-storage-provider-support).
 This configuration relies on valid credentials to be configured already.
 
 [Read more about using object storage with GitLab](object_storage.md).

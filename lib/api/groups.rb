@@ -585,7 +585,7 @@ module API
         use :group_list_params
         use :with_custom_attributes
       end
-      route_setting :authorization, permissions: :read_sub_group, boundary_type: :group
+      route_setting :authorization, permissions: :read_subgroup, boundary_type: :group
       get ":id/subgroups", feature_category: :groups_and_projects, urgency: :low do
         groups = find_groups(declared_params(include_missing: false), params[:id])
         present_groups params, groups

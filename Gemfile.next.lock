@@ -792,7 +792,7 @@ GEM
       prometheus-client-mmap (>= 1.2, < 2.0)
       redis (> 3.0.0, < 6.0.0)
     gitlab-license (2.6.0)
-    gitlab-mail_room (0.1.0)
+    gitlab-mail_room (1.0.0)
       jwt (>= 2.0)
       net-imap (>= 0.2.1)
       oauth2 (>= 1.4.4, < 3)
@@ -2283,7 +2283,7 @@ DEPENDENCIES
   gitlab-kas-grpc (~> 18.5.0.pre.rc4)
   gitlab-labkit (~> 1.5.0)
   gitlab-license (~> 2.6)
-  gitlab-mail_room (~> 0.1.0)
+  gitlab-mail_room (~> 1.0.0)
   gitlab-markup (~> 2.0.0)
   gitlab-net-dns (~> 0.15.0)
   gitlab-rspec!
