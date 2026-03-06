@@ -13041,7 +13041,7 @@ ALTER SEQUENCE ai_flow_triggers_id_seq OWNED BY ai_flow_triggers.id;
 
 CREATE TABLE ai_instance_accessible_entity_rules (
     id bigint NOT NULL,
-    through_namespace_id bigint NOT NULL,
+    through_namespace_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     accessible_entity text NOT NULL,
@@ -13062,7 +13062,7 @@ CREATE TABLE ai_namespace_feature_access_rules (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     root_namespace_id bigint NOT NULL,
-    through_namespace_id bigint NOT NULL,
+    through_namespace_id bigint,
     accessible_entity text NOT NULL,
     CONSTRAINT check_ca828b88ca CHECK ((char_length(accessible_entity) <= 255))
 );
@@ -42929,6 +42929,10 @@ CREATE INDEX idx_ai_catalog_mcp_servers_users_on_organization_id ON ai_catalog_m
 CREATE INDEX idx_ai_code_repository_project_id_state ON ONLY p_ai_active_context_code_repositories USING btree (project_id, state);
 
 CREATE UNIQUE INDEX idx_ai_events_counts_unique_tuple ON ONLY ai_events_counts USING btree (events_date, namespace_id, event, user_id) INCLUDE (total_occurrences) NULLS NOT DISTINCT;
+
+CREATE UNIQUE INDEX idx_ai_iaer_default_rule_on_accessible_entity ON ai_instance_accessible_entity_rules USING btree (accessible_entity) WHERE (through_namespace_id IS NULL);
+
+CREATE UNIQUE INDEX idx_ai_nfar_default_rule_on_root_ns_accessible_entity ON ai_namespace_feature_access_rules USING btree (root_namespace_id, accessible_entity) WHERE (through_namespace_id IS NULL);
 
 CREATE UNIQUE INDEX idx_ai_usage_events_uniqueness ON ONLY ai_usage_events USING btree (namespace_id, user_id, event, "timestamp") NULLS NOT DISTINCT;
 

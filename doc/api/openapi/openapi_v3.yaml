@@ -22081,7 +22081,6 @@ paths:
                           type: string
                         description: List of accessible features
                     required:
-                    - through_namespace
                     - features
                 allow_local_requests_from_web_hooks_and_services:
                   type: string
@@ -84431,7 +84430,6 @@ paths:
                           type: string
                         description: List of accessible features
                     required:
-                    - through_namespace
                     - features
     get:
       operationId: getApiV4GroupsId
