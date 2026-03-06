@@ -373,14 +373,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def versions
     return render_404 unless ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip)
 
-    viewable_merge_request_diffs = @merge_request.viewable_recent_merge_request_diffs
-
-    render json: RapidDiffs::MergeRequestDiffEntity.represent(
-      viewable_merge_request_diffs,
-      merge_request: @merge_request,
-      merge_request_diffs: viewable_merge_request_diffs,
-      merge_request_diff: @merge_request.merge_request_diff,
-      path_extra_options: { rapid_diffs: true }
+    render json: RapidDiffs::DiffCompareVersionsEntity.represent(
+      @merge_request,
+      diff_id: rapid_diff_options[:diff_id],
+      start_sha: rapid_diff_options[:start_sha]
     )
   end
 

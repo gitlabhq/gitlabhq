@@ -93,8 +93,8 @@ Rotate a token to create a new token with the same permissions and scope as the 
 The original token becomes inactive immediately, and GitLab retains both versions for
 audit purposes. You can view both active and inactive tokens on the access tokens page.
 
-On GitLab Self-Managed and GitLab Dedicated, you can modify
-[inactive token retention](../../project/settings/project_access_tokens.md#inactive-token-retention).
+On GitLab Self-Managed and GitLab Dedicated, you can modify the
+[retention period for inactive tokens](#inactive-token-retention).
 
 > [!warning]
 > This action cannot be undone. Tools that rely on a rotated access token will stop working until
@@ -239,31 +239,40 @@ Your expired access tokens are listed in the inactive project access tokens tabl
 
 {{< /history >}}
 
-Bot users for projects are [GitLab-created non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users).
-Each time you create a project access token, a bot user is created and added to the project.
-This user is not a billable user, so it does not count toward the license limit.
+When you create a project access token, GitLab creates a bot user and associates it with the token.
 
-The bot users for projects have [permissions](../../permissions.md#project-permissions) that correspond with the
-selected role and [scope](#project-access-token-scopes) of the project access token.
+Bot users have the following properties:
 
-- The name is set to the name of the token.
-- The username is set to `project_{project_id}_bot_{random_string}`. For example, `project_123_bot_4ffca233d8298ea1`.
-- The email is set to `project_{project_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}`. For example, `project_123_bot_4ffca233d8298ea1@noreply.example.com`.
+- They are granted permissions that correspond with the role and scope of the associated access token.
+- They are members of the project, but cannot be removed from the project or added directly
+  to any other groups or projects.
+- They are [non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users)
+  and do not count towards your license limit.
+- Their contributions are associated with the bot user account.
+- When removed, their contributions are moved to a
+  [ghost user](../../../user/profile/account/delete_account.md#associated-records).
 
-API calls made with a project access token are associated with the corresponding bot user.
+When the bot user is created, the following attributes are defined:
 
-Bot users for projects:
-
-- Are included in a project's member list but cannot be modified.
-- Cannot be added to any other project.
-- Can have a maximum role of Owner for a project. For more information, see
-  [Create a project access token](../../../api/project_access_tokens.md#create-a-project-access-token).
-
-For more information, see [bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).
+| Attribute | Value                                                                                                    | Example |
+| --------- | -------------------------------------------------------------------------------------------------------- | ------- |
+| Name      | The name of the associated access token.                                                                 | `Main token - Read registry` |
+| Username  | Generated in this format: `project_{project_id}_bot_{random_string}`                                     | `project_123_bot_4ffca233d8298ea1` |
+| Email     | Generated in this format: `project_{project_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}` | `project_123_bot_4ffca233d8298ea1@noreply.example.com` |
 
 ## Inactive token retention
 
-By default, GitLab deletes group and project access tokens and their [token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) 30 days after the last active token from the token family becomes inactive. This removes all tokens in the token family and the associated bot user and migrates the bot user contributions to a system-wide "Ghost User".
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+By default, GitLab deletes group and project access tokens and their
+[token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) 30 days after the
+last active token in the token family becomes inactive. This deletion removes all tokens in the
+token family, the associated bot user, and moves any bot contributions to a
+[ghost user](../../../user/profile/account/delete_account.md#associated-records).
 
 Prerequisites:
 

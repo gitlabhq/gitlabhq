@@ -663,6 +663,51 @@ RSpec.shared_examples 'wiki controller actions' do
     end
   end
 
+  describe 'GET #index' do
+    subject(:request) { get :index, params: routing_params }
+
+    context 'when wiki has home page' do
+      before do
+        create(:wiki_page, wiki: wiki, title: 'home', content: 'Home')
+        create(:wiki_page, wiki: wiki, title: 'aaa-first', content: 'First')
+      end
+
+      it 'redirects to home page' do
+        request
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(controller.wiki_page_path(wiki, 'home'))
+      end
+    end
+
+    context 'when wiki has pages but no home page' do
+      before do
+        create(:wiki_page, wiki: wiki, title: 'other-page', content: 'Content')
+      end
+
+      it 'redirects to pages list' do
+        request
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(controller.wiki_path(wiki, action: :pages))
+      end
+    end
+
+    context 'when wiki is empty' do
+      before do
+        # Delete all pages (including the one created in setup)
+        wiki.list_pages.each { |page| wiki.delete_page(page) }
+      end
+
+      it 'redirects to home page for empty state' do
+        request
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(controller.wiki_page_path(wiki, 'home'))
+      end
+    end
+  end
+
   def redirect_to_wiki(wiki, page, query_params = {})
     query = query_params.empty? ? '' : "?#{query_params.to_query}"
     redirect_to("#{controller.wiki_page_path(wiki, page)}#{query}")

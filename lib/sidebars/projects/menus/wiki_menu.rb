@@ -6,7 +6,7 @@ module Sidebars
       class WikiMenu < ::Sidebars::Menu
         override :link
         def link
-          wiki_path(context.project.wiki)
+          wiki_path(context.project.wiki, action: :index)
         end
 
         override :extra_container_html_options

@@ -246,6 +246,22 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     it { is_expected.to eq('/-/abuse_reports/add_category') }
   end
 
+  describe '#versions' do
+    let(:request_params) { { diff_id: '10', start_sha: 'abc123' } }
+
+    it 'delegates to DiffCompareVersionsEntity' do
+      entity = instance_double(RapidDiffs::DiffCompareVersionsEntity)
+      expect(RapidDiffs::DiffCompareVersionsEntity).to receive(:represent).with(
+        merge_request,
+        diff_id: '10',
+        start_sha: 'abc123'
+      ).and_return(entity)
+      expect(entity).to receive(:as_json).and_return({ 'source_versions' => [], 'target_versions' => [] })
+
+      expect(presenter.versions).to eq({ 'source_versions' => [], 'target_versions' => [] })
+    end
+  end
+
   describe 'stream urls with skip parameters' do
     describe '#reload_stream_url' do
       subject(:url) { presenter.reload_stream_url(skip_old_path: 'old.txt', skip_new_path: 'new.txt') }

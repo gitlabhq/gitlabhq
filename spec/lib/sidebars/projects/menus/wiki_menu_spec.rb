@@ -13,6 +13,12 @@ RSpec.describe Sidebars::Projects::Menus::WikiMenu, feature_category: :navigatio
     expect(subject.has_items?).to be false
   end
 
+  describe '#link' do
+    subject { super().link }
+
+    it { is_expected.to eq "/#{project.full_path}/-/wikis" }
+  end
+
   describe '#render?' do
     context 'when user can access project wiki' do
       it 'returns true' do

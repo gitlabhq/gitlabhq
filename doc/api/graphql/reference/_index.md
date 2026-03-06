@@ -11478,6 +11478,31 @@ Input type: `OncallScheduleUpdateInput`
 | <a id="mutation-oncallscheduleupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutation-oncallscheduleupdate-oncallschedule"></a>`oncallSchedule` | [`IncidentManagementOncallSchedule`](#incidentmanagementoncallschedule) | On-call schedule. |
 
+### `Mutation.orbitUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.10.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `OrbitUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-orbitupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-orbitupdate-enabled"></a>`enabled` | [`Boolean!`](#boolean) | Whether to enable or disable the Knowledge Graph for the group. |
+| <a id="mutation-orbitupdate-grouppath"></a>`groupPath` | [`ID!`](#id) | Full path of the group to update. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutation-orbitupdate-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutation-orbitupdate-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutation-orbitupdate-group"></a>`group` | [`Group`](#group) | Group after mutation. |
+
 ### `Mutation.organizationCreate`
 
 {{< details >}}
@@ -34530,6 +34555,7 @@ Relationship between an epic and an issue.
 | <a id="epicissue-webpath"></a>`webPath` | [`String!`](#string) | Web path of the issue. |
 | <a id="epicissue-weburl"></a>`webUrl` | [`String!`](#string) | Web URL of the issue. |
 | <a id="epicissue-weight"></a>`weight` | [`Int`](#int) | Weight of the issue. |
+| <a id="epicissue-workitemtype"></a>`workItemType` | [`WorkItemType!`](#workitemtype) | Type assigned to the issue. |
 
 #### Fields with arguments
 
@@ -35678,6 +35704,7 @@ GPG signature for a signed commit.
 | <a id="group-isselfarchived"></a>`isSelfArchived` | [`Boolean`](#boolean) | Indicates if the group is archived. |
 | <a id="group-isselfdeletioninprogress"></a>`isSelfDeletionInProgress` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group deletion is in progress. |
 | <a id="group-isselfdeletionscheduled"></a>`isSelfDeletionScheduled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group deletion is scheduled. |
+| <a id="group-knowledgegraphenabled"></a>`knowledgeGraphEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.10. **Status**: Experiment. Indicates whether the Knowledge Graph is enabled for the namespace. |
 | <a id="group-lfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="group-licensedfeatures"></a>`licensedFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.1. **Status**: Experiment. Licensed features available on the namespace. |
 | <a id="group-lifecycletemplates"></a>`lifecycleTemplates` {{< icon name="warning-solid" >}} | [`[WorkItemLifecycle!]`](#workitemlifecycle) | **Introduced** in GitLab 18.4. **Status**: Experiment. Lifecycle templates available to the namespace. |
@@ -38784,6 +38811,7 @@ Describes an issuable resource link for incident issues.
 | <a id="issue-webpath"></a>`webPath` | [`String!`](#string) | Web path of the issue. |
 | <a id="issue-weburl"></a>`webUrl` | [`String!`](#string) | Web URL of the issue. |
 | <a id="issue-weight"></a>`weight` | [`Int`](#int) | Weight of the issue. |
+| <a id="issue-workitemtype"></a>`workItemType` | [`WorkItemType!`](#workitemtype) | Type assigned to the issue. |
 
 #### Fields with arguments
 

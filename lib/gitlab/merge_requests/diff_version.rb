@@ -40,12 +40,11 @@ module Gitlab
         if start_sha.present?
           comparable_diffs = viewable_merge_request_diffs.select { |diff| diff.id < found_diff.id }
           start_version = comparable_diffs.find { |diff| diff.head_commit_sha == start_sha }
-          start_version_sha = start_version.head_commit_sha if start_version
 
-          if start_version_sha
+          if start_version
             return ::MergeRequests::MergeRequestDiffComparison
               .new(found_diff)
-              .compare_with(start_version_sha)
+              .compare_with(start_version.head_commit_sha)
           end
         end
 

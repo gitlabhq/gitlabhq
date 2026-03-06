@@ -5,7 +5,5 @@ Migration/PreventIndexCreation:
     - 'db/migrate/20251014143930_add_fk_to_sbom_occurrence_refs_for_security_project_tracked_contexts.rb'
     - 'db/migrate/20251014144050_add_index_on_sbom_occurrence_refs_for_projects.rb'
     - 'db/migrate/20251014170619_add_index_on_sbom_occurrence_refs_for_pipelines.rb'
-    - 'db/post_migrate/20250625234115_prepare_indexes_for_merge_request_diffs_bigint_conversion.rb'
-    - 'db/post_migrate/20250627213929_add_index_to_resource_state_events_namespace_id.rb'
     - 'db/post_migrate/20250807135739_prepare_async_index_project_daily_statistics_date_and_id.rb'
     - 'db/post_migrate/20250811051534_add_index_project_daily_statistics_date_and_id.rb'

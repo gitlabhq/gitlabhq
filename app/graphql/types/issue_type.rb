@@ -134,6 +134,9 @@ module Types
       method: :issue_type,
       description: 'Type of the issue.'
 
+    field :work_item_type, Types::WorkItems::TypeType, null: false,
+      description: 'Type assigned to the issue.'
+
     field :alert_management_alert,
       Types::AlertManagement::AlertType,
       null: true,

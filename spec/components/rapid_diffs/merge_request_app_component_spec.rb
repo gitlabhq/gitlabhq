@@ -18,6 +18,7 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
   let(:sign_in_path) { '/sign_in' }
   let(:markdown_docs_path) { '/markdown_docs' }
   let(:report_abuse_path) { '/report_abuse' }
+  let(:versions) { { 'source_versions' => [], 'target_versions' => [] } }
 
   let(:presenter) do
     instance_double(
@@ -36,7 +37,8 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
       code_review_enabled: code_review_enabled,
       environment: nil,
       resource: merge_request,
-      mr_path: mr_path
+      mr_path: mr_path,
+      versions: versions
     )
   end
 
@@ -62,7 +64,8 @@ RSpec.describe RapidDiffs::MergeRequestAppComponent, feature_category: :code_rev
         register_path: register_path,
         sign_in_path: sign_in_path,
         report_abuse_path: report_abuse_path,
-        markdown_docs_path: markdown_docs_path
+        markdown_docs_path: markdown_docs_path,
+        versions: versions
       }
     )
 

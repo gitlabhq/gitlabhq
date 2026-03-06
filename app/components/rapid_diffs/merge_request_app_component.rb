@@ -6,7 +6,7 @@ module RapidDiffs
 
     delegate :mr_path, :code_review_enabled, :discussions_endpoint, :user_permissions,
       :noteable_type, :preview_markdown_endpoint, :markdown_docs_path, :register_path, :sign_in_path,
-      :report_abuse_path, to: :presenter
+      :report_abuse_path, :versions, to: :presenter
 
     def initialize(presenter)
       @presenter = presenter
@@ -25,7 +25,8 @@ module RapidDiffs
         register_path: register_path,
         sign_in_path: sign_in_path,
         report_abuse_path: report_abuse_path,
-        markdown_docs_path: markdown_docs_path
+        markdown_docs_path: markdown_docs_path,
+        versions: versions
       }
     end
   end

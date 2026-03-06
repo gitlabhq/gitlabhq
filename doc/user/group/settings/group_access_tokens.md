@@ -129,8 +129,8 @@ Rotate a token to create a new token with the same permissions and scope as the 
 The original token becomes inactive immediately, and GitLab retains both versions for
 audit purposes. You can view both active and inactive tokens on the access tokens page.
 
-On GitLab Self-Managed and GitLab Dedicated, you can modify
-[inactive token retention](../../project/settings/project_access_tokens.md#inactive-token-retention).
+On GitLab Self-Managed and GitLab Dedicated, you can modify the
+[retention period for inactive tokens](../../project/settings/project_access_tokens.md#inactive-token-retention).
 
 > [!warning]
 > This action cannot be undone. Tools that rely on a rotated access token will stop working until
@@ -268,19 +268,26 @@ Your expired access tokens are listed in the inactive group access tokens sectio
 
 ## Bot users for groups
 
-Bot users for groups are [GitLab-created non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users).
-Each time you create a group access token, a bot user is created and added to the group.
-These bot users are similar to
-[bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects), except they are added
-to groups instead of projects. Bot users for groups:
+When you create a group access token, GitLab creates a bot user and associates it with the token.
 
-- Is not a billable user, so it does not count toward the license limit.
-- Can have a maximum role of Owner for a group. For more information, see
-  [Create a group access token](../../../api/group_access_tokens.md#create-a-group-access-token).
-- Have a username set to `group_{group_id}_bot_{random_string}`. For example, `group_123_bot_4ffca233d8298ea1`.
-- Have an email set to `group_{group_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}`. For example, `group_123_bot_4ffca233d8298ea1@noreply.example.com`.
+Bot users have the following properties:
 
-All other properties are similar to [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects).
+- They are granted permissions that correspond with the role and scope of the associated access token.
+- They are members of the group and inherit membership in subgroups and projects, but cannot be
+  added directly to any other groups or projects.
+- They are [non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users)
+  and do not count towards your license limit.
+- Their contributions are associated with the bot user account.
+- When removed, their contributions are moved to a
+  [ghost user](../../../user/profile/account/delete_account.md#associated-records).
+
+When the bot user is created, the following attributes are defined:
+
+| Attribute | Value                                                                                                | Example |
+| --------- | ---------------------------------------------------------------------------------------------------- | ------- |
+| Name      | The name of the associated access token.                                                             | `Main token - Read registry` |
+| Username  | Generated in this format: `group_{group_id}_bot_{random_string}`                                     | `group_123_bot_4ffca233d8298ea1` |
+| Email     | Generated in this format: `group_{group_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}` | `group_123_bot_4ffca233d8298ea1@noreply.example.com` |
 
 ## Related topics
 

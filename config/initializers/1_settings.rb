@@ -1258,6 +1258,8 @@ Settings.gitlab_kas['client_timeout_seconds'] ||= 5
 Gitlab.ee do
   Settings['knowledge_graph'] ||= {}
   Settings.knowledge_graph['secret_file'] ||= Rails.root.join('.gitlab_knowledge_graph_secret')
+  Settings.knowledge_graph['enabled'] ||= false
+  Settings.knowledge_graph['grpc_endpoint'] ||= ENV.fetch('KNOWLEDGE_GRAPH_GRPC_ENDPOINT', 'localhost:50054')
 end
 
 #

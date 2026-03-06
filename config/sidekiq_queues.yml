@@ -1153,7 +1153,11 @@
   - 1
 - - security_secret_detection_partner_token_verification
   - 1
+- - security_sync_finding_enrichment
+  - 1
 - - security_sync_linked_pipeline_execution_policy_configs
+  - 1
+- - security_sync_merge_requests
   - 1
 - - security_sync_pipeline_execution_policy_metadata
   - 1

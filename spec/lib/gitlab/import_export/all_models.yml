@@ -831,6 +831,7 @@ project:
 - protected_environments
 - mirror_user
 - push_rule
+- project_push_rule
 - jenkins_integration
 - index_status
 - feature_usage
@@ -1203,6 +1204,8 @@ issuable_sla:
 push_rule:
   - group
   - organization
+project_push_rule:
+  - project
 bulk_import_export:
   - group
 service_desk_setting:

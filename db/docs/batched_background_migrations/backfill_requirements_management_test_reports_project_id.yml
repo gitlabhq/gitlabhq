@@ -1,8 +1,0 @@
----
-migration_job_name: BackfillRequirementsManagementTestReportsProjectId
-description: Backfills sharding key `requirements_management_test_reports.project_id` from `issues`.
-feature_category: requirements_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180838
-milestone: '17.9'
-queued_migration_version: 20250209005908
-finalized_by: '20250620171734'

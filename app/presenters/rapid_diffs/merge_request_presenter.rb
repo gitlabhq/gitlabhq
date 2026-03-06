@@ -93,6 +93,14 @@ module RapidDiffs
       !!@current_user
     end
 
+    def versions
+      ::RapidDiffs::DiffCompareVersionsEntity.represent(
+        resource,
+        diff_id: request_params[:diff_id],
+        start_sha: request_params[:start_sha]
+      ).as_json
+    end
+
     protected
 
     override(:transform_file)

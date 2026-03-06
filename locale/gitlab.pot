@@ -3464,7 +3464,13 @@ msgstr ""
 msgid "AICatalog|You must have the Maintainer or Owner role to enable a flow in a group. Only top-level groups are shown."
 msgstr ""
 
+msgid "AICatalog|You must have the Maintainer or Owner role to enable a flow."
+msgstr ""
+
 msgid "AICatalog|You must have the Maintainer or Owner role to enable an agent in a group. Only top-level groups are shown."
+msgstr ""
+
+msgid "AICatalog|You must have the Maintainer or Owner role to enable an agent."
 msgstr ""
 
 msgid "AICatalog|agent"
@@ -19577,6 +19583,9 @@ msgstr ""
 msgid "Confidentiality"
 msgstr ""
 
+msgid "Configuration"
+msgstr ""
+
 msgid "Configuration help"
 msgstr ""
 
@@ -23428,6 +23437,9 @@ msgid "DastSiteValidation|You will not be able to run active scans against %{url
 msgstr ""
 
 msgid "Data Analyst"
+msgstr ""
+
+msgid "Data Explorer"
 msgstr ""
 
 msgid "Data is still calculating…"
@@ -48168,6 +48180,48 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
+msgid "Orbit"
+msgstr ""
+
+msgid "Orbit|Configuration"
+msgstr ""
+
+msgid "Orbit|Data Explorer"
+msgstr ""
+
+msgid "Orbit|Enable"
+msgstr ""
+
+msgid "Orbit|Enable Orbit for a top-level group to index its projects and make them queryable"
+msgstr ""
+
+msgid "Orbit|Failed to load groups. Please try again."
+msgstr ""
+
+msgid "Orbit|Failed to update group setting. Please try again."
+msgstr ""
+
+msgid "Orbit|Indexed"
+msgstr ""
+
+msgid "Orbit|Indexes"
+msgstr ""
+
+msgid "Orbit|Indexing…"
+msgstr ""
+
+msgid "Orbit|Not indexed"
+msgstr ""
+
+msgid "Orbit|Only top-level groups can be indexed"
+msgstr ""
+
+msgid "Orbit|Orbit"
+msgstr ""
+
+msgid "Orbit|Schema"
+msgstr ""
+
 msgid "Ordered list"
 msgstr ""
 
@@ -60291,6 +60345,9 @@ msgstr ""
 msgid "Schedules"
 msgstr ""
 
+msgid "Schema"
+msgstr ""
+
 msgid "Scope"
 msgstr ""
 
@@ -63667,6 +63724,9 @@ msgid "SecurityOrchestration|without group exceptions"
 msgstr ""
 
 msgid "SecurityOrchestration|without project exceptions"
+msgstr ""
+
+msgid "SecurityOrchestration|★ Recommended"
 msgstr ""
 
 msgid "SecurityPolicies|Invalid or empty policy"

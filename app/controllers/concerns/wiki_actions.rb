@@ -10,7 +10,7 @@ module WikiActions
   extend ActiveSupport::Concern
   include StrongPaginationParams
 
-  RESCUE_GIT_TIMEOUTS_IN = %w[show raw edit history diff pages templates].freeze
+  RESCUE_GIT_TIMEOUTS_IN = %w[index show raw edit history diff pages templates].freeze
 
   included do
     content_security_policy do |p|
@@ -30,7 +30,7 @@ module WikiActions
 
     before_action :wiki
     before_action :page, only: [:show, :edit, :update, :history, :destroy, :diff]
-    before_action :load_sidebar, except: [:pages]
+    before_action :load_sidebar, except: [:pages, :index]
 
     before_action do
       push_frontend_feature_flag(:wiki_immersive_editor, container)
@@ -81,6 +81,13 @@ module WikiActions
       view: 'create',
       selected_template_slug: selected_template_slug
     )
+  end
+
+  def index
+    return redirect_to wiki_page_path(wiki, Wiki::HOMEPAGE) if wiki.has_home_page?
+    return redirect_to wiki_path(wiki, action: :pages) if wiki.exists?
+
+    redirect_to wiki_page_path(wiki, Wiki::HOMEPAGE)
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables

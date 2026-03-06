@@ -561,12 +561,15 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   end
 
   describe 'GET #versions' do
-    let(:merge_request_diff) { merge_request.merge_request_diff }
+    let(:previous_mr_diff) { merge_request.merge_request_diffs.first }
+    let(:latest_mr_diff) { merge_request.merge_request_diff }
     let(:full_path) { project.full_path }
     let(:iid) { merge_request.iid }
     let(:diffs_path) { "/#{full_path}/-/merge_requests/#{iid}/diffs" }
-    let(:diff_id) { merge_request_diff.id }
-    let(:start_sha) { merge_request_diff.head_commit_sha }
+    let(:previous_diff_id) { previous_mr_diff.id }
+    let(:latest_diff_id) { latest_mr_diff.id }
+    let(:previous_start_sha) { previous_mr_diff.head_commit_sha }
+    let(:latest_start_sha) { latest_mr_diff.head_commit_sha }
 
     before do
       project.add_developer(user)
@@ -576,20 +579,168 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     it 'responds with list of diff versions' do
       get versions_project_merge_request_path(project, merge_request)
 
-      expect(json_response).to be_kind_of(Array)
-      expect(json_response.size).to eq(2)
-      expect(json_response.first).to include(
-        "base_version_path" => "#{diffs_path}?diff_id=#{diff_id}&rapid_diffs=true",
-        "commits_count" => merge_request_diff.commits_count,
-        "compare_path" => "#{diffs_path}?diff_id=#{diff_id}&rapid_diffs=true&start_sha=#{start_sha}",
-        "head_commit_sha" => start_sha,
-        "head_version_path" => nil,
-        "id" => diff_id,
-        "latest" => true,
-        "short_commit_sha" => Commit.truncate_sha(start_sha),
+      expect(json_response).to be_kind_of(Hash)
+      expect(json_response['source_versions'].size).to eq(2)
+      expect(json_response['source_versions'].first).to include(
+        "id" => latest_diff_id,
         "version_index" => 2,
-        "version_path" => "#{diffs_path}?diff_id=#{diff_id}&rapid_diffs=true"
+        "head" => false,
+        "latest" => true,
+        "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+        "commits_count" => latest_mr_diff.commits_count,
+        "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true",
+        "selected" => true
       )
+      expect(json_response['source_versions'].last).to include(
+        "id" => previous_diff_id,
+        "version_index" => 1,
+        "head" => false,
+        "latest" => false,
+        "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+        "commits_count" => previous_mr_diff.commits_count,
+        "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true",
+        "selected" => false
+      )
+
+      expect(json_response['target_versions'].size).to eq(2)
+      expect(json_response['target_versions'].first).to include(
+        "id" => latest_diff_id,
+        "version_index" => nil,
+        "head" => false,
+        "latest" => true,
+        "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+        "href" => "#{diffs_path}?rapid_diffs=true",
+        "commits_count" => latest_mr_diff.commits_count,
+        "selected" => true,
+        "branch" => merge_request.target_branch
+      )
+      expect(json_response['target_versions'].last).to include(
+        "id" => previous_diff_id,
+        "version_index" => 1,
+        "head" => false,
+        "latest" => false,
+        "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+        "commits_count" => previous_mr_diff.commits_count,
+        "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+        "selected" => false
+      )
+    end
+
+    context 'when diff_id is set' do
+      it 'responds with list of diff versions' do
+        get(
+          versions_project_merge_request_path(
+            project,
+            merge_request,
+            diff_id: previous_diff_id
+          )
+        )
+
+        expect(json_response).to be_kind_of(Hash)
+        expect(json_response['source_versions'].size).to eq(2)
+        expect(json_response['source_versions'].first).to include(
+          "id" => latest_diff_id,
+          "version_index" => 2,
+          "head" => false,
+          "latest" => true,
+          "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+          "commits_count" => latest_mr_diff.commits_count,
+          "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true",
+          "selected" => false
+        )
+        expect(json_response['source_versions'].last).to include(
+          "id" => previous_diff_id,
+          "version_index" => 1,
+          "head" => false,
+          "latest" => false,
+          "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+          "commits_count" => previous_mr_diff.commits_count,
+          "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true",
+          "selected" => true
+        )
+
+        expect(json_response['target_versions'].size).to eq(2)
+        expect(json_response['target_versions'].first).to include(
+          "id" => latest_diff_id,
+          "version_index" => nil,
+          "head" => false,
+          "latest" => true,
+          "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+          "href" => "#{diffs_path}?rapid_diffs=true",
+          "commits_count" => latest_mr_diff.commits_count,
+          "selected" => true,
+          "branch" => merge_request.target_branch
+        )
+        expect(json_response['target_versions'].last).to include(
+          "id" => previous_diff_id,
+          "version_index" => 1,
+          "head" => false,
+          "latest" => false,
+          "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+          "commits_count" => previous_mr_diff.commits_count,
+          "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+          "selected" => false
+        )
+      end
+
+      context 'when start_sha is set' do
+        it 'responds with list of diff versions' do
+          get(
+            versions_project_merge_request_path(
+              project,
+              merge_request,
+              diff_id: previous_diff_id,
+              start_sha: previous_start_sha
+            )
+          )
+
+          expect(json_response).to be_kind_of(Hash)
+          expect(json_response['source_versions'].size).to eq(2)
+          expect(json_response['source_versions'].first).to include(
+            "id" => latest_diff_id,
+            "version_index" => 2,
+            "head" => false,
+            "latest" => true,
+            "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+            "commits_count" => latest_mr_diff.commits_count,
+            "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+            "selected" => false
+          )
+          expect(json_response['source_versions'].last).to include(
+            "id" => previous_diff_id,
+            "version_index" => 1,
+            "head" => false,
+            "latest" => false,
+            "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+            "commits_count" => previous_mr_diff.commits_count,
+            "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+            "selected" => true
+          )
+
+          expect(json_response['target_versions'].size).to eq(2)
+          expect(json_response['target_versions'].first).to include(
+            "id" => latest_diff_id,
+            "version_index" => nil,
+            "head" => false,
+            "latest" => true,
+            "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+            "href" => "#{diffs_path}?rapid_diffs=true",
+            "commits_count" => latest_mr_diff.commits_count,
+            "selected" => false,
+            "branch" => merge_request.target_branch
+          )
+          expect(json_response['target_versions'].last).to include(
+            "id" => previous_diff_id,
+            "version_index" => 1,
+            "head" => false,
+            "latest" => false,
+            "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+            "commits_count" => previous_mr_diff.commits_count,
+            "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+            "selected" => true
+          )
+        end
+      end
     end
 
     context 'when rapid_diffs_on_mr_show feature flag is disabled' do

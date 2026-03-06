@@ -2934,6 +2934,7 @@ class MergeRequest < ApplicationRecord
       )
       .join(u).on(u[:id].eq(m[:committer_id]))
       .where(dc[:merge_request_diff_id].eq(merge_request_diff.id))
+      .where(u[:email].not_eq(nil))
   end
 
   def committer_emails_via_direct_query
@@ -2944,6 +2945,7 @@ class MergeRequest < ApplicationRecord
       .join(u).on(u[:id].eq(dc[:committer_id]))
       .where(dc[:merge_request_diff_id].eq(merge_request_diff.id))
       .where(dc[:merge_request_commits_metadata_id].eq(nil))
+      .where(u[:email].not_eq(nil))
   end
 
   def update_cached_closing_issues_from_description!(issues_to_close_ids)

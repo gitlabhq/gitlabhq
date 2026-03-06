@@ -4,7 +4,6 @@ Gitlab/AvoidConstDefaultOrganizationId:
     - 'app/models/organizations/organization.rb'
     - 'app/models/personal_access_token.rb'
     - 'app/models/user.rb'
-    - 'db/migrate/20250618121819_add_organization_id_to_users.rb'
     - 'db/post_migrate/20250625103818_change_default_organization_id_on_users.rb'
     - 'db/post_migrate/20250925120459_backfill_jira_connect_installations_organization_id.rb'
     - 'db/post_migrate/20251001091535_backfill_member_roles_organization_id.rb'

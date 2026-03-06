@@ -396,7 +396,6 @@ You can now create personal access tokens for a service account user with no exp
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
@@ -475,7 +474,6 @@ To learn more about DPoP, see the blueprint
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
 - Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -522,7 +520,6 @@ sudo gitlab-rails runner "token = User.find_by_username('automation-bot').person
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
 - Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -561,7 +558,6 @@ sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here12
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
 - Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -601,4 +597,4 @@ For authentication in CI/CD jobs, consider:
 - [Group access tokens](../group/settings/group_access_tokens.md)
 - [Project access tokens](../project/settings/project_access_tokens.md)
 - [Personal access tokens API](../../api/personal_access_tokens.md)
-- [REST API endpoints with granular personal access token support](../../auth/tokens/fine_grained_access_tokens.md)
+- [REST API endpoints with fine-grained personal access token support](../../auth/tokens/fine_grained_access_tokens.md)

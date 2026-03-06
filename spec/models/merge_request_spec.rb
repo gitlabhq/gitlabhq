@@ -3569,6 +3569,27 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it_behaves_like 'committer filtering matches expected'
     end
+
+    context 'with a commit whose committer has nil email in diff_commit_users' do
+      let_it_be(:merge_request) do
+        create(:merge_request, :skip_diff_creation, source_project: project, target_project: project)
+      end
+
+      let(:expected_committer_ids) { [] }
+
+      let_it_be(:diff) { create(:merge_request_diff, merge_request: merge_request) }
+      let_it_be(:nil_email_committer) do
+        create(:merge_request_diff_commit_user, name: 'Name Only', email: nil)
+      end
+
+      let_it_be(:diff_commit) do
+        create(:merge_request_diff_commit, merge_request_diff: diff, committer: nil_email_committer)
+      end
+
+      subject { merge_request.reload }
+
+      it_behaves_like 'committer filtering matches expected'
+    end
   end
 
   describe '#diverged_commits_count' do

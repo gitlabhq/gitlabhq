@@ -5,7 +5,7 @@ class CreateProjectPushRules < Gitlab::Database::Migration[2.3]
   milestone '18.6'
 
   def up
-    create_table :project_push_rules, if_not_exists: true do |t| # rubocop:disable Migration/EnsureFactoryForTable -- factory will use existing PushRule factory
+    create_table :project_push_rules, if_not_exists: true do |t|
       t.timestamps_with_timezone null: false
 
       t.bigint :project_id, null: false

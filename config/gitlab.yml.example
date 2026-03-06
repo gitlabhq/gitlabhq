@@ -1430,6 +1430,11 @@ production: &base
     # The client timeout in seconds for the KAS API (used by the GitLab backend)
     # client_timeout_seconds: 5
 
+  ## GitLab Knowledge Graph settings
+  knowledge_graph:
+    # enabled: false
+    # grpc_endpoint: localhost:50054
+
   ## GitLab Elasticsearch settings
   elasticsearch:
     indexer_path: /home/git/gitlab-elasticsearch-indexer/
