@@ -49332,6 +49332,8 @@ CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules U
 
 CREATE INDEX tmp_idx_redirect_routes_on_source_type_id_where_namespace_null ON redirect_routes USING btree (source_type, id) WHERE (namespace_id IS NULL);
 
+CREATE INDEX tmp_idx_vulnerabilities_state_id ON vulnerabilities USING btree (state, id) WHERE ((resolved_at IS NOT NULL) OR (dismissed_at IS NOT NULL));
+
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
 
 CREATE INDEX tmp_index_namespace_settings_on_experiment_features_enabled ON namespace_settings USING btree (namespace_id) WHERE (experiment_features_enabled IS TRUE);
