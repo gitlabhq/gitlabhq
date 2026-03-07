@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLab Duo Code Review (Classic)
+title: GitLab Duo Code Review
 ---
 
 {{< details >}}
@@ -34,7 +34,7 @@ title: GitLab Duo Code Review (Classic)
 
 {{< /history >}}
 
-When your merge request is ready to be reviewed, use GitLab Duo Code Review (Classic) to perform an initial review:
+When your merge request is ready to be reviewed, use GitLab Duo Code Review to perform an initial review:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.

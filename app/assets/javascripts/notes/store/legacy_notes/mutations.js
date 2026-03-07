@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash';
 import { STATUS_CLOSED, STATUS_REOPENED } from '~/issues/constants';
 import { isInMRPage } from '~/lib/utils/common_utils';
 import createState from '~/notes/stores/state';
@@ -47,12 +46,7 @@ export default {
   },
 
   [types.ADD_NEW_REPLY_TO_DISCUSSION](note) {
-    const discussion = utils.findNoteObjectById(useDiscussions().discussions, note.discussion_id);
-    const existingNote = discussion && utils.findNoteObjectById(discussion.notes, note.id);
-
-    if (discussion && !existingNote) {
-      discussion.notes.push(note);
-    }
+    useDiscussions().addNote(note);
   },
 
   [types.DELETE_NOTE](note) {
@@ -255,19 +249,11 @@ export default {
     // eslint-disable-next-line no-param-reassign
     delete note.base_discussion;
 
-    if (discussion.individual_note) {
-      if (note.type === constants.DISCUSSION_NOTE) {
-        discussion.individual_note = false;
-      }
-
-      discussion.notes.splice(0, 1, note);
-    } else {
-      const comment = utils.findNoteObjectById(discussion.notes, note.id);
-
-      if (!isEqual(comment, note)) {
-        discussion.notes.splice(discussion.notes.indexOf(comment), 1, note);
-      }
+    if (discussion.individual_note && note.type === constants.DISCUSSION_NOTE) {
+      discussion.individual_note = false;
     }
+
+    useDiscussions().updateNote(note);
 
     if (note.resolvable && note.id === discussion.notes[0].id) {
       Object.assign(discussion, {

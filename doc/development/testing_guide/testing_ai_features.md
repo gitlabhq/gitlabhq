@@ -49,7 +49,7 @@ For instance, `ee/spec/features/epic_boards/epic_boards_spec.rb` asserts the fol
 
 - Epic board is functional on a page that loads DAP components in the sidebar.
 - DAP feature is functional in a page where the epic board is rendered.
-  1. User visits a core feature page and open Duo Agentic Chat from the sidebar.
+  1. User visits a core feature page and opens GitLab Duo Chat (agentic) from the sidebar.
   1. User asks a question in the chat.
   1. Frontend JS/Vue initiates websocket connection with Workhorse (This Workhorse instance runs locally in the test environment).
   1. Frontend JS/Vue sends a gRPC request to DWS through Workhorse (This DWS instance runs locally in the test environment).

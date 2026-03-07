@@ -27,7 +27,7 @@ requirements such as development style guides.
 
 The following Agent Platform features support custom rules:
 
-- [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md)
+- [GitLab Duo Chat (agentic)](../../gitlab_duo_chat/agentic_chat.md)
 - [Foundational and custom agents](../agents/_index.md)
 - [Foundational and custom flows](../flows/_index.md)
 
@@ -97,13 +97,13 @@ For example, you can apply a set of development style guides that your team uses
 
 1. Save the file.
 1. For a project: Add the `.gitlab/duo/chat-rules.md` file to the Git repository.
-   Agentic Chat, agents, and flows then automatically read the custom rules from
+   Chat, agents, and flows then automatically read the custom rules from
    the repository into context.
 1. To apply the new custom rules, start a new GitLab Duo conversation.
 
    You must do this every time you change the custom rules.
 
-For more information, see the [Custom rules in GitLab Duo Agentic Chat tutorial blog](https://about.gitlab.com/blog/custom-rules-duo-agentic-chat-deep-dive/).
+For more information, see the [Custom rules in GitLab Duo Chat tutorial blog](https://about.gitlab.com/blog/custom-rules-duo-agentic-chat-deep-dive/).
 
 ## Update custom rules
 

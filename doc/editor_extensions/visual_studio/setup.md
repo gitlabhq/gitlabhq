@@ -97,6 +97,4 @@ prerequisites:
   1. Under **GitLab**, select **General**.
   1. Enter a value for **Default namespace (DAP)**.
   1. Select **OK**.
-- For GitLab Duo Code Suggestions, you meet the additional prerequisites:
-  - [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
-  - [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
+- For GitLab Duo Code Suggestions, you [meet the additional prerequisites](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites).

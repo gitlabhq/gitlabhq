@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: Control GitLab Duo (Classic) availability
+title: Control GitLab Duo availability
 ---
 
 {{< details >}}
@@ -20,7 +20,7 @@ title: Control GitLab Duo (Classic) availability
 
 {{< /history >}}
 
-GitLab Duo (Classic) is on by default.
+GitLab Duo is on by default.
 GitLab Duo includes a [set of features](feature_summary.md).
 
 You can turn GitLab Duo on or off:
@@ -127,7 +127,7 @@ To change GitLab Duo availability for a project:
 ### For earlier GitLab versions
 
 For information on how to turn GitLab Duo on or off in earlier GitLab versions, see
-[control GitLab Duo (Classic) availability for earlier GitLab versions](turn_on_off_earlier.md).
+[control GitLab Duo availability for earlier GitLab versions](turn_on_off_earlier.md).
 
 ## Turn GitLab Duo Core on or off
 
@@ -135,7 +135,7 @@ For information on how to turn GitLab Duo on or off in earlier GitLab versions, 
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538857) in GitLab 18.0.
 - GitLab Duo availability settings and group, subgroup, and project controls [added](https://gitlab.com/gitlab-org/gitlab/-/issues/551895) in GitLab 18.2.
-- GitLab Duo Chat (Classic) [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
+- GitLab Duo Chat (non-agentic) [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 
 {{< /history >}}
 

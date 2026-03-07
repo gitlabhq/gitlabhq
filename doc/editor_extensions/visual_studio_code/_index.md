@@ -39,15 +39,15 @@ After you install and set up the extension, you can access the following feature
   requests, run CI/CD commands, view pipeline status, and perform security scanning.
   You can also extend your view with [custom queries](custom_queries.md).
 - On the left sidebar, **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}):
-  - The chat tab: Interact with GitLab Duo Chat (Agentic), or use the **New chat** ({{< icon name="duo-chat-new" >}})
+  - The chat tab: Interact with GitLab Duo Chat (agentic), or use the **New chat** ({{< icon name="duo-chat-new" >}})
     dropdown list to select a foundational or custom agent to work with.
   - The flows tab: Use the Software Development Flow. Learn more about the
   [difference between Chat and the flow](../../user/duo_agent_platform/flows/foundational_flows/software_development.md#flow-and-chat-comparison).
 - In the status bar, **Duo** ({{< icon name="tanuki-ai" >}}): Check the feature status of
-  GitLab Duo Code Suggestions and GitLab Duo Code Suggestions (Classic), and review suggestions in
+  GitLab Duo Code Suggestions and review suggestions in
   your file as you author code.
 - On the left sidebar, **GitLab Duo Chat** ({{< icon name="duo-chat" >}}): Interact with
-  GitLab Duo Chat (Classic).
+  GitLab Duo Chat (non-agentic).
 
 If these features do not appear, see [troubleshooting](troubleshooting.md#gitlab-duo-features-are-unavailable) for guidance.
 
@@ -134,7 +134,7 @@ To update your extension to the latest version:
 1. A menu opens under the VS Code search box, and the GitLab for VS Code extension shows the status.
    Any errors are displayed next to **Status:**.
 
-For GitLab Duo Chat (Classic), you can also check the [status of Chat](../../user/gitlab_duo_chat/_index.md#check-the-status-of-chat).
+For GitLab Duo Chat (non-agentic), you can also check the [status of Chat](../../user/gitlab_duo_chat/_index.md#check-the-status-of-chat).
 
 ## Enable telemetry
 

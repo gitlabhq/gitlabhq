@@ -16,7 +16,7 @@ If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-
 If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in Visual Studio:
 
 - Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
-- Check that GitLab Duo Chat (Agentic) is enabled:
+- Check that GitLab Duo Chat (agentic) is enabled:
   1. In Visual Studio, go to **Tools** > **Options** > **GitLab**.
   1. Under **GitLab**, select **General**.
   1. Check that **Enable Agentic Duo Chat** is set to **True**.
@@ -24,13 +24,12 @@ If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in Visual St
   1. In Visual Studio, on the bottom status bar, check the GitLab icon's tooltip for the current
      status of the feature.
   1. If Code Suggestions is not enabled, on the top bar, select **Extensions** > **GitLab** >
-     **Toggle Code Suggestions**
+     **Toggle Code Suggestions**.
 
 For additional support:
 
 - [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
 - Troubleshooting [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#microsoft-visual-studio-troubleshooting)
-- Troubleshooting [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/troubleshooting.md#microsoft-visual-studio-troubleshooting)
 
 ## View more logs
 

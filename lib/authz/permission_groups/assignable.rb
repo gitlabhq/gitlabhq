@@ -21,6 +21,14 @@ module Authz
         def definitions
           all.values
         end
+
+        def available_definitions
+          definitions.reject(&:deprecated?)
+        end
+      end
+
+      def deprecated?
+        definition[:deprecated] == true
       end
 
       def category

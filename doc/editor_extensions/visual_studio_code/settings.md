@@ -110,8 +110,3 @@ The `duoFeaturesEnabledForProject` setting is unavailable if:
 - The project is not set up in the extension.
 - The project is on a different GitLab instance than your current account.
 - The file or folder you are working with isn't part of any GitLab project you have access to.
-
-## Related topics
-
-- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md)
-- [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md)

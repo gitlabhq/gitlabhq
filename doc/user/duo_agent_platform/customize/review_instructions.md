@@ -38,7 +38,7 @@ To configure custom merge request review instructions:
 
 1. In the root of your repository, create a `.gitlab/duo` directory if one doesn't already exist.
 1. In the `.gitlab/duo` directory, create a file named `mr-review-instructions.yaml`.
-1. Optional. Ask [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md)
+1. Optional. Ask [GitLab Duo Chat (agentic)](../../gitlab_duo_chat/agentic_chat.md)
    to analyze the codebase and documentation, and generate custom review instructions.
 
    Example prompt:

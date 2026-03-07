@@ -25,7 +25,7 @@ Then follow up with:
 Please show the project structure for the C# project.
 ```
 
-With GitLab Duo Chat (Agentic), you can have a conversation that includes multiple projects.
+With GitLab Duo Chat (agentic), you can have a conversation that includes multiple projects.
 
 ```plaintext
 Tell me the difference between project A and project B.
@@ -42,7 +42,7 @@ Please show a .gitignore and .gitlab-ci.yml configuration with steps for C#,
 and add security scanning for GitLab.
 ```
 
-Or, with GitLab Duo Chat (Agentic):
+Or, with GitLab Duo Chat (agentic):
 
 ```plaintext
 Create an empty C# console application.
@@ -65,7 +65,7 @@ Then ask:
 Please show an example for Codeowners with different teams: backend, frontend, release managers.
 ```
 
-Or, with GitLab Duo Chat (Agentic):
+Or, with GitLab Duo Chat (agentic):
 
 ```plaintext
 Create Codeowners with different teams: backend, frontend, release managers.
@@ -83,7 +83,7 @@ When implementing a pure virtual function in an inherited C++ class,
 should I use virtual function override, or just function override?
 ```
 
-This context is less important when you use GitLab Duo Chat (Agentic) because it autonomously searches,
+This context is less important when you use GitLab Duo Chat (agentic) because it autonomously searches,
 retrieves, and combines information from multiple sources. However, you should
 still be explicit to help Chat work as efficiently as possible.
 
@@ -101,7 +101,7 @@ Follow up with:
 How can I get started creating an empty C# console application in VS Code?
 ```
 
-Or, with GitLab Duo Chat (Agentic):
+Or, with GitLab Duo Chat (agentic):
 
 ```plaintext
 Create an empty C# console application in my test project.
@@ -133,8 +133,8 @@ Or:
 /explain why this code has multiple vulnerabilities
 ```
 
-Although slash commands still work for GitLab Duo Chat (Agentic), they are not as critical
-as they are in GitLab Duo Chat (Classic).
+Although slash commands still work for GitLab Duo Chat (agentic), they are not as critical
+as they are in GitLab Duo Chat (non-agentic).
 You can ask Chat to explain or refactor code and it can search across projects,
 create and edit files, and analyze information from multiple sources simultaneously.
 

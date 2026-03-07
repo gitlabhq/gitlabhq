@@ -171,9 +171,7 @@ GitLab Duo features are enabled by default in VS Code when you meet the prerequi
   1. Select **Extensions** > **GitLab**.
   1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
   1. Enter a value for **GitLab > Duo Agent Platform: Default Namespace**.
-- For GitLab Duo Code Suggestions, you meet the additional prerequisites:
-  - [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
-  - [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
+- For GitLab Duo Code Suggestions, you [meet the additional prerequisites](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites).
 
 ### Code security
 

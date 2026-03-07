@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLab Duo Chat (Classic)
+title: GitLab Duo Chat (non-agentic)
 ---
 
 {{< details >}}
@@ -29,14 +29,13 @@ title: GitLab Duo Chat (Classic)
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) from Ultimate to Premium tier in GitLab 16.9 while in beta.
 - [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.11.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-- Updated naming to GitLab Duo Chat (Classic) in GitLab 18.3.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 - [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
 
 {{< /history >}}
 
-GitLab Duo Chat (Classic) is an AI assistant that accelerates development with
-contextual, conversational AI. Chat:
+GitLab Duo Chat is an AI assistant that accelerates development with
+contextual, conversational AI. This non-agentic Chat:
 
 - Explains code and suggests improvements directly in your development environment.
 - Analyzes code, merge requests, issues, and other GitLab artifacts.
@@ -47,7 +46,7 @@ contextual, conversational AI. Chat:
 <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
 <!-- Video published on 2024-04-18 -->
 
-Learn about the new [GitLab Duo Chat (Agentic)](agentic_chat.md).
+Learn about the new [GitLab Duo Chat (agentic)](agentic_chat.md).
 
 ## Supported editor extensions
 
@@ -72,7 +71,7 @@ You can also use GitLab Duo Chat in these IDEs by installing an editor extension
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/562168) to be available on all pages in the GitLab UI for GitLab.com in GitLab 18.5.
 - New navigation and GitLab Duo sidebar introduced on GitLab.com in GitLab 18.6 with a [flag](../../administration/feature_flags/_index.md) named `paneled_view`. Enabled by default.
-- Classic navigation instructions removed in GitLab 18.7.
+- Previous navigation instructions removed in GitLab 18.7.
 - New navigation and GitLab Duo sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.8. Feature flag `paneled_view` removed.
 
 {{< /history >}}

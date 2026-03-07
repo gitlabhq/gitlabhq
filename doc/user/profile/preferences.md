@@ -208,7 +208,7 @@ of that project or group is used instead for feature availability and credit con
 - If you use GitLab Duo features in a project you're not a member of,
   usage is billed to your default namespace.
 
-If you do not set a default namespace, GitLab Duo Chat (Agentic) and the GitLab Duo Agent Platform are disabled.
+If you do not set a default namespace, GitLab Duo Chat (agentic) and the GitLab Duo Agent Platform are disabled.
 
 To set a default GitLab Duo namespace:
 

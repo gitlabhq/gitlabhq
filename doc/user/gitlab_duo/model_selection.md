@@ -3,7 +3,7 @@ stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure large language models for GitLab Duo features.
-title: GitLab Duo (Classic) AI models
+title: GitLab Duo AI models
 ---
 
 {{< details >}}
@@ -14,7 +14,7 @@ title: GitLab Duo (Classic) AI models
 
 {{< /details >}}
 
-Every GitLab Duo (Classic) feature uses a default model. GitLab might update default models to optimize performance. You can select a different model for a feature, which persists until you change it.
+Every GitLab Duo feature uses a default model. GitLab might update default models to optimize performance. You can select a different model for a feature, which persists until you change it.
 
 ## Default models
 
@@ -60,7 +60,7 @@ The following tables list the models you can select for each feature.
 | Codestral 25.08 Vertex | {{< no >}} | {{< yes >}} |
 | Gemini 2.5 Flash Vertex | {{< yes >}} | {{< no >}} |
 
-### GitLab Duo Chat (Classic)
+### GitLab Duo Chat (non-agentic)
 
 | Model | General Chat | Code Explanation | Test Generation | Refactor Code | Fix Code | Root Cause Analysis |
 |------------|--------------|------------------|-----------------|---------------|----------|---------------------|

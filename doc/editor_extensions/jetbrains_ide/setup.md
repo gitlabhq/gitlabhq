@@ -80,10 +80,7 @@ To enable GitLab Duo features:
 1. Find the feature you want to enable and select the checkbox.
 1. Restart your IDE, if prompted.
 
-For GitLab Duo Code Suggestions, review the additional prerequisites and setup steps:
-
-- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
-- [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
+For GitLab Duo Code Suggestions, [review the additional prerequisites and setup steps](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites).
 
 ## Set the default namespace
 

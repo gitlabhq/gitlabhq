@@ -339,29 +339,29 @@ Chat displays the following types of links as selectable in responses:
 - Links to `gitlab.com`, including but not limited to GitLab projects, issues, and merge requests.
 - Relative URLs in your GitLab instance.
 
-## Agentic Chat-specific issues
+## Issues specific to GitLab Duo Chat (agentic)
 
 ### Not enough GitLab Credits
 
-You might lose access to Agentic Chat because you have run out of GitLab Credits.
+You might lose access to Chat because you have run out of GitLab Credits.
 
 To resolve this issue, you can do either of the following:
 
 - [Buy more GitLab Credits](../../subscriptions/gitlab_credits.md#buy-gitlab-credits).
-- Switch to Classic Chat. When you switch, a new conversation starts.
-  You can still view your previous Agentic Chat conversation, but it is read-only.
+- Switch to non-agentic Chat. When you switch, a new conversation starts.
+  You can still view your previous agentic Chat conversation, but it is read-only.
 
 ### Slow response times
 
-Agentic Chat can be slower than Classic Chat in processing and responding to requests.
+Agentic Chat can be slower than non-agentic Chat in processing and responding to requests.
 
-This issue occurs because Agentic Chat makes multiple API calls to gather information,
+This issue occurs because agentic Chat makes multiple API calls to gather information,
 so responses can take much longer.
 
 ### Limited permissions
 
 Agentic Chat can access the same resources that your GitLab user has permission to
-access. If you find that Agentic Chat cannot access the resources needed to answer
+access. If you find that agentic Chat cannot access the resources needed to answer
 your request, check your [user permissions](../permissions.md).
 
 ### Search limitations

@@ -218,16 +218,14 @@ The token generated when you create an agent for Kubernetes. Use **agent access 
 - secret token
 - authentication token
 
-## Agentic Chat, GitLab Duo Chat (Agentic)
+## Agentic Chat, GitLab Duo Chat (agentic)
 
-GitLab Duo Chat (Agentic) is an enhanced version of [GitLab Duo Chat (Classic)](#chat-gitlab-duo-chat-classic).
+GitLab Duo Chat (agentic) is an enhanced version of [GitLab Duo Chat (non-agentic)](#chat-gitlab-duo-chat-non-agentic).
 
-For capitalization, use **Agentic Chat**.
-
-On first use, use **GitLab Duo Chat (Agentic)**.
+On first use, use **GitLab Duo Chat (agentic)**.
 Thereafter, use **Chat** or **GitLab Duo Chat**.
 
-Do not use **Duo Agentic Chat**.
+Do not use **Agentic Chat** or **Duo Agentic Chat**.
 
 ## agnostic
 
@@ -481,13 +479,11 @@ Instead of:
 
 - In the **Seat utilization** card, select **Assign seats**.
 
-## Chat, GitLab Duo Chat (Classic)
+## Chat, GitLab Duo Chat (non-agentic)
 
-GitLab Duo Chat (Classic) differs from [GitLab Duo Chat (Agentic)](#agentic-chat-gitlab-duo-chat-agentic).
+GitLab Duo Chat (non-agentic) differs from [GitLab Duo Chat (agentic)](#agentic-chat-gitlab-duo-chat-agentic).
 
-For capitalization, use **Classic Chat** or **GitLab Duo Chat (Classic)**.
-
-On first use, use **GitLab Duo Chat (Classic)**.
+On first use, use **GitLab Duo Chat (non-agentic)**.
 Thereafter, use **Chat** or **GitLab Duo Chat**.
 
 Do not use **Duo Chat**.
@@ -552,15 +548,7 @@ Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#co
 
 ## classic
 
-Some GitLab Duo features are non-agentic. These features should be described in the documentation
-with **(Classic)** after the feature name. For example:
-
-- GitLab Duo Chat (Classic)
-- GitLab Duo Vulnerability Resolution (Classic)
-
-You can also use a phrase that includes **classic** as lowercase. For example:
-
-- This new agentic feature is different from the classic version.
+Some GitLab Duo features are non-agentic. These features should not be referred to as **classic**.
 
 ## click
 
@@ -1288,7 +1276,7 @@ Do not use **Dedicated for Government** by itself. Always use **GitLab Dedicated
 Do not use **Duo** by itself. Always use **GitLab Duo**.
 
 On first use on a page, use **GitLab Duo `<featurename>`**. As of Jan, 2026,
-the following are the names of classic GitLab Duo features:
+the following are the names of GitLab Duo features:
 
 - GitLab Duo Chat
 - GitLab Duo Code Explanation
@@ -1310,9 +1298,6 @@ the following are the names of classic GitLab Duo features:
 
 Excluding GitLab Duo Self-Hosted, after the first use, use the feature name
 without **GitLab Duo**.
-
-You can add **(Classic)** after the feature name when comparing it to an agentic version.
-For more information, see [classic](#classic).
 
 ## GitLab Duo Agent Platform
 

@@ -74,8 +74,11 @@ module Tasks
           end
 
           def validate_raw_permissions
-            duplicates = ::Authz::PermissionGroups::Assignable.all_permissions.filter_map do |raw_permission|
-              assignables = ::Authz::PermissionGroups::Assignable.for_permission(raw_permission)
+            non_deprecated = ::Authz::PermissionGroups::Assignable.available_definitions
+            all_raw_permissions = non_deprecated.flat_map(&:permissions).uniq
+
+            duplicates = all_raw_permissions.filter_map do |raw_permission|
+              assignables = non_deprecated.select { |a| a.permissions.include?(raw_permission) }
               [raw_permission, assignables.map(&:name)] if assignables.size > 1
             end.to_h
 

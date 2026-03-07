@@ -16,8 +16,11 @@ Here is a list of all of the main steps to go through from a fresh, GDK-less com
 ### Prepare your GDK
 
 Follow the instructions in the [GitLab Development Kit](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/) to set up
-GitLab Duo for local development purposes. These instructions describe how to fulfill prerequisites in your local environment and set up core
-backend components.
+GitLab Duo for local development purposes. These instructions describe how to fulfill prerequisites in your local environment and set up core backend components.
+
+### Update an existing GDK
+
+If you already have a GDK installed, you **still** must refer to the [GitLab Development Kit instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/) to set up DAP with the right environment variables, NGINX, your Anthropic key and more.
 
 ### Run `gitlab:duo:setup` task
 
@@ -86,14 +89,19 @@ Be sure to run the Rake task from the GitLab Rails root directory (typically `/p
    GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup[duo_core]'
    ```
 
-After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see GitLab Duo Chat. Send a question to Chat
-and make sure there are no errors. If there are, the two most common problems in development are [A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) and [A9999](../../user/gitlab_duo_chat/troubleshooting.md#error-a9999).
+After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see GitLab Duo Chat. Send a question to Chat and make sure there are no errors.
 
-`A9999` is a catchall error. The biggest offender is not setting up the AI Gateway URL correctly as described in the
+### Troubleshooting
+
+In most cases, you can simply run the [ai-services script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#step-1-run-the-automated-setup-script) to reset your GDK environment variables and it may be enough to fix any errors that occured.
+
+If you get error [A9999](../../user/gitlab_duo_chat/troubleshooting.md#error-a9999), it is a catchall error. The biggest offender is not setting up the AI Gateway URL correctly as described in the
 [AI Gateway installation instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway).
 If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repository with `make test` and that `gdk tail gitlab-ai-gateway` returns no error.
 
-`A1003` is more around permissions, either an invalid/missing Anthropic token or a misconfiguration of `gcloud`.
+[A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) is more around permissions, either an invalid/missing Anthropic token or a misconfiguration of `gcloud`.
+
+In Agentic Chat, authentication errors may happen and **not** result in A1003 error. Use `gdk tail duo-workflow-service` to make sure the workflow service runs without issues. If you see an authentication error, you need to [get a new Anthropic key](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#set-up-anthropic-api-key) and [re-run the ai-setup script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway)
 
 ### Tips for local development
 

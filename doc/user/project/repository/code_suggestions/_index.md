@@ -2,8 +2,8 @@
 stage: AI-powered
 group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Code Suggestions (Classic) helps you write code in GitLab more efficiently by using AI to suggest code as you type.
-title: Code Suggestions (Classic)
+description: Code Suggestions helps you write code in GitLab more efficiently by using AI to suggest code as you type.
+title: Code Suggestions
 ---
 
 {{< details >}}
@@ -40,7 +40,7 @@ title: Code Suggestions (Classic)
 
 {{< /history >}}
 
-Use GitLab Duo Code Suggestions (Classic) to write code more efficiently by using generative AI to suggest code while you're developing.
+Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
@@ -51,7 +51,7 @@ Code Suggestions is also available as part of the [GitLab Duo Agent Platform](..
 
 ## Prerequisites
 
-To use Code Suggestions (Classic):
+To use Code Suggestions:
 
 - If you have GitLab Duo Core, [turn on IDE features](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - [Set up Code Suggestions](set_up.md).
@@ -219,7 +219,7 @@ Prompt caching is enabled by default to improve Code Suggestions latency. When p
 ### Turn off prompt caching
 
 You can turn off prompt caching for top-level groups in the GitLab Duo settings.
-This also turns off prompt caching for [GitLab Duo Chat (Agentic)](../../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
+This also turns off prompt caching for [GitLab Duo Chat (agentic)](../../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
 
 Prerequisites:
 

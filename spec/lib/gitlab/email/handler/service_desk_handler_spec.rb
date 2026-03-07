@@ -292,6 +292,22 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             expect { subject }.not_to change { Issue.count }
           end
 
+          context 'when issue_email already existed but for a different namespace' do
+            let(:other_namespace) { create(:namespace) }
+
+            before do
+              Issue::Email.last.update!(namespace_id: other_namespace.id)
+            end
+
+            it 'does create a new issue and scopes the issue_email to the correct project namespace_id' do
+              expect { subject }.to change { Issue.count }.by(1).and(
+                change { Issue::Email.count }.from(1).to(2)
+              )
+
+              expect(Issue::Email.last.namespace_id).to eq(Issue.last.namespace_id)
+            end
+          end
+
           it 'adds a comment to the created issue' do
             subject
 

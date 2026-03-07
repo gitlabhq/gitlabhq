@@ -25,7 +25,7 @@ access to the context they need.
 
 GitLab supports MCP in two ways:
 
-- [MCP clients](mcp_clients.md): Connect GitLab Duo features like GitLab Duo Chat (Agentic)
+- [MCP clients](mcp_clients.md): Connect GitLab Duo features like GitLab Duo Chat (agentic)
   to external MCP servers for access to data and tools from other systems to
   provide more comprehensive assistance.
 

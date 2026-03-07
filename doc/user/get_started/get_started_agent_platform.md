@@ -19,7 +19,7 @@ which are available in the GitLab UI and IDEs.
 
 ## Step 1: Access GitLab Duo Chat
 
-GitLab Duo Chat (Agentic), in the UI or your local environment, is your interface
+GitLab Duo Chat (agentic), in the UI or your local environment, is your interface
 for asking questions and interacting with agents.
 It can provide advice, but it can also propose and implement solutions.
 
@@ -32,7 +32,7 @@ GitLab Duo Chat is available in the GitLab UI and a variety of IDEs.
 
 For more information, see:
 
-- [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md).
+- [GitLab Duo Chat (agentic)](../gitlab_duo_chat/agentic_chat.md).
 
 ## Step 2: Work with agents
 
@@ -97,7 +97,7 @@ functions, and dependencies.
 You can also extend the platform beyond GitLab by connecting with external tools
 and data sources.
 
-- Connect GitLab Duo features like GitLab Duo Chat (Agentic) to external MCP servers
+- Connect GitLab Duo features like GitLab Duo Chat (agentic) to external MCP servers
   so that other MCP clients can provide more comprehensive assistance.
 - MCP server works in the opposite direction: external AI tools like
   Claude Desktop or Cursor can securely connect to your

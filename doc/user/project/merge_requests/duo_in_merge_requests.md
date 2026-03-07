@@ -64,10 +64,10 @@ standards.
 
 When you request a review from `@GitLabDuo`, one of the following features runs:
 
-- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md): The new flow
-  available through the GitLab Duo Agent Platform. Uses GitLab Credits.
-- [GitLab Duo Code Review (Classic)](../../gitlab_duo/code_review_classic.md): The classic code
-  review functionality.
+- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md):
+  The GitLab Duo Agent Platform feature. Uses GitLab Credits.
+- [GitLab Duo Code Review](../../gitlab_duo/code_review_classic.md):
+  The GitLab Duo feature. Available to users with the GitLab Duo Pro or Enterprise add-on.
 
 The review feature that runs depends on the add-on of the user that starts the GitLab Duo review:
 
@@ -81,7 +81,7 @@ same project.
 ### How the review features compare
 
 While you interact with both review features the same way, Code Review Flow offers enhanced
-capabilities compared to GitLab Duo Code Review (Classic):
+capabilities compared to GitLab Duo Code Review:
 
 - Improved context awareness: Better understanding of repository structure and cross-file
   dependencies.

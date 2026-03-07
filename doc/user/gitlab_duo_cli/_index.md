@@ -26,7 +26,7 @@ title: GitLab Duo CLI (`duo`)
 
 {{< /history >}}
 
-The GitLab Duo CLI is a command-line interface tool that brings [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md)
+The GitLab Duo CLI is a command-line interface tool that brings [GitLab Duo Chat (agentic)](../gitlab_duo_chat/agentic_chat.md)
 to your terminal. Available for use with any operating system and editor, use `duo` to ask complex
 questions about your codebase and to autonomously perform actions on your behalf.
 

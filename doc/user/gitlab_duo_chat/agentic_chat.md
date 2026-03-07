@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLab Duo Chat (Agentic)
+title: GitLab Duo Chat (agentic)
 ---
 
 {{< details >}}
@@ -39,14 +39,14 @@ title: GitLab Duo Chat (Agentic)
 - Feature flags [`self_hosted_agent_platform`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218589), [`agentic_chat_ga`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219679), and [`ai_duo_agent_platform_ga_rollout_self_managed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219679) removed in GitLab 18.10.
 {{< /history >}}
 
-GitLab Duo Chat (Agentic) is an enhanced version of GitLab Duo Chat (Classic). This new Chat can autonomously
+GitLab Duo Chat (agentic) is an enhanced version of GitLab Duo Chat (non-agentic). This new Chat can autonomously
 perform actions on your behalf, to help you answer complex questions more comprehensively.
 
-While the classic Chat answers questions based on a single context, the agentic Chat searches,
+While the non-agentic Chat answers questions based on a single context, the agentic Chat searches,
 retrieves, and combines information from multiple sources across your GitLab projects
 to provide more thorough and relevant answers.
 
-GitLab Duo Chat (Agentic) can:
+GitLab Duo Chat (agentic) can:
 
 - Search projects to find relevant issues, merge requests, and other artifacts using keyword-based search (not semantic search).
 - Access files in your local project without manually specifying file paths.
@@ -59,7 +59,7 @@ GitLab Duo Chat (Agentic) can:
 - Create commits, when you use Chat in the GitLab UI.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
+For an overview, see [GitLab Duo Chat (agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
 <!-- Video published on 2025-06-02 -->
 
 ## Use GitLab Duo Chat
@@ -77,7 +77,7 @@ You can use GitLab Duo Chat in:
 
 - Ability for Chat to remember your most recent conversation [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203653) in GitLab 18.4.
 - New navigation and GitLab Duo sidebar introduced on GitLab.com in GitLab 18.6 with a [flag](../../administration/feature_flags/_index.md) named `paneled_view`. Enabled by default.
-- Classic navigation instructions removed in GitLab 18.7.
+- Previous navigation instructions removed in GitLab 18.7.
 - New navigation and GitLab Duo sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.8. Feature flag `paneled_view` removed.
 
 {{< /history >}}
@@ -359,7 +359,7 @@ After you create a conversation with an agent:
 
 {{< /history >}}
 
-Prompt caching is enabled by default to improve GitLab Duo Chat (Agentic) latency.
+Prompt caching is enabled by default to improve GitLab Duo Chat (agentic) latency.
 When prompt caching is enabled, chat prompt data is temporarily stored in memory by the model
 vendor (Anthropic or VertexAI). Prompt caching significantly improves latency by avoiding the
 re-processing of cached prompt and input data.
@@ -372,7 +372,7 @@ This also turns off prompt caching for Code Suggestions.
 
 ## Chat feature comparison
 
-| Capability                                              | GitLab Duo Chat (Classic) |                                                         GitLab Duo Chat (Agentic)                                                                                                          |
+| Capability                                              | GitLab Duo Chat (non-agentic) |                                                         GitLab Duo Chat (agentic)                                                                                                          |
 | ------------                                            |------|                                                         -------------                                                                                                          |
 | Ask general programming questions |                       Yes  |                                                          Yes                                                                                                                   |
 | Get answers about an open file in the editor |     Yes  |                                                          Yes. Provide the path of the file in your question.                                                                   |

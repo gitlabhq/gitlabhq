@@ -2,15 +2,17 @@ import { defineStore } from 'pinia';
 import { merge } from 'lodash';
 import { isCurrentUser } from '~/lib/utils/common_utils';
 
+function addReactiveNoteProps(note) {
+  return { isEditing: undefined, editedNote: null, ...note };
+}
+
 function addReactiveDiscussionProps(discussion) {
   return {
     repliesExpanded: true,
     isReplying: false,
     hidden: false,
     ...discussion,
-    notes: discussion.notes?.map((note) => {
-      return { isEditing: undefined, editedNote: null, ...note };
-    }),
+    notes: discussion.notes?.map(addReactiveNoteProps),
   };
 }
 
@@ -53,9 +55,10 @@ export const useDiscussions = defineStore('discussions', {
       discussion.isReplying = false;
     },
     addNote(note) {
-      const { notes } = this.getDiscussionById(note.discussion_id);
-      if (notes.some((existingNote) => existingNote.id === note.id)) return;
-      notes.push(note);
+      const discussion = this.getDiscussionById(note.discussion_id);
+      if (!discussion) return;
+      if (discussion.notes.some((existingNote) => existingNote.id === note.id)) return;
+      discussion.notes.push(addReactiveNoteProps(note));
     },
     updateNote(note) {
       merge(this.allNotesById[note.id], note);

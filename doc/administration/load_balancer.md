@@ -76,7 +76,7 @@ for details on managing SSL certificates and configuring NGINX.
 | 22      | 22           | TCP                      |
 
 - (*1*): Your load balancer must support WebSocket connections for features
-  like [Duo Chat (Classic)](../user/gitlab_duo_chat/_index.md), real-time label
+  like [GitLab Duo Chat (non-agentic)](../user/gitlab_duo_chat/_index.md), real-time label
   updates in issues and merge requests, and [web terminals](../ci/environments/_index.md#web-terminals-deprecated).
   Load balancers that do not support WebSockets (for example, AWS Classic Load
   Balancers) are not compatible with GitLab for these features. When using HTTP

@@ -757,6 +757,19 @@ Grants the ability to manage vulnerability notes.
 | Read | Project | `GET` | `/projects/:id/vulnerabilities/:noteable_id/notes/:note_id` |
 | Update | Project | `PUT` | `/projects/:id/vulnerabilities/:noteable_id/notes/:note_id` |
 
+### Orbit resources
+
+#### Knowledge Graph
+
+Grants the ability to query and read knowledge graph data.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Read | User | `GET` | `/orbit/schema` |
+| Read | User | `GET` | `/orbit/status` |
+| Read | User | `GET` | `/orbit/tools` |
+| Read | User | `POST` | `/orbit/query` |
+
 ### Packages And Registry resources
 
 #### Container Registry Protection Tag Rule

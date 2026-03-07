@@ -47,6 +47,39 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
       end
     end
 
+    describe '.available_definitions' do
+      it 'returns all definitions when none are deprecated' do
+        expect(described_class.available_definitions).to match_array([assignable, another_assignable])
+      end
+
+      context 'when a definition is deprecated' do
+        let(:deprecated_assignable) do
+          described_class.new({
+            name: 'deprecated_resource',
+            description: 'A deprecated permission',
+            permissions: %w[deprecated_action],
+            deprecated: true
+          }, 'path/to/deprecated_resource/action.yml')
+        end
+
+        before do
+          allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return({
+            assignable.name => assignable,
+            another_assignable.name => another_assignable,
+            deprecated_assignable.name => deprecated_assignable
+          })
+        end
+
+        it 'excludes deprecated definitions' do
+          expect(described_class.available_definitions).to match_array([assignable, another_assignable])
+        end
+
+        it 'still includes deprecated definitions in .definitions' do
+          expect(described_class.definitions).to include(deprecated_assignable)
+        end
+      end
+    end
+
     describe '.for_permission' do
       it 'returns assignables that include the given permission' do
         expect(described_class.for_permission(:delete_other_resource))
@@ -74,6 +107,26 @@ RSpec.describe Authz::PermissionGroups::Assignable, feature_category: :permissio
         it 'returns an empty array' do
           expect(assignable.permissions).to eq([])
         end
+      end
+    end
+
+    describe '#deprecated?' do
+      subject(:deprecated) { assignable.deprecated? }
+
+      context 'when deprecated is not set' do
+        it { is_expected.to be(false) }
+      end
+
+      context 'when deprecated is true' do
+        let(:definition) { super().merge(deprecated: true) }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when deprecated is false' do
+        let(:definition) { super().merge(deprecated: false) }
+
+        it { is_expected.to be(false) }
       end
     end
 

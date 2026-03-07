@@ -46,9 +46,9 @@ Inference data (including code inputs, model prompts, and model responses) does 
 Anonymized billing metadata (instance ID, call count, anonymized user ID) is sent to GitLab for usage billing.
 GitLab does not capture which model or model provider the customer uses.
 
-### GitLab Duo (Classic)
+### GitLab Duo
 
-GitLab Duo Self-Hosted for customers with GitLab Duo Enterprise who are using GitLab Duo (Classic)
+GitLab Duo Self-Hosted is for customers with GitLab Duo Enterprise who are using GitLab Duo
 features. You can use:
 
 - On-premise models or private cloud-hosted models
@@ -63,16 +63,16 @@ The following table lists:
 - The GitLab version required to use the feature.
 - The feature status. A feature status in the deployment might be different to the status listed in the feature.
 
-To use GitLab Duo (Classic) features with GitLab Duo Self-Hosted, you must have the GitLab
-Duo Enterprise add-on. This applies even if you can use these features with GitLab Duo Core
+To use GitLab Duo features with GitLab Duo Self-Hosted, you must have the
+GitLab Duo Enterprise add-on. This applies even if you can use these features with GitLab Duo Core
 or GitLab Duo Pro when GitLab hosts and connects to those models through the cloud-based [AI Gateway](../gitlab_duo/gateway.md).
 
 | Feature                                                                                                                                | GitLab version          | Status              |
 |----------------------------------------------------------------------------------------------------------------------------------------|-------------------------|---------------------|
 | [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                                   | GitLab 18.8 and later   | Generally available |
-| **GitLab Duo (Classic)** | | |
-| [Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md)                                                 | GitLab 17.9 and later   | Generally available |
-| [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9 and later   | Generally available |
+| **GitLab Duo** | | |
+| [Code Suggestions](../../user/project/repository/code_suggestions/_index.md)                                                 | GitLab 17.9 and later   | Generally available |
+| [GitLab Duo Chat (non-agentic)](../../user/gitlab_duo_chat/_index.md)                                                                      | GitLab 17.9 and later   | Generally available |
 | [Code Explanation](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                                       | GitLab 17.9 and later   | Generally available |
 | [Test Generation](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |
 | [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                                       | GitLab 17.9 and later   | Generally available |

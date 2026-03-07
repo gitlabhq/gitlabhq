@@ -185,6 +185,25 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
           #######################################################################
         OUTPUT
       end
+
+      context 'when one of the duplicates is deprecated' do
+        let(:apple_assignable) do
+          Authz::PermissionGroups::Assignable.new(
+            {
+              name: 'apple_assignable',
+              description: 'Apple assignable',
+              permissions: %w[beta_permission alpha_permission unique_two],
+              boundaries: ['project'],
+              deprecated: true
+            },
+            Rails.root.join(permission_source_file).to_s
+          )
+        end
+
+        it 'does not flag the shared raw permissions as duplicates' do
+          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+        end
+      end
     end
 
     context 'when file path does not match /<category>/<resource>/<action>.yml' do

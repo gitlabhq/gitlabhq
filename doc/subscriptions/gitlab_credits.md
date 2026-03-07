@@ -24,7 +24,7 @@ GitLab Credits are the standardized consumption currency for usage-based billing
 Credits are used for [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md),
 where each usage action consumes a number of credits.
 
-[GitLab Duo Pro and Enterprise](subscription-add-ons.md#gitlab-duo-pro-and-enterprise) and their associated [GitLab Duo (Classic) features](../user/gitlab_duo/feature_summary.md) are not billed based on usage and do not consume GitLab Credits.
+[GitLab Duo Pro and Enterprise](subscription-add-ons.md#gitlab-duo-pro-and-enterprise) and their associated [GitLab Duo features](../user/gitlab_duo/feature_summary.md) are not billed based on usage and do not consume GitLab Credits.
 
 Credits are calculated based on the features and models you use, as listed in the credit multiplier tables.
 You are billed for features that are [generally available](../policy/development_stages_support.md#generally-available).
@@ -236,11 +236,11 @@ The following table lists the number of requests you can make with one GitLab Cr
 |---------|---------------------------|
 | [GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) | 50 |
 
-[GitLab Duo Chat (Agentic)](../user/gitlab_duo_chat/agentic_chat.md) doesn't use a fixed model,
+[GitLab Duo Chat (agentic)](../user/gitlab_duo_chat/agentic_chat.md) doesn't use a fixed model,
 so credit cost varies based on the model selected for the request.
 With the [default model](../user/duo_agent_platform/model_selection.md#default-models) you can make 6.7 requests with one credit.
 
-Each message sent to GitLab Duo Chat (Agentic) counts as one billable request.
+Each message sent to GitLab Duo Chat (agentic) counts as one billable request.
 One conversation window can include multiple messages, and so multiple billable requests.
 
 ## GitLab Credits dashboard

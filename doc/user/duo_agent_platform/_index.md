@@ -66,7 +66,7 @@ These features are generally available and consume [GitLab Credits](../../subscr
 
 | Feature | Description |
 |---------|-------------|
-| [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md) | Answer complex questions and autonomously create and edit files. |
+| [GitLab Duo Chat (agentic)](../gitlab_duo_chat/agentic_chat.md) | Answer complex questions and autonomously create and edit files. |
 | [Planner Agent](agents/foundational_agents/planner.md) | Plan, prioritize, and track work. |
 | [Security Analyst Agent](agents/foundational_agents/security_analyst_agent.md) | Automate repetitive security tasks: Triage issues, analyze vulnerabilities, and generate fixes. |
 | [Custom agents](agents/custom.md) | Build team-specific agents for your unique development requirements. |

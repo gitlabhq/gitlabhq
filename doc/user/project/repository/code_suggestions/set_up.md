@@ -2,8 +2,8 @@
 stage: AI-powered
 group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Set up Code Suggestions (Classic) in your IDE.
-title: Set up Code Suggestions (Classic)
+description: Set up Code Suggestions in your IDE.
+title: Set up Code Suggestions
 ---
 
 {{< details >}}
@@ -20,7 +20,7 @@ title: Set up Code Suggestions (Classic)
 
 {{< /history >}}
 
-You can use GitLab Duo Code Suggestions (Classic) in several different IDEs.
+You can use GitLab Duo Code Suggestions in several different IDEs.
 
 To set up Code Suggestions, follow the instructions for your IDE.
 

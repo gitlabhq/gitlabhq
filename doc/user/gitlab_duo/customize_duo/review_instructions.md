@@ -31,7 +31,7 @@ conventions on Go files.
 GitLab Duo appends your custom review instructions to its standard review criteria,
 instead of replacing them.
 
-GitLab Duo Code Review (Classic) supports custom review instructions.
+GitLab Duo Code Review supports custom review instructions.
 
 ## Configure custom review instructions
 
@@ -702,4 +702,4 @@ For more custom review instructions use cases, see the following production exam
 ## Related topics
 
 - [GitLab Duo in merge requests](../../project/merge_requests/duo_in_merge_requests.md)
-- [GitLab Duo Code Review (Classic)](../code_review_classic.md)
+- [GitLab Duo Code Review](../code_review_classic.md)

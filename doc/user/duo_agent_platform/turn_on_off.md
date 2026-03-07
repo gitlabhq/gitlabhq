@@ -33,7 +33,7 @@ To turn Agent Platform on or off for a top-level group:
 1. On the top bar, select **Search or go to** and find your top-level group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (Agentic), agents, and flows** checkbox.
+1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (agentic), agents, and flows** checkbox.
 1. Select **Save changes**.
 
 Agent Platform availability changes for all subgroups and projects.
@@ -52,7 +52,7 @@ To turn Agent Platform on or off for an instance:
 1. In the upper-right corner, select **Admin**.
 1. On the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (Agentic), agents, and flows** checkbox.
+1. Under **GitLab Duo Agent Platform**, select or clear the **Turn on GitLab Duo Chat (agentic), agents, and flows** checkbox.
 1. Select **Save changes**.
 
 When Agent Platform is turned off, related settings for flows and

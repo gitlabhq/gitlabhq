@@ -78561,6 +78561,25 @@ components:
       required:
       - started_on
       - expires_on
+    RequestBody_4e443cf905a5:
+      type: object
+      properties:
+        query:
+          type: object
+          description: Query DSL object
+        query_type:
+          type: string
+          enum:
+          - json
+          description: Query language
+        response_format:
+          type: string
+          enum:
+          - raw
+          - llm
+          description: 'Response format: raw or llm'
+      required:
+      - query
     RequestBody_930d45d60e90:
       type: object
       properties:

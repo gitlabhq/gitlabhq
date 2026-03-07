@@ -157,7 +157,10 @@ module Gitlab
         def work_item_from_reply_to
           return unless mail.in_reply_to
 
-          Issue::Email.find_by_email_message_id(mail.in_reply_to)&.work_item
+          Issue::Email.find_by_email_message_id_and_namespace_id(
+            mail.in_reply_to,
+            @project.project_namespace_id
+          )&.work_item
         end
         strong_memoize_attr :work_item_from_reply_to
 

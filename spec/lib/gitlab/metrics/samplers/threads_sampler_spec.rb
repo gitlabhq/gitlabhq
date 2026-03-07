@@ -24,15 +24,16 @@ RSpec.describe Gitlab::Metrics::Samplers::ThreadsSampler do
     context 'thread counts' do
       it 'reports if any of the threads per group uses the db' do
         threads = [
-          fake_thread(described_class::SIDEKIQ_WORKER_THREAD_NAME, true), fake_thread(described_class::SIDEKIQ_WORKER_THREAD_NAME, false),
-          fake_thread(described_class::SIDEKIQ_WORKER_THREAD_NAME, nil)
+          fake_thread(Gitlab::Metrics::ThreadNameCardinalityLimiter::SIDEKIQ_WORKER_THREAD_NAME, true),
+          fake_thread(Gitlab::Metrics::ThreadNameCardinalityLimiter::SIDEKIQ_WORKER_THREAD_NAME, false),
+          fake_thread(Gitlab::Metrics::ThreadNameCardinalityLimiter::SIDEKIQ_WORKER_THREAD_NAME, nil)
         ]
         allow(Thread).to receive(:list).and_return(threads)
 
         expect(subject.metrics[:running_threads]).to receive(:set)
-          .with({ uses_db_connection: 'yes', thread_name: described_class::SIDEKIQ_WORKER_THREAD_NAME }, 1)
+          .with({ uses_db_connection: 'yes', thread_name: Gitlab::Metrics::ThreadNameCardinalityLimiter::SIDEKIQ_WORKER_THREAD_NAME }, 1)
         expect(subject.metrics[:running_threads]).to receive(:set)
-          .with({ uses_db_connection: 'no', thread_name: described_class::SIDEKIQ_WORKER_THREAD_NAME }, 2)
+          .with({ uses_db_connection: 'no', thread_name: Gitlab::Metrics::ThreadNameCardinalityLimiter::SIDEKIQ_WORKER_THREAD_NAME }, 2)
 
         subject.sample
       end
@@ -41,7 +42,7 @@ RSpec.describe Gitlab::Metrics::Samplers::ThreadsSampler do
         where(:thread_names, :expected_names) do
           [
             [[nil], %w[unnamed]],
-            [['puma threadpool 1', 'puma threadpool 001', 'puma threadpool 002'], ['puma threadpool']],
+            [['puma srv tp 1', 'puma srv tp 001', 'puma srv tp 002'], ['puma srv tp']],
             [%w[sidekiq_worker_thread], %w[sidekiq_worker_thread]],
             [%w[some_sampler some_exporter], %w[some_sampler some_exporter]],
             [%w[unknown thing], %w[unrecognized]]

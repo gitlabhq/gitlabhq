@@ -22,8 +22,8 @@ title: GitLab for Eclipse
 
 The GitLab for Eclipse plugin integrates with GitLab Duo to offer the following features:
 
-- [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md)
-- [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md)
+- [GitLab Duo Chat (non-agentic)](../../user/gitlab_duo_chat/_index.md)
+- [GitLab Duo Code Suggestions](../../user/project/repository/code_suggestions/_index.md)
 
 To install and configure the extension, see [install and set up](setup.md).
 
@@ -44,7 +44,6 @@ Use the `Bug` or `Feature Proposal` template.
 ## Related topics
 
 - [Security considerations for editor extensions](../security_considerations.md)
-- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md) and [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md)
 - [Eclipse troubleshooting](troubleshooting.md)
 - [GitLab Language Server documentation](../language_server/_index.md)
 - [Open issues for this plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/)

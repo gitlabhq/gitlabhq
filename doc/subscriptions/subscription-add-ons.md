@@ -16,7 +16,7 @@ title: GitLab Duo add-ons
 {{< history >}}
 
 - Changed to include GitLab Duo Core add-on in GitLab 18.0.
-- GitLab Duo Chat (Classic) in the UI [added to Core](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) in GitLab 18.3.
+- GitLab Duo Chat (non-agentic) in the UI [added to Core](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) in GitLab 18.3.
 - [Added ability to disable seat assignment emails on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/557290)
   in GitLab 18.4.
 
@@ -52,7 +52,7 @@ GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab
 
 If you have an online license, you can use GitLab Duo Core in combination with
 GitLab Duo Self-Hosted. To use GitLab Duo Core, you must select the GitLab-managed model
-for GitLab Duo Chat (Classic) and Code Suggestions for the instance.
+for GitLab Duo Chat (non-agentic) and Code Suggestions for the instance.
 
 ### GitLab Duo Core limits
 

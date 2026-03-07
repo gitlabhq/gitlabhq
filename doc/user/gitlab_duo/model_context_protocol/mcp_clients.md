@@ -40,7 +40,7 @@ The same MCP configuration file works across all supported IDEs.
 
 The following features can act as MCP clients and connect to external tools from MCP servers:
 
-- [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md)
+- [GitLab Duo Chat (agentic)](../../gitlab_duo_chat/agentic_chat.md)
 - The [Software Development Flow](../../duo_agent_platform/flows/foundational_flows/software_development.md)
 
 These features can then access external context and information to generate more powerful answers.
@@ -370,7 +370,7 @@ you must review that tool unless you've approved it for the entire session:
 ## Related topics
 
 - [Get started with the Model Context Protocol](https://modelcontextprotocol.io/introduction)
-- [Demo - Agentic Chat MCP Tool Call Approval](https://www.youtube.com/watch?v=_cHoTmG8Yj8)
+- [Demo - GitLab Duo Chat MCP Tool Call Approval](https://www.youtube.com/watch?v=_cHoTmG8Yj8)
 
 ## Troubleshooting
 

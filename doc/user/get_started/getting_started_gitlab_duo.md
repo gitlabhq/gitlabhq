@@ -3,11 +3,11 @@ stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use AI-native features throughout your development lifecycle.
-title: Get started with GitLab Duo (Classic)
+title: Get started with GitLab Duo
 ---
 
 GitLab Duo is an AI-native assistant that helps you throughout your planning, development, and security workflow.
-GitLab Duo (Classic) includes features like Code Suggestions and Code Explanation,
+GitLab Duo includes features like Code Suggestions and Code Explanation,
 which help you write, review, and edit code.
 
 ## Step 1: Ensure you have access to GitLab Duo
@@ -32,7 +32,7 @@ Try asking Chat a question about a specific issue or merge request, or about Git
 
 For more information, see:
 
-- [GitLab Duo Chat (Classic)](../gitlab_duo_chat/_index.md).
+- [GitLab Duo Chat (non-agentic)](../gitlab_duo_chat/_index.md).
 
 ## Step 3: Try other GitLab Duo features
 
@@ -45,7 +45,7 @@ The features you have access to might differ, depending on your subscription.
 For more information, see:
 
 - [A decision tree, to help you decide which GitLab Duo features match your workflow](../gitlab_duo/_index.md).
-- [The complete list of GitLab Duo (Classic) features](../gitlab_duo/feature_summary.md).
+- [The complete list of GitLab Duo features](../gitlab_duo/feature_summary.md).
 - [How to turn on GitLab Duo features that are still in development](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 
 ## Step 4: Prepare to use GitLab Duo in your IDE
@@ -76,7 +76,7 @@ You can choose the development languages you want suggestions for.
 For more information, see:
 
 - [Supported extensions and languages](../project/repository/code_suggestions/supported_extensions.md).
-- [Turn on Code Suggestions (Classic)](../project/repository/code_suggestions/set_up.md#turn-on-code-suggestions).
+- [Turn on Code Suggestions](../project/repository/code_suggestions/set_up.md#turn-on-code-suggestions).
 - [Troubleshoot GitLab for VS Code extension](../../editor_extensions/visual_studio_code/troubleshooting.md).
 - [Troubleshoot GitLab plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md).
 - [Troubleshoot GitLab for Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md).

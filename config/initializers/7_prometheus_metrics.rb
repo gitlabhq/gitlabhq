@@ -54,6 +54,8 @@ Gitlab::Application.configure do |config|
   config.middleware.insert_after(Labkit::Middleware::Rack, Gitlab::Metrics::RequestsRackMiddleware)
 end
 
+ActiveRecord::ConnectionAdapters::ConnectionPool.prepend(Gitlab::Patch::ConnectionPoolExtendedStat)
+
 # Any actions beyond this check should only execute outside of tests, when running in an application
 # context (i.e. not in the Rails console or rspec) and when users have enabled metrics.
 return if Rails.env.test? || !Gitlab::Runtime.application? || !Gitlab::Metrics.prometheus_metrics_enabled?

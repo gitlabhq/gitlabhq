@@ -7619,13 +7619,13 @@ msgstr ""
 msgid "AiPowered|GitLab Credits dashboard"
 msgstr ""
 
+msgid "AiPowered|GitLab Duo"
+msgstr ""
+
 msgid "AiPowered|GitLab Duo Agent Platform"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Chat conversations"
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Classic"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Core available to all users"
@@ -26270,7 +26270,7 @@ msgstr ""
 msgid "DuoAgenticChat|Purchase more credits or turn off the Agentic toggle to start a new conversation."
 msgstr ""
 
-msgid "DuoAgenticChat|Return to Classic Chat"
+msgid "DuoAgenticChat|Return to non-agentic Chat"
 msgstr ""
 
 msgid "DuoAgenticChat|Select default namespace"
@@ -26282,10 +26282,10 @@ msgstr ""
 msgid "DuoAgenticChat|This chat was deleted."
 msgstr ""
 
-msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your %{preferencesLinkStart}user profile preferences%{preferencesLinkEnd}. Alternatively, turn off the  %{agenticModeStart}Agentic toggle%{agenticModeEnd} to return to Classic Chat."
+msgid "DuoAgenticChat|To use Chat, select a default namespace in your %{preferencesLinkStart}user profile preferences%{preferencesLinkEnd}. Alternatively, turn off the  %{agenticModeStart}Agentic toggle%{agenticModeEnd} to return to non-agentic Chat."
 msgstr ""
 
-msgid "DuoAgenticChat|To use Agentic Chat, select a default namespace in your user profile preferences. Alternatively, turn off the Agentic toggle to return to Classic Chat."
+msgid "DuoAgenticChat|To use Chat, select a default namespace in your user profile preferences. Alternatively, turn off the Agentic toggle to return to non-agentic Chat."
 msgstr ""
 
 msgid "DuoAgenticChat|Unable to connect to workflow service. Please try again."
@@ -61943,6 +61943,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{cadence} on %{branches}%{timeWindowInfo}%{branchExceptionsString}"
 msgstr ""
 
+msgid "SecurityOrchestration|%{count} pipelines/hour"
+msgstr ""
+
 msgid "SecurityOrchestration|%{hours}"
 msgstr ""
 
@@ -62209,6 +62212,9 @@ msgstr ""
 msgid "SecurityOrchestration|Back to standard editor"
 msgstr ""
 
+msgid "SecurityOrchestration|Begin test run"
+msgstr ""
+
 msgid "SecurityOrchestration|Branch exceptions (%{count})"
 msgstr ""
 
@@ -62273,6 +62279,9 @@ msgid "SecurityOrchestration|Code push"
 msgstr ""
 
 msgid "SecurityOrchestration|Comments are required when bypassing policies."
+msgstr ""
+
+msgid "SecurityOrchestration|Completed: %{time}"
 msgstr ""
 
 msgid "SecurityOrchestration|Compliance and security policy group"
@@ -62465,6 +62474,9 @@ msgid "SecurityOrchestration|Exception branches"
 msgstr ""
 
 msgid "SecurityOrchestration|Excluded projects"
+msgstr ""
+
+msgid "SecurityOrchestration|Execution time: %{time}"
 msgstr ""
 
 msgid "SecurityOrchestration|Exploit settings"
@@ -62763,6 +62775,9 @@ msgstr ""
 msgid "SecurityOrchestration|Only project approval settings will take effect"
 msgstr ""
 
+msgid "SecurityOrchestration|Only projects where you have owner permissions are shown"
+msgstr ""
+
 msgid "SecurityOrchestration|Open policy actions dropdown"
 msgstr ""
 
@@ -62898,6 +62913,9 @@ msgstr ""
 msgid "SecurityOrchestration|Resolved"
 msgstr ""
 
+msgid "SecurityOrchestration|Results of most recent test"
+msgstr ""
+
 msgid "SecurityOrchestration|Roles"
 msgstr ""
 
@@ -62920,6 +62938,12 @@ msgid "SecurityOrchestration|Run %{scannerStart}%{scanner}%{scannerEnd} with the
 msgstr ""
 
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
+msgstr ""
+
+msgid "SecurityOrchestration|Run a test to understand how this policy will impact your infrastructure before enabling it across all projects. The test executes real pipelines to provide accurate timing and resource estimates."
+msgstr ""
+
+msgid "SecurityOrchestration|Run a test to understand how this policy will impact your infrastructure before enabling it on this project. The test executes real pipelines to provide accurate timing and resource estimates."
 msgstr ""
 
 msgid "SecurityOrchestration|Run scans for merge request pipelines targeting default branches and on default branches. Optimized for MR approval policy compatibility"
@@ -63090,6 +63114,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select suffix"
 msgstr ""
 
+msgid "SecurityOrchestration|Select target project"
+msgstr ""
+
 msgid "SecurityOrchestration|Select type, currently selected: %{selected}"
 msgstr ""
 
@@ -63175,9 +63202,6 @@ msgid "SecurityOrchestration|Technical limitation"
 msgstr ""
 
 msgid "SecurityOrchestration|Template"
-msgstr ""
-
-msgid "SecurityOrchestration|Test run content coming soon"
 msgstr ""
 
 msgid "SecurityOrchestration|Test runs"

@@ -91,10 +91,10 @@ If you do not want to manually manage group membership, you can
 When a user is assigned to more than one group, they access features from all assigned groups.
 For example:
 
-- In group A, the user has access to GitLab Duo (Classic) features only.
+- In group A, the user has access to GitLab Duo features only.
 - In group B, the user has access to flows only.
 
-In this example, the user has access to both GitLab Duo (Classic) features and flows.
+In this example, the user has access to both GitLab Duo features and flows.
 
 If no group is configured:
 
@@ -144,8 +144,8 @@ To test Agent Platform capabilities in a controlled environment:
 ### GitLab Duo sidebar does not display for certain groups
 
 In GitLab 18.8 and earlier, if you give a group access to Agent Platform but not to
-GitLab Duo (Classic), the GitLab Duo sidebar does not display for members of that group.
+GitLab Duo, the GitLab Duo sidebar does not display for members of that group.
 As a workaround, ensure the group has access to both
-GitLab Duo (Classic) and Agent Platform features.
+GitLab Duo and Agent Platform features.
 
 To resolve this issue, upgrade to GitLab 18.9 or later.

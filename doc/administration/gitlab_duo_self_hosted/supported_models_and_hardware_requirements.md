@@ -44,7 +44,7 @@ depending on the specific model and feature combination.
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-| Model family | Model | Code completion | Code generation | GitLab Duo Chat (Classic) | GitLab Duo Agent Platform |
+| Model family | Model | Code completion | Code generation | GitLab Duo Chat (non-agentic) | GitLab Duo Agent Platform |
 |--------------|-------|-----------------|-----------------|---------------------------|---------------------------|
 | Claude 4 | [Claude 4 Sonnet](https://www.anthropic.com/news/claude-4) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |
 | Claude 4 | [Claude 4.5 Sonnet](https://www.anthropic.com/news/claude-sonnet-4-5) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |

@@ -2,10 +2,10 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-title: GitLab Duo (Classic) contextual awareness
+title: GitLab Duo contextual awareness
 ---
 
-Different information is available to help GitLab Duo Chat (Classic) make decisions and offer suggestions.
+Different information is available to help GitLab Duo make decisions and offer suggestions.
 
 Information can be available:
 
@@ -20,8 +20,7 @@ Information can be available:
 - Content in the file you're viewing or editing, including code before and after your cursor.
 - When using Chat in the GitLab UI, the current page title and URL.
 - The `/refactor`, `/fix`, `/tests`, and `/explain` slash commands have access to the latest
-  Repository X-Ray report from [Code Suggestions](../duo_agent_platform/code_suggestions/repository_xray.md)
-  or [Code Suggestions (Classic)](../project/repository/code_suggestions/repository_xray.md).
+  Repository X-Ray report from Code Suggestions.
 
 ## Based on location
 
@@ -50,7 +49,7 @@ In the UI, when you're in a merge request, GitLab Duo also knows about:
 All of the resources that are available based on your location
 are also available when you refer to them explicitly by their ID or URL.
 
-## Exclude context from Code Review (Classic)
+## Exclude context from Code Review
 
 {{< details >}}
 
@@ -66,10 +65,10 @@ are also available when you refer to them explicitly by their ID or URL.
 
 {{< /history >}}
 
-You can exclude the project content used as context by Code Review (Classic).
+You can exclude the project content used as context by Code Review.
 Exclude context to protect sensitive information, like password and configuration files.
 
-To specify content that Code Review (Classic) excludes:
+To specify content that Code Review excludes:
 
 1. On the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.

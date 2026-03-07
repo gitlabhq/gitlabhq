@@ -28,14 +28,14 @@ to manage projects and applications.
 | [GitLab for VS Code](visual_studio_code/_index.md)              | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< yes >}} | {{< yes >}}              |
 | [GitLab Duo plugin for JetBrains IDEs](jetbrains_ide/_index.md) | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< yes >}} | {{< no >}}               |
 | [GitLab for Visual Studio](visual_studio/_index.md)   | {{< yes >}}          | {{< yes >}}      | {{< yes >}}                  | {{< no >}}  | {{< no >}}               |
-| [GitLab for Eclipse plugin](eclipse/_index.md)                  | {{< yes >}}(Classic) | {{< yes >}}      | {{< no >}}                   | {{< no >}}  | {{< no >}}               |
+| [GitLab for Eclipse plugin](eclipse/_index.md)                  | {{< yes >}}(non-agentic) | {{< yes >}}      | {{< no >}}                   | {{< no >}}  | {{< no >}}               |
 
 If you prefer a command-line interface, try the following:
 
 | Extension                                                       | GitLab Duo Chat      | Code Suggestions | Software Development<br> Flow | Agents      | Other<br> GitLab features |
 |-----------------------------------------------------------------|----------------------|------------------|------------------------------|-------------|--------------------------|
-| [The GitLab CLI (`glab`)](gitlab_cli/_index.md)                | {{< yes >}}(Classic) | {{< no >}}                  | {{< no >}}                | {{< no >}} | {{< yes >}}           |
-| [The GitLab Duo CLI (`duo`)](../user/gitlab_duo_cli/_index.md) | {{< yes >}}<br>(Agentic) | {{< no >}}                  | {{< no >}}                | {{< no >}} | {{< no >}}            |
+| [The GitLab CLI (`glab`)](gitlab_cli/_index.md)                | {{< yes >}}(non-agentic) | {{< no >}}                  | {{< no >}}                | {{< no >}} | {{< yes >}}           |
+| [The GitLab Duo CLI (`duo`)](../user/gitlab_duo_cli/_index.md) | {{< yes >}}<br>(agentic) | {{< no >}}                  | {{< no >}}                | {{< no >}} | {{< no >}}            |
 | [GitLab.nvim for Neovim](neovim/_index.md)                     | {{< no >}}            | {{< yes >}}                 | {{< no >}}                | {{< no >}} | {{< no >}}            |
 
 ## Security considerations
@@ -62,7 +62,7 @@ or want to contribute to the development of our extensions:
 ## Related topics
 
 - [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md)
-- [GitLab Duo (Classic)](../user/gitlab_duo/feature_summary.md)
+- [GitLab Duo (non-agentic)](../user/gitlab_duo/feature_summary.md)
 - [How we created an extension for VS Code](https://about.gitlab.com/blog/use-gitlab-with-vscode/)
 - [GitLab for Visual Studio](https://about.gitlab.com/blog/gitlab-visual-studio-extension/)
 - [GitLab for JetBrains and Neovim](https://about.gitlab.com/blog/gitlab-jetbrains-neovim-plugins/)

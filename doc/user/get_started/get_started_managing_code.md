@@ -59,8 +59,7 @@ For more information, see:
 - [Create a remote development environment with workspaces](../workspace/_index.md)
 - [Available editor extensions](../../editor_extensions/_index.md)
 
-For other help writing code, see [code suggestions](../duo_agent_platform/code_suggestions/_index.md)
-or [code suggestions (classic)](../project/repository/code_suggestions/_index.md).
+For other help writing code, use Code Suggestions.
 
 ## Step 3: Save changes and push to GitLab
 

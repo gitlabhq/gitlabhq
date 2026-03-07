@@ -2,8 +2,8 @@
 stage: AI-powered
 group: AI Coding
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
-description: Code Suggestions (Classic) supports multiple editors and languages.
-title: Supported extensions and languages for Code Suggestions (Classic)
+description: Code Suggestions supports multiple editors and languages.
+title: Supported extensions and languages for Code Suggestions
 ---
 
 {{< details >}}
@@ -21,7 +21,7 @@ title: Supported extensions and languages for Code Suggestions (Classic)
 
 {{< /history >}}
 
-Code Suggestions (Classic) is available in the following editor extensions and
+Code Suggestions is available in the following editor extensions and
 for the following languages.
 
 ## Supported editor extensions

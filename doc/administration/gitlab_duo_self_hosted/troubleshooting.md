@@ -474,7 +474,7 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 
 ## Error: An error occurred while fetching an authentication token for this workflow
 
-This error can occur when you try to use Agentic Chat in GitLab or your local environment.
+This error can occur when you try to use agentic Chat in GitLab or your local environment.
 
 You might also see the following in the logs of your IDE's [GitLab Language Server](../../editor_extensions/language_server/_index.md):
 
@@ -497,8 +497,8 @@ If you are using a self-hosted model without TLS, to resolve this issue, ensure 
 > If you use a mix of cloud-hosted models and self-hosted models (without TLS) in features in the GitLab Duo Agent Platform, one of these models might fail. Failure depends on whether `DUO_AGENT_PLATFORM_SERVICE_SECURE` is `true` or `false`.
 > This known issue affects models for the following features:
 >
-> - GitLab Duo Chat (Agentic)
-> - All agents, except Agentic Chat
+> - GitLab Duo Chat (agentic)
+> - All agents, except Chat
 >
 > If the models selected for these features are routed to different backends (for example, one cloud-hosted model and one self-hosted model without TLS), one of them might fail.
 > For more information, see [issue 590454](https://gitlab.com/gitlab-org/gitlab/-/issues/590454).

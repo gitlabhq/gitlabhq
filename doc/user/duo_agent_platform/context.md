@@ -13,7 +13,7 @@ Information can be available:
 - Based on your location (the context changes when you navigate).
 - When referenced explicitly. For example, you mention the information by URL, ID, or file path.
 
-## GitLab Duo Chat (Agentic)
+## GitLab Duo Chat (agentic)
 
 {{< history >}}
 
@@ -21,7 +21,7 @@ Information can be available:
 
 {{< /history >}}
 
-The following context is available to GitLab Duo Chat (Agentic).
+The following context is available to GitLab Duo Chat (agentic).
 
 ### Always available
 
@@ -31,7 +31,7 @@ The following context is available to GitLab Duo Chat (Agentic).
 - The GitLab [Search API](../../api/search.md), which Chat uses to find related issues or merge requests.
 - When using Chat in the GitLab UI, the current page title and URL.
 
-Agentic Chat will automatically look up the necessary context from
+Chat will automatically look up the necessary context from
 SDLC data, [Knowledge Graph](../project/repository/knowledge_graph/_index.md), [MCP Clients](../gitlab_duo/model_context_protocol/mcp_clients.md) and [custom instructions](customize/_index.md).
 
 ### Based on location
@@ -41,7 +41,7 @@ SDLC data, [Knowledge Graph](../project/repository/knowledge_graph/_index.md), [
 
 ### When referenced explicitly
 
-GitLab Duo Chat (Agentic) can autonomously retrieve and use:
+GitLab Duo Chat (agentic) can autonomously retrieve and use:
 
 - Files (by searching your project or when you provide file paths)
 - Epics
@@ -51,14 +51,13 @@ GitLab Duo Chat (Agentic) can autonomously retrieve and use:
 - Commits
 - Work items
 
-Unlike Classic Chat, Agentic Chat can search for these resources without requiring you to specify exact IDs or URLs. For example, you can ask "Find the merge request about authentication" and Chat searches for relevant merge requests.
+Unlike non-agentic Chat, agentic Chat can search for these resources without requiring you to specify exact IDs or URLs. For example, you can ask "Find the merge request about authentication" and Chat searches for relevant merge requests.
 
 ### Extended context
 
-- Use the [Model Context Protocol (MCP)](../gitlab_duo/model_context_protocol/_index.md) to
-  connect Chat to external data sources and tools.
-- Use [custom rules](customize/custom_rules.md) or [AGENTS.md](customize/agents_md.md) in Agentic Chat, Agents, and Flows
-  to provide project-specific context, coding standards, and team practices.
+- To connect Chat to external data sources and tools, use the [Model Context Protocol (MCP)](../gitlab_duo/model_context_protocol/_index.md).
+- To provide project-specific context, coding standards, and team practices,
+  use [custom rules](customize/custom_rules.md) or [AGENTS.md](customize/agents_md.md) in Chat, agents, and flows.
 
 ## Software development flow
 

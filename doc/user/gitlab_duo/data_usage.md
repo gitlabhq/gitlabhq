@@ -37,10 +37,7 @@ with Anthropic, Fireworks AI, AWS, and Google.
 These vendors discard model input and output data immediately after the output is
 provided and do not store input and output data for abuse monitoring. The exception
 to this is when Fireworks AI, Anthropic, and VertexAI prompt caching is enabled for
-Code Suggestions and GitLab Duo Chat (Agentic).
-
-For more information on how to turn off prompt caching, see
-prompt caching with [Code Suggestions](../duo_agent_platform/code_suggestions/_index.md#prompt-caching) or [Code Suggestions (Classic)](../project/repository/code_suggestions/_index.md#prompt-caching).
+Code Suggestions and GitLab Duo Chat (agentic).
 
 > [!note]
 > For OpenAI models, you cannot turn off prompt caching. If you have turned off prompt caching and you use an OpenAI model, GitLab attempts to invalidate the cache by adding the current timestamp to the prompt. Ensure that you use a model that is suitable for your data retention requirements.

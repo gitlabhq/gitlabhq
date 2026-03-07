@@ -47,7 +47,7 @@ Composite identity is used when flows and agents execute on runners. This list i
 - External agents.
 - Any flow started through the endpoint `api/v4/ai/duo_workflows/workflows`.
 
-Composite identity does not apply to GitLab Duo Chat (Agentic) in the UI and IDE.
+Composite identity does not apply to GitLab Duo Chat (agentic) in the UI and IDE.
 
 ## How composite identity works
 

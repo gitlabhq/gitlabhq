@@ -25,7 +25,7 @@ extension opens GitLab in your browser.
 ## Use GitLab Duo as you work
 
 The GitLab for VS Code extension gives you access to use the GitLab Duo Agent Platform and
-GitLab Duo (Classic) as you work on your projects.
+GitLab Duo (non-agentic) as you work on your projects.
 
 ### GitLab Duo Agent Platform
 
@@ -36,7 +36,7 @@ GitLab Duo (Classic) as you work on your projects.
 
 {{< /details >}}
 
-To use GitLab Duo Chat (Agentic), agents, and flows:
+To use GitLab Duo Chat (agentic), agents, and flows:
 
 1. In the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
 1. To interact with GitLab Duo Chat, select the chat tab and enter your prompt.
@@ -49,7 +49,7 @@ To use GitLab Duo Code Suggestions:
 1. In the bottom status bar, select **Duo** ({{< icon name="tanuki-ai" >}}) to check the feature status.
 1. Review and accept inline code suggestions as you author code.
 
-### GitLab Duo (Classic)
+### GitLab Duo
 
 {{< details >}}
 
@@ -59,12 +59,12 @@ To use GitLab Duo Code Suggestions:
 
 {{< /details >}}
 
-To use GitLab Duo Chat (Classic):
+To use GitLab Duo Chat (non-agentic):
 
 1. In the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
 1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
-To use GitLab Duo Code Suggestions (Classic):
+To use GitLab Duo Code Suggestions:
 
 1. In the bottom status bar, select **Duo** ({{< icon name="tanuki-ai" >}}) to check the feature status.
 1. Review and accept inline code suggestions as you author code.
@@ -290,4 +290,4 @@ To insert an existing single-file or [multi-file](../../user/snippets.md#add-or-
 - [CI/CD pipelines in the VS Code extension](cicd.md)
 - [Secure your application in GitLab for VS Code](security_scanning.md)
 - [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)
-- [GitLab Duo (Classic)](../../user/gitlab_duo/feature_summary.md)
+- [GitLab Duo](../../user/gitlab_duo/feature_summary.md)

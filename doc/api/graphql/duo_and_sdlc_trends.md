@@ -262,7 +262,7 @@ The query returns the following output:
 
 {{< /history >}}
 
-The `AiUserMetrics` endpoint provides pre-aggregated per-user metrics for all registered GitLab Duo features, including Code Suggestions, GitLab Duo Chat, Code Review, Agent Platform (Agentic Chat), Job Troubleshooting, and Model Context Protocol (MCP) tool calls.
+The `AiUserMetrics` endpoint provides pre-aggregated per-user metrics for all registered GitLab Duo features, including Code Suggestions, GitLab Duo Chat, Code Review, Agent Platform, Job Troubleshooting, and Model Context Protocol (MCP) tool calls.
 
 You can use this endpoint to analyze GitLab Duo user engagement and measure usage frequency across different GitLab Duo features.
 
@@ -366,7 +366,7 @@ Available feature metric types include:
 - `codeSuggestions`: Code Suggestions-specific metrics
 - `chat`: GitLab Duo Chat-specific metrics
 - `codeReview`: Code Review-specific metrics
-- `agentPlatform`: Agent Platform-specific metrics (includes Agentic Chat sessions)
+- `agentPlatform`: Agent Platform-specific metrics (includes agentic Chat sessions)
 - `troubleshootJob`: Job troubleshooting-specific metrics
 - `mcp`: Model Context Protocol (MCP) tool call metrics
 

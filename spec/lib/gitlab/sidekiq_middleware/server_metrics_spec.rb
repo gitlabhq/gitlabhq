@@ -221,7 +221,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
 
         it 'sets the thread name if it was nil' do
           allow(Thread.current).to receive(:name).and_return(nil)
-          expect(Thread.current).to receive(:name=).with(Gitlab::Metrics::Samplers::ThreadsSampler::SIDEKIQ_WORKER_THREAD_NAME)
+          expect(Thread.current).to receive(:name=)
+            .with(Gitlab::Metrics::ThreadNameCardinalityLimiter::SIDEKIQ_WORKER_THREAD_NAME)
 
           subject.call(worker, job, :test) { nil }
         end

@@ -6,7 +6,7 @@ description: Where to find GitLab Duo Chat and how to use it to work with issues
 title: "Tutorial: Manage issues with GitLab Duo Chat"
 ---
 
-GitLab Duo Chat (Agentic) uses AI assistants called agents to help you accomplish specific tasks and answer complex questions.
+GitLab Duo Chat (agentic) uses AI assistants called agents to help you accomplish specific tasks and answer complex questions.
 In this tutorial, you'll complete the following tasks to help you get to know the GitLab Duo Chat interface:
 
 - Ask the default GitLab Duo agent to answer a general question.

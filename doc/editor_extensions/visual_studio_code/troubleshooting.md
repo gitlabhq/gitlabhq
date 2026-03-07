@@ -13,8 +13,6 @@ If you encounter any issues with the GitLab for VS Code extension, or have featu
    [`gitlab-vscode-extension` issue tracker](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues).
    Provide the [required information for Support](#required-information-for-support).
 
-For additional support, see troubleshooting [Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#vs-code-troubleshooting) or [Code Suggestions (Classic)](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).
-
 ## Enable debug logs
 
 Both the VS Code Extension and the GitLab Language Server provide logs that can help you troubleshoot. To enable debug logging:
@@ -126,7 +124,7 @@ To troubleshoot GitLab Duo errors in VS Code:
 For additional support:
 
 - [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
-- Troubleshooting [Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#vs-code-troubleshooting) and [Code Suggestions (Classic)](../../user/project/repository/code_suggestions/troubleshooting.md#vs-code-troubleshooting).
+- Troubleshooting [Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#vs-code-troubleshooting)
 
 ## Known issue: GitLab Duo Chat fails to initialize in remote environments
 

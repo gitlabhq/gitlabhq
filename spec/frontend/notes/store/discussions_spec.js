@@ -99,7 +99,7 @@ describe('discussions store', () => {
       const note = { id: 'bar', discussion_id: 'abc' };
       useDiscussions().discussions = [{ id: 'abc', notes: [{ id: 'foo', discussion_id: 'abc' }] }];
       useDiscussions().addNote(note);
-      expect(useDiscussions().discussions[0].notes[1]).toStrictEqual(note);
+      expect(useDiscussions().discussions[0].notes[1]).toStrictEqual(expect.objectContaining(note));
     });
 
     it('does not add a note when it exists', () => {

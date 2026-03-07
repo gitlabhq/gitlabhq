@@ -27,7 +27,7 @@ title: Code Review Flow
 {{< /history >}}
 
 > [!note]
-> Depending on your add-on, you might have access to GitLab Duo Code Review (Classic) instead.
+> Depending on your add-on, you might have access to GitLab Duo Code Review instead.
 > Learn how [the two features compare](../../../project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code).
 
 The Code Review Flow helps you streamline code reviews with agentic AI.
