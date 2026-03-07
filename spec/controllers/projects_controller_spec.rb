@@ -1612,6 +1612,31 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
     end
 
+    context 'with suggestion on merge request' do
+      let(:project) { create(:project, :repository, maintainers: [user]) }
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:diff_refs) { merge_request.diff_refs }
+
+      it 'includes suggestions in response' do
+        post :preview_markdown, params: {
+          namespace_id: project.namespace.full_path,
+          project_id: project.path,
+          text: "```suggestion\nfoo\n```",
+          preview_suggestions: 'true',
+          target_type: 'MergeRequest',
+          target_id: merge_request.iid,
+          file_path: 'files/ruby/popen.rb',
+          line: '10',
+          base_sha: diff_refs.base_sha,
+          head_sha: diff_refs.head_sha,
+          start_sha: diff_refs.start_sha
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['references']['suggestions']).not_to be_empty
+      end
+    end
+
     context 'when path parameter is provided' do
       let(:project_with_repo) { create(:project, :repository) }
       let(:preview_markdown_params) do

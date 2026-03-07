@@ -328,7 +328,7 @@ module Ci
       taggings_join_model
         .scoped_taggables
         .joins(:tag)
-        .select('COALESCE(array_agg(tags.name ORDER BY tags.name), ARRAY[]::text[])')
+        .select('COALESCE(array_agg(tags.name ORDER BY tags.name), ARRAY[]::text[])::text[]')
     end
 
     def self.runner_matchers

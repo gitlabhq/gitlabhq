@@ -81,7 +81,9 @@ module PreviewMarkdown
   end
 
   def preview_markdown_params
-    params.permit(:text, :preview_suggestions, :id, :path, :ref, :target_type, :target_id, :no_header_anchors,
-      :render_quick_actions)
+    params.permit(
+      :text, :preview_suggestions, :id, :path, :ref, :target_type, :target_id, :no_header_anchors,
+      :render_quick_actions, :file_path, :line, :base_sha, :head_sha, :start_sha
+    )
   end
 end

@@ -10,31 +10,12 @@ RSpec.describe Ci::BulkDeleteExpiredJobArtifactsWorker, feature_category: :job_a
   end
 
   describe '.max_running_jobs_limit' do
-    it { expect(described_class.max_running_jobs_limit).to eq(10) }
-
-    context 'when bulk_delete_job_artifacts_high_concurrency is disabled' do
-      before do
-        stub_feature_flags(bulk_delete_job_artifacts_high_concurrency: false)
-      end
-
-      it { expect(described_class.max_running_jobs_limit).to eq(5) }
-    end
+    it { expect(described_class.max_running_jobs_limit).to eq(5) }
   end
 
   describe '#perform_work' do
     let(:bucket) { 0 }
     let(:max_running_jobs) { described_class.max_running_jobs_limit }
-
-    context 'when bulk_delete_job_artifacts feature flag is disabled' do
-      before do
-        stub_feature_flags(bulk_delete_job_artifacts: false)
-      end
-
-      it 'returns early without claiming a bucket' do
-        expect(Gitlab::Ci::Artifacts::BucketManager).not_to receive(:claim_bucket)
-        worker.perform_work
-      end
-    end
 
     context 'when a bucket is claimed' do
       before do
@@ -97,9 +78,6 @@ RSpec.describe Ci::BulkDeleteExpiredJobArtifactsWorker, feature_category: :job_a
         end
 
         it 'terminates early and logs scale-down' do
-          # Simulate scale-down: bucket 7 is now invalid with max 5
-          stub_feature_flags(bulk_delete_job_artifacts_high_concurrency: false)
-
           expect(worker).to receive(:log_extra_metadata_on_done).with(:terminated_early_due_to_scale_down, true)
           expect(worker).to receive(:log_extra_metadata_on_done).with(:destroyed_job_artifacts_count, 0)
           expect(worker).to receive(:log_extra_metadata_on_done).with(:mod_bucket, bucket)

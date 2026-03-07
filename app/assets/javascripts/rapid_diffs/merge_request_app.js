@@ -3,6 +3,7 @@ import { RapidDiffsFacade } from '~/rapid_diffs/app';
 import { adapters } from '~/rapid_diffs/app/adapter_configs/merge_request';
 import { useCodeReview } from '~/diffs/stores/code_review';
 import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
+import { initCompareVersions } from '~/rapid_diffs/app/init_compare_versions';
 
 class MergeRequestRapidDiffsApp extends RapidDiffsFacade {
   adapterConfig = adapters;
@@ -11,6 +12,7 @@ class MergeRequestRapidDiffsApp extends RapidDiffsFacade {
     this.#initCodeReview();
     super.init();
     await this.#initDiscussions();
+    this.#initCompareVersions();
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -28,6 +30,10 @@ class MergeRequestRapidDiffsApp extends RapidDiffsFacade {
     store.setMrPath(mrPath);
     store.restoreFromAutosave();
     store.restoreFromLegacyMrReviews();
+  }
+
+  #initCompareVersions() {
+    initCompareVersions(this.root.querySelector('[data-after-browser-toggle]'), this.appData);
   }
 }
 

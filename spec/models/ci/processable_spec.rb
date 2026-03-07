@@ -207,6 +207,30 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
           expect(with_aggregated_needs.first.aggregated_needs_names).to be_nil
         end
       end
+
+      context 'when ActiveRecord returns a string instead of an array' do
+        let!(:processable) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+
+        before do
+          create(:ci_build_need, build: processable, name: 'test1')
+          create(:ci_build_need, build: processable, name: 'test2')
+        end
+
+        it 'parses PostgreSQL array string literals into arrays' do
+          record = with_aggregated_needs.first
+          allow(record).to receive(:read_attribute).with(:aggregated_needs_names).and_return('{test1,test2}')
+
+          expect(record.aggregated_needs_names).to contain_exactly('test1', 'test2')
+        end
+      end
+    end
+  end
+
+  describe '.select_with_aggregated_needs' do
+    it 'includes explicit ::text[] cast to ensure proper array type recognition' do
+      relation = described_class.select_with_aggregated_needs(project)
+
+      expect(relation.to_sql).to include('::text[]')
     end
   end
 

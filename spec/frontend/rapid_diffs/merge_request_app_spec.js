@@ -6,6 +6,7 @@ import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
 import { useDiffsList } from '~/rapid_diffs/stores/diffs_list';
 import { useCodeReview } from '~/diffs/stores/code_review';
 import { useMergeRequestDiscussions } from '~/merge_request/stores/merge_request_discussions';
+import { initCompareVersions } from '~/rapid_diffs/app/init_compare_versions';
 
 jest.mock('~/lib/graphql');
 jest.mock('~/rapid_diffs/app/view_settings');
@@ -13,6 +14,7 @@ jest.mock('~/rapid_diffs/app/init_hidden_files_warning');
 jest.mock('~/rapid_diffs/app/file_browser');
 jest.mock('~/rapid_diffs/app/quirks/safari_fix');
 jest.mock('~/rapid_diffs/app/quirks/content_visibility_fix');
+jest.mock('~/rapid_diffs/app/init_compare_versions');
 
 describe('Merge Request Rapid Diffs app', () => {
   let app;
@@ -44,6 +46,7 @@ describe('Merge Request Rapid Diffs app', () => {
             <div data-file-browser-toggle></div>
             <div data-hidden-files-warning></div>
             <div data-stream-remaining-diffs></div>
+            <div data-after-browser-toggle></div>
           </div>
        </div>
       </main>
@@ -109,5 +112,19 @@ describe('Merge Request Rapid Diffs app', () => {
     buildApp();
     await app.init();
     expect(useMergeRequestDiscussions().fetchNotes).toHaveBeenCalled();
+  });
+
+  it('initializes compare versions on init', async () => {
+    const versions = {
+      source_versions: [{ id: 1, version_index: 1, selected: true }],
+      target_versions: [{ id: 'head', head: true, selected: true }],
+    };
+    buildApp({ versions });
+    await app.init();
+
+    expect(initCompareVersions).toHaveBeenCalledWith(
+      document.querySelector('[data-after-browser-toggle]'),
+      expect.objectContaining({ versions }),
+    );
   });
 });

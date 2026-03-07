@@ -12235,6 +12235,46 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/RequestBody_e4306691b34b"
+  "/api/v4/projects/{id}/ml/mlflow/api/2.0/mlflow/metrics/get-history":
+    get:
+      operationId: getApiV4ProjectsIdMlMlflowApi20MlflowMetricsGetHistory
+      summary: Gets metric history for a run
+      description: https://www.mlflow.org/docs/2.19.0/rest-api.html#get-metric-history
+      tags:
+      - MLOps
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/APIEntitiesMlMlflowGetMetricHistory"
+      parameters:
+      - name: run_id
+        required: true
+        description: UUID of the run
+        schema:
+          type: string
+        in: query
+      - name: metric_key
+        required: true
+        description: Name of the metric
+        schema:
+          type: string
+        in: query
+      - name: max_results
+        required: false
+        description: Maximum number of metrics to return. Default is 1000.
+        schema:
+          type: integer
+          default: 1000
+        in: query
+      - name: page_token
+        required: false
+        description: Token for pagination
+        schema:
+          type: string
+        in: query
   "/api/v4/projects/{id}/ml/mlflow/api/2.0/mlflow/experiments/get":
     get:
       operationId: getApiV4ProjectsIdMlMlflowApi20MlflowExperimentsGet
@@ -65816,17 +65856,6 @@ components:
       properties:
         run_info:
           "$ref": "#/components/schemas/APIEntitiesMlMlflowRunInfo"
-    APIEntitiesMlMlflowMetric:
-      type: object
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-        timestamp:
-          type: string
-        step:
-          type: string
     APIEntitiesMlMlflowRunInfo:
       type: object
       properties:
@@ -65896,6 +65925,26 @@ components:
           type: array
           items:
             type: string
+    APIEntitiesMlMlflowMetric:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+        timestamp:
+          type: string
+        step:
+          type: string
+    APIEntitiesMlMlflowGetMetricHistory:
+      type: object
+      properties:
+        metrics:
+          type: array
+          items:
+            "$ref": "#/components/schemas/APIEntitiesMlMlflowMetric"
+        next_page_token:
+          type: string
     APIEntitiesMlMlflowNewExperiment:
       type: object
       properties:

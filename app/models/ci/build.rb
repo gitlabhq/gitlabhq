@@ -506,7 +506,7 @@ module Ci
     def self.tag_names_array_query
       <<~SQL.squish
         (
-          SELECT COALESCE(array_agg(tag_name ORDER BY tag_name), '{}')
+          SELECT COALESCE(array_agg(tag_name ORDER BY tag_name), ARRAY[]::text[])::text[]
             FROM jsonb_array_elements_text(
               #{Ci::JobDefinition.quoted_table_name}.config->'tag_list'
             ) AS tag_name

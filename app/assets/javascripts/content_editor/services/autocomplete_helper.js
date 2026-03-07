@@ -109,12 +109,9 @@ export function createDataSource({
     }
   };
 
-  // We want to make sure that cache doesn't default to same
-  // result as original call by including `prefixCommand` and `query`
-  // to the cache key of memoized function.
-  const cacheTimeoutFn = ({ prefixCommand, query }) => {
+  const cacheTimeoutFn = ({ prefixCommand }) => {
     const timeKey = cache ? 0 : Math.floor(Date.now() / 1e4);
-    return `${prefixCommand}-${query}-${timeKey}`;
+    return `${prefixCommand}-${timeKey}`;
   };
   const memoizedFetchData = memoize(fetchData, cacheTimeoutFn);
 

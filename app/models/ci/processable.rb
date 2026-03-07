@@ -177,7 +177,7 @@ module Ci
     def self.select_with_aggregated_needs(project)
       aggregated_needs_names = Ci::BuildNeed
         .scoped_build
-        .select("ARRAY_AGG(name)")
+        .select("ARRAY_AGG(name)::text[]")
         .to_sql
 
       all.select(
@@ -238,7 +238,8 @@ module Ci
     end
 
     def aggregated_needs_names
-      read_attribute(:aggregated_needs_names)
+      value = read_attribute(:aggregated_needs_names)
+      value.is_a?(String) ? PG::TextDecoder::Array.new.decode(value) : value
     end
 
     def schedulable?

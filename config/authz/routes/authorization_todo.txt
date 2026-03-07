@@ -190,6 +190,7 @@ GET /projects/:id/ml/mlflow/api/2.0/mlflow-artifacts/artifacts/:model_version/*f
 GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/get
 GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/get-by-name
 GET /projects/:id/ml/mlflow/api/2.0/mlflow/experiments/list
+GET /projects/:id/ml/mlflow/api/2.0/mlflow/metrics/get-history
 GET /projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get
 GET /projects/:id/ml/mlflow/api/2.0/mlflow/model-versions/get-download-uri
 GET /projects/:id/ml/mlflow/api/2.0/mlflow/registered-models/alias

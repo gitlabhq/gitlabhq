@@ -43250,6 +43250,12 @@ msgstr ""
 msgid "MergeRequest|Viewed by me"
 msgstr ""
 
+msgid "MergeRequest|latest version"
+msgstr ""
+
+msgid "MergeRequest|version %{versionIndex}"
+msgstr ""
+
 msgid "MergeTopics|%{sourceTopic} will be removed"
 msgstr ""
 

@@ -107,6 +107,23 @@ RSpec.describe Gitlab::Ci::Matching::RunnerMatcher do
       end
     end
 
+    context 'when tag_list is a PostgreSQL array string literal' do
+      let(:record) { build.build_matcher }
+      let(:build_attributes) { { tag_list: %w[ruby], protected: false } }
+      let(:runner_attributes) do
+        {
+          access_level: 'not_protected',
+          run_untagged: false,
+          tag_list: '{ruby,docker}',
+          allowed_plan_ids: []
+        }
+      end
+
+      it 'parses the string and matches correctly' do
+        expect(subject).to eq(true)
+      end
+    end
+
     context 'with an instance of Ci::Build' do
       let(:runner_attributes) { {} }
       let(:build_attributes) { {} }

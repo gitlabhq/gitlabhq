@@ -2428,6 +2428,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe '.tag_names_array_query' do
+    it 'includes explicit ::text[] cast to ensure proper array type recognition' do
+      sql = described_class.tag_names_array_query
+
+      expect(sql).to include('::text[]')
+    end
+  end
+
   describe 'build auto retry feature' do
     context 'with deployment job' do
       let(:build) do

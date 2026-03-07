@@ -9,81 +9,51 @@ RSpec.describe Ci::ScheduleBulkDeleteJobArtifactCronWorker, feature_category: :j
   it { expect(described_class.idempotent?).to be_truthy }
 
   describe '#perform' do
-    context 'when bulk_delete_job_artifacts feature flag is disabled' do
-      before do
-        stub_feature_flags(bulk_delete_job_artifacts: false)
-      end
-
-      it 'does not call BucketManager or trigger child workers' do
-        expect(Gitlab::Ci::Artifacts::BucketManager).not_to receive(:recover_stale_buckets)
-        expect(Gitlab::Ci::Artifacts::BucketManager).not_to receive(:enqueue_missing_buckets)
-        expect(Ci::BulkDeleteExpiredJobArtifactsWorker).not_to receive(:perform_with_capacity)
-
-        worker.perform
-      end
+    let(:max_buckets) { 5 }
+    let(:stale_buckets) { instance_double(Array, count: 2) }
+    let(:active_buckets) do
+      {
+        available: [1, 2],
+        occupied: [3, 4, 5],
+        missing: [6]
+      }
     end
 
-    context 'when bulk_delete_job_artifacts feature flag is enabled' do
-      let(:max_buckets) { 10 }
-      let(:stale_buckets) { instance_double(Array, count: 2) }
-      let(:active_buckets) do
-        {
-          available: [1, 2],
-          occupied: [3, 4, 5],
-          missing: [6]
-        }
-      end
+    before do
+      allow(Gitlab::Ci::Artifacts::BucketManager).to receive_messages(
+        recover_stale_buckets: stale_buckets,
+        enqueue_missing_buckets: active_buckets
+      )
 
-      before do
-        stub_feature_flags(bulk_delete_job_artifacts: true)
+      allow(Ci::BulkDeleteExpiredJobArtifactsWorker).to receive(:perform_with_capacity)
+    end
 
-        allow(Gitlab::Ci::Artifacts::BucketManager).to receive_messages(
-          recover_stale_buckets: stale_buckets,
-          enqueue_missing_buckets: active_buckets
-        )
+    it 'recovers stale buckets' do
+      expect(Gitlab::Ci::Artifacts::BucketManager).to receive(:recover_stale_buckets)
+      worker.perform
+    end
 
-        allow(Ci::BulkDeleteExpiredJobArtifactsWorker).to receive(:perform_with_capacity)
-      end
+    it 'enqueues missing buckets with correct max_buckets' do
+      expect(Gitlab::Ci::Artifacts::BucketManager).to receive(:enqueue_missing_buckets)
+        .with(max_buckets: max_buckets)
+      worker.perform
+    end
 
-      it 'recovers stale buckets' do
-        expect(Gitlab::Ci::Artifacts::BucketManager).to receive(:recover_stale_buckets)
-        worker.perform
-      end
+    it 'triggers bulk delete workers' do
+      expect(Ci::BulkDeleteExpiredJobArtifactsWorker).to receive(:perform_with_capacity)
+      worker.perform
+    end
 
-      it 'enqueues missing buckets with correct max_buckets' do
-        expect(Gitlab::Ci::Artifacts::BucketManager).to receive(:enqueue_missing_buckets)
-          .with(max_buckets: max_buckets)
-        worker.perform
-      end
+    it 'logs hash metadata on done with correct counts' do
+      expect(worker).to receive(:log_hash_metadata_on_done).with(
+        max_buckets: max_buckets,
+        available_count: active_buckets[:available].count,
+        occupied_count: active_buckets[:occupied].count,
+        stale_count: stale_buckets.count,
+        missing_count: active_buckets[:missing].count
+      )
 
-      it 'triggers bulk delete workers' do
-        expect(Ci::BulkDeleteExpiredJobArtifactsWorker).to receive(:perform_with_capacity)
-        worker.perform
-      end
-
-      it 'logs hash metadata on done with correct counts' do
-        expect(worker).to receive(:log_hash_metadata_on_done).with(
-          max_buckets: max_buckets,
-          available_count: active_buckets[:available].count,
-          occupied_count: active_buckets[:occupied].count,
-          stale_count: stale_buckets.count,
-          missing_count: active_buckets[:missing].count
-        )
-
-        worker.perform
-      end
-
-      context 'with high concurrency disabled' do
-        before do
-          stub_feature_flags(bulk_delete_job_artifacts_high_concurrency: false)
-        end
-
-        it 'enqueues missing buckets with decreased max_buckets' do
-          expect(Gitlab::Ci::Artifacts::BucketManager).to receive(:enqueue_missing_buckets)
-            .with(max_buckets: 5)
-          worker.perform
-        end
-      end
+      worker.perform
     end
   end
 end

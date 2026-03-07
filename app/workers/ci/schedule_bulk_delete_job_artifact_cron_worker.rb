@@ -10,8 +10,6 @@ module Ci
     data_consistency :sticky
 
     def perform
-      return unless Feature.enabled?(:bulk_delete_job_artifacts, :instance)
-
       max_buckets = Ci::BulkDeleteExpiredJobArtifactsWorker.max_running_jobs_limit
       stale_buckets = Gitlab::Ci::Artifacts::BucketManager.recover_stale_buckets
 

@@ -383,7 +383,7 @@ describe('AutocompleteHelper', () => {
       ${'/unlink'}
     `('filters work items using apollo cache for command "$command"', async ({ command }) => {
       const dataSource = autocompleteHelper.getDataSource('issue', { command });
-      const results = await dataSource.search();
+      const results = await dataSource.search(command);
 
       expect(results.map(({ iid }) => iid)).toMatchSnapshot();
     });
@@ -393,7 +393,7 @@ describe('AutocompleteHelper', () => {
       ${'/unlabel'}
     `('filters labels using apollo cache for command "$command"', async ({ command }) => {
       const dataSource = autocompleteHelper.getDataSource('label', { command });
-      const results = await dataSource.search();
+      const results = await dataSource.search(command);
 
       expect(results.map(({ title }) => title)).toMatchSnapshot();
     });
