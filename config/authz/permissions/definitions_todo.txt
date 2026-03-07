@@ -223,7 +223,6 @@ create_resource_access_tokens
 create_runners
 create_saved_replies
 create_sentry_issue
-create_snippet
 create_squash_option
 create_subgroup
 create_task
@@ -593,7 +592,6 @@ read_security_settings
 read_self_hosted_models_settings
 read_sentry_issue
 read_shared_with_group
-read_snippet
 read_software_license_policy
 read_squash_option
 read_statistics
@@ -615,7 +613,6 @@ read_user_profile
 read_users_list
 read_virtual_registry
 read_vulnerability_archive_export
-read_vulnerability_export
 read_vulnerability_feedback
 read_vulnerability_merge_request_link
 read_vulnerability_representation_information
@@ -728,7 +725,6 @@ update_runners_registration_token
 update_saved_replies
 update_security_orchestration_policy_project
 update_sentry_issue
-update_snippet
 update_squash_option
 update_subscription
 update_subscription_limit

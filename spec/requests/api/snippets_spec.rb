@@ -90,6 +90,11 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
       expect(json_response.size).to eq(0)
     end
 
+    it_behaves_like 'authorizing granular token permissions', :read_snippet do
+      let(:boundary_object) { :user }
+      let(:request) { get api('/snippets', personal_access_token: pat) }
+    end
+
     it 'does not return snippets related to a project with disable feature visibility' do
       public_snippet = create(:project_snippet, :public, author: user, project: project)
       project.project_feature.update_attribute(:snippets_access_level, 0)
@@ -130,6 +135,11 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
         expect(json_response[0]['files'].first).to eq snippet_blob_file(public_snippet_other.blobs.first)
         expect(json_response[1]['files'].first).to eq snippet_blob_file(public_snippet.blobs.first)
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_snippet do
+      let(:boundary_object) { :user }
+      let(:request) { get api('/snippets/public', personal_access_token: pat) }
     end
 
     context 'filtering public snippets by created_after/created_before' do
@@ -189,6 +199,11 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_snippet do
+      let(:boundary_object) { :user }
+      let(:request) { get api('/snippets/all', personal_access_token: pat) }
+    end
   end
 
   describe 'GET /snippets/:id/raw' do
@@ -205,6 +220,11 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
       expect(response.media_type).to eq 'text/plain'
       expect(headers['Content-Disposition']).to match(/^inline/)
       expect(response.parsed_body).to be_empty
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_snippet do
+      let(:boundary_object) { :user }
+      let(:request) { get api("/snippets/#{private_snippet.id}/raw", personal_access_token: pat) }
     end
 
     it 'returns 404 for invalid snippet id' do
@@ -232,6 +252,11 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
 
     it_behaves_like 'snippet access with different users' do
       let(:path) { "/snippets/#{snippet.id}/files/master/%2Egitattributes/raw" }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_snippet do
+      let(:boundary_object) { :user }
+      let(:request) { get api("/snippets/#{private_snippet.id}/files/master/%2Egitattributes/raw", personal_access_token: pat) }
     end
   end
 
@@ -269,6 +294,11 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
 
     it_behaves_like 'snippet access with different users' do
       let(:path) { "/snippets/#{snippet.id}" }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_snippet do
+      let(:boundary_object) { :user }
+      let(:request) { get api("/snippets/#{private_snippet.id}", personal_access_token: pat) }
     end
   end
 
@@ -436,6 +466,13 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
         end
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_snippet do
+      let(:boundary_object) { :user }
+      let(:request) do
+        post api('/snippets', personal_access_token: pat), params: params
+      end
+    end
   end
 
   describe 'PUT /snippets/:id' do
@@ -540,6 +577,13 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
       end
     end
 
+    it_behaves_like 'authorizing granular token permissions', :update_snippet do
+      let(:boundary_object) { :user }
+      let(:request) do
+        put api("/snippets/#{snippet.id}", personal_access_token: pat), params: { title: 'Updated Title' }
+      end
+    end
+
     def update_snippet(snippet_id: snippet.id, params: {}, requester: user)
       put api("/snippets/#{snippet_id}", requester), params: params
     end
@@ -588,6 +632,11 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
     it_behaves_like '412 response' do
       let(:request) { api("/snippets/#{public_snippet.id}", personal_access_token: user_token) }
     end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_snippet do
+      let(:boundary_object) { :user }
+      let(:request) { delete api("/snippets/#{public_snippet.id}", personal_access_token: pat) }
+    end
   end
 
   describe "GET /snippets/:id/user_agent_detail" do
@@ -604,6 +653,12 @@ RSpec.describe API::Snippets, :aggregate_failures, :with_current_organization, f
       expect(json_response['user_agent']).to eq(user_agent_detail.user_agent)
       expect(json_response['ip_address']).to eq(user_agent_detail.ip_address)
       expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_snippet_user_agent_detail do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) { get api("/snippets/#{public_snippet.id}/user_agent_detail", personal_access_token: pat) }
     end
   end
 end

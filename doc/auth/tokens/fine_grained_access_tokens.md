@@ -119,6 +119,9 @@ Grants the ability to create vulnerability exports.
 | ------ | ------ | ------ | ---- |
 | Create | Project | `POST` | `/security/projects/:id/vulnerability_exports` |
 | Create | Group | `POST` | `/security/groups/:id/vulnerability_exports` |
+| Create | Instance | `POST` | `/security/vulnerability_exports` |
+| Read | Instance | `GET` | `/security/vulnerability_exports/:id` |
+| Read | Instance | `GET` | `/security/vulnerability_exports/:id/download` |
 
 ### CI/CD resources
 
@@ -630,6 +633,17 @@ Grants the ability to read templates.
 | ------ | ------ | ------ | ---- |
 | Read | Project | `GET` | `/projects/:id/templates/:type` |
 | Read | Project | `GET` | `/projects/:id/templates/:type/:name` |
+
+#### Topic
+
+Grants the ability to create, delete, merge, and update topics.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | Instance | `POST` | `/topics` |
+| Delete | Instance | `DELETE` | `/topics/:id` |
+| Merge | Instance | `POST` | `/topics/merge` |
+| Update | Instance | `PUT` | `/topics/:id` |
 
 #### User Activity
 
@@ -1163,6 +1177,23 @@ Grants the ability to read snapshots.
 | Action | Access | Method | Path |
 | ------ | ------ | ------ | ---- |
 | Read | Project | `GET` | `/projects/:id/snapshot` |
+
+#### Snippet
+
+Grants the ability to create, delete, read, and update snippets.
+
+| Action | Access | Method | Path |
+| ------ | ------ | ------ | ---- |
+| Create | User | `POST` | `/snippets` |
+| Delete | User | `DELETE` | `/snippets/:id` |
+| Read | User | `GET` | `/snippets` |
+| Read | User | `GET` | `/snippets/public` |
+| Read | User | `GET` | `/snippets/all` |
+| Read | User | `GET` | `/snippets/:id` |
+| Read | User | `GET` | `/snippets/:id/raw` |
+| Read | User | `GET` | `/snippets/:id/files/:ref/:file_path/raw` |
+| Read | Instance | `GET` | `/snippets/:id/user_agent_detail` |
+| Update | User | `PUT` | `/snippets/:id` |
 
 ### Project Planning resources
 
@@ -2551,5 +2582,7 @@ job token policies or resource-specific access controls.
 | `GET` | `/templates/gitlab_ci_ymls/:name` |
 | `GET` | `/templates/licenses` |
 | `GET` | `/templates/licenses/:name` |
+| `GET` | `/topics` |
+| `GET` | `/topics/:id` |
 | `GET` | `/usage_data/metric_definitions` |
 | `GET` | `/usage_data/metric_definitions` |

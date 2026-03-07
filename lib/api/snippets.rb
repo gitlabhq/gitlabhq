@@ -45,6 +45,7 @@ module API
 
         use :pagination
       end
+      route_setting :authorization, permissions: :read_snippet, boundary_type: :user
       get do
         authenticate!
 
@@ -68,6 +69,7 @@ module API
 
         use :pagination
       end
+      route_setting :authorization, permissions: :read_snippet, boundary_type: :user
       get 'public' do
         authenticate!
 
@@ -96,6 +98,7 @@ module API
         use :pagination
         use :optional_list_params_ee
       end
+      route_setting :authorization, permissions: :read_snippet, boundary_type: :user
       get 'all' do
         authenticate!
 
@@ -115,6 +118,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
+      route_setting :authorization, permissions: :read_snippet, boundary_type: :user
       get ':id' do
         snippet = find_snippet(params[:id])
 
@@ -143,6 +147,7 @@ module API
 
         use :create_file_params
       end
+      route_setting :authorization, permissions: :create_snippet, boundary_type: :user
       post do
         authenticate!
 
@@ -189,6 +194,7 @@ module API
         use :update_file_params
         use :minimum_update_params
       end
+      route_setting :authorization, permissions: :update_snippet, boundary_type: :user
       put ':id' do
         authenticate!
 
@@ -231,6 +237,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
+      route_setting :authorization, permissions: :delete_snippet, boundary_type: :user
       delete ':id' do
         authenticate!
 
@@ -260,6 +267,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
+      route_setting :authorization, permissions: :read_snippet, boundary_type: :user
       get ":id/raw" do
         snippet = find_snippet(params.delete(:id))
         not_found!('Snippet') unless snippet
@@ -276,6 +284,7 @@ module API
       params do
         use :raw_file_params
       end
+      route_setting :authorization, permissions: :read_snippet, boundary_type: :user
       get ":id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
         snippet = find_snippet(params.delete(:id))
         not_found!('Snippet') unless snippet&.repo_exists?
@@ -293,6 +302,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
+      route_setting :authorization, permissions: :read_snippet_user_agent_detail, boundary_type: :instance
       get ":id/user_agent_detail" do
         authenticated_as_admin!
 

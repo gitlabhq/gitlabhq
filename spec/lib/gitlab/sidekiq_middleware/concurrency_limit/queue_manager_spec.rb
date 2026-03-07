@@ -244,5 +244,28 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
         expect(service.queue_size).to eq(1)
       end
     end
+
+    context 'when lease needs to be renewed during processing' do
+      before do
+        stub_feature_flags(concurrency_limit_eager_resume_processing: true)
+      end
+
+      it 'renews the lease before each batch to prevent expiration' do
+        lease_instance = instance_double(Gitlab::ExclusiveLease)
+        allow(lease_instance).to receive_messages(try_obtain: 'lease_uuid', renew: 'lease_uuid')
+        allow(Gitlab::ExclusiveLease).to receive(:new).and_return(lease_instance)
+
+        expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]])
+        expect(worker_class).to receive(:bulk_perform_async).with([[3]])
+
+        # Verify that renew is called before each iteration of the loop
+        # With 3 jobs and concurrency limit of 2: first iteration resumes 2 jobs,
+        # second iteration resumes 1 job, third iteration finds no jobs and breaks.
+        # So renew is called 3 times (before each iteration).
+        expect(lease_instance).to receive(:renew).exactly(3).times
+
+        service.resume_processing!
+      end
+    end
   end
 end

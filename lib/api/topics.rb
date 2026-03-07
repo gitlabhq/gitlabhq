@@ -34,6 +34,7 @@ module API
         desc: 'The organization id for the topics'
       use :pagination
     end
+    route_setting :authorization, skip_granular_token_authorization: true
     get 'topics' do
       organization = find_organization!(params[:organization_id])
 
@@ -53,6 +54,7 @@ module API
     params do
       requires :id, type: Integer, desc: 'ID of project topic'
     end
+    route_setting :authorization, skip_granular_token_authorization: true
     get 'topics/:id' do
       topic = find_topic!(params[:id])
 
@@ -73,6 +75,7 @@ module API
       optional :organization_id, type: Integer, default: -> { ::Current.organization.id },
         desc: 'The organization id for the topic'
     end
+    route_setting :authorization, permissions: :create_topic, boundary_type: :instance
     post 'topics' do
       authenticated_as_admin!
 
@@ -99,6 +102,7 @@ module API
       optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic',
         documentation: { type: 'file' }
     end
+    route_setting :authorization, permissions: :update_topic, boundary_type: :instance
     put 'topics/:id' do
       authenticated_as_admin!
 
@@ -120,6 +124,7 @@ module API
     params do
       requires :id, type: Integer, desc: 'ID of project topic'
     end
+    route_setting :authorization, permissions: :delete_topic, boundary_type: :instance
     delete 'topics/:id' do
       authenticated_as_admin!
 
@@ -137,6 +142,7 @@ module API
       requires :source_topic_id, type: Integer, desc: 'ID of source project topic'
       requires :target_topic_id, type: Integer, desc: 'ID of target project topic'
     end
+    route_setting :authorization, permissions: :merge_topic, boundary_type: :instance
     post 'topics/merge' do
       authenticated_as_admin!
 

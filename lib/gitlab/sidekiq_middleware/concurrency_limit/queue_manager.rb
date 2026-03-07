@@ -45,6 +45,8 @@ module Gitlab
               deadline = MAX_PROCESSING_TIME.from_now
               total_resumed_jobs = 0
               while deadline.future?
+                break unless renew_lease!
+
                 resumed_jobs_count = resume_processing_once!(redis)
                 break if resumed_jobs_count == 0
 

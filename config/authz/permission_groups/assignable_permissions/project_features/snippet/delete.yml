@@ -1,0 +1,7 @@
+---
+name: delete_snippet
+description: Grants the ability to delete snippets
+boundaries:
+  - user
+permissions:
+  - delete_snippet
