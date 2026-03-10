@@ -118,7 +118,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
   end
 
   let(:hook_params) do
-    event_names.to_h { [_1, true] }.merge(hook_param_overrides).merge(
+    event_names.index_with { true }.merge(hook_param_overrides).merge(
       url: "http://example.com",
       url_variables: [
         { key: 'token', value: 'very-secret' },
@@ -354,6 +354,14 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
+
+    it "returns a 422 error if custom_headers validation fails" do
+      post api(collection_uri, user, admin_mode: user.admin?),
+        params: { url: "http://example.com", custom_headers: [{ key: 'Content-Length', value: 'foo \n bar' }] }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(response.body).to include('Custom headers validation failed')
+    end
   end
 
   describe "PUT #{prefix}/hooks/:hook_id", :aggregate_failures do
@@ -429,6 +437,14 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       put api(hook_uri, user, admin_mode: user.admin?), params: { token: %w[foo bar].join("\n") }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    it "returns a 422 error for invalid custom headers" do
+      put api(hook_uri, user, admin_mode: user.admin?),
+        params: { custom_headers: [{ key: 'bar', value: 'foo \n foo' }] }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response["error"]).to include("Custom headers validation failed")
     end
   end
 
@@ -575,6 +591,25 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
         params: { value: 'xyz' }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    it "returns a 400 error when the header name exceeds 255 characters" do
+      long_name = 'a' * 256
+
+      put api("#{hook_uri}/custom_headers/#{long_name}", user, admin_mode: user.admin?),
+        params: { value: 'xyz' }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+
+    it "accepts a header name at the maximum length of 255 characters" do
+      max_name = 'a' * 255
+
+      put api("#{hook_uri}/custom_headers/#{max_name}", user, admin_mode: user.admin?),
+        params: { value: 'some secret value' }
+
+      expect(response).to have_gitlab_http_status(:no_content)
+      expect(hook.reload.custom_headers).to include(max_name => 'some secret value')
     end
 
     it "returns a 422 error when the key has leading whitespace" do
