@@ -48,6 +48,7 @@ module Gitlab
         # The calls to `get/...` will call this method instead of `httparty_perform_request`
         def perform_request(http_method, path, options, &block)
           raise_if_options_are_invalid(options)
+          raise_if_headers_contain_crlf(options)
           raise_if_blocked_by_silent_mode(http_method) if options.delete(:silent_mode_enabled)
 
           log_info = options.delete(:extra_log_info)
@@ -142,6 +143,31 @@ module Gitlab
             { message: 'Gitlab::HTTP - Response size too large', size: byte_size })
 
           raise ResponseSizeTooLarge, "Response size over #{max_bytesize} bytes"
+        end
+
+        def raise_if_headers_contain_crlf(options)
+          headers = options[:headers]
+          return unless headers.is_a?(Hash)
+
+          headers.each do |name, value|
+            validate_header_field!(name, 'header name')
+            validate_header_field!(value, 'header value')
+          end
+        end
+
+        def validate_header_field!(field, field_type)
+          return unless field
+
+          field_str = field.to_s
+
+          return unless field_str.match?(/[\r\n\0]/)
+
+          configuration.log_with_level(:error, {
+            message: 'Rejected HTTP header with control characters',
+            field_type: field_type
+          })
+
+          raise HeaderInjectionError, "Invalid #{field_type}: contains control characters"
         end
 
         def system_monotonic_time
