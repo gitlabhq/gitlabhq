@@ -33,6 +33,15 @@ module Gitlab
           table[:group_id].in(group_and_ancestor_ids)
         end
 
+        def prepare_attributes
+          attributes.dup.tap do |atts|
+            if label?
+              atts['type'] = 'GroupLabel' # Always create group labels
+              atts.delete('project_id')
+            end
+          end
+        end
+
         def group_and_ancestor_ids
           group.ancestors.map(&:id) << group.id
         end

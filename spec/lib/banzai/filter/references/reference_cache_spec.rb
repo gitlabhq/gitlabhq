@@ -198,6 +198,16 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :ma
 
       expect(cache.current_project_namespace_path).to eq project.namespace.full_path
     end
+
+    context 'when project is nil but group is present' do
+      let(:group) { create(:group) }
+      let(:filter) { filter_class.new(doc, group: group, project: nil) }
+      let(:cache) { described_class.new(filter, { group: group }, result) }
+
+      it 'returns the path of the group' do
+        expect(cache.current_project_namespace_path).to eq group.full_path
+      end
+    end
   end
 
   describe '#full_project_path' do

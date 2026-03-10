@@ -320,7 +320,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/lib/api/vulnerability_findings.rb'
     - 'ee/lib/ee/api/geo.rb'
     - 'ee/lib/ee/api/helpers.rb'
-    - 'ee/lib/ee/banzai/filter/references/reference_cache.rb'
     - 'ee/lib/ee/container_registry/client.rb'
     - 'ee/lib/ee/gitlab/alert_management/payload/generic.rb'
     - 'ee/lib/ee/gitlab/analytics/cycle_analytics/data_collector.rb'
