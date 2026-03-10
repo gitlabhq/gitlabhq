@@ -8,6 +8,7 @@ module WebHooks
 
     SECRET_MASK = '************'
     MAX_PARAM_LENGTH = 8192
+    MAX_CUSTOM_HEADER_NAME_LENGTH = 255
 
     # See app/validators/json_schemas/web_hooks_url_variables.json
     VARIABLE_REFERENCE_RE = /\{([A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*)\}/
@@ -70,7 +71,9 @@ module WebHooks
       validates :url_variables, json_schema: { filename: 'web_hooks_url_variables' }
       validate :no_missing_url_variables
       validates :interpolated_url, public_url: true, if: ->(hook) { hook.url_variables? && hook.errors.empty? }
-      validates :custom_headers, json_schema: { filename: 'web_hooks_custom_headers' }
+      validate :validate_custom_header_name_length
+      validates :custom_headers, json_schema: { filename: 'web_hooks_custom_headers' },
+        unless: ->(hook) { hook.errors[:custom_headers].present? }
       validates :custom_webhook_template, length: { maximum: 4096 }
       validates :name, length: { maximum: 255 }
       validates :description, length: { maximum: 2048 }
@@ -227,6 +230,21 @@ module WebHooks
 
       def set_branch_filter_nil
         self.push_events_branch_filter = nil
+      end
+
+      def validate_custom_header_name_length
+        return if custom_headers.blank?
+
+        custom_headers.each_key do |key|
+          next unless key.length > MAX_CUSTOM_HEADER_NAME_LENGTH
+
+          errors.add(
+            :custom_headers,
+            format(_('key is too long (maximum is %{max_length} characters)'),
+              max_length: MAX_CUSTOM_HEADER_NAME_LENGTH)
+          )
+          break
+        end
       end
     end
   end

@@ -294,18 +294,20 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
 
   context 'label object' do
     let(:relation_sym) { :labels }
+    let(:id) { non_existing_record_id }
+    let(:original_project_id) { non_existing_record_id }
     let(:relation_hash) do
       {
-        id: 3,
+        id: id,
         title: "test3",
         color: "#428bca",
-        group_id: project.group.id,
+        group_id: nil,
         created_at: "2016-07-22T08:55:44.161Z",
         updated_at: "2016-07-22T08:55:44.161Z",
         template: false,
         description: "",
-        project_id: project.id,
-        type: "GroupLabel"
+        project_id: original_project_id,
+        type: "ProjectLabel"
       }
     end
 
@@ -315,6 +317,32 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
 
     it 'has preloaded group' do
       expect(created_object.group).to equal(project.group)
+    end
+
+    it 'associates the label to the new project' do
+      expect(created_object.project_id).to eq(project.id)
+      expect(created_object.type).to eq('ProjectLabel')
+    end
+
+    context 'with group label attributes matching another group on the destination instance' do
+      let_it_be(:group_on_destination) { create(:group) }
+
+      before do
+        relation_hash.merge!(
+          'project_id' => nil,
+          'group_id' => group_on_destination.id,
+          'type' => 'GroupLabel'
+        )
+      end
+
+      it 'does not associate the label to unauthorized groups' do
+        expect(created_object.group_id).to be_nil
+      end
+
+      it 'associates the label to the new project' do
+        expect(created_object.project_id).to eq(project.id)
+        expect(created_object.type).to eq('ProjectLabel')
+      end
     end
   end
 

@@ -77279,6 +77279,9 @@ msgstr ""
 msgid "Webhooks|Header name"
 msgstr ""
 
+msgid "Webhooks|Header name is too long (maximum is %{maxLength} characters)."
+msgstr ""
+
 msgid "Webhooks|Header value"
 msgstr ""
 
@@ -82673,6 +82676,9 @@ msgid "item"
 msgid_plural "items"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "key is too long (maximum is %{max_length} characters)"
+msgstr ""
 
 msgid "key result"
 msgstr ""

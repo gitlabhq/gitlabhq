@@ -41,7 +41,7 @@ module Banzai
 
         def current_project_namespace_path
           strong_memoize(:current_project_namespace_path) do
-            project&.namespace&.full_path
+            (project&.namespace || group)&.full_path
           end
         end
 
@@ -213,5 +213,3 @@ module Banzai
     end
   end
 end
-
-Banzai::Filter::References::ReferenceCache.prepend_mod
