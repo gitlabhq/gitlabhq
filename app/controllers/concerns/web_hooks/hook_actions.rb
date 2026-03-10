@@ -85,7 +85,10 @@ module WebHooks
       ps.delete(:token) if action_name == 'update' && ps[:token] == WebHook::SECRET_MASK
 
       ps[:url_variables] = ps[:url_variables].to_h { [_1[:key], _1[:value].presence] } if ps.key?(:url_variables)
-      ps[:custom_headers] = ps[:custom_headers].to_h { [_1[:key], hook_value_from_param_or_db(_1[:key], _1[:value])] }
+      if ps.key?(:custom_headers)
+        ps[:custom_headers] = ps[:custom_headers]
+          .to_h { [_1[:key], hook_value_from_param_or_db(_1[:key], _1[:value])] }
+      end
 
       if action_name == 'update' && ps.key?(:url_variables)
         supplied = ps[:url_variables]

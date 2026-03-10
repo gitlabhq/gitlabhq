@@ -113,7 +113,7 @@ module Banzai
         def text
           return '' unless node
 
-          @text ||= CGI.escapeHTML(node.text)
+          @text ||= CGI.escapeHTML(node.text.strip)
         end
 
         private

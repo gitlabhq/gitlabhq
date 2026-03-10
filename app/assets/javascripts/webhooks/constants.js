@@ -20,6 +20,8 @@ export const MASK_ITEM_VALUE_HIDDEN = '************';
 
 export const CUSTOM_HEADER_KEY_PATTERN = /^[A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*$/;
 
+export const MAXIMUM_CUSTOM_HEADER_NAME_LENGTH = 255;
+
 export const TRIGGER_CONFIG = [
   {
     key: 'tagPushEvents',
