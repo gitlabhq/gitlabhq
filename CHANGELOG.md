@@ -2,6 +2,33 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.8.6 (2026-03-10)
+
+### Added (1 change)
+
+- [Support default AI access rules](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4cfdef67ba674ad72770a60cf5cca3e96c98f064) **GitLab Enterprise Edition**
+
+### Fixed (1 change)
+
+- [Handle RecordInvalid in SyncProjectPolicyWorker](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9b885d2d533f8a23a94441b78d7755194771f20b) **GitLab Enterprise Edition**
+
+### Security (14 changes)
+
+- [Add CRLF injection protection to gitlab-http gem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/df9d5fa4cd85ac94ae5529384fe2413695c2d581) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5840))
+- [Allow HEAD requests to archive endpoints without generating archives](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0b485fbe280247730dec370f21f613599ec56599) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5856))
+- [Remove branches with invalid ref names after import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c1d3acdb0caf79d3854a9c413a3acb4b35d7df6d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5834))
+- [Revoke read access to virtual registry through project membership](https://gitlab.com/gitlab-org/security/gitlab/-/commit/406d57b47b92da31781ebfc740ec2744a479b76d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5851))
+- [Add recursion depth and string size limits to GraphQL variables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e62e9b44969ef985aa73e63575a1e8405bae1d05) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5843))
+- [ReferenceRedactor: don't feed href directly back into HTML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e389256ab6cf8c334727b871a714a0ebe54f939b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5758))
+- [Hide job details when repository option is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6957a0c2e74dcdefb859b4923525342414874378) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5813))
+- [Limit request rate and response length of webhook retry endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cf8227262e121bed3626a155fd2e6f64439627b2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5816))
+- [Limit webhook custom header key length to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9fa29d6a49427e26d7453d401c152fd39c54e69b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5821))
+- [Prevent label creation on unrelated projects on import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/76ebd0993f663acdc5fb01e496c19b93314ea27b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5827))
+- [Use MarkupHelper.markdown_field when exposing *_html fields in API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/361360c4dac220083e546b1ed57fc668b46a60d0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5799))
+- [Block oversized JSON params in REST API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b2d1ec812ff30ea6d27782c738c4fb4f7c63cb41) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5755))
+- [Don't use Snippet#content_html](https://gitlab.com/gitlab-org/security/gitlab/-/commit/130b2133497b94b216cf0c778f9226125a5b8eb1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5749))
+- [Fix Datadog API key leak via placeholder injection in integration fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ebfbbcbf2794daa6f55dbcc3f53077823f33335e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5802))
+
 ## 18.8.5 (2026-02-24)
 
 ### Fixed (5 changes)
