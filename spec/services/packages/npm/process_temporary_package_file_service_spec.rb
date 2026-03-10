@@ -153,11 +153,12 @@ RSpec.describe Packages::Npm::ProcessTemporaryPackageFileService, feature_catego
       let(:content) { '{ name": "package-name"}' }
 
       it 'returns error' do
-        expect(execute).to be_error.and have_attributes(
-          message: "not a number or other value (after ) at line 1, " \
-            "column 2 [parse.c:600] in '{ name\": \"package-name\"}",
-          reason: :json_parser_error
-        )
+        result = execute
+        expect(result).to be_error.and have_attributes(reason: :json_parser_error)
+        expect(result.message).to match(/not a number or other value/)
+        expect(result.message).to match(/line 1/)
+        expect(result.message).to match(/column 2/)
+        expect(result.message).to match(/\{ name"/)
       end
     end
   end

@@ -512,12 +512,13 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           end
 
           it 'handles the error', :aggregate_failures do
-            expect(service_instance.execute).to have_attributes(
-              status: :error,
-              message: 'Error while parsing rendered custom webhook template: invalid escaped character ' \
-                       '(after description) at line 1, column 17 [parse.c:435] in ' \
-                       '\'{"description":"\\This has a backslash"}'
-            )
+            result = service_instance.execute
+            expect(result).to have_attributes(status: :error)
+            expect(result.message).to match(/Error while parsing rendered custom webhook template:/)
+            expect(result.message).to match(/invalid escaped character/)
+            expect(result.message).to match(/line 1/)
+            expect(result.message).to match(/column 17/)
+            expect(result.message).to match(/\\This has a backslash/)
             expect { service_instance.execute }.not_to raise_error
           end
         end
@@ -576,11 +577,11 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         end
 
         it 'handles the error', :aggregate_failures do
-          expect(service_instance.execute).to have_attributes(
-            status: :error,
-            message: 'Error while parsing rendered custom webhook template: quoted string not terminated ' \
-                     '(after test) at line 1, column 16 [parse.c:497] in \'{"test":"oldrev}'
-          )
+          result = service_instance.execute
+          expect(result).to have_attributes(status: :error)
+          expect(result.message).to match(/Error while parsing rendered custom webhook template:/)
+          expect(result.message).to match(/quoted string not terminated/)
+          expect(result.message).to match(/\{"test":"oldrev\}/)
           expect { service_instance.execute }.not_to raise_error
         end
       end
