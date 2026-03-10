@@ -326,13 +326,14 @@ module Gitlab
         end
 
         def setup_cursor_based_migration!(migration, batch_table_name, job_arguments, min_cursor, max_cursor)
+          migration.status_event = !(min_cursor && max_cursor) && table_empty?(batch_table_name) ? :finish : :execute
+
           cursor_columns = migration.job_class.cursor_columns
           min_cursor, max_cursor = resolve_cursor_bounds(min_cursor, max_cursor, batch_table_name, cursor_columns)
 
           migration.min_cursor = min_cursor
           migration.max_cursor = max_cursor
           migration.job_arguments = job_arguments
-          migration.status_event = max_cursor == min_cursor ? :finish : :execute
         end
 
         def resolve_cursor_bounds(min_cursor, max_cursor, batch_table_name, cursor_columns)
@@ -342,12 +343,13 @@ module Gitlab
         end
 
         def setup_legacy_migration!(migration, batch_table_name, batch_min_value, batch_max_value, job_arguments)
+          migration.status_event = batch_max_value.nil? && table_empty?(batch_table_name) ? :finish : :execute
+
           batch_max_value = determine_batch_max_value(batch_max_value, batch_table_name, migration.column_name, batch_min_value)
 
           migration.min_value = batch_min_value
           migration.max_value = batch_max_value
           migration.job_arguments = job_arguments
-          migration.status_event = batch_max_value.nil? || batch_min_value == batch_max_value ? :finish : :execute
         end
 
         def determine_cursor_bounds(table_name, cursor_columns)
@@ -355,6 +357,15 @@ module Gitlab
 
           min_cursor = model.order(cursor_columns.index_with { :asc }).pick(*cursor_columns)
           max_cursor = model.order(cursor_columns.index_with { :desc }).pick(*cursor_columns)
+
+          if min_cursor.nil? && max_cursor.nil?
+            default_cursor = cursor_columns.map { BATCH_MIN_VALUE }
+            return [default_cursor, default_cursor]
+          end
+
+          # Normalize single-column cursor to array format for JSONB storage
+          min_cursor = Array(min_cursor)
+          max_cursor = Array(max_cursor)
 
           [min_cursor, max_cursor]
         end
@@ -368,6 +379,12 @@ module Gitlab
           SQL
 
           max_value || batch_min_value
+        end
+
+        def table_empty?(batch_table_name)
+          !connection.select_value(<<~SQL)
+            SELECT 1 FROM #{connection.quote_table_name(batch_table_name)} LIMIT 1
+          SQL
         end
 
         def validate_job_arguments!(migration, original_job_arguments)

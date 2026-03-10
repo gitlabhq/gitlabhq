@@ -50,6 +50,7 @@ RSpec.describe Jira::Requests::Issues::ServerListService, feature_category: :int
         expect(payload[:issues].map(&:key)).to eq(%w[TST-1 TST-2])
         expect(payload[:is_last]).to be_falsy
         expect(payload[:total_count]).to eq(375)
+        expect(payload[:page]).to eq(1)
       end
     end
 

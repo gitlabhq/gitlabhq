@@ -155,6 +155,34 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter, :clean_gitlab_redis_shared_st
             expect(job_waiter.jobs_remaining).to eq(1)
           end
         end
+
+        context 'when page is nil in the response payload' do
+          before do
+            stub_const("#{described_class.name}::BATCH_SIZE", 3)
+            allow(subject).to receive(:schedule_issue_import_workers)
+          end
+
+          it 'handles nil page without raising an error' do
+            response = ServiceResponse.success(
+              payload: { issues: jira_issues, is_last: false, next_page_token: 'token123', page: nil }
+            )
+
+            first_service = instance_double(Jira::Requests::Issues::CloudListService)
+
+            expect(Jira::Requests::Issues::CloudListService)
+              .to receive(:new)
+              .with(jira_integration, hash_including(next_page_token: nil))
+              .and_return(first_service)
+
+            expect(first_service).to receive(:execute).and_return(response)
+
+            subject.execute
+
+            pagination_state = Gitlab::JiraImport.get_pagination_state(project.id)
+            expect(pagination_state[:page]).to eq(1)
+            expect(pagination_state[:next_page_token]).to eq('token123')
+          end
+        end
       end
 
       context 'when using Jira Server' do
@@ -232,6 +260,70 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter, :clean_gitlab_redis_shared_st
             job_waiter = subject.execute
 
             expect(job_waiter.jobs_remaining).to eq(1)
+          end
+        end
+
+        context 'when multiple pages of results are returned' do
+          before do
+            stub_const("#{described_class.name}::BATCH_SIZE", 3)
+            allow(subject).to receive(:schedule_issue_import_workers)
+          end
+
+          it 'advances pagination state and fetches the next page on subsequent execute' do
+            first_response = ServiceResponse.success(
+              payload: { issues: jira_issues, is_last: false, next_page_token: nil, page: 1 }
+            )
+            second_response = ServiceResponse.success(
+              payload: { issues: jira_issues, is_last: false, next_page_token: nil, page: 2 }
+            )
+            third_response = ServiceResponse.success(
+              payload: { issues: [], is_last: true, next_page_token: nil, page: 3 }
+            )
+
+            first_service = instance_double(Jira::Requests::Issues::ServerListService)
+            second_service = instance_double(Jira::Requests::Issues::ServerListService)
+            third_service = instance_double(Jira::Requests::Issues::ServerListService)
+
+            expect(Jira::Requests::Issues::ServerListService)
+              .to receive(:new)
+              .with(jira_integration, hash_including(page: 1))
+              .ordered
+              .and_return(first_service)
+
+            expect(first_service).to receive(:execute).and_return(first_response)
+
+            expect(Jira::Requests::Issues::ServerListService)
+              .to receive(:new)
+              .with(jira_integration, hash_including(page: 2))
+              .ordered
+              .and_return(second_service)
+
+            expect(second_service).to receive(:execute).and_return(second_response)
+
+            expect(Jira::Requests::Issues::ServerListService)
+              .to receive(:new)
+              .with(jira_integration, hash_including(page: 3))
+              .ordered
+              .and_return(third_service)
+
+            expect(third_service).to receive(:execute).and_return(third_response)
+
+            subject.execute
+
+            pagination_state = Gitlab::JiraImport.get_pagination_state(project.id)
+            expect(pagination_state[:page]).to eq(2)
+            expect(pagination_state[:is_last]).to be_falsey
+
+            subject.execute
+
+            pagination_state = Gitlab::JiraImport.get_pagination_state(project.id)
+            expect(pagination_state[:page]).to eq(3)
+            expect(pagination_state[:is_last]).to be_falsey
+
+            subject.execute
+
+            pagination_state = Gitlab::JiraImport.get_pagination_state(project.id)
+            expect(pagination_state[:is_last]).to be true
           end
         end
       end

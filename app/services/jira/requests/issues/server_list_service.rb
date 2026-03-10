@@ -30,6 +30,7 @@ module Jira
           ServiceResponse.success(payload: {
             issues: map_issues(response["issues"]),
             is_last: last?(response),
+            page: page,
             total_count: response["total"].to_i
           })
         end

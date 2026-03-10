@@ -7398,7 +7398,7 @@ msgstr ""
 msgid "AiPowered|GitLab Duo with Amazon Q"
 msgstr ""
 
-msgid "AiPowered|Group"
+msgid "AiPowered|Have access to"
 msgstr ""
 
 msgid "AiPowered|Indirect connections through GitLab Self-Managed"
@@ -7428,7 +7428,7 @@ msgstr ""
 msgid "AiPowered|Member access"
 msgstr ""
 
-msgid "AiPowered|Membership grants access to"
+msgid "AiPowered|Members of group"
 msgstr ""
 
 msgid "AiPowered|Minimum role required to create, duplicate, edit, delete, and show agents and flows."
@@ -7450,6 +7450,9 @@ msgid "AiPowered|Never allow GitLab to process your code and project data for AI
 msgstr ""
 
 msgid "AiPowered|No access rules configured"
+msgstr ""
+
+msgid "AiPowered|No group"
 msgstr ""
 
 msgid "AiPowered|No groups found"
