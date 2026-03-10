@@ -221,7 +221,12 @@ module API
 
         not_acceptable! if Gitlab::HotlinkingDetector.intercept_hotlinking?(request)
 
-        send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths]
+        # Return early for HEAD requests to avoid generating archives.
+        if request.head?
+          send_git_archive_head(user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path])
+        else
+          send_git_archive user_project.repository, ref: params[:sha], format: params[:format], append_sha: true, path: params[:path], include_lfs_blobs: params[:include_lfs_blobs], exclude_paths: params[:exclude_paths]
+        end
       rescue StandardError
         not_found!('File')
       end

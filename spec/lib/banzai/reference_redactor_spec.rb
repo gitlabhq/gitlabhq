@@ -60,6 +60,14 @@ RSpec.describe Banzai::ReferenceRedactor, feature_category: :markdown do
           redactor.redact([doc])
           expect(doc.to_html).to eq('<a href="https://www.gitlab.com">Homer</a>')
         end
+
+        it 'does not unescape the href while reconstructing the anchor node' do
+          html = "<a href='&quot;&gt;&lt;script&gt;&lt;/script&gt;' data-link-reference='true' class='gfm' data-reference-type='issue' data-reference-type='issue' data-original='Homer'>Marge</a>"
+          doc = Nokogiri::HTML.fragment(html)
+          redactor.redact([doc])
+          expect(doc.css('script').length).to eq(0)
+          expect(doc.to_html).to eq_html('<a href="&quot;&gt;&lt;script&gt;&lt;/script&gt;">Homer</a>')
+        end
       end
     end
 

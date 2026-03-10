@@ -305,4 +305,44 @@ RSpec.describe Projects::RepositoriesController, feature_category: :source_code_
       end
     end
   end
+
+  describe 'HEAD archive' do
+    let_it_be(:user) { create(:user) }
+
+    before do
+      project.add_developer(user)
+      sign_in(user)
+    end
+
+    it 'returns 200 OK with correct headers for authenticated user' do
+      expect(controller).not_to receive(:send_git_archive)
+
+      head :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: 'zip'
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers['ETag']).to be_present
+      expect(response.headers['Cache-Control']).to include('must-revalidate')
+      expect(response.headers['Content-Type']).to include('application/zip')
+      expect(response.headers['Content-Disposition']).to include('attachment')
+      expect(response.headers['Content-Disposition']).to include('.zip')
+    end
+
+    it 'returns correct Content-Type for tar.gz format' do
+      head :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: 'tar.gz'
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers['Content-Type']).to include('application/octet-stream')
+      expect(response.headers['Content-Disposition']).to include('.tar.gz')
+    end
+
+    it 'returns 304 Not Modified when ETag matches' do
+      head :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: 'zip'
+      etag = response.headers['ETag']
+
+      request.headers['If-None-Match'] = etag
+      head :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: 'zip'
+
+      expect(response).to have_gitlab_http_status(:not_modified)
+    end
+  end
 end

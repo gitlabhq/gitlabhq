@@ -531,6 +531,41 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
     end
   end
 
+  describe 'HEAD /projects/:id/repository/archive' do
+    let(:route) { "/projects/#{project.id}/repository/archive" }
+
+    it 'returns 200 OK with headers for authenticated user' do
+      expect(Gitlab::Workhorse).not_to receive(:send_git_archive)
+
+      head api(route, user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      # Content-Type is aligned with Workhorse: application/octet-stream for non-zip formats
+      expect(response.headers['Content-Type']).to include('application/octet-stream')
+      expect(response.headers['Content-Disposition']).to include('attachment')
+    end
+
+    context 'when project is public' do
+      let_it_be(:public_project) { create(:project, :public, :repository) }
+
+      it 'returns 200 OK for unauthenticated user' do
+        head api("/projects/#{public_project.id}/repository/archive")
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['Content-Type']).to include('application/octet-stream')
+      end
+    end
+
+    context 'with specific format' do
+      it 'returns correct content type for zip' do
+        head api("#{route}.zip", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.headers['Content-Type']).to include('application/zip')
+      end
+    end
+  end
+
   describe 'GET /projects/:id/repository/compare' do
     let(:route) { "/projects/#{project.id}/repository/compare" }
 

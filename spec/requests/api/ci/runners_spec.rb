@@ -2245,6 +2245,43 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         end
       end
     end
+
+    context 'when repository is disabled' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Need helpers for scenarios
+      let_it_be(:project_with_disabled_repo) { create(:project, :repository_disabled, maintainers: users.first) }
+      let_it_be(:runner_with_disabled_repo_jobs) { create(:ci_runner, :with_runner_manager, :project, projects: [project_with_disabled_repo]) }
+      let_it_be(:disabled_repo_jobs) do
+        create_list(:ci_build, 2, runner_manager: runner_with_disabled_repo_jobs.runner_managers.sole, project: project_with_disabled_repo)
+      end
+
+      let(:runner) { runner_with_disabled_repo_jobs }
+      let(:current_user) { users.first }
+
+      it 'does not return jobs from projects with disabled repository' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
+      end
+    end
+
+    context 'when builds are disabled' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Need helpers for scenarios
+      let_it_be(:project_with_disabled_builds) { create(:project, :builds_disabled, maintainers: users.first) }
+      let_it_be(:runner_with_disabled_builds_jobs) { create(:ci_runner, :project, projects: [project_with_disabled_builds]) }
+      let_it_be(:disabled_builds_manager) { create(:ci_runner_machine, runner: runner_with_disabled_builds_jobs) }
+      let_it_be(:disabled_builds_jobs) do
+        create_list(:ci_build, 2, runner_manager: disabled_builds_manager, project: project_with_disabled_builds)
+      end
+
+      let(:runner) { runner_with_disabled_builds_jobs }
+      let(:current_user) { users.first }
+
+      it 'does not return jobs from projects with disabled builds' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
+      end
+    end
   end
 
   shared_examples_for 'unauthorized access to runners list' do

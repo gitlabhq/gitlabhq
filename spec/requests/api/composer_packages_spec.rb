@@ -795,14 +795,24 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
         end
 
         context 'for head request' do
-          subject { head api(url), headers:, params: }
+          subject(:request) { head api(url), headers: headers, params: params }
 
           before_all do
             project.add_developer(user)
           end
 
           it 'does not bump last downloaded at field' do
-            expect { subject }.not_to change { package.reload.last_downloaded_at }
+            expect { request }.not_to change { package.reload.last_downloaded_at }
+          end
+
+          it 'returns 200 OK with correct headers without archive generation' do
+            expect(Gitlab::Workhorse).not_to receive(:send_git_archive)
+
+            request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers['Content-Type']).to include('application/zip')
+            expect(response.headers['Content-Disposition']).to include('attachment')
           end
         end
       end
