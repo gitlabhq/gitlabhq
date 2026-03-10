@@ -1324,7 +1324,7 @@ class Repository
     patterns = [Gitlab::Git::BRANCH_REF_PREFIX, Gitlab::Git::TAG_REF_PREFIX]
 
     prohibited_refs = raw_repository.list_refs(patterns).select do |ref|
-      ref.name.match(Gitlab::Git::SHA_LIKE_REF)
+      prohibited_ref?(ref.name)
     end
 
     return if prohibited_refs.blank?
@@ -1435,6 +1435,18 @@ class Repository
   end
 
   private
+
+  # A ref is prohibited if its name matches a SHA-like pattern
+  # or if, after stripping the refs/heads/ or refs/tags/ prefix,
+  # the branch/tag name fails GitRefValidator validation (e.g. names
+  # starting with refs/heads/ which create ambiguous nested refs
+  # like refs/heads/refs/heads/main).
+  def prohibited_ref?(ref_name)
+    return true if ref_name.match?(Gitlab::Git::SHA_LIKE_REF)
+
+    short_name = Gitlab::Git.ref_name(ref_name)
+    !Gitlab::GitRefValidator.validate(short_name)
+  end
 
   # Increase the limit by number of excluded refs
   # to prevent a situation when we return less refs than requested

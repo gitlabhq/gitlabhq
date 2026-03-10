@@ -8,6 +8,7 @@ module WebHooks
     included do
       before_action :hook, only: [:show, :retry]
       before_action :hook_log, only: [:show, :retry]
+      before_action :check_resend_rate_limit!, only: :retry
 
       respond_to :html
 
@@ -43,6 +44,10 @@ module WebHooks
 
     def hide_search_settings
       @hide_search_settings ||= true
+    end
+
+    def check_resend_rate_limit!
+      check_rate_limit!(:web_hook_event_resend, scope: [hook.parent, current_user])
     end
   end
 end

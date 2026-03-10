@@ -4382,14 +4382,14 @@ RSpec.describe Repository, feature_category: :source_code_management do
       let(:repository) { mutable_project.repository }
       let(:raw_repository) { repository.raw }
       let(:commit_id) { raw_repository.commit.id }
-      let(:prohibited_name) { '37fd3601be4c25497a39fa2e6a206e09e759d597' }
+      let(:prohibited_sha_name) { '37fd3601be4c25497a39fa2e6a206e09e759d597' }
       let(:prohibited_hex_64_name) { '5f50b1461c836081ed677f05e08d10dc7dc68631fa5767bc3e3946349b348275' }
       let(:allowed_basic_name) { 'some-tag-name' }
       let(:allowed_non_hex_40_name) { '37fd3601be4c25497a39fa2e6a206e09e759d59s' }
 
       before do
-        raw_repository.add_tag(prohibited_name, user: user, target: commit_id)
-        raw_repository.add_branch(prohibited_name, user: user, target: commit_id)
+        raw_repository.add_tag(prohibited_sha_name, user: user, target: commit_id)
+        raw_repository.add_branch(prohibited_sha_name, user: user, target: commit_id)
 
         raw_repository.add_tag(allowed_basic_name, user: user, target: commit_id)
         raw_repository.add_branch(allowed_basic_name, user: user, target: commit_id)
@@ -4401,35 +4401,62 @@ RSpec.describe Repository, feature_category: :source_code_management do
         raw_repository.add_branch(allowed_non_hex_40_name, user: user, target: commit_id)
       end
 
-      it 'only deletes prohibited refs' do
-        # Check everything exists before calling `remove_prohibited_refs`.
-        expect(repository.find_branch(allowed_basic_name)).not_to be_nil
-        expect(repository.find_tag(allowed_basic_name)).not_to be_nil
-
+      it 'deletes SHA-like prohibited refs' do
+        expect(repository.find_branch(prohibited_sha_name)).not_to be_nil
+        expect(repository.find_tag(prohibited_sha_name)).not_to be_nil
         expect(repository.find_branch(prohibited_hex_64_name)).not_to be_nil
         expect(repository.find_tag(prohibited_hex_64_name)).not_to be_nil
 
+        repository.remove_prohibited_refs
+
+        expect(repository.find_branch(prohibited_sha_name)).to be_nil
+        expect(repository.find_tag(prohibited_sha_name)).to be_nil
+        expect(repository.find_branch(prohibited_hex_64_name)).to be_nil
+        expect(repository.find_tag(prohibited_hex_64_name)).to be_nil
+      end
+
+      it 'does not delete allowed refs' do
+        repository.remove_prohibited_refs
+
+        expect(repository.find_branch(allowed_basic_name)).not_to be_nil
+        expect(repository.find_tag(allowed_basic_name)).not_to be_nil
         expect(repository.find_branch(allowed_non_hex_40_name)).not_to be_nil
         expect(repository.find_tag(allowed_non_hex_40_name)).not_to be_nil
+      end
+    end
 
-        expect(repository.find_branch(prohibited_name)).not_to be_nil
-        expect(repository.find_tag(prohibited_name)).not_to be_nil
+    context "when repository contains branches with nested ref prefixes" do
+      let(:mutable_project) { create(:project, :repository) }
+      let(:repository) { mutable_project.repository }
+      let(:raw_repository) { repository.raw }
+      let(:commit_id) { raw_repository.commit.id }
+
+      it 'deletes branches whose names start with refs/heads/' do
+        raw_repository.write_ref('refs/heads/refs/heads/main', commit_id)
+
+        expect(raw_repository.ref_exists?('refs/heads/refs/heads/main')).to be true
 
         repository.remove_prohibited_refs
 
-        # Check allowed refs were not deleted.
-        expect(repository.find_branch(allowed_basic_name)).not_to be_nil
-        expect(repository.find_tag(allowed_basic_name)).not_to be_nil
+        expect(raw_repository.ref_exists?('refs/heads/refs/heads/main')).to be false
+      end
 
-        expect(repository.find_branch(allowed_non_hex_40_name)).not_to be_nil
-        expect(repository.find_tag(allowed_non_hex_40_name)).not_to be_nil
+      it 'deletes branches whose names start with refs/remotes/' do
+        raw_repository.write_ref('refs/heads/refs/remotes/origin/main', commit_id)
 
-        # Check prohibited refs were deleted.
-        expect(repository.find_branch(prohibited_name)).to be_nil
-        expect(repository.find_tag(prohibited_name)).to be_nil
+        expect(raw_repository.ref_exists?('refs/heads/refs/remotes/origin/main')).to be true
 
-        expect(repository.find_branch(prohibited_hex_64_name)).to be_nil
-        expect(repository.find_tag(prohibited_hex_64_name)).to be_nil
+        repository.remove_prohibited_refs
+
+        expect(raw_repository.ref_exists?('refs/heads/refs/remotes/origin/main')).to be false
+      end
+
+      it 'does not delete normal branches' do
+        raw_repository.write_ref('refs/heads/refs/heads/main', commit_id)
+
+        repository.remove_prohibited_refs
+
+        expect(repository.find_branch('master')).not_to be_nil
       end
     end
 

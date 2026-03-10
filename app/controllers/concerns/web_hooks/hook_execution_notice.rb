@@ -6,7 +6,7 @@ module WebHooks
 
     def set_hook_execution_notice(result)
       http_status = result.payload[:http_status]
-      message = result[:message]
+      message = result[:message].to_s.truncate_bytes(::WebHookService::RESPONSE_BODY_SIZE_LIMIT)
 
       if http_status && http_status >= 200 && http_status < 400
         flash[:notice] = "Hook executed successfully: HTTP #{http_status}"
