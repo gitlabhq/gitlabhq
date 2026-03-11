@@ -28,10 +28,4 @@ class SnippetBlob
   def data
     snippet.content
   end
-
-  def rendered_markup
-    return unless Gitlab::MarkupHelper.gitlab_markdown?(name)
-
-    Banzai.render_field(snippet, :content)
-  end
 end

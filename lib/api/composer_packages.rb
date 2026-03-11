@@ -222,11 +222,15 @@ module API
 
           track_package_event('pull_package', :composer, project: project, namespace: project.namespace)
 
-          # For now we keep writing to the existing packages_packages table.
-          # It contains the trigger to sync the data with packages_composer_packages table.
-          ::Packages::Composer::Sti::Package.touch_last_downloaded_at(package.id) unless request.head?
-
-          send_git_archive project.repository, ref: package.target_sha, format: 'zip', append_sha: true
+          # Return early for HEAD requests to avoid generating archives.
+          if request.head?
+            send_git_archive_head(project.repository, ref: package.target_sha, format: 'zip', append_sha: true)
+          else
+            # For now we keep writing to the existing packages_packages table.
+            # It contains the trigger to sync the data with packages_composer_packages table.
+            ::Packages::Composer::Sti::Package.touch_last_downloaded_at(package.id)
+            send_git_archive project.repository, ref: package.target_sha, format: 'zip', append_sha: true
+          end
         end
       end
     end

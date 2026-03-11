@@ -79,8 +79,10 @@ RSpec.shared_examples 'a webhook' do |factory:|
       it { is_expected.to allow_value({ 'x_y_z' => 'bar' }).for(:custom_headers) }
       it { is_expected.to allow_value({ 'f.o.o' => 'bar' }).for(:custom_headers) }
       it { is_expected.to allow_value({ 'Content-Length' => 'all alone' }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'a' * 255 => 'bar' }).for(:custom_headers) }
 
       it { is_expected.not_to allow_value([]).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'a' * 256 => 'bar' }).for(:custom_headers) }
       it { is_expected.not_to allow_value({ 'foo' => 1 }).for(:custom_headers) }
       it { is_expected.not_to allow_value({ 'bar' => :baz }).for(:custom_headers) }
       it { is_expected.not_to allow_value({ 'bar' => nil }).for(:custom_headers) }

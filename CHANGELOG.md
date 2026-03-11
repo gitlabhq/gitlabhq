@@ -2,6 +2,41 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.9.2 (2026-03-10)
+
+### Added (1 change)
+
+- [Support default AI access rules](https://gitlab.com/gitlab-org/security/gitlab/-/commit/54ad755d436bf21a4cfc2c1bb401571d03574ef1) **GitLab Enterprise Edition**
+
+### Fixed (1 change)
+
+- [Stop unblocking policy approvals when security jobs get canceled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/37b4ff3279db044471e9417455c83f9fafea039e) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Add backtrace to placeholder user reassignment failure logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/22887e27b25ceff6e7cc4b7c6d450b7c82ba8aa4)
+
+### Security (14 changes)
+
+- [Add CRLF injection protection to gitlab-http gem](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a1202533f4411662c619bc301e9162c781281430) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5839))
+- [Allow HEAD requests to archive endpoints without generating archives](https://gitlab.com/gitlab-org/security/gitlab/-/commit/da4bb345a57e8f593bcce0f6bd7e4fd2c3883e0b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5855))
+- [Remove branches with invalid ref names after import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/151ddddbb53286da9ad95a5a59acca3e4f9e198a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5835))
+- [Revoke read access to virtual registry through project membership](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4b7c24739c23e628a8a11449efb033216c78083a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5852))
+- [Add recursion depth and string size limits to GraphQL variables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1a5928809b5debd3929af99385f8487e4082deee) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5842))
+- [ReferenceRedactor: don't feed href directly back into HTML](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ba625ef7c9a6c8e3e9cf97e7dccfb3aa4b846dad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5780))
+- [Hide job details when repository option is disabled](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7176d2ea496daa01706e99d8db0c2b1b6ffea65a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5812))
+- [Limit request rate and response length of webhook retry endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4ab43ff415b23ffcb32a7c5498f6d88185af2462) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5815))
+- [Limit webhook custom header key length to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0354e9afae1af3d4f7a89b9ddcd4187ce49fb5f1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5820))
+- [Prevent label creation on unrelated projects on import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4bd49b9f08e1ea4953a11cd9ff157b72483ac992) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5826))
+- [Use MarkupHelper.markdown_field when exposing *_html fields in API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/363c72c8e11e307ef15279f508917b8a25fedd86) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5800))
+- [Block oversized JSON params in REST API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a6139e40418640c6a83c6ed5313711acafbe4a79) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5765))
+- [Don't use Snippet#content_html](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a4c3f48bccba801b0b49302514109b4514944119) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5782))
+- [Fix Datadog API key leak via placeholder injection in integration fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9b23e622afedff5f2fdb06e743cd54f54b519522) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5801))
+
+### Other (1 change)
+
+- [Revert "Clean up gpg_commit_delegate_to_signature feature flag"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/613697890fb229ba6927985b6a8c7abb838c4e7c)
+
 ## 18.9.1 (2026-02-24)
 
 ### Added (1 change)

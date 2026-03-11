@@ -111,7 +111,9 @@ module API
         project.import_state&.last_error
       end
       expose :open_issues_count, documentation: { type: 'Integer', example: 1 }, if: ->(project, options) { project.feature_available?(:issues, options[:current_user]) }
-      expose :description_html, documentation: { type: 'String' }
+      expose :description_html, documentation: { type: 'String' } do |project|
+        MarkupHelper.markdown_field(project, :description, current_user: options[:current_user])
+      end
       expose :updated_at, documentation: { type: 'DateTime', example: '2020-05-07T04:27:17.016Z' }
 
       with_options if: ->(_, _) { Ability.allowed?(options[:current_user], :admin_project, project) } do

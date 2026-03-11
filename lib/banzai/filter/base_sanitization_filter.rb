@@ -20,6 +20,23 @@ module Banzai
 
       def call
         Sanitize.clean_node!(doc, allowlist)
+
+        # Sanitisation may leave the DOM in an invalid state; e.g.:
+        #
+        # <a> ... <li> <a> ... </a> </li> </a>
+        #
+        # sanitises to:
+        #
+        # <a> ... <a> ... </a> </a>
+        #
+        # This is not actually allowed by HTML, and reparsing it results in:
+        #
+        # <a> ... </a> <a> ... </a>
+        #
+        # Operating on a broken DOM gives rise to vulnerabilities since we're looking
+        # at a structure which we can never parse directly (nor would a browser operate
+        # on), so serialise it out and reparse.
+        Nokogiri::HTML.fragment(doc.to_html)
       end
 
       def allowlist

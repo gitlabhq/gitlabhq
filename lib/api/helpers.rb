@@ -1009,6 +1009,24 @@ module API
       body ''
     end
 
+    # Respond to HEAD requests for archive endpoints without generating the archive.
+    # Sets appropriate Content-Type and Content-Disposition headers.
+    # Raises an exception if the ref is not found, matching send_git_archive behavior.
+    def send_git_archive_head(repository, ref:, format:, append_sha:, path: nil)
+      builder = Gitlab::Repositories::ArchiveHeaderBuilder.new(
+        repository,
+        ref: ref,
+        format: format,
+        append_sha: append_sha,
+        path: path
+      )
+
+      content_type builder.content_type
+      header 'Content-Disposition', builder.content_disposition
+
+      body ''
+    end
+
     # Deprecated. Use `send_artifacts_entry` instead.
     def legacy_send_artifacts_entry(file, entry)
       header(*Gitlab::Workhorse.send_artifacts_entry(file, entry))
