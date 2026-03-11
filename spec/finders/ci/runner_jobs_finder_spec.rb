@@ -114,4 +114,31 @@ RSpec.describe Ci::RunnerJobsFinder, '#execute', factory_default: :keep, feature
       is_expected.to eq(jobs.sort_by(&:id).reverse)
     end
   end
+
+  context 'when repository is disabled' do
+    let_it_be(:disabled_repo_project) { create(:project, :repository_disabled, reporters: user) }
+    let_it_be(:disabled_repo_jobs) { create_list(:ci_build, 2, runner: runner, project: disabled_repo_project) }
+
+    it 'does not return jobs from projects with disabled repository' do
+      is_expected.not_to include(*disabled_repo_jobs)
+    end
+  end
+
+  context 'when builds are disabled' do
+    let_it_be(:disabled_builds_project) { create(:project, :builds_disabled, reporters: user) }
+    let_it_be(:disabled_builds_jobs) { create_list(:ci_build, 2, runner: runner, project: disabled_builds_project) }
+
+    it 'does not return jobs from projects with disabled builds' do
+      is_expected.not_to include(*disabled_builds_jobs)
+    end
+  end
+
+  context 'when both repository and builds are enabled' do
+    let_it_be(:enabled_project) { create(:project, reporters: user) }
+    let_it_be(:enabled_jobs) { create_list(:ci_build, 2, runner: runner, project: enabled_project) }
+
+    it 'returns jobs from projects with enabled repository and builds' do
+      is_expected.to include(*enabled_jobs)
+    end
+  end
 end

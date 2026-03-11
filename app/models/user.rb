@@ -2175,9 +2175,15 @@ class User < ApplicationRecord
   end
 
   def authorized_project_mirrors(level)
-    projects = Ci::ProjectMirror.by_project_id(ci_project_ids_for_project_members(level))
+    projects = Ci::ProjectMirror.by_project_id(
+      with_project_feature_enabled(:project, ci_project_ids_for_project_members(level))
+      .pluck(:source_id)
+    )
 
-    namespace_projects = Ci::ProjectMirror.by_namespace_id(ci_namespace_mirrors_for_group_members(level).select(:namespace_id))
+    namespace_projects = Ci::ProjectMirror.by_namespace_id(
+      ci_namespace_mirrors_for_group_members(level) { |scope| with_project_feature_enabled(:projects, scope) }
+      .select(:namespace_id)
+    )
 
     Ci::ProjectMirror.from_union([projects, namespace_projects])
   end
@@ -2918,7 +2924,7 @@ class User < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def ci_project_ids_for_project_members(level)
-    project_members.where('access_level >= ?', level).pluck(:source_id)
+    project_members.where('access_level >= ?', level)
   end
 
   def notification_email_verified
@@ -3076,11 +3082,19 @@ class User < ApplicationRecord
   def ci_namespace_mirrors_for_group_members(level)
     search_members = group_members.where('access_level >= ?', level)
 
-    traversal_ids = Group.joins(:all_group_members)
-      .merge(search_members)
-      .shortest_traversal_ids_prefixes
+    traversal_ids = Group.joins(:all_group_members).merge(search_members)
+    traversal_ids = yield(traversal_ids) if block_given?
+    traversal_ids = traversal_ids.shortest_traversal_ids_prefixes
 
     Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
+  end
+
+  def with_project_feature_enabled(relation, scope)
+    scope
+      .joins(relation)
+      .merge(Project.with_project_feature)
+      .merge(ProjectFeature.with_feature_enabled(:repository))
+      .merge(ProjectFeature.with_feature_enabled(:builds))
   end
 
   def prefix_for_feed_token

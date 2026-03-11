@@ -25,12 +25,12 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory, feature_category: :
 
   context 'label object' do
     let(:relation_sym) { :group_label }
-    let(:id) { random_id }
-    let(:original_group_id) { random_id }
+    let(:id) { non_existing_record_id }
+    let(:original_group_id) { non_existing_record_id }
 
     let(:relation_hash) do
       {
-        'id' => 123456,
+        'id' => id,
         'title' => 'Bruffefunc',
         'color' => '#1d2da4',
         'project_id' => nil,
@@ -62,6 +62,27 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory, feature_category: :
 
       it 'are removed from the imported object' do
         expect(created_object.description).to be_nil
+      end
+    end
+
+    context 'with project label attributes matching another project on the destination instance' do
+      let_it_be(:project_on_destination) { create(:project) }
+
+      before do
+        relation_hash.merge!(
+          'group_id' => nil,
+          'project_id' => project_on_destination.id,
+          'type' => 'ProjectLabel'
+        )
+      end
+
+      it 'does not associate the label to unauthorized projects' do
+        expect(created_object.project_id).to be_nil
+      end
+
+      it 'associates the label to the new group' do
+        expect(created_object.group_id).to eq(group.id)
+        expect(created_object.type).to eq('GroupLabel')
       end
     end
   end
@@ -216,9 +237,5 @@ RSpec.describe Gitlab::ImportExport::Group::RelationFactory, feature_category: :
         expect(created_object).to be_nil
       end
     end
-  end
-
-  def random_id
-    rand(1000..10000)
   end
 end

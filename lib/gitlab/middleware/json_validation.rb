@@ -52,6 +52,24 @@ module Gitlab
         \A/api/v4/ai/duo_workflows/workflows/
       }xi
 
+      USAGE_DATA_TRACK_EVENTS_PATH = %r{
+        \A/api/v4/usage_data/track_events\z
+      }xi
+
+      PROTECTED_BRANCHES_PATH = %r{
+        \A/api/v4/projects/
+        (?<id>
+        [a-zA-Z0-9%-._]{1,255}
+        )/protected_branches(?:/[^/]+)?\z
+      }xi
+
+      PROTECTED_TAGS_PATH = %r{
+        \A/api/v4/projects/
+        (?<id>
+        [a-zA-Z0-9%-._]{1,255}
+        )/protected_tags(?:/[^/]+)?\z
+      }xi
+
       DEFAULT_LIMITS = {
         # Rack::Utils uses a depth of 32 by default
         max_depth: ENV.fetch('GITLAB_JSON_MAX_DEPTH', 32).to_i,
@@ -146,6 +164,45 @@ module Gitlab
             max_hash_size: 5000,
             max_total_elements: 0, # Regularly exceeds 10,000, disable for now
             max_json_size_bytes: 25.megabytes,
+            mode: :enforced
+          }
+        },
+        # Usage data track_events API - events parameter limited to 2MB
+        {
+          regex: USAGE_DATA_TRACK_EVENTS_PATH,
+          methods: %i[post],
+          limits: {
+            max_depth: 32,
+            max_array_size: 50000,
+            max_hash_size: 50000,
+            max_total_elements: 100000,
+            max_json_size_bytes: 2.megabytes,
+            mode: :enforced
+          }
+        },
+        # Protected branches API - 3 JSON array parameters each limited to 1MB
+        {
+          regex: PROTECTED_BRANCHES_PATH,
+          methods: %i[post patch],
+          limits: {
+            max_depth: 32,
+            max_array_size: 50000,
+            max_hash_size: 50000,
+            max_total_elements: 100000,
+            max_json_size_bytes: 3.megabytes,
+            mode: :enforced
+          }
+        },
+        # Protected tags API - 1 JSON array parameter limited to 1MB
+        {
+          regex: PROTECTED_TAGS_PATH,
+          methods: %i[post],
+          limits: {
+            max_depth: 32,
+            max_array_size: 50000,
+            max_hash_size: 50000,
+            max_total_elements: 100000,
+            max_json_size_bytes: 1.megabyte,
             mode: :enforced
           }
         }

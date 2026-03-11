@@ -136,5 +136,45 @@ describe('FormCustomHeaders', () => {
       expect(fakeEvent.stopPropagation).not.toHaveBeenCalled();
       expect(scrollToElement).not.toHaveBeenCalled();
     });
+
+    it('prevents submit when header name exceeds maximum length', async () => {
+      const longName = 'a'.repeat(256);
+      createComponent({ props: { initialCustomHeaders: [{ key: longName, value: 'value' }] } });
+      await nextTick();
+
+      const fakeEvent = createFakeSubmitEvent();
+      submitForm(fakeEvent);
+      await nextTick();
+
+      expect(fakeEvent.preventDefault).toHaveBeenCalled();
+      expect(fakeEvent.stopPropagation).toHaveBeenCalled();
+    });
+
+    it('allows submit when header name is at maximum length', async () => {
+      const maxName = 'a'.repeat(255);
+      createComponent({ props: { initialCustomHeaders: [{ key: maxName, value: 'value' }] } });
+      await nextTick();
+
+      const fakeEvent = createFakeSubmitEvent();
+      submitForm(fakeEvent);
+      await nextTick();
+
+      expect(fakeEvent.preventDefault).not.toHaveBeenCalled();
+      expect(fakeEvent.stopPropagation).not.toHaveBeenCalled();
+    });
+
+    it('shows length error feedback when header name exceeds maximum length', async () => {
+      const longName = 'a'.repeat(256);
+      createComponent({ props: { initialCustomHeaders: [{ key: longName, value: 'value' }] } });
+      await nextTick();
+
+      submitForm(createFakeSubmitEvent());
+      await nextTick();
+
+      const firstItem = findAllCustomHeaderItems().at(0);
+      expect(firstItem.props('invalidKeyFeedback')).toBe(
+        'Header name is too long (maximum is 255 characters).',
+      );
+    });
   });
 });

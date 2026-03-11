@@ -31023,7 +31023,7 @@ paths:
         required: true
       - in: path
         name: key
-        description: The key of the custom header
+        description: The name of the custom header
         type: string
         required: true
       - in: path
@@ -31055,7 +31055,7 @@ paths:
         required: true
       - in: path
         name: key
-        description: The key of the custom header
+        description: The name of the custom header
         type: string
         required: true
       - in: path
@@ -46098,7 +46098,7 @@ paths:
         required: true
       - in: path
         name: key
-        description: The key of the custom header
+        description: The name of the custom header
         type: string
         required: true
       - name: putApiV4HooksHookIdCustomHeadersKey
@@ -46125,7 +46125,7 @@ paths:
         required: true
       - in: path
         name: key
-        description: The key of the custom header
+        description: The name of the custom header
         type: string
         required: true
       responses:

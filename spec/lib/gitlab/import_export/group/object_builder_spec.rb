@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Group::ObjectBuilder do
+RSpec.describe Gitlab::ImportExport::Group::ObjectBuilder, feature_category: :importers do
   let(:group) { create(:group) }
   let(:base_attributes) do
     {
@@ -34,6 +34,28 @@ RSpec.describe Gitlab::ImportExport::Group::ObjectBuilder do
         group_label = create(:group_label, label_attributes)
 
         expect(described_class.build(Label, label_attributes)).to eq(group_label)
+      end
+    end
+
+    context 'when attributes correspond to project label' do
+      let_it_be(:project) { create(:project) }
+      let(:label_attributes) do
+        {
+          'title' => 'title',
+          'description' => 'description',
+          'project' => project,
+          'group' => group,
+          'type' => 'ProjectLabel'
+        }
+      end
+
+      it 'only creates group labels', :aggregate_failures do
+        label = described_class.build(Label, label_attributes)
+
+        expect(label.persisted?).to be true
+        expect(label).to be_a(GroupLabel)
+        expect(label.project_id).to be_nil
+        expect(label.group_id).to eq(group.id)
       end
     end
   end

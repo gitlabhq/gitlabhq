@@ -194,4 +194,35 @@ RSpec.describe ::API::Entities::Project do
       it { expect(json[:package_registry_access_level]).to eq(expected_value) }
     end
   end
+
+  describe 'description_html', feature_category: :groups_and_projects do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project_a) { create(:project, :public, group: group, name: 'a', path: 'a') }
+    let_it_be(:project_b) { create(:project, :public, group: group, name: 'b', path: 'b') }
+    let_it_be(:issue) { create(:issue, :confidential, project: project_b) }
+
+    let(:entity) { described_class.new(project_a, current_user: current_user) }
+    let(:issue_path) { Gitlab::UrlBuilder.build(issue, only_path: true) }
+    let(:issue_title) { issue.title }
+
+    before do
+      project_a.update!(description: "Project references #{issue.to_reference(project_a)}")
+    end
+
+    subject(:description_html) { entity.as_json[:description_html] }
+
+    it 'renders references if current user has access to the referent' do
+      project_b.add_reporter(current_user)
+
+      expect(description_html).to include(issue_path)
+      expect(description_html).to include(issue_title)
+    end
+
+    it 'redacts references if current user has no access to the referent' do
+      project_a.add_guest(current_user)
+
+      expect(description_html).not_to include(issue_path)
+      expect(description_html).not_to include(issue_title)
+    end
+  end
 end

@@ -17,6 +17,18 @@ RSpec.describe Gitlab::Graphql::Variables, feature_category: :api do
     end
   end
 
+  describe "MAX_RECURSION_DEPTH" do
+    it "is set to 3" do
+      expect(described_class::MAX_RECURSION_DEPTH).to eq(3)
+    end
+  end
+
+  describe "MAX_NESTED_STRING_SIZE" do
+    it "is set to 10MB" do
+      expect(described_class::MAX_NESTED_STRING_SIZE).to eq(10_000_000)
+    end
+  end
+
   describe '#to_h' do
     subject(:variables) { described_class.new(param).to_h }
 
@@ -82,6 +94,58 @@ RSpec.describe Gitlab::Graphql::Variables, feature_category: :api do
         it 'raises Invalid error' do
           expect { described_class.new(json).to_h }.to raise_error(described_class::Invalid)
         end
+      end
+    end
+
+    context "when string nesting is at exactly the limit" do
+      let(:json) do
+        current_content = { "key" => "value" }.to_json
+        3.times { current_content = current_content.to_json }
+        current_content
+      end
+
+      it "parses successfully" do
+        expect(described_class.new(json).to_h).to eq({ "key" => "value" })
+      end
+    end
+
+    context "when the string nesting limit is exceeded" do
+      let(:json) do
+        current_content = { "key" => "value" }.to_json
+        4.times { current_content = current_content.to_json }
+        current_content
+      end
+
+      it "raises an Invalid error" do
+        expect { described_class.new(json).to_h }.to raise_error(
+          described_class::Invalid, "Parameters nested too deeply"
+        )
+      end
+    end
+
+    context "when the nesting depth is valid and the nested string is at the size limit" do
+      let(:json) { { "key" => "a" * 9_999_980 }.to_json.to_json }
+
+      it "parses successfully" do
+        expect { described_class.new(json).to_h }.not_to raise_error
+      end
+    end
+
+    context "when the nesting depth is valid but the nested string exceeds the size limit" do
+      let(:json) { { "key" => "a" * 10_000_001 }.to_json.to_json }
+
+      it "raises an Invalid error" do
+        expect { described_class.new(json).to_h }.to raise_error(
+          described_class::Invalid, "Nested parameter too large"
+        )
+      end
+    end
+
+    context "when a large string is at the top level (not nested)" do
+      let(:json) { { "key" => "a" * 10_000_001 }.to_json }
+
+      it "parses successfully because size limit only applies to nested strings" do
+        expect { described_class.new(json).to_h }.not_to raise_error
       end
     end
 

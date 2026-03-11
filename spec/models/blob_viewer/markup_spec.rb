@@ -17,15 +17,5 @@ RSpec.describe BlobViewer::Markup do
       expect(subject.banzai_render_context[:issuable_reference_expansion_enabled]).to be(true)
       expect(subject.banzai_render_context[:commit_id]).to eq(blob.commit_id)
     end
-
-    context 'when blob does respond to rendered_markup' do
-      before do
-        allow(blob).to receive(:rendered_markup).and_return("some rendered markup")
-      end
-
-      it 'does sets rendered key' do
-        expect(subject.banzai_render_context.keys).to include(:rendered)
-      end
-    end
   end
 end

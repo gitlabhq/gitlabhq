@@ -71,7 +71,7 @@ RSpec.describe WebHooks::CreateService, feature_category: :webhooks do
         response = webhook_created.execute(invalid_params, relation)
 
         expect(response).not_to be_success
-        expect(response[:message]).to eq("Custom headers must be a valid json schema")
+        expect(response[:message]).to eq("Custom headers validation failed: must be a valid json schema")
         expect(response[:http_status]).to eq(422)
       end
     end
@@ -83,7 +83,7 @@ RSpec.describe WebHooks::CreateService, feature_category: :webhooks do
         response = webhook_created.execute(invalid_params, relation)
 
         expect(response).not_to be_success
-        expect(response[:message]).to eq("Custom headers must be a valid json schema")
+        expect(response[:message]).to eq("Custom headers validation failed: must be a valid json schema")
         expect(response[:http_status]).to eq(422)
       end
     end
