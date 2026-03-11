@@ -174,10 +174,6 @@ module Gitlab
           end
         end
 
-        def label?
-          klass == Label
-        end
-
         def milestone?
           klass == Milestone
         end

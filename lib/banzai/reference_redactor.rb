@@ -66,13 +66,16 @@ module Banzai
     def redacted_node_content(node)
       original_content = node.attr('data-original')
 
-      # Build the raw <a> tag just with a link as href and content if
+      # Build the <a> tag just with a link as href and content if
       # it's originally a link pattern. We shouldn't return a plain text href.
       original_link =
         if node.attr('data-link-reference') == 'true'
           href = node.attr('href')
 
-          %(<a href="#{href}">#{original_content}</a>)
+          a = node.document.create_element('a')
+          a['href'] = href
+          a.inner_html = original_content
+          a.to_html
         end
 
       # The reference should be replaced by the original link's content,

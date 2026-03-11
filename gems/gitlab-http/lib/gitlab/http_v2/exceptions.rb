@@ -12,6 +12,7 @@ module Gitlab
     ResponseSizeTooLarge = Class.new(StandardError)
     MaxDecompressionSizeError = Class.new(StandardError)
     InvalidResponseError = Class.new(StandardError)
+    HeaderInjectionError = Class.new(StandardError)
 
     HTTP_TIMEOUT_ERRORS = [
       Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout, Gitlab::HTTP_V2::ReadTotalTimeout
@@ -22,7 +23,7 @@ module Gitlab
       Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH,
       Gitlab::HTTP_V2::BlockedUrlError, Gitlab::HTTP_V2::RedirectionTooDeep,
       Net::HTTPBadResponse, Gitlab::HTTP_V2::ResponseSizeTooLarge, Gitlab::HTTP_V2::MaxDecompressionSizeError,
-      Gitlab::HTTP_V2::InvalidResponseError
+      Gitlab::HTTP_V2::InvalidResponseError, Gitlab::HTTP_V2::HeaderInjectionError
     ].freeze
   end
 end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'rspec-parameterized'
 
 RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
   context 'when allow_local_requests' do
@@ -517,6 +518,91 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
 
       it 'blocks DELETE requests' do
         expect { described_class.delete('http://example.org', silent_mode_enabled: silent_mode) }.not_to raise_error
+      end
+    end
+  end
+
+  describe 'CRLF injection protection' do
+    before do
+      stub_full_request('http://example.org', method: :any).to_return(status: 200, body: 'success')
+    end
+
+    context 'when headers contain control characters' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:header_name, :header_value, :error_field) do
+        "X-Custom\rHeader"   | 'value'                       | 'header name'
+        "X-Custom\nHeader"   | 'value'                       | 'header name'
+        "X-Custom\0Header"   | 'value'                       | 'header name'
+        'X-Custom'           | "value\rinjected"             | 'header value'
+        'X-Custom'           | "value\ninjected"             | 'header value'
+        'X-Custom'           | "value\0injected"             | 'header value'
+        'X-Custom'           | "value\r\nX-Injected: attack" | 'header value'
+      end
+
+      with_them do
+        it 'raises HeaderInjectionError' do
+          expect do
+            described_class.get('http://example.org', headers: { header_name => header_value })
+          end.to raise_error(Gitlab::HTTP_V2::HeaderInjectionError, /Invalid #{error_field}/)
+        end
+      end
+    end
+
+    context 'when headers are valid' do
+      where(:header_name, :header_value) do
+        [
+          ['X-Custom', 'normal-value'],
+          [:'X-Custom-Symbol', 'value'],
+          ['Content-Length', '100'],
+          ['X-Empty', ''],
+          ['X-Special-Chars', '!@#$%^&*()'],
+          ['Authorization', 'Bearer token123']
+        ]
+      end
+
+      with_them do
+        it 'allows the request' do
+          expect do
+            described_class.get('http://example.org', headers: { header_name => header_value })
+          end.not_to raise_error
+        end
+      end
+    end
+
+    context 'when no headers are provided' do
+      it 'does not raise an error' do
+        expect { described_class.get('http://example.org') }.not_to raise_error
+      end
+    end
+
+    context 'when headers option is nil' do
+      it 'does not raise an error' do
+        expect { described_class.get('http://example.org', headers: nil) }.not_to raise_error
+      end
+    end
+
+    it 'logs an error when rejecting headers' do
+      expect(described_class.configuration).to receive(:log_with_level)
+        .with(:error, {
+          message: 'Rejected HTTP header with control characters',
+          field_type: 'header value'
+        })
+
+      expect do
+        described_class.get('http://example.org', headers: { 'X-Custom' => "value\ninjected" })
+      end.to raise_error(Gitlab::HTTP_V2::HeaderInjectionError)
+    end
+
+    context 'with async requests' do
+      it 'raises HeaderInjectionError for invalid headers before async execution' do
+        expect do
+          described_class.get(
+            'http://example.org',
+            headers: { 'X-Custom' => "value\r\ninjected" },
+            async: true
+          )
+        end.to raise_error(Gitlab::HTTP_V2::HeaderInjectionError)
       end
     end
   end

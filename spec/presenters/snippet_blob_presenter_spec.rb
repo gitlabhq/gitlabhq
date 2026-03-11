@@ -81,6 +81,36 @@ RSpec.describe SnippetBlobPresenter do
     end
   end
 
+  describe '#rich_data with SnippetBlob' do
+    # Imported snippets may not have a repository to belong to, in which case
+    # SnippetsActions#blobs returns `[snippet.blob]`, a (decorated) SnippetBlob.
+    # Ensure that, same as regular blobs, they don't render references.
+    let_it_be(:ref_project) { create(:project, :public) }
+    let_it_be(:public_issue) { create(:issue, project: ref_project) }
+    let_it_be(:private_issue) { create(:issue, :confidential, project: ref_project) }
+    let_it_be(:viewer) { create(:user) }
+
+    let(:snippet) do
+      create(
+        :project_snippet,
+        :public,
+        project: ref_project,
+        author: ref_project.first_owner,
+        file_name: 'test.md',
+        content: "Reference to #{public_issue.to_reference} and #{private_issue.to_reference}"
+      )
+    end
+
+    let(:blob) { snippet.blob }
+
+    subject(:rich_data) { described_class.new(blob, current_user: viewer).rich_data }
+
+    it 'does not render references' do
+      expect(snippet.empty_repo?).to be(true)
+      expect(rich_data).not_to include("data-reference-type")
+    end
+  end
+
   describe 'route helpers' do
     let_it_be(:project)          { create(:project) }
     let_it_be(:user)             { create(:user) }

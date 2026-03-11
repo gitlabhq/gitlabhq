@@ -110,6 +110,10 @@ module Gitlab
         def where_clause_for_created_at
           attrs_to_arel(attributes.slice('created_at'))
         end
+
+        def label?
+          klass == Label
+        end
       end
     end
   end

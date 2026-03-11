@@ -4,7 +4,7 @@ import { GlButton } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import { CUSTOM_HEADER_KEY_PATTERN } from '../constants';
+import { CUSTOM_HEADER_KEY_PATTERN, MAXIMUM_CUSTOM_HEADER_NAME_LENGTH } from '../constants';
 import FormCustomHeaderItem from './form_custom_header_item.vue';
 
 const MAXIMUM_CUSTOM_HEADERS = 20;
@@ -66,7 +66,11 @@ export default {
       }
     },
     keyIsValid(key) {
-      return !isEmpty(key) && this.keyHasValidPattern(key);
+      return (
+        !isEmpty(key) &&
+        key.length <= MAXIMUM_CUSTOM_HEADER_NAME_LENGTH &&
+        this.keyHasValidPattern(key)
+      );
     },
     keyHasValidPattern(key) {
       return CUSTOM_HEADER_KEY_PATTERN.test(key);
@@ -75,11 +79,15 @@ export default {
       if (!this.isValidated) return null;
       if (this.keyIsValid(key)) return null;
 
-      return isEmpty(key)
-        ? this.$options.i18n.inputRequired
-        : s__(
-            'Webhooks|Only alphanumeric characters, periods, dashes, and underscores allowed. Must start with a letter and end with a letter or number. Cannot have consecutive periods, dashes, or underscores.',
-          );
+      if (isEmpty(key)) return this.$options.i18n.inputRequired;
+      if (key.length > MAXIMUM_CUSTOM_HEADER_NAME_LENGTH) {
+        return s__(
+          'Webhooks|Header name is too long (maximum is %{maxLength} characters).',
+        ).replace('%{maxLength}', MAXIMUM_CUSTOM_HEADER_NAME_LENGTH);
+      }
+      return s__(
+        'Webhooks|Only alphanumeric characters, periods, dashes, and underscores allowed. Must start with a letter and end with a letter or number. Cannot have consecutive periods, dashes, or underscores.',
+      );
     },
     valueErrorFeedback(value) {
       if (!this.isValidated) return null;
@@ -88,7 +96,7 @@ export default {
       return this.$options.i18n.inputRequired;
     },
     isInvalid(customHeaderItem) {
-      return isEmpty(customHeaderItem.key) || isEmpty(customHeaderItem.value);
+      return !this.keyIsValid(customHeaderItem.key) || isEmpty(customHeaderItem.value);
     },
     isEmpty,
     s__,

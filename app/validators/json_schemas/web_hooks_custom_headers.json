@@ -4,6 +4,11 @@
   "type": "object",
   "additionalProperties": false,
   "maxProperties": 20,
+  "propertyNames": {
+    "type": "string",
+    "minLength": 1,
+    "maxLength": 255
+  },
   "patternProperties": {
     "\\A[A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*\\z": {
       "type": "string",

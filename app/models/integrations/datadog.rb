@@ -210,13 +210,12 @@ module Integrations
       url = api_url.presence || sprintf(URL_TEMPLATE, datadog_domain: datadog_domain)
       url = URI.parse(url)
       query = {
-        "dd-api-key" => 'THIS_VALUE_WILL_BE_REPLACED',
         service: datadog_service.presence,
         env: datadog_env.presence,
         tags: datadog_tags_query_param.presence
       }.compact
-      url.query = query.to_query
-      url.to_s.gsub('THIS_VALUE_WILL_BE_REPLACED', '{api_key}')
+      url.query = ["dd-api-key={api_key}", query.to_query.presence].compact.join('&')
+      url.to_s
     end
 
     def url_variables

@@ -47,6 +47,31 @@ lazy_response.wait # waits for the request to finish and returns the same LazyRe
 response = lazy_response.value # returns an HTTParty::Response object
 ```
 
+## Security
+
+This gem provides several security protections for outbound HTTP requests:
+
+### SSRF Protection
+
+URLs are validated to prevent Server-Side Request Forgery (SSRF) attacks. Requests to internal networks, localhost, and other restricted addresses are blocked by default.
+
+### Header Injection Protection
+
+HTTP headers are validated to prevent CRLF injection attacks. Headers containing control characters (`\r`, `\n`, `\0`) will raise a `HeaderInjectionError`. This prevents HTTP request smuggling/splitting attacks.
+
+```ruby
+# This will raise Gitlab::HTTP_V2::HeaderInjectionError
+Gitlab::HTTP_V2.get(uri, headers: { 'X-Custom' => "value\r\nX-Injected: attack" })
+```
+
+### Response Size Limits
+
+Use the `max_bytes` option to limit response sizes and prevent memory exhaustion.
+
+```ruby
+Gitlab::HTTP_V2.get(uri, max_bytes: 1.megabyte)
+```
+
 ## Development
 
 After checking out the repo, run `bundle` to install dependencies.
