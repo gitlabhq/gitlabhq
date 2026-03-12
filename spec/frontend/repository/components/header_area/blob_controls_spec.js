@@ -284,6 +284,13 @@ describe('Blob controls component', () => {
       expect(findWebIdeLink().props('customTooltipText')).toBe(NO_MODIFY_PERMISSION_MESSAGE);
     });
 
+    it('renders the WebIdeLink component with showPipelineEditorButton prop as false when pipelineEditorUrl is not available', async () => {
+      const blobOverwriteResolver = overrideBlobControlsResolver({ pipelineEditorPath: null });
+      await createComponent({ blobControlsResolver: blobOverwriteResolver });
+
+      expect(findWebIdeLink().props('showPipelineEditorButton')).toBe(false);
+    });
+
     describe('when project query has errors', () => {
       it('disables the WebIdeLink component with appropriate tooltip', async () => {
         await createComponent({ blobControlsResolver: blobControlsErrorResolver });
