@@ -3,7 +3,7 @@ import VueApollo from 'vue-apollo';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import waitForPromises from 'helpers/wait_for_promises';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardCard from '~/boards/components/board_card.vue';
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
@@ -23,10 +23,8 @@ describe('Board card', () => {
   Vue.use(VueApollo);
 
   const mockSetActiveBoardItemResolver = jest.fn();
-  const mockApollo = createMockApollo([], {
-    Mutation: {
-      setActiveBoardItem: mockSetActiveBoardItemResolver,
-    },
+  const { apolloProvider: mockApollo } = createControlledMockApollo([], {
+    Mutation: { setActiveBoardItem: mockSetActiveBoardItemResolver },
   });
 
   // this particular mount component needs to be used after the root beforeEach because it depends on list being initialized
@@ -93,7 +91,7 @@ describe('Board card', () => {
       mountComponent({
         item: {
           ...mockIssue,
-          iid: 1,
+          iid: '1',
           title: 'Accessible label test',
         },
       });

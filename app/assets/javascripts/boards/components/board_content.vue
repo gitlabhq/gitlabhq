@@ -1,6 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import produce from 'immer';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 import BoardAddNewColumn from 'ee_else_ce/boards/components/board_add_new_column.vue';
@@ -20,7 +20,7 @@ import {
   DEFAULT_BOARD_LIST_ITEMS_SIZE,
   BoardType,
 } from 'ee_else_ce/boards/constants';
-import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
+import { DETAIL_VIEW_QUERY_PARAM_NAME, VIEW_CONTEXT } from '~/work_items/constants';
 import { calculateNewPosition } from 'ee_else_ce/boards/boards_util';
 import { setError } from '../graphql/cache_updates';
 import BoardColumn from './board_column.vue';
@@ -28,6 +28,7 @@ import BoardDrawerWrapper from './board_drawer_wrapper.vue';
 
 export default {
   draggableItemTypes: DraggableItemTypes,
+  VIEW_CONTEXT,
   components: {
     BoardAddNewColumn,
     BoardAddNewColumnTrigger,
@@ -366,6 +367,7 @@ export default {
           :open="Boolean(activeIssuable && activeIssuable.iid)"
           :active-item="activeIssuable"
           :issuable-type="issuableType"
+          :view-context="$options.VIEW_CONTEXT.drawerBoard"
           click-outside-exclude-selector=".board-card"
           is-board
           @close="
@@ -373,7 +375,7 @@ export default {
             $emit('drawer-closed');
           "
           @work-item-updated="updateBoardCard($event, activeIssuable)"
-          @workItemDeleted="onIssuableDeleted(activeIssuable)"
+          @work-item-deleted="onIssuableDeleted(activeIssuable)"
           @attributesUpdated="onAttributeUpdated"
           @workItemStateUpdated="onStateUpdated"
           @workItemTypeChanged="updateBoardCard($event, activeIssuable)"

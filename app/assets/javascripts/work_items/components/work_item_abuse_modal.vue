@@ -1,6 +1,6 @@
 <script>
 import { GlForm, GlFormGroup, GlFormRadioGroup, GlModal } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { s__, __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 import { CATEGORY_OPTIONS } from '~/abuse_reports/components/constants';

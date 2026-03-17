@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Storybook
 ---
 
@@ -75,14 +75,10 @@ To add a story with API access:
 
    > [!note]
    > If you test against `gitlab.com`, make sure to use a token with `read_api` if possible and to make the token short-lived.
-
 1. Create an `.env` file in the `storybook` directory. Use the `storybook/.env.template` file as
    a starting point.
-
 1. Set the `API_ACCESS_TOKEN` variable to the access token that you created.
-
 1. Set the `GITLAB_URL` variable to the GitLab instance's domain URL, for example: `http://gdk.test:3000`.
-
 1. Start or restart your storybook.
 
 You can also use the GitLab API Access panel in the Storybook UI to set the GitLab instance URL and access token.

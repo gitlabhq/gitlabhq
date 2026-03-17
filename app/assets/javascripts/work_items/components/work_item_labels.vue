@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlDisclosureDropdown, GlLabel } from '@gitlab/ui';
-import { difference, unionBy } from 'lodash';
+import { difference, unionBy } from 'lodash-es';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
 import { __, createListFormat, s__, sprintf } from '~/locale';
@@ -13,7 +13,7 @@ import Tracking from '~/tracking';
 import { ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import { i18n, TRACKING_CATEGORY_SHOW, WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
+import { i18n, TRACKING_CATEGORY_SHOW, VIEW_CONTEXT, WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
 import {
   findLabelsWidget,
   formatLabelForListbox,
@@ -36,6 +36,7 @@ export default {
     issuesListPath: 'issuesListPath',
     labelsManagePath: 'labelsManagePath',
     epicsListPath: { default: '' },
+    viewContext: { default: VIEW_CONTEXT.fullScreen },
   },
   props: {
     fullPath: {
@@ -96,6 +97,7 @@ export default {
         category: TRACKING_CATEGORY_SHOW,
         label: 'item_label',
         property: `type_${this.workItemType}`,
+        extra: { viewContext: this.viewContext },
       };
     },
     dropdownText() {

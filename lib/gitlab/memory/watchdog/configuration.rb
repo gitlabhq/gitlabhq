@@ -9,8 +9,8 @@ module Gitlab
             @monitors = []
           end
 
-          def push(monitor_class, *args, **kwargs, &block)
-            @monitors.push(build_monitor_state(monitor_class, *args, **kwargs, &block))
+          def push(monitor_class, ...)
+            @monitors.push(build_monitor_state(monitor_class, ...))
           end
 
           def call_each
@@ -32,8 +32,8 @@ module Gitlab
             Gitlab::Memory::Watchdog::MonitorState.new(monitor, max_strikes: max_strikes, monitor_name: monitor_name)
           end
 
-          def build_monitor(monitor_class, *args, **kwargs, &block)
-            monitor_class.new(*args, **kwargs, &block)
+          def build_monitor(monitor_class, ...)
+            monitor_class.new(...)
           end
         end
 

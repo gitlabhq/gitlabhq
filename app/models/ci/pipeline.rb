@@ -9,7 +9,6 @@ module Ci
     include AfterCommitQueue
     include Presentable
     include Gitlab::Allowable
-    include Gitlab::OptimisticLocking
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
     include Ci::HasRef
@@ -95,7 +94,6 @@ module Ci
     # DEPRECATED:
     has_many :statuses, ->(pipeline) { in_partition(pipeline) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :processables, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::Processable', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
-    has_many :latest_statuses_ordered_by_stage, ->(pipeline) { latest.in_partition(pipeline).order(:stage_idx, :stage) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :latest_statuses, ->(pipeline) { latest.in_partition(pipeline) }, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :statuses_order_id_desc, ->(pipeline) { in_partition(pipeline).order_id_desc }, class_name: 'CommitStatus', foreign_key: :commit_id,
       inverse_of: :pipeline, partition_foreign_key: :partition_id
@@ -176,7 +174,8 @@ module Ci
 
     has_many :job_environments, class_name: 'Environments::Job', inverse_of: :pipeline
 
-    accepts_nested_attributes_for :variables, reject_if: :persisted?
+    # TODO: Remove with FF `ci_stop_writing_to_pipeline_variables`
+    accepts_nested_attributes_for :variables, reject_if: :reject_variables_attributes?
 
     delegate :full_path, to: :project, prefix: true
     delegate :name, to: :pipeline_metadata, allow_nil: true
@@ -202,10 +201,10 @@ module Ci
     validates :yaml_errors, bytesize: { maximum: -> { YAML_ERRORS_MAX_LENGTH } }, if: :yaml_errors_changed?
 
     after_create :keep_around_commits, unless: :importing?
+    before_destroy :destroy_job_artifact_associations, prepend: true
     after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
     after_find :observe_age_in_minutes, unless: :importing?
 
-    use_fast_destroy :job_artifacts
     use_fast_destroy :build_trace_chunks
 
     # We use `Enums::Ci::Pipeline.sources` here so that EE can more easily extend
@@ -548,6 +547,25 @@ module Ci
       archive_cutoff ? created_after(archive_cutoff) : all
     end
 
+    # Finds a pipeline by ID, first attempting to search within the current partition
+    # for improved query performance when partition pruning is enabled, then falling
+    # back to a global search if not found.
+    #
+    def self.find_by_id_through_partition(pipeline_id)
+      return unless pipeline_id
+
+      partition_id = Ci::Partition.current&.id
+      scope = Ci::Pipeline.in_partition(partition_id) if partition_id
+
+      if Feature.enabled?(:ci_partition_pruning_workers, :current_request) && scope
+        pipeline = scope.find_by_id(pipeline_id)
+      end
+
+      pipeline ||= Ci::Pipeline.find_by_id(pipeline_id)
+
+      pipeline
+    end
+
     # Returns the pipelines in descending order (= newest first), optionally
     # limited to a number of references.
     #
@@ -709,28 +727,41 @@ module Ci
     end
 
     def self.projects_with_variables(project_ids, limit)
-      if Feature.disabled?(:query_projects_with_variables_from_ci_pipeline_artifacts, Feature.current_request)
-        return Ci::PipelineVariable.projects_with_variables(project_ids, limit)
-      end
+      pipeline_variables_table = Ci::PipelineVariable.quoted_table_name
+      pipeline_artifacts_table = Ci::PipelineArtifact.quoted_table_name
 
-      project_ids_from_pipeline_variables =
-        Ci::PipelineVariable
-          .select(:project_id)
-          .where(project_id: project_ids)
+      project_ids_from_pipeline_variables_sql = <<~SQL.squish
+        SELECT input_projects.project_id
+        FROM input_projects
+        WHERE EXISTS (
+          SELECT 1
+          FROM #{pipeline_variables_table}
+          WHERE #{pipeline_variables_table}.project_id = input_projects.project_id
+        )
+      SQL
 
-      project_ids_from_pipeline_artifacts =
-        Ci::PipelineArtifact
-          .select(:project_id)
-          .where(project_id: project_ids, file_type: :pipeline_variables)
+      project_ids_from_pipeline_artifacts_sql = <<~SQL.squish
+        SELECT input_projects.project_id
+        FROM input_projects
+        WHERE EXISTS (
+          SELECT 1
+          FROM #{pipeline_artifacts_table}
+          WHERE #{pipeline_artifacts_table}.project_id = input_projects.project_id
+            AND #{pipeline_artifacts_table}.file_type = #{Ci::PipelineArtifact.file_types[:pipeline_variables]}
+        )
+      SQL
 
       project_ids_sql = <<~SQL.squish
-        (#{project_ids_from_pipeline_variables.to_sql})
+        WITH input_projects AS (
+          SELECT unnest(ARRAY[?]) AS project_id
+        )
+        (#{project_ids_from_pipeline_variables_sql})
         UNION
-        (#{project_ids_from_pipeline_artifacts.to_sql})
+        (#{project_ids_from_pipeline_artifacts_sql})
         LIMIT ?
       SQL
 
-      connection.select_values(sanitize_sql_array([project_ids_sql, limit]))
+      connection.select_values(sanitize_sql_array([project_ids_sql, project_ids, limit]))
     end
 
     def ci_pipeline_statuses_rate_limited?
@@ -803,6 +834,20 @@ module Ci
     def git_author_full_text
       strong_memoize(:git_author_full_text) do
         commit.try(:author_full_text)
+      end
+    end
+
+    def git_author_login
+      strong_memoize(:git_author_login) do
+        email = commit.try(:author_email)
+        next unless email
+
+        user = User.find_by_any_email(email, confirmed: true)
+        next unless user
+        next if user.private_profile?
+        next unless user.public_email.present? && user.public_email.casecmp?(email)
+
+        user.username
       end
     end
 
@@ -935,6 +980,23 @@ module Ci
         .last
     end
 
+    # Returns a Ci::Build relation wrapped in a CTE to force the query planner
+    # to use `p_ci_builds_commit_id_status_type_idx` instead of the primary key
+    # index. Without the CTE, queries with `ORDER BY id LIMIT 1` (from
+    # each_batch) trick the planner into scanning via pkey, causing timeouts.
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/582836
+    def builds_with_cte
+      cte = Gitlab::SQL::CTE.new(
+        :cte_builds,
+        builds.without_statuses([]).select(:id)
+      )
+
+      Ci::Build
+        .with(cte.to_arel)
+        .from("\"cte_builds\" AS #{Ci::Build.quoted_table_name}")
+        .unscope(where: :type)
+    end
+
     # This batch loads the latest reports for each CI job artifact
     # type (e.g. sast, dast, etc.) in a single SQL query to eliminate
     # the need to do N different `job_artifacts.where(file_type:
@@ -1045,7 +1107,7 @@ module Ci
 
     # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability
     def set_status(new_status)
-      retry_optimistic_lock(self, name: 'ci_pipeline_set_status') do
+      Gitlab::OptimisticLocking.retry_lock(self, name: 'ci_pipeline_set_status') do
         case new_status
         when 'created' then nil
         when 'waiting_for_resource' then request_resource
@@ -1074,8 +1136,6 @@ module Ci
     end
 
     def variables
-      return super if Feature.disabled?(:ci_read_pipeline_variables_from_artifact, project)
-
       # TODO: Replace super with [] when Ci::PipelineVariable is dropped
       # https://gitlab.com/gitlab-org/gitlab/-/issues/587237
       read_variables_from_pipeline_artifact || super
@@ -1697,6 +1757,21 @@ module Ci
 
     private
 
+    # rubocop: disable CodeReuse/ServiceClass -- mirrors FastDestroyAll pattern used by Ci::JobArtifact
+    def destroy_job_artifact_associations
+      if Feature.enabled?(:ci_pipeline_destroy_two_level_batching, project)
+        service = ::Ci::Pipelines::DestroyAssociationsService.new(self)
+        service.destroy_records
+
+        run_after_commit do
+          service.update_statistics
+        end
+      else
+        perform_fast_destroy(job_artifacts)
+      end
+    end
+    # rubocop: enable CodeReuse/ServiceClass
+
     def add_message(severity, content)
       messages.build(severity: severity, content: content, project_id: project_id)
     end
@@ -1793,6 +1868,10 @@ module Ci
 
     rescue Repository::AmbiguousRefError
       false
+    end
+
+    def reject_variables_attributes?
+      persisted? || Feature.enabled?(:ci_stop_writing_to_pipeline_variables, project)
     end
 
     def read_variables_from_pipeline_artifact

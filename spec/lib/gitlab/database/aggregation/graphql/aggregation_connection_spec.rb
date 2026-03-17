@@ -174,6 +174,17 @@ RSpec.describe Gitlab::Database::Aggregation::Graphql::AggregationConnection, :c
           .to raise_error(GraphQL::ExecutionError, /Invalid cursor provided/)
       end
     end
+
+    describe '#count' do
+      it 'returns the total number of aggregated rows via a database query' do
+        expect(connection.count).to eq(3)
+      end
+
+      it 'does not load rows into memory' do
+        expect(nodes).not_to receive(:load_data)
+        connection.count
+      end
+    end
   end
 
   def encode_cursor(value)

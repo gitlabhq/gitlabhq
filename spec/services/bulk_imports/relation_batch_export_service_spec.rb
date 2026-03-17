@@ -6,7 +6,7 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
   let_it_be(:project) { create(:project) }
   let_it_be(:label) { create(:label, project: project) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:export) { create(:bulk_import_export, :batched, project: project) }
+  let_it_be_with_reload(:export) { create(:bulk_import_export, :batched, project: project) }
   let_it_be(:batch) { create(:bulk_import_export_batch, export: export) }
   let_it_be(:cache_key) { BulkImports::BatchedRelationExportService.cache_key(export.id, batch.id) }
 
@@ -59,6 +59,27 @@ RSpec.describe BulkImports::RelationBatchExportService, feature_category: :impor
 
         expect(batch.failed?).to eq(true)
         expect(batch.error).to eq("Batched relation export cache key missing or expired.")
+      end
+    end
+
+    context 'when the export is associated with offline transfer' do
+      before do
+        stub_application_setting(allow_s3_compatible_storage_for_offline_transfer: true)
+
+        export.update!(
+          offline_export: create(
+            :offline_export,
+            configuration: create(:import_offline_configuration, :s3_compatible)
+          )
+        )
+      end
+
+      it 'uploads the file directly to the configured storage location' do
+        expect_next_instance_of(Import::Clients::ObjectStorage) do |storage_client|
+          expect(storage_client).to receive(:store_file)
+        end
+
+        expect { service.execute }.not_to change { ::Upload.count }
       end
     end
   end

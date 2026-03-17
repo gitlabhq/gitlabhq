@@ -11,13 +11,7 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
   let(:service) { described_class }
 
   describe '#execute' do
-    let(:notify_about_push_ff) { false }
-
     before do
-      stub_feature_flags(
-        split_refresh_worker_notify_about_push: notify_about_push_ff
-      )
-
       @user = create(:user)
       group = create(:group)
       group.add_owner(@user)
@@ -81,11 +75,6 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
     context 'push to origin repo source branch' do
       let(:refresh_service) { service.new(project: @project, current_user: @user) }
-      let(:notification_service) { spy('notification_service') }
-
-      before do
-        allow(NotificationService).to receive(:new) { notification_service }
-      end
 
       context 'query count' do
         it 'does not execute a lot of queries' do
@@ -103,13 +92,24 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
       end
 
       it 'refreshes the merge requests' do
+        expect(MergeRequests::Refresh::NotifyAboutPushWorker).to receive(:perform_async).twice do |*args|
+          merge_request_id, user_id, new_commits_data, total_new, existing_commits_data, total_existing = args
+
+          expect(merge_request_id).to be_a(Integer)
+          expect(user_id).to eq(@user.id)
+          expect(new_commits_data).to be_a(Array)
+          expect(total_new).to be_a(Integer)
+          expect(existing_commits_data).to be_a(Array)
+          expect(total_existing).to be_a(Integer)
+
+          if new_commits_data.any?
+            expect(new_commits_data.first).to have_key('short_id')
+            expect(new_commits_data.first).to have_key('title')
+          end
+        end
+
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs
-
-        expect(notification_service).to have_received(:push_to_merge_request)
-          .with(@merge_request, @user, new_commits: anything, existing_commits: anything)
-        expect(notification_service).to have_received(:push_to_merge_request)
-          .with(@another_merge_request, @user, new_commits: anything, existing_commits: anything)
 
         expect(@merge_request.notes).not_to be_empty
         expect(@merge_request).to be_open
@@ -134,43 +134,71 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
       end
 
-      context 'when notify_about_push ff is on' do
-        let(:notify_about_push_ff) { true }
-
-        it 'calls the notify about push worker async with pre-computed commit data' do
-          expect(MergeRequests::Refresh::NotifyAboutPushWorker).to receive(:perform_async).twice do |*args|
-            merge_request_id, user_id, new_commits_data, total_new, existing_commits_data, total_existing = args
-
-            expect(merge_request_id).to be_a(Integer)
-            expect(user_id).to eq(@user.id)
-            expect(new_commits_data).to be_a(Array)
-            expect(total_new).to be_a(Integer)
-            expect(existing_commits_data).to be_a(Array)
-            expect(total_existing).to be_a(Integer)
-
-            # Verify commit data structure
-            if new_commits_data.any?
-              expect(new_commits_data.first).to have_key('short_id')
-              expect(new_commits_data.first).to have_key('title')
-            end
-          end
-
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-        end
-
-        it 'does not notify about push synchronously' do
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-
-          expect(notification_service).not_to have_received(:push_to_merge_request)
-        end
-      end
-
       it 'triggers mergeRequestMergeStatusUpdated GraphQL subscription conditionally' do
         expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(@merge_request)
         expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(@another_merge_request)
         expect(GraphqlTriggers).not_to receive(:merge_request_merge_status_updated).with(@fork_merge_request)
 
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+      end
+
+      context 'with several MRs affected by the push' do
+        let!(:extra_merge_request1) do
+          create(
+            :merge_request,
+            source_project: @project,
+            source_branch: 'feature1',
+            target_branch: 'master',
+            merge_status: 'cannot_be_merged'
+          )
+        end
+
+        let!(:extra_merge_request2) do
+          create(
+            :merge_request,
+            source_project: @project,
+            source_branch: 'feature2',
+            target_branch: 'master',
+            merge_status: 'cannot_be_merged'
+          )
+        end
+
+        it 'uses batch method to update merge status with fewer queries' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+          end
+
+          expect(@merge_request.reload.merge_status).to eq('unchecked')
+          expect(@another_merge_request.reload.merge_status).to eq('unchecked')
+          expect(@fork_merge_request.reload.merge_status).to eq('unchecked')
+          expect(extra_merge_request1.reload.merge_status).to eq('cannot_be_merged_recheck')
+          expect(extra_merge_request2.reload.merge_status).to eq('cannot_be_merged_recheck')
+
+          merge_status_updates = recorder.occurrences_starting_with('UPDATE "merge_requests" SET "merge_status"')
+          expect(merge_status_updates.values.sum).to eq(2)
+        end
+
+        context 'when batch_merge_status_updates feature flag is disabled' do
+          before do
+            stub_feature_flags(batch_merge_status_updates: false)
+          end
+
+          it 'updates merge status individually with more queries' do
+            recorder = ActiveRecord::QueryRecorder.new do
+              refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+            end
+
+            expect(@merge_request.reload.merge_status).to eq('unchecked')
+            expect(@another_merge_request.reload.merge_status).to eq('unchecked')
+            expect(@fork_merge_request.reload.merge_status).to eq('unchecked')
+            expect(extra_merge_request1.reload.merge_status).to eq('cannot_be_merged_recheck')
+            expect(extra_merge_request2.reload.merge_status).to eq('cannot_be_merged_recheck')
+
+            # Individual updates would have one UPDATE per MR (5 MRs)
+            merge_status_updates = recorder.occurrences_starting_with('UPDATE "merge_requests" SET "merge_status"')
+            expect(merge_status_updates.values.sum).to eq 5
+          end
+        end
       end
 
       context 'when a merge error exists' do
@@ -323,20 +351,13 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
 
     context 'push to origin repo source branch' do
       let(:refresh_service) { service.new(project: @project, current_user: @user) }
-      let(:notification_service) { spy('notification_service') }
 
       before do
-        allow(NotificationService).to receive(:new) { notification_service }
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
         reload_mrs
       end
 
       it 'refreshes the merge requests' do
-        expect(notification_service).to have_received(:push_to_merge_request)
-          .with(@merge_request, @user, new_commits: anything, existing_commits: anything)
-        expect(notification_service).to have_received(:push_to_merge_request)
-          .with(@another_merge_request, @user, new_commits: anything, existing_commits: anything)
-
         expect(@merge_request.notes).not_to be_empty
         expect(@merge_request).to be_open
         expect(@merge_request.auto_merge_enabled).to be_falsey

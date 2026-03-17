@@ -1,5 +1,3 @@
 ---
 name: update_release_link
 description: Grants the ability to update release links
-boundaries:
-  - project

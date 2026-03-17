@@ -7,7 +7,7 @@ RSpec.describe 'Dashboard homepage', feature_category: :notifications do
 
   before do
     sign_in(user)
-    stub_feature_flags(personal_homepage: true, organization_scoped_paths: false)
+    stub_feature_flags(personal_homepage: true)
   end
 
   describe 'GET /dashboard/home' do

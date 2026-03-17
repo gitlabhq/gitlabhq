@@ -142,6 +142,48 @@ export const i18n = {
 };
 
 export const SCAN_PROFILE_TYPE_SECRET_DETECTION = 'SECRET_DETECTION';
+
+export const SCAN_TRIGGER_DEFINITIONS = {
+  GIT_PUSH_EVENT: {
+    anchor: 'secret-push-protection',
+    icon: 'push-rules',
+    title: s__('ScanProfiles|Secret push protection'),
+    subtitle: s__('ScanProfiles|Scan all Git push events and block pushes with detected secrets.'),
+    description: s__(
+      'ScanProfiles|Block secrets such as keys and API tokens from being pushed to your repositories. Secret detection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked.',
+    ),
+    helpLink: helpPagePath(
+      '/user/application_security/secret_detection/secret_push_protection/_index.md',
+    ),
+  },
+  MERGE_REQUEST_PIPELINE: {
+    anchor: 'merge-request-pipeline',
+    icon: 'merge-request',
+    title: s__('ScanProfiles|Merge Request Pipelines'),
+    subtitle: s__('ScanProfiles|Scans new commits to merge requests · All branches'),
+    description: s__(
+      'ScanProfiles|A scan is automatically run each time new commits are pushed to a branch associated with an open merge request. The full repository is scanned, but only vulnerabilities introduced by the merge request are highlighted. This helps identify security issues early, before code is merged.',
+    ),
+    targetBranch: s__('ScanProfiles|All'),
+    scope: s__('ScanProfiles|Full repository'),
+    results: s__('ScanProfiles|New vulnerabilities only'),
+    helpLink: helpPagePath('/user/application_security/secret_detection/pipeline/_index.md'),
+  },
+  DEFAULT_BRANCH_PIPELINE: {
+    anchor: 'default-branch-pipeline',
+    icon: 'branch',
+    title: s__('ScanProfiles|Branch Pipelines (default only)'),
+    subtitle: s__('ScanProfiles|Scans commits to the default branch'),
+    description: s__(
+      "ScanProfiles|A scan is automatically run when changes are merged or pushed to the default branch. All vulnerabilities found are reported, providing a complete picture of your default branch's security posture.",
+    ),
+    targetBranch: s__('ScanProfiles|Default'),
+    scope: s__('ScanProfiles|Full repository'),
+    results: s__('ScanProfiles|All vulnerabilities'),
+    helpLink: helpPagePath('/user/application_security/secret_detection/pipeline/_index.md'),
+  },
+};
+
 export const SCAN_PROFILE_CATEGORIES = {
   [SCAN_PROFILE_TYPE_SECRET_DETECTION]: {
     name: s__('SecurityProfiles|Secret Detection'),

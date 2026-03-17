@@ -51,6 +51,8 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import MergeRequestReviewers from '~/merge_requests/list/components/merge_request_reviewers.vue';
 import issuableEventHub from '~/merge_requests/list/eventhub';
 
+jest.mock('~/merge_requests/list', () => ({ initBulkUpdateSidebar: jest.fn() }));
+
 Vue.use(VueApollo);
 Vue.use(VueRouter);
 

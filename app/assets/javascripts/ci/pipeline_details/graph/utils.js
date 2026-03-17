@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { getIdFromGraphQLId, etagQueryHeaders } from '~/graphql_shared/utils';
 import { reportToSentry } from '~/ci/utils';
 

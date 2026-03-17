@@ -186,6 +186,36 @@ CREATE TABLE IF NOT EXISTS siphon_project_authorizations
         end
       end
     end
+
+    context 'when use_null_engine is true' do
+      let(:generator) { described_class.new([table_name], use_null_engine: true) }
+
+      before do
+        allow(generator).to receive(:pg_fields_metadata).and_return([
+          { 'field_name' => 'id', 'field_type_id' => 23, 'nullable' => 'NO' }
+        ])
+      end
+
+      it 'uses Null engine and no primary key' do
+        definition = generator.send(:table_definition)
+        expect(definition).to include('ENGINE = Null')
+        expect(definition).not_to include('PRIMARY KEY')
+      end
+
+      context 'with hierarchy_denormalization' do
+        let(:generator) { described_class.new([table_name], use_null_engine: true, with_traversal_path: true) }
+
+        before do
+          allow(File).to receive(:exist?).and_return(true)
+          allow(YAML).to receive(:safe_load_file).and_return({ "sharding_key" => { "project_id" => "projects" } })
+        end
+
+        it 'does not include projection' do
+          expect(generator.send(:table_projection)).to be_nil
+          expect(generator.send(:table_definition)).not_to include('PROJECTION')
+        end
+      end
+    end
   end
 
   describe '#pg_fields_metadata' do

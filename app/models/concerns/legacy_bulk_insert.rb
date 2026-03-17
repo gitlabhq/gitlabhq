@@ -33,10 +33,10 @@ module LegacyBulkInsert
         end
       end
 
-      sql = <<-EOF
+      sql = <<-SQL
         INSERT INTO #{table} (#{columns.join(', ')})
         VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
-      EOF
+      SQL
 
       sql = "#{sql} ON CONFLICT DO NOTHING" if on_conflict == :do_nothing
 

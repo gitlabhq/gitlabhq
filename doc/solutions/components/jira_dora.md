@@ -111,7 +111,7 @@ Create another Jira automation workflow as described above, with the following c
 ### Map Jira payload values to GitLab alert parameters
 
 1. Once you've created your Jira automation workflow, click on the workflow you just created, and select **Then: Send web request**.
-1. Expand the **Validate your web request configuration** section, and enter a *resolved* issue key to test with (you must have an existing issue key that you can use). Click **Validate**.
+1. Expand the **Validate your web request configuration** section, and enter a _resolved_ issue key to test with (you must have an existing issue key that you can use). Click **Validate**.
 1. Expand the **Request POST** section, and expand the **Payload** section. Copy the entire payload.
 1. Head back into your GitLab project, and go to **Settings** > **Monitor** > **Alerts** > **Current Integrations**. Click the 'settings' icon next to the integration you created earlier, and switch to the **Configure details** tab.
 1. Under **Customize alert payload mapping**, paste the payload you copied from Jira in step 3. Then click **Parse payload fields**.
@@ -127,7 +127,7 @@ Create another Jira automation workflow as described above, with the following c
     | Fingerprint | issue.key |
     | Environment | issue.fields.project.name |
 
-<sup>1</sup> This is only needed if you set up the incident resolution automation. If this field doesn't appear as an option, make sure you entered a *resolved* issue key to test with in step 2 above.
+<sup>1</sup> This is only needed if you set up the incident resolution automation. If this field doesn't appear as an option, make sure you entered a _resolved_ issue key to test with in step 2 above.
 
 1. Finally, click **Save integration**.
 

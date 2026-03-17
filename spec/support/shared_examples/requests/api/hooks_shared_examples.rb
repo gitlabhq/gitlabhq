@@ -241,7 +241,7 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
           expect(response).to have_gitlab_http_status(:ok)
 
-          expect(json_response).to include('alert_status' => 'disabled') unless hook.executable?
+          expect(json_response).to include('alert_status' => 'temporarily_disabled') unless hook.executable?
         end
       end
 

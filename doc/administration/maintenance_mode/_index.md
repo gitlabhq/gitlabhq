@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Maintenance Mode
 ---
 
@@ -26,7 +26,7 @@ Enable Maintenance Mode as an administrator in one of these ways:
 
 - **Web UI**:
   1. In the upper-right corner, select **Admin**.
-  1. On the left sidebar, select **Settings** > **General**.
+  1. In the left sidebar, select **Settings** > **General**.
   1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
   1. Select **Save changes**.
@@ -43,7 +43,7 @@ Disable Maintenance Mode in one of three ways:
 
 - **Web UI**:
   1. In the upper-right corner, select **Admin**.
-  1. On the left sidebar, select **Settings** > **General**.
+  1. In the left sidebar, select **Settings** > **General**.
   1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
   1. Select **Save changes**.

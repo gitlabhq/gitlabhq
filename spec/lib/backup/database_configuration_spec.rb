@@ -236,4 +236,114 @@ RSpec.describe Backup::DatabaseConfiguration, :reestablished_active_record_base,
       end
     end
   end
+
+  describe 'custom_config option' do
+    context 'when custom_config is nil' do
+      subject(:config) { described_class.new(connection_name, custom_config: nil) }
+
+      it 'uses standard database.yml lookup' do
+        expect(config.connection_name).to eq('main')
+      end
+
+      it 'returns activerecord configuration from database.yml' do
+        expect(config.activerecord_configuration).to be_a ActiveRecord::DatabaseConfigurations::HashConfig
+      end
+    end
+
+    context 'when custom_config is provided' do
+      let(:custom_config) do
+        {
+          adapter: 'postgresql',
+          database: 'custom_db',
+          host: 'custom.host',
+          port: 5433,
+          username: 'custom_user',
+          password: 'custom_pass'
+        }
+      end
+
+      subject(:config) { described_class.new('custom_connection', custom_config: custom_config) }
+
+      it 'uses custom configuration instead of database.yml' do
+        expect(config.connection_name).to eq('custom_connection')
+      end
+
+      it 'returns activerecord configuration with custom values' do
+        ar_config = config.activerecord_configuration
+        expect(ar_config).to be_a ActiveRecord::DatabaseConfigurations::HashConfig
+        expect(ar_config.configuration_hash[:database]).to eq('custom_db')
+        expect(ar_config.configuration_hash[:host]).to eq('custom.host')
+        expect(ar_config.configuration_hash[:port]).to eq(5433)
+        expect(ar_config.configuration_hash[:username]).to eq('custom_user')
+      end
+
+      it 'merges default values with custom config' do
+        ar_vars = config.activerecord_variables
+        expect(ar_vars[:adapter]).to eq('postgresql')
+        expect(ar_vars[:database]).to eq('custom_db')
+        expect(ar_vars[:host]).to eq('custom.host')
+        expect(ar_vars[:port]).to eq(5433)
+        expect(ar_vars[:encoding]).to eq('unicode')
+        expect(ar_vars[:pool]).to eq(5)
+      end
+
+      it 'generates pg_env_variables from custom config' do
+        pg_vars = config.pg_env_variables
+        expect(pg_vars['PGHOST']).to eq('custom.host')
+        expect(pg_vars['PGPORT']).to eq('5433')
+        expect(pg_vars['PGUSER']).to eq('custom_user')
+        expect(pg_vars['PGPASSWORD']).to eq('custom_pass')
+      end
+
+      it 'does not process ENV overrides for custom configs' do
+        stub_env('GITLAB_BACKUP_PGHOST', 'override.host')
+        stub_env('GITLAB_BACKUP_PGUSER', 'override_user')
+
+        pg_vars = config.pg_env_variables
+        expect(pg_vars['PGHOST']).to eq('custom.host')
+        expect(pg_vars['PGUSER']).to eq('custom_user')
+      end
+
+      context 'when missing required keys' do
+        let(:custom_config) { { host: 'localhost' } }
+
+        it 'raises ArgumentError' do
+          expect { config }.to raise_error(ArgumentError, /missing required keys/)
+        end
+      end
+
+      context 'when missing adapter' do
+        let(:custom_config) { { database: 'test_db' } }
+
+        it 'raises ArgumentError' do
+          expect { config }.to raise_error(ArgumentError, /missing required keys: adapter/)
+        end
+      end
+
+      context 'when missing database' do
+        let(:custom_config) { { adapter: 'postgresql' } }
+
+        it 'raises ArgumentError' do
+          expect { config }.to raise_error(ArgumentError, /missing required keys: database/)
+        end
+      end
+
+      context 'with minimal config' do
+        let(:custom_config) do
+          {
+            adapter: 'postgresql',
+            database: 'minimal_db'
+          }
+        end
+
+        it 'applies defaults for optional keys' do
+          ar_vars = config.activerecord_variables
+          expect(ar_vars[:host]).to eq('localhost')
+          expect(ar_vars[:port]).to eq(5432)
+          expect(ar_vars[:pool]).to eq(5)
+          expect(ar_vars[:encoding]).to eq('unicode')
+        end
+      end
+    end
+  end
 end

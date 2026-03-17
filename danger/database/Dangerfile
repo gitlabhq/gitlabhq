@@ -65,6 +65,8 @@ if stable_branch.valid_stable_branch?
   return
 end
 
+database.check_prevent_index_creation_disabled(helper.all_changed_files)
+
 if non_geo_migration_created && !non_geo_db_schema_updated
   warn format(format_str, migrations: 'migrations', schema: helper.html_link("db/structure.sql"))
 end

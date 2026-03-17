@@ -2767,4 +2767,12 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       it { is_expected.to eq([]) }
     end
   end
+
+  describe '.arel_tag_names_array' do
+    it 'includes explicit ::text[] cast to ensure proper array type recognition' do
+      sql = described_class.arel_tag_names_array.to_sql
+
+      expect(sql).to include('::text[]')
+    end
+  end
 end

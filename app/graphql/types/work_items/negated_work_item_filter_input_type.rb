@@ -46,7 +46,13 @@ module Types
       argument :types, [::Types::IssueTypeEnum], as: :issue_types,
         description: 'Filter out work items by the given types.',
         required: false
+      argument :work_item_type_ids,
+        [::Types::GlobalIDType[::WorkItems::Type]],
+        required: false,
+        description: 'Filter out work items by work item type global IDs.',
+        prepare: ->(global_ids, _ctx) { global_ids.map(&:model_id) }
 
+      validates mutually_exclusive: [:issue_types, :work_item_type_ids]
       validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
     end
   end

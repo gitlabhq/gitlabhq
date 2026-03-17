@@ -3,6 +3,8 @@ data_category: optional
 key_path: ldap_enabled
 description: Whether LDAP is enabled
 product_group: authentication
+product_categories:
+- system_access
 value_type: boolean
 status: active
 time_frame: none

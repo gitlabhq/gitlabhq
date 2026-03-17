@@ -1,0 +1,67 @@
+---
+name: reporter
+description: View code, create issues, and generate reports. Cannot push code or manage
+  protected branches.
+inherits_from:
+- guest
+project:
+  permissions: []
+  raw_permissions:
+  - admin_issue
+  - admin_issue_board
+  - admin_issue_board_list
+  - admin_label
+  - admin_milestone
+  - admin_work_item
+  - create_design
+  - create_saved_view
+  - create_snippet
+  - daily_statistics
+  - destroy_design
+  - download_code
+  - download_wiki_code
+  - metrics_dashboard
+  - move_design
+  - read_build
+  - read_ci_cd_analytics
+  - read_code
+  - read_commit_status
+  - read_confidential_issues
+  - read_container_image
+  - read_deploy_board
+  - read_deployment
+  - read_environment
+  - read_external_emails
+  - read_grafana
+  - read_harbor_registry
+  - read_internal_note
+  - read_merge_request
+  - read_package
+  - read_pipeline
+  - read_pipeline_schedule
+  - read_prometheus
+  - read_sentry_issue
+  - read_statistics
+  - reopen_issue
+  - update_design
+  - update_issue
+group:
+  permissions: []
+  raw_permissions:
+  - admin_issue
+  - admin_issue_board
+  - admin_issue_board_list
+  - admin_label
+  - admin_milestone
+  - admin_work_item
+  - create_saved_view
+  - read_ci_cd_analytics
+  - read_confidential_issues
+  - read_container_image
+  - read_crm_contact
+  - read_crm_organization
+  - read_harbor_registry
+  - read_internal_note
+  - read_package
+  - read_prometheus
+  - update_issue

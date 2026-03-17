@@ -69,12 +69,26 @@ module Organizations
             organization_id: new_organization.id,
             visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
           )
-          Project.in_namespace(batch_ids).update_all(
+          project_relation = Project.in_namespace(batch_ids)
+          project_relation.each_batch(of: BATCH_SIZE) do |batch|
+            schedule_pool_repository_disconnections(batch)
+          end
+          project_relation.update_all(
             organization_id: new_organization.id,
             visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
           )
         end
       end
+
+      # rubocop:disable CodeReuse/ActiveRecord -- used only in this service
+      def schedule_pool_repository_disconnections(batch)
+        group.run_after_commit_or_now do
+          batch.where.not(pool_repository_id: nil).select(:id).each do |project|
+            Repositories::LeavePoolRepositoryWorker.perform_async(project.id)
+          end
+        end
+      end
+      # rubocop:enable CodeReuse/ActiveRecord
 
       def transfer_users
         user_transfer_service.execute

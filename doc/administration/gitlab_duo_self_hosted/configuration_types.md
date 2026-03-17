@@ -1,15 +1,14 @@
 ---
 stage: AI-powered
 group: Custom Models
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Get started with GitLab Duo Self-Hosted.
-title: GitLab Duo Self-Hosted configuration and authentication
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Learn about different AI gateway configurations and the authentication process for self-hosted models
+title: AI Gateway configuration and authentication
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -25,7 +24,7 @@ title: GitLab Duo Self-Hosted configuration and authentication
 
 {{< /history >}}
 
-There are two configuration options for self-managed customers:
+There are two AI Gateway configuration options for self-managed customers:
 
 - **GitLab.com AI Gateway**: This is the default configuration for GitLab Self-Managed customers. Use the GitLab-managed AI Gateway with external large language model (LLM) providers selected by GitLab (for example, Google Vertex or Anthropic).
 - **Self-hosted AI Gateway**: Deploy and manage your own AI Gateway and language models in your infrastructure, without depending on GitLab-provided external language providers.
@@ -76,16 +75,13 @@ sequenceDiagram
     SelfHostedGitLab -->> User: Forward AI response
 ```
 
-## Authentication for GitLab Duo Self-Hosted
+## Authentication for self-hosted models
 
-The authentication process for GitLab Duo Self-Hosted is secure, efficient, and made up of the following key components:
+The authentication process for self-hosted models is secure, efficient, and made up of the following key components:
 
 - **Self-issued tokens**: In this architecture, access credentials are not synchronized with `cloud.gitlab.com`. Instead, tokens are self-issued dynamically, similar to the functionality on GitLab.com. This method provides users with immediate access while maintaining a high level of security.
-
 - **Offline environments**: In offline setups, there are no connections to `cloud.gitlab.com`. All requests are routed exclusively to the self-hosted AI Gateway.
-
 - **Token minting and verification**: The instance mints the token, which is then verified by the AI Gateway against the GitLab instance.
-
 - **Model configuration and security**: When an administrator configures a model, they can incorporate an API key to authenticate requests. Additionally, you can enhance security by specifying connection IP addresses within your network, ensuring that only trusted IPs can interact with the model.
 
 As illustrated in the following diagram:

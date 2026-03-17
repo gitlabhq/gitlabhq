@@ -24,7 +24,7 @@ variables:
   ## Use this Git strategy if you're using a theme that's imported as a Git submodule
   GIT_SUBMODULE_STRATEGY: recursive
   ## Uncomment the following if you're using a theme that's imported as a Go submodule
-  #THEME_URL: "github.com/adityatelange/hugo-PaperMod"
+  # THEME_URL: "github.com/adityatelange/hugo-PaperMod"
 
 default:
   image: hugomods/hugo:exts
@@ -32,9 +32,9 @@ default:
     - hugo version
     - apk add --no-cache go curl bash nodejs
     ## Uncomment the following if you use PostCSS. See https://gohugo.io/hugo-pipes/postcss/
-    #- npm install postcss postcss-cli autoprefixer
+    # - npm install postcss postcss-cli autoprefixer
     ## Uncomment the following if you're using a theme as a Go module
-    #- hugo mod get -u $THEME_URL
+    # - hugo mod get -u $THEME_URL
 
 # Use everywhere except on the default branch
 test:          # builds and tests your site

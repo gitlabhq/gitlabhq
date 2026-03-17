@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: Top-level page type
 ---
 
@@ -45,5 +45,5 @@ Use the following metadata format:
 stage: Name
 group: Name
 description: List 3 to 4 features linked from the page.
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 ```

@@ -17,6 +17,9 @@ class ChatName < ApplicationRecord
   validates :chat_id, uniqueness: { scope: :team_id }
   validates :token, length: { maximum: MAX_PARAM_LENGTH }
 
+  scope :for_team_and_chat_ids, ->(team_id, chat_ids) { where(team_id: team_id, chat_id: chat_ids) }
+  scope :with_user, -> { includes(:user) }
+
   attr_encrypted :token,
     mode: :per_attribute_iv,
     algorithm: 'aes-256-gcm',

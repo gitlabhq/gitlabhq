@@ -15,7 +15,7 @@ module Gitlab
         raise NotImplementedError, 'Define a guest_read_ability in a RepoType subclass'
       end
 
-      def suffix = nil
+      def suffix; end
 
       def container_class
         raise NotImplementedError, 'Define a container_class in a RepoType subclass'

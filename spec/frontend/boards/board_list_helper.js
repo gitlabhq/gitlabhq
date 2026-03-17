@@ -7,7 +7,7 @@ import BoardList from '~/boards/components/board_list.vue';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 import BoardNewItem from '~/boards/components/board_new_item.vue';
 
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import { mockList, boardListQueryResponse } from './mock_data';
 
@@ -31,11 +31,13 @@ export default function createComponent({
 
   const queryVariables = totalIssueWeight !== undefined ? { totalIssueWeight } : { issuesCount };
 
-  const fakeApollo = createMockApollo(
-    [
-      [listQuery, jest.fn().mockResolvedValue(boardListQueryResponse(queryVariables))],
-      ...apolloQueryHandlers,
-    ],
+  const {
+    apolloProvider: fakeApollo,
+    resolveQuery,
+    rejectQuery,
+    resolveMutation,
+  } = createControlledMockApollo(
+    [[listQuery, () => boardListQueryResponse(queryVariables)], ...apolloQueryHandlers],
     apolloResolvers,
   );
 
@@ -94,5 +96,5 @@ export default function createComponent({
     },
   });
 
-  return component;
+  return { wrapper: component, resolveQuery, rejectQuery, resolveMutation };
 }

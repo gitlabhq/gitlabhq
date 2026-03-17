@@ -1,4 +1,4 @@
-import { capitalize } from 'lodash';
+import { capitalize } from 'lodash-es';
 import {
   securityReportTypeEnumToReportType,
   REPORT_FILE_TYPES,

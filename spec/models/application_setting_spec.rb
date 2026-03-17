@@ -161,6 +161,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         issues_create_limit: 300,
         jira_connect_public_key_storage_enabled: false,
         kroki_formats: { 'blockdiag' => false, 'bpmn' => false, 'excalidraw' => false, 'mermaid' => false },
+        kroki_diagram_proxy_enabled: false,
         local_markdown_version: 0,
         lock_maven_package_requests_forwarding: false,
         lock_npm_package_requests_forwarding: false,
@@ -201,6 +202,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         personal_access_token_prefix: 'glpat-',
         plantuml_enabled: false,
+        plantuml_diagram_proxy_enabled: false,
         project_api_limit: 400,
         project_members_api_limit: 200,
         project_download_export_limit: 1,
@@ -213,10 +215,12 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         projects_api_rate_limit_unauthenticated: 400,
         protected_ci_variables: true,
         protected_paths: ApplicationSettingImplementation::DEFAULT_PROTECTED_PATHS,
+        protected_paths_for_get_request: ApplicationSettingImplementation::DEFAULT_PROTECTED_PATHS_FOR_GET_REQUEST,
         push_event_activities_limit: 3,
         push_event_hooks_limit: 3,
         pypi_package_requests_forwarding: true,
         raw_blob_request_limit: 300,
+        raw_blob_request_limit_unauthenticated: ApplicationSetting::DEFAULT_RAW_BLOB_UNAUTHENTICATED_REQUEST_LIMIT,
         rate_limiting_response_text: nil,
         recaptcha_enabled: false,
         reindexing_minimum_index_size: 1.gigabyte,
@@ -307,11 +311,13 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
         valid_runner_registrars: ApplicationSettingImplementation::VALID_RUNNER_REGISTRAR_TYPES,
         vscode_extension_marketplace: {
           'enabled' => false,
-          'extension_host_domain' => ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN
+          'extension_host_domain' => ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN,
+          'single_origin_fallback_enabled' => true
         },
         vscode_extension_marketplace_enabled?: false,
         vscode_extension_marketplace_extension_host_domain:
           ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN,
+        vscode_extension_marketplace_single_origin_fallback_enabled: true,
         whats_new_variant: 'all_tiers', # changed from 0 to "all_tiers" due to enum conversion
         wiki_asciidoc_allow_uri_includes: false,
         wiki_page_max_content_bytes: 5.megabytes,
@@ -557,6 +563,7 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           projects_api_limit
           projects_api_rate_limit_unauthenticated
           raw_blob_request_limit
+          raw_blob_request_limit_unauthenticated
           runner_jobs_request_api_limit
           runner_jobs_patch_trace_api_limit
           runner_jobs_endpoints_api_limit
@@ -1819,6 +1826,22 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
           it { is_expected.not_to allow_value(true).for(:ci_job_live_trace_enabled) }
         end
       end
+
+      describe 'ci_partitions_in_seconds_limit default value' do
+        it 'has correct default for ci_partitions_in_seconds_limit' do
+          expect(setting.ci_partitions_in_seconds_limit).to eq(ChronicDuration.parse('1 month'))
+        end
+      end
+
+      describe '#ci_partitions_in_seconds_limit validations' do
+        it { is_expected.to allow_value(ChronicDuration.parse('2 month')).for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.to allow_value(ChronicDuration.parse('6 month')).for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.not_to allow_value(ChronicDuration.parse('1 week')).for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.not_to allow_value(ChronicDuration.parse('1 year')).for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.not_to allow_value('').for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.not_to allow_value(nil).for(:ci_partitions_in_seconds_limit) }
+        it { is_expected.not_to allow_value(0).for(:ci_partitions_in_seconds_limit) }
+      end
     end
 
     context 'for resource_access_tokens_settings' do
@@ -2487,6 +2510,24 @@ RSpec.describe ApplicationSetting, feature_category: :settings, type: :model do
       with_them do
         it { is_expected.not_to allow_value({ extension_host_domain: domain }).for(:vscode_extension_marketplace) }
       end
+    end
+  end
+
+  describe '#vscode_extension_marketplace_single_origin_fallback_enabled' do
+    it 'is updated when underlying vscode_extension_marketplace changes' do
+      expect(setting.vscode_extension_marketplace_single_origin_fallback_enabled).to be(true)
+
+      setting.vscode_extension_marketplace = { single_origin_fallback_enabled: false }
+
+      expect(setting.vscode_extension_marketplace_single_origin_fallback_enabled).to be(false)
+    end
+
+    it 'updates the underlying vscode_extension_marketplace when changed' do
+      setting.vscode_extension_marketplace = { single_origin_fallback_enabled: true }
+
+      setting.vscode_extension_marketplace_single_origin_fallback_enabled = false
+
+      expect(setting.vscode_extension_marketplace).to eq({ "single_origin_fallback_enabled" => false })
     end
   end
 

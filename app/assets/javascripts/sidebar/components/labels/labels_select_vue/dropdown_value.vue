@@ -1,6 +1,6 @@
 <script>
 import { GlLabel } from '@gitlab/ui';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 

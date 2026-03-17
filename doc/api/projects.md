@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: REST API to create, retrieve, update, delete, and manage projects and project features.
 title: Projects API
 ---
@@ -131,9 +131,6 @@ Supported attributes:
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
-
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
 
 | Attribute                | Type              | Description |
 |:-------------------------|:------------------|:------------|
@@ -343,9 +340,8 @@ following response attributes:
 | `statistics.container_registry_size` | integer | Container registry storage size in bytes. <sup>1</sup> |
 | `forked_from_project` | object | The upstream project this project was forked from. If the upstream project is private, an authentication token is required to view this field. |
 | `mr_default_target_self` | boolean | Whether merge requests target this project by default. If `false`, merge requests target the upstream project. Appears only if the project is a fork. |
+<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
-<!-- markdownlint-enable MD055 -->
-<!-- markdownlint-enable MD056 -->
 
 Example request:
 
@@ -457,6 +453,8 @@ Example response:
   "ci_restrict_pipeline_cancellation_role": "developer",
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
+  "ci_display_pipeline_variables": false,
+  "protect_merge_request_pipelines": true,
   "public_jobs": true,
   "shared_with_groups": [
     {
@@ -568,8 +566,6 @@ GET /projects
 ```
 
 Supported attributes:
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
 
 | Attribute                     | Type     | Required | Description |
 |:------------------------------|:---------|:---------|:------------|
@@ -605,15 +601,11 @@ Supported attributes:
 | `with_programming_language`   | string   | No       | Limit by projects which use the given programming language. |
 | `marked_for_deletion_on`      | date     | No       | Filter by date when project was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463939) in GitLab 17.1. Premium and Ultimate only. |
 | `active`                      | boolean  | No       | Limit by projects that are not archived and not marked for deletion. |
+<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
-<!-- markdownlint-enable MD055 -->
-<!-- markdownlint-enable MD056 -->
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
-
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -750,9 +742,8 @@ following response attributes:
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
 | `permissions.group_access` | object | Group access permissions for the user. |
+<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
-<!-- markdownlint-enable MD055 -->
-<!-- markdownlint-enable MD056 -->
 
 Example request:
 
@@ -869,6 +860,8 @@ Example response:
     "ci_restrict_pipeline_cancellation_role": "developer",
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
+    "ci_display_pipeline_variables": false,
+    "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "build_timeout": 3600,
     "auto_cancel_pending_pipelines": "enabled",
@@ -965,9 +958,6 @@ Supported attributes:
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
-
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -1119,9 +1109,8 @@ following response attributes:
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
 | `permissions.group_access` | object | Group access permissions for the user. |
+<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
-<!-- markdownlint-enable MD055 -->
-<!-- markdownlint-enable MD056 -->
 
 Example request:
 
@@ -1205,6 +1194,8 @@ Example response:
     "ci_restrict_pipeline_cancellation_role": "developer",
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
+    "ci_display_pipeline_variables": false,
+    "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -1331,6 +1322,8 @@ Example response:
     "ci_restrict_pipeline_cancellation_role": "developer",
     "ci_pipeline_variables_minimum_override_role": "maintainer",
     "ci_push_repository_for_job_token_allowed": false,
+    "ci_display_pipeline_variables": false,
+    "protect_merge_request_pipelines": true,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -1413,9 +1406,6 @@ Supported attributes:
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
-
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -1567,9 +1557,8 @@ following response attributes:
 | `permissions` | object | User permissions for the project. |
 | `permissions.project_access` | object | Project access permissions for the user. |
 | `permissions.group_access` | object | Group access permissions for the user. |
+<!-- markdownlint-disable-next-line MD055 MD056 -->
 {.condensed}
-<!-- markdownlint-enable MD055 -->
-<!-- markdownlint-enable MD056 -->
 
 Example request:
 
@@ -2290,6 +2279,7 @@ see [Project feature visibility level](#project-feature-visibility-level).
 - `model_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412734) in GitLab 16.7.
 - `packages_enabled` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10.
 - `package_registry_access_level` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 18.5.
+- `protect_merge_request_pipelines` and `ci_display_pipeline_variables` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/584488) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -2323,10 +2313,11 @@ Supported general project attributes:
 | `ci_config_path`                                   | string            | No       | The path to CI configuration file. |
 | `ci_default_git_depth`                             | integer           | No       | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone). |
 | `ci_delete_pipelines_in_seconds`                   | integer           | No       | Pipelines older than the configured time are deleted. |
+| `ci_display_pipeline_variables`                    | boolean           | No       | Display all manually-defined variables in the pipeline details page after running a pipeline manually. |
 | `ci_forward_deployment_enabled`                    | boolean           | No       | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_forward_deployment_rollback_allowed`           | boolean           | No       | Enable or disable [allow job retries for rollback deployments](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
-| `ci_id_token_sub_claim_components`                 | array             | No       | Fields included in the `sub` claim of the [ID Token](../ci/secrets/id_token_authentication.md). Accepts an array starting with `project_path`. The array might also include `ref_type`, `ref`, `environment_protected`, and `deployment_tier`. Defaults to `["project_path", "ref_type", "ref"]`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477260) in GitLab 17.10. Support for `environment_protected` and `deployment_tier` introduced in GitLab 18.7. |
+| `ci_id_token_sub_claim_components`                 | array             | No       | Fields included in the `sub` claim of the [ID Token](../ci/secrets/id_token_authentication.md). Accepts an array starting with `project_path`. The array might also include `ref_type`, `ref`, `ref_protected`, `environment_protected`, and `deployment_tier`. Defaults to `["project_path", "ref_type", "ref"]`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/477260) in GitLab 17.10. Support for `environment_protected` and `deployment_tier` introduced in GitLab 18.7. |
 | `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/_index.md#cache-key-names) by branch protection status. |
 | `ci_restrict_pipeline_cancellation_role`           | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429921) in GitLab 16.8. Premium and Ultimate only. |
 | `ci_pipeline_variables_minimum_override_role`      | string            | No       | You can specify which role can override variables. One of `owner`, `maintainer`, `developer` or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. In GitLab 17.1 to 17.7, `restrict_user_defined_variables` must be enabled. |
@@ -2369,6 +2360,7 @@ Supported general project attributes:
 | `path`                                             | string            | No       | Custom repository name for the project. By default generated based on name. |
 | `prevent_merge_without_jira_issue`                 | boolean           | No       | Set whether merge requests require an associated issue from Jira. Ultimate only. |
 | `printing_merge_request_link_enabled`              | boolean           | No       | Show link to create/view merge request when pushing from the command line. |
+| `protect_merge_request_pipelines`                  | boolean           | No       | Enable or disable [control access to protected variables and runners](../ci/pipelines/merge_request_pipelines.md#control-access-to-protected-variables-and-runners). |
 | `public_builds`                                    | boolean           | No       | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
 | `public_jobs`                                      | boolean           | No       | If `true`, jobs can be viewed by non-project members. |
 | `remove_source_branch_after_merge`                 | boolean           | No       | Enable `Delete source branch` option by default for all new merge requests. |
@@ -2581,6 +2573,8 @@ Example response:
   "ci_restrict_pipeline_cancellation_role": "developer",
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
+  "ci_display_pipeline_variables": false,
+  "protect_merge_request_pipelines": true,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -2728,6 +2722,8 @@ Example response:
   "ci_restrict_pipeline_cancellation_role": "developer",
   "ci_pipeline_variables_minimum_override_role": "maintainer",
   "ci_push_repository_for_job_token_allowed": false,
+  "ci_display_pipeline_variables": false,
+  "protect_merge_request_pipelines": true,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,

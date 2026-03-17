@@ -1,13 +1,14 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Configure access for the GitLab Duo Agent Platform.
-title: Configure access for the Agent Platform
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Configure access to the GitLab Duo Agent Platform.
+title: Configure access to the GitLab Duo Agent Platform
 ---
 
 {{< details >}}
 
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -18,29 +19,72 @@ title: Configure access for the Agent Platform
 
 {{< /history >}}
 
-You can [turn GitLab Duo on or off for a group](../../../user/gitlab_duo/turn_on_off.md).
+You can [turn GitLab Duo on or off](../../../user/duo_agent_platform/turn_on_off.md#turn-gitlab-duo-on-or-off) for a group.
+You can also specify certain groups that can access only GitLab Duo Agent Platform features.
 
-In addition, you can specify specific groups that can access Agent Platform features only.
+## Give access to Agent Platform features
 
-## Give a user access to Agent Platform features
+{{< history >}}
 
-To give a user access to specific Agent Platform features, complete the following steps.
+- Default **No group** rule [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225728) in GitLab 18.10.
+
+{{< /history >}}
 
 {{< tabs >}}
 
-{{< tab title="For an instance" >}}
+{{< tab title="On GitLab.com" >}}
 
 Prerequisites:
 
-- You must be an administrator.
+- The Owner role for the top-level group.
 
-To give a user access to specific features:
+To give access to specific Agent Platform features for a top-level group:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Member access**, select **Add group**.
+1. From the dropdown list, select an existing group.
+
+   When you add the first group, a default **No group** rule is also added.
+   You can use this rule to configure access for all other users.
+   This rule is automatically deleted when it has no access to GitLab Duo
+   or Agent Platform and all existing groups are removed.
+
+1. Select the features that direct group members can access.
+1. Select **Save changes**.
+
+These settings apply to:
+
+- Users who execute actions in the top-level group or a subgroup or project within a top-level group, and are direct
+  members of either the top-level group, or of any subgroup or project within that top-level group.
+- Users who have the top-level group as the [default GitLab Duo namespace](../../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
+> [!note]
+> When you configure group-based access controls, you can select only groups
+> that are direct subgroups of the top-level group.
+> You cannot use nested subgroups in access control rules.
+
+{{< /tab >}}
+
+{{< tab title="On GitLab Self-Managed" >}}
+
+Prerequisites:
+
+- Administrator access.
+
+To give access to specific Agent Platform features for an instance:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Under **Member Access**, select **Add group**.
-1. Use the search box to select an existing group.
+1. Under **Member access**, select **Add group**.
+1. From the dropdown list, select an existing group.
+
+   When you add the first group, a default **No group** rule is also added.
+   You can use this rule to configure access for all other users.
+   This rule is automatically deleted when it has no access to GitLab Duo
+   or Agent Platform and all existing groups are removed.
 
    >>> [!note]
    You can select only direct subgroups of the top-level group for access control.
@@ -50,38 +94,7 @@ To give a user access to specific features:
 1. Select the features that direct group members can access.
 1. Select **Save changes**.
 
-The user now has access to these features anywhere in the instance
-that they have access and the features are turned on.
-
-{{< /tab >}}
-
-{{< tab title="For GitLab.com" >}}
-
-Prerequisites:
-
-- You must be an administrator of the top-level namespace.
-- An existing group or the ability to create a new group for DAP users.
-
-To give a user access to specific features:
-
-1. In the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **GitLab Duo**.
-1. Select **Change configuration**.
-1. Under **Member Access**, select **Add group**.
-1. Use the search box to select an existing group.
-1. Select the features that direct group members can access.
-1. Select **Save changes**.
-
-These settings apply to:
-
-- Users who have the top-level group as the [default GitLab Duo namespace](../../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
-- Users who execute actions in the top-level group and are direct members of that group.
-- Users who are [inherited members](../../../user/project/members/_index.md#membership-types) of the top-level group.
-
-> [!note]
-> When you configure group-based access controls, you can select only groups
-> that are direct subgroups of the top-level group.
-> You cannot use nested subgroups in access control rules.
+The user can now access these features when they are turned on.
 
 {{< /tab >}}
 
@@ -90,31 +103,29 @@ These settings apply to:
 If you do not want to manually manage group membership, you can
 [synchronize membership by using LDAP or SAML](#synchronize-group-membership).
 
-### Multiple group membership
+### Group membership
 
-When a user is assigned to more than one group, they get the features from all assigned groups.
+When a user is assigned to more than one group, they access features from all assigned groups.
 For example:
 
-- In group A, they have access to classic features only.
-- In group B, they have access to flows only.
+- In group A, the user has access to GitLab Duo features only.
+- In group B, the user has access to flows only.
 
-They will be able to access both classic features and flows.
-
-### When no group is configured
+In this example, the user has access to both GitLab Duo features and flows.
 
 If no group is configured:
 
-- On GitLab.com: All members of the top-level namespace are eligible to use Duo Agent Platform features. Further controls (such as disabling features across the namespace) are still applied.
-- On GitLab Self-Managed: All users in the instance are eligible to use Agent Platform features.
+- On GitLab.com: All members of the top-level group can access Agent Platform features.
+- On GitLab Self-Managed: All users can access Agent Platform features.
 
-In all scenarios, further controls such as disabling features across a namespace or instance still apply.
+Additional controls (such as disabling features for the top-level group or instance) still apply.
 
-### Synchronize group membership
+#### Synchronize group membership
 
 If you use LDAP or SAML for authentication, you can synchronize group membership automatically:
 
-1. Configure your LDAP or SAML provider to include a group that represents DAP users.
-1. In GitLab, ensure the group is linked to your LDAP/SAML provider.
+1. Configure your LDAP or SAML provider to include a group that represents Agent Platform users.
+1. In GitLab, ensure the group is linked to your LDAP or SAML provider.
 1. Group membership updates automatically when users are added or removed from the provider group.
 
 For more information, see:
@@ -123,28 +134,35 @@ For more information, see:
 - [SAML for GitLab Self-Managed](../../../integration/saml.md)
 - [SAML for GitLab.com](../../../user/group/saml_sso/_index.md)
 
-## Use cases
+## Using access control
 
-You can use groups to implement phased rollouts or for testing purposes.
+You can use access control for phased rollouts or testing and validation.
 
-### Phased rollout
+### Phased rollouts
 
 To implement a phased rollout of the Agent Platform:
 
 1. Create a group for pilot users (for example, `pilot-users`).
 1. Add a subset of users to this group.
-1. Gradually add more users to the group as you validate functionality and train users.
-1. When ready for full rollout, add all users to the group.
+1. Add more users to the group gradually as you validate functionality and train users.
+1. Add all users to the group when you're ready for a full rollout.
 
 ### Testing and validation
 
 To test Agent Platform capabilities in a controlled environment:
 
 1. Create a dedicated group for testing (for example, `agent-testers`).
-1. Create a test namespace or project.
+1. Create a test group or project.
 1. Add test users to the `agent-testers` group.
-1. Validate functionality and train users before broader rollout.
+1. Validate functionality and train users before a broader rollout.
 
-## Related topics
+## Troubleshooting
 
-- [Turn on GitLab Duo](../../../user/gitlab_duo/turn_on_off.md)
+### GitLab Duo sidebar does not display for certain groups
+
+In GitLab 18.8 and earlier, if you give a group access to Agent Platform but not to
+GitLab Duo, the GitLab Duo sidebar does not display for members of that group.
+As a workaround, ensure the group has access to both
+GitLab Duo and Agent Platform features.
+
+To resolve this issue, upgrade to GitLab 18.9 or later.

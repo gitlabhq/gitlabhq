@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Set up and manage GitLab Duo with Amazon Q on a Self-Managed instance using AWS integration.
 title: Set up GitLab Duo with Amazon Q
 ---
@@ -241,7 +241,7 @@ To confirm that it was successful:
 - In the Amazon CloudWatch console log, check for a `204` status code. For more information, see
   [What is Amazon CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html)?
 - In GitLab, a notification that says `Amazon Q settings have been saved` is displayed.
-- In GitLab, on the left sidebar, select **Applications**. The Amazon Q OAuth application is displayed.
+- In GitLab, in the left sidebar, select **Applications**. The Amazon Q OAuth application is displayed.
 
 ## Allow administrators to use customer managed keys
 
@@ -299,7 +299,7 @@ You can configure GitLab to use the hosted AI Gateway on AWS.
    sudo gitlab-rails console
    ```
 
-1.To view the currently assigned service URL, run:
+1. To view the currently assigned service URL, run:
 
    ```ruby
    Ai::Setting.instance.ai_gateway_url
@@ -339,7 +339,7 @@ Prerequisites:
 
 To turn off GitLab Duo with Amazon Q for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Amazon Q**.
 1. Choose an option:
@@ -355,7 +355,7 @@ Prerequisites:
 
 To turn off GitLab Duo with Amazon Q for a project:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Amazon Q**, turn the toggle off.

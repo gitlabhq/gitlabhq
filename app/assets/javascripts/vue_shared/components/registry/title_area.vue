@@ -1,6 +1,6 @@
 <script>
 import { GlAvatar, GlSprintf, GlLink, GlSkeletonLoader } from '@gitlab/ui';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 

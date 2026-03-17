@@ -36,9 +36,9 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
 
   let(:mutation_response) { graphql_mutation_response(:create_container_protection_repository_rule) }
 
-  subject(:post_graphql_mutation_create_container_registry_protection_rule) {
+  subject(:post_graphql_mutation_create_container_registry_protection_rule) do
     post_graphql_mutation(mutation, current_user: user)
-  }
+  end
 
   shared_examples 'a successful response' do
     it { subject.tap { expect_graphql_errors_to_be_empty } }
@@ -79,11 +79,11 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
 
     it_behaves_like 'an erroneous response'
 
-    it {
+    it do
       subject
 
       expect_graphql_errors_to_include([/minimumAccessLevelForPush/, /minimumAccessLevelForDelete/])
-    }
+    end
   end
 
   context 'with blank input fields `minimumAccessLevelForPush` and `minimumAccessLevelForDelete`' do

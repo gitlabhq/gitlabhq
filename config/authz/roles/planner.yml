@@ -1,0 +1,49 @@
+---
+name: planner
+description: Create and manage issues, epics, milestones, and iterations. Focused
+  on project planning and tracking with the ability to view and collaborate on code
+  changes.
+inherits_from:
+- guest
+project:
+  permissions: []
+  raw_permissions:
+  - admin_issue
+  - admin_issue_board
+  - admin_issue_board_list
+  - admin_label
+  - admin_milestone
+  - admin_wiki
+  - admin_work_item
+  - create_design
+  - create_saved_view
+  - create_wiki
+  - destroy_design
+  - destroy_issue
+  - download_code
+  - download_wiki_code
+  - move_design
+  - read_code
+  - read_confidential_issues
+  - read_internal_note
+  - read_merge_request
+  - reopen_issue
+  - update_design
+  - update_issue
+group:
+  permissions: []
+  raw_permissions:
+  - admin_issue
+  - admin_issue_board
+  - admin_issue_board_list
+  - admin_label
+  - admin_milestone
+  - admin_work_item
+  - create_saved_view
+  - destroy_issue
+  - guest_access
+  - read_confidential_issues
+  - read_crm_contact
+  - read_crm_organization
+  - read_internal_note
+  - update_issue

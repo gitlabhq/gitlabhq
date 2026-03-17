@@ -36,10 +36,7 @@ RSpec.describe WorkItems::TypesFramework::HasType, feature_category: :team_plann
     end
 
     it 'returns the system_defined_type from the provider' do
-      # TODO change that to expect work_item.work_item_type to eq system_defined_type once we
-      # integrate the system defined types into the types provider
-      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-      expect(work_item.work_item_type_id).to eq(system_defined_type.id)
+      expect(work_item.work_item_type).to eq(system_defined_type)
     end
 
     context 'when work_item_type_id is nil' do
@@ -49,22 +46,6 @@ RSpec.describe WorkItems::TypesFramework::HasType, feature_category: :team_plann
 
       it 'returns nil' do
         expect(work_item.work_item_type).to be_nil
-      end
-    end
-
-    context "when the FF for system defined types is disabled" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it 'returns the work_item_type from the provider' do
-        expect(work_item.work_item_type).to eq(work_item_type)
-      end
-
-      it 'calls super' do
-        expect(work_item).to receive(:work_item_type).and_call_original
-
-        work_item.work_item_type
       end
     end
   end
@@ -87,13 +68,10 @@ RSpec.describe WorkItems::TypesFramework::HasType, feature_category: :team_plann
 
     context 'when we set a system_defined_type' do
       it 'sets the work_item_type_id' do
-        # TODO change that to  work_item.work_item_type = system_defined_type once we
-        # integrate the system defined types into the types provider
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
         expect { work_item.work_item_type_id = system_defined_type.id }
-          .to change { work_item.work_item_type_id }
+          .to change { work_item.work_item_type }
           .from(nil)
-          .to(system_defined_type.id)
+          .to(system_defined_type)
       end
     end
 
@@ -125,31 +103,6 @@ RSpec.describe WorkItems::TypesFramework::HasType, feature_category: :team_plann
             .from(nil)
             .to(system_defined_type.id)
         end
-      end
-    end
-
-    context "when the FF for system defined types is disabled" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it 'uses the belongs_to setter' do
-        work_item.work_item_type = work_item_type
-
-        expect(work_item.association(:work_item_type).loaded?).to be true
-      end
-
-      it 'calls super' do
-        expect(work_item).to receive(:work_item_type=).and_call_original
-
-        work_item.work_item_type = work_item_type
-      end
-
-      it 'sets the work_item_type_id' do
-        expect { work_item.work_item_type = work_item_type }
-          .to change { work_item.work_item_type_id }
-          .from(nil)
-          .to(work_item_type.id)
       end
     end
   end

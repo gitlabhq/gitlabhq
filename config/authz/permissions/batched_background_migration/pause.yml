@@ -1,0 +1,3 @@
+---
+name: pause_batched_background_migration
+description: Grants the ability to pause batched background migrations

@@ -246,6 +246,33 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
         end
       end
 
+      describe 'filters by work_item_type_ids' do
+        let(:incident_type_id) { issue1.work_item_type.to_global_id.model_id }
+        let(:issue_type_id) { issue2.work_item_type.to_global_id.model_id }
+
+        it 'filters by a single type id' do
+          expect(resolve_issues(work_item_type_ids: [incident_type_id])).to contain_exactly(issue1)
+        end
+
+        it 'filters by multiple type ids' do
+          expect(resolve_issues(work_item_type_ids: [incident_type_id, issue_type_id]))
+            .to contain_exactly(issue1, issue2)
+        end
+
+        it 'ignores the filter if none given' do
+          expect(resolve_issues(work_item_type_ids: [])).to contain_exactly(issue1, issue2)
+        end
+
+        context 'when both types and work_item_type_ids are provided' do
+          it 'generates a mutually exclusive filter error' do
+            expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError,
+              'Only one of [issueTypes, workItemTypeIds] arguments is allowed at the same time.') do
+              resolve_issues(types: [:incident], work_item_type_ids: [incident_type_id])
+            end
+          end
+        end
+      end
+
       context 'when filtering by reaction emoji' do
         let_it_be(:downvoted_issue) { create(:issue, project: project) }
         let_it_be(:downvote_award) { create(:award_emoji, :downvote, user: current_user, awardable: downvoted_issue) }
@@ -603,13 +630,13 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
       end
 
       it 'finds a specific issue with iid', :request_store do
-        result = batch_sync(max_queries: 11) { resolve_issues(iid: issue1.iid).to_a }
+        result = batch_sync(max_queries: 12) { resolve_issues(iid: issue1.iid).to_a }
 
         expect(result).to contain_exactly(issue1)
       end
 
       it 'batches queries that only include IIDs', :request_store do
-        result = batch_sync(max_queries: 11) do
+        result = batch_sync(max_queries: 12) do
           [issue1, issue2]
             .map { |issue| resolve_issues(iid: issue.iid.to_s) }
             .flat_map(&:to_a)
@@ -619,7 +646,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
       end
 
       it 'finds a specific issue with iids', :request_store do
-        result = batch_sync(max_queries: 11) do
+        result = batch_sync(max_queries: 12) do
           resolve_issues(iids: [issue1.iid]).to_a
         end
 

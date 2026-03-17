@@ -56,7 +56,7 @@ export default {
   i18n: {
     defineScopeLabel: s__('AccessTokens|Define scope'),
     scopesDescription: s__(
-      'AccessTokens|Add only the %{linkStart}minimum resource and permissions %{linkEnd} needed for your token. Permissions that exceed your assigned role will have no effect.',
+      'AccessTokens|Add only the %{linkStart}minimum resource and permissions %{linkEnd} needed for your token. Permissions that exceed your assigned role have no effect.',
     ),
     groupTab: __('Group and project'),
     groupAccess: s__('AccessTokens|Group and project access'),
@@ -68,8 +68,8 @@ export default {
     ),
     userTab: __('User'),
   },
-  scopesHelpPagePath: helpPagePath('user/profile/personal_access_tokens', {
-    anchor: 'personal-access-token-scopes',
+  scopesHelpPagePath: helpPagePath('auth/tokens/fine_grained_access_tokens', {
+    anchor: 'available-fine-grained-permissions',
   }),
 };
 </script>

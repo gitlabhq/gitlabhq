@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Create a GitLab Pages website from a project template
 ---
 
@@ -22,7 +22,7 @@ configured to generate a Pages site.
 1. Select **Create from Template**.
 1. Next to one of the templates starting with **Pages**, select **Use template**.
 1. Complete the form and select **Create project**.
-1. On the left sidebar, select **Build** > **Pipelines**
+1. In the left sidebar, select **Build** > **Pipelines**
    and select **New pipeline** to trigger GitLab CI/CD to build and deploy your
    site.
 

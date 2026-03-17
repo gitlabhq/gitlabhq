@@ -1,4 +1,4 @@
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import { getTag } from '~/rest_api';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';

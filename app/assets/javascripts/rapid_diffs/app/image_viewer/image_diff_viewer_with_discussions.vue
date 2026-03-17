@@ -1,7 +1,6 @@
 <script>
 import ImageViewer from '~/rapid_diffs/app/image_viewer/image_viewer.vue';
 import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
-import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import BaseImageDiffOverlay from '~/diffs/components/base_image_diff_overlay.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
 import axios from '~/lib/utils/axios_utils';
@@ -18,6 +17,7 @@ export default {
     ImageViewer,
   },
   inject: {
+    store: { type: Object },
     userPermissions: {
       type: Object,
     },
@@ -51,7 +51,7 @@ export default {
       return `${window.location.pathname}-image-${[this.oldPath || '-', this.newPath || '-'].join('-')}`;
     },
     discussions() {
-      return useDiffDiscussions().getImageDiscussions(this.oldPath, this.newPath);
+      return this.store.getImageDiscussions(this.oldPath, this.newPath);
     },
   },
   methods: {
@@ -77,7 +77,7 @@ export default {
           },
         });
         clearDraft(this.autosaveKey);
-        useDiffDiscussions().addDiscussion(discussion);
+        this.store.addDiscussion(discussion);
         this.commentForm = null;
       } catch (error) {
         createAlert({

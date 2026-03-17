@@ -8,8 +8,6 @@ RSpec.describe Banzai::Pipeline::SingleLinePipeline, feature_category: :markdown
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:issue) { create(:issue, project: project) }
 
-  it_behaves_like 'sanitize pipeline'
-
   it 'does not process markdown' do
     text = '_italic_'
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
+RSpec.describe Gitlab::ImportExport::Project::RelationSaver, feature_category: :importers do
   include ImportExport::CommonUtil
 
   subject(:relation_saver) do
@@ -51,7 +51,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
 
         json = read_json(File.join(shared.export_path, 'tree', 'project.json'))
         expect(json).to include({ 'description' => params[:description] })
-        expect(json.keys).not_to include('name')
+        expect(json.keys).not_to include('path')
       end
 
       it 'successfully serializes without errors' do

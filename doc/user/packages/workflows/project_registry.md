@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Manage packages with dedicated, type-specific registries
 ---
 
@@ -29,9 +29,9 @@ To effectively organize and manage
 your packages with this approach, you should:
 
 - Create a dedicated top-level group for artifact
-management with projects organized by package type.
+  management with projects organized by package type.
 - Limit the top-level group to only projects with
-artifacts to improve performance when consuming packages.
+  artifacts to improve performance when consuming packages.
 
 ### Recommended structure
 
@@ -57,7 +57,7 @@ company_namespace/artifact_management/ # top-level group
 
 Create a new top-level group for artifact management:
 
-1. On the top bar, select **Create new** ({{< icon name="plus" >}}) and **New group**.
+1. In the top bar, select **Create new** ({{< icon name="plus" >}}) and **New group**.
 1. Select **Create group**.
 1. In the **Group name** text box, enter `Artifact Management` or similar.
 1. In **Group URL**, keep the generated path.
@@ -66,8 +66,8 @@ Create a new top-level group for artifact management:
 
 Create projects for each package type you need:
 
-1. On the top bar, select **Search or go to** and find your artifact management group.
-1. On the left sidebar, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
+1. In the top bar, select **Search or go to** and find your artifact management group.
+1. In the left sidebar, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter a **Project name** for your desired package type. For example, `java-packages` or `node-packages`.
 1. Set the appropriate visibility level.
@@ -79,7 +79,7 @@ This approach scales naturally while maintaining security and ease of use.
 
 Configure group settings:
 
-1. In your artifact management group, on the left sidebar, select **Settings** > **Packages and registries**.
+1. In your artifact management group, in the left sidebar, select **Settings** > **Packages and registries**.
 1. Configure any group policies you need, like **Duplicate packages** or **Package forwarding**.
 1. Set up group access controls as needed.
 
@@ -87,7 +87,7 @@ Configure group settings:
 
 Authentication varies based on your use case. Refer
 to the suggestions below. For more information about
-authentication, see [Authenticate with the registry](../../packages/package_registry/supported_functionality.md#authenticate-with-the-registry)
+authentication, see [Authenticate with the registry](../package_registry/supported_functionality.md#authenticate-with-the-registry)
 
 For local development (developers):
 
@@ -108,7 +108,7 @@ For external systems:
 
 Create a group deploy token for organization-wide package consumption:
 
-1. In your artifact management group, on the left sidebar, select **Settings** > **Repository**.
+1. In your artifact management group, in the left sidebar, select **Settings** > **Repository**.
 1. Expand **Deploy tokens**.
 1. Select **Add token** and complete the fields:
    - For the **Name**, enter `package-consumption`.
@@ -120,7 +120,7 @@ Save the token securely.
 If you want to use CI/CD job tokens for publishing,
 configure the job token allowlist:
 
-1. In each package-specific project, on the left sidebar, select **Settings** > **CI/CD**.
+1. In each package-specific project, in the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Token Access**.
 1. Add projects that should be allowed to publish packages to this package registry.
 
@@ -179,6 +179,7 @@ Publish with:
 
 ```shell
 mvn deploy
+```
 
 {{< /tab >}}
 
@@ -208,6 +209,7 @@ For local publishing, configure authentication:
 ```shell
 npm config set @company:registry https://gitlab.example.com/api/v4/projects/NODE_PACKAGES_PROJECT_ID/packages/npm/
 npm config set //gitlab.example.com/api/v4/projects/NODE_PACKAGES_PROJECT_ID/packages/npm/:_authToken ${PERSONAL_ACCESS_TOKEN}
+```
 
 {{< /tab >}}
 
@@ -227,6 +229,7 @@ For local publishing:
 
 ```shell
 twine upload --repository-url https://gitlab.example.com/api/v4/projects/PYTHON_PACKAGES_PROJECT_ID/packages/pypi --username __token__ --password ${PERSONAL_ACCESS_TOKEN} dist/*
+```
 
 {{< /tab >}}
 
@@ -246,6 +249,7 @@ For local development:
 ```shell
 docker login gitlab.example.com -u ${USERNAME} -p ${PERSONAL_ACCESS_TOKEN}
 docker push gitlab.example.com/artifact-management/docker-images/my-app:latest
+```
 
 {{< /tab >}}
 
@@ -277,6 +281,7 @@ For local publishing:
 
 ```shell
 dotnet nuget push package.nupkg --source https://gitlab.example.com/api/v4/projects/NUGET_PACKAGES_PROJECT_ID/packages/nuget/index.json --api-key ${PERSONAL_ACCESS_TOKEN}
+```
 
 {{< /tab >}}
 
@@ -429,6 +434,7 @@ Or use environment variables:
 
 ```shell
 pip install --index-url https://deploy-token-username:deploy-token-password@gitlab.example.com/api/v4/groups/artifact-management/-/packages/pypi/simple/ --no-index my-package
+```
 
 {{< /tab >}}
 
@@ -439,6 +445,7 @@ Pull images from the group registry:
 ```shell
 docker login gitlab.example.com -u deploy-token-username -p deploy-token-password
 docker pull gitlab.example.com/artifact-management/docker-images/my-app:latest
+```
 
 {{< /tab >}}
 
@@ -448,6 +455,7 @@ Configure Terraform to use GitLab credentials with environment variables:
 
 ```shell
 export TF_TOKEN_gitlab_example_com="deploy-token-password"
+```
 
 Then reference modules in your Terraform configuration:
 
@@ -485,6 +493,7 @@ Configure NuGet to use the group registry:
     </GitLab>
   </packageSourceCredentials>
 </configuration>
+```
 
 {{< /tab >}}
 
@@ -494,6 +503,7 @@ Download generic packages:
 
 ```shell
 curl --header "DEPLOY-TOKEN: ${DEPLOY_TOKEN}" "https://gitlab.example.com/api/v4/groups/artifact-management/-/packages/generic/my-package/1.0.0/my-package.zip" --output my-package.zip
+```
 
 {{< /tab >}}
 

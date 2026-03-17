@@ -1,4 +1,4 @@
-import { map } from 'lodash';
+import { map } from 'lodash-es';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   workItemDevelopmentFragmentResponse,

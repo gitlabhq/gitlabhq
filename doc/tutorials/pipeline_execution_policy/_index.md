@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: "Tutorial: Set up a pipeline execution policy"
 ---
 
@@ -34,7 +34,7 @@ To complete this tutorial, you need:
 
 To begin, create a test project to apply your pipeline execution policy to:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **New project**.
 1. Select **Create blank project**.
 1. Complete the fields.
@@ -103,9 +103,7 @@ Next, add a pipeline execution policy to your test project:
 1. Set **Actions** to the following:
 
    ![Pipeline Execution Policy Actions](img/pipeline_execution_policy_actions_v18_7.png)
-
 1. Select **Configure with a merge request**.
-
 1. Review the generated policy YAML in the merge request's **Changes** tab. The policy should look similar to:
 
    ```yaml
@@ -124,9 +122,7 @@ Next, add a pipeline execution policy to your test project:
    ```
 
 1. Go to the **Overview** tab and select **Merge**. This step creates a new project called `My Pipeline Execution Policy - Security Policy Project`. Security policy projects are used to store security policies so the same policy can be enforced across multiple projects.
-
-1. On the top bar, select **Search or go to** and find the `my-pipeline-execution-policy` project.
-
+1. In the top bar, select **Search or go to** and find the `my-pipeline-execution-policy` project.
 1. Select **Secure** > **Policies**.
 
    You can see the list of policies added in the previous steps.
@@ -150,7 +146,6 @@ Now test your pipeline execution policy by creating a merge request:
 1. When the merge request page opens, select **Create merge request**.
 
    Wait for the pipeline to complete. This could take a few minutes.
-
 1. In the merge request, select the **Pipelines** tab and select the created pipeline.
 
    You should see the enforced jobs running:

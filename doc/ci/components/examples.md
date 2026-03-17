@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: This page is maintained by Developer Relations, author @dnsmichi, see https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation
+info: This page is maintained by Developer Relations, author @dnsmichi, see <https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation>
 title: CI/CD component examples
 ---
 
@@ -459,7 +459,7 @@ The CI/CD template migration involves the following steps:
      ```
 
    - Create a `main.go` file with a main function, printing `Hello, CI/CD component` for example.
-     You can use code comments to generate Go code using [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md) and [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md).
+     You can use code comments to generate Go code using GitLab Duo Code Suggestions.
 
      ```go
      // Specify the package, import required packages

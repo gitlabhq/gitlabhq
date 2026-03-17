@@ -17,6 +17,7 @@ default:
 
 stages:
   - test
+  - post-test
 
 workflow:
   name: '$PIPELINE_NAME'
@@ -116,6 +117,31 @@ rspec system predictive:
 <% end %>
 <% end %>
 
+<% if rspec_files_per_test_level.values.any? { |config| config[:files].size > 0 } %>
+rspec-predictive-artifact-collector:
+  stage: post-test
+  needs:
+<% rspec_files_per_test_level.each do |test_level, config| -%>
+<% if config[:files].size > 0 -%>
+    - job: rspec <%= test_level %> predictive
+      optional: true
+      artifacts: true
+<% end -%>
+<% end -%>
+  rules:
+    - when: always
+  script:
+    - echo "Collecting artifacts from predictive pipeline jobs"
+  artifacts:
+    name: predictive-coverage
+    expire_in: 31d
+    paths:
+      - coverage/
+      - rspec/
+      - crystalball/
+    when: always
+<% end %>
+
 <% end %>
 
 <% if test_suite_prefix == 'ee/' %>
@@ -175,6 +201,31 @@ rspec-ee system predictive:
 <% if rspec_files_per_test_level.dig(:system, :parallelization) > 1 %>
   parallel: <%= rspec_files_per_test_level.dig(:system, :parallelization) %>
 <% end %>
+<% end %>
+
+<% if rspec_files_per_test_level.values.any? { |config| config[:files].size > 0 } %>
+rspec-ee-predictive-artifact-collector:
+  stage: post-test
+  needs:
+<% rspec_files_per_test_level.each do |test_level, config| -%>
+<% if config[:files].size > 0 -%>
+    - job: rspec-ee <%= test_level %> predictive
+      optional: true
+      artifacts: true
+<% end -%>
+<% end -%>
+  rules:
+    - when: always
+  script:
+    - echo "Collecting artifacts from EE predictive pipeline jobs"
+  artifacts:
+    name: ee-predictive-coverage
+    expire_in: 31d
+    paths:
+      - coverage/
+      - rspec/
+      - crystalball/
+    when: always
 <% end %>
 
 <% end %>

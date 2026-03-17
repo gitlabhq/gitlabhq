@@ -1,0 +1,7 @@
+---
+name: read_experiment
+description: Grants the ability to read experiments
+boundaries:
+  - instance
+permissions:
+  - read_experiment

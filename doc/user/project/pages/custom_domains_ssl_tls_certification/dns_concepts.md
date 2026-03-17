@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages DNS records
 ---
 
@@ -28,6 +28,8 @@ is hosted on. Every control panel has its own place to do it. If you are
 not an administrator of your domain, and don't have access to your registrar,
 you must ask the technical support of your hosting service
 to do it for you.
+
+For more information, see [set up DNS records for GitLab Pages](_index.md#step-3-set-up-dns-records).
 
 For the most popular hosting services, see the following instructions:
 

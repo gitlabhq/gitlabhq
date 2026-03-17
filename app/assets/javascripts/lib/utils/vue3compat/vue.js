@@ -14,11 +14,17 @@ class GitLabPatchedVue extends VueCompatOriginal {
     let originalEl;
     if (config?.el) {
       originalEl = config.el instanceof Element ? config.el : document.querySelector(config.el);
-      config.el = new DocumentFragment();
+      config.el = document.createElement('div');
+      config.el.style.display = 'contents';
+      config.el.dataset.info = 'gitlab-vue3-compat-wrapper';
+      // We need to have it in real HTML otherwise accessing for example attached CSS vars might fail
+      originalEl.appendChild(config.el);
     }
     super(config, ...rest);
     if (originalEl) {
-      originalEl?.replaceWith(config.el);
+      const fragment = new DocumentFragment();
+      fragment.replaceChildren(...config.el.childNodes);
+      originalEl.replaceWith(fragment);
     }
   }
 }

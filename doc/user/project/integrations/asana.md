@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Asana
 description: Configure the Asana integration to add commit messages as comments to Asana tasks and close tasks from GitLab commits.
 ---
@@ -45,7 +45,7 @@ In Asana, create a personal access token.
 
 Complete these steps in GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Asana**.
 1. Ensure that the **Active** toggle is enabled.

@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Build packages
 ---
 
@@ -204,7 +204,6 @@ Prerequisites:
 To build a package:
 
 1. Make sure you are in the `hello` folder created in the previous section.
-
 1. Create a package for the recipe by running `conan create` with the Conan user
    and channel:
 
@@ -380,7 +379,6 @@ Install sbt to create new sbt projects.
 To install sbt for your development environment:
 
 1. Follow the instructions at [scala-sbt.org](https://www.scala-sbt.org/1.x/docs/Setup.html).
-
 1. From your terminal, verify you can use sbt:
 
    ```shell

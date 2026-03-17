@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Publish npm packages to the GitLab package registry using semantic-release
 ---
 
@@ -20,7 +20,6 @@ You can also view or fork the complete [example source](https://gitlab.com/gitla
 
 1. Open a terminal and go to the project's repository.
 1. Run `npm init`. Name the module according to [the package registry's naming conventions](../../user/packages/npm_registry/_index.md#naming-convention). For example, if the project's path is `gitlab-examples/semantic-release-npm`, name the module `@gitlab-examples/semantic-release-npm`.
-
 1. Install the following npm packages:
 
    ```shell
@@ -42,7 +41,6 @@ You can also view or fork the complete [example source](https://gitlab.com/gitla
    ```
 
 1. Update the `files` key with glob patterns that selects all files that should be included in the published module. More information about `files` can be found [in the npm documentation](https://docs.npmjs.com/cli/v6/configuring-npm/package-json/#files).
-
 1. Add a `.gitignore` file to the project to avoid committing `node_modules`:
 
    ```plaintext
@@ -94,13 +92,13 @@ The default `before_script` generates a temporary `.npmrc` that is used to authe
 
 As part of publishing a package, semantic-release increases the version number in `package.json`. For semantic-release to commit this change and push it back to GitLab, the pipeline requires a custom CI/CD variable named `GITLAB_TOKEN`. To create this variable:
 
-<!-- markdownlint-disable MD044 -->
-
 1. Open the left sidebar.
 1. Select **Settings** > **Access tokens**.
 1. In your project, select **Add new token**.
 1. In the **Token name** box, enter a token name.
+   <!-- markdownlint-disable MD044 -->
 1. Under **Select scopes**, select the **api** checkbox.
+   <!-- markdownlint-enable MD044 -->
 1. Select **Create project access token**.
 1. Copy the token value.
 1. In the left sidebar, select **Settings** > **CI/CD**.
@@ -110,7 +108,6 @@ As part of publishing a package, semantic-release increases the version number i
 1. In the **Key** box, enter `GITLAB_TOKEN`.
 1. In the **Value** box, enter the token value.
 1. Select **Add variable**.
-<!-- markdownlint-enable MD044 -->
 
 ## Configure semantic-release
 

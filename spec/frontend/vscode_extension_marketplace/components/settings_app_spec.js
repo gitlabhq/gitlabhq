@@ -12,7 +12,6 @@ import { PRESETS } from '../mock_data';
 
 jest.mock('~/lib/logger');
 jest.mock('~/vue_shared/plugins/global_toast');
-jest.mock('lodash/uniqueId', () => (x) => `${x}testUnique`);
 
 const TEST_NEW_SETTINGS = { preset: 'open_vsx' };
 const TEST_INIT_SETTINGS = {

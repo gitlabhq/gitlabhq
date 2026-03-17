@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import actionCable from '~/actioncable_consumer';
 import Api from '~/api';
 import { createAlert, VARIANT_INFO } from '~/alert';

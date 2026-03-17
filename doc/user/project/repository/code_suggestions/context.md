@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Code Suggestions contextual awareness
 ---
 
@@ -30,14 +30,14 @@ The following context is available to Code Suggestions.
   - These files provide GitLab Duo with information about the standards and practices in your project.
   - Close files if you do not want them used for context.
   - The most recently opened or changed files are prioritized for context.
-  - Code completion is aware of all languages supported by [Code Suggestions](../../../duo_agent_platform/code_suggestions/supported_extensions.md#supported-languages-by-ide) and [Code Suggestions (Classic)](supported_extensions.md#supported-languages-by-ide).
+  - Code completion is aware of all languages supported by Code Suggestions.
   - Code generation is aware of files in these languages only:
     Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files), Vue, and YAML.
 - Files imported in the file you're viewing or editing. Optional, and off by default.
   - These files provide GitLab Duo with information about the classes and methods in your file.
   - Supported for JavaScript and TypeScript files, including `.js`, `.jsx`, `.ts`, `.tsx`, and `.vue` file types.
 - Code selected in your editor.
-- Repository X-Ray files from [Code Suggestions](../../../duo_agent_platform/code_suggestions/repository_xray.md) or [Code Suggestions (Classic)](repository_xray.md).
+- Repository X-Ray files from Code Suggestions.
 
 > [!note]
 > Secrets and sensitive values that match known formats are redacted before
@@ -57,7 +57,7 @@ You can change whether or not Code Suggestions uses other files as context.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.1 [with a flag](../../../../administration/feature_flags/_index.md) named `advanced_context_resolver`. Disabled by default.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_context`. Disabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab Workflow for VS Code 4.20.0.
+- [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab for VS Code 4.20.0.
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/462) in GitLab Duo for JetBrains 2.7.0.
 - [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/merge_requests/152) to the GitLab Neovim plugin on July 16, 2024.
 - Feature flags `advanced_context_resolver` and `code_suggestions_context` enabled on GitLab.com in GitLab 17.2 and on GitLab Self-Managed in GitLab 17.4.
@@ -73,10 +73,10 @@ Prerequisites:
 - GitLab 17.2 or later. Earlier GitLab versions that support Code Suggestions
   cannot weigh the content of open tabs more heavily than other files in your project.
 - A supported extension:
-  - GitLab Workflow extension for VS Code 6.2.2 or later.
+  - GitLab for VS Code extension 6.2.2 or later.
   - GitLab plugin for JetBrains IDEs 3.6.5 or later.
   - GitLab plugin for Neovim 1.1.0 or later.
-  - GitLab extension for Visual Studio 0.51.0 or later.
+  - GitLab for Visual Studio extension 0.51.0 or later.
 
 To change open files being used as context:
 
@@ -84,8 +84,8 @@ To change open files being used as context:
 
 {{< tab title="Visual Studio Code" >}}
 
-1. On the top bar, go to **Code** > **Settings** > **Extensions**.
-1. Search for GitLab Workflow in the list, and select the gear icon.
+1. In the top bar, go to **Code** > **Settings** > **Extensions**.
+1. Search for **GitLab** in the list, and select the gear icon.
 1. Select **Settings**.
 1. In your **User** settings, search for `open tabs`.
 1. Under **GitLab** > **Duo Code Suggestions: Open Tabs Context**,
@@ -96,7 +96,7 @@ To change open files being used as context:
 {{< tab title="JetBrains IDEs" >}}
 
 1. Go to your IDE's top menu bar and select **Settings**.
-1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
+1. In the left sidebar, expand **Tools**, then select **GitLab Duo**.
 1. Below **Additional languages**, select or clear **Send open tabs as context**.
 1. Select **Apply** or **Save**.
 

@@ -159,10 +159,10 @@ $dark-il: #de935f;
   --code-new-inline-diff-background-color: #{$dark-new-idiff};
 
   --code-meta-diff-background-color: #{$dark-diff-match-color};
-  --code-meta-diff-color: #{$dark-diff-match-bg};
+  --code-meta-diff-color: #{$gl-color-neutral-200};
 
   --code-diff-hunk-header-background-color: #{$dark-diff-match-color};
-  --code-diff-hunk-header-color: #{$dark-diff-match-bg};
+  --code-diff-hunk-header-color: #{$gl-color-neutral-200};
 
   --code-diff-expand-button-background-color: #{$gl-color-neutral-600};
   --code-diff-expand-button-color: #{$gl-color-neutral-200};

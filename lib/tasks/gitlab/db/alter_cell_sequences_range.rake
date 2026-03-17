@@ -10,8 +10,13 @@ namespace :gitlab do
       # This is a safety check to ensure this rake does not alter the sequences for the Legacy Cell
       next if Gitlab.config.cell.database.skip_sequence_alteration
 
+      sequence_names = ENV['SEQUENCE_NAMES']
+      sequence_names = sequence_names&.split(',')&.map(&:strip)&.reject(&:blank?).presence
+
       Gitlab::Database::EachDatabase.each_connection do |connection, _database_name|
-        Gitlab::Database::AlterCellSequencesRange.new(args.minval&.to_i, args.maxval&.to_i, connection).execute
+        Gitlab::Database::AlterCellSequencesRange.new(
+          args.minval&.to_i, args.maxval&.to_i, connection, sequence_names: sequence_names
+        ).execute
       end
     end
   end

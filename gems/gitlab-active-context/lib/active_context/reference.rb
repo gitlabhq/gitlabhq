@@ -33,8 +33,8 @@ module ActiveContext
         name.demodulize
       end
 
-      def preprocess_references(refs)
-        preprocess(refs)
+      def preprocess_references(refs, **options)
+        preprocess(refs, **options)
       end
     end
 
@@ -116,8 +116,14 @@ module ActiveContext
       [identifier]
     end
 
-    def embedding_versions
-      collection_class&.current_indexing_embedding_versions || []
+    def indexing_embedding_models(next_model_only: false)
+      return [] unless collection_class
+
+      if next_model_only
+        [collection_class.next_indexing_embedding_model].compact
+      else
+        collection_class.indexing_embedding_models
+      end
     end
 
     def collection_class

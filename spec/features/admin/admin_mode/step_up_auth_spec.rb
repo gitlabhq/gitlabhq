@@ -153,14 +153,12 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
         end
       end
 
-      with_and_without_sign_in_form_vue do
-        context 'when user signed in initially with username and password' do
-          before do
-            gitlab_sign_in(admin)
-          end
-
-          it_behaves_like 'successful step-up auth process'
+      context 'when user signed in initially with username and password' do
+        before do
+          gitlab_sign_in(admin)
         end
+
+        it_behaves_like 'successful step-up auth process'
       end
 
       context 'when user signed in initially with same omniauth provider (openid_connect)' do

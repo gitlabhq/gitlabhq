@@ -139,7 +139,7 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
 
         expect(rendered).to render_template('shared/groups_projects/settings/_restore')
         expect(rendered).to have_content('Restore group')
-        expect(rendered).to have_link('Restore')
+        expect(rendered).to have_button('Restore')
       end
     end
 
@@ -149,7 +149,7 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
 
         expect(rendered).to render_template('shared/groups_projects/settings/_restore')
         expect(rendered).not_to have_content('Restore group')
-        expect(rendered).not_to have_link('Restore')
+        expect(rendered).not_to have_button('Restore')
       end
     end
   end

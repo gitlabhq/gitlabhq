@@ -13,7 +13,7 @@ RSpec.describe Mutations::CustomEmoji::Create do
     subject(:resolve) { described_class.new(object: nil, context: query_context, field: nil).resolve(**args) }
 
     it 'creates the custom emoji' do
-      expect { resolve }.to change(CustomEmoji, :count).by(1)
+      expect { resolve }.to change { CustomEmoji.count }.by(1)
     end
 
     it 'sets the creator to be the user who added the emoji' do

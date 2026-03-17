@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: How to create a merge request for a confidential issue without leaking information publicly.
 title: Merge requests for confidential issues
 ---
@@ -50,8 +50,8 @@ Prerequisites:
 
 To create a confidential merge request:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues** and find the issue you want to create a merge request for.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. Scroll below the issue description, and select **Create confidential merge request**.
 1. Select the item that meets your needs:
    - To create both a branch and a merge request, select

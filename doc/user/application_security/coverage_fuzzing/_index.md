@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Coverage-guided fuzz testing (deprecated)
 description: Coverage-guided fuzzing, random inputs, and unexpected behavior.
 ---
@@ -37,7 +37,7 @@ For an overview, see [Coverage-guided Fuzzing - Advanced Security Testing](https
 
 To confirm the status of coverage-guided fuzz testing:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **Coverage Fuzzing** section the status is:
    - **Not configured**
@@ -49,7 +49,6 @@ To confirm the status of coverage-guided fuzz testing:
 To enable coverage-guided fuzz testing, edit `.gitlab-ci.yml`:
 
 1. Add the `fuzz` stage to the list of stages.
-
 1. If your application is not written in Go, [provide a Docker image](../../../ci/yaml/_index.md#image) using the matching fuzzing
    engine. For example:
 
@@ -126,7 +125,7 @@ artifacts files you can download from the CI/CD pipeline. Also, a project member
 
 To view details of the corpus registry:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 
@@ -154,7 +153,7 @@ provided by the `COVFUZZ_CORPUS_NAME` variable. The corpus is updated on every p
 
 To upload an existing corpus file:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 1. Select **New corpus**.

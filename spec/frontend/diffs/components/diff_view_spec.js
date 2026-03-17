@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import Vue from 'vue';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { PiniaVuePlugin } from 'pinia';
 import DiffView from '~/diffs/components/diff_view.vue';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
@@ -12,8 +12,11 @@ import { createCustomGetters } from 'helpers/pinia_helpers';
 
 Vue.use(PiniaVuePlugin);
 
-jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
-const lodash = jest.requireActual('lodash');
+jest.mock('lodash-es', () => ({
+  ...jest.requireActual('lodash-es'),
+  throttle: jest.fn((fn) => fn),
+}));
+const lodash = jest.requireActual('lodash-es');
 
 describe('DiffView', () => {
   let pinia;
@@ -45,6 +48,7 @@ describe('DiffView', () => {
           legacyNotes: {},
           legacyDiffs: {},
           fileBrowser: {},
+          discussions: {},
           batchComments: {
             shouldRenderDraftRow: () => false,
             shouldRenderParallelDraftRow: () => () => true,

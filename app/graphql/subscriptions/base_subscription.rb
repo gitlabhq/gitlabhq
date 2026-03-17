@@ -34,6 +34,16 @@ module Subscriptions
 
     private
 
+    def authorize_object_or_gid!(ability_name, gid:, object: self.object)
+      auth_object = object.presence || force(GitlabSchema.find_by_gid(gid))
+
+      return unauthorized! if auth_object.nil?
+
+      unauthorized! unless Ability.allowed?(current_user, ability_name, auth_object)
+
+      true
+    end
+
     def unauthorized!
       unsubscribe if context.query.subscription_update?
 

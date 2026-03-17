@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLab development guidelines - Unhealthy tests.
 title: Unhealthy tests
 ---
@@ -45,8 +45,7 @@ merging. For implementation details on how to quarantine tests in your codebase,
 
 ### Automatic retries and flaky tests detection
 
-On our CI, we use [`RSpec::Retry`](https://github.com/NoRedInk/rspec-retry) to automatically retry a failing example a few
-times (see [`spec/spec_helper.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/spec_helper.rb) for the precise retries count).
+Failing tests are automatically retried once in a separate RSpec process.
 
 For more information, see [Automatic retry of failing tests in a separate process](../pipelines/_index.md#automatic-retry-of-failing-tests).
 

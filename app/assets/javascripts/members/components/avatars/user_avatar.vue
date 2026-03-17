@@ -1,5 +1,5 @@
 <script>
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { GlAvatarLink, GlAvatarLabeled, GlBadge } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { generateBadges } from 'ee_else_ce/members/utils';

@@ -1,7 +1,13 @@
-query searchProjectMembers($fullPath: ID!, $search: String, $ids: [ID!]) {
+query searchProjectMembers(
+  $fullPath: ID!
+  $search: String
+  $ids: [ID!]
+  $accessLevels: [AccessLevelEnum!]
+  $relations: [ProjectMemberRelation!]
+) {
   project(fullPath: $fullPath) {
     id
-    projectMembers(search: $search, ids: $ids) {
+    projectMembers(search: $search, ids: $ids, accessLevels: $accessLevels, relations: $relations) {
       nodes {
         id
         user {

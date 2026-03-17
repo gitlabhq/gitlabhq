@@ -29,6 +29,14 @@ class GroupChildEntity < Grape::Entity
     public_send("edit_#{type}_path", instance) # rubocop:disable GitlabSecurity/PublicSend
   end
 
+  expose :request_access_path do |instance|
+    polymorphic_path([:request_access, instance, :members])
+  end
+
+  expose :withdraw_access_request_path do |instance|
+    polymorphic_path([:leave, instance, :members])
+  end
+
   expose :relative_path do |instance|
     polymorphic_path(instance)
   end

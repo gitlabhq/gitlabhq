@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import MockAdapter from 'axios-mock-adapter';
 import { roleDropdownItems } from '~/members/utils';
 import {

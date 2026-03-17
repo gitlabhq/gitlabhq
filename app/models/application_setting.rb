@@ -44,6 +44,8 @@ class ApplicationSetting < ApplicationRecord
   DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT = 3600
   DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD = 3600
 
+  DEFAULT_RAW_BLOB_UNAUTHENTICATED_REQUEST_LIMIT = 800
+
   SEARCH_SCOPE_SYSTEM_DEFAULT = 'system default'
 
   enum :whats_new_variant, { all_tiers: 0, current_tier: 1, disabled: 2 }, prefix: true
@@ -202,18 +204,24 @@ class ApplicationSetting < ApplicationRecord
     presence: true,
     if: :unique_ips_limit_enabled
 
+  validates :metrics_method_call_threshold,
+    numericality: { greater_than_or_equal_to: 0 },
+    presence: true,
+    if: :prometheus_metrics_enabled
+
   validates :kroki_url, presence: { if: :kroki_enabled }
 
   validate :validate_kroki_url, if: :kroki_enabled
 
   validates :kroki_formats, json_schema: { filename: 'application_setting_kroki_formats' }
 
-  validates :metrics_method_call_threshold,
-    numericality: { greater_than_or_equal_to: 0 },
-    presence: true,
-    if: :prometheus_metrics_enabled
-
   validates :plantuml_url, presence: true, if: :plantuml_enabled
+
+  jsonb_accessor :diagram_proxy,
+    kroki_diagram_proxy_enabled: [:boolean, { default: false }],
+    plantuml_diagram_proxy_enabled: [:boolean, { default: false }]
+
+  validates :diagram_proxy, json_schema: { filename: 'application_setting_diagram_proxy' }
 
   validates :sourcegraph_url, presence: true, if: :sourcegraph_enabled
 
@@ -533,6 +541,7 @@ class ApplicationSetting < ApplicationRecord
       pipeline_variables_default_allowed: [:boolean, { default: true }],
       ci_job_live_trace_enabled: [:boolean, { default: false }],
       ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
+      ci_partitions_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 month') }],
       ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
       git_push_pipeline_limit: [:integer, { default: 4 }]
     }
@@ -544,6 +553,12 @@ class ApplicationSetting < ApplicationRecord
 
   validate :validate_object_storage_for_live_trace_configuration, if: -> { ci_job_live_trace_enabled? }
   validates :ci_partitions_size_limit, presence: true, numericality: { only_integer: true, greater_than: 0 }
+  validates :ci_partitions_in_seconds_limit, presence: true,
+    numericality: {
+      only_integer: true,
+      greater_than_or_equal_to: ChronicDuration.parse('1 month'),
+      less_than_or_equal_to: ChronicDuration.parse('6 months')
+    }
   validates :ci_delete_pipelines_in_seconds_limit, presence: true,
     numericality: { only_integer: true, greater_than_or_equal_to: 1.day }
 
@@ -699,6 +714,7 @@ class ApplicationSetting < ApplicationRecord
       :projects_api_limit,
       :projects_api_rate_limit_unauthenticated,
       :raw_blob_request_limit,
+      :raw_blob_request_limit_unauthenticated,
       :runner_jobs_request_api_limit,
       :runner_jobs_patch_trace_api_limit,
       :runner_jobs_endpoints_api_limit,
@@ -1081,6 +1097,10 @@ class ApplicationSetting < ApplicationRecord
     vscode_extension_marketplace_extension_host_domain: [
       :string,
       { default: ::WebIde::ExtensionMarketplace::DEFAULT_EXTENSION_HOST_DOMAIN, store_key: :extension_host_domain }
+    ],
+    vscode_extension_marketplace_single_origin_fallback_enabled: [
+      :boolean,
+      { default: true, store_key: :single_origin_fallback_enabled }
     ]
 
   jsonb_accessor :editor_extensions,
@@ -1247,7 +1267,8 @@ class ApplicationSetting < ApplicationRecord
       users_api_limit_ssh_key: [:integer, { default: 120 }],
       users_api_limit_gpg_keys: [:integer, { default: 120 }],
       users_api_limit_gpg_key: [:integer, { default: 120 }],
-      pipeline_limit_per_user: [:integer, { default: 0 }]
+      pipeline_limit_per_user: [:integer, { default: 0 }],
+      raw_blob_request_limit_unauthenticated: [:integer, { default: DEFAULT_RAW_BLOB_UNAUTHENTICATED_REQUEST_LIMIT }]
     }
   end
 

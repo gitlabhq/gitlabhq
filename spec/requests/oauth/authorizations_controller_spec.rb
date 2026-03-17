@@ -242,6 +242,32 @@ RSpec.describe Oauth::AuthorizationsController, feature_category: :system_access
         end
       end
 
+      context 'when resource param ends with /api/v4/orbit/mcp' do
+        it 'forces scope to mcp_orbit regardless of original scope param' do
+          get oauth_authorization_path, params: params.merge(
+            resource: 'https://gitlab.example.com/api/v4/orbit/mcp',
+            scope: 'read_user'
+          )
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template('doorkeeper/authorizations/new')
+          expect(response.body).to include('value="mcp_orbit"')
+          expect(response.body).not_to include('value="read_user"')
+        end
+
+        context 'when scope param is not present' do
+          it 'defaults scope to mcp_orbit', :aggregate_failures do
+            get oauth_authorization_path, params: params.merge(
+              resource: 'https://gitlab.example.com/api/v4/orbit/mcp'
+            ).except(:scope)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template('doorkeeper/authorizations/new')
+            expect(response.body).to include('value="mcp_orbit"')
+          end
+        end
+      end
+
       context 'when resource param does not end with /api/v4/mcp' do
         it 'does not force scope to mcp' do
           get oauth_authorization_path, params: params.merge(

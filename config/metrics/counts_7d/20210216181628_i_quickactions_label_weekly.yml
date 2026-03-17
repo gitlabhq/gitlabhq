@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_label_weekly
 description: Count of WAU using the `/label` quick action
 product_group: project_management
+product_categories:
+- team_planning
 value_type: number
 status: active
 time_frame: 7d

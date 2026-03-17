@@ -14,6 +14,8 @@
         .form-group
           = f.gitlab_ui_checkbox_component :kroki_enabled,
             _('Enable Kroki')
+          = f.gitlab_ui_checkbox_component :kroki_diagram_proxy_enabled,
+            _('Proxy Kroki diagrams through GitLab')
         .form-group
           = f.label :kroki_url, _('Kroki URL'), class: 'label-bold'
           = f.text_field :kroki_url, class: 'form-control gl-form-input'

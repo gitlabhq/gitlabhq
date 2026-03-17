@@ -4,12 +4,17 @@ require_relative "gitlab/grape_openapi/version"
 require_relative "gitlab/grape_openapi/configuration"
 require_relative "gitlab/grape_openapi/generator"
 require_relative "gitlab/grape_openapi/schema_registry"
+require_relative "gitlab/grape_openapi/request_body_registry"
 require_relative "gitlab/grape_openapi/tag_registry"
+
+# Concerns
+require_relative "gitlab/grape_openapi/concerns/serializable"
 
 # Serializers
 require_relative "gitlab/grape_openapi/serializers/time"
 
 # Converters
+require_relative "gitlab/grape_openapi/converters/coercer_resolver"
 require_relative "gitlab/grape_openapi/converters/entity_converter"
 require_relative "gitlab/grape_openapi/converters/type_resolver"
 require_relative "gitlab/grape_openapi/converters/tag_converter"
@@ -24,6 +29,7 @@ require_relative "gitlab/grape_openapi/models/request_body/parameter_schema"
 require_relative "gitlab/grape_openapi/models/request_body/parameters"
 require_relative "gitlab/grape_openapi/models/schema"
 require_relative "gitlab/grape_openapi/models/tag"
+require_relative "gitlab/grape_openapi/models/server_variable"
 require_relative "gitlab/grape_openapi/models/server"
 require_relative "gitlab/grape_openapi/models/operation"
 require_relative "gitlab/grape_openapi/models/path_item"
@@ -34,6 +40,8 @@ require_relative "gitlab/grape_openapi/models/parameter"
 
 module Gitlab
   module GrapeOpenapi
+    GenerationError = Class.new(StandardError)
+
     class << self
       attr_writer :configuration
 

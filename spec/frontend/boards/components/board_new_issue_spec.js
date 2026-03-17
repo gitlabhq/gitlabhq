@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 import BoardNewItem from '~/boards/components/board_new_item.vue';
 import ProjectSelect from '~/boards/components/project_select.vue';
@@ -21,17 +21,20 @@ Vue.use(VueApollo);
 const projectBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockProjectBoardResponse);
 const groupBoardQueryHandlerSuccess = jest.fn().mockResolvedValue(mockGroupBoardResponse);
 
-const mockApollo = createMockApollo([
-  [projectBoardQuery, projectBoardQueryHandlerSuccess],
-  [groupBoardQuery, groupBoardQueryHandlerSuccess],
-]);
+let mockApollo;
+let resolveQuery;
 
 const createComponent = ({
   isGroupBoard = true,
   data = { selectedProject: mockGroupProjects[0] },
   provide = {},
-} = {}) =>
-  shallowMount(BoardNewIssue, {
+} = {}) => {
+  ({ apolloProvider: mockApollo, resolveQuery } = createControlledMockApollo([
+    [projectBoardQuery, projectBoardQueryHandlerSuccess],
+    [groupBoardQuery, groupBoardQueryHandlerSuccess],
+  ]));
+
+  return shallowMount(BoardNewIssue, {
     apolloProvider: mockApollo,
     propsData: {
       list: mockList,
@@ -52,6 +55,7 @@ const createComponent = ({
       BoardNewItem,
     },
   });
+};
 
 describe('Issue boards new issue form', () => {
   let wrapper;
@@ -65,12 +69,15 @@ describe('Issue boards new issue form', () => {
   });
 
   it.each`
-    boardType            | queryHandler                       | notCalledHandler
-    ${NAMESPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess}
-    ${NAMESPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}
+    boardType            | queryHandler                       | notCalledHandler                   | query
+    ${NAMESPACE_GROUP}   | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQueryHandlerSuccess} | ${groupBoardQuery}
+    ${NAMESPACE_PROJECT} | ${projectBoardQueryHandlerSuccess} | ${groupBoardQueryHandlerSuccess}   | ${projectBoardQuery}
   `(
     'fetches $boardType board and emits addNewIssue event',
-    async ({ boardType, queryHandler, notCalledHandler }) => {
+    async ({ boardType, queryHandler, notCalledHandler, query }) => {
+      projectBoardQueryHandlerSuccess.mockClear();
+      groupBoardQueryHandlerSuccess.mockClear();
+
       wrapper = createComponent({
         provide: {
           boardType,
@@ -79,7 +86,8 @@ describe('Issue boards new issue form', () => {
         },
       });
 
-      await nextTick();
+      await resolveQuery(query);
+
       findBoardNewItem().vm.$emit('form-submit', { title: 'Foo' });
 
       await nextTick();

@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Engagement
-info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: 'Tutorial: Navigate the GitLab interface'
 ---
 
@@ -29,7 +29,7 @@ Follow this tutorial to learn how to use the different interface elements to nav
 In the upper-right corner, there are several shortcuts. Use these shortcuts to create new items, and to view your
 profile, your list of issues, merge requests, and to-do items.
 
-![Shortcuts in new navigation.](img/top_nav_v18_6.png)
+![Shortcuts in new navigation.](img/top_nav_v18_10.png)
 
 The left sidebar changes based on the information you're viewing. For example,
 you might be viewing a project, exploring projects or groups, or viewing your profile.
@@ -40,7 +40,7 @@ if you're in a project, the sidebar is project-specific.
 
 On the right, the GitLab Duo sidebar has buttons to access GitLab Duo Chat, sessions, and suggestions.
 
-![GitLab Duo sidebar.](img/paneled_view_duo_sidebar_v18_7.png)
+![GitLab Duo sidebar.](img/paneled_view_duo_sidebar_v18_10.png)
 
 ## Find your project
 
@@ -48,7 +48,7 @@ Now let's go over a few common tasks you'll use the left sidebar for.
 
 To start, we will find the project we want to work on.
 
-1. To explore all available projects, on the top bar, select **Search or go to**.
+1. To explore all available projects, in the top bar, select **Search or go to**.
 1. Choose from the list of frequently visited projects, or
    type a colon `:` followed by the project name:
 
@@ -56,7 +56,7 @@ To start, we will find the project we want to work on.
 
 The left sidebar now shows project-specific options.
 
-![Project-specific options](img/project_selected_v18_3.png)
+![Project-specific options](img/sidebar_v18_10.png)
 
 ## Pin frequently used items
 
@@ -69,7 +69,7 @@ You can pin menu items if you tend to use them frequently.
 
 The item is displayed in the **Pinned** section:
 
-![An item in the Pinned section.](img/pinned_v18_3.png)
+![An item in the Pinned section.](img/sidebar_v18_10_pinned.png)
 
 > [!note]
 > The items you pin while you're viewing a project are different than the items you pin while viewing a group.
@@ -89,15 +89,15 @@ When you select a work item, like an issue, it opens in a details panel.
 
 To open the item in the full page view, either:
 
-- On the Issues or Epics page, right-click the item and open it in a new tab.
+- On the **Work items** page, right-click the item and open it in a new tab.
 - Select the item, and from the details panel select its ID (for example, `myproject#123456`).
 
 If there's enough screen space, the details panel opens next to the list or board you open it from.
 On smaller screens, the detail panel covers the list or board panel.
 
-![Issue opened in a panel side by side with the Issues panel.](img/paneled_view_issue_drawer_v18_6.png)
+![Issue opened in a panel side by side with the Issues panel.](img/paneled_view_issue_drawer_v18_10.png)
 
-![Issue opened in a panel covering part of the Issues panel.](img/paneled_view_issue_drawer_overlap_v18_6.png)
+![Issue opened in a panel covering part of the Issues panel.](img/paneled_view_issue_drawer_overlap_v18_10.png)
 
 ### Set preference for opening work items in a panel
 
@@ -105,8 +105,8 @@ By default, work items like issues or epics open in the details panel.
 If you prefer to turn it off:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Select **Plan** > **Issues** or **Epics**.
-1. At the top of the Issues or Epics page, select **Display options** ({{< icon name="preferences" >}})
+1. Select **Plan** > **Work items**.
+1. On the right of the filter bar, select **Display options** ({{< icon name="preferences" >}})
    and turn off the **Open items in side panel** toggle.
 
 Your preference is saved and applies across GitLab.

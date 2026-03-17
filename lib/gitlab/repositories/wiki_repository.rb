@@ -7,19 +7,29 @@ module Gitlab
       extend Gitlab::Utils::Override
 
       override :name
-      def name = :wiki
+      def name
+        :wiki
+      end
 
       override :suffix
-      def suffix = :wiki
+      def suffix
+        :wiki
+      end
 
       override :access_checker_class
-      def access_checker_class = Gitlab::GitAccessWiki
+      def access_checker_class
+        Gitlab::GitAccessWiki
+      end
 
       override :guest_read_ability
-      def guest_read_ability = :download_wiki_code
+      def guest_read_ability
+        :download_wiki_code
+      end
 
       override :container_class
-      def container_class = ProjectWiki
+      def container_class
+        ProjectWiki
+      end
 
       override :project_for
       def project_for(wiki)

@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: NuGet packages in the package registry
 ---
 
@@ -565,7 +565,7 @@ You can publish multiple packages with the same name and version.
 
 To prevent group members and users from publishing duplicate NuGet packages, turn off the **Allow duplicates** setting:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Packages and registries**.
 1. In the **NuGet** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
@@ -609,10 +609,8 @@ nuget install <package_id> -OutputDirectory <output_directory> \
 - `<package_version>`: Optional. The package version.
 - `<source_name>`: Optional. The source name.
   - `nuget` checks `nuget.org` for the requested package first.
-If GitLab package registry has a NuGet package
-with the same name as a package at
-`nuget.org`, you must specify the source name
-to install the correct package.
+    If GitLab package registry has a NuGet package with the same name as a package at
+    `nuget.org`, you must specify the source name to install the correct package.
 
 {{< /tab >}}
 
@@ -752,7 +750,6 @@ with your project or group endpoint:
   ```
 
   - Replace `<project_id>` with the project ID.
-
 - Group endpoint:
 
   ```plaintext

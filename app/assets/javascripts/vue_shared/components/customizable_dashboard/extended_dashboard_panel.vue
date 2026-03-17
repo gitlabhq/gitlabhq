@@ -1,7 +1,7 @@
 <script>
 import { GlPopover, GlDashboardPanel } from '@gitlab/ui';
 import { alertVariantIconMap } from '@gitlab/ui/src/utils/constants';
-import { isObject } from 'lodash';
+import { isObject } from 'lodash-es';
 import { VARIANT_DANGER, VARIANT_WARNING, VARIANT_INFO } from '~/alert';
 
 /**
@@ -20,6 +20,11 @@ export default {
   },
   props: {
     title: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    subtitle: {
       type: String,
       required: false,
       default: '',
@@ -119,6 +124,7 @@ export default {
   <gl-dashboard-panel
     container-class="grid-stack-item-content"
     :title="title"
+    :subtitle="subtitle"
     :title-icon-class="alertIconClasses"
     :title-icon="alertIcon"
     :title-popover="tooltip"

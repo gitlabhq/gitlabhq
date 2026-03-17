@@ -1,4 +1,4 @@
-import { flattenDeep, clone } from 'lodash';
+import { flattenDeep, clone } from 'lodash-es';
 import { match } from '~/diffs/utils/diff_file';
 import { isInMRPage } from '~/lib/utils/common_utils';
 import { doesHashExistInUrl } from '~/lib/utils/url_utility';

@@ -19,7 +19,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
   let_it_be(:owner) { create(:user) }
   let_it_be(:reporter_from_group_link) { create(:user) }
   let_it_be(:non_member) { create(:user) }
-  let(:alert_bot) { Users::Internal.alert_bot }
+  let(:alert_bot) { Users::Internal.in_organization(issue.project.organization).alert_bot }
 
   def permissions(user, issue)
     described_class.new(user, issue)

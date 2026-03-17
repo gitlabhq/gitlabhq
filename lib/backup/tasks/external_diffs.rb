@@ -5,9 +5,13 @@ module Backup
     class ExternalDiffs < Task
       def self.id = 'external_diffs'
 
-      def human_name = _('external diffs')
+      def human_name
+        _('external diffs')
+      end
 
-      def destination_path = 'external_diffs.tar.gz'
+      def destination_path
+        'external_diffs.tar.gz'
+      end
 
       private
 

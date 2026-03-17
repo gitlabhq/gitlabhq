@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting SAML
 ---
 
@@ -413,11 +413,11 @@ For more information, see the documentation on [additional configuration for SAM
 
 ### Verify `NameID`
 
-In troubleshooting, any authenticated user can use the API to verify the `NameID` GitLab already has linked to their user by visiting [`https://gitlab.com/api/v4/user`](https://gitlab.com/api/v4/user) and checking the `extern_uid` under identities.
+In troubleshooting, any authenticated user can use the API to verify the `NameID` GitLab already has linked to their user by visiting <https://gitlab.com/api/v4/user> and checking the `extern_uid` under identities.
 
 For GitLab Self-Managed, administrators can use the [users API](../../../api/users.md) to see the same information.
 
-When using SAML for groups, group members of a role with the appropriate permissions can make use of the [members API](../../../api/members.md) to view group SAML identity information for members of the group.
+When using SAML for groups, group members of a role with the appropriate permissions can make use of the [members API](../../../api/group_members.md) to view group SAML identity information for members of the group.
 
 This can then be compared to the `NameID` sent by the identity provider by decoding the
 message with a [SAML debugging tool](#saml-debugging-tools). These values must match to
@@ -464,12 +464,9 @@ If the top-level group has [restricted membership by email domain](../access_and
 If all users are receiving a `404` after signing in to the identity provider (IdP):
 
 - Verify the `assertion_consumer_service_url`:
-
   - In the GitLab configuration by [matching it to the HTTPS endpoint of GitLab](../../../integration/saml.md#configure-saml-support-in-gitlab).
   - As the `Assertion Consumer Service URL` or equivalent when setting up the SAML app on your IdP.
-
 - Verify if the `404` is related to [the user having too many groups assigned to them in their Azure IdP](group_sync.md#microsoft-azure-active-directory-integration).
-
 - Verify the clocks on the IdP server and GitLab are synced to the same time.
 
 If a subset of users receive a `404` error after they sign in to the IdP, first verify what audit events are returned if the user is added to the group and then immediately removed. Alternatively, if the user can successfully sign in, but they do not show as [a member of the top-level group](../_index.md#search-a-group):
@@ -623,4 +620,8 @@ Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/200
 
 {{< /details >}}
 
-If the [global SAML group membership lock](group_sync.md#global-saml-group-memberships-lock) is enabled, only administrators can manage group members and service accounts through the UI. If a group Owner needs to manage service accounts, they can use the [group members API](../../../api/members.md) instead.
+If the [global SAML group membership lock](group_sync.md#global-saml-group-memberships-lock) is enabled, only administrators can manage group members and service accounts through the UI. If a group Owner needs to manage service accounts, they can use the [group members API](../../../api/group_members.md) instead.
+
+## Support knowledge base
+
+If you're still having issues, see the [GitLab Support knowledge base](https://support.gitlab.com/hc/en-us/).

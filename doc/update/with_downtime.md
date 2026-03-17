@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Upgrade a multi-node instance with downtime
 description: Upgrade a multi-node Linux package-based or cloud-native instance with downtime.
 ---
@@ -202,7 +202,6 @@ deploy node:
    `/etc/gitlab/gitlab.rb` does not contain `gitlab_rails['auto_migrate'] = false`.
    Either set it specifically `gitlab_rails['auto_migrate'] = true` or omit it
    for the default behavior (`true`).
-
 1. If you're using PgBouncer, you must bypass PgBouncer and connect directly to PostgreSQL before running migrations.
 
    Rails uses an advisory lock when attempting to run a migration to prevent

@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Virtual registry
 description: Use the GitLab virtual registry to proxy, cache, and distribute packages from multiple upstream registries.
 ---
@@ -27,7 +27,7 @@ description: Use the GitLab virtual registry to proxy, cache, and distribute pac
 > The availability of this feature is controlled by a feature flag.
 > For more information, see the history.
 
-Use the GitLab virtual registry to proxy, cache, and distribute packages from multiple upstream registries behind a single, well-known URL.
+Use the GitLab virtual registry to proxy and cache packages from multiple upstream registries behind a single, well-known URL.
 
 With this approach, you can configure your applications to use one virtual registry instead of multiple upstream registries.
 
@@ -38,7 +38,7 @@ With this approach, you can configure your applications to use one virtual regis
 
 To configure the virtual registry:
 
-- You need a top-level group with at least the Maintainer role.
+- You need a top-level group with the Maintainer or Owner role.
 - Make sure you enable the virtual registries setting. It's enabled by default, but [administrators can turn it off](#turn-off-the-virtual-registry).
 - Make sure you enable the dependency proxy setting. It's enabled by default, but [administrators can turn it off](../../../administration/packages/dependency_proxy.md).
 - You must configure authentication for your supported [package format](#supported-package-formats).
@@ -53,7 +53,7 @@ Prerequisites:
 
 To turn off the virtual registry:
 
-1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Settings** > **Packages and registries**.
 1. Under **Virtual Registry**, turn off the **Enable Virtual Registry** toggle.
 
@@ -78,7 +78,7 @@ Tokens need one of the following scopes:
 
 Access tokens and the CI/CD job token are resolved to users. The resolved user must be either:
 
-- A direct member of the top-level group with at least the Guest role.
+- A direct member of the top-level group with the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 - A GitLab instance administrator.
 - A direct member of one of the projects included in the top-level group.
 
@@ -101,14 +101,14 @@ When you create a virtual registry:
 
 To view a virtual registry:
 
-1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 
 ### Edit a virtual registry
 
 To edit an existing virtual registry:
 
-1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. In the row of the registry you want to edit, select **Edit** ({{< icon name="pencil" >}}).
@@ -118,7 +118,7 @@ To edit an existing virtual registry:
 
 To delete a virtual registry:
 
-1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Registries** tab, in the row of the registry you want to delete, select **Edit** ({{< icon name="pencil" >}}).
@@ -134,7 +134,7 @@ for a top-level group.
 
 To view upstream registries:
 
-1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Select the **Upstreams** tab to view all available upstreams.
@@ -143,7 +143,7 @@ To view upstream registries:
 
 To edit an upstream registry:
 
-1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Select the **Upstreams** tab.
@@ -157,7 +157,7 @@ in which they are queried for packages.
 
 To change the order of upstream registries:
 
-1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registries**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Registries** tab, select a registry.
@@ -234,7 +234,7 @@ You configure the cache validity period when you create or edit an upstream.
 
 To view packages that have been cached from upstream registries:
 
-1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Upstreams** tab, select an upstream.
@@ -244,7 +244,7 @@ To view packages that have been cached from upstream registries:
 
 To delete cache entries:
 
-1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Registries** tab, select a registry.
@@ -264,7 +264,9 @@ Object storage usage counts towards the top-level group [object storage usage li
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/572839) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `virtual_registry_cleanup_policies`. Disabled by default.
 - [UI for cleanup policies](https://gitlab.com/gitlab-org/gitlab/-/issues/548566) introduced in GitLab 18.9 [with a flag](../../../administration/feature_flags/_index.md) named `ui_for_virtual_registry_cleanup_policy`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/578060) in GitLab 18.10. Feature flags `virtual_registry_cleanup_policies` and `ui_for_virtual_registry_cleanup_policy` removed.
 
 {{< /history >}}
 
@@ -291,7 +293,7 @@ A cleanup policy affects only cached content from upstream registries. It does n
 ### Manage cleanup policies
 
 Manage a cleanup policy for virtual registries in a top-level group.
-Each top-level group can have up to one cleanup policy that 
+Each top-level group can have up to one cleanup policy that
 applies to all virtual registries in that group.
 
 #### Create a cleanup policy
@@ -314,7 +316,7 @@ To create a cleanup policy:
    - Under **Delete caches not accessed in the last (days)**, enter a number to set how often unused cache entries are deleted. Defaults to `7` days. Must be between `1` and `365`.
    - Optional. Under **Email notifications**, select either or both of the following checkboxes to receive email notifications:
      - **Send email notifications when cleanup runs**
-     - **Send email notifications if cleanup fails** 
+     - **Send email notifications if cleanup fails**
 1. Select **Save changes**.
 
 #### Edit a cleanup policy
@@ -396,7 +398,7 @@ Upstream registries are organized in ordered lists. When a virtual registry rece
 - The registry walks through the ordered list of upstreams to find one that can fulfill the request.
 - If the requested file is found in an upstream, the virtual registry returns that file and caches it for future requests. Caching increases the availability of dependencies if you've pulled them at least once through the virtual registry.
 - If a requested file is not found in a cache, the virtual registry walks the ordered list to find the
-upstream with the highest priority that can fulfill the request.
+  upstream with the highest priority that can fulfill the request.
 
 This system noticeably impacts the performance of a virtual registry.
 

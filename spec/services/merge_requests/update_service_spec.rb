@@ -1162,14 +1162,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
         context 'when project has a required regex' do
           context 'when auto merge is enabled' do
             it_behaves_like 'it publishes the AutoMerge::TitleDescriptionUpdateEvent once'
-
-            context 'when merge_request_title_regex ff is off' do
-              before do
-                stub_feature_flags(merge_request_title_regex: false)
-              end
-
-              it_behaves_like 'it does not publish the AutoMerge::TitleDescriptionUpdateEvent'
-            end
           end
 
           context 'when auto merge is not enabled' do
@@ -1382,7 +1374,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, :request_store, feature_ca
             feature_visibility_attr = :"#{merge_request.model_name.plural}_access_level"
             project.project_feature.update_attribute(feature_visibility_attr, ProjectFeature::PRIVATE)
 
-            expect { update_merge_request(assignee_ids: [assignee]) }.not_to change(merge_request.assignees, :count)
+            expect { update_merge_request(assignee_ids: [assignee]) }.not_to change { merge_request.assignees.count }
           end
         end
       end

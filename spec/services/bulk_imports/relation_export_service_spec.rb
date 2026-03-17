@@ -6,7 +6,7 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
   let_it_be(:jid) { 'jid' }
   let_it_be(:relation) { 'labels' }
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group) }
   let_it_be(:project) { create(:project) }
   let_it_be(:label) { create(:group_label, group: group) }
   let_it_be(:export_path) { "#{Dir.tmpdir}/relation_export_service_spec/tree" }
@@ -135,6 +135,49 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
 
         expect(export.batched?).to eq(false)
         expect(export.batches_count).to eq(0)
+      end
+    end
+
+    context 'with offline_export_id' do
+      before do
+        stub_application_setting(allow_s3_compatible_storage_for_offline_transfer: true)
+
+        allow_next_instance_of(Import::Clients::ObjectStorage) do |object_storage_client|
+          allow(object_storage_client).to receive(:store_file)
+        end
+      end
+
+      let_it_be(:offline_export) { create(:offline_export, :with_configuration, user: user) }
+
+      subject(:service) { described_class.new(user, group, relation, jid, offline_export_id: offline_export.id) }
+
+      it 'creates export with offline_export_id and without user_id' do
+        service.execute
+
+        expect(group.bulk_import_exports).not_to be_empty
+        expect(group.bulk_import_exports.last).to have_attributes(
+          offline_export_id: offline_export.id,
+          user_id: nil
+        )
+      end
+
+      it 'reuses existing export with same offline_export_id' do
+        _existing_export = create(:bulk_import_export,
+          group: group,
+          offline_export_id: offline_export.id,
+          relation: relation,
+          user: nil
+        )
+
+        expect { service.execute }.not_to change { group.bulk_import_exports.count }
+      end
+
+      it 'uploads file directly to object storage' do
+        expect_next_instance_of(Import::Clients::ObjectStorage) do |object_storage_client|
+          expect(object_storage_client).to receive(:store_file)
+        end
+
+        expect { service.execute }.not_to change { ::Upload.count }
       end
     end
   end

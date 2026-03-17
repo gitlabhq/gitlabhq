@@ -5,6 +5,7 @@ import {
   createWebHistory,
   createWebHashHistory,
 } from '@gitlab/vue-router-vue3';
+import { transformRoutes, normalizeLocation } from './vue_router_helper';
 
 const mode = (value, options) => {
   if (!value) return null;
@@ -22,41 +23,15 @@ const mode = (value, options) => {
       break;
   }
 
-  return { history };
+  return { mode: undefined, history };
 };
 
-const base = () => null;
+const base = () => ({ base: undefined });
 
-const toNewCatchAllPath = (path, { isRoot } = {}) => {
-  if (path === '*') {
-    const prefix = isRoot ? '/' : '';
-    return `${prefix}:pathMatch(.*)*`;
-  }
-  return path;
-};
-
-const transformRoutes = (value, _routerOptions, transformOptions = { isRoot: true }) => {
-  if (!value) return null;
-  const newRoutes = [];
-  value.forEach((route) => {
-    const newRoute = {
-      ...route,
-      path: toNewCatchAllPath(route.path, transformOptions),
-    };
-    if (route.children) {
-      newRoute.children = transformRoutes(route.children, _routerOptions, { isRoot: false }).routes;
-    }
-    newRoutes.push(newRoute);
-
-    // In Vue Router 3, a child catch-all `*` with redirect would also match when
-    // the parent path was visited with no trailing child segment (e.g., `/`).
-    // Vue Router 4's `:pathMatch(.*)*` does NOT match the empty string in child routes.
-    // Add an empty-path sibling with the same redirect to preserve this behavior.
-    if (route.path === '*' && route.redirect && !transformOptions.isRoot) {
-      newRoutes.push({ path: '', redirect: route.redirect });
-    }
-  });
-  return { routes: newRoutes };
+const routes = (value) => {
+  return {
+    routes: transformRoutes(value),
+  };
 };
 
 const scrollBehavior = (value) => {
@@ -71,16 +46,19 @@ const scrollBehavior = (value) => {
 const transformers = {
   mode,
   base,
-  routes: transformRoutes,
+  routes,
   scrollBehavior,
 };
 
 const transformOptions = (rawOptions = {}) => {
   const options = {
+    // hash is default value in Vue Router 3
     mode: 'hash',
     ...rawOptions,
   };
+
   const defaultConfig = {
+    // routes are mandatory in Vue Router 4
     routes: [
       {
         path: '/',
@@ -92,6 +70,7 @@ const transformOptions = (rawOptions = {}) => {
       },
     ],
   };
+
   return Object.keys(options).reduce((acc, key) => {
     const value = options[key];
     if (key in transformers) {
@@ -113,6 +92,22 @@ export const getMatchedComponents = (instance, path) => {
   const route = path ? instance.resolve(path) : instance.currentRoute.value;
 
   return route.matched.flatMap((record) => Object.values(record.components));
+};
+
+const runBeforeEnterGuards = (resolved) => {
+  for (const match of resolved.matched) {
+    const { beforeEnter } = match;
+    if (typeof beforeEnter === 'function') {
+      let redirectTarget = null;
+      beforeEnter(resolved, { path: '/' }, (target) => {
+        if (target && (typeof target === 'object' || typeof target === 'string')) {
+          redirectTarget = target;
+        }
+      });
+      if (redirectTarget) return redirectTarget;
+    }
+  }
+  return null;
 };
 
 // Strip trailing slash from path (except for root '/'), handling query strings and hashes
@@ -158,20 +153,15 @@ export default class VueRouterCompat {
       // Get the base path from the history object and strip it from the current path.
       // Vue Router 4's resolve() expects paths relative to the base, not absolute paths.
       const historyBase = router.options.history.base || '';
-      let { pathname } = window.location;
 
       // Strip trailing slash from initial URL to match Vue Router 3 behavior
-      const fullUrl = pathname + window.location.search + window.location.hash;
+      const fullUrl = window.location.pathname + window.location.search + window.location.hash;
       const normalizedUrl = stripTrailingSlash(fullUrl);
       if (normalizedUrl !== fullUrl) {
         window.history.replaceState(window.history.state, '', normalizedUrl);
-        pathname = window.location.pathname;
       }
 
-      if (historyBase && pathname.startsWith(historyBase)) {
-        pathname = pathname.slice(historyBase.length) || '/';
-      }
-      const currentLocation = pathname + window.location.search + window.location.hash;
+      const currentLocation = normalizeLocation(historyBase);
       let resolved = router.resolve(currentLocation);
 
       // Vue Router 4's resolve() does not follow redirects (unlike Vue Router 3's
@@ -181,12 +171,23 @@ export default class VueRouterCompat {
       let didRedirect = false;
       for (let i = 0; i < maxRedirects; i += 1) {
         const lastMatched = resolved.matched[resolved.matched.length - 1];
-        if (!lastMatched?.redirect) break;
 
-        const { redirect } = lastMatched;
-        const redirectTarget = typeof redirect === 'function' ? redirect(resolved) : redirect;
-        resolved = router.resolve(redirectTarget);
-        didRedirect = true;
+        // resolve() does not execute beforeEnter guards. Synchronously invoke
+        // them to mimic Vue Router 3 behavior where guards run before the
+        // initial route is committed.
+        const guardRedirect = runBeforeEnterGuards(resolved);
+
+        if (guardRedirect) {
+          resolved = router.resolve(guardRedirect);
+          didRedirect = true;
+        } else if (lastMatched?.redirect) {
+          const { redirect } = lastMatched;
+          const redirectTarget = typeof redirect === 'function' ? redirect(resolved) : redirect;
+          resolved = router.resolve(redirectTarget);
+          didRedirect = true;
+        } else {
+          break;
+        }
       }
 
       router.currentRoute.value = resolved;

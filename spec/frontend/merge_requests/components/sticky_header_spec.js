@@ -5,6 +5,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import StickyHeader from '~/merge_requests/components/sticky_header.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
+import DiscussionCounter from '~/notes/components/discussion_counter.vue';
 import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
@@ -71,6 +72,17 @@ describe('Merge requests sticky header component', () => {
       });
 
       expect(findImportedBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('discussion counter', () => {
+    it('renders in compact mode', () => {
+      createComponent();
+
+      const counter = wrapper.findComponent(DiscussionCounter);
+
+      expect(counter.exists()).toBe(true);
+      expect(counter.props('compact')).toBe(true);
     });
   });
 

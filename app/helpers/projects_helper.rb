@@ -136,10 +136,10 @@ module ProjectsHelper
   end
 
   def transfer_project_message(project)
-    _("You are about to transfer %{code_start}%{project_full_name}%{code_end} to another namespace. This action " \
+    _("You are about to transfer %{code_start}%{project_full_path}%{code_end} to another namespace. This action " \
       "changes the %{link_to_namespace_change_doc} and can lead to %{link_to_data_loss_doc}.") % {
-        project_full_name: project.full_name,
-        code_start: '<code>',
+        project_full_path: project.full_path,
+        code_start: '<code class="gl-whitespace-pre-wrap">',
         code_end: '</code>',
         link_to_namespace_change_doc: link_to_namespace_change_doc,
         link_to_data_loss_doc: link_to_data_loss_doc
@@ -463,7 +463,8 @@ module ProjectsHelper
       environmentsHelpPath: help_page_path('ci/environments/_index.md'),
       featureFlagsHelpPath: help_page_path('operations/feature_flags.md'),
       releasesHelpPath: help_page_path('user/project/releases/_index.md'),
-      infrastructureHelpPath: help_page_path('user/infrastructure/_index.md')
+      infrastructureHelpPath: help_page_path('user/infrastructure/_index.md'),
+      groupPathRegex: JsRegex.new(Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX).source
     }
   end
 
@@ -694,14 +695,6 @@ module ProjectsHelper
     'manual-ordering'
   end
 
-  def projects_filtered_search_and_sort_app_data
-    {
-      initial_sort: group_project_list_sort_by,
-      programming_languages: programming_languages,
-      paths_to_exclude_sort_on: [starred_explore_projects_path, explore_root_path]
-    }.to_json
-  end
-
   def dashboard_projects_app_data
     {
       initial_sort: group_project_list_sort_by,
@@ -885,16 +878,13 @@ module ProjectsHelper
 
   def current_ref
     return current_branch if @repository.try(:branch_exists?, current_branch)
+    return @repository.try(:root_ref) if @wiki
 
     @ref || @repository.try(:root_ref)
   end
 
   def project_child_container_class(view_path)
     view_path == "projects/issues" ? "gl-mt-3" : "project-show-#{view_path}"
-  end
-
-  def project_issues(project)
-    IssuesFinder.new(current_user, project_id: project.id).execute
   end
 
   def project_merge_requests(project)

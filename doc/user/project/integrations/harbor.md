@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Harbor
 description: Configure Harbor as an open-source container registry for your GitLab project to manage artifacts across platforms.
 ---
@@ -30,7 +30,7 @@ In the Harbor instance, ensure that:
 
 GitLab supports integrating Harbor projects at the group or project level. Complete these steps in GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Harbor**.
 1. Under **Enable integration**, select the **Active** checkbox.

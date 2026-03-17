@@ -74,7 +74,7 @@ RSpec.describe 'Dashboard - Homepage E2E', :js, feature_category: :notifications
 
       if page.has_link?('Issues') # rubocop:disable RSpec/AvoidConditionalStatements -- Navigation links may vary by user permissions
         click_link 'Issues'
-        expect(page).to have_current_path(%r{dashboard/issues}, ignore_query: true)
+        expect(page).to have_current_path(%r{dashboard/(issues|work_items)}, ignore_query: true)
       end
 
       if page.has_link?('Merge requests') # rubocop:disable RSpec/AvoidConditionalStatements -- Navigation links may vary by user permissions

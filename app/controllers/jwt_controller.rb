@@ -15,7 +15,7 @@ class JwtController < ApplicationController
 
   SERVICES = {
     ::Auth::ContainerRegistryAuthenticationService::AUDIENCE => ::Auth::ContainerRegistryAuthenticationService,
-    ::Auth::DependencyProxyAuthenticationService::AUDIENCE => ::Auth::DependencyProxyAuthenticationService
+    ::Auth::ContainerProxyAuthenticationService::AUDIENCE => ::Auth::ContainerProxyAuthenticationService
   }.freeze
 
   # Currently POST requests for this route return a 404 by default and are allowed through in our readonly middleware -

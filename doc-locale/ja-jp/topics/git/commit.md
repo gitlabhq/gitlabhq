@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: 一般的なコマンドとワークフロー。
 title: 変更のステージング、コミット、プッシュ
 ---
@@ -109,15 +109,12 @@ git push --push-option=<push_option>
 
 プッシュオプションを使用すると、CI/CDパイプラインをスキップしたり、CI/CD変数を渡したりできます。
 
-{{< alert type="note" >}}
-
-プッシュオプションは、マージリクエストパイプラインでは使用できません。詳細については、[イシュー373212](https://gitlab.com/gitlab-org/gitlab/-/issues/373212)を参照してください。
-
-{{< /alert >}}
+> [!note]
+> マージリクエストパイプラインでは、プッシュオプションは使用できません。詳細については、[イシュー373212](https://gitlab.com/gitlab-org/gitlab/-/issues/373212)を参照してください。
 
 | プッシュオプション                    | 説明 | 例 |
 |--------------------------------|-------------|---------|
-| `ci.input=<name>=<value>`      | パイプラインにインプット変数を渡します。 | `git push -o ci.input='stage=test' -o ci.input='security_scan=false'`配列のインプット: `git push -o ci.input='my_array=["string", "double", "quotes"]'` |
+| `ci.input=<name>=<value>`      | パイプラインに入力パラメータを渡します。 | `git push -o ci.input='stage=test' -o ci.input='security_scan=false'`。配列の入力: `git push -o ci.input='my_array=["string", "double", "quotes"]'` |
 | `ci.skip`                      | このプッシュのパイプラインをスキップします。ブランチのパイプラインにのみ影響し、[マージリクエストパイプライン](../../ci/pipelines/merge_request_pipelines.md)には影響しません。JenkinsのようなCI/CDインテグレーションはスキップしません。 | `git push -o ci.skip` |
 | `ci.variable="<name>=<value>"` | パイプラインの[CI/CD変数](../../ci/variables/_index.md)を設定します。ブランチのパイプラインにのみ影響し、[マージリクエストパイプライン](../../ci/pipelines/merge_request_pipelines.md)には影響しません。 | `git push -o ci.variable="MAX_RETRIES=10" -o ci.variable="MAX_TIME=600"` |
 
@@ -161,7 +158,7 @@ Gitプッシュオプションは、変更をプッシュしながらマージ�
 
 ### セキュリティポリシーのプッシュオプション {#push-options-for-security-policy}
 
-プッシュオプションを使用すると、[セキュリティポリシーを回避](../../user/application_security/policies/merge_request_approval_policies.md#access-token-and-service-account-exceptions)できます。
+プッシュオプションを使用すると、[セキュリティポリシーを回避](../../user/application_security/policies/merge_request_approval_policies.md#allowing-users-to-bypass-security-policies)できます。
 
 | プッシュオプション                    | 説明 | 例 |
 |--------------------------------|-------------|---------|
@@ -178,7 +175,7 @@ Gitプッシュオプションは、変更をプッシュしながらマージ�
 
 ### プッシュオプションの形式 {#formats-for-push-options}
 
-プッシュオプションにスペースを含むテキストが必要な場合は、テキストを二重引用符（`"`）で囲みます。スペースがない場合は、引用符を省略できます。次に例を示します。
+プッシュオプションにスペースを含むテキストが必要な場合は、テキストを二重引用符（`"`）で囲みます。スペースがない場合は、引用符を省略できます。例: 
 
 ```shell
 git push -o merge_request.label="Label with spaces"

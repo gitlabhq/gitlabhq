@@ -28,6 +28,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
 
       it 'accepts a merge request when devirged' do
         merge_request = create(:merge_request, :diverged, source_project: project)
+        project.project_setting.update!(automatic_rebase_enabled: true)
 
         visit(merge_request_path(merge_request))
 
@@ -62,6 +63,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
 
       it 'accepts a merge request when devirged' do
         merge_request = create(:merge_request, :diverged, source_project: project)
+        project.project_setting.update!(automatic_rebase_enabled: true)
 
         visit(merge_request_path(merge_request))
 

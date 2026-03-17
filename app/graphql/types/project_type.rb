@@ -651,13 +651,11 @@ module Types
       Types::ContainerRegistry::Protection::RuleType.connection_type,
       null: true,
       description: 'Container protection rules for the project.',
-      experiment: { milestone: '16.10' },
       resolver: Resolvers::ProjectContainerRegistryProtectionRulesResolver
 
     field :container_protection_tag_rules,
       Types::ContainerRegistry::Protection::TagRuleType.connection_type,
       null: true,
-      experiment: { milestone: '17.8' },
       description: 'Container repository tag protection rules for the project.'
 
     field :container_repositories, Types::ContainerRegistry::ContainerRepositoryType.connection_type,
@@ -758,14 +756,6 @@ module Types
       null: true,
       description: 'Template used to create squash commit message in merge requests.'
 
-    field :merge_request_title_regex, GraphQL::Types::String,
-      null: true,
-      description: 'Regex used to validate the title of merge requests.'
-
-    field :merge_request_title_regex_description, GraphQL::Types::String,
-      null: true,
-      description: 'Description of the regex used to validate the title of merge requests.'
-
     field :labels, Types::LabelType.connection_type,
       null: true,
       description: 'Labels available on this project.',
@@ -848,7 +838,8 @@ module Types
     field :autocomplete_users,
       null: true,
       resolver: Resolvers::AutocompleteUsersResolver,
-      description: 'Search users for autocompletion'
+      description: 'Search users for autocompletion',
+      extras: [:lookahead]
 
     field :detailed_import_status,
       ::Types::Projects::DetailedImportStatusType,

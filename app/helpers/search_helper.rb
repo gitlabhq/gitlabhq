@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module SearchHelper
+  include Gitlab::Utils::StrongMemoize
+
   # params which should persist when a new tab is selected
   SEARCH_GENERIC_PARAMS = [
     :search,
@@ -297,7 +299,47 @@ module SearchHelper
     parse_navigation(sorted_navigation).to_json
   end
 
+  def work_item_types_for_filter
+    container = @project || @group
+
+    if container
+      types = ::WorkItems::TypesFinder
+        .new(container: container)
+        .execute
+        .map do |type|
+          {
+            name: type.base_type.to_s,
+            label: type.name,
+            icon_name: type.icon_name
+          }
+        end
+      types = types.sort_by { |type| type[:name] }
+
+      # Filter types based on container and feature flags
+      filter_work_item_types(types, container)
+    else
+      # Return empty list for global search - work item type filter is not applicable
+      []
+    end
+  end
+  strong_memoize_attr :work_item_types_for_filter
+
   private
+
+  def filter_work_item_types(types, container)
+    types.reject do |type|
+      # Epic requires the licensed feature; for projects, also requires project_work_item_epics feature flag
+      type[:name] == 'epic' && !epics_enabled_for?(container)
+    end
+  end
+
+  def epics_enabled_for?(container)
+    if container.is_a?(Project)
+      container.try(:project_epics_enabled?)
+    else
+      container.licensed_feature_available?(:epics)
+    end
+  end
 
   def combined_generic_results
     project_autocomplete + default_autocomplete + help_autocomplete + default_autocomplete_admin

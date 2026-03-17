@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::GroupsResolver, :with_current_organization, feature_category: :groups_and_projects do
+RSpec.describe Resolvers::GroupsResolver, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   include GraphqlHelpers

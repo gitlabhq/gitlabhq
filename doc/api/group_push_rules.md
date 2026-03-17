@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use push rules to control the content and format of Git commits your repository accepts. Set standards for commit messages, and block secrets or credentials from being added accidentally.
 title: Group push rules API
 ---
@@ -13,7 +13,7 @@ title: Group push rules API
 
 {{< /details >}}
 
-Use this API to manage [group push rules](../user/group/access_and_permissions.md#group-push-rules)
+Use this API to manage [group push rules](../user/project/repository/push_rules.md#group-push-rules)
 for newly created projects in a group.
 
 Prerequisites:

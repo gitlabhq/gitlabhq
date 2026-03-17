@@ -182,7 +182,7 @@ describe('YourWorkGroupsApp', () => {
 
       expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
         sortOptions: SORT_OPTIONS,
-        activeSortOption: SORT_OPTION_UPDATED,
+        activeSortOption: SORT_OPTION_CREATED,
       });
     },
   );

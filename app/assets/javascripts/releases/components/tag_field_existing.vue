@@ -1,6 +1,6 @@
 <script>
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import FormFieldContainer from './form_field_container.vue';

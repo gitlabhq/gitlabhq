@@ -47,6 +47,14 @@ RSpec.describe API::UsageDataQueries, :aggregate_failures, feature_category: :se
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to eq({})
           end
+
+          it_behaves_like 'authorizing granular token permissions', :read_usage_data_query do
+            let(:boundary_object) { :instance }
+            let(:user) { admin }
+            let(:request) do
+              get api(endpoint, personal_access_token: pat)
+            end
+          end
         end
       end
 

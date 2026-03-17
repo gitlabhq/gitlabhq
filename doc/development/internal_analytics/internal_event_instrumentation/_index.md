@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Analytics Instrumentation
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Internal Event Tracking
 ---
 
@@ -16,6 +16,8 @@ Currently Internal Event Tracking is consolidating the following systems:
 Internal Events is an unified interface to track events in GitLab. Each tracking call represents a user action and the
 associated properties. Internal Events then provides underlying systems the properties they require for their specific
 analytics needs.
+
+**Important**: Starting with GitLab 18.0, event data is collected from Self-Managed instances, not just aggregated metrics as in previous versions. This change provides more detailed insights into product usage while maintaining user privacy through pseudonymization.
 
 Analytics systems summary:
 

@@ -850,6 +850,37 @@ RSpec.describe Organizations::Transfer::GroupsService, :aggregate_failures, feat
         expect { service.execute }.not_to change { user.reload.organization_id }
       end
     end
+
+    context 'when disconnecting from gitaly' do
+      let_it_be(:project) do
+        create(:project, :repository, namespace: group, organization: old_organization)
+      end
+
+      context 'when linked to pool repository' do
+        let_it_be(:pool_repository) do
+          create(:pool_repository, :ready, source_project: project)
+        end
+
+        before do
+          pool_repository
+        end
+
+        it 'enqueues Repositories::LeavePoolRepositoryWorker' do
+          expect { service.execute }.to change { Repositories::LeavePoolRepositoryWorker.jobs.size }.by(1)
+        end
+      end
+
+      context 'when not linked to pool repository' do
+        before do
+          project.update!(pool_repository: nil)
+        end
+
+        it 'does not enqueue Repositories::LeavePoolRepositoryWorker' do
+          service.execute
+          expect(Repositories::LeavePoolRepositoryWorker.jobs.size).to eq(0)
+        end
+      end
+    end
   end
 
   describe '#async_execute' do

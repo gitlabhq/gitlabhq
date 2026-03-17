@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: FIPS 140-2 and 140-3
 ---
 
@@ -160,7 +160,6 @@ Here are some guidelines for developing GitLab FIPS-approved software:
 - There may be instances where a non-approved cryptographic algorithm can be used for non-cryptographic purposes. For example, SHA1 is not a FIPS 140-3
   algorithm, but because Git uses it for non-cryptographic purposes, we can use it. In these cases, we must document why it's not being used for
   cryptographic purposes, or disable the feature outright.
-
 - Backwards compatibility. There may be some features where switching algorithms would break existing functionality. For example, the database stores
   passwords encrypted with bcrypt, and these passwords cannot be re-encrypted without user help.
 

@@ -5,6 +5,7 @@ import { persistCache } from 'apollo3-cache-persist';
 import ActionCableLink from '~/actioncable_link';
 import { apolloCaptchaLink } from '~/captcha/apollo_captcha_link';
 import possibleTypes from '~/graphql_shared/possible_types.json';
+import { GRAPHQL_GET_QUERY_PARAM_KEYS } from '~/graphql_shared/constants';
 import { StartupJSLink } from '~/lib/utils/apollo_startup_js_link';
 import csrf from '~/lib/utils/csrf';
 import { objectToQuery, queryToObject } from '~/lib/utils/url_utility';
@@ -120,7 +121,9 @@ export const stripWhitespaceFromQuery = (url, path) => {
   }
 
   const decoded = decodeURIComponent(params);
-  const paramsObj = queryToObject(decoded);
+  const paramsObj = queryToObject(decoded, {
+    preservePlusForKeys: GRAPHQL_GET_QUERY_PARAM_KEYS,
+  });
 
   if (!paramsObj.query) {
     return url;

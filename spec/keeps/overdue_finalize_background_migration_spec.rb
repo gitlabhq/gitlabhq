@@ -168,14 +168,6 @@ RSpec.describe Keeps::OverdueFinalizeBackgroundMigration, feature_category: :too
 
     subject(:database_name) { keep.database_name(migration_record) }
 
-    context 'when schema is gitlab_main_cell' do
-      let(:gitlab_schema) { 'gitlab_main_cell' }
-
-      it 'returns the database name' do
-        expect(database_name).to eq('main')
-      end
-    end
-
     context 'when schema is gitlab_main_org' do
       let(:gitlab_schema) { 'gitlab_main_org' }
 

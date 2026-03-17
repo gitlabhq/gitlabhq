@@ -19,8 +19,32 @@ function createMixinForLateInit({ install, shouldInstall }) {
   return {
     created() {
       callLifecycle.call(this, 'created');
+
+      if (this.$apollo) {
+        let apollo = this.$apollo;
+        const originalDestroy = apollo.destroy.bind(apollo);
+        apollo.destroy = function destroy() {
+          // eslint-disable-next-line no-underscore-dangle
+          if (this._apolloSubscriptions === null) return;
+          originalDestroy();
+        };
+        Object.defineProperty(this, '$apollo', {
+          get() {
+            return apollo;
+          },
+          set(val) {
+            if (val !== null) {
+              apollo = val;
+            }
+          },
+          configurable: true,
+        });
+      }
     },
-    // @vue/compat normalizez lifecycle hook names so there is no error here
+    // @vue/compat normalizes lifecycle hook names so there is no error here
+    // Mixins registered late (during beforeCreate via app.use) don't get their
+    // unmounted hooks picked up by Vue's option resolution. We must forward manually.
+    // The idempotent $apollo.destroy guard in created() prevents double-destroy.
     destroyed() {
       callLifecycle.call(this, 'unmounted');
     },
@@ -48,6 +72,10 @@ function createMixinForLateInit({ install, shouldInstall }) {
   };
 }
 
+function resolveApolloProvider(vm) {
+  return vm.$options.apolloProvider || vm.$.appContext.config.globalProperties.$apolloProvider;
+}
+
 export default class VueCompatApollo {
   constructor(...args) {
     // eslint-disable-next-line no-constructor-return
@@ -57,12 +85,13 @@ export default class VueCompatApollo {
   static install() {
     Vue.mixin(
       createMixinForLateInit({
-        shouldInstall: (vm) =>
-          vm.$options.apolloProvider &&
-          !installed.get(vm.$.appContext.app)?.has(vm.$options.apolloProvider),
+        shouldInstall: (vm) => {
+          const apolloProvider = resolveApolloProvider(vm);
+          return apolloProvider && !installed.get(vm.$.appContext.app)?.has(apolloProvider);
+        },
         install: (vm) => {
           const { app } = vm.$.appContext;
-          const { apolloProvider } = vm.$options;
+          const apolloProvider = resolveApolloProvider(vm);
 
           if (!installed.has(app)) {
             installed.set(app, new WeakSet());
@@ -70,7 +99,7 @@ export default class VueCompatApollo {
 
           installed.get(app).add(apolloProvider);
 
-          vm.$.appContext.app.use(vm.$options.apolloProvider);
+          app.use(apolloProvider);
         },
       }),
     );

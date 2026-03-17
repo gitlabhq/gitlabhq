@@ -1,0 +1,7 @@
+---
+name: merge_topic
+description: Grants the ability to merge topics
+boundaries:
+  - instance
+permissions:
+  - merge_topic

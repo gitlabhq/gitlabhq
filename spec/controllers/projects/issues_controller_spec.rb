@@ -353,11 +353,31 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       expect(response).to redirect_to(new_user_session_path)
     end
 
-    context 'internal issue tracker' do
-      it_behaves_like 'issue building actions'
+    context 'on internal issue tracker' do
+      context 'when work_item_planning_view: false' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+        end
+
+        it_behaves_like 'issue building actions'
+      end
+
+      context 'when work_item_planning_view: true' do
+        before do
+          project.add_guest(user)
+          sign_in user
+          stub_feature_flags(work_item_planning_view: true)
+        end
+
+        it 'redirects to new work item' do
+          get :new, params: { namespace_id: project.namespace, project_id: project }
+
+          expect(response).to redirect_to new_project_work_item_url(project)
+        end
+      end
     end
 
-    context 'external issue tracker' do
+    context 'on external issue tracker' do
       let!(:service) do
         create(:custom_issue_tracker_integration, project: project, new_issue_url: 'http://test.com')
       end
@@ -382,11 +402,17 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       end
 
       context 'when GitLab issues enabled' do
-        it 'renders the "new" template' do
-          get :new, params: { namespace_id: project.namespace, project_id: project }
+        context 'when work_item_planning_view: false' do
+          before do
+            stub_feature_flags(work_item_planning_view: false)
+          end
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:new)
+          it 'renders the "new" template' do
+            get :new, params: { namespace_id: project.namespace, project_id: project }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:new)
+          end
         end
       end
     end

@@ -137,6 +137,7 @@ query getWorkItemsFull(
         workItemType {
           id
           name
+          iconName
         }
       }
     }

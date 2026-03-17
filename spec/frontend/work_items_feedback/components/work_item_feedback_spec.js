@@ -1,6 +1,7 @@
 import { GlBadge, GlLink, GlPopover } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { ROUTES } from '~/work_items/constants';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 
 import WorkItemFeedback from '~/work_items_feedback/components/work_item_feedback.vue';
@@ -17,7 +18,7 @@ describe('WorkItemFeedback', () => {
   const feedbackIssue = 'https://link.to.gitlab/issue';
   const featureName = 'the_feature_we_want_feedback_for';
 
-  const createComponent = (shouldShowPopover) => {
+  const createComponent = (shouldShowPopover, routeName = ROUTES.index) => {
     wrapper = shallowMount(WorkItemFeedback, {
       provide: {
         feedbackIssue,
@@ -32,6 +33,9 @@ describe('WorkItemFeedback', () => {
           dismiss: userCalloutDismissSpy,
           shouldShowCallout: shouldShowPopover,
         }),
+      },
+      mocks: {
+        $route: { name: routeName },
       },
     });
   };
@@ -90,6 +94,13 @@ describe('WorkItemFeedback', () => {
       await nextTick();
 
       expect(findPopover().props('show')).toBe(false);
+    });
+  });
+
+  describe('visibility', () => {
+    it('is hidden if the route is not the index or saved view', () => {
+      createComponent(false, ROUTES.workItem);
+      expect(findBadge().exists()).toBe(false);
     });
   });
 });

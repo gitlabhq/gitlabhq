@@ -2,15 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Snippet'], :with_current_organization do
+RSpec.describe GitlabSchema.types['Snippet'], feature_category: :source_code_management do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-
-  before do
-    # Since this doesn't go through a request flow, we need to manually set Current.organization
-    Current.organization = current_organization
-  end
 
   it 'has the correct fields' do
     expected_fields = [:id, :title, :project, :author, :hidden,

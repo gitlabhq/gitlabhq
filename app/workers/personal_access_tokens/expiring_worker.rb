@@ -126,8 +126,8 @@ module PersonalAccessTokens
 
           begin
             with_context(user: project_bot) do
-              # project bot does not have more than 1 token
-              expiring_user_token = project_bot.personal_access_tokens.first
+              # project bot may have multiple tokens (active + revoked from rotation history)
+              expiring_user_token = project_bot.personal_access_tokens.not_revoked.first
 
               execute_web_hooks(project_bot, expiring_user_token, { interval: interval })
 

@@ -1363,6 +1363,7 @@ export const singleNoteResponseFactory = ({
                   ],
                 },
                 note_html: 'my quick note',
+                body_first_line_html: 'my quick note',
                 created_at: '2020-01-01T10:00:00.000Z',
                 last_edited_at: null,
                 last_edited_by: null,

@@ -197,11 +197,10 @@ export const CONTRIBUTOR_METRICS = {
 };
 
 export const AI_METRICS = {
-  CODE_SUGGESTIONS_USAGE_RATE: 'code_suggestions_usage_rate',
+  CODE_SUGGESTIONS_USERS_COUNT: 'code_suggestions_users_count',
   CODE_SUGGESTIONS_ACCEPTANCE_RATE: 'code_suggestions_acceptance_rate',
-  DUO_CHAT_USAGE_RATE: 'duo_chat_usage_rate',
-  DUO_USAGE_RATE: 'duo_usage_rate',
-  DUO_RCA_USAGE_RATE: 'duo_rca_usage_rate',
+  DUO_CHAT_USERS_COUNT: 'duo_chat_users_count',
+  DUO_RCA_USERS_COUNT: 'duo_rca_users_count',
   DUO_USED_COUNT: 'duo_used_count',
   DUO_REVIEW_REQUESTS_COUNT: 'duo_review_requests_count',
   DUO_REVIEW_COMMENT_COUNT: 'duo_review_comment_count',
@@ -386,10 +385,8 @@ export const VALUE_STREAM_METRIC_METADATA = {
     projectLink: mrProjectLink,
     docsLink: helpPagePath('user/analytics/merge_request_analytics'),
   },
-  [AI_METRICS.CODE_SUGGESTIONS_USAGE_RATE]: {
-    description: s__(
-      'AiImpactAnalytics|Code contributors with assigned Duo seats who used Code Suggestions.',
-    ),
+  [AI_METRICS.CODE_SUGGESTIONS_USERS_COUNT]: {
+    description: s__('AiImpactAnalytics|Number of users who used Code Suggestions.'),
     groupLink: '',
     projectLink: '',
     docsLink: helpPagePath('user/project/repository/code_suggestions/_index', {
@@ -406,16 +403,14 @@ export const VALUE_STREAM_METRIC_METADATA = {
       anchor: 'use-code-suggestions',
     }),
   },
-  [AI_METRICS.DUO_CHAT_USAGE_RATE]: {
-    description: s__('AiImpactAnalytics|Users with assigned Duo seats who used Duo Chat.'),
+  [AI_METRICS.DUO_CHAT_USERS_COUNT]: {
+    description: s__('AiImpactAnalytics|Number of users who used Duo Chat (non-agentic).'),
     groupLink: '',
     projectLink: '',
     docsLink: helpPagePath('user/gitlab_duo_chat/_index'),
   },
-  [AI_METRICS.DUO_RCA_USAGE_RATE]: {
-    description: s__(
-      'AiImpactAnalytics|Users with assigned Duo seats who used Root Cause Analysis.',
-    ),
+  [AI_METRICS.DUO_RCA_USERS_COUNT]: {
+    description: s__('AiImpactAnalytics|Number of users who used Root Cause Analysis.'),
     groupLink: '',
     projectLink: '',
     docsLink: helpPagePath('user/gitlab_duo/use_cases', {

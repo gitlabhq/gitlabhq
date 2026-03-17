@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Cherry-pick a Git commit when you want to add a single commit from one branch to another.
 title: Cherry-pick changes
 ---
@@ -29,7 +29,7 @@ In this example, a Git repository has two branches: `develop` and `main`.
 Commit `B` is cherry-picked from the `develop` branch after commit `E` in the `main` branch.
 Commit `G` is added after the cherry-pick:
 
-<!-- Diagram reused in doc/topics/git/cherry_pick.md -->
+<!-- Diagram reused in `doc/topics/git/cherry_pick.md` -->
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
@@ -97,7 +97,7 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests**, and find your merge request.
 1. Scroll to the merge request reports section, and find the **Merged by** report.
 1. In the upper-right corner of the report, select **Cherry-pick**:
@@ -119,7 +119,7 @@ the operation.
 
 To cherry-pick a commit from the list of all commits for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Commits**.
 1. Select the [title](https://git-scm.com/docs/git-commit#_discussion) of the commit you want to cherry-pick.
 1. In the upper-right corner, select **Options** > **Cherry-pick**.
@@ -132,7 +132,7 @@ To cherry-pick a commit from the list of all commits for a project:
 You can cherry-pick from the list of previous commits affecting an individual file
 when you view that file in your project's Git repository:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Repository**.
 1. Go to the file changed by the commit. In the last commit block, select **History**.
 1. Select the [title](https://git-scm.com/docs/git-commit#_discussion)
@@ -146,7 +146,7 @@ when you view that file in your project's Git repository:
 
 When you cherry-pick a merge commit in the GitLab UI, the mainline is always the
 first parent. Use the command line to cherry-pick with a different mainline. For more information, see
-[Copy the contents of an entire branch](../../../topics/git/cherry_pick.md#copy-the-contents-of-an-entire-branch).
+[copy the contents of an entire branch](../../../topics/git/cherry_pick.md#copy-the-contents-of-an-entire-branch).
 
 ## Related topics
 

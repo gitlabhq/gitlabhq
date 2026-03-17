@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate from Bitbucket Server
 description: "Migrate from Bitbucket Server to GitLab."
 ---
@@ -23,7 +23,7 @@ description: "Migrate from Bitbucket Server to GitLab."
 - Mapping user mentions to GitLab users [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433008) in GitLab 16.8.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153041) to map users only by email address in GitLab 17.1.
 - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461211) in GitLab 17.2.
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [post-migration user contribution and membership mapping](mapping.md) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [post-migration user contribution and membership mapping](mapping/_index.md) in GitLab 17.8.
 - Post-migration user and contribution membership mapping [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
@@ -56,7 +56,7 @@ Footnotes:
 
 ## Importer workflow
 
-The Bitbucket Server importer supports [post-migration mapping](mapping.md) of user contributions for GitLab.com and
+The Bitbucket Server importer supports [post-migration mapping](mapping/_index.md) of user contributions for GitLab.com and
 GitLab Self-Managed. The importer also supports an [alternative method](#alternative-method-of-mapping) of mapping.
 
 When Bitbucket Server items are imported:
@@ -112,13 +112,13 @@ To import your Bitbucket Server repositories:
 You can disable the `bitbucket_server_user_mapping` feature flag to use the alternative user contribution mapping method
 for imports.
 
-For imports to GitLab.com, you must use the [post-migration method](mapping.md) instead.
+For imports to GitLab.com, you must use the [post-migration method](mapping/_index.md) instead.
 
 > [!flag]
 > The availability of this feature is controlled by a feature flag. This feature is not recommended and is unavailable for
 > migrations to GitLab.com. Problems that are found in this mapping method are unlikely to be fixed. Use the
-> [post-migration method](mapping.md) instead that doesn't have these limitations.
-> 
+> [post-migration method](mapping/_index.md) instead that doesn't have these limitations.
+>
 > For more information, see [issue 512213](https://gitlab.com/gitlab-org/gitlab/-/work_items/512213).
 
 Using the alternative method, the importer tries to match a Bitbucket Server user's email address with a confirmed email address
@@ -145,7 +145,7 @@ The following sections contain solutions for problems you might encounter.
 
 If the GUI-based import tool does not work, you can try to:
 
-- Use the [GitLab Import API](../../api/import.md#import-repository-from-bitbucket-server)
+- Use the [import API](../../api/import.md#import-repository-from-bitbucket-server)
   Bitbucket Server endpoint.
 - Set up [repository mirroring](../project/repository/mirror/_index.md).
   It provides verbose error output.
@@ -157,7 +157,7 @@ for Bitbucket Cloud.
 
 If the project import completes but LFS objects can't be downloaded or cloned, you may be using a
 password or personal access token containing special characters. For more information, see
-[this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337769).
+[issue 337769](https://gitlab.com/gitlab-org/gitlab/-/issues/337769).
 
 ### Import fails due to invalid/unresolved host address, or the import URL is blocked
 
@@ -169,7 +169,13 @@ To troubleshoot this problem, use the [Projects API](../../api/projects.md) to c
 This value indicates the URL provided by the Bitbucket server to use for the import. If this URL isn't publicly resolvable, you can get unresolvable address errors.
 
 To fix this problem, ensure that the Bitbucket server is aware of any proxy servers because proxy servers can impact how Bitbucket constructs and uses URLs.
-For more information, see [Proxy and secure Bitbucket](https://confluence.atlassian.com/bitbucketserver/proxy-and-secure-bitbucket-776640099.html).
+For more information, see [proxy and secure Bitbucket](https://confluence.atlassian.com/bitbucketserver/proxy-and-secure-bitbucket-776640099.html).
+
+### Import fails with JSON::NestingError
+
+If a project import fails with an error message containing `JSON::NestingError`, the Bitbucket Server response contains deeply nested objects that exceed the `max_http_response_json_depth` setting.
+
+To resolve this issue, increase the [maximum allowed nesting depth in JSON HTTP responses from outbound requests](../../administration/instance_limits.md#maximum-allowed-nesting-depth-in-json-http-responses-from-outbound-requests).
 
 ## Related topics
 

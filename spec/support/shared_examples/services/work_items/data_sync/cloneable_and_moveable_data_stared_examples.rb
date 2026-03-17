@@ -267,6 +267,9 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
   end
 
   let_it_be(:parent) do
+    # The original work item is type of issue and it has parent only in EE.
+    next nil unless Gitlab.ee?
+
     parent = create(:work_item, :epic)
     create(:parent_link, work_item: original_work_item, work_item_parent: parent)
     parent

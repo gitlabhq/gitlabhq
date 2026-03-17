@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Secret Detection
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Pipeline secret detection
 ---
 
@@ -74,7 +74,7 @@ After you enable pipeline secret detection, you can [customize the analyzer sett
 
 This method requires you to manually edit an existing `.gitlab-ci.yml` file.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline editor**.
 1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
 
@@ -99,7 +99,7 @@ This method automatically prepares a merge request to add a `.gitlab-ci.yml` fil
 
 To enable pipeline secret detection:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **Pipeline secret detection** row, select **Configure with a merge request**.
 1. Optional. Complete the fields.
@@ -171,7 +171,7 @@ by default the first scheduled scan is a historic scan.
 
 To run a historic scan:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. Add a CI/CD variable:

@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Signing outgoing email with S/MIME
 description: Configure S/MIME for outgoing email.
 ---
@@ -90,8 +90,8 @@ To export the required files in PEM encoding from the PKCS #12 file, the
 
 ```shell
 #-- Extract private key in PEM encoding (no password, unencrypted)
-$ openssl pkcs12 -in gitlab.p12 -nocerts -nodes -out gitlab.key
+openssl pkcs12 -in gitlab.p12 -nocerts -nodes -out gitlab.key
 
 #-- Extract certificates in PEM encoding (full certs chain including CA)
-$ openssl pkcs12 -in gitlab.p12 -nokeys -out gitlab.crt
+openssl pkcs12 -in gitlab.p12 -nokeys -out gitlab.crt
 ```

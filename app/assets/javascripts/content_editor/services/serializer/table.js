@@ -1,4 +1,4 @@
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import { renderTagClose, renderTagOpen, tableCellAsTaskTableItem } from '../serialization_helpers';
 
 const tableMap = new WeakMap();

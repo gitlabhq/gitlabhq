@@ -6,7 +6,7 @@ module Types
       graphql_name 'DataVisualizationColorEnum'
       description 'Color of the data visualization palette'
 
-      Enums::DataVisualizationPalette.colors.keys.each do |unit|
+      Enums::DataVisualizationPalette.colors.each_key do |unit|
         value unit.upcase, value: unit, description: "#{unit.to_s.titleize} color"
       end
     end

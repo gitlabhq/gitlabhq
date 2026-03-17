@@ -1,0 +1,14 @@
+---
+name: guest
+description: Test guest role
+inherits_from: []
+project:
+  permissions: []
+  raw_permissions:
+    - read_issue
+    - create_issue
+group:
+  permissions: []
+  raw_permissions:
+    - read_group
+    - read_release

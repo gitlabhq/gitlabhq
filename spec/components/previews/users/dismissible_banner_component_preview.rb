@@ -6,20 +6,18 @@ module Users
   class DismissibleBannerComponentPreview < ViewComponent::Preview
     # @label Default User dismissal
     # @param button_text text
-    # @param button_link text
     # @param content textarea
     # @param variant select {{ Pajamas::BannerComponent::VARIANT_OPTIONS }
     # @param feature_id select {{ Users::Callout.feature_names.keys }}
     def default(
       button_text: "Learn more",
-      button_link: "https://about.gitlab.com/",
       content: "Add your message here.",
       variant: :promotion,
       feature_id: :suggest_pipeline
     )
       render(Users::DismissibleBannerComponent.new(
         button_text: button_text,
-        button_link: button_link,
+        button_link: "#",
         svg_path: "illustrations/devops-sm.svg",
         variant: variant,
         dismiss_options: { feature_id: feature_id.to_sym, user: FactoryBot.build_stubbed(:user) }

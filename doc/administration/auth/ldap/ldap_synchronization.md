@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Seat Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: no
 title: LDAP synchronization
 description: Learn how to configure LDAP synchronization for users and groups, and adjust the sync schedule.
@@ -729,19 +729,16 @@ access is adjusted accordingly. The only exception is if the user is the
 last owner in a group. Groups need at least one owner to fulfill
 administrative duties.
 
-#### Minimal Access role assignment with Restricted Access
+#### Minimal Access role assignment with restricted access
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
 
 {{< /history >}}
 
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
-
-When [Restricted Access](../../../user/group/manage.md#restricted-access) is enabled and no subscription seats are available, users are assigned the Minimal Access role during LDAP group synchronization.
+When [restricted access](../../../user/group/manage.md#restricted-access) is enabled and no subscription seats are available, users are assigned the Minimal Access role during LDAP group synchronization.
 
 For more information, see [Provisioning behavior with SAML, SCIM, and LDAP](../../../user/group/manage.md#provisioning-behavior-with-saml-scim-and-ldap).
 

@@ -1,0 +1,10 @@
+---
+name: packages_conan_v1_revisions_backward_compatibility
+description: Add backward compatibility for Conan v1 with enabled revisions
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/561028
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224708
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/591312
+milestone: '18.10'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

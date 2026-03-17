@@ -26,6 +26,7 @@ import { Mousetrap } from '~/lib/mousetrap';
 import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -118,6 +119,7 @@ describe('note_app', () => {
       plugins: [globalAccessorPlugin],
       stubActions: false,
     });
+    useDiscussions();
     useLegacyDiffs();
     useNotes();
     useBatchComments();

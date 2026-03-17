@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Set timeouts, protect sensitive information, control behavior with tags and variables, and configure artifact and cache settings of your GitLab Runner.
 title: Configuring runners
 ---
@@ -791,7 +791,7 @@ git submodule update --init --depth 20 --recursive --remote --jobs 4
 > reproducibility of your builds when using the `--remote` flag. In most cases,
 > it is better to explicitly track submodule commits as designed, and update them
 > using an auto-remediation/dependency bot.
-> 
+>
 > The `--remote` flag is not required to check out submodules at their committed
 > revisions. Use this flag only when you want to automatically update submodules
 > to their latest remote versions.
@@ -1052,6 +1052,27 @@ variables:
 | `ARTIFACT_COMPRESSION_LEVEL` | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) must also be enabled. |
 | `CACHE_COMPRESSION_LEVEL`    | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) must also be enabled. |
 | `CACHE_REQUEST_TIMEOUT`      | Configure the maximum duration of cache upload and download operations for a single job in minutes. Default is `10` minutes. |
+
+### Tune TCP settings for high-latency connections
+
+If significant network latency exists between the runner and the GitLab instance,
+the default TCP window size might limit throughput. On the runner host,
+increase the TCP window size to allow more data in flight.
+
+For example, on Linux, increase the maximum TCP buffer sizes:
+
+```shell
+sudo sysctl -w net.core.rmem_max=16777216
+sudo sysctl -w net.core.wmem_max=16777216
+sudo sysctl -w net.ipv4.tcp_rmem="4096 87380 16777216"
+sudo sysctl -w net.ipv4.tcp_wmem="4096 65536 16777216"
+```
+
+To make these changes persistent across reboots, add them to `/etc/sysctl.conf`.
+
+> [!note]
+> TCP tuning is a host-level change that affects all network connections on the
+> runner machine. Test changes in a non-production environment first.
 
 ## Artifact provenance metadata
 

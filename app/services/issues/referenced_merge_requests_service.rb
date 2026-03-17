@@ -68,7 +68,7 @@ module Issues
     # rubocop: enable CodeReuse/ActiveRecord
 
     def sort_by_iid(merge_requests)
-      Gitlab::IssuableSorter.sort(project, merge_requests) { |mr| mr.iid.to_s }
+      Gitlab::IssuableSorter.sort(project, merge_requests) { |mr| mr.iid.to_s } # rubocop:disable Lint/UnexpectedBlockArity -- false positive (detected as Array.sort)
     end
   end
 end

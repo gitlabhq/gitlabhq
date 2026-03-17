@@ -1,0 +1,3 @@
+---
+name: update_container_registry_protection_tag_rule
+description: Grants the ability to update container registry protection tag rules

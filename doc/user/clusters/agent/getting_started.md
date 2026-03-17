@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Get started connecting a Kubernetes cluster to GitLab
 ---
 
@@ -47,7 +47,7 @@ the `api` scope:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. Select **Personal access tokens**.
+1. In the left sidebar, select **Access** > **Personal access tokens**.
 1. Enter a name and optional expiry date for the token.
 1. Select the `api` scope.
 1. Select **Create personal access token**.
@@ -110,7 +110,6 @@ You can do this by bootstrapping the agent with the GitLab CLI (`glab`).
    ```
 
 1. [Authenticate `glab`](https://gitlab.com/gitlab-org/cli/#installation) to your GitLab instance.
-
 1. In the repository where you bootstrapped Flux, run the `glab cluster agent bootstrap` command:
 
    ```shell
@@ -135,7 +134,7 @@ The `glab cluster agent bootstrap` created an environment within GitLab and [con
 
 To view your dashboard:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select your environment. For example, `flux-system/gitlab-agent`.
 1. Select the **Kubernetes overview** tab.

@@ -1,15 +1,14 @@
 ---
 stage: AI-powered
 group: Custom Models
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Supported LLM Serving Platforms.
-title: GitLab Duo Self-Hosted supported platforms
+title: Configure LLM platforms
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -25,9 +24,17 @@ title: GitLab Duo Self-Hosted supported platforms
 
 {{< /history >}}
 
-There are multiple platforms available to host your self-hosted Large Language Models (LLMs). Each platform has unique features and benefits that can cater to different needs. The following documentation summarises the currently supported options. If the platform you want to use is not in this documentation, provide feedback in the [platform request issue (issue 526144)](https://gitlab.com/gitlab-org/gitlab/-/issues/526144).
+The AI Gateway supports multiple LLM providers through [LiteLLM](https://docs.litellm.ai/docs/providers). Each platform has unique features and benefits that can cater to different needs. The following documentation summarises the providers we have validated and tested. If the platform you want to use is not in this documentation, provide feedback in the [platform request issue (issue 526144)](https://gitlab.com/gitlab-org/gitlab/-/issues/526144).
 
-## For self-hosted model deployments
+## Use multiple models and platforms
+
+You can use multiple models and platforms in the same GitLab instance.
+
+For example, you can configure one feature to use Azure OpenAI, and another feature to use AWS Bedrock, or self-hosted models served with vLLM.
+
+This setup gives you flexibility to choose the best model and platform for each use case. Models must be supported and served through a compatible platform.
+
+## Self-hosted model deployments
 
 ### vLLM
 
@@ -35,7 +42,7 @@ There are multiple platforms available to host your self-hosted Large Language M
 
 To install vLLM, see the [vLLM Installation Guide](https://docs.vllm.ai/en/latest/getting_started/installation.html). You should install [version v0.6.4.post1](https://github.com/vllm-project/vllm/releases/tag/v0.6.4.post1) or later.
 
-#### Endpoint Configuration
+#### Configuring the endpoint URL
 
 When configuring the endpoint URL for any OpenAI API compatible platforms (such as vLLM) in GitLab:
 
@@ -76,13 +83,10 @@ Example response:
 
 In this example, if the model's `id` is `Mixtral-8x22B-Instruct-v0.1`, you would set the model identifier in GitLab as `custom_openai/Mixtral-8x22B-Instruct-v0.1`.
 
-For more information on:
+For more information, see the following documentation:
 
 - vLLM supported models, see the [vLLM Supported Models documentation](https://docs.vllm.ai/en/latest/models/supported_models.html).
 - Available options when using vLLM to run a model, see the [vLLM documentation on engine arguments](https://docs.vllm.ai/en/stable/configuration/engine_args.html).
-- The hardware needed for the models, see the [Supported models and Hardware requirements documentation](supported_models_and_hardware_requirements.md).
-
-Examples:
 
 #### Mistral-7B-Instruct-v0.2
 
@@ -147,67 +151,253 @@ vllm serve <path-to-model>/<model-version> \
 
 This change has been observed to notably improve response times in internal benchmarks.
 
-## For cloud-hosted model deployments
+## Cloud-hosted model deployments
 
-### AWS Bedrock
+GitLab has validated and tested the following providers. The AI Gateway supports LLM providers that are compatible with [LiteLLM](https://docs.litellm.ai/docs/providers).
 
-[AWS Bedrock](https://aws.amazon.com/bedrock/) is a fully managed service that
-allows developers to build and scale generative AI applications using pre-trained
-models from leading AI companies. It seamlessly integrates with other AWS services
-and offers a pay-as-you-go pricing model.
+- [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+- [Google Vertex AI](https://cloud.google.com/vertex-ai)
+- [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
+- [Anthropic](https://platform.claude.com/docs/en/about-claude/models/overview)
+- [OpenAI](https://developers.openai.com/api/docs/models)
 
-To access AWS Bedrock models:
+### Configure authentication with AWS Bedrock
 
-1. Configure IAM credentials to access Bedrock with the appropriate AWS IAM
-   permissions:
+You can use several methods to authenticate AWS Bedrock with your AI Gateway.
 
-   - Make sure that the IAM role has the `AmazonBedrockFullAccess` policy to allow
-   [access to Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess). You cannot do this in
-   the GitLab Duo Self-Hosted UI.
+Prerequisites:
 
-   - [Use the AWS console to request access to the models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html) that you want to use.
+- Models are automatically enabled in Bedrock when first invoked. For more information,
+  see [Bedrock model access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html).
+- Have AWS credentials configured with appropriate IAM permissions.
 
-1. Authenticate your AI Gateway instance by exporting the appropriate AWS SDK
-   environment variables when starting the Docker container. You can use either:
+#### Amazon EKS with Helm Chart (Recommended)
 
-   - `AWS_BEARER_TOKEN_BEDROCK` (see [API keys](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys-use.html))
-   - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION_NAME` (see [IAM credentials](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html))
+Use IRSA (IAM Roles for Service Accounts) for your AI Gateway pods to authenticate
+to AWS Bedrock, without storing static credentials.
 
-   For more information, see the [AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
+After you authenticate Amazon EKS with IRSA,
+the AI Gateway automatically obtains temporary credentials from the IRSA role.
+
+To use IRSA to authenticate Amazon EKS:
+
+1. Create an IAM policy that grants access to Bedrock models. You can scope this to specific models if you require more security:
+
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": [
+           "bedrock:InvokeModel",
+           "bedrock:InvokeModelWithResponseStream"
+         ],
+         "Resource": "arn:aws:bedrock:*::foundation-model/*"
+       }
+     ]
+   }
+   ```
+
+   ```shell
+   aws iam create-policy \
+     --policy-name bedrock-ai-gateway-access \
+     --policy-document file://bedrock-policy.json \
+     --description "Bedrock access for AI Gateway"
+   ```
+
+1. Optional. For stricter access control, replace the wildcard resource with specific model Amazon Resource Name (ARN).
+   This ensures only approved models can be accessed, even if GitLab configuration changes. For
+   available model ARNs, see [Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html).
+
+   ```json
+   "Resource": [
+     "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-5-sonnet-20241022-v2:0",
+     "arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-haiku-20240307-v1:0"
+   ]
+   ```
 
    > [!note]
-   > Temporary credentials are not supported by AI Gateway at this time. For more information on adding support for Bedrock to use instance profile or temporary credentials, see [issue 542389](https://gitlab.com/gitlab-org/gitlab/-/issues/542389).
+   > Some models might use different ARN formats. For example, newer models might
+   > require inference profile ARNs in addition to foundation model ARNs. To check the
+   > the ARN format for your specific model, see the [Amazon Bedrock model IDs](https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html).
 
-1. Optional. To set up a private Bedrock endpoint operating in a virtual private cloud (VPC),
-   make sure the `AWS_BEDROCK_RUNTIME_ENDPOINT` environment variable is configured
-   with your internal URL when launching the AI Gateway container.
+1. Create an IAM role with a trust policy for your Amazon EKS service account to use. Replace the following values:
 
-   An example configuration: `AWS_BEDROCK_RUNTIME_ENDPOINT = https://bedrock-runtime.{aws_region_name}.amazonaws.com`
+   - `YOUR_ACCOUNT_ID`: Your AWS account ID.
+   - `REGION`: Your Amazon EKS cluster region (for example, `us-east-1`).
+   - `YOUR_OIDC_ID`: Your Amazon EKS cluster's OIDC provider ID.
+   - `NAMESPACE`: Kubernetes namespace where AI Gateway is deployed.
 
-   For VPC endpoints, the URL format may be different, such as `https://vpce-{vpc-endpoint-id}-{service-name}.{aws_region_name}.vpce.amazonaws.com`
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Principal": {
+           "Federated": "arn:aws:iam::YOUR_ACCOUNT_ID:oidc-provider/oidc.eks.REGION.amazonaws.com/id/YOUR_OIDC_ID"
+         },
+         "Action": "sts:AssumeRoleWithWebIdentity",
+         "Condition": {
+           "StringEquals": {
+             "oidc.eks.REGION.amazonaws.com/id/YOUR_OIDC_ID:sub": "system:serviceaccount:NAMESPACE:ai-gateway",
+             "oidc.eks.REGION.amazonaws.com/id/YOUR_OIDC_ID:aud": "sts.amazonaws.com"
+           }
+         }
+       }
+     ]
+   }
+   ```
 
-For more information, see [supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
+   ```shell
+   # Create the role
+   aws iam create-role \
+     --role-name eks-ai-gateway-bedrock \
+     --assume-role-policy-document file://trust-policy.json \
+     --description "EKS IRSA role for AI Gateway to access Bedrock"
+   ```
 
-### Azure OpenAI
+1. Attach the Bedrock IAM policy to this role.
 
-[Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/) provides
-access to OpenAI's powerful models, enabling developers to integrate advanced AI
-capabilities into their applications with robust security and scalable infrastructure.
+   ```shell
+   # Attach the role
+   aws iam attach-role-policy \
+     --role-name eks-ai-gateway-bedrock \
+     --policy-arn arn:aws:iam::YOUR_ACCOUNT_ID:policy/bedrock-ai-gateway-access
+   ```
 
-For more information, see:
+1. To configure the Helm chart, install the AI Gateway with the IAM role annotation:
 
-- [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
-- [Azure OpenAI Service models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
+   ```yaml
+   serviceAccount:
+     create: true
+     name: ai-gateway
+     annotations:
+       eks.amazonaws.com/role-arn: arn:aws:iam::YOUR_ACCOUNT_ID:role/YOUR_ROLE_NAME
+   extraEnvironmentVariables:
+     - name: AWS_REGION
+       value: us-east-1
+   ```
 
-## Use multiple models and platforms
+For more information, see [IAM roles for service accounts](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html).
 
-With GitLab Duo Self-Hosted, you can use multiple models and platforms in the same GitLab instance.
+#### Docker deployments
 
-For example, you can configure one feature to use Azure OpenAI, and another feature to use AWS Bedrock or self-hosted models served with vLLM.
+Configure IAM credentials through environment variables when starting the AI Gateway container:
 
-This setup gives you flexibility to choose the best model and platform for each use case. Models must be supported and served through a compatible platform.
+```shell
+docker run -d \
+  -e AWS_ACCESS_KEY_ID=your-access-key \
+  -e AWS_SECRET_ACCESS_KEY=your-secret-key \
+  -e AWS_REGION=us-east-1 \
+  -p 5052:5052 \
+  registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:self-hosted-vX.Y.Z-ee
+```
 
-For more information on setting up different providers, see:
+The IAM user or role must have a policy similar to the one you would set in Amazon EKS with Helm Chart.
 
-- [Configure GitLab Duo Self-Hosted features](configure_duo_features.md)
-- [Supported GitLab Duo Self-Hosted models and hardware requirements](supported_models_and_hardware_requirements.md)
+#### Kubernetes deployments
+
+For Kubernetes clusters other than Amazon EKS, you can use Kubernetes secrets to store AWS credentials:
+
+1. Create a Kubernetes secret:
+
+   ```shell
+   kubectl create secret generic aws-credentials \
+     --from-literal=access-key-id=YOUR_ACCESS_KEY_ID \
+     --from-literal=secret-access-key=YOUR_SECRET_ACCESS_KEY \
+     -n YOUR_NAMESPACE
+   ```
+
+1. Configure the Helm chart to reference the secret:
+
+   ```yaml
+   extraEnvironmentVariables:
+     - name: AWS_ACCESS_KEY_ID
+       valueFrom:
+         secretKeyRef:
+           name: aws-credentials
+           key: access-key-id
+     - name: AWS_SECRET_ACCESS_KEY
+       valueFrom:
+         secretKeyRef:
+           name: aws-credentials
+           key: secret-access-key
+     - name: AWS_REGION
+       value: us-east-1
+   ```
+
+#### AWS Bedrock API keys
+
+To use AWS Bedrock API keys as an alternative to IAM credentials:
+
+1. [Create a Bedrock API key](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys-generate.html)
+1. Create a Kubernetes secret with the API key:
+
+   ```shell
+   kubectl create secret generic bedrock-api-key \
+     --from-literal=token=YOUR_BEDROCK_API_KEY \
+     -n YOUR_NAMESPACE
+   ```
+
+1. Configure the AI Gateway (add to your `values.yaml`):
+
+   ```yaml
+   extraEnvironmentVariables:
+     - name: AWS_BEARER_TOKEN_BEDROCK
+       valueFrom:
+         secretKeyRef:
+           name: bedrock-api-key
+           key: token
+     - name: AWS_REGION
+       value: us-east-1
+   ```
+
+#### Private VPC endpoints
+
+To use a private Bedrock endpoint in a VPC, set the `AWS_BEDROCK_RUNTIME_ENDPOINT` environment variable.
+
+For Helm deployments:
+
+```yaml
+extraEnvironmentVariables:
+  - name: AWS_BEDROCK_RUNTIME_ENDPOINT
+    value: https://bedrock-runtime.us-east-1.amazonaws.com
+```
+
+For Docker deployments:
+
+```shell
+docker run -d \
+  -e AWS_BEDROCK_RUNTIME_ENDPOINT=https://bedrock-runtime.us-east-1.amazonaws.com \
+  -e AWS_REGION=us-east-1 \
+  # ... other configuration
+```
+
+For VPC endpoints, use the format: `https://vpce-{vpc-endpoint-id}-{service-name}.{region}.vpce.amazonaws.com`
+
+### Configure authentication with Google Vertex AI
+
+To use models from Google Vertex AI, you must authenticate your AI Gateway instance. You can use any of the following mechanisms:
+
+- Export the environment variables when starting the Docker container. To do this, set the following environment variables when running the AI Gateway container:
+
+  ```shell
+  GOOGLE_APPLICATION_CREDENTIALS=/path/to/application_default_credentials.json
+  VERTEXAI_PROJECT=<gcp-project-id>
+  VERTEXAI_LOCATION=global
+  ```
+
+- Run the AI Gateway container on Google Cloud Run and use the [Cloud Run service account](https://docs.litellm.ai/docs/providers/vertex#using-gcp-service-account) for Vertex AI access.
+
+## Related topics
+
+- [Supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
+- [Amazon Bedrock supported foundation models](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+- [AWS IAM best practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html)
+- [Amazon Bedrock Security](https://docs.aws.amazon.com/bedrock/latest/userguide/security.html)
+- For configuration information, see the following documentation:
+  - [Anthropic API overview](https://platform.claude.com/docs/en/api/overview)
+  - [OpenAI API overview](https://developers.openai.com/api/docs)
+  - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)

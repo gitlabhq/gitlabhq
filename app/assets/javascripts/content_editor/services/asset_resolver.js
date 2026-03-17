@@ -1,4 +1,4 @@
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 import { n__ } from '~/locale';
 
 const parser = new DOMParser();

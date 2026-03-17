@@ -23,7 +23,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
 
     describe '#allowed_child_types_by_name' do
-      it 'returns child types from hierarchy restrictions' do
+      # epic type is not available in CE
+      it 'returns child types from hierarchy restrictions', if: Gitlab.ee? do
         epic_type = described_class.find_by(base_type: :epic)
         issue_type = described_class.find_by(base_type: :issue)
 
@@ -94,19 +95,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
         expect { type.destroy! }.not_to change(Issue, :count)
         expect(described_class.count).to eq(9)
-      end
-    end
-
-    context 'when work_item_system_defined_type FF is disabled' do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-      end
-
-      it 'does not delete type when there are related issues' do
-        type = work_item.work_item_type
-
-        expect { type.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
-        expect(Issue.count).to eq(1)
       end
     end
   end
@@ -230,7 +218,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
     subject { epic_type.allowed_child_types }
 
-    it 'returns queried data' do
+    # epic type is not available in CE
+    it 'returns queried data', if: Gitlab.ee? do
       is_expected.to include(issue_type) # Changed from expect(subject)
     end
   end
@@ -241,7 +230,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
     subject { issue_type.allowed_parent_types }
 
-    it 'returns queried data' do
+    # epic type is not available in CE
+    it 'returns queried data', if: Gitlab.ee? do
       is_expected.to include(epic_type)
     end
   end
@@ -253,7 +243,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
     subject(:descendant_types) { epic_type.descendant_types }
 
-    it 'returns all possible descendant types' do
+    # epic type is not available in CE
+    it 'returns all possible descendant types', if: Gitlab.ee? do
       is_expected.to include(epic_type, issue_type, task_type)
     end
 
@@ -389,12 +380,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     describe '#archived?' do
       it 'returns nil' do
         expect(work_item_type.archived?).to be_nil
-      end
-    end
-
-    describe '#filterable?' do
-      it 'returns nil' do
-        expect(work_item_type.filterable?).to be_nil
       end
     end
 

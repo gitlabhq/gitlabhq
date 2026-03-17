@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Confidential issues
 ---
 
@@ -44,7 +44,7 @@ When you create a confidential issue in a project, the project becomes listed in
 
 To create a confidential issue:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}).
 1. From the dropdown list, select **New issue**.
 1. Complete the [fields](create_issues.md#fields-in-the-new-issue-form).
@@ -55,9 +55,8 @@ To create a confidential issue:
 
 To change the confidentiality of an existing issue:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**.
-1. Select the title of your issue to view it.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the upper-right corner, select **Issue actions** ({{< icon name="ellipsis_v" >}}) and then **Turn on confidentiality** (or **Turn off confidentiality** to make the issue non-confidential).
 
 Alternatively, you can use the [`/confidential` quick action](../quick_actions.md#confidential).
@@ -96,7 +95,7 @@ Likewise, while inside the issue, you can see the confidential ({{< icon name="e
 the issue number. There is also an indicator in the comment area that the
 issue you are commenting on is confidential.
 
-There is also an indicator on the sidebar denoting confidentiality.
+There is also an indicator in the sidebar denoting confidentiality.
 
 Every change from regular to confidential and vice versa, is indicated by a
 system note in the issue's comments, for example:

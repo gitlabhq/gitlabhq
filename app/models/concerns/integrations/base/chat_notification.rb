@@ -29,6 +29,12 @@ module Integrations
         MATCH_ALL_LABELS = 'match_all'
       ].freeze
 
+      # Supported actions per event type for fine-grained filtering
+      EVENT_ACTIONS = {
+        'merge_request' => %w[open close reopen merge approved unapproved],
+        'issue' => %w[open close reopen]
+      }.freeze
+
       SECRET_MASK = '************'
 
       class_methods do

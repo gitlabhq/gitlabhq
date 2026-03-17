@@ -618,29 +618,86 @@ RSpec.describe ProjectPresenter do
       end
 
       context 'when Auto Devops is enabled' do
-        it 'returns anchor data' do
+        before do
           allow(project).to receive(:auto_devops_enabled?).and_return(true)
+        end
 
+        it 'returns anchor data' do
           expect(presenter.autodevops_anchor_data).to have_attributes(
             is_link: false,
             label: a_string_including('Auto DevOps enabled'),
             link: nil
           )
         end
+
+        it 'returns anchor data with warning icon when container registry is disabled' do
+          allow(presenter).to receive(:container_registry_disabled?).and_return(true)
+
+          anchor_data = presenter.autodevops_anchor_data
+
+          expect(anchor_data.label).to include('warning')
+        end
+
+        it 'returns anchor data without warning icon when container registry is enabled' do
+          allow(presenter).to receive(:container_registry_disabled?).and_return(false)
+
+          anchor_data = presenter.autodevops_anchor_data
+
+          expect(anchor_data.label).not_to include('warning')
+        end
       end
 
       context 'when user can admin pipeline and CI yml does not exist' do
-        it 'returns anchor data' do
+        before do
           project.add_maintainer(user)
-
-          allow(project).to receive(:auto_devops_enabled?).and_return(false)
           allow(project).to receive(:has_ci_config_file?).and_return(false)
+        end
 
-          expect(presenter.autodevops_anchor_data).to have_attributes(
+        it 'returns anchor data with icon when Auto DevOps is disabled' do
+          allow(project).to receive(:auto_devops_enabled?).and_return(false)
+
+          anchor_data = presenter.autodevops_anchor_data
+          label = anchor_data.label
+
+          expect(label).to include('Enable Auto DevOps')
+          expect(label).to include('data-testid="plus-icon"')
+        end
+
+        it 'returns anchor data with link when Auto DevOps is enabled' do
+          allow(project).to receive(:auto_devops_enabled?).and_return(true)
+
+          anchor_data = presenter.autodevops_anchor_data
+
+          expect(anchor_data).to have_attributes(
             is_link: false,
-            label: a_string_including('Enable Auto DevOps'),
-            link: presenter.project_settings_ci_cd_path(project, anchor: 'autodevops-settings')
+            label: a_string_including('Auto DevOps enabled'),
+            link: presenter.project_settings_ci_cd_path(project, anchor: 'autodevops-settings'),
+            class_modifier: 'btn-default'
           )
+        end
+
+        it 'returns anchor data with warning icon when Auto DevOps is enabled and container registry is disabled' do
+          allow(project).to receive(:auto_devops_enabled?).and_return(true)
+          allow(presenter).to receive(:container_registry_disabled?).and_return(true)
+
+          anchor_data = presenter.autodevops_anchor_data
+
+          expect(anchor_data.label).to include('warning')
+        end
+      end
+
+      context 'when Auto DevOps is enabled and container registry is disabled' do
+        it 'returns warning icon with tooltip and aria-label' do
+          allow(project).to receive(:auto_devops_enabled?).and_return(true)
+          allow(presenter).to receive(:container_registry_disabled?).and_return(true)
+
+          anchor_data = presenter.autodevops_anchor_data
+          label = anchor_data.label
+
+          expect(label).to include('Auto DevOps enabled')
+          expect(label).to include('data-toggle="tooltip"')
+          expect(label).to match(/aria-label=/)
+          expect(label).to include('warning')
         end
       end
     end

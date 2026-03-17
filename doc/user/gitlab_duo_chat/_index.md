@@ -1,8 +1,8 @@
 ---
 stage: AI-powered
 group: Duo Chat
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Duo Chat (Classic)
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: GitLab Duo Chat (non-agentic)
 ---
 
 {{< details >}}
@@ -29,14 +29,13 @@ title: GitLab Duo Chat (Classic)
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) from Ultimate to Premium tier in GitLab 16.9 while in beta.
 - [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.11.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-- Updated naming to GitLab Duo Chat (Classic) in GitLab 18.3.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 - [Updated default LLM](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/1541) to Claude Sonnet 4.5 in GitLab 18.6.
 
 {{< /history >}}
 
-GitLab Duo Chat (Classic) is an AI assistant that accelerates development with
-contextual, conversational AI. Chat:
+GitLab Duo Chat is an AI assistant that accelerates development with
+contextual, conversational AI. This non-agentic Chat:
 
 - Explains code and suggests improvements directly in your development environment.
 - Analyzes code, merge requests, issues, and other GitLab artifacts.
@@ -47,7 +46,7 @@ contextual, conversational AI. Chat:
 <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
 <!-- Video published on 2024-04-18 -->
 
-Learn about the new [GitLab Duo Chat (Agentic)](agentic_chat.md).
+Learn about the new [GitLab Duo Chat (agentic)](agentic_chat.md).
 
 ## Supported editor extensions
 
@@ -72,7 +71,7 @@ You can also use GitLab Duo Chat in these IDEs by installing an editor extension
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/562168) to be available on all pages in the GitLab UI for GitLab.com in GitLab 18.5.
 - New navigation and GitLab Duo sidebar introduced on GitLab.com in GitLab 18.6 with a [flag](../../administration/feature_flags/_index.md) named `paneled_view`. Enabled by default.
-- Classic navigation instructions removed in GitLab 18.7.
+- Previous navigation instructions removed in GitLab 18.7.
 - New navigation and GitLab Duo sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/574049) in GitLab 18.8. Feature flag `paneled_view` removed.
 
 {{< /history >}}
@@ -87,7 +86,7 @@ Prerequisites:
 
 To use Chat in the GitLab UI:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat**
    ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat**
    ({{< icon name="duo-chat" >}}).
@@ -161,10 +160,10 @@ However, administrators can [change this expiration period](#configure-chat-conv
 To use GitLab Duo Chat in the Web IDE on GitLab:
 
 1. Open the Web IDE:
-   1. In the GitLab UI, on the top bar, select **Search or go to** and find your project.
+   1. In the GitLab UI, in the top bar, select **Search or go to** and find your project.
    1. Select a file. Then in the upper right, select **Edit** > **Open in Web IDE**.
 1. Open Chat by using one of the following methods:
-   - On the left sidebar, select **GitLab Duo Chat**.
+   - In the left sidebar, select **GitLab Duo Chat**.
    - In the file that you have open in the editor, select some code.
      1. Right-click and select **GitLab Duo Chat**.
      1. Select **Explain selected snippet**, **Fix**, **Generate tests**, **Open Quick Chat**, or **Refactor**.
@@ -189,7 +188,7 @@ system versioning, feature state management, and feature flags:
 
 - Introduced in GitLab 16.6 as an [experiment](../../policy/development_stages_support.md#experiment).
 - Changed to generally available in GitLab 16.11.
-- Status [added](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1712) in the GitLab Workflow extension for VS Code 5.29.0.
+- Status [added](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1712) in the GitLab for VS Code extension 5.29.0.
 
 {{< /history >}}
 
@@ -197,10 +196,10 @@ Prerequisites:
 
 - You've [installed and configured the VS Code extension](../../editor_extensions/visual_studio_code/setup.md).
 
-To use GitLab Duo Chat in the GitLab Workflow extension for VS Code:
+To use GitLab Duo Chat in the GitLab for VS Code extension:
 
 1. In VS Code, open a file. The file does not need to be a file in a Git repository.
-1. On the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
+1. In the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
 1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
 If you have selected code in the editor, this selection is included with your question to GitLab Duo Chat.
@@ -210,8 +209,8 @@ For example, you can select code and ask Chat, `Can you simplify this?`.
 
 {{< history >}}
 
-- Introduced as [generally available](https://gitlab.com/groups/gitlab-org/-/epics/15218) in the GitLab Workflow extension for VS Code 5.15.0.
-- Insert Snippet [added](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2150) in the GitLab Workflow extension for VS Code 5.25.0.
+- Introduced as [generally available](https://gitlab.com/groups/gitlab-org/-/epics/15218) in the GitLab for VS Code extension 5.15.0.
+- Insert Snippet [added](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2150) in the GitLab for VS Code extension 5.25.0.
 
 {{< /history >}}
 
@@ -243,7 +242,7 @@ To check the health of your GitLab Duo configuration:
 
 To close GitLab Duo Chat:
 
-- For GitLab Duo Chat on the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
+- For GitLab Duo Chat in the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
 - For the quick chat window that's embedded in your file, in the upper-right corner,
   select **Collapse** ({{< icon name="chevron-lg-up" >}}).
 
@@ -251,9 +250,9 @@ To close GitLab Duo Chat:
 
 Prerequisites:
 
-- You've [installed and configured the GitLab extension for Visual Studio](../../editor_extensions/visual_studio/setup.md).
+- You've installed and configured the [GitLab for Visual Studio extension](../../editor_extensions/visual_studio/setup.md).
 
-To use GitLab Duo Chat in the GitLab extension for Visual Studio:
+To use GitLab Duo Chat in the GitLab for Visual Studio extension:
 
 1. In Visual Studio, open a file. The file does not need to be a file in a Git repository.
 1. Open Chat by using one of the following methods:
@@ -314,7 +313,7 @@ After GitLab Duo Chat opens:
 
 {{< history >}}
 
-- Introduced as generally available in the [GitLab Duo plugin for JetBrains 3.0.0](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/80) and [GitLab Workflow extension for VS Code 5.14.0](https://gitlab.com/groups/gitlab-org/-/epics/15218).
+- Introduced as generally available in the [GitLab Duo plugin for JetBrains 3.0.0](https://gitlab.com/groups/gitlab-org/editor-extensions/-/epics/80) and [GitLab for VS Code extension 5.14.0](https://gitlab.com/groups/gitlab-org/-/epics/15218).
 
 {{< /history >}}
 
@@ -379,7 +378,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo Chat conversations**, select either of the following options:
    - **After the conversation was last updated**.
@@ -390,10 +389,10 @@ Prerequisites:
 
 Different language models can be the source for GitLab Duo Chat.
 
-- On GitLab.com or GitLab Self-Managed, the default GitLab AI vendor models and
+- On GitLab.com or GitLab Self-Managed, the default GitLab-managed models and
   cloud-based AI Gateway that is hosted by GitLab.
 - On GitLab Self-Managed, in GitLab 17.9 and later, [GitLab Duo Self-Hosted with a supported self-hosted model](../../administration/gitlab_duo_self_hosted/_index.md). Self-hosted models maximize
-  security and privacy by making sure nothing is sent to an external model. You can use GitLab AI vendor models, other supported language models, or bring your own compatible model.
+  security and privacy by making sure nothing is sent to an external model. You can use GitLab-managed models, other supported language models, or bring your own compatible model.
 
 ## Input and output length
 

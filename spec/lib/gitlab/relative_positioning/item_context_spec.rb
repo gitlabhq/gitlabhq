@@ -43,26 +43,10 @@ RSpec.describe Gitlab::RelativePositioning::ItemContext do
         expect(positions).to eq(positions.uniq)
       end
 
-      it 'is possible to create_space_right, which will move the gap to immediately after' do
-        subject.create_space_right
-
-        expect(subject.find_next_gap_after).to have_attributes(start_pos: subject.relative_position)
-        expect(positions).to all(be_between(range.first, range.last))
-        expect(positions).to eq(positions.uniq)
-      end
-
       it 'is possible to shift_left, which will consume the gap at the start' do
         subject.shift_left
 
         expect(subject.find_next_gap_before).not_to be_present
-        expect(positions).to all(be_between(range.first, range.last))
-        expect(positions).to eq(positions.uniq)
-      end
-
-      it 'is possible to create_space_left, which will move the gap to immediately before' do
-        subject.create_space_left
-
-        expect(subject.find_next_gap_before).to have_attributes(start_pos: subject.relative_position)
         expect(positions).to all(be_between(range.first, range.last))
         expect(positions).to eq(positions.uniq)
       end

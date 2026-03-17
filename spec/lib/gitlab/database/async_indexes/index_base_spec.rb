@@ -32,6 +32,38 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexBase, feature_category: :dat
       end
     end
 
+    context 'when the table does not exist' do
+      before do
+        allow(subject).to receive(:table_exists?).and_return(false)
+        allow(subject).to receive(:action_type).and_return('test')
+      end
+
+      it 'skips execution and destroys the queuing entry' do
+        expect(async_index).to receive(:destroy!).and_call_original
+
+        expect { subject.perform }
+          .to change { Gitlab::Database::AsyncIndexes::PostgresAsyncIndex.count }.by(-1)
+      end
+
+      it 'logs an appropriate message' do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+
+        subject.perform
+
+        expect(Gitlab::AppLogger)
+          .to have_received(:info)
+          .with(a_hash_including(
+            message: 'Skipping async index test since the table does not exist. The queuing entry will be deleted'
+          ))
+      end
+
+      it 'does not check preconditions' do
+        expect(subject).not_to receive(:preconditions_met?)
+
+        subject.perform
+      end
+    end
+
     context 'with error handling' do
       before do
         allow(subject).to receive(:preconditions_met?).and_return(true)

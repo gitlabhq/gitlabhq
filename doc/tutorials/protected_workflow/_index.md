@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use this tutorial to build a protected workflow for your GitLab project.
 title: 'Tutorial: Build a protected workflow for your project'
 description: Security, approval rules, and branch protection.
@@ -70,11 +70,10 @@ Then you'll add these new groups as members of the `engineering` group.
 
 First, create the new subgroup:
 
-1. On the top bar, select **Search or go to** and search for `engineering`.
+1. In the top bar, select **Search or go to** and search for `engineering`.
 1. Select the group named `Engineering`:
 
    ![The engineering group in search results](img/search_engineering_v16_2.png)
-
 1. On the overview page for the `engineering` group, in the upper-right corner,
    select **Create subgroup**.
 1. For the **Subgroup name**, enter `Managers`.
@@ -83,7 +82,7 @@ First, create the new subgroup:
 
 Next, add the subgroup as a member of the `engineering` group:
 
-1. On the top bar, select **Search or go to** and search for `engineering`.
+1. In the top bar, select **Search or go to** and search for `engineering`.
 1. Select the group named `Engineering`.
 1. Select **Manage** > **Members**.
 1. In the upper right, select **Invite a group**.
@@ -113,7 +112,7 @@ for projects owned by `engineering`. As a result:
 
 To add a user to the `frontend` subgroup:
 
-1. On the top bar, select **Search or go to** and search for `frontend`.
+1. In the top bar, select **Search or go to** and search for `frontend`.
 1. Select the `Frontend` group.
 1. Select **Manage** > **Members**.
 1. Select **Invite members**.
@@ -135,7 +134,7 @@ smaller subgroups you just created.
 
 To create the new `excelsior` project:
 
-1. On the top bar, select **Search or go to** and search for `engineering`.
+1. In the top bar, select **Search or go to** and search for `engineering`.
 1. Select the group named `Engineering`.
 1. On the overview page for the `engineering` group, in the upper-right corner,
    select **Create new** ({{< icon name="plus" >}}) and **In this group** > **New project/repository**.
@@ -170,7 +169,7 @@ the right subgroup. This example sets up four rules:
 
 To add a CODEOWNERS file to your `excelsior` project:
 
-1. On the top bar, select **Search or go to** and search for `Excelsior`.
+1. In the top bar, select **Search or go to** and search for `Excelsior`.
 1. Select the project named `Excelsior`.
 1. Next to the branch name, select the plus icon ({{< icon name="plus" >}}), then **New file**:
    ![Create a new file in the project](img/new_file_v16_2.png)
@@ -219,7 +218,7 @@ file types. Approval rules direct merge requests to those reviewers.
 Here, you will set up an approval rule that uses the information in your new CODEOWNERS
 file and adds protection for release branches:
 
-1. On the top bar, select **Search or go to** and search for `Excelsior`.
+1. In the top bar, select **Search or go to** and search for `Excelsior`.
 1. Select the project named `Excelsior`.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval rules**.
@@ -257,7 +256,7 @@ into the release branch.
 Rather than create protections for a branch at a time, configure wildcard branch rules
 to protect multiple branches:
 
-1. On the top bar, select **Search or go to** and search for `Excelsior`.
+1. In the top bar, select **Search or go to** and search for `Excelsior`.
 1. Select the project named `Excelsior`.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
@@ -267,7 +266,7 @@ to protect multiple branches:
    1. In the **Allowed to merge** section, select **Edit**, set to **Maintainers**,
       and select **Save changes**.
    1. In the **Allowed to push and merge** section, select **Edit**, set to **No one**,
-   and select **Save changes**.
+      and select **Save changes**.
    1. Leave **Allowed to force push** disabled.
 1. In GitLab Premium and GitLab Ultimate, to require Code Owners to review changes
    to files they work on, toggle **Require approval from code owners**.
@@ -283,7 +282,7 @@ Your rules are now in place, even though no `1.*` branches exist yet:
 
 Now that all branch protections in place, you're ready to create your 1.0.0 release branch:
 
-1. On the top bar, select **Search or go to** and search for `Excelsior`.
+1. In the top bar, select **Search or go to** and search for `Excelsior`.
 1. Select the project named `Excelsior`.
 1. In the left sidebar, select **Code** > **Branches**.
 1. In the upper-right corner, select **New branch**. Name it `1.0.0`.
@@ -291,12 +290,11 @@ Now that all branch protections in place, you're ready to create your 1.0.0 rele
 
 The branch protections are now visible in the UI:
 
-- On the left sidebar, select **Code** > **Branches**. In the list of branches,
+- In the left sidebar, select **Code** > **Branches**. In the list of branches,
   branch `1.0.0` should be show that it is protected:
 
   ![List of branches, showing 1.0.0 is protected](img/branch_is_protected_v16_2.png)
-
-- On the left sidebar, select **Settings** > **Repository**, then expand **Branch rules**
+- In the left sidebar, select **Settings** > **Repository**, then expand **Branch rules**
   to see details about all protected branches:
 
   ![List of protected branches and their protections](img/protections_in_place_v16_2.png)

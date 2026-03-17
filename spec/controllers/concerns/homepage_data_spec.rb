@@ -55,6 +55,20 @@ RSpec.describe HomepageData, feature_category: :notifications do
   describe '#homepage_app_data' do
     subject(:homepage_data) { controller.send(:homepage_app_data, user) }
 
+    it 'includes work_item_planning_view_enabled flag' do
+      expect(homepage_data).to have_key(:work_item_planning_view_enabled)
+    end
+
+    context 'when work_items_consolidated_list_user feature flag is enabled' do
+      before do
+        stub_feature_flags(work_items_consolidated_list_user: true)
+      end
+
+      it 'sets work_item_planning_view_enabled to "true"' do
+        expect(homepage_data[:work_item_planning_view_enabled]).to eq('true')
+      end
+    end
+
     context 'when user has a recent push event' do
       let(:project) { build(:project, :repository) }
       let(:push_event) do

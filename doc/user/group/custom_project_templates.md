@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: To speed up project creation in your group, build custom project templates and share them with your group.
 title: Custom project templates for groups
 ---
@@ -92,7 +92,7 @@ to the new project. These items include:
 - Labels, milestones, snippets, and releases.
 - CI/CD pipeline configuration.
 
-For a complete list of what is copied, see [Project items that are exported](../project/settings/import_export.md#project-items-that-are-exported).
+For a complete list of what is copied, see [project items that are exported](../project/settings/import_export.md#project-items-that-are-exported).
 
 ### Permissions and sensitive data
 

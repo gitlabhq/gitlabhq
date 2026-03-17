@@ -18,7 +18,6 @@ import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
 import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
-import MrWidgetMigrateJenkins from './components/mr_widget_migrate_jenkins.vue';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import ArchivedState from './components/states/mr_widget_archived.vue';
 import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
@@ -58,7 +57,6 @@ export default {
     Loading,
     WidgetContainer,
     MrWidgetSuggestPipeline: WidgetSuggestPipeline,
-    MrWidgetMigrateJenkins,
     MrWidgetPipelineContainer,
     MrWidgetAlertMessage,
     MrWidgetMerged: MergedState,
@@ -176,14 +174,9 @@ export default {
       return this.mr.hasCI || this.hasPipelineMustSucceedConflict;
     },
     shouldSuggestPipelines() {
-      const { hasCI, mergeRequestAddCiConfigPath, isDismissedSuggestPipeline } = this.mr;
+      const { hasCI, mergeRequestAddCiConfigPath } = this.mr;
 
-      return !hasCI && mergeRequestAddCiConfigPath && !isDismissedSuggestPipeline;
-    },
-    showRenderMigrateFromJenkins() {
-      const { hasCI, isDismissedJenkinsMigration, ciIntegrationJenkins } = this.mr;
-
-      return hasCI && !isDismissedJenkinsMigration && ciIntegrationJenkins;
+      return !hasCI && mergeRequestAddCiConfigPath;
     },
     shouldRenderCollaborationStatus() {
       return this.mr.allowCollaboration && this.mr.isOpen;
@@ -505,12 +498,6 @@ export default {
       eventHub.$off('FetchDeployments', this.onFetchDeployments);
       eventHub.$off('mr.discussion.updated', this.refetchState);
     },
-    dismissSuggestPipelines() {
-      this.mr.isDismissedSuggestPipeline = true;
-    },
-    dismissMigrateFromJenkins() {
-      this.mr.isDismissedJenkinsMigration = true;
-    },
     apolloStateQueryMaxPollingInterval() {
       return (
         Math.max(this.startingPollInterval, STATE_QUERY_POLLING_INTERVAL_DEFAULT) +
@@ -544,19 +531,9 @@ export default {
     </header>
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"
-      :pipeline-path="mr.mergeRequestAddCiConfigPath"
-      :pipeline-svg-path="mr.pipelinesEmptySvgPath"
       :human-access="formattedHumanAccess"
       :user-callouts-path="mr.userCalloutsPath"
       :user-callout-feature-id="mr.suggestPipelineFeatureId"
-      @dismiss="dismissSuggestPipelines"
-    />
-    <mr-widget-migrate-jenkins
-      v-if="showRenderMigrateFromJenkins"
-      class="mr-widget-workflow"
-      :path="mr.userCalloutsPath"
-      :feature-id="mr.migrateJenkinsFeatureId"
-      @dismiss="dismissMigrateFromJenkins"
     />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"

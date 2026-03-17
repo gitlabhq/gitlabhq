@@ -1,5 +1,7 @@
 import Vue from 'vue';
+import { GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { renderVueComponentForLegacyJS } from '~/render_vue_component_for_legacy_js';
 import ImageLightbox from '~/behaviors/components/image_lightbox.vue';
 import { IMAGE_FORMATS } from '~/lib/utils/constants';
 
@@ -82,6 +84,109 @@ function buildImages(imgs) {
   return { images, imageLinks };
 }
 
+function createTransparencyToggle(img) {
+  const button = renderVueComponentForLegacyJS(GlButton, {
+    class:
+      'has-tooltip gl-absolute gl-top-2 gl-right-2 gl-z-1 gl-opacity-0 gl-transition-opacity group-hover:gl-opacity-5 hover:!gl-opacity-10 focus:!gl-opacity-10',
+    props: {
+      icon: 'dot-grid',
+      size: 'small',
+    },
+    attrs: {
+      'data-title': __('Toggle transparency checkerboard'),
+      'aria-label': __('Toggle transparency checkerboard'),
+    },
+  });
+
+  button.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    img.classList.toggle('md-img-checkerboard');
+  });
+
+  return button;
+}
+
+const TRANSPARENT_IMAGE_FORMATS = /\.(png|webp|gif)(\?.*)?$/i;
+const ANALYZE_MAX_SIZE = 100;
+
+function supportsTransparency(link) {
+  const filename = link.href?.split('/').pop() || '';
+  return TRANSPARENT_IMAGE_FORMATS.test(filename);
+}
+
+function checkPixelsForTransparency(img) {
+  const canvas = document.createElement('canvas');
+  const scale = Math.min(1, ANALYZE_MAX_SIZE / Math.max(img.naturalWidth, img.naturalHeight));
+  const width = Math.max(1, Math.floor(img.naturalWidth * scale));
+  const height = Math.max(1, Math.floor(img.naturalHeight * scale));
+
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, width, height);
+
+  const { data } = ctx.getImageData(0, 0, width, height);
+
+  for (let i = 3; i < data.length; i += 4) {
+    if (data[i] < 255) return true;
+  }
+
+  return false;
+}
+
+function hasTransparency(imageSrc) {
+  return new Promise((resolve) => {
+    const testImg = new Image();
+    // Only set crossOrigin for cross-domain images to avoid unnecessary CORS issues
+    if (new URL(imageSrc, window.location.href).origin !== window.location.origin) {
+      testImg.crossOrigin = 'anonymous';
+    }
+
+    testImg.onload = () => {
+      try {
+        resolve(checkPixelsForTransparency(testImg));
+      } catch (e) {
+        resolve(false);
+      }
+    };
+
+    testImg.onerror = () => {
+      resolve(false);
+    };
+
+    testImg.src = imageSrc;
+  });
+}
+
+function addToggleToImage(link, img) {
+  if (link.parentNode.dataset.transparencyToggle) return;
+
+  const wrapper = document.createElement('span');
+  wrapper.className = 'gl-relative gl-inline-block gl-group';
+  wrapper.dataset.transparencyToggle = 'true';
+
+  link.parentNode.insertBefore(wrapper, link);
+  wrapper.appendChild(link);
+  wrapper.appendChild(createTransparencyToggle(img));
+}
+
+function wrapImageWithToggle(link) {
+  if (!supportsTransparency(link)) return;
+
+  const img = link.querySelector('img');
+  if (!img) return;
+
+  hasTransparency(link.href)
+    .then((transparent) => {
+      if (transparent) {
+        addToggleToImage(link, img);
+      }
+    })
+    .catch(() => {});
+}
+
 export function renderImageLightbox(els, container) {
   if (!els.length) return;
 
@@ -107,6 +212,8 @@ export function renderImageLightbox(els, container) {
     newLink.setAttribute('aria-label', __('View image'));
     newLink.setAttribute('aria-haspopup', 'dialog');
     newLink.style.cursor = 'zoom-in';
+
+    wrapImageWithToggle(newLink);
   });
 }
 

@@ -1,5 +1,3 @@
 ---
 name: create_user_gpg_key
 description: Grants the ability to create user GPG keys
-boundaries:
-  - user

@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Authentication methods such as LDAP, OmniAuth, SAML, SCIM, OIDC, and OAuth
 title: User identity
 ---
@@ -32,7 +32,7 @@ Choose from multiple integration methods based on your organization's needs:
 - [OmniAuth](../../integration/omniauth.md)
 - [SAML](../../integration/saml.md)
 - [SAML Group Sync](../../user/group/saml_sso/group_sync.md)
-- [SCIM](../../administration/settings/scim_setup.md)
+- [SCIM](../settings/scim_setup.md)
 
 {{< /cards >}}
 

@@ -73,6 +73,7 @@ export default {
       :placeholder="$options.i18n.searchPlaceholder"
       @submit="visitUrlFromOption"
     />
+    <!-- eslint-disable vue/v-on-event-hyphenation -->
     <gl-sorting
       dropdown-class="gl-w-full !gl-flex"
       block
@@ -80,8 +81,9 @@ export default {
       :sort-options="$options.sortOptions"
       :sort-by="sortKey"
       :is-ascending="isAscending"
-      @sort-by-change="setSelectedSortOption"
-      @sort-direction-change="onSortDirectionChange"
+      @sortByChange="setSelectedSortOption"
+      @sortDirectionChange="onSortDirectionChange"
     />
+    <!-- eslint-disable vue/v-on-event-hyphenation -->
   </div>
 </template>

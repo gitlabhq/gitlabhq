@@ -239,6 +239,17 @@ module GroupsHelper
     }.to_json
   end
 
+  def group_more_action_data(group)
+    request = group.requesters.with_user(current_user).first
+
+    {
+      group: GroupChildSerializer.new(current_user:).represent(group).to_json,
+      can_request_access: can_request_access(current_user, group, request).to_s,
+      can_withdraw_access_request: can_withdraw_access_request(current_user, request).to_s,
+      dashboard_path: dashboard_groups_path
+    }
+  end
+
   def group_merge_requests(group)
     MergeRequestsFinder.new(current_user, group_id: group.id, include_subgroups: true, non_archived: true).execute
   end
@@ -252,6 +263,14 @@ module GroupsHelper
   end
 
   private
+
+  def can_request_access(user, group, request)
+    request.nil? && can?(user, :request_access, group)
+  end
+
+  def can_withdraw_access_request(user, request)
+    can?(user, :withdraw_member_access_request, request)
+  end
 
   def group_title_link(group, hidable: false, show_avatar: false)
     link_to(group_path(group), class: "group-path js-breadcrumb-item-text #{'hidable' if hidable}") do

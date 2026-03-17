@@ -1,12 +1,12 @@
 ---
 stage: AI-powered
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Use the GitLab Workflow extension for VS Code to handle common GitLab tasks directly in VS Code.
-title: Install and set up the GitLab Workflow extension for VS Code
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Use the GitLab for VS Code extension to handle common GitLab tasks directly in VS Code.
+title: Install and set up the GitLab for VS Code extension
 ---
 
-To use the GitLab Workflow extension for VS Code, choose the installation method that meets your
+To use the GitLab for VS Code extension, choose the installation method that meets your
 needs:
 
 - For standard VS Code, install from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
@@ -28,7 +28,7 @@ To install the extension in a VS Code Dev Container:
 
 1. Run the **Dev Containers: Add Dev Container Configuration Files** command from the Command
    Palette.
-1. Add the GitLab Workflow extension to the configuration file:
+1. Add the GitLab extension to the configuration file:
 
    ```json
    // .devcontainer/devcontainer.json
@@ -81,7 +81,7 @@ To connect to your GitLab repository from VS Code:
 1. Clone your repository: `git clone <repository>`.
 1. Change to the directory where your repository was cloned and check out your branch: `git checkout <branch_name>`.
 1. Ensure your project is selected:
-   1. On the left sidebar, select **GitLab Workflow** ({{< icon name="tanuki" >}}).
+   1. In the left sidebar, select **GitLab** ({{< icon name="tanuki" >}}).
    1. Select the project name. If you have multiple projects, select the one you want to work with.
 1. In the terminal, ensure your repository is configured with a remote: `git remote -v`. The results should look similar to:
 
@@ -92,7 +92,7 @@ To connect to your GitLab repository from VS Code:
 
    If no remote is defined, or you have multiple remotes:
 
-   1. On the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
+   1. In the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
    1. On the **Source Control** label, right-click and select **Repositories**.
    1. Next to your repository, select the ellipsis ({{< icon name=ellipsis_h >}}), then **Remote** > **Add Remote**.
    1. Select **Add remote from GitLab**.
@@ -105,7 +105,7 @@ The extension shows information in the VS Code status bar if both:
 
 ## Configure the extension
 
-To configure settings, go to **Settings** > **Extensions** > **GitLab Workflow**.
+To configure settings, go to **Settings** > **Extensions** > **GitLab**.
 Settings can be configured at the user or workspace level.
 
 ### Authentication
@@ -118,7 +118,7 @@ If you are on GitLab Self-Managed or GitLab Dedicated, create a personal access 
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Personal access tokens**.
+1. In the left sidebar, select **Access** > **Personal access tokens**.
 1. Select **Add new token**.
 1. Enter a name, description, and expiration date.
 1. Select the `api` scope.
@@ -135,7 +135,7 @@ If you are on GitLab Self-Managed or GitLab Dedicated, create a personal access 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2738) in GitLab Workflow 6.47.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2738) in GitLab for VS Code 6.47.0.
 
 {{< /history >}}
 
@@ -151,29 +151,28 @@ To configure OAuth application login:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
    - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Type `Preferences: Open User Settings` and press <kbd>Enter</kbd>.
-1. Select **Settings** > **Extensions** > **GitLab Workflow** > **Authentication**.
+1. Select **Settings** > **Extensions** > **GitLab** > **Authentication**.
 1. Under **OAuth Client IDs**, select **Add Item**.
 1. Select **Key** and enter the GitLab instance URL.
 1. Select **Value** and enter the client ID of the OAuth application.
 
 ### Configure GitLab Duo
 
-GitLab Duo features are enabled by default when you meet the prerequisites:
+GitLab Duo features are enabled by default in VS Code when you meet the prerequisites:
 
 - For agentic features, you meet the prerequisites for [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md#prerequisites).
 - You have GitLab Duo [turned on](../../user/gitlab_duo/turn_on_off.md).
-- You open a project that is linked to a remote repository on GitLab, or you set a
-  default GitLab Duo namespace in the extension:
-  1. Select **Extensions** > **GitLab**.
-  1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
-  1. Enter a value for **GitLab > Duo Agent Platform: Default Namespace**.
-- For GitLab Duo Code Suggestions, you meet the additional prerequisites:
-  - [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
-  - [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
+- For flows, you have [foundational flows turned on](../../user/duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- For agents, you have [foundational agents turned on](../../user/duo_agent_platform/agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off)
+  and [custom agents enabled](../../user/duo_agent_platform/agents/custom.md#enable-an-agent), as
+  needed.
+- You have a [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)
+  set or have a project open that has GitLab Duo access.
+- For GitLab Duo Code Suggestions, you [meet the additional prerequisites](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites).
 
 ### Code security
 
-To configure the code security settings, go to **Settings** > **Extensions** > **GitLab Workflow** > **Code Security**.
+To configure the code security settings, go to **Settings** > **Extensions** > **GitLab** > **Code Security**.
 
 - To enable SAST scanning of the active file, select the **Enable Real-time SAST scan** checkbox.
 - Optional. To enable SAST scanning of the active file when you save it, select the
@@ -186,7 +185,7 @@ GitLab publishes pre-release builds of the extension to the VS Code Extension Ma
 To install a pre-release build:
 
 1. Open VS Code.
-1. Under **Extensions** > **GitLab Workflow**, select **Switch to Pre-release Version**.
+1. Under **Extensions** > **GitLab**, select **Switch to Pre-release Version**.
 1. Select **Restart Extensions**.
    1. Alternatively **Reload Window** to refresh any outdated webviews after updating.
 
@@ -194,5 +193,5 @@ To install a pre-release build:
 
 To turn off GitLab Duo Chat in VS Code:
 
-1. Go to **Settings** > **Extensions** > **GitLab Workflow**.
+1. Go to **Settings** > **Extensions** > **GitLab**.
 1. Clear the **Enable GitLab Duo Chat assistant** checkbox.

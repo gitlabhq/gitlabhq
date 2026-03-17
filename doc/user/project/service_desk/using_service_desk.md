@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Use Service Desk
 ---
 
@@ -19,7 +19,7 @@ In these tickets, you can also see our friendly neighborhood [Support Bot](confi
 
 To check what the Service Desk email address is for your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Service Desk**.
 
 The email address is available at the top of the ticket list.
@@ -88,7 +88,7 @@ Prerequisites:
 
 To view Service Desk tickets:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Service Desk**.
 
 #### Redesigned ticket list
@@ -112,7 +112,7 @@ a dedicated email address.
 
 ##### Filter the list of tickets
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Service Desk**.
 1. Above the list of tickets, select **Search or filter results**.
 1. In the dropdown list that appears, select the attribute you want to filter by.
@@ -139,7 +139,7 @@ when you [filter the list of tickets](#filter-the-list-of-tickets) by:
 
 ##### Filter tickets by ID
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Service Desk**.
 1. In the **Search** box, type the ticket ID. For example, enter filter `#10` to return only ticket 10.
 

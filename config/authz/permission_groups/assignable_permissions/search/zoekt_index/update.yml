@@ -1,0 +1,7 @@
+---
+name: update_zoekt_index
+description: Grants the ability to update zoekt indexes
+boundaries:
+  - instance
+permissions:
+  - update_zoekt_index

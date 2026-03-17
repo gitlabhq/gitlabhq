@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import { GlAnimatedSidebarIcon, GlButton, GlTooltip } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
@@ -28,11 +28,11 @@ describe('FileBrowserToggle', () => {
 
   const findToggle = () => wrapper.findComponent(GlButton);
 
-  const createComponent = () => {
+  const createComponent = ({ mountFn = shallowMount } = {}) => {
     const pinia = createTestingPinia();
     useFileBrowser();
     showToast = jest.fn();
-    wrapper = shallowMount(FileBrowserToggle, {
+    wrapper = mountFn(FileBrowserToggle, {
       pinia,
       mocks: {
         $toast: { show: showToast },
@@ -124,16 +124,32 @@ describe('FileBrowserToggle', () => {
   describe('tooltip', () => {
     const findTooltip = () => wrapper.findComponent(GlTooltip);
 
-    it('displays hide message for open file browser', () => {
+    it('renders tooltip component', () => {
       createComponent();
+      expect(findTooltip().exists()).toBe(true);
+    });
+
+    it('displays hide message for open file browser', () => {
+      createComponent({ mountFn: mount });
       expect(findTooltip().text()).toContain('Hide file browser');
     });
 
     it('displays show message for hidden file browser', async () => {
-      createComponent();
+      createComponent({ mountFn: mount });
       useFileBrowser().fileBrowserVisible = false;
       await nextTick();
       expect(findTooltip().text()).toContain('Show file browser');
+    });
+
+    it('displays keyboard shortcut when shortcuts are enabled', () => {
+      createComponent({ mountFn: mount });
+      expect(findTooltip().find('kbd').exists()).toBe(true);
+    });
+
+    it('does not display keyboard shortcut when shortcuts are disabled', () => {
+      shouldDisableShortcuts.mockReturnValue(true);
+      createComponent({ mountFn: mount });
+      expect(findTooltip().find('kbd').exists()).toBe(false);
     });
   });
 });

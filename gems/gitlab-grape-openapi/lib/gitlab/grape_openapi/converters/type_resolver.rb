@@ -5,34 +5,69 @@ module Gitlab
     module Converters
       class TypeResolver
         TYPE_MAPPINGS = {
-          'dateTime' => 'string',
+          'API::Validations::Types::WorkhorseFile' => 'string',
+          'Array' => 'array',
+          'BigDecimal' => 'number',
+          'Boolean' => 'boolean',
           'date' => 'string',
           'Date' => 'string',
-          'symbol' => 'string',
-          'String' => 'string',
-          String => 'string',
-          'Integer' => 'integer',
-          Integer => 'integer',
+          'date-time' => 'string',
+          'dateTime' => 'string',
+          'DateTime' => 'string',
+          'FalseClass' => 'boolean',
+          'Grape::API::Boolean' => 'boolean',
+          'Gitlab::Color' => 'string',
           :int => 'integer',
-          'text' => 'string',
-          'Hash' => 'object',
-          'hash' => 'object',
-          'JSON' => 'object',
+          'int' => 'integer',
+          Integer => 'integer',
+          'Integer' => 'integer',
+          'File' => 'string',
+          Float => 'number',
+          'Float' => 'number',
           :hash => 'object',
-          'Grape::API::Boolean' => 'boolean'
+          'hash' => 'object',
+          'Hash' => 'object',
+          'JSON' => 'object',
+          'Numeric' => 'number',
+          String => 'string',
+          'String' => 'string',
+          'symbol' => 'string',
+          'Symbol' => 'string',
+          'text' => 'string',
+          'Time' => 'string',
+          'TrueClass' => 'boolean'
         }.freeze
 
         FORMAT_MAPPINGS = {
+          'API::Validations::Types::WorkhorseFile' => 'binary',
+          'date' => 'date',
+          'Date' => 'date',
+          'date-time' => 'date-time',
           'dateTime' => 'date-time',
-          'date' => 'date'
+          'DateTime' => 'date-time',
+          'File' => 'binary',
+          'Time' => 'date-time'
         }.freeze
 
         def self.resolve_type(type)
-          TYPE_MAPPINGS[type] || type
+          return TYPE_MAPPINGS[type] if TYPE_MAPPINGS[type]
+          return type unless type.is_a?(String)
+          return 'object' if type.start_with?('API::')
+
+          type
         end
 
         def self.resolve_format(format, type)
           format || FORMAT_MAPPINGS[type]
+        end
+
+        def self.resolve_union_member(type)
+          if type.start_with?('[') && type.end_with?(']')
+            item_type = type[1..-2]
+            { type: 'array', items: { type: resolve_type(item_type) || 'string' } }
+          else
+            { type: resolve_type(type) || 'string' }
+          end
         end
       end
     end

@@ -43,8 +43,7 @@ RSpec.describe Mutations::Integrations::Exclusions::Delete, feature_category: :i
 
     context 'and there are integrations' do
       let!(:existing_exclusion) do
-        create(:beyond_identity_integration, project: project, active: false, inherit_from_id: nil,
-          instance: false)
+        create(:beyond_identity_integration, project: project, active: false, inherit_from_id: nil)
       end
 
       context 'and the integration is active for the instance' do
@@ -52,8 +51,8 @@ RSpec.describe Mutations::Integrations::Exclusions::Delete, feature_category: :i
 
         context 'and there is a group exclusion', :sidekiq_inline do
           let!(:group_exclusion) do
-            create(:beyond_identity_integration, group: project2.root_namespace, active: false, inherit_from_id: nil,
-              instance: false)
+            create(:beyond_identity_integration, project: nil, group: project2.root_namespace, active: false,
+              inherit_from_id: nil)
           end
 
           let(:args) do

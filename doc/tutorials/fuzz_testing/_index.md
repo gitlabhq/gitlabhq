@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Perform fuzz testing in GitLab (deprecated)'
 ---
 
@@ -54,7 +54,7 @@ project template:
 You have successfully forked the `fuzz-testing` project template. Before you can
 start fuzz testing, remove the relationship between the project template and the fork:
 
-1. On the left sidebar, select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.
    Enter the name of the project when prompted.
@@ -92,7 +92,6 @@ To create the two fuzz target files:
 
    You can also copy this code from the `fuzz-testing-demo/fuzzers/fuzz-sayhello.js`
    project file.
-
 1. Name the **Target Branch** `add-fuzz-test` and write a descriptive commit message.
    - Do not select the **Start a new merge request with these changes** checkbox yet.
 1. Select **Commit changes**.
@@ -113,7 +112,6 @@ To create the two fuzz target files:
 
    You can also copy this code from the `fuzz-testing-demo/fuzzers/fuzz-readme.js`
    project file.
-
 1. Write a descriptive commit message.
 1. Make sure the **Target Branch** is `add-fuzz-test`.
 1. Select **Commit changes**.
@@ -246,7 +244,6 @@ To create the `my-tools.js` file:
 
    You can also copy the code from the `fuzz-testing-demo/javascript/my-tools.js`
    project file.
-
 1. Select **Commit changes**. This triggers another pipeline to run another fuzz test.
 1. When the pipeline is finished, check the merge request **Overview** page. You
    should see that the security scan detected no new potential vulnerabilities.

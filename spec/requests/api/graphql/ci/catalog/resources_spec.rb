@@ -212,6 +212,78 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
 
     it_behaves_like 'avoids N+1 queries'
 
+    context 'when the project repository feature is enabled' do
+      let(:query) do
+        <<~GQL
+          query {
+            ciCatalogResources {
+              nodes {
+                id
+                versions(first: 1) {
+                  nodes {
+                    id
+                    readme
+                  }
+                }
+              }
+            }
+          }
+        GQL
+      end
+
+      it 'resolves the readme field for versions' do
+        post_query
+
+        resources = graphql_data_at(:ciCatalogResources, :nodes)
+        versions = resources.flat_map { |r| r.dig('versions', 'nodes') }
+
+        expect(versions).to all(have_key('readme'))
+      end
+    end
+
+    context 'when the project repository feature is disabled' do
+      let(:query) do
+        <<~GQL
+          query {
+            ciCatalogResources {
+              nodes {
+                id
+                versions(first: 1) {
+                  nodes {
+                    id
+                    readme
+                    readmeHtml
+                  }
+                }
+              }
+            }
+          }
+        GQL
+      end
+
+      before do
+        public_project.project_feature.update!(
+          repository_access_level: ProjectFeature::DISABLED,
+          merge_requests_access_level: ProjectFeature::DISABLED,
+          builds_access_level: ProjectFeature::DISABLED
+        )
+      end
+
+      it 'returns null for readme and readmeHtml fields on the affected resource' do
+        post_query
+
+        resources = graphql_data_at(:ciCatalogResources, :nodes)
+
+        public_resource_data = resources.find { |r| r['id'] == public_resource.to_global_id.to_s }
+        public_versions = public_resource_data.dig('versions', 'nodes')
+
+        public_versions.each do |version|
+          expect(version['readme']).to be_nil
+          expect(version['readmeHtml']).to be_nil
+        end
+      end
+    end
+
     context 'when querying version paths' do
       let(:query) do
         <<~GQL

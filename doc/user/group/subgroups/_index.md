@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Subgroups
 ---
 
@@ -29,7 +29,7 @@ Subgroups can:
 - Be nested up to 20 levels.
 - Use [runners](../../../ci/runners/_index.md) registered to parent groups:
   - Secrets configured for the parent group are available to subgroup jobs.
-  - Users with at least the Maintainer role in projects that belong to subgroups can see the details of runners registered to
+  - Users with the Maintainer or Owner role in projects that belong to subgroups can see the details of runners registered to
     parent groups.
 
 For example:
@@ -64,7 +64,7 @@ Prerequisites:
 
 To view the subgroups of a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select the **Subgroups and projects** tab.
 1. Select the subgroup you want to view.
    To view nested subgroups, expand ({{< icon name="chevron-down" >}}) a subgroup.
@@ -82,7 +82,7 @@ you should add private subgroups only to private parent groups.
 Prerequisites:
 
 - You must have either:
-  - At least the Maintainer role for a group.
+  - The Maintainer or Owner role for a group.
   - The [role determined by a setting](#change-who-can-create-subgroups). These users can create
     subgroups even if group creation is
     [disabled by an Administrator](../../../administration/admin_area.md#prevent-a-user-from-creating-top-level-groups) in the user's settings.
@@ -92,7 +92,7 @@ Prerequisites:
 
 To create a subgroup:
 
-1. On the top bar, select **Search or go to** and find the group you want to create the subgroup in.
+1. In the top bar, select **Search or go to** and find the group you want to create the subgroup in.
 1. On the parent group's overview page, in the upper-right corner, select **New subgroup**.
 1. Fill in the fields. View a list of [reserved names](../../reserved_names.md) that cannot be used as group names.
 1. Select **Create subgroup**.
@@ -101,19 +101,19 @@ To create a subgroup:
 
 Prerequisites:
 
-- You must have at least the Maintainer role on the group, depending on the group's setting.
+- You must have the Maintainer or Owner role on the group, depending on the group's setting.
 
 To change who can create subgroups on a group:
 
 - As a user with the Owner role on the group:
-  1. On the top bar, select **Search or go to** and find your group.
+  1. In the top bar, select **Search or go to** and find your group.
   1. Select **Settings** > **General**.
   1. Expand **Permissions and group features**.
   1. From **Roles allowed to create subgroups**, select an option.
   1. Select **Save changes**.
 - As an administrator:
   1. In the upper-right corner, select **Admin**.
-  1. On the left sidebar, select **Overview** > **Groups** and find your group.
+  1. In the left sidebar, select **Overview** > **Groups** and find your group.
   1. In the group's row, select **Edit**.
   1. From the **Allowed to create subgroups** dropdown list, select an option.
   1. Select **Save changes**.
@@ -177,7 +177,7 @@ Group permissions for a member can be changed only by:
 
 To see if a member has inherited the permissions from a parent group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Manage** > **Members**.
    The member's inheritance is displayed in the **Source** column.
 

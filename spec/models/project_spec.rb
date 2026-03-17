@@ -16,8 +16,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'cells claimable model',
-    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::PROJECT,
-    subject_key: :id,
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
+    subject_key: :organization_id,
     source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_PROJECTS,
     claiming_attributes: [:id]
 
@@ -998,6 +998,39 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(relation).to have_received(:reorder).with(arel_table['namespace_id'].asc)
       end
     end
+
+    describe '.include_topics' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:topic) { create(:topic) }
+
+      before_all do
+        project.topics << topic
+      end
+
+      it 'preloads topics and project_topics associations' do
+        projects = described_class.include_topics.where(id: project.id)
+        loaded_project = projects.first
+
+        expect(loaded_project.association(:topics)).to be_loaded
+        expect(loaded_project.association(:project_topics)).to be_loaded
+      end
+    end
+
+    describe '.for_group_and_its_subgroups' do
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:child_group) { create(:group, parent: parent_group) }
+      let_it_be(:other_group) { create(:group) }
+      let_it_be(:project_in_parent) { create(:project, namespace: parent_group) }
+      let_it_be(:project_in_child) { create(:project, namespace: child_group) }
+      let_it_be(:project_in_other) { create(:project, namespace: other_group) }
+
+      it 'returns projects in the specified namespace and its descendants' do
+        result = described_class.for_group_and_its_subgroups(parent_group)
+
+        expect(result).to include(project_in_parent, project_in_child)
+        expect(result).not_to include(project_in_other)
+      end
+    end
   end
 
   describe 'modules' do
@@ -1823,9 +1856,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:start_deletion!).to(:project_namespace).allow_nil }
     it { is_expected.to delegate_method(:cancel_deletion).to(:project_namespace).allow_nil }
     it { is_expected.to delegate_method(:cancel_deletion!).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:deletion_error).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:deletion_error=).to(:project_namespace).with_arguments(:args).allow_nil }
     it { is_expected.to delegate_method(:deletion_in_progress?).to(:project_namespace).allow_nil }
     it { is_expected.to delegate_method(:deletion_scheduled?).to(:project_namespace).allow_nil }
-    it { is_expected.to delegate_method(:namespace_details).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:deletion_scheduled_at).to(:project_namespace) }
+    it { is_expected.to delegate_method(:deletion_scheduled_at=).to(:project_namespace).with_arguments(:args) }
 
     describe 'read project settings' do
       %i[
@@ -3383,6 +3419,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       create(:integrations_slack, project: project_4, inherit_from_id: nil)
 
       expect(described_class.without_integration(instance_integration)).to contain_exactly(project_4)
+    end
+  end
+
+  describe '.without_integration_excluding_ancestor_archived_check' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:active_project) { create(:project, group: group) }
+    let_it_be(:archived_project) { create(:project, :archived, group: group) }
+    let_it_be(:pending_delete_project) { create(:project, group: group, pending_delete: true) }
+    let_it_be(:project_with_integration) { create(:project, group: group) }
+    let_it_be(:instance_integration) { create(:jira_integration, :instance) }
+    let_it_be(:existing_integration) { create(:jira_integration, project: project_with_integration) }
+
+    subject { described_class.without_integration_excluding_ancestor_archived_check(instance_integration) }
+
+    it 'returns active projects without the integration' do
+      is_expected.to include(active_project)
+      is_expected.not_to include(project_with_integration, archived_project, pending_delete_project)
     end
   end
 
@@ -5794,31 +5847,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  context 'with inside_path' do
-    let!(:project1) { create(:project, namespace: create(:namespace, path: 'name_pace')) }
-    let!(:project2) { create(:project) }
-    let!(:project3) { create(:project, namespace: create(:namespace, path: 'namespace')) }
-    let!(:path) { project1.namespace.full_path }
-
-    describe 'inside_path' do
-      it 'returns correct project' do
-        expect(described_class.inside_path(path)).to eq([project1])
-      end
-    end
-
-    describe '.inside_path_preloaded' do
-      it 'preloads the specified associations' do
-        projects = described_class.inside_path_preloaded(path)
-
-        project = projects.first
-
-        expect(project.association(:topics)).to be_loaded
-        expect(project.association(:project_topics)).to be_loaded
-        expect(project.association(:route)).to be_loaded
-      end
-    end
-  end
-
   describe '#route_map_for' do
     let(:project) { create(:project, :repository) }
     let(:route_map) do
@@ -7118,6 +7146,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.repository).to receive(:remove_prohibited_refs).ordered
       expect(project.wiki.repository).to receive(:expire_content_cache)
       expect(import_state).to receive(:finish)
+      expect(project).to receive(:track_project_repository)
       expect(project).to receive(:reset_counters_and_iids)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
@@ -7198,6 +7227,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(project).to receive(:enqueue_record_project_target_platforms)
 
         project.after_import
+      end
+    end
+
+    describe 'project_repository tracking' do
+      context 'when the project does not have a git repository' do
+        it 'does not create a project_repository record' do
+          expect { project.after_import }.not_to change(ProjectRepository, :count)
+        end
+      end
+
+      context 'when the project does have a git repository' do
+        let_it_be(:project_with_repo) { create(:project, :test_repo) }
+
+        it 'creates a project_repository record' do
+          expect { project_with_repo.after_import }.to change(ProjectRepository, :count).by(1)
+        end
       end
     end
   end
@@ -7572,6 +7617,30 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
           it_behaves_like 'webhook is added to execution list'
         end
+      end
+    end
+
+    context 'when resource deploy token hooks for expiry notification' do
+      let_it_be_with_reload(:project) { create(:project) }
+      let!(:hook) { create(:project_hook, project: project, resource_deploy_token_events: true) }
+      let!(:hook_scope) { :resource_deploy_token_hooks }
+
+      context 'when interval is seven days' do
+        let(:data) { { interval: :seven_days } }
+
+        it_behaves_like 'webhook is added to execution list'
+      end
+
+      context 'when interval is thirty days' do
+        let(:data) { { interval: :thirty_days } }
+
+        it_behaves_like 'webhook is added to execution list'
+      end
+
+      context 'when interval is sixty days' do
+        let(:data) { { interval: :sixty_days } }
+
+        it_behaves_like 'webhook is added to execution list'
       end
     end
   end
@@ -9997,6 +10066,93 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#deletion_error' do
+    context 'when project_namespace exists' do
+      let(:project) { create(:project) }
+
+      context 'when state_metadata has deletion_error' do
+        before do
+          project.project_namespace.namespace_details.update!(state_metadata: { 'deletion_error' => 'Something went wrong' })
+        end
+
+        it 'returns the deletion_error from state_metadata' do
+          expect(project.reload.deletion_error).to eq('Something went wrong')
+        end
+      end
+
+      context 'when state_metadata is nil' do
+        before do
+          project.project_namespace.namespace_details.update!(state_metadata: nil)
+        end
+
+        it 'returns nil' do
+          expect(project.reload.deletion_error).to be_nil
+        end
+      end
+
+      context 'when state_metadata does not have deletion_error key' do
+        before do
+          project.project_namespace.namespace_details.update!(state_metadata: { 'correlation_id' => 'abc123' })
+        end
+
+        it 'returns nil' do
+          expect(project.reload.deletion_error).to be_nil
+        end
+      end
+    end
+
+    context 'when project_namespace is nil' do
+      let(:project) { build(:project, project_namespace: nil) }
+
+      it 'returns nil' do
+        expect(project.deletion_error).to be_nil
+      end
+    end
+  end
+
+  describe '#deletion_error=' do
+    let(:project) { create(:project) }
+
+    it 'sets the deletion_error in state_metadata' do
+      project.deletion_error = 'Deletion failed'
+      project.project_namespace.namespace_details.save!
+
+      expect(project.project_namespace.namespace_details.reload.state_metadata['deletion_error']).to eq('Deletion failed')
+    end
+
+    it 'preserves existing state_metadata keys' do
+      project.project_namespace.namespace_details.update!(state_metadata: { 'correlation_id' => 'abc123' })
+
+      project.deletion_error = 'New error'
+      project.project_namespace.namespace_details.save!
+
+      state_metadata = project.project_namespace.namespace_details.reload.state_metadata
+      expect(state_metadata['correlation_id']).to eq('abc123')
+      expect(state_metadata['deletion_error']).to eq('New error')
+    end
+
+    it 'overwrites existing deletion_error' do
+      project.deletion_error = 'First error'
+      project.deletion_error = 'Second error'
+      project.project_namespace.namespace_details.save!
+
+      expect(project.project_namespace.namespace_details.reload.state_metadata['deletion_error']).to eq('Second error')
+    end
+
+    context 'when state_metadata is nil' do
+      before do
+        project.project_namespace.namespace_details.update!(state_metadata: nil)
+      end
+
+      it 'creates state_metadata with deletion_error' do
+        project.deletion_error = 'Error message'
+        project.project_namespace.namespace_details.save!
+
+        expect(project.project_namespace.namespace_details.reload.state_metadata).to eq({ 'deletion_error' => 'Error message' })
+      end
+    end
+  end
+
   describe '#glql_load_on_click_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
@@ -10414,95 +10570,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       subject(:use_work_item_url?) { project.use_work_item_url? }
 
       it { is_expected.to be(result) }
-    end
-  end
-
-  describe '#work_items_saved_views_enabled?' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, group: group) }
-    let_it_be(:user) { create(:user) }
-
-    context "when the project's group has work_items_saved_views enabled" do
-      before do
-        allow(group).to receive(:work_items_saved_views_enabled?).and_return(true)
-      end
-
-      it 'returns true' do
-        expect(project.work_items_saved_views_enabled?).to eq(true)
-        expect(project.work_items_saved_views_enabled?(user)).to eq(true)
-      end
-    end
-
-    context "when the project's group has work_items_saved_views disabled" do
-      before do
-        allow(group).to receive(:work_items_saved_views_enabled?).and_return(false)
-      end
-
-      context 'when work_items_saved_views is enabled' do
-        before do
-          stub_feature_flags(work_items_saved_views: true)
-        end
-
-        it 'returns true regardless of user' do
-          expect(project.work_items_saved_views_enabled?).to eq(true)
-          expect(project.work_items_saved_views_enabled?(user)).to eq(true)
-        end
-      end
-
-      context 'when work_items_saved_views is disabled' do
-        before do
-          stub_feature_flags(work_items_saved_views: false)
-        end
-
-        context 'when work_items_saved_views_user is enabled for user' do
-          before do
-            stub_feature_flags(work_items_saved_views_user: user)
-          end
-
-          it 'returns true when user is provided' do
-            expect(project.work_items_saved_views_enabled?(user)).to eq(true)
-          end
-
-          it 'returns false when no user is provided' do
-            expect(project.work_items_saved_views_enabled?).to eq(false)
-          end
-        end
-
-        context 'when work_items_saved_views_user is disabled' do
-          before do
-            stub_feature_flags(work_items_saved_views_user: false)
-          end
-
-          it 'returns false' do
-            expect(project.work_items_saved_views_enabled?(user)).to eq(false)
-            expect(project.work_items_saved_views_enabled?).to eq(false)
-          end
-        end
-      end
-    end
-
-    context 'when the project belongs to a user namespace' do
-      let_it_be(:project_without_group) { create(:project, namespace: user.namespace) }
-
-      context 'when work_items_saved_views is enabled' do
-        before do
-          stub_feature_flags(work_items_saved_views: true)
-        end
-
-        it 'returns true' do
-          expect(project_without_group.work_items_saved_views_enabled?).to eq(true)
-        end
-      end
-
-      context 'when all saved view feature flags are disabled' do
-        before do
-          stub_feature_flags(work_items_saved_views: false, work_items_saved_views_user: false)
-        end
-
-        it 'returns false' do
-          expect(project_without_group.work_items_saved_views_enabled?).to eq(false)
-        end
-      end
     end
   end
 

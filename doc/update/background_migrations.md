@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Check migrations before upgrade
 ---
 
@@ -38,7 +38,7 @@ To view all batched background migrations across all databases:
 
 {{< tabs >}}
 
-{{< tab title="GitLab 18.5 and later" >}}
+{{< tab title="GitLab 18.9 and later" >}}
 
 ```shell
 sudo gitlab-rake gitlab:background_migrations:list
@@ -61,7 +61,7 @@ ci_3    | ci_runners                       | BackfillOrganizationIdOnCiRunners  
 
 {{< /tab >}}
 
-{{< tab title="GitLab 18.4 and earlier" >}}
+{{< tab title="GitLab 18.8 and earlier" >}}
 
 ```shell
 sudo gitlab-rake gitlab:background_migrations:status
@@ -388,7 +388,6 @@ Use the following database queries to see the state of the current batched backg
 
 1. Run the query multiple times within a few minutes to ensure no new row has been added.
    If no new row has been added, the migration has been paused.
-
 1. After confirming the migration has paused, restart the migration (using the `enable`
    command mentioned previously) to proceed with the batch when ready. On larger instances,
    background migrations can take as long as 48 hours to complete each batch.
@@ -539,14 +538,14 @@ use the information in the failure error logs or the database:
    - `column_name`: `id`
    - `job_arguments`: `[["id"], ["id_convert_to_bigint"]]`
 
- When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
- comma between each argument with a backslash ` \ ` to prevent an invalid character error.
- Every comma in the `job_arguments` parameter value must be escaped with a backslash.
+   When dealing with multiple arguments, such as `[["id"],["id_convert_to_bigint"]]`, escape the
+   comma between each argument with a backslash ` \ ` to prevent an invalid character error.
+   Every comma in the `job_arguments` parameter value must be escaped with a backslash.
 
- For example:
+   For example:
 
- ```shell
- sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,ci_builds,id,'[["id"\, "stage_id"]\,["id_convert_to_bigint"\,"stage_id_convert_to_bigint"]]']
+   ```shell
+   sudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,ci_builds,id,'[["id"\, "stage_id"]\,["id_convert_to_bigint"\,"stage_id_convert_to_bigint"]]']
    ```
 
 {{< /tab >}}

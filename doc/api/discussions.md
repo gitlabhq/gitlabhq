@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Discussions API
 ---
 
@@ -271,7 +271,7 @@ Example request:
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/<discussion_id>/notes/1108?body=comment"
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/<discussion_id>/notes/<note_id>?body=comment"
 ```
 
 ### Delete an issue thread note
@@ -298,7 +298,7 @@ Example request:
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/636"
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions/<discussion_id>/notes/<note_id>"
 ```
 
 ## Snippets
@@ -517,7 +517,7 @@ Example request:
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/<discussion_id>/notes/1108?body=comment"
+  --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/<discussion_id>/notes/<note_id>?body=comment"
 ```
 
 ### Delete a snippet thread note
@@ -544,7 +544,7 @@ Example request:
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/636"
+  --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/<discussion_id>/notes/<note_id>"
 ```
 
 ## Epics
@@ -563,7 +563,7 @@ curl --request DELETE \
 > Use the Work Items API instead:
 >
 > - GitLab 17.4 to 18.0: Required when [the new look for epics](../user/group/epics/_index.md#epics-as-work-items)
-> is enabled.
+>   is enabled.
 > - GitLab 18.1 and later: Required for all installations.
 >
 > For more information, see the [API migration guide](graphql/epic_work_items_api_migration_guide.md).
@@ -784,7 +784,7 @@ Example request:
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/<discussion_id>/notes/1108?body=comment"
+  --url "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/<discussion_id>/notes/<note_id>?body=comment"
 ```
 
 ### Delete an epic thread note
@@ -811,7 +811,7 @@ Example request:
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/636"
+  --url "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/<discussion_id>/notes/<note_id>"
 ```
 
 ## Merge requests
@@ -1297,7 +1297,7 @@ Example request:
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>/notes/1108?body=comment"
+  --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>/notes/<note_id>?body=comment"
 ```
 
 Resolving a note:
@@ -1305,7 +1305,7 @@ Resolving a note:
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>/notes/1108?resolved=true"
+  --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>/notes/<note_id>?resolved=true"
 ```
 
 ### Delete a merge request thread note
@@ -1332,7 +1332,7 @@ Example request:
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/636"
+  --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/<discussion_id>/notes/<note_id>"
 ```
 
 ## Commits
@@ -1618,7 +1618,7 @@ Example request:
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions/<discussion_id>/notes/1108?body=comment"
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions/<discussion_id>/notes/<note_id>?body=comment"
 ```
 
 Resolving a note:
@@ -1626,7 +1626,7 @@ Resolving a note:
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions/<discussion_id>/notes/1108?resolved=true"
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions/<discussion_id>/notes/<note_id>?resolved=true"
 ```
 
 ### Delete a commit discussion note
@@ -1653,5 +1653,5 @@ Example request:
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions/<discussion_id>/notes/636"
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions/<discussion_id>/notes/<note_id>"
 ```

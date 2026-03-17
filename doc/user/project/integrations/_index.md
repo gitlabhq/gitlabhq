@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Project integrations
 description: "User documentation for project and group integrations. Includes a list of available integrations."
 ---
@@ -36,7 +36,7 @@ Prerequisites:
 
 To manage the group default settings for a project integration:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. Complete the fields.
@@ -76,7 +76,7 @@ Prerequisites:
 
 To remove a group default setting:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. Select **Reset** and confirm.
@@ -91,7 +91,7 @@ Prerequisites:
 
 To use instance or group default settings for a project integration:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use default settings**.
@@ -108,7 +108,7 @@ Prerequisites:
 
 To use custom settings for a project or group integration:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Integrations**.
 1. Select an integration.
 1. On the right, from the dropdown list, select **Use custom settings**.
@@ -162,7 +162,7 @@ None of these integrations have integration hooks.
 
 ### External issue trackers
 
-The following integrations add links to [external issue trackers](../../../integration/external-issue-tracker.md) on the left sidebar in your project.
+The following integrations add links to [external issue trackers](../../../integration/external-issue-tracker.md) in the left sidebar in your project.
 None of these integrations have integration hooks.
 
 | Integration                                     | Description                                             | Issue sync  | Can create new issues |
@@ -178,7 +178,7 @@ None of these integrations have integration hooks.
 
 ### External wikis
 
-The following integrations add links to external wikis on the left sidebar in your project.
+The following integrations add links to external wikis in the left sidebar in your project.
 None of these integrations have integration hooks.
 
 | Integration                                              | Description                                         |

@@ -18,7 +18,6 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
       project.add_developer(user)
       project.update!(auto_devops_attributes: { enabled: false })
-      stub_feature_flags(pipelines_page_graphql: false)
     end
 
     describe 'GET /:project/-/pipelines' do
@@ -574,10 +573,9 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
       end
 
       context 'with pagination' do
-        before do
-          allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
-          create(:ci_empty_pipeline, project: project)
-        end
+        # rubocop:disable FactoryBot/ExcessiveCreateList -- need >15 items to test pagination
+        let!(:pipelines) { create_list(:ci_pipeline, 16, project: project) }
+        # rubocop:enable FactoryBot/ExcessiveCreateList
 
         it 'renders pagination' do
           visit_project_pipelines
@@ -586,20 +584,18 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           expect(page).to have_selector('.gl-pagination')
         end
 
-        it 'renders second page of pipelines' do
-          visit project_pipelines_path(project, page: '2')
+        it 'shows updated page content' do
+          visit project_pipelines_path(project)
+
           wait_for_requests
 
-          expect(page).to have_selector('[data-testid="gl-pagination-li"]', count: 4)
-        end
+          expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 15)
 
-        it 'shows updated content' do
-          visit_project_pipelines
+          find_by_testid('nextButton').click
+
           wait_for_requests
 
-          find_by_testid('gl-pagination-next').click
-
-          expect(page).to have_selector('[data-testid="gl-pagination-li"]', count: 4)
+          expect(page).to have_selector('[data-testid="pipeline-table-row"]', count: 2)
         end
       end
 
@@ -830,7 +826,6 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
   context 'when user is not logged in' do
     before do
-      stub_feature_flags(pipelines_page_graphql: false)
       project.update!(auto_devops_attributes: { enabled: false })
 
       visit_project_pipelines

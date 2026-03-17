@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Manage Git access to projects by adding CA certificates to your top-level group, instead of individual groups.
 title: Manage group SSH certificates
 ---
@@ -13,12 +13,14 @@ title: Manage group SSH certificates
 
 {{< /details >}}
 
-You can control and manage Git access to your projects and groups with SSH certificates.
+Control and manage Git access to your projects and groups hosted on GitLab.com with SSH certificates.
 
 SSH certificates are cryptographically signed documents that authenticate a user's identity and
-permissions.
-They are issued by a trusted Certificate Authority (CA) and contain information such as
-the user's identity, validity period, and permissions.
+permissions. SSH certificates are issued by a trusted Certificate Authority (CA) and contain
+information such as the user's identity, validity period, and permissions.
+
+If you are a GitLab Self-Managed instance administrator, you should instead use an instance-wide SSH certificate approach configured using the system OpenSSH daemon.
+For more information, see [user lookup with the OpenSSH `AuthorizedPrincipalsCommand`](../../administration/operations/ssh_certificates.md).
 
 The benefits of SSH certificate authentication are:
 
@@ -146,7 +148,7 @@ Prerequisites:
 
 To enforce using SSH certificates:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select the **Enforce SSH Certificates** checkbox.

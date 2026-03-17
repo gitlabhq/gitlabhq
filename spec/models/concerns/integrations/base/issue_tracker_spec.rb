@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Base::IssueTracker, feature_category: :integrations do
+RSpec.describe Integrations::Base::IssueTracker, feature_category: :team_planning do
   let(:integration) do
     build(
       :redmine_integration,

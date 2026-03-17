@@ -1,6 +1,6 @@
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { toggleFileAdapter } from '~/rapid_diffs/adapters/toggle_file';
-import { COLLAPSE_FILE, EXPAND_FILE } from '~/rapid_diffs/adapter_events';
+import { COLLAPSE_FILE, COLLAPSE_FILE_BY_USER, EXPAND_FILE } from '~/rapid_diffs/adapter_events';
 import { scrollPastCoveringElements } from '~/lib/utils/sticky';
 
 jest.mock('~/lib/utils/sticky');
@@ -102,6 +102,22 @@ describe('Diff File Toggle Behavior', () => {
 
     expect(scrollIntoViewSpy).not.toHaveBeenCalled();
     expect(scrollPastCoveringElements).not.toHaveBeenCalled();
+  });
+
+  it('collapses file and scrolls into view via COLLAPSE_FILE_BY_USER event', () => {
+    const file = get('file');
+    const scrollIntoViewSpy = jest.spyOn(file.diffElement, 'scrollIntoView');
+
+    get('file').trigger(COLLAPSE_FILE_BY_USER);
+
+    expect(get('body').open).toEqual(false);
+    expect(get('file').diffElement.dataset.collapsed).toEqual('true');
+    expect(scrollIntoViewSpy).toHaveBeenCalledWith({
+      block: 'nearest',
+      inline: 'nearest',
+      behavior: 'instant',
+    });
+    expect(scrollPastCoveringElements).toHaveBeenCalledWith(file.diffElement);
   });
 
   it('expands file', () => {

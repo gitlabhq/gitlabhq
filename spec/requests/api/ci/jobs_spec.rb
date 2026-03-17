@@ -1011,7 +1011,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     let(:skip_before) { false }
     let!(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
     let(:retry_inputs) { {} }
-    let(:ci_job_inputs_flag) { true }
 
     def call_retry_job
       post api("/projects/#{project.id}/jobs/#{job.id}/retry", api_user),
@@ -1023,7 +1022,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       next if skip_before
 
       allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(103)
-      stub_feature_flags(ci_job_inputs: ci_job_inputs_flag)
       call_retry_job
     end
 
@@ -1141,16 +1139,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         it 'returns validation errors' do
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq('400 Bad request - `environment` input: `development` cannot be used because it is not in the list of allowed options')
-        end
-      end
-
-      context 'when the ci_job_inputs feature flag is disabled' do
-        let(:ci_job_inputs_flag) { false }
-        let(:retry_inputs) { { 'environment' => 'production', 'debug' => true } }
-
-        it 'returns an error when inputs are provided' do
-          expect(response).to have_gitlab_http_status(:forbidden)
-          expect(json_response['message']).to eq('403 Forbidden - The inputs parameter is not available')
         end
       end
     end
@@ -1280,11 +1268,9 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
   describe 'POST /projects/:id/jobs/:job_id/play' do
     let(:params) { {} }
-    let(:ci_job_inputs_flag) { true }
 
     before do
       project.update!(ci_pipeline_variables_minimum_override_role: :developer)
-      stub_feature_flags(ci_job_inputs: ci_job_inputs_flag)
       post api("/projects/#{project.id}/jobs/#{job.id}/play", api_user), params: params
     end
 
@@ -1399,25 +1385,6 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['message']).to include('Unknown input')
             expect(job.reload).to be_manual
-          end
-        end
-
-        context 'when job_inputs feature flag is disabled' do
-          let_it_be(:job) do
-            create(:ci_build, :manual, project: project, pipeline: pipeline, options: {
-              inputs: {
-                environment: { type: 'string' }
-              }
-            })
-          end
-
-          let(:params) { { job_inputs: { environment: 'production' } } }
-          let(:ci_job_inputs_flag) { false }
-
-          it 'ignores the inputs and plays the job' do
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(job.reload).to be_pending
-            expect(job.inputs).to be_empty
           end
         end
       end

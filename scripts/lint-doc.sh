@@ -87,7 +87,8 @@ if [ "${VERSIONLESS_IMAGES}" != "" ]; then
 fi
 
 printf "${INFO_COLOR_SET}INFO${COLOR_RESET} Checking '$(pwd)/doc' for filenames containing an uppercase letter...\n"
-FILENAMES_WITH_UPPERCASE=$(find doc -type f -name "*[[:upper:]]*.md")
+# AGENTS.md is excluded because it follows the AI agent convention of uppercase filenames
+FILENAMES_WITH_UPPERCASE=$(find doc -type f -name "*[[:upper:]]*.md" ! -name "AGENTS.md")
 if [ "${FILENAMES_WITH_UPPERCASE}" != "" ]; then
   printf "${ERROR_COLOR_SET}ERROR${COLOR_RESET} Filenames with an uppercase letter found! Use lowercase letters instead for these filenames:\n"
   printf "  ${FILENAMES_WITH_UPPERCASE}\n"

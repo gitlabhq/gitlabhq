@@ -1,4 +1,4 @@
-import { pick } from 'lodash';
+import { pick } from 'lodash-es';
 import createGqClient, { fetchPolicies } from '~/lib/graphql';
 import { truncateSha } from '~/lib/utils/text_utility';
 

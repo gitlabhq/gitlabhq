@@ -121,6 +121,14 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
           end
         end
       end
+
+      context 'when committer email has different case than verified email' do
+        let(:committer_email) { user.email.upcase }
+
+        it 'returns verified (case-insensitive match)' do
+          expect(signature.verification_status).to eq('verified')
+        end
+      end
     end
 
     context 'when persisted verification_status not verified' do

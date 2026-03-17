@@ -48,7 +48,13 @@ module Security
 
         ServiceResponse.error(message: e.message)
       rescue Gitlab::Git::PreReceiveError => e
-        ServiceResponse.error(message: e.message)
+        ServiceResponse.error(message: Gitlab::Utils::ErrorMessage.to_user_facing(e.message))
+      rescue Gitlab::Git::CommandError => e
+        # When push rules reject a branch name, the error arrives as CommandError
+        # (via wraps_gitaly_errors) rather than PreReceiveError. Extract the safe
+        # user-facing portion using the same prefixes defined in PreReceiveError.
+        sanitized = extract_safe_message(e.message)
+        ServiceResponse.error(message: Gitlab::Utils::ErrorMessage.to_user_facing(sanitized))
       rescue StandardError
         remove_branch_on_exception
         raise
@@ -99,6 +105,14 @@ module Security
         Gitlab::Tracking.event(
           self.class.to_s, action[:action], label: action[:default_values_overwritten].to_s
         )
+      end
+
+      def extract_safe_message(message)
+        # Matches the safe message portion after known prefixes (GitLab:, GL-HOOK-ERR:)
+        # anywhere in the string, consistent with PreReceiveError::SAFE_MESSAGE_PREFIXES.
+        prefixes = Gitlab::Git::PreReceiveError::SAFE_MESSAGE_PREFIXES.join('|')
+        match = message.match(/(#{prefixes})\s*(?<safe_message>.+)/)
+        match ? match[:safe_message] : message
       end
 
       def root_ref_sha(repository)

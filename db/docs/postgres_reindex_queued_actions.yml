@@ -8,5 +8,5 @@ description: Contains a queue-like structure for reindexing actions. Actions in 
   queue will be prioritized over regular reindexing actions.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73480
 milestone: '14.5'
-gitlab_schema: gitlab_shared
+gitlab_schema: gitlab_shared_cell_local
 table_size: small

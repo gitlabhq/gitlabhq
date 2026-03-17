@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: Prompt example page type
 ---
 
@@ -126,7 +126,6 @@ Expected outcomes should be specific and measurable. For example:
 
 - Do: `Detailed analysis identifying 3-5 specific improvement areas with code examples`
 - Do not: `Analysis of the code`
-
 - Do: `Complete refactored class with improved method names and added tests`
 - Do not: `Better code`
 

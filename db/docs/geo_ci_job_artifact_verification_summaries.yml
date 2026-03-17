@@ -1,0 +1,11 @@
+---
+table_name: geo_ci_job_artifact_verification_summaries
+classes:
+  - Geo::CiJobArtifactVerificationSummary
+feature_categories:
+  - geo_replication
+description: Stores pre-calculated verification state counts for CI job artifacts,
+  organized by buckets for efficient incremental updates.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224136
+milestone: '18.10'
+gitlab_schema: gitlab_ci_cell_local

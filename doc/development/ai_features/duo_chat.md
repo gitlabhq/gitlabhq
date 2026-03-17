@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Duo Chat
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: GitLab Duo Chat
 ---
 
@@ -175,21 +175,16 @@ If you want to add a new tool, contact the GitLab Duo Chat team. We're working o
    - `example` of question and desired answer
 
 1. Add tool to `__all__` list of tools in `ai_gateway/chat/tools/gitlab.py`.
-
 1. Add tool class to the `DuoChatToolsRegistry` in `ai_gateway/chat/toolset.py` with an appropriate Unit Primitive.
-
 1. Add test for your changes.
 
 #### Changes in Rails Monolith
 
 1. Create files for the tool in the `ee/lib/gitlab/llm/chain/tools/` folder. Use existing tools like `issue_reader` or
    `epic_reader` as a template.
-
 1. Write a class for the tool that includes instructions for the large language model on how to use the tool
    to gather information - the main prompts that this tool is using.
-
 1. Implement code in the tool to parse the response from the large language model and return it to the [chat agent](https://gitlab.com/gitlab-org/gitlab/-/blob/e0220502f1b3459b5a571d510ce5d1826877c3ce/ee/lib/gitlab/llm/chain/agents/single_action_executor.rb).
-
 1. Add the new tool name to the `tools` array in `ee/lib/gitlab/llm/completions/chat.rb` so the agent knows about it.
 
 #### Testing all together
@@ -297,11 +292,14 @@ LangSmith integration works with any tools, including [GitLab Centralized Evalua
 
    Project name is an existing project in LangSmith or a new one. It's enough to put a new name in the environment variable -
    the project will be created during request.
-
 1. Restart GDK.
 1. Ask any question to Chat.
 1. Observe project in the LangSmith [page](https://smith.langchain.com/) > Projects > \[Project name\]. 'Runs' tab should contain
    your last requests.
+
+### Sharing your LangSmith traces (for internal team members)
+
+You can share your trace URL with team members directly by copying the entire URL from the web browser. This is the preferred way of sharing your traces instead of the ["share" trace feature present in the LangSmith UI](https://docs.langchain.com/langsmith/share-trace). Sharing a trace publicly will make it accessible to anyone with the link, even if they don’t have a LangSmith access via OKTA. Traces contain sensitive information such as CI tokens.
 
 ## Evaluate your merge request in one click
 
@@ -693,7 +691,7 @@ flow of how we construct a Chat prompt:
    ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L207)
    | [example tool class](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/tools/identifier.rb))
       1. The tool executor classes include `Concerns::AiDependent` and use its `request` method.
-      ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/chain/concerns/ai_dependent.rb#L14))
+         ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/chain/concerns/ai_dependent.rb#L14))
       1. The `request` method uses the `ai_request` instance
          that was injected into the `context` in `Llm::Completions::Chat`. For Chat,
          this is `Gitlab::Llm::Chain::Requests::AiGateway`. ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/completions/chat.rb#L42)).
@@ -702,7 +700,7 @@ flow of how we construct a Chat prompt:
          This tells the `ai_request` to send the prompt to the `/v1/prompts/chat` endpoint ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L87)).
 
       1. AI Gateway `/v1/prompts/chat` endpoint receives the request on `api.v1.prompts.invoke`
-      ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L41)).
+         ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L41)).
       1. `api.v1.prompts.invoke` gets the correct tool prompt from the tool prompt registry ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L49)).
       1. The prompt is called either as a [stream](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L86) or as a [non-streamed invocation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L96).
       1. If the tool answer is not final, the response is added to `agent_scratchpad` and the loop in `Gitlab::Duo::Chat::ReactExecutor` starts again, adding the additional context to the request. It loops to up to 10 times until a final answer is reached. ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L44))

@@ -1,19 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'archived project policies' do
-  let(:feature_write_abilities) do
-    described_class.archived_features.flat_map do |feature|
-      [
-        :"create_#{feature}",
-        :"update_#{feature}",
-        :"admin_#{feature}",
-        :"destroy_#{feature}"
-      ]
-    end + additional_maintainer_permissions
-  end
-
-  let(:other_write_abilities) do
-    described_class.archived_abilities
+  let(:write_abilities) do
+    Authz::PermissionGroups::Internal.get('project:archived').permissions
   end
 
   context 'when the project is archived' do
@@ -22,15 +11,11 @@ RSpec.shared_examples 'archived project policies' do
     end
 
     it 'disables write actions on all relevant project features' do
-      expect_disallowed(*feature_write_abilities)
-    end
-
-    it 'disables some other important write actions' do
-      expect_disallowed(*other_write_abilities)
+      expect_disallowed(*write_abilities)
     end
 
     it 'does not disable other abilities' do
-      expect_allowed(*(regular_abilities - feature_write_abilities - other_write_abilities))
+      expect_allowed(*(regular_abilities - write_abilities))
     end
   end
 end

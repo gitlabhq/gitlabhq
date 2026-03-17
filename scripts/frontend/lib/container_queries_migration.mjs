@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { styleText } from 'node:util';
-import memoize from 'lodash/memoize.js';
+import { memoize } from 'lodash-es';
 import { BOOTSTRAP_MIGRATIONS } from './bootstrap_tailwind_equivalents.mjs';
 
 const BREAKPOINTS = ['sm', 'md', 'lg', 'xl'];

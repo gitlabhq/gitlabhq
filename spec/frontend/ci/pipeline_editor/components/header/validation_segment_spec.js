@@ -1,7 +1,7 @@
 import VueApollo from 'vue-apollo';
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import Vue from 'vue';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import ValidationSegment from '~/ci/pipeline_editor/components/header/validation_segment.vue';

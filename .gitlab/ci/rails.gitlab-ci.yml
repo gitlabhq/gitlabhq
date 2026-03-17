@@ -496,11 +496,11 @@ rspec:artifact-collector unit:
   needs:
     - job: rspec unit pg17  # 44 jobs
       optional: true
-    - job: rspec unit clickhouse23 # 2 jobs
+    - job: rspec unit clickhouse23  # 2 jobs
       optional: true
-    - job: rspec unit clickhouse24 # 2 jobs
+    - job: rspec unit clickhouse24  # 2 jobs
       optional: true
-    - job: rspec unit clickhouse25 # 2 jobs
+    - job: rspec unit clickhouse25  # 2 jobs
       optional: true
 
 rspec:artifact-collector part-a:
@@ -582,7 +582,7 @@ rspec:artifact-collector ee remainder:
   needs:
     - job: rspec-ee migration pg17  # 2 jobs
       optional: true
-    - job: rspec-ee background_migration pg17  # 3 jobs
+    - job: rspec-ee background_migration pg17  # 6 jobs
       optional: true
     - job: rspec-ee unit clickhouse23  # 2 jobs
       optional: true
@@ -596,9 +596,9 @@ rspec:artifact-collector ee remainder:
       optional: true
     - job: rspec-ee system pg17  # 16 jobs
       optional: true
-    - job: rspec fail-fast # 1 job
+    - job: rspec fail-fast  # 1 job
       optional: true
-    - job: rspec-ee fail-fast # 1 job
+    - job: rspec-ee fail-fast  # 1 job
       optional: true
   rules:
     - !reference ['.rails:rules:rspec fail-fast', rules]
@@ -606,6 +606,70 @@ rspec:artifact-collector ee remainder:
     - !reference ['.rails:rules:ee-only-background-migration', rules]
     - !reference ['.rails:rules:ee-only-integration', rules]
     - !reference ['.rails:rules:ee-only-system', rules]
+
+rspec:predictive artifact-collector:
+  stage: post-test
+  needs:
+    - job: rspec:predictive:trigger
+      optional: true
+    - job: rspec:predictive:trigger single-db
+      optional: true
+    - job: rspec:predictive:trigger single-db-ci-connection
+      optional: true
+  rules:
+    - !reference ['.rails:rules:rspec-predictive', rules]
+    - !reference ['.rails:rules:rspec-predictive:single-db', rules]
+    - !reference ['.rails:rules:rspec-predictive:single-db-ci-connection', rules]
+  variables:
+    JOB_NAME: 'rspec-predictive-artifact-collector'
+    COVERAGE_TYPE: 'predictive'
+  script:
+    - |
+      for BRIDGE_NAME in "rspec:predictive:trigger" "rspec:predictive:trigger single-db" "rspec:predictive:trigger single-db-ci-connection"; do
+        echo "Attempting to download from bridge: $BRIDGE_NAME"
+        export BRIDGE_NAME="$BRIDGE_NAME"
+        ruby scripts/coverage/download_artifacts_from_child_pipeline.rb || true
+      done
+  artifacts:
+    name: predictive-coverage
+    expire_in: 31d
+    paths:
+      - coverage/
+      - rspec/
+      - crystalball/
+    when: always
+
+rspec-ee:predictive artifact-collector:
+  stage: post-test
+  needs:
+    - job: rspec-ee:predictive:trigger
+      optional: true
+    - job: rspec-ee:predictive:trigger single-db
+      optional: true
+    - job: rspec-ee:predictive:trigger single-db-ci-connection
+      optional: true
+  rules:
+    - !reference ['.rails:rules:rspec-predictive', rules]
+    - !reference ['.rails:rules:rspec-predictive:single-db', rules]
+    - !reference ['.rails:rules:rspec-predictive:single-db-ci-connection', rules]
+  variables:
+    JOB_NAME: 'rspec-ee-predictive-artifact-collector'
+    COVERAGE_TYPE: 'ee predictive'
+  script:
+    - |
+      for BRIDGE_NAME in "rspec-ee:predictive:trigger" "rspec-ee:predictive:trigger single-db" "rspec-ee:predictive:trigger single-db-ci-connection"; do
+        echo "Attempting to download from bridge: $BRIDGE_NAME"
+        export BRIDGE_NAME="$BRIDGE_NAME"
+        ruby scripts/coverage/download_artifacts_from_child_pipeline.rb || true
+      done
+  artifacts:
+    name: ee-predictive-coverage
+    expire_in: 31d
+    paths:
+      - coverage/
+      - rspec/
+      - crystalball/
+    when: always
 
 rspec:coverage:
   extends:
@@ -628,6 +692,8 @@ rspec:coverage:
       optional: true
     - job: rspec:artifact-collector remainder single-redis
       optional: true
+    - job: rspec:predictive artifact-collector
+      optional: true
     # as-if-foss jobs
     - job: rspec:artifact-collector as-if-foss
       optional: true
@@ -639,6 +705,8 @@ rspec:coverage:
     - job: rspec:artifact-collector ee unit
       optional: true
     - job: rspec:artifact-collector ee remainder
+      optional: true
+    - job: rspec-ee:predictive artifact-collector
       optional: true
   script:
     - bundle exec scripts/merge-simplecov
@@ -1061,6 +1129,16 @@ rspec-ee system pg17 single-db-sec-connection:
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:single-db-sec-connection-ee", rules]
 
+rspec-ee system pg17 duo_workflow_service:
+  extends:
+    - rspec-ee system pg17
+  variables:
+    RSPEC_TAGS: "--tag duo_workflow_service"
+  parallel: 4
+  rules:
+    - !reference [".rails:rules:triggered-by-aigw-project", rules]
+    - !reference ['.rails:rules:ee-only-system', rules]
+
 # Integration tests with Elasticsearch and PG production versions
 # These run on merge requests which meet certain conditions and the nightly pipeline
 rspec-ee unit pg17 es8:
@@ -1348,6 +1426,38 @@ rspec-ee system pg17 opensearch-latest:
   rules:
     - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
 
+rspec-ee unit pg17 pgvector17 es8:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
+  extends:
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-pgvector17-es8
+    - .rspec-ee-unit-parallel
+  rules:
+    - !reference [".rails:rules:run-search-tests", rules]
+    - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
+
+rspec-ee integration pg17 pgvector17 es8:
+  extends:
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-pgvector17-es8
+    - .rspec-ee-integration-parallel
+  rules:
+    - !reference [".rails:rules:run-search-tests", rules]
+    - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
+
+rspec-ee system pg17 pgvector17 es8:
+  tags:
+    - $GLCI_MEDIUM_RUNNER_REQUIRED
+  extends:
+    - .rspec-base-pg17
+    - .rspec-ee-base-pg17-pgvector17-es8
+    - .rspec-ee-system-parallel
+  rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
+    - !reference [".rails:rules:run-search-tests", rules]
+    - !reference [".rails:rules:default-branch-schedule-weekly--code-backstage-ee-only", rules]
+
 # EE: default branch weekly scheduled jobs #
 ##################################################
 
@@ -1403,7 +1513,7 @@ fail-pipeline-early:
 
 .base-rspec-pg17-rerun-previous-failed-tests:
   tags:
-    - $GLCI_MEDIUM_RUNNER_REQUIRED # See note above on .rspec-fail-fast regarding special-case usage of GLCI_MEDIUM_RUNNER_REQUIRED
+    - $GLCI_MEDIUM_RUNNER_REQUIRED  # See note above on .rspec-fail-fast regarding special-case usage of GLCI_MEDIUM_RUNNER_REQUIRED
   extends:
     - .rails:rules:rerun-previous-failed-tests
   stage: test

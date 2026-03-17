@@ -97,6 +97,7 @@ export default {
       'ProjectSettings|Highlight the usage of hidden unicode characters. These have innocent uses for right-to-left languages, but can also be used in potential exploits.',
     ),
     confirmButtonText: __('Save changes'),
+    confirmButtonAriaLabel: __('Save changes for visibility, project features, permissions'),
     emailsLabel: s__('ProjectSettings|Email notifications'),
     extendedPratExpiryWebhooksExecuteLabel: s__(
       'ProjectSettings|Add additional webhook triggers for project access token expiration.',
@@ -1156,7 +1157,13 @@ export default {
         data-testid="project-features-save-button"
         @confirm="$emit('confirm')"
       />
-      <gl-button v-else type="submit" variant="confirm" data-testid="project-features-save-button">
+      <gl-button
+        v-else
+        type="submit"
+        variant="confirm"
+        :aria-label="$options.i18n.confirmButtonAriaLabel"
+        data-testid="project-features-save-button"
+      >
         {{ $options.i18n.confirmButtonText }}
       </gl-button>
     </template>

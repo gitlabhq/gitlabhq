@@ -109,8 +109,12 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     ${true}
     ${false}
   `('when backendPagination is $backendPagination', ({ backendPagination }) => {
-    it('should render an empty table with a default message', () => {
+    it('should render an empty table with a default message', async () => {
       createComponent({ initialActiveAccessTokens: [], backendPagination });
+
+      if (backendPagination) {
+        await axios.waitForAll();
+      }
 
       const cells = findCells();
       expect(cells).toHaveLength(1);
@@ -119,13 +123,17 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       );
     });
 
-    it('should render an empty table with a custom message', () => {
+    it('should render an empty table with a custom message', async () => {
       const noTokensMessage = 'This group has no active access tokens.';
       createComponent({
         initialActiveAccessTokens: [],
         noActiveTokensMessage: noTokensMessage,
         backendPagination,
       });
+
+      if (backendPagination) {
+        await axios.waitForAll();
+      }
 
       const cells = findCells();
       expect(cells).toHaveLength(1);
@@ -199,6 +207,11 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
     it('updates the table after new tokens are created', async () => {
       createComponent({ initialActiveAccessTokens: [], showRole: true, backendPagination });
+
+      if (backendPagination) {
+        await axios.waitForAll();
+      }
+
       await triggerSuccess();
 
       const cells = findCells();
@@ -263,6 +276,10 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       });
       createComponent({ backendPagination });
 
+      if (backendPagination) {
+        await axios.waitForAll();
+      }
+
       await triggerTokenRotation();
 
       expect(mockAxios.history.put).toHaveLength(1);
@@ -285,6 +302,10 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       });
       createComponent({ backendPagination });
 
+      if (backendPagination) {
+        await axios.waitForAll();
+      }
+
       await triggerTokenRotation();
 
       expect(mockAxios.history.put).toHaveLength(1);
@@ -300,7 +321,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
 
     describe('when revoke_path and rotate_path are', () => {
       describe('absent in all tokens', () => {
-        it('should not include `Action` column', () => {
+        it('should not include `Action` column', async () => {
           createComponent({
             initialActiveAccessTokens: defaultActiveAccessTokens.map(
               ({ revoke_path, rotate_path, ...rest }) => rest,
@@ -308,6 +329,10 @@ describe('~/access_tokens/components/access_token_table_app', () => {
             showRole: true,
             backendPagination,
           });
+
+          if (backendPagination) {
+            await axios.waitForAll();
+          }
 
           const headers = findHeaders();
           expect(headers).toHaveLength(8);
@@ -329,7 +354,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       it.each([
         { revoke_path: null, rotate_path: null },
         { revoke_path: undefined, rotate_path: undefined },
-      ])('%p in some tokens, does not show revoke and rotate buttons', (input) => {
+      ])('%p in some tokens, does not show revoke and rotate buttons', async (input) => {
         createComponent({
           initialActiveAccessTokens: [
             defaultActiveAccessTokens.map((data) => ({ ...data, ...input }))[0],
@@ -338,6 +363,10 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           showRole: true,
           backendPagination,
         });
+
+        if (backendPagination) {
+          await axios.waitForAll();
+        }
 
         expect(findHeaders().at(8).text()).toBe('Action');
         expect(findCells().at(8).findComponent(GlButton).exists()).toBe(false);
@@ -346,7 +375,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
       it.each([
         { revoke_path: '/-/user_settings/personal_access_tokens/1/revoke', rotate_path: null },
         { revoke_path: null, rotate_path: '/-/user_settings/personal_access_tokens/1/rotate' },
-      ])(`% in some tokens, shows revoke or rotate button`, (input) => {
+      ])(`% in some tokens, shows revoke or rotate button`, async (input) => {
         createComponent({
           initialActiveAccessTokens: [
             defaultActiveAccessTokens.map((data) => ({ ...data, ...input }))[0],
@@ -355,6 +384,10 @@ describe('~/access_tokens/components/access_token_table_app', () => {
           showRole: true,
           backendPagination,
         });
+
+        if (backendPagination) {
+          await axios.waitForAll();
+        }
 
         expect(findHeaders().at(8).text()).toBe('Action');
         expect(findCells().at(8).findComponent(GlButton).exists()).toBe(true);
@@ -446,6 +479,8 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     });
 
     it('does not sort rows alphabetically', async () => {
+      await axios.waitForAll();
+
       const cells = findCells();
 
       // First and second rows

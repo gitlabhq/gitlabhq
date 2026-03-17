@@ -14,6 +14,8 @@
         .form-group
           = f.gitlab_ui_checkbox_component :plantuml_enabled,
             _('Enable PlantUML')
+          = f.gitlab_ui_checkbox_component :plantuml_diagram_proxy_enabled,
+            _('Proxy PlantUML diagrams through GitLab')
         .form-group
           = f.label :plantuml_url, _('PlantUML URL'), class: 'label-bold'
           = f.text_field :plantuml_url, class: 'form-control gl-form-input', placeholder: 'http://your-plantuml-instance:8080'

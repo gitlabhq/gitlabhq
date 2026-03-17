@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: CI Platform
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Runner Fleet.
 title: Design and configure a GitLab Runner fleet on Google Kubernetes Engine
 ---
@@ -119,7 +119,6 @@ Complete the following steps to identify the compute and RAM resources needed:
 
    > [!note]
    > In the example, the CI/CD job is short-lived, so the sleep between each container poll is set to one second. Adjust this value to better suit your needs.
-
 1. Analyze the `metrics.log` file to identify the peak usage of the test container.
 
    In the example, the maximum CPU usage is `107.50%` and the maximum memory usage is `303.1Mi`.
@@ -177,7 +176,6 @@ To plan runner scope, consider the following questions:
 
   - By default, project and group owners can create runner configuration and register runners to a project or group in GitLab.
   - This design allows developers to create a build environment quickly. This approach reduces developer friction when getting started with GitLab CI/CD. However, in large organizations, this approach may lead to many underutilized or unused runners across the environment.
-
 - Does your organization have security or other policies that require segmenting access to certain types of runners to specific groups or projects?
 
 The most straightforward way to deploy a runner in a GitLab Self-Managed environments is to create it for an instance. Runners scoped for an instance are available to all groups and projects by default.

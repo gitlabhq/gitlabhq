@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: External users
 description: Grant limited access to external members with restricted permissions for specific resources.
 ---
@@ -31,6 +31,9 @@ private project, they cannot access the code.
 
 > [!note]
 > An external user counts as a billable user and consumes a license seat.
+>
+> If you [created an external providers list](../integration/omniauth.md#create-an-external-providers-list),
+> users who sign in with a listed provider are automatically marked as external.
 
 ## Create an external user
 

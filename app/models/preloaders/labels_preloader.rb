@@ -28,13 +28,14 @@ module Preloaders
           ]
         }
       ).call
+      Preloaders::UserMaxAccessLevelInProjectsPreloader.new(project_labels.map(&:project), user).execute
 
       ActiveRecord::Associations::Preloader.new(
         records: group_labels,
-        associations: { group: [:namespace_settings_with_ancestors_inherited_settings, :route] }
+        associations: { group: [:organization, :namespace_settings_with_ancestors_inherited_settings, :route] }
       ).call
+      Preloaders::UserMaxAccessLevelInGroupsPreloader.new(group_labels.map(&:group), user).execute
 
-      Preloaders::UserMaxAccessLevelInProjectsPreloader.new(project_labels.map(&:project), user).execute
       labels.each do |label|
         label.lazy_subscription(user)
         label.lazy_subscription(user, project) if project.present?

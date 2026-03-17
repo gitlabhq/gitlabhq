@@ -11,7 +11,7 @@ RSpec.describe 'Groups > Members > Leave group', feature_category: :groups_and_p
   let(:other_user) { create(:user) }
   let(:group) { create(:group) }
   let(:more_actions_dropdown) do
-    find_by_testid('groups-projects-more-actions-dropdown')
+    find('#group-more-action-dropdown [data-testid="groups-list-item-actions"]')
   end
 
   before do
@@ -24,7 +24,7 @@ RSpec.describe 'Groups > Members > Leave group', feature_category: :groups_and_p
 
     visit group_path(group)
     more_actions_dropdown.click
-    click_link 'Leave group'
+    click_button 'Leave group'
     accept_gl_confirm(button_text: 'Leave group')
     wait_for_requests
 
@@ -51,7 +51,7 @@ RSpec.describe 'Groups > Members > Leave group', feature_category: :groups_and_p
 
     visit group_path(group)
     more_actions_dropdown.click
-    click_link 'Leave group'
+    click_button 'Leave group'
     accept_gl_confirm(button_text: 'Leave group')
     wait_for_requests
 
@@ -66,7 +66,7 @@ RSpec.describe 'Groups > Members > Leave group', feature_category: :groups_and_p
 
     visit group_path(group)
     more_actions_dropdown.click
-    click_link 'Leave group'
+    click_button 'Leave group'
     accept_gl_confirm(button_text: 'Leave group')
     wait_for_requests
 

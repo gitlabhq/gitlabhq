@@ -1,6 +1,8 @@
 key_path: redis_hll_counters.quickactions.i_quickactions_link_weekly
 description: Count of WAU using the `/link` quick action
 product_group: platform_insights
+product_categories:
+- incident_management
 value_type: number
 status: active
 milestone: "15.5"

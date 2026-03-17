@@ -4,6 +4,8 @@ key_path: redis_hll_counters.incident_management_alerts.incident_management_aler
 description: Count of unique users per month to create an incident corresponding to
   an alert
 product_group: platform_insights
+product_categories:
+- incident_management
 value_type: number
 status: active
 time_frame: 28d

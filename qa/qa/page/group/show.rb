@@ -41,15 +41,15 @@ module QA
         def leave_group
           dismiss_duo_chat_popup if respond_to?(:dismiss_duo_chat_popup)
 
-          click_element 'groups-projects-more-actions-dropdown'
+          click_element 'groups-list-item-actions'
           wait_for_requests
 
           click_element 'leave-group-link'
-          click_confirmation_ok_button
+          click_button 'Leave group'
         end
 
         def click_request_access
-          click_element 'groups-projects-more-actions-dropdown'
+          click_element 'groups-list-item-actions'
           wait_for_requests
 
           click_element 'request-access-link'
@@ -58,5 +58,3 @@ module QA
     end
   end
 end
-
-QA::Page::Group::Show.prepend_mod_with('Page::Component::DuoChatCallout', namespace: QA)

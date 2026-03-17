@@ -20,6 +20,7 @@ import {
 } from '~/notes/constants';
 
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { discussionFiltersMock, discussionMock } from '../mock_data';
@@ -51,7 +52,7 @@ describe('DiscussionFilter component', () => {
 
     useNotes().notesData.discussionsPath = DISCUSSION_PATH;
 
-    useNotes().discussions = discussions;
+    useDiscussions().discussions = discussions;
 
     wrapper = mount(DiscussionFilter, {
       pinia,

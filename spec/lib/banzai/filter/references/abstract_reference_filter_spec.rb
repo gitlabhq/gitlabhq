@@ -14,9 +14,27 @@ RSpec.describe Banzai::Filter::References::AbstractReferenceFilter, feature_cate
     it 'is not an XSS vector' do
       allow(described_class).to receive(:object_class).and_return(Issue)
 
-      data_attributes = filter_instance.data_attributes_for('xss &lt;img onerror=alert(1) src=x&gt;', project, issue, link_content: true)
+      data_attributes = filter_instance.data_attributes_for('xss &lt;img onerror=alert(1) src=x&gt;', project, issue, original_href: '@someone')
 
       expect(data_attributes[:original]).to eq('xss &lt;img onerror=alert(1) src=x&gt;')
+    end
+
+    it 'sets link to true when original_href is present' do
+      allow(described_class).to receive(:object_class).and_return(Issue)
+
+      data_attributes = filter_instance.data_attributes_for('content', project, issue, original_href: '@someone')
+
+      expect(data_attributes[:link]).to be(true)
+      expect(data_attributes[:original_href]).to eq('@someone')
+    end
+
+    it 'sets link to false when original_href is absent' do
+      allow(described_class).to receive(:object_class).and_return(Issue)
+
+      data_attributes = filter_instance.data_attributes_for('@someone', project, issue)
+
+      expect(data_attributes[:link]).to be(false)
+      expect(data_attributes[:original_href]).to be_nil
     end
   end
 

@@ -7,85 +7,17 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     render_views
 
     it 'pushes expected feature flag to the frontend' do
-      stub_feature_flags(explore_projects_vue: false, retire_trending_projects: false)
+      stub_feature_flags(retire_trending_projects: false)
 
       get action
 
       expect(response.body).to have_pushed_frontend_feature_flags(
-        exploreProjectsVue: false,
         retireTrendingProjects: false
       ), response.body
     end
   end
 
   shared_examples 'explore projects' do
-    let(:expected_default_sort) { 'latest_activity_desc' }
-
-    describe 'GET #index.json' do
-      render_views
-
-      before do
-        get :index, format: :json
-      end
-
-      it { is_expected.to respond_with(:success) }
-
-      it 'sets a default sort parameter' do
-        expect(controller.params[:sort]).to eq(expected_default_sort)
-        expect(assigns[:sort]).to eq(expected_default_sort)
-      end
-    end
-
-    describe 'GET #trending.json' do
-      render_views
-
-      it 'redirects to active projects with json format', :aggregate_failures do
-        get :trending, format: :json
-
-        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc', format: :json))
-        expect(response).to have_gitlab_http_status(:found)
-      end
-
-      context 'when `retire_trending_projects` flag is disabled' do
-        before do
-          stub_feature_flags(retire_trending_projects: false)
-          get :trending, format: :json
-        end
-
-        it { is_expected.to respond_with(:success) }
-
-        it 'sets a default sort parameter' do
-          expect(controller.params[:sort]).to eq(expected_default_sort)
-          expect(assigns[:sort]).to eq(expected_default_sort)
-        end
-      end
-    end
-
-    describe 'GET #starred.json' do
-      render_views
-
-      it 'redirects to active projects with stars_desc sort and json format', :aggregate_failures do
-        get :starred, format: :json
-
-        expect(response).to redirect_to(active_explore_projects_path(sort: 'stars_desc', format: :json))
-        expect(response).to have_gitlab_http_status(:found)
-      end
-
-      context 'when `explore_projects_vue` flag is disabled' do
-        before do
-          stub_feature_flags(explore_projects_vue: false)
-          get :starred, format: :json
-        end
-
-        it { is_expected.to respond_with(:success) }
-
-        it 'sets a default sort parameter' do
-          expect(controller.params[:sort]).to eq(expected_default_sort)
-          expect(assigns[:sort]).to eq(expected_default_sort)
-        end
-      end
-    end
-
     describe 'GET #index' do
       it_behaves_like 'pushes feature flag', :index
     end
@@ -103,46 +35,6 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
         end
 
         it_behaves_like 'pushes feature flag', :trending
-
-        context 'sorting by update date' do
-          let(:project1) { create(:project, :public, updated_at: 3.days.ago) }
-          let(:project2) { create(:project, :public, updated_at: 1.day.ago) }
-
-          before do
-            create(:trending_project, project: project1)
-            create(:trending_project, project: project2)
-          end
-
-          it 'sorts by last updated' do
-            get :trending, params: { sort: 'updated_desc' }
-
-            expect(assigns(:projects)).to eq [project2, project1]
-          end
-
-          it 'sorts by oldest updated' do
-            get :trending, params: { sort: 'updated_asc' }
-
-            expect(assigns(:projects)).to eq [project1, project2]
-          end
-        end
-
-        context 'projects aimed for deletion' do
-          let_it_be(:project1) { create(:project, :public, path: 'project-1') }
-          let_it_be(:project2) { create(:project, :public, path: 'project-2') }
-          let_it_be(:aimed_for_deletion_project) { create(:project, :public, :archived, marked_for_deletion_at: 2.days.ago) }
-
-          before do
-            create(:trending_project, project: project1)
-            create(:trending_project, project: project2)
-            create(:trending_project, project: aimed_for_deletion_project)
-          end
-
-          it 'does not list projects aimed for deletion' do
-            get :trending
-
-            expect(assigns(:projects)).to eq [project2, project1]
-          end
-        end
       end
     end
 
@@ -247,89 +139,6 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     end
   end
 
-  shared_examples "blocks high page numbers" do
-    let(:page_limit) { described_class::PAGE_LIMIT }
-
-    context "page number is too high" do
-      [:index, :trending, :starred].each do |endpoint|
-        describe "GET #{endpoint}" do
-          render_views
-
-          before do
-            get endpoint, params: { page: page_limit + 1 }
-          end
-
-          it { is_expected.to respond_with(:bad_request) }
-          it { is_expected.to render_template("explore/projects/page_out_of_bounds") }
-
-          it "assigns the page number" do
-            expect(assigns[:max_page_number]).to eq(page_limit.to_s)
-          end
-        end
-
-        describe "GET #{endpoint}.json" do
-          render_views
-
-          before do
-            get endpoint, params: { page: page_limit + 1 }, format: :json
-          end
-
-          it { is_expected.to respond_with(:bad_request) }
-        end
-
-        describe "metrics recording" do
-          subject { get endpoint, params: { page: page_limit + 1 } }
-
-          let(:counter) { double("counter", increment: true) }
-
-          before do
-            allow(Gitlab::Metrics).to receive(:counter) { counter }
-          end
-
-          it "records the interception" do
-            expect(Gitlab::Metrics).to receive(:counter).with(
-              :gitlab_page_out_of_bounds,
-              controller: "explore/projects",
-              action: endpoint.to_s,
-              bot: false
-            )
-
-            subject
-          end
-        end
-      end
-    end
-
-    context "page number is acceptable" do
-      [:index, :trending, :starred].each do |endpoint|
-        describe "GET #{endpoint}" do
-          render_views
-
-          before do
-            stub_feature_flags(retire_trending_projects: false) if endpoint == :trending
-            stub_feature_flags(explore_projects_vue: false) if endpoint == :starred
-            get endpoint, params: { page: page_limit }
-          end
-
-          it { is_expected.to respond_with(:success) }
-          it { is_expected.to render_template('explore/projects/index') }
-        end
-
-        describe "GET #{endpoint}.json" do
-          render_views
-
-          before do
-            stub_feature_flags(retire_trending_projects: false) if endpoint == :trending
-            stub_feature_flags(explore_projects_vue: false) if endpoint == :starred
-            get endpoint, params: { page: page_limit }, format: :json
-          end
-
-          it { is_expected.to respond_with(:success) }
-        end
-      end
-    end
-  end
-
   shared_examples 'avoids N+1 queries' do
     [:index, :trending, :starred].each do |endpoint|
       describe "GET #{endpoint}" do
@@ -378,7 +187,6 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     end
 
     include_examples 'explore projects'
-    include_examples "blocks high page numbers"
     include_examples 'avoids N+1 queries'
 
     context 'user preference sorting' do
@@ -412,7 +220,6 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
     let_it_be(:namespace) { create(:namespace, organization: current_organization) }
 
     include_examples 'explore projects'
-    include_examples "blocks high page numbers"
     include_examples 'avoids N+1 queries'
 
     context 'user preference sorting' do

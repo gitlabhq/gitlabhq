@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect Sentry to GitLab for error tracking in your projects.
 title: Sentry error tracking
 ---
@@ -33,11 +33,11 @@ To enable the Sentry integration:
 1. [Create a new Sentry project](https://docs.sentry.io/product/sentry-basics/integrate-frontend/create-new-project/).
    For each GitLab project that you want to integrate, create a new Sentry project.
 1. Find or generate a [Sentry auth token](https://docs.sentry.io/api/auth/#auth-tokens).
-   For the SaaS version of Sentry, you can find or generate the auth token at [https://sentry.io/api/](https://sentry.io/api/).
+   For the SaaS version of Sentry, you can find or generate the auth token at <https://sentry.io/api/>.
    Give the token at least the following scopes: `project:read`, `event:read`, and
    `event:write` (for resolving events).
 1. In GitLab, enable and configure Error Tracking:
-   1. On the top bar, select **Search or go to** and find your project.
+   1. In the top bar, select **Search or go to** and find your project.
    1. Select **Settings** > **Monitor**, then expand **Error Tracking**.
    1. For **Enable error tracking**, select **Active**.
    1. For **Error tracking backend**, select **Sentry**.

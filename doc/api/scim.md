@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Seat Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: SCIM API
 ---
 
@@ -31,7 +31,6 @@ This API differs from the [internal group SCIM API](../development/internal_api/
 - This API:
   - Does not implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
   - Gets, checks, updates, and deletes SCIM identities within groups.
-
 - The internal group and instance SCIM APIs:
   - Are for system use for SCIM provider integration.
   - Implement the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).

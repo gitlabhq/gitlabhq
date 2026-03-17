@@ -4,6 +4,8 @@ key_path: redis_hll_counters.quickactions.i_quickactions_confidential_weekly
 description: Count of WAU using the `/confidential` quick action to set an issue as
   confidential
 product_group: project_management
+product_categories:
+- team_planning
 value_type: number
 status: active
 time_frame: 7d

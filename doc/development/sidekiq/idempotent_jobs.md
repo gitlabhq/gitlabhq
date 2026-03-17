@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Sidekiq idempotent jobs
 ---
 
@@ -173,7 +173,6 @@ However, the key can remain until its TTL in certain cases like:
 
 1. `until_executing` is used but the job was never enqueued or executed after the Sidekiq
    client middleware was run.
-
 1. `until_executed` is used but the job fails to finish due to retry exhaustion, gets
    interrupted the maximum number of times, or gets lost.
 

@@ -232,8 +232,9 @@ as WebAuthn, must be used (IA-2).
 
 **Personal access tokens**
 
-Personal access tokens for user access are disabled by default in FIPS
-enabled instances.
+GitLab [provides instructions](../user/profile/personal_access_tokens.md) on how to configure
+and manage personal access tokens. GitLab supports [fine-grained permissions](../auth/tokens/fine_grained_access_tokens.md),
+which can be used to scope tokens to only the permissions required for the applicable use case.
 
 #### Other Access Control Family Concepts
 

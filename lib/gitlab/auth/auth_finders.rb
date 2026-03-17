@@ -61,6 +61,8 @@ module Gitlab
 
       attr_accessor :current_token
 
+      BEARER_PATTERN = /^Bearer /i
+
       # Check the Rails session for valid authentication details
       def find_user_from_warden
         current_request.env['warden']&.authenticate if verified_request?
@@ -268,11 +270,42 @@ module Gitlab
           parsed_oauth_token
       end
 
+      def current_auth_header_type
+        strong_memoize(:current_auth_header_type) do
+          if current_request.env[PRIVATE_TOKEN_HEADER].present?
+            'private_token_header'
+          elsif current_request.params[PRIVATE_TOKEN_PARAM].present?
+            'private_token_param'
+          elsif current_request.authorization&.match?(BEARER_PATTERN)
+            'bearer'
+          else
+            'other'
+          end
+        end
+      end
+
+      def request_token_type
+        strong_memoize(:request_token_type) do
+          token = extract_personal_access_token
+
+          next "" if token.nil?
+
+          if ::Authn::Tokens::PersonalAccessToken.prefix?(token)
+            'PersonalAccessToken'
+          elsif ::Authn::Tokens::CiJobToken.prefix?(token)
+            'CiJobToken'
+          else
+            'unknown'
+          end
+        end
+      end
+
       def save_current_token_in_env
         token_info = {
           token_id: access_token.id,
           token_type: access_token.class.to_s,
-          token_scopes: access_token.scopes.map(&:to_sym)
+          token_scopes: access_token.scopes.map(&:to_sym),
+          auth_header_type: current_auth_header_type
         }
 
         token_info[:token_application_id] = access_token.application_id if access_token.respond_to?(:application_id)
@@ -285,7 +318,9 @@ module Gitlab
           user: access_token.user,
           auth_fail_reason: cause.to_s,
           auth_fail_token_id: "#{access_token.class}/#{access_token.id}",
-          auth_fail_requested_scopes: requested_scopes.join(' ')
+          auth_fail_requested_scopes: requested_scopes.join(' '),
+          auth_fail_token_type: request_token_type,
+          auth_fail_auth_header_type: current_auth_header_type
         )
       end
 
@@ -319,6 +354,11 @@ module Gitlab
 
           if try(:namespace_inheritable, :authentication)
             access_token_from_namespace_inheritable
+          elsif Feature.enabled?(:optimize_pat_lookup, Feature.current_request) && pat_prefix_token?
+            # If the token has a PAT prefix (glpat-), skip OAuth lookup entirely.
+            # This avoids the expensive PBKDF2 hashing in OauthAccessToken.by_token
+            # for tokens that are clearly Personal Access Tokens.
+            find_personal_access_token
           else
             # The token can be a PAT or an OAuth (doorkeeper or IAM JWT) token
             begin
@@ -330,6 +370,13 @@ module Gitlab
             end || find_personal_access_token
           end
         end
+      end
+
+      def pat_prefix_token?
+        token = extract_personal_access_token
+        return false unless token.present?
+
+        Authn::Tokens::PersonalAccessToken.prefix?(token)
       end
 
       def find_personal_access_token

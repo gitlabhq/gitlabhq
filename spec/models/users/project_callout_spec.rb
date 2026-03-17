@@ -17,8 +17,8 @@ RSpec.describe Users::ProjectCallout do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:feature_name) }
 
-    it {
+    it do
       is_expected.to validate_uniqueness_of(:feature_name).scoped_to(:user_id, :project_id).ignoring_case_sensitivity
-    }
+    end
   end
 end

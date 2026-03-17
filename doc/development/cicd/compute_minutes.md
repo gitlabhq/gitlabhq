@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Compute Minute Development
 ---
 
@@ -100,7 +100,9 @@ A runner polls `POST /api/v4/jobs/request` to find `pending` jobs to execute. Wh
 - The `started_at` timestamp is set
 - The job begins execution on the runner
 
-Note: If a job has exceeded the quota, it will not be assigned to a runner. This logic is handled in `BuildQueueService`, which is called from `RegisterJobService`.
+> [!note]
+> If a job has exceeded the quota, it will not be assigned to a runner. This logic is handled in `BuildQueueService`,
+> which is called from `RegisterJobService`.
 
 **2. Job Running Phase**
 
@@ -156,7 +158,6 @@ In 2024, we developed a purpose-specific visualization for dedicated hosted runn
 The existing GitLab visualizations were insufficient because:
 
 1. **Single namespace limitation**: Existing visualizations only show usage for a single root namespace, but Dedicated customers need visibility across all namespaces on their instance
-
 1. **No runner type distinction**: Admin-managed instance runners can run alongside GitLab Hosted Instance Runners. Since we track all instance runner usage together, existing visualizations would incorrectly include self-managed instance runners in the hosted runner metrics
 
 ### How It Works

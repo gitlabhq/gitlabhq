@@ -3,9 +3,28 @@
 require 'spec_helper'
 
 RSpec.describe Projects::MergeRequestsController, feature_category: :source_code_management do
+  include RepoHelpers
+
   let_it_be(:merge_request) { create(:merge_request) }
   let_it_be(:project) { merge_request.project }
   let_it_be(:user) { merge_request.author }
+
+  let_it_be(:base_diff_1) { merge_request.merge_request_diff }
+
+  let_it_be(:commit_id) do
+    create_file_in_repo(
+      merge_request.project,
+      'master',
+      'master',
+      'new_file.txt',
+      'new content'
+    )[:result]
+  end
+
+  let_it_be(:base_diff_2) do
+    merge_request.clear_memoized_shas
+    merge_request.create_merge_request_diff
+  end
 
   describe 'GET #show' do
     let_it_be(:group) { create(:group) }
@@ -282,6 +301,30 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
         expect(response.body.scan('<diff-file ').size).to eq(5)
       end
+
+      context 'when diff_id and start_sha params are set' do
+        let(:params) { { diff_id: base_diff_2.id, start_sha: base_diff_1.head_commit_sha } }
+
+        it 'shows only files in the diff between versions' do
+          get diffs_project_merge_request_path(project, merge_request, params.merge(rapid_diffs: 'true'))
+
+          expect(response.body.scan('<diff-file ').size).to eq(1)
+          expect(response.body).to include('new_file.txt')
+          expect(response.body).to include('new content')
+        end
+      end
+
+      context 'when commit_id param is set' do
+        let(:params) { { commit_id: commit_id } }
+
+        it 'shows only files in the commit' do
+          get diffs_project_merge_request_path(project, merge_request, params.merge(rapid_diffs: 'true'))
+
+          expect(response.body.scan('<diff-file ').size).to eq(1)
+          expect(response.body).to include('new_file.txt')
+          expect(response.body).to include('new content')
+        end
+      end
     end
 
     private
@@ -308,7 +351,11 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       login_as(user)
     end
 
-    let(:send_request) { get diff_files_metadata_project_merge_request_path(project, merge_request) }
+    let(:additional_params) { {} }
+
+    let(:send_request) do
+      get diff_files_metadata_project_merge_request_path(project, merge_request, params: additional_params)
+    end
 
     include_examples 'diff files metadata'
 
@@ -321,6 +368,24 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
 
         expect(json_response['diff_files']).to be_empty
       end
+    end
+
+    context 'when diff_id param is set' do
+      let(:additional_params) { { diff_id: base_diff_2.id } }
+
+      include_examples 'diff files metadata'
+
+      context 'when start_sha param is set' do
+        let(:additional_params) { { diff_id: base_diff_2.id, start_sha: base_diff_1.head_commit_sha } }
+
+        include_examples 'diff files metadata'
+      end
+    end
+
+    context 'when commit_id param is set' do
+      let(:additional_params) { { commit_id: commit_id } }
+
+      include_examples 'diff files metadata'
     end
   end
 
@@ -336,9 +401,9 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     include_examples 'diffs stats' do
       let(:expected_stats) do
         {
-          added_lines: 118,
+          added_lines: 119,
           removed_lines: 9,
-          diffs_count: 20
+          diffs_count: 21
         }
       end
     end
@@ -347,7 +412,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       include_examples 'overflow' do
         let(:expected_stats) do
           {
-            visible_count: 20,
+            visible_count: 21,
             email_path: "/#{project.full_path}/-/merge_requests/1.patch",
             diff_path: "/#{project.full_path}/-/merge_requests/1.diff"
           }
@@ -363,6 +428,48 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         send_request
 
         expect(json_response['diffs_stats']).to eq({ "added_lines" => 0, "removed_lines" => 0, "diffs_count" => 0 })
+      end
+    end
+
+    context 'when diff_id param is set' do
+      let(:additional_params) { { diff_id: base_diff_2.id } }
+
+      it_behaves_like 'diffs stats' do
+        let(:expected_stats) do
+          {
+            added_lines: 119,
+            removed_lines: 9,
+            diffs_count: 21
+          }
+        end
+      end
+
+      context 'when start_sha param is set' do
+        let(:additional_params) { { diff_id: base_diff_2.id, start_sha: base_diff_1.head_commit_sha } }
+
+        it_behaves_like 'diffs stats' do
+          let(:expected_stats) do
+            {
+              added_lines: 1,
+              removed_lines: 0,
+              diffs_count: 1
+            }
+          end
+        end
+      end
+    end
+
+    context 'when commit_id param is set' do
+      let(:additional_params) { { commit_id: commit_id } }
+
+      it_behaves_like 'diffs stats' do
+        let(:expected_stats) do
+          {
+            added_lines: 1,
+            removed_lines: 0,
+            diffs_count: 1
+          }
+        end
       end
     end
   end
@@ -399,7 +506,7 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
 
       before do
-        allow(diff_file).to receive(:whitespace_only?).and_return(true)
+        allow(diff_file).to receive_messages(whitespace_only?: true, conflict: nil)
       end
 
       it 'makes a call to presenter diff_files with ignore_whitespace_change: false' do
@@ -424,6 +531,19 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     before do
       project.add_developer(user)
       login_as(user)
+    end
+
+    context 'with composite identity', :request_store, :sidekiq_inline do
+      let_it_be(:service_account) do
+        create(:user, :service_account, composite_identity_enforced: true, developer_of: project)
+      end
+
+      it 'attributes the system note to the human user when assigning a service account as reviewer' do
+        put project_merge_request_path(project, merge_request),
+          params: { merge_request: { reviewer_ids: [service_account.id] } }
+
+        expect(merge_request.notes.system.last.author).to eq(user)
+      end
     end
 
     it 'applies correct timezone to merge_after' do
@@ -454,12 +574,15 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
   end
 
   describe 'GET #versions' do
-    let(:merge_request_diff) { merge_request.merge_request_diff }
+    let(:previous_mr_diff) { merge_request.merge_request_diffs.first }
+    let(:latest_mr_diff) { merge_request.merge_request_diff }
     let(:full_path) { project.full_path }
     let(:iid) { merge_request.iid }
     let(:diffs_path) { "/#{full_path}/-/merge_requests/#{iid}/diffs" }
-    let(:diff_id) { merge_request_diff.id }
-    let(:start_sha) { merge_request_diff.head_commit_sha }
+    let(:previous_diff_id) { previous_mr_diff.id }
+    let(:latest_diff_id) { latest_mr_diff.id }
+    let(:previous_start_sha) { previous_mr_diff.head_commit_sha }
+    let(:latest_start_sha) { latest_mr_diff.head_commit_sha }
 
     before do
       project.add_developer(user)
@@ -469,20 +592,168 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
     it 'responds with list of diff versions' do
       get versions_project_merge_request_path(project, merge_request)
 
-      expect(json_response).to be_kind_of(Array)
-      expect(json_response.size).to eq(1)
-      expect(json_response.first).to include(
-        "base_version_path" => "#{diffs_path}?diff_id=#{diff_id}&rapid_diffs=true",
-        "commits_count" => merge_request_diff.commits_count,
-        "compare_path" => "#{diffs_path}?diff_id=#{diff_id}&rapid_diffs=true&start_sha=#{start_sha}",
-        "head_commit_sha" => start_sha,
-        "head_version_path" => nil,
-        "id" => diff_id,
+      expect(json_response).to be_kind_of(Hash)
+      expect(json_response['source_versions'].size).to eq(2)
+      expect(json_response['source_versions'].first).to include(
+        "id" => latest_diff_id,
+        "version_index" => 2,
+        "head" => false,
         "latest" => true,
-        "short_commit_sha" => Commit.truncate_sha(start_sha),
-        "version_index" => nil,
-        "version_path" => "#{diffs_path}?diff_id=#{diff_id}&rapid_diffs=true"
+        "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+        "commits_count" => latest_mr_diff.commits_count,
+        "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true",
+        "selected" => true
       )
+      expect(json_response['source_versions'].last).to include(
+        "id" => previous_diff_id,
+        "version_index" => 1,
+        "head" => false,
+        "latest" => false,
+        "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+        "commits_count" => previous_mr_diff.commits_count,
+        "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true",
+        "selected" => false
+      )
+
+      expect(json_response['target_versions'].size).to eq(2)
+      expect(json_response['target_versions'].first).to include(
+        "id" => latest_diff_id,
+        "version_index" => nil,
+        "head" => false,
+        "latest" => true,
+        "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+        "href" => "#{diffs_path}?rapid_diffs=true",
+        "commits_count" => latest_mr_diff.commits_count,
+        "selected" => true,
+        "branch" => merge_request.target_branch
+      )
+      expect(json_response['target_versions'].last).to include(
+        "id" => previous_diff_id,
+        "version_index" => 1,
+        "head" => false,
+        "latest" => false,
+        "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+        "commits_count" => previous_mr_diff.commits_count,
+        "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+        "selected" => false
+      )
+    end
+
+    context 'when diff_id is set' do
+      it 'responds with list of diff versions' do
+        get(
+          versions_project_merge_request_path(
+            project,
+            merge_request,
+            diff_id: previous_diff_id
+          )
+        )
+
+        expect(json_response).to be_kind_of(Hash)
+        expect(json_response['source_versions'].size).to eq(2)
+        expect(json_response['source_versions'].first).to include(
+          "id" => latest_diff_id,
+          "version_index" => 2,
+          "head" => false,
+          "latest" => true,
+          "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+          "commits_count" => latest_mr_diff.commits_count,
+          "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true",
+          "selected" => false
+        )
+        expect(json_response['source_versions'].last).to include(
+          "id" => previous_diff_id,
+          "version_index" => 1,
+          "head" => false,
+          "latest" => false,
+          "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+          "commits_count" => previous_mr_diff.commits_count,
+          "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true",
+          "selected" => true
+        )
+
+        expect(json_response['target_versions'].size).to eq(2)
+        expect(json_response['target_versions'].first).to include(
+          "id" => latest_diff_id,
+          "version_index" => nil,
+          "head" => false,
+          "latest" => true,
+          "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+          "href" => "#{diffs_path}?rapid_diffs=true",
+          "commits_count" => latest_mr_diff.commits_count,
+          "selected" => true,
+          "branch" => merge_request.target_branch
+        )
+        expect(json_response['target_versions'].last).to include(
+          "id" => previous_diff_id,
+          "version_index" => 1,
+          "head" => false,
+          "latest" => false,
+          "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+          "commits_count" => previous_mr_diff.commits_count,
+          "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+          "selected" => false
+        )
+      end
+
+      context 'when start_sha is set' do
+        it 'responds with list of diff versions' do
+          get(
+            versions_project_merge_request_path(
+              project,
+              merge_request,
+              diff_id: previous_diff_id,
+              start_sha: previous_start_sha
+            )
+          )
+
+          expect(json_response).to be_kind_of(Hash)
+          expect(json_response['source_versions'].size).to eq(2)
+          expect(json_response['source_versions'].first).to include(
+            "id" => latest_diff_id,
+            "version_index" => 2,
+            "head" => false,
+            "latest" => true,
+            "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+            "commits_count" => latest_mr_diff.commits_count,
+            "href" => "#{diffs_path}?diff_id=#{latest_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+            "selected" => false
+          )
+          expect(json_response['source_versions'].last).to include(
+            "id" => previous_diff_id,
+            "version_index" => 1,
+            "head" => false,
+            "latest" => false,
+            "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+            "commits_count" => previous_mr_diff.commits_count,
+            "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+            "selected" => true
+          )
+
+          expect(json_response['target_versions'].size).to eq(2)
+          expect(json_response['target_versions'].first).to include(
+            "id" => latest_diff_id,
+            "version_index" => nil,
+            "head" => false,
+            "latest" => true,
+            "short_commit_sha" => Commit.truncate_sha(latest_start_sha),
+            "href" => "#{diffs_path}?rapid_diffs=true",
+            "commits_count" => latest_mr_diff.commits_count,
+            "selected" => false,
+            "branch" => merge_request.target_branch
+          )
+          expect(json_response['target_versions'].last).to include(
+            "id" => previous_diff_id,
+            "version_index" => 1,
+            "head" => false,
+            "latest" => false,
+            "short_commit_sha" => Commit.truncate_sha(previous_start_sha),
+            "commits_count" => previous_mr_diff.commits_count,
+            "href" => "#{diffs_path}?diff_id=#{previous_diff_id}&rapid_diffs=true&start_sha=#{previous_start_sha}",
+            "selected" => true
+          )
+        end
+      end
     end
 
     context 'when rapid_diffs_on_mr_show feature flag is disabled' do

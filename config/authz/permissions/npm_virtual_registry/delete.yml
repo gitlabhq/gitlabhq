@@ -1,0 +1,3 @@
+---
+name: delete_npm_virtual_registry
+description: Grants the ability to delete NPM virtual registries

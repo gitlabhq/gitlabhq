@@ -40,6 +40,24 @@ RSpec.describe Gitlab::FormBuilders::GitlabUiFormBuilder do
 
         expect(html_strip_whitespace(submit_html)).to eq(html_strip_whitespace(expected_html))
       end
+
+      context 'with custom variant' do
+        subject(:submit_html) do
+          form_builder.submit('Restore', pajamas_button: true, variant: :default)
+        end
+
+        it 'renders a submit button with the specified variant' do
+          expected_html = <<~EOS
+          <button type="submit" class="gl-button btn btn-md btn-default ">
+            <span class="gl-button-text">
+              Restore
+            </span>
+          </button>
+          EOS
+
+          expect(html_strip_whitespace(submit_html)).to eq(html_strip_whitespace(expected_html))
+        end
+      end
     end
   end
 

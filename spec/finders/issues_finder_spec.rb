@@ -115,4 +115,47 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
       end
     end
   end
+
+  describe 'filtering by service desk (author_username)' do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:support_bot) { create(:support_bot) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:service_desk_issue) { create(:issue, project: project, author: support_bot) }
+    let_it_be(:regular_issue) { create(:issue, project: project, author: user) }
+    let_it_be(:ticket) { create(:work_item, :ticket, project: project, author: user) }
+
+    context 'when author_username matches support bot' do
+      let(:params) { { project_id: project.id, author_username: support_bot.username } }
+
+      subject(:items) { described_class.new(user, params).execute }
+
+      it 'returns service desk issues and tickets' do
+        expect(items).to contain_exactly(service_desk_issue, Issue.find(ticket.id))
+      end
+    end
+
+    context 'when author_username does not match support bot' do
+      let(:params) { { project_id: project.id, author_username: user.username } }
+
+      subject(:items) { described_class.new(user, params).execute }
+
+      it 'filters by author username normally' do
+        expect(items).to contain_exactly(regular_issue, Issue.find(ticket.id))
+      end
+    end
+
+    context 'with organization-specific support bot' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:org_support_bot) { Users::Internal.in_organization(organization).support_bot }
+      let_it_be(:org_service_desk_issue) { create(:issue, project: project, author: org_support_bot) }
+
+      let(:params) { { project_id: project.id, author_username: org_support_bot.username } }
+
+      subject(:items) { described_class.new(user, params).execute }
+
+      it 'returns service desk issues for organization-specific support bot' do
+        expect(items).to include(org_service_desk_issue)
+      end
+    end
+  end
 end

@@ -11,6 +11,8 @@ RSpec.describe JwksController, feature_category: :system_access do
         "/.well-known/oauth-authorization-server",
         "/.well-known/oauth-authorization-server/api/v4/mcp",
         "/.well-known/openid-configuration/api/v4/mcp",
+        "/.well-known/oauth-authorization-server/api/v4/orbit/mcp",
+        "/.well-known/openid-configuration/api/v4/orbit/mcp",
         "/.well-known/webfinger?resource=#{create(:user).email}"
       ].each do |endpoint|
         get endpoint
@@ -108,6 +110,21 @@ RSpec.describe JwksController, feature_category: :system_access do
       end
     end
 
+    context 'when accessing MCP Orbit discovery endpoint' do
+      before do
+        get '/.well-known/oauth-authorization-server/api/v4/orbit/mcp'
+      end
+
+      it 'returns only mcp_orbit scope in scopes_supported' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(parsed_response['scopes_supported']).to eq(['mcp_orbit'])
+      end
+
+      it 'includes registration_endpoint' do
+        expect(parsed_response['registration_endpoint']).to end_with('/oauth/register')
+      end
+    end
+
     context 'when accessing general OAuth discovery endpoint' do
       before do
         get '/.well-known/oauth-authorization-server'
@@ -130,7 +147,11 @@ RSpec.describe JwksController, feature_category: :system_access do
 
       before do
         stub_config_setting(relative_url_root: relative_url_root, url: base_url_with_root)
-        get '/.well-known/oauth-authorization-server/api/v4/mcp'
+        allow(Rails.application.routes).to receive(:default_url_options)
+          .and_return(script_name: relative_url_root)
+        # Simulate what the Rack map middleware does: set SCRIPT_NAME to the prefix
+        get '/.well-known/oauth-authorization-server/api/v4/mcp',
+          env: { 'SCRIPT_NAME' => relative_url_root }
       end
 
       it 'includes relative_url_root in registration_endpoint' do

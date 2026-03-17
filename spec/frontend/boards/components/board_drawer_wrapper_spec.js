@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import BoardDrawerWrapper from '~/boards/components/board_drawer_wrapper.vue';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
@@ -20,7 +20,7 @@ describe('BoardDrawerWrapper', () => {
   const findUpdateAttributeButton = () => wrapper.findByTestId('update-attribute-button');
 
   const createComponent = (propsData = {}) => {
-    const mockApollo = createMockApollo([], resolvers);
+    const { apolloProvider: mockApollo } = createControlledMockApollo([], resolvers);
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: activeBoardItemQuery,
       data: {

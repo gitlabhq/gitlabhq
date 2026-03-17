@@ -1,0 +1,13 @@
+---
+table_name: p_knowledge_graph_code_indexing_tasks
+classes:
+- Analytics::KnowledgeGraph::CodeIndexingTask
+feature_categories:
+- knowledge_graph
+description: Tracks code indexing tasks for Knowledge Graph, partitioned daily with automatic retention
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227200
+milestone: '18.10'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

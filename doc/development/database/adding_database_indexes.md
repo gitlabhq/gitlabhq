@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Adding Database Indexes
 ---
 
@@ -268,7 +268,6 @@ You have two options depending on [how long it takes to create the index](../mig
 1. Single release: if a regular migration can create the required index very fast
    (usually because the table is new or very small) you can create the index in a
    regular migration, and ship the application code change in the same MR and milestone.
-
 1. At least two releases: if the required index takes time to create,
    you must create it in a PDM in one release then wait for the next release to
    make the application code changes that rely on the index.
@@ -295,7 +294,7 @@ Consult the Database team, reviewers, or maintainers to plan the work.
 
 ### All unique indexes needs to be scoped
 
-For more information, see [Unique constraints in Cells](../../development/cells/_index.md#unique-constraints).
+For more information, see [Unique constraints in Cells](../cells/_index.md#unique-constraints).
 
 ## Dropping unused indexes
 

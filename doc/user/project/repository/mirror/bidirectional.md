@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Create bidirectional mirrors to push and pull changes between two Git repositories.
 title: Bidirectional mirroring
 ---
@@ -55,10 +55,10 @@ Prerequisites:
 To create the webhook in the downstream instance:
 
 1. Create a [personal access token](../../../profile/personal_access_tokens.md) with `API` scope.
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Webhooks**.
 1. Add the webhook **URL**, which (in this case) uses the
-   [Pull Mirror API](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project)
+   [pull mirror API](../../../../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project)
    request to trigger an immediate pull after a repository update:
 
    ```plaintext

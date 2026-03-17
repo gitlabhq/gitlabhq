@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import * as types from '~/sidebar/components/labels/labels_select_vue/store/mutation_types';
 import mutations from '~/sidebar/components/labels/labels_select_vue/store/mutations';
 

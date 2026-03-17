@@ -1,14 +1,14 @@
 ---
 stage: AI-powered
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Connect and use GitLab Duo in Neovim.
-title: Visual Studio troubleshooting
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Learn how to address common issues for the GitLab for Visual Studio extension.
+title: Troubleshooting the GitLab for Visual Studio extension
 ---
 
 If the steps on this page don't solve your problem, check the
 [list of open issues](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/?sort=created_date&state=opened&first_page_size=100)
-in the Visual Studio plugin's project. If an issue matches your problem, update the issue.
+in the extension's project. If an issue matches your problem, update the issue.
 If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/new).
 
 ## GitLab Duo features do not appear
@@ -16,27 +16,26 @@ If no issues match your problem, [create a new issue](https://gitlab.com/gitlab-
 If GitLab Duo Chat or GitLab Duo Code Suggestions are not available in Visual Studio:
 
 - Ensure you meet the [prerequisites](setup.md#configure-gitlab-duo).
-- Check that GitLab Duo Chat (Agentic) is enabled:
+- Check that GitLab Duo Chat (agentic) is enabled:
   1. In Visual Studio, go to **Tools** > **Options** > **GitLab**.
   1. Under **GitLab**, select **General**.
   1. Check that **Enable Agentic Duo Chat** is set to **True**.
 - Check that Code Suggestions is enabled:
   1. In Visual Studio, on the bottom status bar, check the GitLab icon's tooltip for the current
      status of the feature.
-  1. If Code Suggestions is not enabled, on the top bar, select **Extensions** > **GitLab** >
-     **Toggle Code Suggestions**
+  1. If Code Suggestions is not enabled, in the top bar, select **Extensions** > **GitLab** >
+     **Toggle Code Suggestions**.
 
 For additional support:
 
 - [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
 - Troubleshooting [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#microsoft-visual-studio-troubleshooting)
-- Troubleshooting [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/troubleshooting.md#microsoft-visual-studio-troubleshooting)
 
 ## View more logs
 
 More logs are available in the **GitLab Extension Output** window:
 
-1. In Visual Studio, on the top bar, go to the **Tools** > **Options** menu.
+1. In Visual Studio, in the top bar, go to the **Tools** > **Options** menu.
 1. Find the **GitLab** option, and set **Log Level** to **Debug**.
 1. Go to **View** > **Output** to open the extension log. In the dropdown list, select **GitLab Extension** as the log filter.
 1. Verify that the debug log contains similar output:

@@ -1,20 +1,34 @@
 package loadshedding
 
 import (
+	"net/http"
 	"testing"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/puma"
 )
 
-func TestLoadShedderThresholdExceeded(t *testing.T) {
+func newTestLoadShedder(threshold int, hysteresis float64, retryAfter int, statusCode int, strategy string) *LoadShedder {
 	logger := logrus.New()
 	reg := prometheus.NewRegistry()
-	shedder := NewLoadShedder(100, 0.8, 0, logger, reg, nil)
+	cfg := &config.LoadSheddingConfig{
+		BacklogThreshold:  threshold,
+		BacklogHysteresis: hysteresis,
+		RetryAfterSeconds: retryAfter,
+		StatusCode:        statusCode,
+		Strategy:          strategy,
+	}
+	shedder := NewLoadShedder(cfg, logger, reg)
 	shedder.InitializeMetrics()
+	return shedder
+}
+
+func TestLoadShedderThresholdExceeded(t *testing.T) {
+	shedder := newTestLoadShedder(100, 0.9, 1, 529, "max")
 
 	// Initially should not shed
 	assert.False(t, shedder.ShouldShedLoad())
@@ -49,10 +63,7 @@ func TestLoadShedderThresholdExceeded(t *testing.T) {
 }
 
 func TestLoadShedderThresholdNotExceeded(t *testing.T) {
-	logger := logrus.New()
-	reg := prometheus.NewRegistry()
-	shedder := NewLoadShedder(100, 0.8, 0, logger, reg, nil)
-	shedder.InitializeMetrics()
+	shedder := newTestLoadShedder(100, 0.8, 0, http.StatusServiceUnavailable, "max")
 
 	controlResp := &puma.ControlResponse{
 		Workers:       2,
@@ -83,10 +94,7 @@ func TestLoadShedderThresholdNotExceeded(t *testing.T) {
 }
 
 func TestLoadShedderTransition(t *testing.T) {
-	logger := logrus.New()
-	reg := prometheus.NewRegistry()
-	shedder := NewLoadShedder(100, 0.8, 0, logger, reg, nil)
-	shedder.InitializeMetrics()
+	shedder := newTestLoadShedder(100, 0.8, 0, http.StatusServiceUnavailable, "max")
 
 	// Start below threshold
 	controlResp := &puma.ControlResponse{
@@ -118,10 +126,7 @@ func TestLoadShedderTransition(t *testing.T) {
 }
 
 func TestLoadShedderNilResponse(t *testing.T) {
-	logger := logrus.New()
-	reg := prometheus.NewRegistry()
-	shedder := NewLoadShedder(100, 0.8, 0, logger, reg, nil)
-	shedder.InitializeMetrics()
+	shedder := newTestLoadShedder(100, 0.8, 0, http.StatusServiceUnavailable, "sum")
 
 	// Should handle nil response gracefully
 	shedder.UpdateBacklog(nil)
@@ -129,10 +134,7 @@ func TestLoadShedderNilResponse(t *testing.T) {
 }
 
 func TestLoadShedderEmptyWorkers(t *testing.T) {
-	logger := logrus.New()
-	reg := prometheus.NewRegistry()
-	shedder := NewLoadShedder(100, 0.8, 0, logger, reg, nil)
-	shedder.InitializeMetrics()
+	shedder := newTestLoadShedder(100, 0.8, 0, http.StatusServiceUnavailable, "sum")
 
 	controlResp := &puma.ControlResponse{
 		Workers:       0,
@@ -145,10 +147,7 @@ func TestLoadShedderEmptyWorkers(t *testing.T) {
 }
 
 func TestLoadShedderGetThreshold(t *testing.T) {
-	logger := logrus.New()
-	reg := prometheus.NewRegistry()
-	shedder := NewLoadShedder(250, 0.8, 0, logger, reg, nil)
-	shedder.InitializeMetrics()
+	shedder := newTestLoadShedder(250, 0.8, 0, http.StatusServiceUnavailable, "sum")
 
 	assert.Equal(t, 250, shedder.GetThreshold())
 }
@@ -204,41 +203,6 @@ func TestMaxBacklogStrategy(t *testing.T) {
 func TestMaxBacklogStrategyName(t *testing.T) {
 	strategy := &MaxBacklogStrategy{}
 	assert.Equal(t, "max", strategy.Name())
-}
-
-func TestLoadShedderWithCustomStrategy(t *testing.T) {
-	logger := logrus.New()
-	reg := prometheus.NewRegistry()
-	strategy := &MaxBacklogStrategy{}
-	shedder := NewLoadShedder(100, 0.8, 0, logger, reg, strategy)
-	shedder.InitializeMetrics()
-
-	controlResp := &puma.ControlResponse{
-		Workers:       2,
-		BootedWorkers: 2,
-		WorkerStatus: []puma.Worker{
-			{
-				Index:  0,
-				Booted: true,
-				LastStatus: puma.WorkerStatus{
-					Backlog: 150,
-				},
-			},
-			{
-				Index:  1,
-				Booted: true,
-				LastStatus: puma.WorkerStatus{
-					Backlog: 50,
-				},
-			},
-		},
-	}
-
-	shedder.UpdateBacklog(controlResp)
-
-	// Should shed load (max backlog is 150, threshold is 100)
-	assert.True(t, shedder.ShouldShedLoad())
-	assert.Equal(t, 150, shedder.GetLastBacklog())
 }
 
 func TestSumBacklogStrategy(t *testing.T) {
@@ -301,11 +265,7 @@ func TestSumBacklogStrategyLargeValues(t *testing.T) {
 }
 
 func TestLoadShedderWithSumStrategy(t *testing.T) {
-	logger := logrus.New()
-	reg := prometheus.NewRegistry()
-	strategy := &SumBacklogStrategy{}
-	shedder := NewLoadShedder(200, 0.8, 0, logger, reg, strategy)
-	shedder.InitializeMetrics()
+	shedder := newTestLoadShedder(200, 0.8, 0, http.StatusServiceUnavailable, "sum")
 
 	controlResp := &puma.ControlResponse{
 		Workers:       2,
@@ -372,11 +332,7 @@ func TestNewBacklogStrategy(t *testing.T) {
 }
 
 func TestLoadShedderHysteresis(t *testing.T) {
-	logger := logrus.New()
-	reg := prometheus.NewRegistry()
-	// Threshold 100, hysteresis 0.8 (deactivate at 80)
-	shedder := NewLoadShedder(100, 0.8, 0, logger, reg, nil)
-	shedder.InitializeMetrics()
+	shedder := newTestLoadShedder(100, 0.8, 0, http.StatusServiceUnavailable, "max")
 
 	// Start below threshold
 	controlResp := &puma.ControlResponse{

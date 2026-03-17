@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Integrate GitLab with GitGuardian to get alerts for policy violations and security issues before they can be exploited.
 title: GitGuardian
 ---
@@ -67,7 +67,7 @@ After you have created and copied your API token, configure GitLab to reject com
 
 To enable the integration for your project:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Integrations**.
 1. Select **GitGuardian**.
 1. In **Enable integration**, select the **Active** checkbox.

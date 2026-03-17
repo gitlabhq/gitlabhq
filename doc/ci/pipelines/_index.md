@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: CI/CD pipelines
 description: Configuration, automation, stages, schedules, and efficiency.
 ---
@@ -57,6 +57,8 @@ Pipelines can be configured in many different ways:
   already been merged into the target branch.
 - [Merge trains](merge_trains.md)
   use merged results pipelines to queue merges one after the other.
+- [Workload pipelines](pipeline_types.md#workload-pipeline) run on ephemeral Git
+  references for on-demand pipeline execution without creating temporary branches.
 - [Parent-child pipelines](downstream_pipelines.md#parent-child-pipelines) break down complex pipelines
   into one parent pipeline that can trigger multiple child sub-pipelines, which all
   run in the same project and with the same SHA. This pipeline architecture is commonly used for mono-repos.
@@ -74,7 +76,7 @@ You can also configure specific aspects of your pipelines through the GitLab UI:
 - [Pipeline schedules](schedules.md).
 - [Custom CI/CD variables](../variables/_index.md#for-a-project).
 
-If you use VS Code to edit your GitLab CI/CD configuration, the [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/_index.md)
+If you use VS Code to edit your GitLab CI/CD configuration, the [GitLab for VS Code extension](../../editor_extensions/visual_studio_code/_index.md)
 helps you [validate your configuration](../../editor_extensions/visual_studio_code/cicd.md#test-gitlab-cicd-configuration)
 and [view your pipeline status](../../editor_extensions/visual_studio_code/cicd.md#view-pipeline-information).
 
@@ -556,11 +558,12 @@ project repository.
 
 This table lists the refspecs injected for each pipeline type:
 
-| Pipeline type                                                     | Refspecs |
-|-------------------------------------------------------------------|----------|
-| pipeline for branches                                             | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
-| pipeline for tags                                                 | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>` |
-| [merge request pipeline](merge_request_pipelines.md)              | `+refs/pipelines/<id>:refs/pipelines/<id>` |
+| Pipeline type                                        | Refspecs |
+|------------------------------------------------------|----------|
+| pipeline for branches                                | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
+| pipeline for tags                                    | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>` |
+| [merge request pipeline](merge_request_pipelines.md) | `+refs/pipelines/<id>:refs/pipelines/<id>` |
+| [pipeline for workload refs](pipeline_types.md#workload-pipeline)  | `+refs/pipelines/<id>:refs/pipelines/<id>` |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a

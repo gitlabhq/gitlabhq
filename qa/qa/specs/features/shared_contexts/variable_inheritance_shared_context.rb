@@ -42,6 +42,7 @@ module QA
 
     def start_pipeline_with_variable
       upstream_project.visit!
+      Page::Project::Show.perform(&:close_dap_panel_if_exists)
       Flow::Pipeline.wait_for_latest_pipeline
       Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
       Page::Project::Pipeline::New.perform do |new|
@@ -63,6 +64,7 @@ module QA
 
     def visit_job_page(pipeline_title, job_name)
       Page::Project::Pipeline::Show.perform do |show|
+        show.close_dap_panel_if_exists
         show.expand_child_pipeline(title: pipeline_title)
         show.click_job(job_name)
       end

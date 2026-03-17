@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab 17 upgrade notes
 ---
 
@@ -30,15 +30,12 @@ When upgrading from certain GitLab versions, you should be aware of some issues 
 When you upgrade from GitLab 16.11:
 
 - Background migration `AlterWebhookDeletedAuditEvent: audit_events` can take several hours to finish. You can read more in [merge request 161320](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161320).
-
 - You must remove references to the [now deprecated bundled Grafana](../deprecations.md#bundled-grafana-deprecated-and-disabled) key from `gitlab.rb` before upgrading to GitLab 17.0 or later. After upgrading, any references to the key in `gitlab.rb` will cause `gitlab-ctl reconfigure` to fail.
-
 - You should [migrate to the new runner registration workflow](../../ci/runners/new_creation_workflow.md) before upgrading to GitLab 17.0.
 
   In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register runners.
   The legacy workflow that uses registration tokens is now disabled by default in GitLab 17.0 and is planned for removal in GitLab 20.0.
   If registration tokens are still being used, upgrading to GitLab 17.0 will cause runner registration to fail.
-
 - Gitaly storages can no longer share the same path as in this example:
 
   ```ruby
@@ -113,7 +110,6 @@ Specific information applies to Linux package installations:
 
   Prior to upgrading, you must ensure your installation is using
   [PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
-
 - Packages are no longer built for Ubuntu 18.04
 
   Ensure that your operating system has been upgraded to Ubuntu 20.04 or later before attempting to upgrade GitLab.
@@ -200,7 +196,7 @@ To safely resolve this issue, follow these steps:
 1. Run the following script in the Rails console.
 1. Re-run the migrations, and they should complete successfully.
 
-```Ruby
+```ruby
 # Get the IDs to keep for each cluster_agent_id; if there are duplicates, only the row with the latest updated_at will be kept.
 latest_ids = ::RemoteDevelopment::RemoteDevelopmentAgentConfig.select("DISTINCT ON (cluster_agent_id) id")
   .order("cluster_agent_id, updated_at DESC")
@@ -564,7 +560,6 @@ for more details.
 
 - Upgrades to GitLab 17.2.1 can fail because of [unknown sequences in the database](https://gitlab.com/gitlab-org/gitlab/-/issues/474293). This issue has
   been fixed in GitLab 17.2.2.
-
 - Upgrades to [GitLab 17.2.1 may fail with the error](https://gitlab.com/gitlab-org/gitlab/-/issues/473337):
 
   ```plaintext

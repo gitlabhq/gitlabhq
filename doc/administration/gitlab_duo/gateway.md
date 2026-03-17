@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: AI Gateway
 ---
 
@@ -11,7 +11,7 @@ GitLab operates an instance of the AI Gateway, based in the cloud.
 This instance is used by GitLab.com, [GitLab Self-Managed](setup.md), and GitLab Dedicated.
 
 You can also use a self-hosted AI Gateway instance on GitLab Self-Managed
-through [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md).
+through [GitLab Duo Self-Hosted](../gitlab_duo_self_hosted/_index.md).
 
 ## Region support
 
@@ -54,7 +54,7 @@ The following factors influence where data is routed:
 The IDE communicates directly with the AI Gateway by default, bypassing the GitLab monolith.
 This direct connection improves routing efficiency.
 
-To change this behavior, configure direct and indirect connections for [Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md#direct-and-indirect-connections) or [Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md#direct-and-indirect-connections).
+To change this behavior, configure [direct and indirect connections](../../user/duo_agent_platform/code_suggestions/_index.md#direct-and-indirect-connections) for Code Suggestions.
 
 ### Tracing requests to specific regions
 

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Runners API
 ---
 
@@ -110,7 +110,8 @@ Example response:
         "runner_type": "project_type",
         "name": null,
         "online": true,
-        "status": "online"
+        "status": "online",
+        "job_execution_status": "idle"
     },
     {
         "active": true,
@@ -122,7 +123,8 @@ Example response:
         "runner_type": "group_type",
         "name": null,
         "online": false,
-        "status": "offline"
+        "status": "offline",
+        "job_execution_status": "idle"
     }
 ]
 ```
@@ -195,7 +197,8 @@ Example response:
         "runner_type": "instance_type",
         "name": null,
         "online": true,
-        "status": "online"
+        "status": "online",
+        "job_execution_status": "idle"
     },
     {
         "active": true,
@@ -207,7 +210,8 @@ Example response:
         "runner_type": "instance_type",
         "name": null,
         "online": false,
-        "status": "offline"
+        "status": "offline",
+        "job_execution_status": "idle"
     },
     {
         "active": true,
@@ -219,7 +223,8 @@ Example response:
         "runner_type": "project_type",
         "name": null,
         "online": true,
-        "status": "paused"
+        "status": "paused",
+        "job_execution_status": "idle"
     },
     {
         "active": true,
@@ -231,7 +236,8 @@ Example response:
         "runner_type": "group_type",
         "name": null,
         "online": false,
-        "status": "offline"
+        "status": "offline",
+        "job_execution_status": "idle"
     }
 ]
 ```
@@ -247,11 +253,9 @@ Instance runner details are available to all authenticated users through this en
 Prerequisites:
 
 - User access: You must have one of the following:
-
   - For group runners: The Maintainer or Owner role in the owner namespace.
   - For project runners: The Maintainer or Owner role in the project that owns the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
-
 - An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
@@ -303,6 +307,7 @@ Example response:
     "name": null,
     "online": true,
     "status": "online",
+    "job_execution_status": "idle",
     "platform": null,
     "projects": [
         {
@@ -335,12 +340,10 @@ PUT /runners/:id
 Prerequisites:
 
 - User access: You must have one of the following:
-
   - For instance runners: Administrator access to the GitLab instance.
   - For group runners: Owner role in the owner namespace.
   - For project runners: The Maintainer or Owner role in a project assigned to the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
-
 - An access token with the `manage_runner` scope and the appropriate role.
 
 | Attribute          | Type    | Required | Description |
@@ -391,6 +394,7 @@ Example response:
     "name": null,
     "online": true,
     "status": "online",
+    "job_execution_status": "idle",
     "platform": null,
     "projects": [
         {
@@ -421,12 +425,10 @@ Pause a runner.
 Prerequisites:
 
 - User access: You must have one of the following:
-
   - For instance runners: Administrator access to the GitLab instance.
   - For group runners: Owner role in the owner namespace.
   - For project runners: The Maintainer or Owner role in a project assigned to the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
-
 - An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
@@ -578,7 +580,8 @@ Example response:
       "created_at": "2024-06-09T11:12:02.507Z",
       "contacted_at": "2024-06-09T06:30:09.355Z",
       "ip_address": "127.0.0.1",
-      "status": "offline"
+      "status": "offline",
+      "job_execution_status": "idle"
     },
     {
       "id": 2,
@@ -590,7 +593,8 @@ Example response:
       "created_at": "2024-06-09T09:12:02.507Z",
       "contacted_at": "2024-06-09T06:30:09.355Z",
       "ip_address": "127.0.0.1",
-      "status": "offline"
+      "status": "offline",
+      "job_execution_status": "idle"
     }
 ]
 ```
@@ -657,7 +661,8 @@ Example response:
         "runner_type": "project_type",
         "name": null,
         "online": false,
-        "status": "offline"
+        "status": "offline",
+        "job_execution_status": "idle"
     },
     {
         "active": true,
@@ -669,7 +674,8 @@ Example response:
         "runner_type": "instance_type",
         "name": null,
         "online": true,
-        "status": "online"
+        "status": "online",
+        "job_execution_status": "idle"
     }
 ]
 ```
@@ -719,7 +725,8 @@ Example response:
     "runner_type": "project_type",
     "name": null,
     "online": true,
-    "status": "online"
+    "status": "online",
+    "job_execution_status": "idle"
 }
 ```
 
@@ -733,10 +740,8 @@ Prerequisites:
 
 - You must not lock the runner, unless you are an administrator.
 - User access: You must have one of the following:
-
   - The Maintainer or Owner role in the project you want to unassign.
   - A custom role with the `admin_runners` permission in the relevant group or project.
-
 - An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
@@ -759,11 +764,9 @@ Lists all runners available in the group and its ancestor groups, including [any
 Prerequisites:
 
 - User access: You must have one of the following:
-
   - Administrator access to the GitLab instance.
   - Owner or Auditor role in the group.
   - A custom role with the `admin_runners` permission in the group.
-
 - An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
@@ -819,7 +822,8 @@ Example response:
     "runner_type": "instance_type",
     "name": "gitlab-runner",
     "online": null,
-    "status": "never_contacted"
+    "status": "never_contacted",
+    "job_execution_status": "idle"
   },
   {
     "id": 6,
@@ -831,7 +835,8 @@ Example response:
     "runner_type": "instance_type",
     "name": "gitlab-runner",
     "online": false,
-    "status": "offline"
+    "status": "offline",
+    "job_execution_status": "idle"
   },
   {
     "id": 8,
@@ -843,7 +848,8 @@ Example response:
     "runner_type": "group_type",
     "name": "gitlab-runner",
     "online": null,
-    "status": "never_contacted"
+    "status": "never_contacted",
+    "job_execution_status": "idle"
   }
 ]
 ```
@@ -919,12 +925,10 @@ To delete the runner by ID, use your access token with the runner's ID:
 Prerequisites:
 
 - User access: You must have one of the following:
-
   - For instance runners: Administrator access to the GitLab instance.
   - For group runners: Owner role in the owner namespace.
   - For project runners: The Maintainer or Owner role in the project that owns the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
-
 - An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
@@ -1005,7 +1009,7 @@ Example response:
 > Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
 > to generate an authentication token to register runners. This process provides full
 > traceability of runner ownership and enhances your runner fleet's security.
-> 
+>
 > For more information, see
 > [Migrating to the new runner registration workflow](../ci/runners/new_creation_workflow.md).
 
@@ -1071,12 +1075,10 @@ Reset the runner's authentication token by using its runner ID.
 Prerequisites:
 
 - User access: You must have one of the following:
-
   - For instance runners: Administrator access to the GitLab instance.
   - For group runners: Owner role in the owner namespace.
   - For project runners: The Maintainer or Owner role in a project assigned to the runner.
   - A custom role with the `admin_runners` permission in the relevant group or project.
-
 - An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext

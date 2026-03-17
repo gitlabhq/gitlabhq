@@ -96,7 +96,7 @@ module ClickHouseSchemaHelpers
                   .camelcase
                   .safe_constantize
 
-      Object.send(:remove_const, const.to_s) if const
+      Object.send(:remove_const, const.to_s) if const # rubocop:disable RSpec/RemoveConst -- constant should be unloaded
       $LOADED_FEATURES.delete(file)
     end
   end

@@ -1,16 +1,33 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
-import ReportWidgetContainer from 'ee_else_ce/vue_merge_request_widget/components/widget/app.vue';
+import SmartInterval from '~/smart_interval';
+import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
+
+// 5s → 10s → 20s → 40s → 80s → 120s → repeats 120s until done
+const MR_POLLING_SETTINGS = {
+  startingInterval: secondsToMilliseconds(5), // Poll starts at 5s
+  incrementByFactorOf: 2, // Doubles each time
+  maxInterval: secondsToMilliseconds(120), // Caps at 2 mins
+};
 
 export default {
   name: 'MergeRequestReportsApp',
   components: {
-    ReportWidgetContainer,
-    BlockersListItem: () =>
-      import('ee_component/merge_requests/reports/components/blockers_list_item.vue'),
+    GlLoadingIcon,
+    SecurityScansProvider: () =>
+      import('ee_component/merge_requests/reports/components/security_scans_provider.vue'),
+    SecurityNavItem: () => import('~/merge_requests/reports/components/security_nav_item.vue'),
+    LicenseComplianceProvider: () =>
+      import('ee_component/merge_requests/reports/components/license_compliance_provider.vue'),
+    LicenseComplianceNavItem: () =>
+      import('ee_component/merge_requests/reports/components/license_compliance_nav_item.vue'),
+    CodeQualityProvider: () =>
+      import('~/merge_requests/reports/components/code_quality_provider.vue'),
+    CodeQualityNavItem: () =>
+      import('~/merge_requests/reports/components/code_quality_nav_item.vue'),
   },
-  inject: ['hasPolicies'],
   data() {
     return {
       mr: null,
@@ -24,9 +41,32 @@ export default {
       MRWidgetService.fetchInitialData()
         .then(({ data }) => {
           this.mr = new MRWidgetStore({ ...window.gl.mrWidgetData, ...data });
+          this.initMrPolling();
         })
         .catch(() => {});
     }
+  },
+  beforeDestroy() {
+    this.mrPollingInterval?.destroy();
+  },
+  methods: {
+    initMrPolling() {
+      if (!this.mr.isPipelineActive) return;
+
+      this.mrPollingInterval = new SmartInterval({
+        callback: () =>
+          MRWidgetService.fetchInitialData()
+            .then(({ data }) => {
+              this.mr.setData({ ...window.gl.mrWidgetData, ...data });
+              if (!this.mr.isPipelineActive) {
+                this.mrPollingInterval.destroy();
+              }
+            })
+            .catch(() => {}),
+        ...MR_POLLING_SETTINGS,
+        immediateExecution: false,
+      });
+    },
   },
 };
 </script>
@@ -40,23 +80,20 @@ export default {
       class="gl-border-b gl-border-default gl-pb-3 gl-pt-5 @md/panel:gl-border-r @md/panel:gl-border-0 @md/panel:gl-pr-5"
     >
       <nav>
-        <blockers-list-item v-if="hasPolicies" />
-        <div v-if="mr">
-          <h3
-            class="gl-heading-6 gl-mb-0 gl-py-3 gl-pl-3 gl-text-sm gl-font-[700] gl-leading-normal"
-          >
-            {{ s__('MrReports|All reports') }}
-          </h3>
-          <report-widget-container
-            :mr="mr"
-            reports-tab-sidebar
-            data-testid="reports-widget-sidebar"
-          />
-        </div>
+        <security-scans-provider v-if="mr" :mr="mr">
+          <security-nav-item />
+        </security-scans-provider>
+        <license-compliance-provider v-if="mr" :mr="mr">
+          <license-compliance-nav-item />
+        </license-compliance-provider>
+        <code-quality-provider v-if="mr" :mr="mr">
+          <code-quality-nav-item />
+        </code-quality-provider>
       </nav>
     </aside>
     <section class="@md/panel:gl-pt-5">
-      <router-view :mr="mr" />
+      <router-view v-if="mr" :mr="mr" />
+      <gl-loading-icon v-else size="lg" />
     </section>
   </div>
 </template>

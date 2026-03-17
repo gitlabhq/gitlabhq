@@ -42,6 +42,14 @@ RSpec.shared_examples Integrations::Base::Discord do
           'https://discord.com/' | true
           'https://discord.com/api/webhooks/12345/token_12-34' | true
           'https://discord.com/api/webhooks/12345/token_12-34?thread_id=1234' | true
+          'https://ptb.discord.com/api/webhooks/12345/token_12-34' | true
+          'https://canary.discord.com/api/webhooks/12345/token_12-34' | true
+          'https://ptb.discord.com' | true
+          'https://canary.discord.com' | true
+          'https://other.discord.com/api/webhooks/12345/token_12-34' | false
+          'https://canary.ptb.discord.com/api/webhooks/12345/token_12-34' | false
+          'https://ptbdiscord.com/api/webhooks/12345/token_12-34' | false
+          'https://canarydiscord.com/api/webhooks/12345/token_12-34' | false
         end
 
         with_them do

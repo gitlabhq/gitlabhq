@@ -8,6 +8,7 @@ module Banzai
           Filter::References::ExternalIssueReferenceFilter::LinkResolutionFilter,
           Filter::TruncateVisibleFilter,
           Filter::PlaceholdersPostFilter,
+          Filter::DiagramProxyPostFilter,
           *internal_link_filters,
           Filter::AbsoluteLinkFilter,
           Filter::BroadcastMessagePlaceholdersFilter

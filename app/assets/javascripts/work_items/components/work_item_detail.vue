@@ -1,5 +1,5 @@
 <script>
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import {
   GlAlert,
   GlButton,
@@ -10,13 +10,13 @@ import {
   GlIntersectionObserver,
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
-import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
+import DuoWorkflowAction from 'ee_component/ai/shared/widgets/duo_workflow_action.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import toast from '~/vue_shared/plugins/global_toast';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -28,7 +28,6 @@ import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybin
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import {
   i18n,
-  WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_AWARD_EMOJI,
@@ -46,6 +45,7 @@ import {
   WIDGET_TYPE_LINKED_RESOURCES,
   WIDGET_TYPE_MILESTONE,
   WORK_ITEM_TYPE_NAME_INCIDENT,
+  VIEW_CONTEXT,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -54,7 +54,7 @@ import workItemByIdQuery from '../graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
 import workspacePermissionsQuery from '../graphql/workspace_permissions.query.graphql';
-import { findHierarchyWidgetDefinition, activeWorkItemIds } from '../utils';
+import { findAssigneesWidget, findHierarchyWidgetDefinition, activeWorkItemIds } from '../utils';
 import { updateWorkItemCurrentTodosWidget } from '../graphql/cache_utils';
 
 import getWorkItemDesignListQuery from './design_management/graphql/design_collection.query.graphql';
@@ -146,7 +146,7 @@ export default {
     WorkItemMetadataProvider,
     DuoWorkflowAction,
   },
-  mixins: [glFeatureFlagMixin(), trackingMixin],
+  mixins: [glFeatureFlagsMixin(), trackingMixin],
   inject: {
     groupPath: {
       from: 'groupPath',
@@ -228,20 +228,20 @@ export default {
   apollo: {
     workItem: {
       query() {
-        if (this.workItemId) {
-          return workItemByIdQuery;
-        }
-        return workItemByIidQuery;
+        return this.workItemId ? workItemByIdQuery : workItemByIidQuery;
       },
       variables() {
         if (this.workItemId) {
           return {
             id: this.workItemId,
+            useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
           };
         }
+
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
         };
       },
       skip() {
@@ -290,6 +290,7 @@ export default {
         variables() {
           return {
             id: this.workItem.id,
+            useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
           };
         },
         skip() {
@@ -412,7 +413,7 @@ export default {
       return this.workItemCurrentUserTodos?.currentUserTodos?.nodes;
     },
     workItemAssignees() {
-      return this.findWidget(WIDGET_TYPE_ASSIGNEES);
+      return findAssigneesWidget(this.workItem);
     },
     workItemAwardEmoji() {
       return this.findWidget(WIDGET_TYPE_AWARD_EMOJI);
@@ -647,6 +648,7 @@ export default {
               id: this.workItem.id,
               confidential: confidentialStatus,
             },
+            useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
           },
         })
         .then(
@@ -736,6 +738,7 @@ export default {
                 description: this.draftData.description,
               },
             },
+            useWorkItemFeatures: Boolean(this.glFeatures.workItemFeaturesField),
           },
         });
 
@@ -933,6 +936,7 @@ export default {
     },
   },
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  VIEW_CONTEXT,
   noAccessSvg,
 };
 </script>
@@ -1066,7 +1070,7 @@ export default {
                   @workItemStateUpdated="$emit('workItemStateUpdated')"
                   @workItemTypeChanged="workItemTypeChanged"
                   @toggleReportAbuseModal="toggleReportAbuseModal"
-                  @workItemCreated="handleWorkItemCreated"
+                  @work-item-created="handleWorkItemCreated"
                   @toggleSidebar="handleToggleSidebar"
                   @toggleTruncationEnabled="handleTruncationEnabled"
                 />
@@ -1154,7 +1158,7 @@ export default {
                   @workItemStateUpdated="$emit('workItemStateUpdated')"
                   @workItemTypeChanged="workItemTypeChanged"
                   @toggleReportAbuseModal="toggleReportAbuseModal"
-                  @workItemCreated="handleWorkItemCreated"
+                  @work-item-created="handleWorkItemCreated"
                   @toggleSidebar="handleToggleSidebar"
                   @toggleTruncationEnabled="handleTruncationEnabled"
                 />
@@ -1322,7 +1326,7 @@ export default {
                 :is-drawer="isDrawer"
                 contextual-view-enabled
                 @show-modal="openContextualView"
-                @addChild="$emit('addChild')"
+                @add-child="$emit('add-child')"
               />
               <work-item-relationships
                 v-if="workItemLinkedItems"
@@ -1390,9 +1394,10 @@ export default {
         :active-item="activeChildItem"
         :open="isItemSelected"
         :issuable-type="activeChildItemType"
+        :view-context="$options.VIEW_CONTEXT.drawerWorkItem"
         click-outside-exclude-selector=".issuable-list"
         @close="activeChildItem = null"
-        @workItemDeleted="deleteChildItem"
+        @work-item-deleted="deleteChildItem"
       />
       <work-item-abuse-modal
         v-if="isReportModalOpen"

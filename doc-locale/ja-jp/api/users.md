@@ -1,9 +1,9 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: ユーザーAPI
-description: GitLab Users APIを使用すると、ユーザーアカウントの作成、変更、検索、および削除を実行できます。また、管理者オペレーションとSCIMプロビジョニングもサポートしています。
+description: GitLabのAPIは、ユーザーアカウントの作成、変更、検索、および削除が可能です。管理者操作とSCIMプロビジョニングもサポートしています。
 ---
 
 {{< details >}}
@@ -15,11 +15,11 @@ description: GitLab Users APIを使用すると、ユーザーアカウントの
 
 このAPIを使用して、GitLabのユーザーアカウントを操作します。これらのエンドポイントは、[アカウント](../user/profile/_index.md)または[他のユーザーのアカウント](../administration/administer_users.md)の管理に役立ちます。
 
-## ユーザーのリストを取得する {#list-users}
+## すべてのユーザーをリストする {#list-all-users}
 
-ユーザーのリストを取得します。
+すべてのユーザーをリストします。
 
-ユーザーのリストを制限するために、[ページネーション](rest/_index.md#offset-based-pagination)パラメータ`page`と`per_page`を受け取ります。
+[ページネーション](rest/_index.md#offset-based-pagination)パラメータ`page`と`per_page`を取り、ユーザーのリストを制限します。
 
 ### 標準ユーザーとして {#as-a-regular-user}
 
@@ -34,7 +34,7 @@ description: GitLab Users APIを使用すると、ユーザーアカウントの
 GET /users
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性              | 型     | 必須 | 説明 |
 |:-----------------------|:---------|:---------|:------------|
@@ -54,7 +54,7 @@ GET /users
 | `without_project_bots` | ブール値  | いいえ       | プロジェクトボットのないユーザーをフィルタリングします。デフォルトは`false`です。 |
 | `saml_provider_id`     | 数値   | いいえ       | GitLab 18.2で削除されました。代わりに[`GET /groups/:id/saml_users`](groups.md#list-all-saml-users)を使用してください。 |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -81,28 +81,24 @@ GET /users
 
 このエンドポイントは、[キーセットページネーション](rest/_index.md#keyset-based-pagination)をサポートしています。GitLab 17.0以降では、応答の数が50,000件以上の場合にはキーセットページネーションが必要です。
 
-`?search=`を使用して、名前、ユーザー名、または公開メールアドレスでユーザーを検索することもできます。例: `/users?search=John`。検索対象に応じて、次のようになります:
+`?search=`を使用して、名前、ユーザー名、または公開メールアドレスでユーザーを検索することもできます。例: `/users?search=John`。検索対象に応じて、次のようになります。
 
 - 公開メールアドレスを検索する場合、完全一致する結果を取得するには、完全なメールアドレスを使用する必要があります。
 - 名前またはユーザー名を検索する場合、これはあいまい検索であるため、完全一致する結果を得る必要はありません。
 
-さらに、ユーザー名でユーザーを検索できます:
+さらに、ユーザー名でユーザーを検索できます。
 
 ```plaintext
 GET /users?username=:username
 ```
 
-例は次のとおりです:
+例: 
 
 ```plaintext
 GET /users?username=jack_smith
 ```
 
-{{< alert type="note" >}}
-
-ユーザー名の検索では大文字と小文字は区別されません。
-
-{{< /alert >}}
+> [!note]ユーザー名検索では大文字と小文字が区別されません。
 
 また、`blocked`状態と`active`状態に基づいてユーザーをフィルタリングできます。`active=false`と`blocked=false`はサポートされていません。
 
@@ -120,7 +116,7 @@ GET /users?blocked=true
 GET /users?external=true
 ```
 
-GitLabは、[アラートボット](../operations/incident_management/integrations.md)や[サポートボット](../user/project/service_desk/configure.md#support-bot-user)などのボットユーザーをサポートしています。`exclude_internal=true`パラメータを使用して、ユーザーリストから次の種類の[内部ユーザー](../administration/internal_users.md)を除外することができます:
+GitLabは、[アラートボット](../operations/incident_management/integrations.md)や[サポートボット](../user/project/service_desk/configure.md#support-bot-user)などのボットユーザーをサポートしています。`exclude_internal=true`パラメータを使用して、ユーザーリストから次の種類の[内部ユーザー](../administration/internal_users.md)を除外することができます。
 
 - アラートボット
 - サポートボット
@@ -158,7 +154,7 @@ GET /users?without_project_bots=true
 - 応答の`scim_identities`フィールドは、GitLab 16.1で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/324247)されました。
 - 応答の`auditors`フィールドは、GitLab 16.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/418023)されました。
 - 応答の`email_reset_offered_at`フィールドは、GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610)されました。
-- レスポンスの`email_reset_offered_at`フィールドは、GitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
+- レスポンスの`email_reset_offered_at`フィールドはGitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
 
 {{< /history >}}
 
@@ -168,7 +164,7 @@ GET /users
 
 [すべてのユーザーが利用できるパラメータ](#as-a-regular-user)の他に、管理者のみが利用できる次の属性があります。
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性          | 型    | 必須 | 説明 |
 |:-------------------|:--------|:---------|:------------|
@@ -180,10 +176,10 @@ GET /users
 | `two_factor`       | 文字列  | いいえ       | 2要素認証でユーザーをフィルタリングします。フィルターの値は`enabled`または`disabled`です。デフォルトでは、すべてのユーザーが返されます。 |
 | `without_projects` | ブール値 | いいえ       | プロジェクトのないユーザーをフィルタリングします。デフォルトは`false`です。これは、プロジェクトの有無にかかわらず、すべてのユーザーが返されることを意味します。 |
 | `admins`           | ブール値 | いいえ       | 管理者のみを返します。デフォルトは`false`です。 |
-| `auditors`         | ブール値 | いいえ       | 監査担当者ユーザーのみを返します。デフォルトは`false`です。含まれていない場合、すべてのユーザーが返されます。PremiumおよびUltimateのみ。 |
-| `skip_ldap`        | ブール値 | いいえ       | LDAPユーザーをスキップします。PremiumおよびUltimateのみ。 |
+| `auditors`         | ブール値 | いいえ       | 監査担当者ユーザーのみを返します。デフォルトは`false`です。含まれていない場合、すべてのユーザーが返されます。PremiumおよびUltimateのみです。 |
+| `skip_ldap`        | ブール値 | いいえ       | LDAPユーザーをスキップします。PremiumおよびUltimateのみです。 |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -287,7 +283,7 @@ GET /users
 ]
 ```
 
-[GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、`group_saml`プロバイダーオプションと`provisioned_by_group_id`パラメータも表示されます:
+[GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、`group_saml`プロバイダーオプションと`provisioned_by_group_id`パラメータも表示されます。
 
 ```json
 [
@@ -306,30 +302,30 @@ GET /users
 ]
 ```
 
-`?search=`を使用して、名前、ユーザー名、またはメールアドレスでユーザーを検索することもできます。例: `/users?search=John`。検索対象に応じて、次のようになります:
+`?search=`を使用して、名前、ユーザー名、またはメールアドレスでユーザーを検索することもできます。例: `/users?search=John`。検索対象に応じて、次のようになります。
 
 - メールアドレスを検索する場合、完全一致する結果を取得するには、完全なメールアドレスを使用する必要があります。管理者は公開メールアドレスと非公開メールアドレスの両方を検索できます。
 - 名前またはユーザー名を検索する場合、これはあいまい検索であるため、完全一致する結果を得る必要はありません。
 
-外部固有識別子（UID）とプロバイダーを使用してユーザーを検索できます:
+外部UIDとプロバイダーを使用してユーザーを検索できます。
 
 ```plaintext
 GET /users?extern_uid=:extern_uid&provider=:provider
 ```
 
-例は次のとおりです:
+例: 
 
 ```plaintext
 GET /users?extern_uid=1234567&provider=github
 ```
 
-[GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーは、`scim`プロバイダーを使用できます:
+[GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーは、`scim`プロバイダーを使用できます。
 
 ```plaintext
 GET /users?extern_uid=1234567&provider=scim
 ```
 
-作成日時範囲でユーザーを検索するには、以下を使用します:
+作成日時範囲でユーザーを検索するには、以下を使用します。
 
 ```plaintext
 GET /users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:00:00.060
@@ -337,34 +333,34 @@ GET /users?created_before=2001-01-02T00:00:00.060Z&created_after=1999-01-02T00:0
 
 プロジェクトのないユーザーを検索するには、`/users?without_projects=true`を使用します。
 
-[カスタム属性](custom_attributes.md)でフィルタリングするには、以下を使用します:
+[カスタム属性](custom_attributes.md)でフィルタリングするには、以下を使用します。
 
 ```plaintext
 GET /users?custom_attributes[key]=value&custom_attributes[other_key]=other_value
 ```
 
-応答にユーザーの[カスタム属性](custom_attributes.md)を含めるには、以下を使用します:
+応答にユーザーの[カスタム属性](custom_attributes.md)を含めるには、以下を使用します。
 
 ```plaintext
 GET /users?with_custom_attributes=true
 ```
 
-`created_by`パラメータを使用して、ユーザーアカウントが以下のように作成されたかどうかを確認できます:
+`created_by`パラメータを使用して、ユーザーアカウントが以下のように作成されたかどうかを確認できます。
 
 - [管理者により手動](../user/profile/account/create_accounts.md#create-a-user-in-the-admin-area)で作成される。
 - [プロジェクトボットユーザー](../user/project/settings/project_access_tokens.md#bot-users-for-projects)として作成される。
 
 返された値が`null`の場合、自分でアカウントを登録したユーザーによって作成されています。
 
-## 単一のユーザーを取得する {#get-a-single-user}
+## 単一ユーザーを取得する {#retrieve-a-single-user}
 
-単一のユーザーを取得します。
+単一ユーザーを取得します。
 
-### 標準ユーザーとして {#as-a-regular-user-1}
+### 通常ユーザーとして単一ユーザーを取得する {#retrieve-a-single-user-as-a-regular-user}
 
-標準ユーザーとして単一のユーザーを取得します。
+通常ユーザーとして単一ユーザーを取得します。
 
-前提要件:
+前提条件: 
 
 - このエンドポイントを使用するには、サインインする必要があります。
 
@@ -372,13 +368,13 @@ GET /users?with_custom_attributes=true
 GET /users/:id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明 |
 |:----------|:--------|:---------|:------------|
 | `id`      | 整数 | はい      | ユーザーのID |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -423,23 +419,23 @@ GET /users/:id
 
 - 応答の`created_by`フィールドは、GitLab 15.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092)されました。
 - 応答の`email_reset_offered_at`フィールドは、GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610)されました。
-- レスポンスの`email_reset_offered_at`フィールドは、GitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
+- レスポンスの`email_reset_offered_at`フィールドはGitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
 
 {{< /history >}}
 
-管理者として単一のユーザーを取得します。
+管理者として単一ユーザーを取得します。
 
 ```plaintext
 GET /users/:id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明 |
 |:----------|:--------|:---------|:------------|
 | `id`      | 整数 | はい      | ユーザーのID |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -497,11 +493,7 @@ GET /users/:id
 }
 ```
 
-{{< alert type="note" >}}
-
-`plan`パラメータと`trial`パラメータは、GitLab Enterprise Editionでのみ使用できます。
-
-{{< /alert >}}
+> [!note] `plan`および`trial`パラメータは、GitLab Enterprise Editionでのみ利用可能です。
 
 [GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、`shared_runners_minutes_limit`、`is_auditor`、`extra_shared_runners_minutes_limit`パラメータも表示されます。
 
@@ -516,7 +508,7 @@ GET /users/:id
 }
 ```
 
-[GitLab.com PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、`group_saml`オプションと`provisioned_by_group_id`パラメータも表示されます:
+[GitLab.com PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、`group_saml`オプションと`provisioned_by_group_id`パラメータも表示されます。
 
 ```json
 {
@@ -535,7 +527,7 @@ GET /users/:id
 }
 ```
 
-[GitLab.com PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、`scim_identities`パラメータも表示されます:
+[GitLab.com PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、`scim_identities`パラメータも表示されます。
 
 ```json
 {
@@ -549,32 +541,32 @@ GET /users/:id
 }
 ```
 
-管理者は`created_by`パラメータを使用して、ユーザーアカウントが次のように作成されたかどうかを確認できます:
+管理者は`created_by`パラメータを使用して、ユーザーアカウントが次のように作成されたかどうかを確認できます。
 
 - [管理者により手動](../user/profile/account/create_accounts.md#create-a-user-in-the-admin-area)で作成される。
 - [プロジェクトボットユーザー](../user/project/settings/project_access_tokens.md#bot-users-for-projects)として作成される。
 
 返された値が`null`の場合、自分でアカウントを登録したユーザーによって作成されています。
 
-応答にユーザーの[カスタム属性](custom_attributes.md)を含めるには、以下を使用します:
+応答にユーザーの[カスタム属性](custom_attributes.md)を含めるには、以下を使用します。
 
 ```plaintext
 GET /users/:id?with_custom_attributes=true
 ```
 
-## 現在のユーザーを取得する {#get-the-current-user}
+## 現在のユーザーを取得する {#retrieve-the-current-user}
 
 現在のユーザーを取得します。
 
-### 標準ユーザーとして {#as-a-regular-user-2}
+### 標準ユーザーとして {#as-a-regular-user-1}
 
-ユーザーの詳細を取得します。
+あなたのユーザー詳細を取得します。
 
 ```plaintext
 GET /user
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -640,17 +632,17 @@ GET /user
 
 - 応答の`created_by`フィールドは、GitLab 15.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092)されました。
 - 応答の`email_reset_offered_at`フィールドは、GitLab 16.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137610)されました。
-- レスポンスの`email_reset_offered_at`フィールドは、GitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
+- レスポンスの`email_reset_offered_at`フィールドはGitLab 18.3で[削除されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197491)。
 
 {{< /history >}}
 
-ユーザーの詳細、または別のユーザーの詳細を取得します。
+あなたのユーザー詳細、または他のユーザーの詳細を取得します。
 
 ```plaintext
 GET /user
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明 |
 |:----------|:--------|:---------|:------------|
@@ -704,7 +696,7 @@ GET /user
 }
 ```
 
-[GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、次のパラメータも表示されます:
+[GitLab PremiumまたはUltimate](https://about.gitlab.com/pricing/)のユーザーには、次のパラメータも表示されます。
 
 - `shared_runners_minutes_limit`
 - `extra_shared_runners_minutes_limit`
@@ -729,21 +721,17 @@ GET /user
 
 ユーザーを作成します。
 
-前提要件:
+前提条件: 
 
 - 管理者である必要があります。
 
-{{< alert type="note" >}}
-
-`private_profile`のデフォルトは、[新しいユーザーのプロファイルをデフォルトで非公開に設定する](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default)の値に設定されます。`bio`のデフォルトは、`null`ではなく`""`に設定されます。
-
-{{< /alert >}}
+> [!note] `private_profile`は[Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default)設定の値にデフォルトで設定されます。`bio`は`null`の代わりに`""`にデフォルトで設定されます。
 
 ```plaintext
 POST /users
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                            | 必須 | 説明 |
 |:-------------------------------------|:---------|:------------|
@@ -752,15 +740,15 @@ POST /users
 | `email`                              | はい      | ユーザーのメールアドレス       |
 | `password`                           | 条件付き | ユーザーのパスワード。`force_random_password`または`reset_password`が定義されていない場合は必須です。`force_random_password`または`reset_password`のいずれかが定義されている場合、それらの設定が優先されます。 |
 | `admin`                              | いいえ       | ユーザーは管理者です。有効な値は、`true`または`false`です。デフォルトはfalseです。 |
-| `auditor`                            | いいえ       | ユーザーは監査担当者です。有効な値は、`true`または`false`です。デフォルトはfalseです。GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/366404)されました。PremiumおよびUltimateのみ。 |
+| `auditor`                            | いいえ       | ユーザーは監査担当者です。有効な値は、`true`または`false`です。デフォルトはfalseです。GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/366404)されました。PremiumおよびUltimateのみです。 |
 | `avatar`                             | いいえ       | ユーザーのアバターの画像ファイル |
 | `bio`                                | いいえ       | ユーザーの経歴 |
 | `can_create_group`                   | いいえ       | ユーザーがトップレベルグループを作成できるかどうか（trueまたはfalse） |
 | `color_scheme_id`                    | いいえ       | ファイルビューアーのユーザーの配色（詳細については、[ユーザー設定のドキュメント](../user/profile/preferences.md#change-the-syntax-highlighting-theme)を参照してください） |
 | `commit_email`                       | いいえ       | ユーザーのコミットメールアドレス |
-| `extern_uid`                         | いいえ       | 外部固有識別子（UID） |
+| `extern_uid`                         | いいえ       | 外部UID |
 | `external`                           | いいえ       | ユーザーを外部としてフラグ設定します（trueまたはfalse（デフォルト）） |
-| `extra_shared_runners_minutes_limit` | いいえ       | 管理者のみが設定できます。このユーザーの追加のコンピューティング時間です。PremiumおよびUltimateのみ。 |
+| `extra_shared_runners_minutes_limit` | いいえ       | 管理者のみが設定できます。このユーザーの追加のコンピューティング時間です。PremiumおよびUltimateのみです。 |
 | `force_random_password`              | いいえ       | `true`の場合、ユーザーのパスワードをランダムな値に設定します。`reset_password`と一緒に使用できます。`password`より優先されます。 |
 | `group_id_for_saml`                  | いいえ       | SAMLが設定されているグループのID |
 | `linkedin`                           | いいえ       | LinkedIn    |
@@ -773,7 +761,7 @@ POST /users
 | `provider`                           | いいえ       | 外部プロバイダー名 |
 | `public_email`                       | いいえ       | ユーザーの公開メールアドレス |
 | `reset_password`                     | いいえ       | `true`の場合、ユーザーにパスワードをリセットするためのリンクを送信します。`force_random_password`と一緒に使用できます。`password`より優先されます。 |
-| `shared_runners_minutes_limit`       | いいえ       | 管理者のみが設定できます。このユーザーの1か月あたりのコンピューティング時間の最大数。`nil`（デフォルト、システムのデフォルトを継承）、`0`（無制限）、または`> 0`のいずれかです。PremiumおよびUltimateのみ。 |
+| `shared_runners_minutes_limit`       | いいえ       | 管理者のみが設定できます。このユーザーの1か月あたりのコンピューティング時間の最大数。`nil`（デフォルト、システムのデフォルトを継承）、`0`（無制限）、または`> 0`のいずれかです。PremiumおよびUltimateのみです。 |
 | `skip_confirmation`                  | いいえ       | 確認をスキップします（trueまたはfalse（デフォルト）） |
 | `theme_id`                           | いいえ       | ユーザーのGitLabテーマ（詳細については、[ユーザー設定のドキュメント](../user/profile/preferences.md#change-the-navigation-theme)を参照してください） |
 | `twitter`                            | いいえ       | X（旧Twitter）アカウント |
@@ -799,7 +787,7 @@ POST /users
 
 既存のユーザーを変更します。
 
-前提要件:
+前提条件: 
 
 - 管理者である必要があります。
 
@@ -809,7 +797,7 @@ POST /users
 PUT /users/:id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                            | 必須 | 説明 |
 |:-------------------------------------|:---------|:------------|
@@ -819,11 +807,11 @@ PUT /users/:id
 | `bio`                                | いいえ       | ユーザーの経歴 |
 | `can_create_group`                   | いいえ       | ユーザーがグループを作成できるかどうか（trueまたはfalse） |
 | `color_scheme_id`                    | いいえ       | ファイルビューアーのユーザーの配色（詳細については、[ユーザー設定のドキュメント](../user/profile/preferences.md#change-the-syntax-highlighting-theme)を参照してください） |
-| `commit_email`                       | いいえ       | ユーザーのコミットメール。非公開のコミットメールを使用するには、`_private`に設定します。GitLab 15.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/375148)されました。 |
+| `commit_email`                       | いいえ       | ユーザーのコミットメール。非公開のコミットメールを使用するには、`_private`に設定します。GitLab 15.5で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/375148)。 |
 | `email`                              | いいえ       | ユーザーのメールアドレス |
-| `extern_uid`                         | いいえ       | 外部固有識別子（UID） |
+| `extern_uid`                         | いいえ       | 外部UID |
 | `external`                           | いいえ       | ユーザーを外部としてフラグ設定します（trueまたはfalse（デフォルト）） |
-| `extra_shared_runners_minutes_limit` | いいえ       | 管理者のみが設定できます。このユーザーの追加のコンピューティング時間です。PremiumおよびUltimateのみ。 |
+| `extra_shared_runners_minutes_limit` | いいえ       | 管理者のみが設定できます。このユーザーの追加のコンピューティング時間です。PremiumおよびUltimateのみです。 |
 | `group_id_for_saml`                  | いいえ       | SAMLが設定されているグループのID |
 | `id`                                 | はい      | ユーザーのID |
 | `linkedin`                           | いいえ       | LinkedIn    |
@@ -837,7 +825,7 @@ PUT /users/:id
 | `pronouns`                           | いいえ       | 代名詞    |
 | `provider`                           | いいえ       | 外部プロバイダー名 |
 | `public_email`                       | いいえ       | ユーザーの公開メール（すでに検証済みである必要があります） |
-| `shared_runners_minutes_limit`       | いいえ       | 管理者のみが設定できます。このユーザーの1か月あたりのコンピューティング時間の最大数。`nil`（デフォルト、システムのデフォルトを継承）、`0`（無制限）、または`> 0`のいずれかです。PremiumおよびUltimateのみ。 |
+| `shared_runners_minutes_limit`       | いいえ       | 管理者のみが設定できます。このユーザーの1か月あたりのコンピューティング時間の最大数。`nil`（デフォルト、システムのデフォルトを継承）、`0`（無制限）、または`> 0`のいずれかです。PremiumおよびUltimateのみです。 |
 | `skip_reconfirmation`                | いいえ       | 確認をスキップします（trueまたはfalse（デフォルト）） |
 | `theme_id`                           | いいえ       | ユーザーのGitLabテーマ（詳細については、[ユーザー設定のドキュメント](../user/profile/preferences.md#change-the-navigation-theme)を参照してください） |
 | `twitter`                            | いいえ       | X（旧Twitter）アカウント |
@@ -862,7 +850,7 @@ PUT /users/:id
 
 ユーザーを削除します。
 
-前提要件:
+前提条件: 
 
 - 管理者である必要があります。
 
@@ -876,18 +864,18 @@ PUT /users/:id
 DELETE /users/:id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性     | 型    | 必須 | 説明 |
 |:--------------|:--------|:---------|:------------|
 | `id`          | 整数 | はい      | ユーザーのID |
 | `hard_delete` | ブール値 | いいえ       | trueの場合、通常は[Ghostユーザーに移動](../user/profile/account/delete_account.md#associated-records)されるコントリビュートは削除され、このユーザーのみが所有するグループも削除されます。 |
 
-## 自分のユーザーステータスを取得 {#get-your-user-status}
+## あなたのユーザー状態を取得する {#retrieve-your-user-status}
 
-自分のユーザーステータスを取得します。
+あなたのユーザー状態を取得します。
 
-前提要件:
+前提条件: 
 
 - 認証済みである必要があります。
 
@@ -895,14 +883,14 @@ DELETE /users/:id
 GET /user/status
 ```
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/status"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -914,27 +902,27 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## ユーザーのステータスを取得する {#get-the-status-of-a-user}
+## ユーザーの状態を取得する {#retrieve-the-status-of-a-user}
 
-ユーザーのステータスを取得します。このエンドポイントには認証なしでアクセスできます。
+ユーザーの状態を取得します。このエンドポイントには認証なしでアクセスできます。
 
 ```plaintext
 GET /users/:id_or_username/status
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性        | 型   | 必須 | 説明 |
 |:-----------------|:-------|:---------|:------------|
 | `id_or_username` | 文字列 | はい      | ステータスを取得するユーザーのIDまたはユーザー名 |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --url "https://gitlab.example.com/users/<username>/status"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -948,9 +936,9 @@ curl --url "https://gitlab.example.com/users/<username>/status"
 
 ## ユーザーのステータスを設定する {#set-your-user-status}
 
-ユーザーのステータスを設定します。
+あなたのユーザー状態を設定します。
 
-前提要件:
+前提条件: 
 
 - 認証済みである必要があります。
 
@@ -959,7 +947,7 @@ PUT /user/status
 PATCH /user/status
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性            | 型   | 必須 | 説明 |
 |:---------------------|:-------|:---------|:------------|
@@ -968,12 +956,12 @@ PATCH /user/status
 | `availability`       | 文字列 | いいえ       | ユーザーの利用状況。使用できる値は、`busy`と`not_set`です。 |
 | `clear_status_after` | 文字列 | いいえ       | 特定の期間の経過後に状態を自動的にクリーンアップします。使用できる値は`30_minutes`、`3_hours`、`8_hours`、`1_day`、`3_days`、`7_days`、`30_days`です。 |
 
-`PUT`と`PATCH`の違いは次のとおりです:
+`PUT`と`PATCH`の違いは次のとおりです。
 
 - `PUT`を使用すると、渡されないパラメータは`null`に設定され、クリアされます。
 - `PATCH`を使用すると、渡されないパラメータは無視されます。フィールドをクリアするには、明示的に`null`を渡します。
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
@@ -984,7 +972,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/user/status"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -996,11 +984,11 @@ curl --request PUT \
 }
 ```
 
-## ユーザー設定を取得する {#get-your-user-preferences}
+## あなたのユーザー設定を取得する {#retrieve-your-user-preferences}
 
-ユーザー設定を取得します。
+あなたのユーザー設定を取得します。
 
-前提要件:
+前提条件: 
 
 - 認証済みである必要があります。
 
@@ -1008,7 +996,7 @@ curl --request PUT \
 GET /user/preferences
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -1022,9 +1010,9 @@ GET /user/preferences
 
 ## ユーザー設定を更新する {#update-your-user-preferences}
 
-ユーザー設定を更新します。
+あなたのユーザー設定を更新します。
 
-前提要件:
+前提条件: 
 
 - 認証済みである必要があります。
 
@@ -1042,7 +1030,7 @@ PUT /user/preferences
 }
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                        | 必須 | 説明 |
 |:---------------------------------|:---------|:------------|
@@ -1058,38 +1046,46 @@ PUT /user/preferences
 
 {{< /history >}}
 
-自分のアバターをアップロードします。
+あなたのアバターをアップロードします。
 
-前提要件:
+前提条件: 
 
 - 認証済みである必要があります。
+- ファイルのサイズは200 KB以下である必要があります。理想的な画像サイズは192 x 192ピクセルです。
+- 画像は、次のいずれかのファイル形式である必要があります。
+  - `.bmp`
+  - `.gif`
+  - `.ico`
+  - `.jpeg`
+  - `.png`
+  - `.tiff`
 
 ```plaintext
 PUT /user/avatar
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型   | 必須 | 説明 |
 |:----------|:-------|:---------|:------------|
-| `avatar`  | 文字列 | はい      | アップロードするファイル。理想的な画像サイズは192×192ピクセルです。ファイルの最大許容サイズは200KiBです。 |
+| `avatar`  | 文字列 | はい      | アップロードするファイル。 |
 
-ファイルシステムからアバターをアップロードするには、`--form`引数を使用します。これにより、cURLはヘッダー`Content-Type: multipart/form-data`を使用してデータを送信します。`file=`パラメータは、ファイルシステムの画像ファイルを指しており、先頭に`@`を付ける必要があります。
+ファイルシステムからアバターをアップロードするには、`--form`引数を使用します。これにより、cURLはヘッダー`Content-Type: multipart/form-data`を使用してデータを送信します。`avatar=`パラメータは、ファイルシステムの画像ファイルを指しており、先頭に`@`を付ける必要があります。
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --form "avatar=@avatar.png" \
+  --form "avatar=@/path/to/your/avatar.png" \
   --url "https://gitlab.example.com/api/v4/user/avatar"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
-  "avatar_url": "http://gdk.test:3000/uploads/-/system/user/avatar/76/avatar.png",
+  "avatar_url": "http://gitlab.example.com/uploads/-/system/user/avatar/76/avatar.png",
 }
 ```
 
@@ -1098,15 +1094,15 @@ curl --request PUT \
 - 成功した場合は`200`。
 - ファイルサイズが200KiBを超える場合は`400 Bad Request`。
 
-## 割り当てられたイシュー、マージリクエスト、およびレビューの数を取得する {#get-a-count-of-your-assigned-issues-merge-requests-and-reviews}
+## 割り当てられたイシュー、マージリクエスト、およびレビューの数を取得する {#retrieve-a-count-of-your-assigned-issues-merge-requests-and-reviews}
 
 割り当てられたイシュー、マージリクエスト、およびレビューの数を取得します。
 
-前提要件:
+前提条件: 
 
 - 認証済みである必要があります。
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                         | 型   | 説明 |
 |:----------------------------------|:-------|:------------|
@@ -1120,14 +1116,14 @@ curl --request PUT \
 GET /user_counts
 ```
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user_counts"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -1139,9 +1135,9 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## ユーザーのプロジェクト、グループ、イシュー、およびマージリクエストの数を取得する {#get-a-count-of-a-users-projects-groups-issues-and-merge-requests}
+## ユーザーのプロジェクト、グループ、イシュー、およびマージリクエストの数を取得する {#retrieve-a-count-of-a-users-projects-groups-issues-and-merge-requests}
 
-ユーザーの以下のアイテムの数のリストを取得します:
+ユーザーの以下のカウントのリストを取得します:
 
 - プロジェクト。
 - グループ。
@@ -1154,13 +1150,13 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /users/:id/associations_count
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明 |
 |:----------|:--------|:---------|:------------|
 | `id`      | 整数 | はい      | ユーザーのID |
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -1171,7 +1167,7 @@ GET /users/:id/associations_count
 }
 ```
 
-## ユーザーのアクティビティーのリストを取得する {#list-a-users-activity}
+## ユーザーのアクティビティのリストを取得する {#list-a-users-activity}
 
 {{< details >}}
 
@@ -1180,40 +1176,40 @@ GET /users/:id/associations_count
 
 {{< /details >}}
 
-前提要件:
+前提条件: 
 
-- 非公開プロファイルを持つユーザーのアクティビティーを表示するには、管理者である必要があります。
+- 非公開プロファイルを持つユーザーのアクティビティを表示するには、管理者である必要があります。
 
-公開プロファイルを持つユーザーの最終アクティビティーの日付を、古い順で取得します。
+公開プロファイルを持つユーザーの最終アクティビティの日付を、古い順で取得します。
 
-ユーザーイベントのタイムスタンプ（`last_activity_on`と`current_sign_in_at`）を更新するアクティビティーは次のとおりです:
+ユーザーイベントのタイムスタンプ（`last_activity_on`と`current_sign_in_at`）を更新するアクティビティは次のとおりです。
 
-- Git HTTP/SSHアクティビティー（クローン、プッシュなど）
+- Git HTTP/SSHアクティビティ（クローン、プッシュなど）
 - GitLabへのユーザーログイン
 - ダッシュボード、プロジェクト、イシュー、マージリクエストに関連するページへのユーザーアクセス
 - ユーザーによるAPIの使用
 - ユーザーによるGraphQL APIの使用
 
-デフォルトでは、公開プロファイルを持つユーザーの過去6か月間のアクティビティーが表示されます。ただし、`from`パラメータを使用してこれを変更できます。
+デフォルトでは、公開プロファイルを持つユーザーの過去6か月間のアクティビティが表示されます。ただし、`from`パラメータを使用してこれを変更できます。
 
 ```plaintext
 GET /user/activities
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型   | 必須 | 説明 |
 |:----------|:-------|:---------|:------------|
 | `from`    | 文字列 | いいえ       | `YEAR-MM-DD`形式の日付文字列。例: `2016-03-11`。デフォルトは6か月前です。 |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/activities"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -1246,33 +1242,42 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /details >}}
 
-前提要件:
+前提条件: 
 
 - 管理者である必要があります。
 
 ユーザーがメンバーであるすべてのプロジェクトとグループのリストを取得します。
 
-メンバーシップの`source_id`、`source_name`、`source_type`、および`access_level`を返します。ソースのタイプは、`Namespace`（グループを表す）または`Project`になります。応答は、直接メンバーシップのみを表します。サブグループなどの継承メンバーシップは含まれません。アクセスレベルは整数値で表されます。詳細については、[アクセスレベルの値](access_requests.md#valid-access-levels)の意味を参照してください。
+メンバーシップの`source_id`、`source_name`、`source_type`、および`access_level`を返します。ソースのタイプは、`Namespace`（グループを表す）または`Project`になります。応答は、直接メンバーシップのみを表します。サブグループなどの継承メンバーシップは含まれません。アクセスレベルは整数値で表されます:
+
+- `0`: アクセスなし
+- `5`: 最小アクセス
+- `10`: ゲスト
+- `15`: プランナー
+- `20`: レポーター
+- `30`: デベロッパー
+- `40`: メンテナー
+- `50`: オーナー
 
 ```plaintext
 GET /users/:id/memberships
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明 |
 |:----------|:--------|:---------|:------------|
 | `id`      | 整数 | はい      | 指定されたユーザーのID |
 | `type`    | 文字列  | いいえ       | メンバーシップをtypeでフィルタリングします。`Project`または`Namespace`のいずれかになります |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/:user_id/memberships"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 [
@@ -1313,7 +1318,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-前提要件:
+前提条件: 
 
 - 管理者である必要があります。
 
@@ -1325,13 +1330,13 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 PATCH /users/:id/disable_two_factor
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明 |
 |:----------|:--------|:---------|:------------|
 | `id`      | 整数 | はい      | ユーザーのID |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -1354,9 +1359,9 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /details >}}
 
-現在のユーザーにリンクされたRunnerを作成します。
+現在のユーザーにリンクされたRunnerを作成します。監査目的でユーザーがオーナーとしてリストされますが、Runnerの可用性は`runner_type`に基づきます。詳細については、[Runnerの管理](../ci/runners/runners_scope.md)を参照してください。
 
-前提要件:
+前提条件: 
 
 - 管理者であるか、ターゲットネームスペースまたはプロジェクトのオーナーロールを持っている必要があります。
 - `instance_type`の場合、GitLabインスタンスの管理者である必要があります。
@@ -1369,7 +1374,7 @@ curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /user/runners
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性          | 型         | 必須 | 説明 |
 |:-------------------|:-------------|:---------|:------------|
@@ -1385,7 +1390,7 @@ POST /user/runners
 | `maximum_timeout`  | 整数      | いいえ       | Runnerがジョブを実行できる時間（秒単位）を制限する最大タイムアウト。 |
 | `maintenance_note` | 文字列       | いいえ       | Runnerの自由形式のメンテナンスノート（1024文字）。 |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -1394,7 +1399,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/user/runners"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -1413,9 +1418,9 @@ curl --request POST \
 
 {{< /details >}}
 
-ユーザーの認証IDに関連付けられているプロバイダー名を使用して、そのIDを削除します。
+その認証に関連付けられたプロバイダー名を使用して、ユーザーの認証IDを削除します。
 
-前提要件:
+前提条件: 
 
 - 管理者である必要があります。
 
@@ -1423,7 +1428,7 @@ curl --request POST \
 DELETE /users/:id/identities/:provider
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性  | 型    | 必須 | 説明 |
 |:-----------|:--------|:---------|:------------|
@@ -1447,7 +1452,7 @@ DELETE /users/:id/identities/:provider
 
 ユーザーアカウントのサポートPINを作成します。PINは作成後7日で有効期限切れになります。GitLabサポートは、ユーザーの身元を検証するためにこのPINを求めることがあります。
 
-前提要件:
+前提条件: 
 
 - 認証済みである必要があります。
 
@@ -1455,7 +1460,7 @@ DELETE /users/:id/identities/:provider
 POST /user/support_pin
 ```
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --request POST |
@@ -1463,7 +1468,7 @@ curl --request POST |
   --url "https://gitlab.example.com/api/v4/user/support_pin"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -1489,7 +1494,7 @@ curl --request POST |
 
 アカウントのサポートPINの詳細を取得します。GitLabサポートは、ユーザーの身元を検証するためにこのPINを求めることがあります。
 
-前提要件:
+前提条件: 
 
 - 認証済みである必要があります。
 
@@ -1497,14 +1502,14 @@ curl --request POST |
 GET /user/support_pin
 ```
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/user/support_pin"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -1530,7 +1535,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 指定されたユーザーのサポートPINの詳細を取得します。GitLabサポートは、ユーザーの身元を検証するためにこのPINを求めることがあります。
 
-前提要件:
+前提条件: 
 
 - 管理者である必要があります。
 
@@ -1538,14 +1543,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 GET /users/:id/support_pin
 ```
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/users/1234/support_pin"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 ```json
 {
@@ -1554,7 +1559,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明 |
 |:----------|:--------|:---------|:------------|
@@ -1577,7 +1582,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 指定されたユーザーのサポートPINを、有効期限より前に失効させます。これにより、PINが直ちに失効し、削除されます。
 
-前提要件:
+前提条件: 
 
 - 管理者である必要があります。
 
@@ -1585,7 +1590,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 POST /users/:id/support_pin/revoke
 ```
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --request POST \
@@ -1593,11 +1598,11 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/users/1234/support_pin/revoke"
 ```
 
-レスポンス例:
+レスポンス例: 
 
 成功した場合、`202 Accepted`を返します。
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型    | 必須 | 説明 |
 |:----------|:--------|:---------|:------------|

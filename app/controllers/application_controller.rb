@@ -267,7 +267,10 @@ class ApplicationController < BaseActionController
 
   def render_503(message = nil)
     respond_to do |format|
-      format.html { render template: "errors/service_unavailable", formats: :html, layout: "errors", status: :service_unavailable, locals: { message: message } }
+      format.html do
+        render template: "errors/service_unavailable", formats: :html, layout: "errors", status: :service_unavailable,
+          locals: { message: message }
+      end
       format.any { head :service_unavailable }
     end
   end

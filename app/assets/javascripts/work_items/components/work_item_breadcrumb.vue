@@ -4,11 +4,6 @@ import { s__, __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { ROUTES, WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_TICKET } from '../constants';
 
-const BREADCRUMB_LABELS = {
-  workItemList: s__('WorkItem|Work items'),
-  new: s__('WorkItem|New'),
-};
-
 export default {
   components: {
     GlBreadcrumb,
@@ -98,7 +93,7 @@ export default {
 
       if (this.$route.name === ROUTES.new) {
         crumbs.push({
-          text: BREADCRUMB_LABELS[ROUTES.new],
+          text: s__('WorkItem|New'),
           to: { name: ROUTES.new, params: { type: this.breadcrumbType } },
         });
       }

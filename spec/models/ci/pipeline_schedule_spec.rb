@@ -568,4 +568,62 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
       end
     end
   end
+
+  describe 'next_run_at updates when active status changes' do
+    let(:now) { Time.zone.local(2021, 3, 2, 1, 0) }
+    let!(:inactive_schedule) do
+      travel_to(now) do
+        create(:ci_pipeline_schedule, cron: "0 1 * * *", active: false, project: project)
+      end
+    end
+
+    context 'when active is changed from false to true' do
+      it 'recalculates next_run_at when it is in the future' do
+        future_next_run = now + 3.days
+        inactive_schedule.update_column(:next_run_at, future_next_run)
+
+        travel_to(now + 2.days) do
+          inactive_schedule.update!(active: true)
+
+          expect(inactive_schedule.next_run_at).not_to eq(future_next_run)
+          expect(inactive_schedule.next_run_at).to be_future
+        end
+      end
+
+      it 'recalculates next_run_at when it was in the past' do
+        past_next_run = now - 1.day
+        inactive_schedule.update_column(:next_run_at, past_next_run)
+
+        inactive_schedule.update!(active: true)
+        expect(inactive_schedule.next_run_at).to be_future
+        expect(inactive_schedule.next_run_at).not_to eq(past_next_run)
+      end
+    end
+
+    context 'when active is changed from true to false' do
+      let!(:active_schedule) do
+        travel_to(now) do
+          create(:ci_pipeline_schedule, cron: "0 1 * * *", active: true, project: project)
+        end
+      end
+
+      it 'does not update next_run_at' do
+        original_next_run = active_schedule.next_run_at
+
+        active_schedule.update!(active: false)
+
+        expect(active_schedule.next_run_at).to eq(original_next_run)
+      end
+    end
+
+    context 'when other attributes are updated' do
+      it 'does not update next_run_at' do
+        original_next_run = inactive_schedule.next_run_at
+
+        inactive_schedule.update!(description: 'new description')
+
+        expect(inactive_schedule.next_run_at).to eq(original_next_run)
+      end
+    end
+  end
 end

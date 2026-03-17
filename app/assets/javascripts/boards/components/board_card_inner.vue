@@ -1,6 +1,6 @@
 <script>
 import { GlLabel, GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
-import { sortBy, uniqueId } from 'lodash';
+import { sortBy, uniqueId } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -176,6 +176,9 @@ export default {
     workItemType() {
       return this.isEpicBoard ? WORK_ITEM_TYPE_NAME_EPIC : this.item.type;
     },
+    workItemTypeIconName() {
+      return this.item.workItemType?.iconName;
+    },
     workItemFullPath() {
       return this.item.namespace?.fullPath || this.item.referencePath?.split(this.itemPrefix)[0];
     },
@@ -329,6 +332,7 @@ export default {
               v-if="showWorkItemTypeIcon"
               :aria-label="createIssueNumberAriaLabel()"
               :work-item-type="item.type"
+              :type-icon-name="workItemTypeIconName"
               class="gl-text-subtle"
               icon-class="gl-flex-shrink-0 gl-fill-icon-subtle"
               variant="subtle"

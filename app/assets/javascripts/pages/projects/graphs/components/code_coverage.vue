@@ -179,6 +179,7 @@ export default {
         <gl-alert
           v-if="noDataAvailable"
           variant="info"
+          :header-level="3"
           :title="s__('Code Coverage|No code coverage data')"
           :dismissible="false"
         >

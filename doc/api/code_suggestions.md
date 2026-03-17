@@ -1,12 +1,12 @@
 ---
 stage: AI-powered
 group: AI Coding
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Documentation for the REST API for Code Suggestions.
 title: Code Suggestions API
 ---
 
-Use this API to access the [GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) or [GitLab Duo Code Suggestions (Classic)](../user/project/repository/code_suggestions/_index.md) feature.
+Use this API to access GitLab Duo Code Suggestions.
 
 ## Generate code completions
 

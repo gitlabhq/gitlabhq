@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlBadge, GlIcon, GlLink, GlButton, GlTruncate, GlDrawer } from '@gitlab/ui';
+import { GlBadge, GlIcon, GlLink, GlButton, GlDrawer } from '@gitlab/ui';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sanitize } from '~/lib/dompurify';
@@ -14,7 +14,6 @@ export default {
     GlIcon,
     GlLink,
     GlButton,
-    GlTruncate,
     GlDrawer,
   },
   directives: {
@@ -79,6 +78,13 @@ export default {
     toggleArticle() {
       this.articleOpen = !this.articleOpen;
     },
+    toggleArticleAndEmit() {
+      if (this.articleOpen) {
+        this.$emit('close-drawer');
+      }
+
+      this.toggleArticle();
+    },
     toggleAndMarkArticle() {
       if (this.showUnread) {
         this.$emit('mark-article-as-read');
@@ -90,51 +96,63 @@ export default {
 </script>
 
 <template>
-  <div v-if="feature.releaseHeading">
-    <h5 class="gl-m-3" data-testid="whats-new-release-heading">
-      {{ formattedReleaseHeading }}
-    </h5>
-  </div>
-  <div v-else class="gl-px-3">
+  <h4
+    v-if="feature.releaseHeading"
+    class="whats-new-release-heading gl-heading-5 gl-mb-0 gl-mt-3 gl-px-3"
+    data-testid="whats-new-release-heading"
+  >
+    {{ formattedReleaseHeading }}
+  </h4>
+  <div v-else>
     <gl-button
-      class="gl-my-3 !gl-p-0"
+      class="gl-my-3 !gl-border-transparent !gl-p-0 focus:!gl-focus-inset"
       category="primary"
       variant="default"
       block
       data-testid="whats-new-article-toggle"
       @click="toggleAndMarkArticle"
     >
-      <div class="gl-p-5 gl-text-left">
-        <gl-badge
-          v-for="packageName in feature.available_in"
-          :key="`toggle-${packageName}`"
-          variant="info"
-          class="gl-mr-2 !gl-px-3 !gl-py-1"
-        >
-          {{ packageName }}
-        </gl-badge>
+      <div class="gl-flex gl-flex-col gl-gap-3 gl-px-3 gl-py-4 gl-text-left">
         <h3
-          class="gl-my-2 gl-text-wrap gl-text-lg gl-leading-24 gl-text-default"
+          class="gl-m-0 gl-text-wrap gl-text-lg gl-text-default"
           data-testid="toggle-feature-name"
         >
           <gl-icon
             v-if="showUnread"
             name="status-active"
             :size="8"
-            class="gl-my-1 gl-mr-1 gl-text-status-info"
+            class="gl-my-1 gl-mr-1"
+            variant="info"
             data-testid="unread-article-icon"
           />
           {{ feature.name }}
         </h3>
-        <gl-truncate :text="sanitizedDescription" class="gl-leading-20" />
+        <p
+          class="gl-mb-0 gl-line-clamp-3 gl-text-wrap gl-leading-20 gl-text-subtle"
+          data-testid="feature-description"
+        >
+          {{ sanitizedDescription }}
+        </p>
+        <div class="gl-flex gl-flex-wrap gl-gap-2">
+          <gl-badge
+            v-for="packageName in feature.available_in"
+            :key="`toggle-${packageName}`"
+            variant="tier"
+            icon="check-xs"
+            class="!gl-gap-0"
+          >
+            {{ packageName }}
+          </gl-badge>
+        </div>
       </div>
     </gl-button>
+    <hr class="gl-border-t gl-m-0" />
     <gl-drawer
-      class="whats-new-article-drawer"
+      class="whats-new-article-drawer gl-transition-none"
       :open="articleOpen"
       :header-height="getDrawerHeaderHeight"
       header-sticky
-      @close="toggleArticle"
+      @close="toggleArticleAndEmit"
     >
       <template #title>
         <gl-button
@@ -145,12 +163,12 @@ export default {
           :aria-label="articleToggleAriaLabel"
           @click="toggleArticle"
         />
-        <h3 class="gl-heading-3-fixed gl-my-3 gl-ml-3 gl-mr-auto">
-          {{ __("What's new at GitLab") }}
+        <h3 class="gl-heading-3-fixed gl-my-0 gl-ml-2 gl-mr-auto">
+          {{ formattedReleaseHeading }}
         </h3>
       </template>
-      <div class="gl-m-3">
-        <h3 class="gl-mb-3 gl-mt-0 gl-text-lg" data-testid="feature-name">
+      <div class="gl-flex gl-flex-col gl-gap-3">
+        <h3 class="gl-m-0 gl-text-lg" data-testid="feature-name">
           <gl-link
             :href="feature.documentation_link"
             target="_blank"
@@ -163,13 +181,14 @@ export default {
             {{ feature.name }}
           </gl-link>
         </h3>
-        <div v-if="releaseDate" class="gl-mb-3" data-testid="release-date">{{ releaseDate }}</div>
-        <div v-if="feature.available_in" class="gl-mb-6">
+        <div v-if="releaseDate" data-testid="release-date">{{ releaseDate }}</div>
+        <div v-if="feature.available_in" class="gl-mb-3 gl-mt-2 gl-flex gl-flex-wrap gl-gap-2">
           <gl-badge
             v-for="packageName in feature.available_in"
             :key="packageName"
-            variant="info"
-            class="gl-mr-2"
+            variant="tier"
+            icon="check-xs"
+            class="!gl-gap-0"
           >
             {{ packageName }}
           </gl-badge>
@@ -196,18 +215,19 @@ export default {
         <div
           :id="descriptionId"
           v-safe-html:[$options.safeHtmlConfig]="feature.description"
-          class="gl-pt-6 gl-leading-20"
+          class="gl-mt-3 gl-leading-20"
         ></div>
-        <gl-button
+        <gl-link
           :href="feature.documentation_link"
           target="_blank"
+          show-external-icon
           data-track-action="click_whats_new_item"
           :data-track-label="feature.name"
           :data-track-property="feature.documentation_link"
           :aria-describedby="descriptionId"
         >
-          {{ __('Learn more') }} <gl-icon name="arrow-right" />
-        </gl-button>
+          {{ __('Learn more') }}
+        </gl-link>
       </div>
     </gl-drawer>
   </div>

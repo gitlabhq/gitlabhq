@@ -87,7 +87,8 @@ Gitlab::Application.config.to_prepare do
         Vulnerabilities::Backups::VulnerabilityUserMention,
         Ai::ActiveContext::Code::EnabledNamespace,
         Ai::ActiveContext::Code::Repository,
-        Ai::DuoWorkflows::Checkpoint
+        Ai::DuoWorkflows::Checkpoint,
+        Analytics::KnowledgeGraph::CodeIndexingTask
       ])
   else
     Gitlab::Database::Partitioning.register_tables(

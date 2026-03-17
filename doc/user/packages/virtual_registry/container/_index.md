@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Container virtual registry
 description: Use the container virtual registry to cache container images from upstream registries.
 ---
@@ -18,6 +18,7 @@ description: Use the container virtual registry to cache container images from u
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/548794) in GitLab 18.5 [with a flag](../../../../administration/feature_flags/_index.md) named `container_virtual_registries`. Disabled by default.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/work_items/589631) from experiment to beta in GitLab 18.9.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224250) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -34,18 +35,76 @@ to reduce bandwidth usage and improve build performance.
 Before you can use the container virtual registry:
 
 - Review the [prerequisites](../_index.md#prerequisites) to use the virtual registry.
+- Configure authentication to the virtual registry. For more information, see [Authenticate to the virtual registry](../_index.md#authenticate-to-the-virtual-registry).
 
 When using the container virtual registry, remember the following restrictions:
 
 - You can create up to `5` container virtual registries per top-level group.
 - You can set only `5` upstreams to a given container virtual registry.
-- For technical reasons, the `proxy_download` setting is force enabled, no matter what the value in the [object storage configuration](../../../../administration/object_storage.md#proxy-download) is configured to.
 - Geo support is not implemented.
 
 ## Manage virtual registries
 
-To create, edit, or delete a container virtual registry, see the
-[Container virtual registry API](../../../../api/container_virtual_registries.md).
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/19283) in GitLab 18.10 [with a flag](../../../../administration/feature_flags/_index.md) named `ui_for_container_virtual_registries`.
+
+{{< /history >}}
+
+Manage container virtual registries for your group.
+
+You can also [use the API](../../../../api/container_virtual_registries.md).
+
+### Create a container virtual registry
+
+To create a container virtual registry:
+
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. If you:
+   - Have an existing registry, select **Create registry**. From the dropdown list, select **Container**.
+   - Do not have an existing registry, from the dropdown list, select **Container**. Then, select **Create registry**.
+1. Enter a **Name** and optional **Description**.
+1. Select **Create registry**.
+
+## Manage upstream registries
+
+Manage upstream container registries in a virtual registry.
+
+### Create a container upstream registry
+
+Create a container upstream registry to connect to the virtual registry.
+
+Prerequisites:
+
+- You must have a container virtual registry. For more information, see [Create a virtual registry](#create-a-container-virtual-registry).
+
+To create a container upstream registry:
+
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. Under the **Registries** tab, select a registry.
+1. Select **Add upstream**. If the virtual registry has existing upstreams, from the dropdown list, select either:
+   - **Create new upstream** to configure the upstream.
+   - **Link existing upstream** > **Select existing upstream**.
+     1. From the dropdown list, select an upstream.
+     1. Optional. Select **Test upstream** to test the upstream connection before you create it.
+     1. Select **Add upstream**.
+1. Complete the fields.
+   - Include both a **username** and **password**, or neither. If not set, a public (anonymous) request is used to access the upstream.
+   - If you want to connect the upstream to Docker Hardened Images, use the following as the **Upstream URL**:
+
+      ```plaintext
+      https://dhi.io
+      ```
+
+   - **Artifact caching period** defaults to 24 hours. Set to `0` to disable cache entry checks.
+   - If you want to test the upstream connection before you create it, select **Test upstream**.
+
+1. Select **Create upstream**.
+
+For more information about cache validity settings, see [Set the cache validity period](../_index.md#set-the-cache-validity-period).
 
 ## Authenticate with the container virtual registry
 
@@ -175,7 +234,7 @@ Make sure you are using the expected authentication mechanism.
 
 Errors like these might indicate that:
 
-- The user running the job does not have at least the Guest role for the group that owns the virtual registry.
+- The user running the job does not have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the group that owns the virtual registry.
 - The virtual registry ID in the URL is incorrect.
 - The upstream registry does not contain the requested image.
 - The virtual registry has no upstreams configured.
@@ -193,7 +252,7 @@ Error response from daemon: error parsing HTTP 404 response body: unexpected end
 
 To resolve these errors:
 
-1. Verify you have at least the Guest role for the group.
+1. Verify you have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 1. Confirm the virtual registry ID is correct.
 1. Check that the virtual registry has at least one upstream configured.
 1. Verify the image exists in the upstream registry.

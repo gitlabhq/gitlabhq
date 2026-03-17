@@ -4,7 +4,7 @@
 
 $tabs-holder-z-index: 250;
 $comparison-empty-state-height: 62px;
-$merge-request-sticky-header-height: 45px;
+$merge-request-sticky-header-height: rem-to-px($mr-sticky-tabs-height) + 1px;
 
 .apply-suggestions-input-min-width {
   @include gl-container-width-up(lg, panel) {
@@ -110,6 +110,12 @@ $merge-request-sticky-header-height: 45px;
 
 @supports (container-type: scroll-state) {
   .merge-request-sticky-header-wrapper {
+    pointer-events: none;
+
+    > * {
+      pointer-events: auto;
+    }
+
     @include gl-container-width-up(md, panel) {
       top: $calc-application-header-height;
       min-height: 89px;
@@ -149,7 +155,7 @@ $merge-request-sticky-header-height: 45px;
         }
 
         .merge-request-tabs {
-          @apply gl-h-auto;
+          height: $mr-sticky-tabs-height;
         }
 
         .nav-links li a {
@@ -157,7 +163,7 @@ $merge-request-sticky-header-height: 45px;
         }
 
         .detail-page-description {
-          @apply gl-pt-1;
+          padding-top: $mr-sticky-description-padding;
           @apply gl-pb-0;
           @apply gl-flex-nowrap;
         }
@@ -185,11 +191,81 @@ $merge-request-sticky-header-height: 45px;
 }
 
 .merge-request-tabs-container {
+  align-items: center;
+
   .discussion-filter-container {
     &:not(:only-child) {
       margin: $gl-padding-4;
     }
   }
+}
+
+.merge-request-tabs {
+  --mr-tab-border-width: 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  height: $mr-static-tabs-height;
+}
+
+.merge-request-tabs.merge-request-tabs li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-top: var(--mr-tab-border-width) solid transparent;
+  border-bottom: var(--mr-tab-border-width) solid transparent;
+  @apply gl-px-4;
+}
+
+.merge-request-tabs.merge-request-tabs li a {
+  padding: 0;
+}
+
+.merge-request-tabs.merge-request-tabs li a,
+.merge-request-tabs.merge-request-tabs li a:focus {
+  outline: none;
+}
+
+.merge-request-tabs.merge-request-tabs li a::before {
+  content: '';
+  position: absolute;
+  inset: calc(-1 * var(--mr-tab-border-width)) 0;
+}
+
+.merge-request-tabs.merge-request-tabs li a:hover,
+.merge-request-tabs.merge-request-tabs li a:active,
+.merge-request-tabs.merge-request-tabs li a.active,
+.merge-request-tabs.merge-request-tabs li.active a,
+.merge-request-tabs.merge-request-tabs li:has(a.active) a {
+  box-shadow: none;
+}
+
+.merge-request-tabs.merge-request-tabs li a:focus-visible::before,
+.merge-request-tabs.merge-request-tabs li.active a:focus::before {
+  border: var(--mr-tab-border-width) solid var(--gl-focus-ring-color, var(--gl-tab-selected-indicator-color-default));
+}
+
+.merge-request-tabs.merge-request-tabs li:hover,
+.merge-request-tabs.merge-request-tabs li.active {
+  border-bottom-color: var(--gl-tab-selected-indicator-color-default);
+}
+
+// Use text-stroke instead of font-weight to visually emphasize active tabs
+// without changing the element's layout width, preventing tab bar shifts.
+@supports (-webkit-text-stroke: 0.025em) {
+  .merge-request-tabs.merge-request-tabs li.active a,
+  .merge-request-tabs.merge-request-tabs li:has(a.active) a,
+  .merge-request-tabs.merge-request-tabs li a.active,
+  .merge-request-tabs.merge-request-tabs li.active a .badge.badge-pill,
+  .merge-request-tabs.merge-request-tabs li a.active .badge.badge-pill {
+    -webkit-text-stroke: 0.025em currentColor;
+    font-weight: normal;
+  }
+}
+
+.merge-request-tabs-actions {
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 .container-fluid {
@@ -199,16 +275,10 @@ $merge-request-sticky-header-height: 45px;
   }
 }
 
-// Wrap MR tabs/buttons so you don't have to scroll on desktop
-@include gl-container-width-down(lg, panel) {
-  .merge-request-tabs-container {
-    @apply gl-flex-row;
-  }
-}
-
 @include gl-container-width-down(md, panel) {
   .merge-request-tabs-container {
-    @apply gl-flex-col-reverse;
+    flex-direction: column-reverse;
+    align-items: flex-start;
   }
 }
 
@@ -222,15 +292,6 @@ $merge-request-sticky-header-height: 45px;
           @apply gl-hidden;
         }
       }
-    }
-  }
-}
-
-@include gl-container-width-down(xl, panel) {
-  .right-sidebar-expanded {
-    .merge-request-tabs-container {
-      flex-direction: column-reverse;
-      align-items: flex-start;
     }
   }
 }

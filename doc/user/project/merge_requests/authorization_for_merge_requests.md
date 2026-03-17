@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: The most common merge request flows in GitLab use forks, protected branches, or both.
 title: Merge request workflows
 ---
@@ -46,7 +46,7 @@ To set up a protected branch flow:
 1. If your team has multiple branches, and you would like to manage who can merge changes and who
    explicitly has the option to push or force push, consider making those branches protected:
 
-   - [Manage and Protect Branches](../repository/branches/_index.md#manage-and-protect-branches)
+   - [Manage and protect branches](../repository/branches/_index.md#manage-and-protect-branches)
    - [Protected Branches](../repository/branches/protected.md)
 
 1. Each change to the code comes through as a commit.
@@ -63,7 +63,7 @@ To set up a protected branch flow:
 Also available in the Ultimate tier:
 
 - [Status checks](status_checks.md)
-- [Security Approvals](approvals/rules.md#security-approvals)
+- [Security approvals](approvals/rules.md#security-approvals)
 
 ## Forking workflow
 

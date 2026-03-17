@@ -2,7 +2,7 @@
 name: project_export_created
 description: A project file export is created
 introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/294168
-introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151278
 feature_category: importers
 milestone: '17.0'
 saved_to_database: true

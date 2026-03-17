@@ -32,6 +32,6 @@ RSpec.shared_context 'with build, pipeline and artifacts' do
   end
 
   before do
-    stub_ci_job_definition(build, yaml_variables: yaml_variables)
+    stub_ci_job_definition(build, yaml_variables: yaml_variables) if build
   end
 end

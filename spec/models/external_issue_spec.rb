@@ -54,6 +54,35 @@ RSpec.describe ExternalIssue do
     end
   end
 
+  describe '#web_url' do
+    context 'when project has an external issue tracker' do
+      it 'returns the URL for the external issue' do
+        tracker = instance_double(Integrations::Jira, issue_url: 'https://jira.example.com/browse/JIRA-123')
+        allow(project).to receive(:external_issue_tracker).and_return(tracker)
+
+        external_issue = described_class.new('JIRA-123', project)
+        expect(external_issue.web_url).to eq('https://jira.example.com/browse/JIRA-123')
+      end
+    end
+
+    context 'when project has no external issue tracker' do
+      it 'returns nil' do
+        allow(project).to receive(:external_issue_tracker).and_return(nil)
+
+        expect(issue.web_url).to be_nil
+      end
+    end
+
+    context 'when the tracker returns an invalid URI' do
+      it 'returns nil' do
+        tracker = instance_double(Integrations::Jira, issue_url: 'not a valid url %%')
+        allow(project).to receive(:external_issue_tracker).and_return(tracker)
+
+        expect(issue.web_url).to be_nil
+      end
+    end
+  end
+
   describe '#supports_time_tracking?' do
     it { expect(issue.supports_time_tracking?).to be(false) }
   end

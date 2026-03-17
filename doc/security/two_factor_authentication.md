@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Enforce two-factor authentication
 ---
 
@@ -84,11 +84,11 @@ Administrators can enforce 2FA for both:
 - Regular users who have been assigned a [custom admin role](../user/custom_roles/_index.md).
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand the **Sign-in restrictions** section:
    1. Select **Enforce two-factor authentication for administrators**.
    1. In **Two-factor grace period**, enter a number of hours. If you want to
-     enforce 2FA on the next sign-in attempt, enter `0`.
+      enforce 2FA on the next sign-in attempt, enter `0`.
 1. Select **Save changes**.
 
 > [!note]
@@ -118,7 +118,7 @@ Prerequisites:
 
 To enforce 2FA for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Select **All users in this group must set up two-factor authentication**.
@@ -151,7 +151,6 @@ When 2FA is not enforced in a top-level group:
   If a subgroup enables a 2FA requirement:
   - All members of the top-level group must use 2FA.
   - All members of any sibling subgroups must use 2FA.
-
 - If **Allow more restrictive 2FA enforcement for subgroups** is disabled, subgroups
   cannot enforce a 2FA requirement independently. 2FA is not required for any members in the hierarchy.
 
@@ -256,7 +255,7 @@ Top-level group Owners can disable two-factor authentication (2FA) for enterpris
 
 To disable 2FA:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Manage** > **Members**.
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** ({{< icon name="ellipsis_v" >}}) and select **Disable two-factor authentication**.

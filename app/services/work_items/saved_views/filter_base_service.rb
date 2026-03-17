@@ -12,7 +12,7 @@ module WorkItems
           state confidential subscribed issue_types in search my_reaction_emoji closed_before closed_after
           assignee_wildcard_id milestone_wildcard_id release_tag_wildcard_id iid due_before due_after created_before
           created_after updated_before updated_after exclude_projects exclude_group_work_items include_descendants
-          include_descendant_work_items
+          include_descendant_work_items label_wildcard_id
         ]
       end
 

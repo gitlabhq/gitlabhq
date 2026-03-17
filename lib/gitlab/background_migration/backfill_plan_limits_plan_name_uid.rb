@@ -7,17 +7,20 @@ module Gitlab
       feature_category :consumables_cost_management
 
       def perform
-        each_sub_batch do |sub_batch|
-          connection.execute(
-            <<~SQL
+        Gitlab::Database.allow_cross_joins_across_databases(
+          url: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/584338') do
+          each_sub_batch do |sub_batch|
+            connection.execute(
+              <<~SQL
               UPDATE plan_limits
               SET plan_name_uid = plans.plan_name_uid
               FROM plans
               WHERE plan_limits.plan_id = plans.id
                 AND plan_limits.id IN (#{sub_batch.select(:id).to_sql})
                 AND plan_limits.plan_name_uid IS NULL
-            SQL
-          )
+              SQL
+            )
+          end
         end
       end
     end

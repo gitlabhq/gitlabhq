@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect your Bitbucket Cloud repository to GitLab CI/CD.
 title: Using GitLab CI/CD with a Bitbucket Cloud repository
 ---
@@ -27,7 +27,6 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    ![Bitbucket Cloud page showing the App password creation interface.](img/bitbucket_app_password_v10_6.png)
 
 1. In Bitbucket, from your repository, select **Clone**, then copy the URL that starts after `git clone`.
-
 1. In GitLab, create a project:
 
    1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.

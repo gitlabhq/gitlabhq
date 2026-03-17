@@ -11,15 +11,11 @@ module Projects
       ]
 
       def play_manual
-        ::Ci::PlayManualStageService
-          .new(@project, current_user, pipeline: pipeline)
-          .execute(stage)
+        stage.play_manual(current_user)
 
         respond_to do |format|
           format.json do
-            render json: StageSerializer
-              .new(project: @project, current_user: @current_user)
-              .represent(stage)
+            head :no_content
           end
         end
       end

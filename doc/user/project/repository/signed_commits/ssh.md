@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Sign commits in your GitLab repository with SSH keys.
 title: Sign commits with SSH keys
 ---
@@ -23,7 +23,7 @@ For GitLab to consider a commit verified:
   with a [usage type](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account)
   of **Authentication & Signing** or **Signing**.
 - The committer email address in your Git configuration must match a
-  [verified email address](../../../../user/profile/_index.md#change-your-primary-email)
+  [verified email address](../../../profile/_index.md#change-your-primary-email)
   associated with your GitLab account.
 
 If the signature is valid but the committer email does not match a verified
@@ -34,7 +34,7 @@ and signing commit signatures as long as their usage type is **Authentication & 
 It can be verified on the page for [adding an SSH key to your GitLab account](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account).
 
 For more information about managing the SSH keys associated with your GitLab account, see
-[Use SSH keys to communicate with GitLab](../../../ssh.md).
+[use SSH keys to communicate with GitLab](../../../ssh.md).
 
 ## Configure Git to sign commits with your SSH key
 
@@ -80,7 +80,7 @@ Prerequisites:
 - You've [created an SSH key](../../../ssh.md#generate-an-ssh-key-pair).
 - You've [added the key](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account) to your GitLab account.
 - You've [configured Git to sign commits](#configure-git-to-sign-commits-with-your-ssh-key) with your SSH key.
-- Your Git `user.email` matches a [verified email address](../../../../user/profile/_index.md#change-your-primary-email)
+- Your Git `user.email` matches a [verified email address](../../../profile/_index.md#change-your-primary-email)
   associated with your GitLab account.
 
 To sign a commit:
@@ -102,7 +102,7 @@ To sign a commit:
 1. Push to GitLab.
 1. Check that your commits [are verified](#verify-commits).
    Signature verification uses the `allowed_signers` file to associate emails and SSH keys.
-   For help configuring this file, read [Verify commits locally](#verify-commits-locally).
+   For help configuring this file, see [verify commits locally](#verify-commits-locally).
 
 ## Verify commits
 
@@ -165,7 +165,7 @@ for Git to associate SSH public keys with users:
 
 ## Signed commits with removed SSH keys
 
-You can revoke or delete your SSH keys used to sign commits. For more information see [Remove an SSH key](../../../ssh.md#remove-an-ssh-key).
+You can revoke or delete your SSH keys used to sign commits. For more information, see [remove an SSH key](../../../ssh.md#remove-an-ssh-key).
 
 Removing your SSH key can impact any commits signed with the key:
 

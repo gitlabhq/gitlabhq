@@ -3,6 +3,7 @@
 module MergeRequests
   class MergeabilityCheckBatchWorker
     include ApplicationWorker
+    include Gitlab::Utils::StrongMemoize
 
     data_consistency :sticky
 
@@ -17,31 +18,58 @@ module MergeRequests
     end
 
     def perform(merge_request_ids, user_id)
-      merge_requests = MergeRequest.id_in(merge_request_ids)
       user = User.find_by_id(user_id)
+      return unless user
 
-      merge_requests.each do |merge_request|
-        # Skip projects that user doesn't have update_merge_request access
-        next if merge_status_recheck_not_allowed?(merge_request, user)
+      # rubocop: disable CodeReuse/ActiveRecord -- doesn't seem useful to move to model
+      merge_requests = MergeRequest.id_in(merge_request_ids).preload(target_project: :project_feature)
+      # rubocop: enable CodeReuse/ActiveRecord
 
-        merge_request.mark_as_checking
+      projects = merge_requests.map(&:target_project).uniq
 
-        result = merge_request.check_mergeability
+      Preloaders::ProjectPolicyPreloader.new(projects, user).execute
 
-        next unless result&.error?
+      allowed_merge_requests = merge_requests.reject do |merge_request|
+        merge_status_recheck_not_allowed?(merge_request.project, user)
+      end
 
-        logger.error(
-          worker: self.class.name,
-          message: "Failed to check mergeability of merge request: #{result.message}",
-          merge_request_id: merge_request.id
-        )
+      if Feature.enabled?(:batch_merge_status_updates, allowed_merge_requests.first&.project)
+        MergeRequest.batch_mark_as_checking(allowed_merge_requests.map(&:id))
+
+        allowed_merge_requests.each do |merge_request|
+          result = merge_request.check_mergeability
+
+          next unless result&.error?
+
+          logger.error(
+            worker: self.class.name,
+            message: "Failed to check mergeability of merge request: #{result.message}",
+            merge_request_id: merge_request.id
+          )
+        end
+      else
+        allowed_merge_requests.each do |merge_request|
+          merge_request.mark_as_checking
+
+          result = merge_request.check_mergeability
+
+          next unless result&.error?
+
+          logger.error(
+            worker: self.class.name,
+            message: "Failed to check mergeability of merge request: #{result.message}",
+            merge_request_id: merge_request.id
+          )
+        end
       end
     end
 
     private
 
-    def merge_status_recheck_not_allowed?(merge_request, user)
-      !Ability.allowed?(user, :update_merge_request, merge_request.project)
+    def merge_status_recheck_not_allowed?(project, user)
+      strong_memoize_with(:merge_status_recheck_not_allowed, project.id, user.id) do
+        !Ability.allowed?(user, :update_merge_request, project)
+      end
     end
   end
 end

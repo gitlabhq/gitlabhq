@@ -38,6 +38,86 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
     end
   end
 
+  shared_context 'PEP 691 Accept negotiation' do |shared_example_name|
+    where(pep_691_accept: %w[
+      application/vnd.pypi.simple.v1+json
+      application/vnd.pypi.simple.latest+json
+    ])
+
+    with_them do
+      let(:pep_691_headers) do
+        basic_auth_header(user.username, personal_access_token.token).merge('Accept' => pep_691_accept)
+      end
+
+      it_behaves_like shared_example_name
+    end
+  end
+
+  shared_examples 'PEP 691 JSON simple index response' do
+    it 'returns JSON when requested via Accept header' do
+      get api(url), headers: pep_691_headers
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers['Content-Type']).to include(API::PypiPackages::PEP_691_JSON_CONTENT_TYPE)
+      expect(response.headers['Vary']).to include('Accept')
+
+      json = json_response
+      expect(json['meta']).to include('api-version' => '1.0')
+      expect(json['projects']).to be_an(Array)
+      expect(json['projects']).not_to be_empty
+      expect(json['projects'].first).to include('name')
+    end
+  end
+
+  shared_examples 'PEP 691 JSON simple package response' do
+    it 'returns JSON package payload when requested via Accept header' do
+      get api(url), headers: pep_691_headers
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers['Content-Type']).to include(API::PypiPackages::PEP_691_JSON_CONTENT_TYPE)
+      expect(response.headers['Vary']).to include('Accept')
+
+      json = json_response
+      expect(json['meta']).to include('api-version' => '1.0')
+      expect(json['name']).to eq(package.normalized_pypi_name)
+
+      expect(json['files']).to be_an(Array)
+      expect(json['files']).not_to be_empty
+
+      expect(json['files']).to all(
+        include(
+          'filename' => be_present,
+          'url' => be_present,
+          'hashes' => include('sha256')
+        )
+      )
+    end
+  end
+
+  shared_examples 'returns HTML by default' do
+    it 'returns HTML by default' do
+      get api(url)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers['Content-Type']).to include('text/html')
+      expect(response.headers['Vary']).to include('Accept')
+    end
+  end
+
+  shared_examples 'returns HTML when PEP 691 flag disabled' do
+    before do
+      stub_feature_flags(pypi_pep_691_json: false)
+    end
+
+    it 'returns HTML even when requested via PEP 691 Accept header' do
+      get api(url), headers: pep_691_headers
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response.headers['Content-Type']).to include('text/html')
+      expect(response.headers['Vary']).not_to include('Accept')
+    end
+  end
+
   context 'simple index API endpoint' do
     let_it_be(:package) { create(:pypi_package, project: project) }
     let_it_be(:package2) { create(:pypi_package, project: project) }
@@ -49,6 +129,7 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
 
       it_behaves_like 'pypi simple index API endpoint'
       it_behaves_like 'rejects PyPI access with unknown group id'
+      it_behaves_like 'returns HTML by default'
 
       context 'deploy tokens' do
         let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token, group: group) }
@@ -91,6 +172,11 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
         let(:boundary_object) { group }
         let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
       end
+
+      context 'PEP 691 Accept negotiation' do
+        include_context 'PEP 691 Accept negotiation', 'returns HTML when PEP 691 flag disabled'
+        include_context 'PEP 691 Accept negotiation', 'PEP 691 JSON simple index response'
+      end
     end
 
     describe 'GET /api/v4/projects/:id/packages/pypi/simple' do
@@ -104,6 +190,7 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       it_behaves_like 'deploy token for package GET requests'
       it_behaves_like 'job token for package GET requests'
       it_behaves_like 'allow access for everyone with public package_registry_access_level'
+      it_behaves_like 'returns HTML by default'
 
       context 'with project path as id' do
         let(:url) { "/projects/#{CGI.escape(project.full_path)}/packages/pypi/simple" }
@@ -123,11 +210,17 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
         let(:boundary_object) { project }
         let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
       end
+
+      context 'PEP 691 Accept negotiation' do
+        include_context 'PEP 691 Accept negotiation', 'returns HTML when PEP 691 flag disabled'
+        include_context 'PEP 691 Accept negotiation', 'PEP 691 JSON simple index response'
+      end
     end
   end
 
   context 'simple package API endpoint' do
     let_it_be(:package) { create(:pypi_package, project: project) }
+    let_it_be(:package_file) { create(:package_file, package: package) }
 
     subject(:request) { get api(url), headers: headers }
 
@@ -138,6 +231,7 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
 
       it_behaves_like 'pypi simple API endpoint'
       it_behaves_like 'rejects PyPI access with unknown group id'
+      it_behaves_like 'returns HTML by default'
 
       context 'deploy tokens' do
         let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token, group: group) }
@@ -180,6 +274,11 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
         let(:boundary_object) { group }
         let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
       end
+
+      context 'PEP 691 Accept negotiation' do
+        include_context 'PEP 691 Accept negotiation', 'returns HTML when PEP 691 flag disabled'
+        include_context 'PEP 691 Accept negotiation', 'PEP 691 JSON simple package response'
+      end
     end
 
     describe 'GET /api/v4/projects/:id/packages/pypi/simple/:package_name' do
@@ -193,6 +292,7 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
       it_behaves_like 'deploy token for package GET requests'
       it_behaves_like 'job token for package GET requests'
       it_behaves_like 'allow access for everyone with public package_registry_access_level'
+      it_behaves_like 'returns HTML by default'
 
       context 'with project path as id' do
         let(:url) { "/projects/#{CGI.escape(project.full_path)}/packages/pypi/simple/#{package.name}" }
@@ -211,6 +311,11 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
 
         let(:boundary_object) { project }
         let(:request) { get api(url), headers: basic_auth_header(user.username, pat.token) }
+      end
+
+      context 'PEP 691 Accept negotiation' do
+        include_context 'PEP 691 Accept negotiation', 'returns HTML when PEP 691 flag disabled'
+        include_context 'PEP 691 Accept negotiation', 'PEP 691 JSON simple package response'
       end
     end
   end

@@ -1,0 +1,20 @@
+---
+description: Events where a group is restored
+internal_events: true
+status: active
+action: trigger_restore_on_group
+identifiers:
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: Location from where the restore occurred
+product_group: organizations
+product_categories:
+  - groups_and_projects
+milestone: '18.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224844
+tiers:
+  - free
+  - premium
+  - ultimate

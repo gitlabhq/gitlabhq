@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlIcon } from '@gitlab/ui';
-import { isString } from 'lodash';
+import { isString } from 'lodash-es';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Remote Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure your GitLab workspaces to manage your GitLab development environments.
 title: Configure workspaces
 ---
@@ -69,7 +69,7 @@ Prerequisites:
 
 {{< tab title="From a project" >}}
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Edit** > **New workspace**.
 1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
@@ -85,8 +85,8 @@ Prerequisites:
 
 {{< tab title="From a merge request" >}}
 
-1. On the top bar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Code** > **Merge requests**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select the merge request you want to create a workspace for.
 1. Select **Code** > **Open in Workspace**.
 1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
@@ -131,7 +131,7 @@ To choose a method that fits your platform requirements, see [Configure sudo acc
 
 Development environments often require building and running containers to manage and use dependencies
 during runtime.
-To build and run containers in a workspace, see [configure sudo access for a workspace with Sysbox](#with-sysbox).
+To build and run containers in a workspace, see [configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
 
 ## Configure support for private container registries
 
@@ -242,7 +242,7 @@ To connect to a workspace with an SSH client:
 
 1. Get the name of the workspace:
 
-   1. On the top bar, select **Search or go to**.
+   1. In the top bar, select **Search or go to**.
    1. Select **Your work**.
    1. Select **Workspaces**.
    1. Copy the name of the workspace you want to connect to.

@@ -38,6 +38,8 @@ module RuboCop
         end
       end
 
+      alias_method :on_numblock, :on_block
+
       private
 
       def top_block?(node)

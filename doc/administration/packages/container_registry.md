@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure and manage the GitLab container registry, including storage backends, garbage collection, and authentication.
 title: GitLab container registry administration
 ---
@@ -409,7 +409,7 @@ Container registry feature flags are environment variable toggles
 that control experimental or transitional functionality in the
 container registry.
 
-Unlike [GitLab application feature flags](../../administration/feature_flags/list.md),
+Unlike [GitLab application feature flags](../feature_flags/list.md),
 container registry feature flags:
 
 - Are managed through registry-specific environment variables
@@ -425,7 +425,7 @@ The following table lists active container registry feature flags:
 | `REGISTRY_FF_ONGOING_RENAME_CHECK` | Check Redis for projects undergoing rename operations. | 16.2 | Disabled | |
 | `REGISTRY_FF_DYNAMIC_MEDIA_TYPES` | Allow creation of new media types during runtime. | 17.1 | Disabled | |
 | `REGISTRY_FF_BBM` | Control asynchronous batched background migration processes. | 17.2 | Disabled | |
-| `REGISTRY_FF_ENFORCE_LOCKFILES` | Enable lockfile checking for database or legacy metadata storage. | [Introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1335) in GitLab 17.6. | [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/container-registry/-/work_items/1786) in GitLab 18.9. | 18.10 (See [issue 1439](https://gitlab.com/gitlab-org/container-registry/-/issues/1439)) |
+| `REGISTRY_FF_ENFORCE_LOCKFILES` | Enable lockfile checking for database or legacy metadata storage. | [Introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1335) in GitLab 17.6. | [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/container-registry/-/work_items/1786) in GitLab 18.9. |[Removed](https://gitlab.com/gitlab-org/container-registry/-/issues/1439) in GitLab 18.10. |
 
 To configure container registry feature flags,
 follow the instructions for your platform.
@@ -517,7 +517,7 @@ The different supported drivers are:
 | `gcs`        | Google Cloud Storage                 |
 | `s3`         | Amazon Simple Storage Service. Be sure to configure your storage bucket with the correct [S3 Permission Scopes](https://distribution.github.io/distribution/storage-drivers/s3/#s3-permission-scopes). |
 
-Although most S3 compatible services (like [MinIO](https://min.io/)) should work with the container registry,
+Although most S3-compatible services should work with the container registry,
 we only guarantee support for AWS S3. Because we cannot assert the correctness of third-party S3 implementations,
 we can debug issues, but we cannot patch the registry unless an issue is reproducible against an AWS S3 bucket.
 
@@ -642,7 +642,7 @@ A three-day expiration policy for incomplete multipart uploads works well for mo
 > `loglevel` settings differ between the [`s3_v1`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v1.md#configuration-parameters) and [`s3_v2`](https://gitlab.com/gitlab-org/container-registry/-/blob/f4ece8cdba4413b968c8a3fd20497a8186f23d26/docs/storage-drivers/s3_v2.md#configuration-parameters) drivers.
 > If you set the `loglevel` for the wrong driver, it is ignored and a warning message is printed.
 
-When using MinIO with the `s3_v2` driver, add the `checksum_disabled` parameter to disable AWS checksums:
+When using some S3-compatible services with the `s3_v2` driver, you may need to add the `checksum_disabled` parameter to disable AWS checksums:
 
 ```ruby
 registry['storage'] = {
@@ -675,7 +675,7 @@ registry['storage'] = {
 S3 configuration parameters:
 
 - `<your-s3-bucket>`: The name of an existing bucket. Cannot include subdirectories.
-- `regionendpoint`: Required only when using an S3-compatible service like MinIO or an AWS S3 VPC Endpoint.
+- `regionendpoint`: Required only when using an S3-compatible service or an AWS S3 VPC Endpoint.
 - `pathstyle`: Controls URL formatting. Set to `true` for `host/bucket_name/object` (most S3-compatible services) or `false` for `bucket_name.host/object` (AWS S3).
 
 To avoid 503 errors from the S3 API, add the `maxrequestspersecond` parameter to set a rate limit on connections:
@@ -701,11 +701,11 @@ The Azure storage driver integrates with Microsoft Azure Blob Storage.
 
 > [!warning]
 > The legacy Azure storage driver was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523096) in GitLab 17.10 and is planned for removal in GitLab 19.0.
-> 
+>
 > Use the `azure_v2` driver (in Beta) instead. This driver offers improved performance, reliability, and modern authentication methods. While this is a breaking change, the new driver has been extensively tested to ensure a smooth transition for most configurations.
-> 
+>
 > Make sure to test the new driver in non-production environments before deploying to production to identify and address any edge cases specific to your environment and usage patterns.
-> 
+>
 > Report any issues or feedback using [issue 525855](https://gitlab.com/gitlab-org/gitlab/-/issues/525855).
 
 For a complete list of configuration parameters for each driver, see [`azure_v1`](https://gitlab.com/gitlab-org/container-registry/-/blob/7b1786d261481a3c69912ad3423225f47f7c8242/docs/storage-drivers/azure_v1.md) and [`azure_v2`](https://gitlab.com/gitlab-org/container-registry/-/blob/7b1786d261481a3c69912ad3423225f47f7c8242/docs/storage-drivers/azure_v2.md).
@@ -1398,7 +1398,7 @@ The time required to perform garbage collection is proportional to the container
 > The `registry-garbage-collect` command shuts down the container registry prior to the garbage collection and
 > only starts it again after garbage collection completes. If you prefer to avoid downtime,
 > you can manually set the container registry to [read-only mode and bypass `gitlab-ctl`](#performing-garbage-collection-without-downtime).
-> 
+>
 > This command proceeds only if legacy metadata is in use. This command does not proceed
 > if the [container registry metadata database](#container-registry-metadata-database) is enabled.
 

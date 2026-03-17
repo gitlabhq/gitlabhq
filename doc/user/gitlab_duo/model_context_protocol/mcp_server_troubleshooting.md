@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Troubleshoot common issues with the GitLab MCP server.
 title: Troubleshooting the GitLab MCP server
 ---
@@ -43,7 +43,6 @@ to update their client implementation.
 ## Troubleshoot the GitLab MCP Server on the CLI with mcp-remote
 
 1. Install [Node.js](https://nodejs.org/en/download) version 20 or later.
-
 1. To test the exact same command as the IDEs and desktop clients:
    1. Extract the MCP configuration.
    1. Assemble the `npx` command string into one line.

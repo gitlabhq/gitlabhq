@@ -82,6 +82,11 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, type: :component,
     expect(page).to have_selector("[data-hunk-lines]")
   end
 
+  it "renders data-hunk-header on header row" do
+    render_component
+    expect(page).to have_selector("tr[data-hunk-header]")
+  end
+
   it "renders data-expanded" do
     lines.each { |line| line.expanded = true }
     render_component

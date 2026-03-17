@@ -1,5 +1,3 @@
 ---
 name: play_pipeline_schedule
 description: Grants the ability to play a scheduled pipeline immediately
-boundaries:
-  - project

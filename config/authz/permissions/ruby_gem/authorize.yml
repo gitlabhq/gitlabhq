@@ -1,5 +1,3 @@
 ---
 name: authorize_ruby_gem
 description: Grants the ability to authorize a Ruby gem upload
-boundaries:
-  - project

@@ -314,33 +314,65 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
       end
 
       context 'filtering by group' do
-        it 'includes all merge requests when user has access excluding merge requests from projects the user does not have access to' do
-          private_project = allow_gitaly_n_plus_1 { create(:project, :private, group: group) }
-          private_project.add_guest(user)
-          create(:merge_request, :simple, author: user, source_project: private_project, target_project: private_project)
-          params = { group_id: group.id }
+        shared_examples 'filtering by group' do
+          it 'includes all merge requests when user has access excluding merge requests from projects the user does not have access to' do
+            private_project = allow_gitaly_n_plus_1 { create(:project, :private, group: group) }
+            private_project.add_guest(user)
+            create(:merge_request, :simple, author: user, source_project: private_project, target_project: private_project)
+            params = { group_id: group.id }
 
-          merge_requests = described_class.new(user, params).execute
+            merge_requests = described_class.new(user, params).execute
 
-          expect(merge_requests).to contain_exactly(merge_request1, merge_request2)
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2)
+          end
+
+          it 'filters by group including subgroups' do
+            params = { group_id: group.id, include_subgroups: true }
+
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request5)
+          end
+
+          it 'filters by group projects including subgroups' do
+            # project3 is not in the group, so it should not return merge_request4
+            projects = [project3.id, project4.id]
+            params = { group_id: group.id, include_subgroups: true, projects: projects }
+
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to contain_exactly(merge_request5)
+          end
         end
 
-        it 'filters by group including subgroups' do
-          params = { group_id: group.id, include_subgroups: true }
+        context 'with mr_lookup_by_checking_traversal_ids_on_join feature flag' do
+          context 'when the flag is enabled' do
+            it_behaves_like 'filtering by group'
 
-          merge_requests = described_class.new(user, params).execute
+            it 'uses the traversal_ids JOIN on project_namespace_id in the generated SQL' do
+              finder = described_class.new(user, { group_id: group.id, include_subgroups: true })
+              sql = finder.execute.to_sql
 
-          expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request5)
-        end
+              expect(sql).to include('ns.id = projects.project_namespace_id')
+              expect(sql).to include('ns.traversal_ids @>')
+            end
+          end
 
-        it 'filters by group projects including subgroups' do
-          # project3 is not in the group, so it should not return merge_request4
-          projects = [project3.id, project4.id]
-          params = { group_id: group.id, include_subgroups: true, projects: projects }
+          context 'when the flag is disabled' do
+            before do
+              stub_feature_flags(mr_lookup_by_checking_traversal_ids_on_join: false)
+            end
 
-          merge_requests = described_class.new(user, params).execute
+            it_behaves_like 'filtering by group'
 
-          expect(merge_requests).to contain_exactly(merge_request5)
+            it 'does not use the traversal_ids JOIN on project_namespace_id in the generated SQL' do
+              finder = described_class.new(user, { group_id: group.id, include_subgroups: true })
+              sql = finder.execute.to_sql
+
+              expect(sql).not_to include('ns.id = projects.project_namespace_id')
+              expect(sql).not_to include('ns.traversal_ids @>')
+            end
+          end
         end
       end
 

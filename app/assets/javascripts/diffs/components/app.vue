@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlKeysetPagination, GlSprintf, GlAlert } from '@gitlab/ui';
-import { debounce, throttle } from 'lodash';
+import { debounce, throttle } from 'lodash-es';
 import { mapState, mapActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
 import {

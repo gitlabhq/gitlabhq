@@ -12,7 +12,6 @@ module Types
 
           value access_level_key.upcase,
             value: access_level_key,
-            experiment: { milestone: '17.8' },
             description: "#{access_level_key.capitalize} access."
         end
       end

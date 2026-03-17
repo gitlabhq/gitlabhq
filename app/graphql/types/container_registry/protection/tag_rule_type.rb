@@ -17,13 +17,11 @@ module Types
         field :id,
           ::Types::GlobalIDType[::ContainerRegistry::Protection::TagRule],
           null: false,
-          experiment: { milestone: '17.8' },
           description: 'ID of the container repository tag protection rule.'
 
         field :tag_name_pattern,
           GraphQL::Types::String,
           null: false,
-          experiment: { milestone: '17.8' },
           description:
             'The pattern that matches container image tags to protect. ' \
             'For example, `v1.*`. Wildcard character `*` allowed.'

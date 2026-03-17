@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_templates.p_ci_templates_cosign
 description: Count of pipelines using the Cosign CI template.
 product_group: pipeline_security
+product_categories:
+- pipeline_composition
 value_type: number
 status: active
 milestone: "16.4"

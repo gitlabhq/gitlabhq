@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: Backport documentation changes
 ---
 
@@ -48,7 +48,6 @@ Prerequisites:
 
 1. Open an [issue in the Technical Writing team tasks project](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/issues/new)
    using the [backport changes template](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/blob/main/.gitlab/issue_templates/backport_changes.md).
-
 1. In the issue, state why the backport is needed. Include:
    - The background to this change.
    - Which specific documentation versions are changing.
@@ -78,9 +77,7 @@ where you want the changes to occur.
 1. Open an MR with the backport by following the
    [release docs guidelines](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md#backporting-a-bug-fix-in-the-gitlab-project),
    and mention the issue you opened before so that they are linked.
-
 1. Assign the MR to a technical writer for review.
-
 1. After the technical writer approves the MR, assign the MR to a release manager
    for review and merge.
 

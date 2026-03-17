@@ -22,6 +22,7 @@ import FileTreeBrowserPopover from '~/repository/file_tree_browser/components/fi
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { scrollUp } from '~/lib/utils/scroll_utils';
 import { mockResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -37,6 +38,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 jest.mock('~/lib/utils/dom_utils');
+jest.mock('~/lib/utils/scroll_utils');
 
 describe('Tree List', () => {
   let wrapper;
@@ -261,6 +263,154 @@ describe('Tree List', () => {
       });
 
       expect(mockFocus).toHaveBeenCalled();
+    });
+  });
+
+  describe('skeleton loader', () => {
+    const mockEvent = {
+      target: {
+        closest: jest.fn(() => ({
+          previousElementSibling: {
+            nextElementSibling: { focus: jest.fn() },
+          },
+        })),
+      },
+    };
+
+    describe('when last item is a file', () => {
+      beforeEach(() => {
+        const paginatedResponse = cloneDeep(mockResponse);
+        paginatedResponse.data.project.repository.paginatedTree.pageInfo.hasNextPage = true;
+        return createComponent(paginatedResponse);
+      });
+
+      it('shows skeleton item and hides show more button when show more is clicked', async () => {
+        const secondPageResponse = cloneDeep(mockResponse);
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].trees.nodes = [];
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
+        getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
+
+        findFileRows().at(2).vm.$emit('showMore', mockEvent);
+        await nextTick();
+        await nextTick();
+        triggerIntersectionForAll();
+        await nextTick();
+
+        const files = findFileRows().wrappers.map((w) => w.props('file'));
+        expect(files.some((f) => f.isSkeleton)).toBe(true);
+        expect(files.some((f) => f.isShowMore)).toBe(false);
+      });
+
+      it('removes skeleton item after data loads', async () => {
+        const secondPageResponse = cloneDeep(mockResponse);
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].trees.nodes = [];
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
+        getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
+
+        findFileRows().at(2).vm.$emit('showMore', mockEvent);
+        await waitForPromises();
+        triggerIntersectionForAll();
+        await nextTick();
+
+        const files = findFileRows().wrappers.map((w) => w.props('file'));
+        expect(files.some((f) => f.isSkeleton)).toBe(false);
+      });
+    });
+
+    describe('when last item is a directory', () => {
+      beforeEach(() => {
+        const dirResponse = cloneDeep(mockResponse);
+        dirResponse.data.project.repository.paginatedTree.pageInfo.hasNextPage = true;
+        dirResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
+        return createComponent(dirResponse);
+      });
+
+      it('shows skeleton item and hides show more button when show more is clicked', async () => {
+        const secondPageResponse = cloneDeep(mockResponse);
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].trees.nodes = [];
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
+        getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
+
+        findFileRows().at(1).vm.$emit('showMore', mockEvent);
+        await nextTick();
+        await nextTick();
+        triggerIntersectionForAll();
+        await nextTick();
+
+        const files = findFileRows().wrappers.map((w) => w.props('file'));
+        expect(files.some((f) => f.isSkeleton)).toBe(true);
+        expect(files.some((f) => f.isShowMore)).toBe(false);
+      });
+
+      it('removes skeleton item after data loads', async () => {
+        const secondPageResponse = cloneDeep(mockResponse);
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].trees.nodes = [];
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
+        getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
+
+        findFileRows().at(1).vm.$emit('showMore', mockEvent);
+        await waitForPromises();
+        triggerIntersectionForAll();
+        await nextTick();
+
+        const files = findFileRows().wrappers.map((w) => w.props('file'));
+        expect(files.some((f) => f.isSkeleton)).toBe(false);
+      });
+    });
+
+    describe('when last item is a submodule', () => {
+      beforeEach(() => {
+        const subResponse = cloneDeep(mockResponse);
+        subResponse.data.project.repository.paginatedTree.pageInfo.hasNextPage = true;
+        subResponse.data.project.repository.paginatedTree.nodes[0].trees.nodes = [];
+        subResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
+        subResponse.data.project.repository.paginatedTree.nodes[0].submodules.nodes = [
+          {
+            __typename: 'Submodule',
+            id: 'gid://Submodule123',
+            sha: '1234567890abcdef',
+            name: 'submodule-project',
+            flatPath: 'submodule-project',
+            type: 'commit',
+            path: 'submodule-project',
+            treeUrl: 'https://example.com/submodule-project',
+            webUrl: 'https://example.com/submodule-project',
+          },
+        ];
+        return createComponent(subResponse);
+      });
+
+      it('shows skeleton item and hides show more button when show more is clicked', async () => {
+        const secondPageResponse = cloneDeep(mockResponse);
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].trees.nodes = [];
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
+        getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
+
+        findFileRows().at(1).vm.$emit('showMore', mockEvent);
+        await nextTick();
+        await nextTick();
+        triggerIntersectionForAll();
+        await nextTick();
+
+        const files = findFileRows().wrappers.map((w) => w.props('file'));
+        expect(files.some((f) => f.isSkeleton)).toBe(true);
+        expect(files.some((f) => f.isShowMore)).toBe(false);
+      });
+
+      it('removes skeleton item after data loads', async () => {
+        const secondPageResponse = cloneDeep(mockResponse);
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].trees.nodes = [];
+        secondPageResponse.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [];
+        getQueryHandlerSuccess.mockResolvedValueOnce(secondPageResponse);
+
+        findFileRows().at(1).vm.$emit('showMore', mockEvent);
+        await waitForPromises();
+        triggerIntersectionForAll();
+        await nextTick();
+
+        const files = findFileRows().wrappers.map((w) => w.props('file'));
+        expect(files.some((f) => f.isSkeleton)).toBe(false);
+      });
     });
   });
 
@@ -822,6 +972,89 @@ describe('Tree List', () => {
         expect(focusedItem.findComponent(FileRow).props('file').name).toBe('dir_2');
       });
     });
+
+    describe('RAF throttling', () => {
+      beforeEach(() => {
+        jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+          cb();
+          return 1;
+        });
+        jest.spyOn(window, 'cancelAnimationFrame');
+      });
+
+      it('throttles focus operations using requestAnimationFrame', async () => {
+        await createComponent();
+        await nextTick();
+
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+
+        expect(window.requestAnimationFrame).toHaveBeenCalled();
+      });
+
+      it('does not schedule multiple RAF callbacks when navigating rapidly', async () => {
+        await createComponent();
+        await nextTick();
+
+        window.requestAnimationFrame.mockImplementation(() => {
+          // Don't execute callback immediately to simulate pending RAF
+          return 1;
+        });
+
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+
+        // Should only schedule one RAF callback since previous ones are pending
+        expect(window.requestAnimationFrame).toHaveBeenCalledTimes(1);
+      });
+
+      it('cancels pending RAF on component destroy', async () => {
+        await createComponent();
+        await nextTick();
+
+        window.requestAnimationFrame.mockImplementation(() => 123); // Return a mock RAF ID
+
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+
+        wrapper.destroy();
+
+        expect(window.cancelAnimationFrame).toHaveBeenCalledWith(123);
+      });
+
+      it('focuses correct item after RAF callback executes', async () => {
+        let rafCallback;
+        window.requestAnimationFrame.mockImplementation((cb) => {
+          rafCallback = cb;
+          return 1;
+        });
+
+        await createComponent();
+        await nextTick();
+
+        const items = findTreeItems();
+        const secondItem = items.at(1).element;
+
+        expect(items.at(0).attributes('tabindex')).toBe('0');
+        jest.spyOn(secondItem, 'focus');
+
+        findTree().trigger('keydown', { key: 'ArrowDown' });
+        await nextTick();
+
+        // Active item ID changed but focus() not called yet (RAF pending)
+        expect(items.at(1).attributes('tabindex')).toBe('0');
+        expect(secondItem.focus).not.toHaveBeenCalled();
+
+        // Execute the RAF callback
+        rafCallback();
+        await nextTick();
+
+        // Now focus() should have been called
+        expect(secondItem.focus).toHaveBeenCalled();
+      });
+    });
   });
 
   describe('Tree toggle', () => {
@@ -1049,6 +1282,12 @@ describe('Tree List', () => {
     expect(wrapper.vm.$router.push).toHaveBeenCalledWith(
       '/-/blob/main/dir_1/file.txt?ref_type=heads',
     );
+  });
+
+  it('calls scrollUp when file is clicked', () => {
+    findFileRows().at(0).vm.$emit('clickRow');
+
+    expect(scrollUp).toHaveBeenCalled();
   });
 
   it('tracks event when row is clicked', async () => {

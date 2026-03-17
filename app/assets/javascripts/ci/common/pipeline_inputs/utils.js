@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 
 /**
  * Generates skeleton rect props for the skeleton loader based on column and row indices

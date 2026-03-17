@@ -57,5 +57,5 @@
       = render 'groups/settings/advanced'
 
 - elsif can?(current_user, :remove_group, @group)
-  = render 'shared/groups_projects/settings/restore', context: @group
+  = render 'shared/groups_projects/settings/restore', context: @group, tracking_event: 'trigger_restore_on_group'
   = render 'groups/settings/delete'

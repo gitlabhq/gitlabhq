@@ -1,6 +1,6 @@
 <script>
 import { GlModal, GlFormGroup, GlFormSelect, GlAlert } from '@gitlab/ui';
-import { differenceBy } from 'lodash';
+import { differenceBy } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, s__, sprintf } from '~/locale';
 import { findDesignsWidget, getParentGroupName, isMilestoneWidget } from '~/work_items/utils';

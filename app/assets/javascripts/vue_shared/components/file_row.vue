@@ -125,6 +125,17 @@ export default {
     {{ __('Show more') }}
   </gl-button>
   <div
+    v-else-if="file.isSkeleton"
+    data-testid="file-row-container"
+    class="gl-flex gl-items-center"
+    :class="fileRowContainerClassList"
+    :style="{ '--level': file.level }"
+  >
+    <div class="file-row file-row-indentation gl-flex-grow-1 gl-flex gl-items-center">
+      <div class="gl-animate-skeleton-loader gl-h-4 gl-w-3/4 gl-rounded-base"></div>
+    </div>
+  </div>
+  <div
     v-else
     data-testid="file-row-container"
     class="gl-flex gl-items-center"

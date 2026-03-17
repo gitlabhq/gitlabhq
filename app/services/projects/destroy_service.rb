@@ -169,8 +169,16 @@ module Projects
       unless project.destroyed?
         # Restrict project visibility if the parent namespace visibility was made more restrictive while the project was scheduled for deletion.
         visibility_level = project.visibility_level_allowed_by_namespace? ? project.visibility_level : project.namespace.visibility_level
-        project.update(delete_error: message, pending_delete: false, visibility_level: visibility_level)
-        reschedule_deletion
+
+        Project.transaction do
+          project.update!(pending_delete: false, visibility_level: visibility_level)
+          reschedule_deletion
+
+          # Set the error message after reschedule_deletion, because the state machine
+          # callback update_state_metadata sets deletion_error to nil on transitions.
+          project.deletion_error = message
+          project.project_namespace.namespace_details.save!
+        end
       end
 
       log_error("Deletion failed on #{project.full_path} with the following message: #{message}")

@@ -37,7 +37,11 @@ class MergeRequestDiffCommit < ApplicationRecord
   attribute :trailers, ::Gitlab::Database::Type::IndifferentJsonb.new
   validates :trailers, json_schema: { filename: 'git_trailers' }
 
-  scope :for_merge_request_diff, ->(diff_id) { where(merge_request_diff_id: diff_id) }
+  scope :for_merge_request_diff, ->(diff_id, project_id = nil) {
+    relation = where(merge_request_diff_id: diff_id)
+    relation = relation.where(project_id: project_id) if project_id
+    relation
+  }
 
   # A list of keys of which their values need to be trimmed before they can be
   # inserted into the merge_request_diff_commit_users table.
@@ -121,7 +125,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   def self.oldest_merge_request_id_per_commit(project_id, shas)
     # This method is defined here and not on MergeRequest, otherwise the SHA
     # values used in the WHERE below won't be encoded correctly.
-    select(['merge_request_diff_commits.sha AS sha', 'min(merge_requests.id) AS merge_request_id'])
+    relation = select(['merge_request_diff_commits.sha AS sha', 'min(merge_requests.id) AS merge_request_id'])
       .joins(:merge_request_diff)
       .joins(
         'INNER JOIN merge_requests ' \
@@ -135,9 +139,13 @@ class MergeRequestDiffCommit < ApplicationRecord
         }
       )
       .group(:sha)
+
+    relation = relation.where(project_id: project_id) if partition_enabled?(project_id)
+
+    relation
   end
 
-  def self.commit_shas_from_metadata(project_id:, limit:)
+  def self.commit_shas_from_metadata(project_id:, limit:, partition_enabled: false)
     # Until `merge_request_commits_metadata` records are backfilled, SHAs data may be in found in either table
     metadata_join_sql = <<~SQL.squish
       LEFT JOIN merge_request_commits_metadata
@@ -151,11 +159,17 @@ class MergeRequestDiffCommit < ApplicationRecord
     relation = self.joins(self.sanitize_sql_array([metadata_join_sql, project_id]))
       .order(:relative_order)
 
+    relation = relation.where(project_id: project_id) if partition_enabled
+
     relation = relation.limit(limit) if limit
 
     # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- limit may be applied in the caller
     relation.pluck(shas_sql)
     # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+  end
+
+  def self.partition_enabled?(project_id)
+    Feature.enabled?(:merge_request_diff_commits_partition, Project.actor_from_id(project_id))
   end
 
   def self.commit_rows_with_metadata(project_id, merge_request_diff_id, rows)

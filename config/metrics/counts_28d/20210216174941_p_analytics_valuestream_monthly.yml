@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.analytics.p_analytics_valuestream_monthly
 description: Unique visitors to /:group/:project/-/value_stream_analytics by month
 product_group: optimize
+product_categories:
+- value_stream_management
 value_type: number
 status: active
 time_frame: 28d

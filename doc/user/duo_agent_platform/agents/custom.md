@@ -1,20 +1,20 @@
 ---
 stage: AI-powered
 group: Workflow Catalog
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Custom agents
 ---
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
 
 {{< collapsible title="Model information" >}}
 
-- Not available on GitLab Duo with self-hosted models
+- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /collapsible >}}
 
@@ -25,11 +25,14 @@ title: Custom agents
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/568176) to beta in GitLab 18.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 - Feature flag `ai_catalog_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217802) in GitLab 18.9.
+- Feature flag `global_ai_catalog` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223135) in 18.10.
+- Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
+- Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 
 {{< /history >}}
 
 > [!flag]
-> The availability of this feature is controlled by a feature flag.
+> The ability to enable an agent directly in projects as a maintainer is controlled by a feature flag.
 > For more information, see the history.
 
 Agents use AI to perform tasks and answer complex questions. Create
@@ -37,14 +40,20 @@ custom agents to accomplish specific tasks, like creating merge
 requests or reviewing code. Or, use the AI Catalog to discover agents
 created by GitLab.
 
-When you're ready to interact with an agent, you can enable it to
-start using it with GitLab Duo Chat.
+When you're ready to interact with an agent, enable it and start using it
+with GitLab Duo Chat in the GitLab UI, VS Code, and JetBrains IDEs.
 
 ## Prerequisites
 
 - Meet the [prerequisites for the GitLab Duo Agent Platform](../_index.md#prerequisites).
 
 ## Agent visibility
+
+{{< history >}}
+
+- Roles that can view private agents [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
+
+{{< /history >}}
 
 When you create a custom agent, you select a project to manage it and choose whether the agent is public or private.
 
@@ -54,7 +63,7 @@ Public agents:
 
 Private agents:
 
-- Can be viewed only by members of the managing project who have the Developer, Maintainer, or Owner role.
+- Can be viewed only by members of the managing project who have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 - Cannot be enabled in projects other than the managing project.
 
 You cannot make a public agent private if the agent is currently enabled.
@@ -67,7 +76,7 @@ Prerequisites:
 
 To view a list of agents associated with your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Agents**.
    - To view agents enabled in the project, select the **Enabled** tab.
    - To view agents managed by the project, select the **Managed** tab.
@@ -88,7 +97,7 @@ Prerequisites:
 
 To create an agent:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Agents**.
 1. Select **New agent**.
 1. Under **Basic information**:
@@ -101,7 +110,9 @@ To create an agent:
    select which tools the agent can access.
    For example, for the agent to create issues automatically, select **Create issue**.
 
-   For more information, see the list of [agent tools](tools.md).
+   > [!note]
+   > Some tools require the IDE extension and are not available in Web UI.
+   > For more information, see the list of [agent tools](tools.md).
 1. Select **Create agent**.
 
 {{< /tab >}}
@@ -110,7 +121,7 @@ To create an agent:
 
 To create an agent:
 
-1. On the top bar, select **Search or go to** > **Explore**.
+1. In the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select **New agent**.
 1. Under **Basic information**:
@@ -132,61 +143,146 @@ To create an agent:
 
 {{< /tabs >}}
 
-The agent appears in the AI Catalog. To use the agent with Chat, enable it in a project.
+The agent appears in the AI Catalog. To use the agent with Chat, you must enable it.
 
 ## Enable an agent
 
-Enable an agent to use it with Chat. To enable an agent, you must:
+Enable an agent to use it with Chat.
 
-1. Enable it in a top-level group.
-1. Enable it in the project you want to use it in.
-
-### Enable in a top-level group
-
-Prerequisites:
-
-- You must have the Owner role for the group.
-
-To enable an agent in a top-level group:
-
-1. On the top bar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**, then select the **Agents** tab.
-1. Select the agent you want to enable.
-1. In the upper-right corner, select **Enable in group**.
-1. From the dropdown list, select the group you want to enable the agent in.
-1. Select **Enable**.
-
-The agent appears in the group's **Automate** > **Agents** page.
-
-### Enable in a project
+When you enable an agent in a project, it is enabled in the top-level group for that project at the same time.
 
 Prerequisites:
 
 - You must have the Maintainer or Owner role for the project.
-- The agent must be enabled in a top-level group.
+
+{{< tabs >}}
+
+{{< tab title="From the managing project" >}}
+
+To enable an agent:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Automate** > **Agents**.
+1. Select the **Managed** tab, then select the agent you want to enable.
+1. In the upper-right corner, select **Enable**.
+1. Under **Project**, select the project you want to enable the agent in.
+1. Select **Enable**.
+
+{{< /tab >}}
+
+{{< tab title="From the AI Catalog" >}}
+
+To enable an agent:
+
+1. In the top bar, select **Search or go to** > **Explore**.
+1. Select **AI Catalog**, then select the **Agents** tab.
+1. Select the agent you want to enable.
+1. In the upper-right corner, select **Enable**.
+1. Under **Project**, select the project you want to enable the agent in.
+1. Select **Enable**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The agent appears in the group and project **Automate** > **Agents** pages.
+Members of any project in the top-level group can now enable the agent in their project.
+
+In the project, you can start a new chat with the agent.
+For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
+
+### Enable in a project
+
+If an agent is already enabled in a top-level group, you can enable it in the group's projects.
+
+Prerequisites:
+
+- You must have the Maintainer or Owner role for the project.
+- The agent must be enabled in the project's top-level group.
 
 To enable an agent in a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Agents**.
 1. In the upper-right corner, select **Enable agent from group**.
 1. From the dropdown list, select the agent you want to enable.
 1. Select **Enable**.
 
-The agent appears on the project's **Automate** > **Agents** page.
+The agent appears in the project's **Automate** > **Agents** page.
+
 In the project, you can start a new chat with the agent.
-For more information, see [select an agent](../../gitlab_duo_chat/agentic_chat.md#select-an-agent).
+
+## Use an agent
+
+You can use a custom agent in the GitLab UI, VS Code, and JetBrains IDEs.
+
+### In the GitLab UI
+
+Prerequisites:
+
+- Enable the agent in the project you want to use it in.
+
+To use a custom agent in the GitLab UI:
+
+1. In the top bar, select **Search or go to** and find your project or group.
+1. Open an issue, epic, or merge request.
+1. On the GitLab Duo sidebar, select either **New GitLab Duo Chat**
+   ({{< icon name="pencil-square" >}}) or **Current GitLab Duo Chat**
+   ({{< icon name="duo-chat" >}}).
+
+   A Chat conversation opens in the GitLab Duo sidebar on the right side of your screen.
+
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select the custom agent.
+1. Enter your question or request.
+
+### In VS Code
+
+Prerequisites:
+
+- Enable the agent in the project you want to use it in.
+- Install and configure [GitLab for VS Code](../../../editor_extensions/visual_studio_code/setup.md)
+  version 6.47.0 or later.
+- Set a [default GitLab Duo namespace](../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
+To use a custom agent in VS Code:
+
+1. In VS Code, in the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select the custom agent.
+1. Enter your question or request.
+
+### In JetBrains IDEs
+
+Prerequisites:
+
+- Enable the agent in the project you want to use it in.
+- Install and configure [GitLab plugin for JetBrains](../../../editor_extensions/jetbrains_ide/setup.md)
+  version 3.19.0 or later.
+- Set a [default GitLab Duo namespace](../../profile/preferences.md#set-a-default-gitlab-duo-namespace).
+
+First, enable the GitLab Duo Agent Platform:
+
+1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
+1. Under **GitLab Duo Agent Platform**, select the **Enable GitLab Duo Agent Platform** checkbox.
+1. Restart your IDE if prompted.
+
+Then, to use a custom agent:
+
+1. In your JetBrains IDE, on the right tool window bar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+1. Select the **Chat** tab.
+1. From the **New chat** ({{< icon name="duo-chat-new" >}}) dropdown list, select the custom agent.
+1. Enter your question or request.
 
 ## Disable an agent
 
 Prerequisites:
 
-- For groups, you must have the Owner role.
+- For groups, you must have the Maintainer or Owner role.
 - For projects, you must have the Maintainer or Owner role.
 
 To disable an agent:
 
-1. On the top bar, select **Search or go to** and find your group or project.
+1. In the top bar, select **Search or go to** and find your group or project.
 1. Select **Automate** > **Agents**.
 1. Find the agent you want to remove and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Disable**.
 1. On the confirmation dialog, select **Disable**.
@@ -203,7 +299,7 @@ Prerequisites:
 
 To duplicate an agent:
 
-1. On the top bar, select **Search or go to** > **Explore**.
+1. In the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Agents** tab.
 1. Select the agent you want to duplicate.
 1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.

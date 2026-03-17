@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Redmine
 ---
 
@@ -14,15 +14,16 @@ title: Redmine
 
 Prerequisites:
 
-- You must disable [GitLab internal issue tracking](../issues/_index.md) in the project. For more information about the steps and consequences of disabling
-  GitLab issues, see [Change project visibility](../../public_access.md#change-project-visibility), and also
-  [Configure project features and permissions](../settings/_index.md#configure-project-features-and-permissions).
+- You must [disable GitLab internal issue tracking](../../../integration/external-issue-tracker.md#disable-the-gitlab-issue-tracker) in the project.
+  For more information about the steps and consequences of disabling
+  GitLab issues, see [change project visibility](../../public_access.md#change-project-visibility), and
+  [configure project features and permissions](../settings/_index.md#configure-project-features-and-permissions).
 
 You can use [Redmine](https://www.redmine.org/) as an
 [external issue tracker](../../../integration/external-issue-tracker.md).
 To enable the Redmine integration in a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Redmine**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -34,7 +35,7 @@ To enable the Redmine integration in a project:
    - **New issue URL**: The URL to use to create a new issue in the Redmine project linked to
      this GitLab project.
 
-     <!-- The note below was originally added in January 2018: https://gitlab.com/gitlab-org/gitlab/-/commit/778b231f3a5dd42ebe195d4719a26bf675093350 -->
+     <!-- The note below was originally added in January 2018: <https://gitlab.com/gitlab-org/gitlab/-/commit/778b231f3a5dd42ebe195d4719a26bf675093350> -->
 
      > [!note]
      > This URL is not used and removal is planned in a future release.

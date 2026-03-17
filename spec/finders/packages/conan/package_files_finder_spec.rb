@@ -137,6 +137,26 @@ RSpec.describe Packages::Conan::PackageFilesFinder, feature_category: :package_r
       end
     end
 
+    context 'with file_sha1' do
+      let(:params) { { file_sha1: } }
+
+      context 'when file_sha1 matches' do
+        let(:file_sha1) { package_file.file_sha1 }
+
+        let(:expected_package_files) do
+          package_files.select { |file| file.file_sha1 == file_sha1 }
+        end
+
+        it { is_expected.to match_array(expected_package_files) }
+      end
+
+      context 'when file_sha1 does not match' do
+        let(:file_sha1) { 'non_existing_sha1' }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
     context 'when no files exist' do
       let_it_be(:package) { create(:conan_package, without_package_files: true) }
 

@@ -96,7 +96,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
         user.lock_access!
       end
 
-      it {
+      it do
         is_expected.to contain_exactly(
           "edit",
           "block",
@@ -107,7 +107,7 @@ RSpec.describe Admin::UserActionsHelper, feature_category: :user_management do
           "delete_with_contributions",
           "trust"
         )
-      }
+      end
     end
 
     context 'the user is banned' do

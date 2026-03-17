@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Group relations export API
 description: "Export group relations with the REST API."
 ---
@@ -13,13 +13,18 @@ description: "Export group relations with the REST API."
 
 {{< /details >}}
 
-Use this API to migrate a group structure. Each top-level
-relation (for example, milestones, boards, and labels) is stored as a separate file.
+This API is used by the destination instance during [group migration by direct transfer](../user/group/import/_index.md)
+to migrate a group structure. You don't usually need to use this API yourself.
 
-This API is primarily used during [group migration by direct transfer](../user/group/import/_index.md).
-To use this API, your GitLab instance must meet certain [prerequisites](../user/group/import/direct_transfer_migrations.md#prerequisites).
+In this context, a {{< glossary-tooltip text="relation" >}} is an exportable item such as an epic. When exported, the
+relation includes any items related to the relation such as a label.
 
-This API can't be used with the [group import and export API](group_import_export.md).
+If you want to use this API, your GitLab instance must meet certain
+[prerequisites](../user/group/import/direct_transfer_migrations.md#prerequisites).
+
+> [!note]
+> This API can't be used with the [group import and export API](group_import_export.md), which is for file-based
+> migration.
 
 ## Schedule new export
 

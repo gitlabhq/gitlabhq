@@ -1,6 +1,3 @@
 ---
 name: update_variable
 description: Grants the ability to update variables
-boundaries:
-  - project
-  - group

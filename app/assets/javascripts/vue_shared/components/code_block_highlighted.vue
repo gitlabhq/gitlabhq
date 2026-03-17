@@ -1,5 +1,5 @@
 <script>
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import CodeBlock from './code_block.vue';

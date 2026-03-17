@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Terraform Module Registry
 ---
 
@@ -43,11 +43,11 @@ Do not use authentication methods other than the methods documented here. Undocu
 
 To publish a Terraform module:
 
-- You must have at least the Developer role.
+- You must have the Developer, Maintainer, or Owner role.
 
 To delete a module:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 ## Publish a Terraform module
 
@@ -228,7 +228,7 @@ By default, the Terraform Module Registry enforces uniqueness for module names i
 
 To allow publishing duplicate module names:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Packages and registries**.
 1. In the **Terraform module** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names of modules to allow.
@@ -261,7 +261,7 @@ For more information on module resolution, see [module resolution workflow](#mod
 
 To view Terraform modules in your project or group:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Operate** > **Terraform modules**.
 
 You can search, sort, and filter modules on this page.
@@ -340,7 +340,7 @@ If there are [duplicate module names](#allow-duplicate-terraform-modules) in the
 
 To download a Terraform module:
 
-1. On the left sidebar, select **Operate** > **Terraform modules**.
+1. In the left sidebar, select **Operate** > **Terraform modules**.
 1. Select the name of the module you want to download.
 1. From the **Assets** table, select the module you want to download.
 
@@ -353,7 +353,7 @@ You can delete modules by using [the packages API](../../../api/packages.md#dele
 
 To delete a module in the UI, from your project:
 
-1. On the left sidebar, select **Operate** > **Terraform modules**.
+1. In the left sidebar, select **Operate** > **Terraform modules**.
 1. Find the name of the package you want to delete.
 1. Select **Delete**.
 

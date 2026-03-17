@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Dependency Management in Go
 ---
 
@@ -175,5 +175,5 @@ adds HTTP Basic authentication credentials to the request. Go does not
 authenticate requests made over HTTP. Go rejects HTTP-only entries in
 `GOPROXY` that have embedded credentials.
 
-In a future version, Go may add support for arbitrary authentication headers.
-Follow [`golang/go#26232`](https://github.com/golang/go/issues/26232) for details.
+In Go 1.24 and later, you can use `GOAUTH` to provide authentication credentials.
+For more information, see [authenticate Go requests to private projects](../../user/project/use_project_as_go_package.md#authenticate-go-requests-to-private-projects).

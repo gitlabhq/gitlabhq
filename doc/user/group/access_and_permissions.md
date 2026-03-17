@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure and manage group access and permissions.
 title: Group access and permissions
 ---
@@ -15,35 +15,6 @@ title: Group access and permissions
 
 Configure your groups to control group permissions and access.
 For more information, see also [Sharing projects and groups](../project/members/sharing_projects_groups.md).
-
-## Group push rules
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-Group push rules allow group maintainers to set
-[push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
-
-To configure push rules for a group:
-
-1. On the top bar, select **Search or go to** and find your group.
-1. Select **Settings** > **Repository**.
-1. Expand the **Pre-defined push rules** section.
-1. Select the settings you want.
-1. Select **Save push rules**.
-
-New projects inherit push rules from:
-
-- The closest parent group with push rules defined.
-- Push rules set for the entire instance, if no parent groups have push rules defined.
-
-Only projects inherit push rules. Subgroups don't inherit push
-rules from parent groups. To verify which push rules apply to new projects,
-create a project in the subgroup and check the project's push rules.
 
 ## Restrict Git access protocols
 
@@ -60,7 +31,7 @@ configured by an administrator.
 
 To change the permitted Git access protocols for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Choose the permitted protocols from **Enabled Git access protocols**.
@@ -110,7 +81,7 @@ Administrators can combine restricted access by IP address with
 
 To restrict group access by IP address:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict access by IP address** text box, enter a list of IPv4 or IPv6
@@ -184,7 +155,7 @@ to access that group. Subgroups inherit the same allowlist.
 
 To restrict group access by domain:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. In the **Restrict membership by email domain** text box, enter the domain names to allow.
@@ -213,7 +184,7 @@ When you share a group, both the source and target namespaces must allow the dom
 As a group Owner, you can prevent non-members from requesting access to
 your group.
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Allow users to request access** checkbox.
@@ -247,7 +218,7 @@ Prerequisites:
 
 To prevent projects from being forked outside the group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Check **Prevent project forking outside current group**.
@@ -279,7 +250,7 @@ The setting does not cascade. Projects in subgroups observe the subgroup configu
 
 To prevent members from being added to projects in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Under **Membership**, select **Users cannot be added to projects in this group**.
@@ -374,7 +345,7 @@ To create group links with an LDAP user filter:
 
 {{< /details >}}
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Active synchronization**.
 1. Identify the group link you want to remove and select **Remove**.
 
@@ -392,7 +363,7 @@ To create group links with an LDAP user filter:
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Manage** > **Members**. If LDAP synchronization
    has granted a user a role with:
    - More permissions than the parent group membership, that user is displayed as having
@@ -420,18 +391,18 @@ project setting. New projects created in the group have this value selected by d
 
 Prerequisites:
 
-- You must have at least the Maintainer role in the group.
+- You must have the Maintainer or Owner role in the group.
 - The group must be the top-level group, not a subgroup.
 
 To set the default minimum role:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **CI/CD** > **Variables**.
 1. Under **Default role to use pipeline variables** select a minimum role, or select
    **No one allowed** to prevent any user from using pipeline variables.
 1. Select **Save changes**.
 
-After a new project is created, project members with at least the Maintainer role
+After a new project is created, project members with the Maintainer or Owner role
 can change the project setting to another value if needed.
 
 ## Troubleshooting

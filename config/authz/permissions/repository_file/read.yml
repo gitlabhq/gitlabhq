@@ -1,5 +1,3 @@
 ---
 name: read_repository_file
 description: Grants the ability to read repository files
-boundaries:
-  - project

@@ -13,7 +13,8 @@
 
 - if repository_file_tree_browser_enabled
   .gl-flex.navigation-root
-    #js-file-browser
+    -# Pre-reserve width to prevent CLS; must match TREE_WIDTH in file_tree_browser.vue
+    #js-file-browser{ style: 'width:320px' }
     #tree-holder.tree-holder.gl-pt-5.gl-pl-4.gl-w-full.gl-min-w-0
       = render 'blob', blob: @blob
 - else

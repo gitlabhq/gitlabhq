@@ -149,6 +149,25 @@ module ActiveContext
             )
           end
         end
+
+        def do_nullify_field(collection, field_name, batch_size:)
+          response = raw_client.update_by_query(
+            index: collection.name,
+            max_docs: batch_size,
+            conflicts: 'proceed',
+            body: {
+              query: {
+                exists: { field: field_name }
+              },
+              script: {
+                lang: 'painless',
+                source: "ctx._source.remove('#{field_name}')"
+              }
+            }
+          )
+
+          response['updated'] || 0
+        end
       end
     end
   end

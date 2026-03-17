@@ -626,6 +626,8 @@ export function collapseDiffDiscussion(discussion) {
   }
 
   const diffFile = this.getDiffFileByHash(discussion.diff_file.file_hash);
+  // Guard against a call in Rapid Diffs
+  if (!diffFile) return;
   const line = diffFile[INLINE_DIFF_LINES_KEY].find(
     (diffLine) => diffLine.line_code === discussion.line_code,
   );

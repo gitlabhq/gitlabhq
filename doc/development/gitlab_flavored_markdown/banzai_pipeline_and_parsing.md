@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: The Banzai pipeline and parsing.
 title: The Banzai pipeline and parsing
 ---
@@ -85,7 +85,7 @@ We use our [`gitlab-glfm-markdown`](https://gitlab.com/gitlab-org/ruby/gems/gitl
 
 `comrak` provides 100% compatibility with GFM and CommonMark while allowing additional extensions to be added to it. For example, we were able to implement our multi-line blockquote and wikilink syntax directly in `comrak`. The goal is to move more of the Ruby filters into either `comrak` (if it makes sense) or into `gitlab-glfm-markdown`.
 
-For more information about the various options that get passed into `comrak`, see [glfm_markdown.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/markdown_engines/glfm_markdown.rb#L12-L52).
+For more information about the various options that get passed into `comrak`, see [`glfm_markdown.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/markdown_engines/glfm_markdown.rb#L12-L52).
 
 ## Caching
 

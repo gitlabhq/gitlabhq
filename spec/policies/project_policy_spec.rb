@@ -25,14 +25,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     project_with_runner_registration_token.add_owner(owner)
   end
 
-  def expect_allowed(*permissions)
-    permissions.each { |p| is_expected.to be_allowed(p) }
-  end
-
-  def expect_disallowed(*permissions)
-    permissions.each { |p| is_expected.not_to be_allowed(p) }
-  end
-
   context 'with no project feature' do
     let(:current_user) { owner }
 
@@ -98,7 +90,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     let(:current_user) { owner }
     let(:mr_permissions) do
       [:create_merge_request_from, :read_merge_request, :update_merge_request,
-       :admin_merge_request, :create_merge_request_in]
+        :admin_merge_request, :create_merge_request_in]
     end
 
     it 'disallows all permissions when the feature is disabled' do
@@ -1117,7 +1109,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'alert bot' do
-    let(:current_user) { Users::Internal.alert_bot }
+    let(:current_user) { Users::Internal.in_organization(project.organization).alert_bot }
 
     it { is_expected.to be_allowed(:reporter_access) }
 
@@ -4202,27 +4194,32 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe 'create_saved_view' do
-    context 'when user can read the project' do
-      let(:current_user) { create(:user) }
+    using RSpec::Parameterized::TableSyntax
 
-      before do
-        project.add_guest(current_user)
+    context 'when user can create saved views' do
+      where(:role, :current_user) do
+        'planner'    | lazy { planner }
+        'reporter'   | lazy { reporter }
+        'developer'  | lazy { developer }
+        'maintainer' | lazy { maintainer }
+        'owner'      | lazy { owner }
       end
 
-      it { is_expected.to be_allowed(:create_saved_view) }
+      with_them do
+        it { is_expected.to be_allowed(:create_saved_view) }
+      end
     end
 
-    context 'when user cannot read the project' do
-      let(:project) { private_project }
-      let(:current_user) { create(:user) }
+    context 'when user cannot create saved views' do
+      where(:role, :current_user) do
+        'guest'      | lazy { guest }
+        'non-member' | lazy { create(:user) }
+        'anonymous'  | lazy { nil }
+      end
 
-      it { is_expected.to be_disallowed(:create_saved_view) }
-    end
-
-    context 'when user is anonymous' do
-      let(:current_user) { anonymous }
-
-      it { is_expected.to be_disallowed(:create_saved_view) }
+      with_them do
+        it { is_expected.to be_disallowed(:create_saved_view) }
+      end
     end
   end
 

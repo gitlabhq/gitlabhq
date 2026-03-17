@@ -1,6 +1,6 @@
 <script>
 import { GlAvatar, GlLoadingIcon, GlIcon, GlBadge } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { getAdaptiveStatusColor } from '~/lib/utils/color_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isUserBusy } from '~/set_status_modal/utils';

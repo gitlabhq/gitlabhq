@@ -74,8 +74,11 @@ module Tasks
           end
 
           def validate_raw_permissions
-            duplicates = ::Authz::PermissionGroups::Assignable.all_permissions.filter_map do |raw_permission|
-              assignables = ::Authz::PermissionGroups::Assignable.for_permission(raw_permission)
+            non_deprecated = ::Authz::PermissionGroups::Assignable.available_definitions
+            all_raw_permissions = non_deprecated.flat_map(&:permissions).uniq
+
+            duplicates = all_raw_permissions.filter_map do |raw_permission|
+              assignables = non_deprecated.select { |a| a.permissions.include?(raw_permission) }
               [raw_permission, assignables.map(&:name)] if assignables.size > 1
             end.to_h
 
@@ -172,24 +175,33 @@ module Tasks
 
           def error_messages
             {
-              schema: "The following permissions failed schema validation.",
+              schema: "The following permissions failed schema validation." \
+                "\n#{assignable_permissions_link(anchor: 'create-the-assignable-permission-file')}",
               duplicate_name: "The following permissions have duplicate names." \
-                "\nAssignable permissions must have unique names.",
+                "\nAssignable permissions must have unique names." \
+                "\n#{assignable_permissions_link(anchor: 'important-constraints')}",
               duplicate_raw_permission: "The following raw permissions are used in multiple assignable permissions." \
-                "\nEach raw permission should only belong to one assignable permission.",
-              file: "The following permission definitions do not exist at the expected path.",
+                "\nEach raw permission should only belong to one assignable permission." \
+                "\n#{assignable_permissions_link(anchor: 'important-constraints')}",
+              file: "The following permission definitions do not exist at the expected path." \
+                "\n#{assignable_permissions_link(anchor: 'understanding-the-directory-structure')}",
               missing_resource_metadata:
-                "The following assignable permission resource directories are missing a _metadata.yml file.",
+                "The following assignable permission resource directories are missing a _metadata.yml file." \
+                "\n#{assignable_permissions_link(anchor: 'when-do-you-need-metadata-files')}",
               resource_metadata_schema:
-                "The following assignable permission resource metadata file failed schema validation.",
+                "The following assignable permission resource metadata file failed schema validation." \
+                "\n#{assignable_permissions_link(anchor: 'when-do-you-need-metadata-files')}",
               category_metadata_schema:
-                "The following assignable permission category metadata file failed schema validation.",
+                "The following assignable permission category metadata file failed schema validation." \
+                "\n#{assignable_permissions_link(anchor: 'understanding-the-directory-structure')}",
               empty_resource_directory:
                 "The following resource directories contain only a _metadata.yml file with no permission definitions." \
-                "\nEither add permission definitions or remove the directory.",
+                "\nEither add permission definitions or remove the directory." \
+                "\n#{assignable_permissions_link(anchor: 'understanding-the-directory-structure')}",
               empty_category_directory:
                 "The following category directories contain only a _metadata.yml file with no resource " \
-                "subdirectories.\nEither add resource subdirectories or remove the directory."
+                "subdirectories.\nEither add resource subdirectories or remove the directory." \
+                "\n#{assignable_permissions_link(anchor: 'understanding-the-directory-structure')}"
             }
           end
 

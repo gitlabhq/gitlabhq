@@ -48,10 +48,10 @@
             <% if sentinel[:ssl_params] %>
             :ssl_params: <%= sentinel[:ssl_params].to_json %>
             <% end %>
-            <% if sentinel[:password] && !sentinel[:password].empty? %>
-            :password: <%= sentinel[:password] %>
-            <% end %>
           <% end %>
+        <% if config[:sentinel_password] %>
+        :sentinel_password: <%= config[:sentinel_password].to_json %>
+        <% end %>
         <% end %>
       <% elsif config[:delivery_method] == Gitlab::MailRoom::DELIVERY_METHOD_WEBHOOK %>
       :delivery_method: postback
@@ -83,9 +83,9 @@
             <% if sentinel[:ssl_params] %>
             :ssl_params: <%= sentinel[:ssl_params].to_json %>
             <% end %>
-            <% if sentinel[:password] && !sentinel[:password].empty? %>
-            :password: <%= sentinel[:password] %>
-            <% end %>
           <% end %>
+        <% if config[:sentinel_password] %>
+        :sentinel_password: <%= config[:sentinel_password].to_json %>
+        <% end %>
         <% end %>
   <% end %>

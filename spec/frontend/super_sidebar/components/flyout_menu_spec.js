@@ -6,7 +6,7 @@ import NavItem from '~/super_sidebar/components/nav_item.vue';
 import { setHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('@floating-ui/dom');
-jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
+jest.mock('lodash', () => ({ ...jest.requireActual('lodash'), throttle: jest.fn((fn) => fn) }));
 
 describe('FlyoutMenu', () => {
   const targetId = 'section-1';

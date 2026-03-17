@@ -2,7 +2,7 @@
 import { GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
-import { intersection } from 'lodash';
+import { intersection } from 'lodash-es';
 import Tracking from '~/tracking';
 import { NAV_LINK_COUNT_DEFAULT_CLASSES, LABEL_DEFAULT_CLASSES } from '../../constants';
 import { formatSearchResultCount } from '../../../store/utils';

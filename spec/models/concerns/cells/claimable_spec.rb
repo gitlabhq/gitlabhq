@@ -21,6 +21,12 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       subject_key: subject_key
   end
 
+  around do |example|
+    example.run
+  ensure
+    described_class.models_with_claims.delete(test_klass)
+  end
+
   describe 'configuration' do
     it 'retrieves cell configuration' do
       expect(test_klass.cells_claims_subject_type).to eq(Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION)
@@ -167,6 +173,54 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
     end
   end
 
+  describe '.models_with_claims' do
+    it 'is initialized as an empty Set by default' do
+      expect(described_class.models_with_claims).to be_a(Set)
+    end
+
+    it 'is never nil' do
+      expect(described_class.models_with_claims).not_to be_nil
+    end
+
+    it 'includes a model once cells_claims_attribute is called' do
+      expect(described_class.models_with_claims).to include(test_klass)
+    end
+
+    it 'does not include duplicates when cells_claims_attribute is called multiple times' do
+      test_klass.cells_claims_attribute :path, type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH
+
+      expect(described_class.models_with_claims.count(test_klass)).to eq(1)
+    end
+  end
+
+  describe '#cells_claims_metadata' do
+    it 'returns an array of metadata for each registered attribute' do
+      metadata = instance.cells_claims_metadata
+
+      expect(metadata.size).to eq(test_klass.cells_claims_attributes.size)
+    end
+
+    it 'includes bucket type and value for each attribute' do
+      metadata = instance.cells_claims_metadata
+
+      expect(metadata).to include(
+        a_hash_including(
+          bucket: { type: Cells::Claimable::CLAIMS_BUCKET_TYPE::ORGANIZATION_PATH,
+                    value: instance.path }
+        )
+      )
+    end
+
+    it 'includes subject and source in each entry' do
+      metadata = instance.cells_claims_metadata
+
+      expect(metadata).to all(include(
+        subject: { type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION, id: instance.id },
+        source: a_hash_including(type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_ORGANIZATIONS)
+      ))
+    end
+  end
+
   describe '#cells_claims_default_metadata' do
     context 'when instance ID is integer' do
       it 'returns metadata with subject and source information' do
@@ -242,8 +296,10 @@ RSpec.describe Cells::Claimable, feature_category: :cell do
       context 'when instance ID is of unsupported type' do
         let(:instance_id) { %w[foo bar] }
 
-        it 'raises error' do
-          expect { instance.send(:cells_claims_default_metadata) }.to raise_error(ArgumentError)
+        it 'raises ArgumentError via Cells::Serialization' do
+          expect { instance.send(:cells_claims_default_metadata) }.to raise_error(
+            ArgumentError, /Unsupported primary key type/
+          )
         end
       end
     end

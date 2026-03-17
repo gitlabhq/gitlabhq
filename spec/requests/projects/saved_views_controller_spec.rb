@@ -8,7 +8,6 @@ RSpec.describe 'Projects::SavedViews', feature_category: :portfolio_management d
 
   before do
     sign_in(user)
-    stub_feature_flags(work_items_saved_views: true)
   end
 
   describe 'GET /projects/:project/-/views/:id' do
@@ -44,7 +43,7 @@ RSpec.describe 'Projects::SavedViews', feature_category: :portfolio_management d
       subject(:show_saved_view) { get project_saved_view_path(project, saved_view.id) }
 
       before do
-        stub_feature_flags(work_items_saved_views: false)
+        stub_feature_flags(work_item_planning_view: false)
       end
 
       it 'returns 404' do

@@ -21,6 +21,7 @@ $diff-file-element-order: (
   diff-file-hunk-header-z-index,
   diff-file-cell-focused-z-index,
   diff-file-highlighted-line-number-z-index,
+  diff-file-discussion-row-z-index,
   diff-file-header-z-index,
   diff-file-header-active-z-index,
   diff-file-new-discussion-toggle-z-index
@@ -37,5 +38,6 @@ $diff-file-hunk-header-z-index: map.get($diff-file-z-index-map, diff-file-hunk-h
 $diff-file-cell-focused-z-index: map.get($diff-file-z-index-map, diff-file-cell-focused-z-index);
 $diff-file-header-z-index: map.get($diff-file-z-index-map, diff-file-header-z-index);
 $diff-file-highlighted-line-number-z-index: map.get($diff-file-z-index-map, diff-file-highlighted-line-number-z-index);
+$diff-file-discussion-row-z-index: map.get($diff-file-z-index-map, diff-file-discussion-row-z-index);
 $diff-file-header-active-z-index: map.get($diff-file-z-index-map, diff-file-header-active-z-index);
 $diff-file-new-discussion-toggle-z-index: map.get($diff-file-z-index-map, diff-file-new-discussion-toggle-z-index);

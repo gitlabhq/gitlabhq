@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Understand and configure the commit squashing options available in GitLab.
 title: Squash and merge
 ---
@@ -52,7 +52,7 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Select **Edit**.
 1. Select or clear the **Squash commits when merge request is accepted** checkbox.
@@ -63,7 +63,7 @@ To do this:
 If your project allows you to select squashing options for merge requests, to
 squash the commits as part of the merge process:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. In the merge request widget, ensure the **Squash commits** checkbox is selected. This checkbox doesn't display
    if the project's squashing option is set to either **Do not allow** or **Require**.
@@ -79,7 +79,7 @@ Prerequisites:
 
 To configure the default squashing behavior for all merge requests in your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In the **Squash commits when merging** section, select your desired behavior:
    - **Do not allow**: Squashing is never performed, and the option is not displayed.

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Beginner's guide to writing end-to-end tests
 ---
 
@@ -25,7 +25,7 @@ Before you write tests, your [GitLab Development Kit (GDK)](https://gitlab.com/g
 
 ## Determine if end-to-end tests are needed
 
-Check the code coverage of a specific feature before writing end-to-end tests for the [GitLab](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) project. Does sufficient test coverage exist at the unit, feature, or integration levels? If you answered *yes*, then you *don't* need an end-to-end test.
+Check the code coverage of a specific feature before writing end-to-end tests for the [GitLab](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) project. Does sufficient test coverage exist at the unit, feature, or integration levels? If you answered _yes_, then you _don't_ need an end-to-end test.
 
 For information about the distribution of tests per level in GitLab, see [Testing Levels](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/testing_guide/testing_levels.md).
 
@@ -190,7 +190,7 @@ end
 **How do we test**?
 
 1. Check if the user avatar appears in the left sidebar.
-1. Check if the user avatar *does not* appear in the left sidebar.
+1. Check if the user avatar _does not_ appear in the left sidebar.
 
 Behind the scenes, `be_signed_in` is a [predicate matcher](https://rspec.info/features/3-12/rspec-expectations/built-in-matchers/predicates/) that [implements checking the user avatar](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/page/main/menu.rb#L92).
 

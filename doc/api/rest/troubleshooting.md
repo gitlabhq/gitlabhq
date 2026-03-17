@@ -1,7 +1,7 @@
 ---
 stage: Developer Experience
 group: API Platform
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: "Troubleshooting the GitLab REST API. Includes status codes, error responses, spam detection, and reverse proxy issues."
 title: Troubleshooting the REST API
 ---
@@ -241,3 +241,7 @@ server {
 {{< /tabs >}}
 
 For more information, see [issue 18775](https://gitlab.com/gitlab-org/gitlab/-/issues/18775).
+
+## Support knowledge base
+
+If you're still having issues, see the [GitLab Support knowledge base](https://support.gitlab.com/hc/en-us/).

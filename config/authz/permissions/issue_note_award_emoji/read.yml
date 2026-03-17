@@ -1,5 +1,3 @@
 ---
 name: read_issue_note_award_emoji
 description: Grants the ability to read award emoji reactions on issue notes
-boundaries:
-  - project

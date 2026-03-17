@@ -1,7 +1,8 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Remove user accounts and manage associated records and contributions.
 title: Delete users
 ---
 
@@ -58,7 +59,7 @@ To delete your own account:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Select **Delete account**.
 
 If you cannot delete your account on GitLab.com, submit a [personal data request](https://support.gitlab.io/personal-data-request/)

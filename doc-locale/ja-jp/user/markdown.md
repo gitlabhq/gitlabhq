@@ -13,7 +13,7 @@ description: フォーマット、インラインHTML、GitLab固有の参照、
 
 {{< /details >}}
 
-GitLab Flavored Markdown（GLFM）は、GitLabユーザーインターフェースでテキストを整形する強力なマークアップ言語です。GLFMでは、次のことが可能です:
+GitLab Flavored Markdown（GLFM）は、GitLabユーザーインターフェースでテキストを整形する強力なマークアップ言語です。GLFMでは、次のことが可能です。
 
 - コード、図表、数式、マルチメディアをサポートするリッチコンテンツを作成する。
 - イシュー、マージリクエスト、その他のGitLabコンテンツをクロスリファレンスによってリンクする。
@@ -23,7 +23,7 @@ GitLab Flavored Markdown（GLFM）は、GitLabユーザーインターフェー�
 
 GitLab UIにテキストを入力すると、GitLabはそのテキストがGitLab Flavored Markdownであると見なします。
 
-GitLab Flavored Markdownは、以下で使用できます:
+GitLab Flavored Markdownは、以下で使用できます。
 
 - コメント
 - イシュー
@@ -37,13 +37,9 @@ GitLab Flavored Markdownは、以下で使用できます:
 
 GitLabでは、他のリッチテキストファイルも使用できます。ただし、そうするには依存関係のインストールが必要になる場合があります。詳細については、[`gitlab-markup` gemプロジェクト](https://gitlab.com/gitlab-org/gitlab-markup)を参照してください。
 
-{{< alert type="note" >}}
+> [!note]このMarkdownの仕様は、GitLabでのみ有効です。ここではできる限り忠実にMarkdownをレンダリングしていますが、[GitLabドキュメントサイト](https://docs.gitlab.com)と[GitLabハンドブック](https://handbook.gitlab.com)では異なるMarkdownレンダラーを使用しています。
 
-このMarkdownの仕様は、GitLabでのみ有効です。ここではできる限り忠実にMarkdownをレンダリングしていますが、[GitLabドキュメントサイト](https://docs.gitlab.com)と[GitLabハンドブック](https://handbook.gitlab.com)では異なるMarkdownレンダラーを使用しています。
-
-{{< /alert >}}
-
-ここに示した例がGitLabでどのようにレンダリングされるかを正確に確認するには、次の手順に従います:
+ここに示した例がGitLabでどのようにレンダリングされるかを正確に確認するには、次の手順に従います。
 
 1. 関連するMarkdownの例のrawテキスト（レンダリング結果ではないもの）をコピーします。
 1. MarkdownのプレビューをサポートするGitLab内の場所にMarkdownを貼り付けます。たとえば、イシューまたはマージリクエストのコメントや説明、新しいMarkdownファイルなどです。
@@ -57,7 +53,7 @@ Don't repeat this information in each individual topic, unless there's a specifi
 reason, like in "Newlines".
 -->
 
-GitLab Flavored Markdownは、次の機能で構成されています:
+GitLab Flavored Markdownは、次の機能で構成されています。
 
 - [CommonMark仕様](https://spec.commonmark.org/current/)に基づくコアMarkdown機能。
 - [GitHub Flavored Markdown](https://github.github.com/gfm/)の拡張機能。
@@ -65,7 +61,7 @@ GitLab Flavored Markdownは、次の機能で構成されています:
 
 すべての標準Markdown形式は、GitLabで期待どおりに機能します。一部の標準機能は、標準的な使用法に影響を与えることなく、追加機能によって拡張されています。
 
-標準のMarkdownにはない機能は、次のとおりです:
+標準のMarkdownにはない機能は、次のとおりです。
 
 - [アラート](#alerts)
 - [`HEX`、`RGB`、`HSL`で記述されたカラーチップ](#colors)
@@ -85,7 +81,7 @@ GitLab Flavored Markdownは、次の機能で構成されています:
 - [タスクリスト](#task-lists)
 - [Wiki固有のMarkdown](project/wiki/markdown.md)
 
-次の機能は、標準のMarkdownから拡張されています:
+次の機能は、標準のMarkdownから拡張されています。
 
 | 標準Markdown                     | GitLabにおける拡張Markdown |
 |---------------------------------------|-----------------------------|
@@ -97,7 +93,7 @@ GitLab Flavored Markdownは、次の機能で構成されています:
 
 ## Markdownとアクセシビリティ {#markdown-and-accessibility}
 
-GitLab Flavored Markdownを使用すると、デジタルコンテンツが作成されます。このコンテンツは、閲覧者にとってできるだけアクセスしやすいものである必要があります。次のリストは網羅的なものではありませんが、特に注意すべきGitLab Flavored Markdownのスタイルに関するガイダンスを提供します:
+GitLab Flavored Markdownを使用すると、デジタルコンテンツが作成されます。このコンテンツは、閲覧者にとってできるだけアクセスしやすいものである必要があります。次のリストは網羅的なものではありませんが、特に注意すべきGitLab Flavored Markdownのスタイルに関するガイダンスを提供します。
 
 ### アクセスしやすい見出し {#accessible-headings}
 
@@ -124,7 +120,7 @@ GitLab Flavored Markdownを使用すると、デジタルコンテンツが作�
 ###### H6
 ```
 
-または、H1およびH2の場合は、下線スタイルを使用します:
+または、H1およびH2の場合は、下線スタイルを使用します。
 
 ```markdown
 Alt-H1
@@ -146,7 +142,7 @@ Alt-H2
 
 マウスオーバーすると、それらのIDへのリンクが表示され、見出しへのリンクをコピーして他の場所で簡単に使用できます。
 
-IDは、次のルールに従って見出しの内容から生成されます:
+IDは、次のルールに従って見出しの内容から生成されます。
 
 1. すべてのテキストは小文字に変換されます。
 1. 単語以外のテキスト（句読点やHTMLなど）はすべて削除されます。
@@ -155,6 +151,11 @@ IDは、次のルールに従って見出しの内容から生成されます:
 1. 同じIDを持つ見出しがすでに生成されている場合、1から始まる一意の連番が付加されます。
 
 例: 
+
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the example link IDs.
+-->
 
 ```markdown
 # This heading has spaces in it
@@ -166,7 +167,7 @@ IDは、次のルールに従って見出しの内容から生成されます:
 ## This heading has  multiple spaces and --- hyphens
 ```
 
-次のリンクIDが生成されます:
+次のリンクIDが生成されます。
 
 1. `this-heading-has-spaces-in-it`
 1. `this-heading-has-a-thumbsup-in-it`
@@ -178,7 +179,7 @@ IDは、次のルールに従って見出しの内容から生成されます:
 
 ## 改行 {#line-breaks}
 
-前のテキストの末尾に2つの改行コードが入ると、改行が挿入されます（新しい段落が開始されます）。たとえば、<kbd>Enter</kbd>キーを2回続けて押したときがこれに該当します。改行コードを1つだけ使用した（<kbd>Enter</kbd>を1回押した）場合、次の文は同じ段落に含まれます。長い行を折り返さずに編集可能な状態を維持する場合は、この方法を使用します:
+前のテキストの末尾に2つの改行コードが入ると、改行が挿入されます（新しい段落が開始されます）。たとえば、<kbd>Enter</kbd>キーを2回続けて押したときがこれに該当します。改行コードを1つだけ使用した（<kbd>Enter</kbd>を1回押した）場合、次の文は同じ段落に含まれます。長い行を折り返さずに編集可能な状態を維持する場合は、この方法を使用します。
 
 ```markdown
 まず、この行から始めます。
@@ -191,7 +192,7 @@ IDは、次のルールに従って見出しの内容から生成されます:
 *同じ段落*の中に含まれます。
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > まず、この行から始めます。
 >
@@ -201,9 +202,9 @@ IDは、次のルールに従って見出しの内容から生成されます:
 
 ### 改行コード {#newlines}
 
-[改行](#line-breaks)で説明したとおり、段落は、1行以上の連続したテキストで構成され、1行以上の空行で区切られています（次の例では、最初の段落の後に2つの改行コードが入っています）。
+[改行](#line-breaks)で説明したとおり、段落は、1行以上の連続したテキストで構成され、1行以上の空行で区切られています（最初の段落の末尾に2つの改行コードが入っています）。
 
-改行またはソフトリターンをより細かく制御する必要がある場合は、行末にバックスラッシュまたは2つ以上のスペースを入れると、1つの改行を追加できます。2つの改行コードを連続して入れると、間に空行を挟んで新しい段落が作成されます:
+改行またはソフトリターンをより細かく制御する必要がある場合は、行末にバックスラッシュまたは2つ以上のスペースを入れると、1つの改行を追加できます。2つの改行コードを連続して入れると、間に空行を挟んで新しい段落が作成されます。
 
 ```markdown
 最初の段落。
@@ -216,7 +217,7 @@ IDは、次のルールに従って見出しの内容から生成されます:
 直前のバックスラッシュによる新しい行。
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > 最初の段落。同じ段落内の別の行。同じ段落内の3行目。ただし、今回は行末に2つスペースがあります。<br>
 > 最初の段落のすぐ下の新しい行。
@@ -224,7 +225,7 @@ IDは、次のルールに従って見出しの内容から生成されます:
 > 2番目の段落。別の行。今回は行末にバックスラッシュがあります。\
 > 直前のバックスラッシュによる新しい行。
 
-この構文は、[段落と改行](https://spec.commonmark.org/current/)の処理に関するMarkdownの仕様に準拠しています。
+この構文は、[パラグラフと改行](https://spec.commonmark.org/current/)の処理に関するMarkdownの仕様に準拠しています。
 
 ## 強調 {#emphasis}
 
@@ -242,13 +243,13 @@ IDは、次のルールに従って見出しの内容から生成されます:
 二重のチルダによる取り消し線。~~これを取り消します。~~
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > *アスタリスク*または_アンダースコア_を使用した強調（斜体）。
 >
-> 二重の**asterisks**（アスタリスク）または**underscores**（アンダースコア）を使用した強い強調（太字）。
+> 二重の**アスタリスク**または**アンダースコア**を使用した強い強調（太字）。
 >
-> **asterisks and _underscores_**（アスタリスクとアンダースコア）を組み合わせた強調。
+> **アスタリスクと_アンダースコア_**を組み合わせた強調。
 >
 > 二重のチルダによる取り消し線。~~これを取り消します。~~
 
@@ -256,7 +257,12 @@ IDは、次のルールに従って見出しの内容から生成されます:
 
 単語の一部を斜体にすることは避けてください。複数のアンダースコアで表示されることが多いコードや名前を扱う場合は、特に避ける必要があります。
 
-GitLab Flavored Markdownは、単語内の複数のアンダーライン記法を無視します。これは、コードについて説明するMarkdownドキュメントをより適切にレンダリングするためです:
+GitLab Flavored Markdownは、単語内の複数のアンダーライン記法を無視します。これは、コードについて説明するMarkdownドキュメントをより適切にレンダリングするためです。
+
+<!--
+Translation note: DO NOT TRANSLATE these examples or the rendered versions.
+The mid-word emphasis examples do not work in all languages and must stay in English to render correctly.
+-->
 
 ```markdown
 perform_complicated_task
@@ -266,7 +272,7 @@ do_this_and_do_that_and_another_thing
 but_emphasis is_desired _here_
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 <!-- vale gitlab_base.Spelling = NO -->
 
@@ -278,7 +284,7 @@ but_emphasis is_desired _here_
 
 <!-- vale gitlab_base.Spelling = YES -->
 
-単語の一部だけを強調したい場合は、アスタリスクを使用できます:
+単語の一部だけを強調したい場合は、アスタリスクを使用できます。
 
 ```markdown
 perform*complicated*task
@@ -286,7 +292,7 @@ perform*complicated*task
 do*this*and*do*that*and*another thing
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > perform*complicated*task
 >
@@ -296,7 +302,12 @@ do*this*and*do*that*and*another thing
 
 インライン差分タグを使用すると、`{+ additions +}`または`[- deletions -]`を表示できます。
 
-ラップタグには、中かっこまたは角かっこを使用できます:
+ラップタグには、中かっこまたは角かっこを使用できます。
+
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the image.
+-->
 
 ```markdown
 - {+ addition 1 +}
@@ -309,7 +320,7 @@ do*this*and*do*that*and*another thing
 
 ---
 
-ただし、次のようにラップタグを混在させることはできません:
+ただし、次のようにラップタグを混在させることはできません。
 
 ```markdown
 - {+ addition +]
@@ -318,7 +329,12 @@ do*this*and*do*that*and*another thing
 - [- deletion -}
 ```
 
-`` `inline code` ``内では差分ハイライトは機能しません。テキストにバッククォート（`` ` ``）が含まれている場合は、各バッククォートをバックスラッシュ（` \ `）で[エスケープ](#escape-characters)してください:
+`` `inline code` ``内では差分ハイライトは機能しません。テキストにバッククォート（`` ` ``）が含まれている場合は、各バッククォートをバックスラッシュ（` \ `）で[エスケープ](#escape-characters)してください。
+
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the image.
+-->
 
 ```markdown
 - {+ Just regular text +}
@@ -330,7 +346,7 @@ do*this*and*do*that*and*another thing
 
 ### 水平線 {#horizontal-rule}
 
-3つ以上のハイフン、アスタリスク、またはアンダースコアを使用して水平線を作成します:
+3つ以上のハイフン、アスタリスク、またはアンダースコアを使用して水平線を作成します。
 
 ```markdown
 ---
@@ -340,7 +356,7 @@ do*this*and*do*that*and*another thing
 ___
 ```
 
-レンダリングされると、すべての水平線は次のようになります:
+レンダリングされると、すべての水平線は次のようになります。
 
 ---
 
@@ -359,7 +375,7 @@ ___
 1. 実際の数値は関係ありません。数値であることだけが重要です
    1. 順序付きサブリスト
    1. 次の順序付きサブリスト項目
-4. さらに別の項目
+4. さらに別の項目。
 ```
 
 <!--
@@ -368,7 +384,7 @@ to match the style standards on docs.gitlab.com.
 See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
 -->
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > 1. 最初の順序付きリスト項目
 > 1. 別の項目
@@ -381,17 +397,17 @@ See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
 順序なしリストの場合は、各行の先頭に`-`、`*`、`+`のいずれかを追加し、その後にスペースを追加します。同じリスト内でこれらの記号を混在させないでください。
 
 ```markdown
-順序なしリストの例: 
+順序なしリストの例:
 
 - 使用した記号は
 - マイナス
 
-順序なしリストの別の例: 
+順序なしリストの別の例:
 
 * 使用した記号は
 * アスタリスク
 
-順序なしリストのさらに別の例: 
+順序なしリストのさらに別の例:
 
 + 使用した記号は
 + プラス
@@ -403,19 +419,19 @@ to match the style standards on docs.gitlab.com.
 See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
 -->
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
-> 順序なしリストの例: 
+> 順序なしリストの例:
 >
 > - 使用した記号は
 > - マイナス
 >
-> 順序なしリストの別の例: 
+> 順序なしリストの別の例:
 >
 > - 使用した記号は
 > - アスタリスク
 >
-> 順序なしリストのさらに別の例: 
+> 順序なしリストのさらに別の例:
 >
 > - 使用した記号は
 > - プラス
@@ -434,7 +450,7 @@ See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
 1. 別の項目
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > 1. 最初の順序付きリスト項目
 >
@@ -449,10 +465,10 @@ See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
 
   （最初の項目の位置がずれた段落）
 
-1.別の項目
+1. 別の項目
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 <!-- markdownlint-disable MD027 -->
 
@@ -476,7 +492,7 @@ See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
   5. 最初の順序付きリスト項目
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 <!-- markdownlint-disable MD029 -->
 
@@ -486,21 +502,21 @@ See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
 
 <!-- markdownlint-disable MD029 -->
 
-空行がない場合、2番目のリスト項目は最初の項目の一部としてレンダリングされます:
+空行がない場合、2番目のリスト項目は最初の項目の一部としてレンダリングされます。
 
 ```markdown
 - 順序なしリスト項目
   5. 最初の順序付きリスト項目
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > - 順序なしリスト項目
 >   5. 最初の順序付きリスト項目
 
 ---
 
-CommonMarkは、順序付きリスト項目と順序なしリスト項目の間にある空行を無視し、それらを単一のリストの一部と見なします。項目は[緩いリスト](https://spec.commonmark.org/0.30/#loose)としてレンダリングされます。各リスト項目は段落タグで囲まれるため、段落のスペースやマージンが適用されます。このため、リストでは各項目の間に余分なスペースがあるように見えます。
+CommonMarkは、順序付きリスト項目と順序なしリスト項目の間にある空行を無視し、それらを単一のリストの一部と見なします。項目は[ルーズ](https://spec.commonmark.org/0.30/#loose)リストとしてレンダリングされます。各リスト項目は段落タグで囲まれるため、段落のスペースやマージンが適用されます。このため、リストでは各項目の間に余分なスペースがあるように見えます。
 
 例: 
 
@@ -511,7 +527,7 @@ CommonMarkは、順序付きリスト項目と順序なしリスト項目の間�
 - 別のリスト
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > - 最初のリスト項目
 > - 2番目のリスト項目
@@ -553,28 +569,23 @@ CommonMarkは空行を無視し、これを段落スペースを伴う単一の�
 : オレンジ
 ```
 
-{{< alert type="note" >}}
-
-リッチテキストエディタは新しい説明リストの挿入に対応していません。新しい説明リストを挿入するには、プレーンテキストエディタを使用します。詳細については、[イシュー535956](https://gitlab.com/gitlab-org/gitlab/-/issues/535956)を参照してください。
-
-{{< /alert >}}
+> [!note]リッチテキストエディタは、新しい説明リストの挿入をサポートしていません。新しい説明リストを挿入するには、プレーンテキストエディタを使用します。詳細については、[イシュー535956](https://gitlab.com/gitlab-org/gitlab/-/issues/535956)を参照してください。
 
 ### タスクリスト {#task-lists}
-
-{{< history >}}
-
-- GitLab 15.3で適用不可のチェックボックスが[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85982)されました。
-
-{{< /history >}}
 
 タスクリストは、Markdownがサポートされている場所であればどこにでも追加できます。
 
 - イシュー、マージリクエスト、エピック、コメントでは、チェックボックスを選択できます。
 - それ以外の場所ではチェックボックスを選択できません。Markdownを手動で編集し、角かっこ内の`x`を追加または削除する必要があります。
 
-タスクは、完了および未完了の他に、**inapplicable**（適用不可）にすることもできます。イシュー、マージリクエスト、エピック、コメントで適用不可のチェックボックスを選択しても、効果はありません。
+タスクは、完了および未完了の他に、**適用不可**にすることもできます。イシュー、マージリクエスト、エピック、コメントで適用不可のチェックボックスを選択しても、効果はありません。
 
-タスクリストを作成するには、順序付きリストまたは順序なしリストの形式に従います:
+タスクリストを作成するには、順序付きリストまたは順序なしリストの形式に従います。
+
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the image.
+-->
 
 ```markdown
 - [x] Completed task
@@ -584,12 +595,12 @@ CommonMarkは空行を無視し、これを段落スペースを伴う単一の�
   - [~] Sub-task 2
   - [ ] Sub-task 3
 
-1. [x] 完了したタスク
-1. [~] 該当しないタスク
-1. [ ] 未完了のタスク
-   1. [x] サブタスク1
-   1. [~] サブタスク2
-   1. [ ] サブタスク3
+1. [x] Completed task
+1. [~] Inapplicable task
+1. [ ] Incomplete task
+   1. [x] Sub-task 1
+   1. [~] Sub-task 2
+   1. [ ] Sub-task 3
 ```
 
 ![GitLabでレンダリングされたタスクリスト](img/completed_tasks_v15_3.png)
@@ -598,7 +609,7 @@ CommonMarkは空行を無視し、これを段落スペースを伴う単一の�
 
 ## リンク {#links}
 
-リンクは複数の方法で作成できます:
+リンクは複数の方法で作成できます。
 
 ```markdown
 - この行は[インラインスタイルのリンク](https://www.google.com)を示しています
@@ -607,30 +618,26 @@ CommonMarkは空行を無視し、これを段落スペースを伴う単一の�
 - この行は[タイトルテキストも含むリンク](https://www.google.com "このリンクはGoogleに移動します！")を示しています
 ```
 
-レンダリングすると、これらの例は次のように表示されます:
+レンダリングすると、これらの例は次のように表示されます。
 
 > - この行は[インラインスタイルのリンク](https://www.google.com)を示しています
 > - この行は[同じディレクトリ内のリポジトリファイルへのリンク](permissions.md)を示しています
 > - この行は[1つ上のディレクトリにあるファイルへの相対リンク](../_index.md)を示しています
 > - この行は[タイトルテキストも含むリンク](https://www.google.com "このリンクはGoogleに移動します！")を示しています
 
-{{< alert type="note" >}}
+相対リンクを使用して、Wikiページ内でプロジェクトファイルを参照したり、プロジェクトファイル内でWikiページを参照したりすることはできません。この制限は、GitLabではWikiが常に別のGitリポジトリに存在することによるものです。たとえば、`[I'm a reference-style link](style)`は、リンクがWikiのMarkdownファイル内にある場合にのみ`wikis/style`を指します。詳細については、[Wiki固有のMarkdown](project/wiki/markdown.md)を参照してください。
 
-相対リンクを使用して、Wikiページ内でプロジェクトファイルを参照したり、プロジェクトファイル内でWikiページを参照したりすることはできません。この制限は、GitLabではWikiが常に別のGitリポジトリに存在することによるものです。たとえば、`[I'm a reference-style link](style)`は、リンクがWikiのMarkdownファイル内にある場合にのみ`wikis/style`を指します。詳細については、[Wiki固有の](project/wiki/markdown.md)を参照してください。
-
-{{< /alert >}}
-
-見出しのIDアンカーを使用して、ページ内の特定のセクションにリンクします:
+見出しのIDアンカーを使用して、ページ内の特定のセクションにリンクします。
 
 ```markdown
-- この行は、[#と見出しIDを使用して、別のMarkdownページ上のセクション](permissions.md#project-members-permissions)にリンクします。
-- この行は、[#と見出しIDを使用して、同じページ上の別のセクション](#heading-ids-and-links)にリンクします。
+- この行は[`#`と見出しIDを使用して、別のMarkdownページ上のセクション](permissions.md#project-permissions)にリンクします
+- この行は[`#`と見出しIDを使用して、同じページ上の別のセクション](#heading-ids-and-links)にリンクします
 ```
 
-レンダリングすると、これらの例は次のように表示されます:
+レンダリングすると、これらの例は次のように表示されます。
 
-> - この行は、[`#`#と見出しIDを使用して、別のMarkdownページ上のセクション](permissions.md#project-members-permissions)にリンクします。
-> - この行は、[`#`#と見出しIDを使用して、同じページ上の別のセクション](#heading-ids-and-links)にリンクします。
+> - この行は[`#`と見出しIDを使用して、別のMarkdownページ上のセクション](permissions.md#project-permissions)にリンクします
+> - この行は[`#`と見出しIDを使用して、同じページ上の別のセクション](#heading-ids-and-links)にリンクします
 
 リンク参照の使用:
 
@@ -640,9 +647,9 @@ Do not remove the two-space nesting.
 -->
 
   ```markdown
-  - この行は[参照スタイルのリンク（下記参照）][大文字と小文字を区別しない任意の参照テキスト]を示しています
-  - [参照スタイルのリンク定義には数字を使用できます（下記参照）][1]
-  - または、空にして[リンクテキスト自体][]を使用します（下記参照）
+  - この行は、[参照スタイルリンク、下記参照][Arbitrary case-insensitive reference text]を示しています
+  - [参照スタイルリンク定義に数字を使用できます、下記参照][1]
+  - または、空のままにして[リンクテキスト自体][]を使用します（下記参照）。
 
   参照リンクがこの後に続くことを示すテキスト。
 
@@ -656,7 +663,7 @@ The example below uses in-line links to pass the Vale ReferenceLinks test.
 Do not change to reference style links.
 -->
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > - この行は[参照スタイルのリンク（下記参照）](https://www.mozilla.org/en-US/)を示しています
 > - [参照スタイルのリンク定義には数字を使用できます（下記参照）](https://slashdot.org)
@@ -666,7 +673,7 @@ Do not change to reference style links.
 
 ### URLの自動リンク {#url-auto-linking}
 
-テキストに入力したほとんどのURLは、自動的にリンクされます:
+テキストに入力したほとんどのURLは、自動的にリンクされます。
 
 ```markdown
 - https://www.google.com
@@ -677,7 +684,7 @@ Do not change to reference style links.
 - http://localhost:3000
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > - <https://www.google.com>
 > - <https://www.google.com>
@@ -691,21 +698,21 @@ Do not change to reference style links.
 {{< history >}}
 
 - GitLab 16.11でWikiページのオートコンプリートが[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/442229)されました。
-- GitLab 17.1でグループからのラベルを参照する機能が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/455120)されました。
-- GitLab 18.2で`[work_item:NUMBER]`構文を使用して作業アイテム、エピック、イシューを参照する機能が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/352861)されました。
-- GitLab 18.1で`[work_item:123]`構文を使用して作業アイテム、エピック、イシューを`extensible_reference_filters`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/352861)されました。デフォルトでは無効になっています。
-- GitLab 18.2で`[work_item:123]`構文を使用して作業アイテム、エピック、イシューを参照する機能が[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052)になりました。機能フラグ`extensible_reference_filters`は削除されました。
-- `[epic:123]`構文でエピックを参照するオプションが、[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/352864)されました（GitLab 18.4）。
+- グループからのラベルを参照するオプションが、[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/455120)されました（GitLab 17.1）。
+- `[work_item:123]`の構文で、イシュー、エピック、および作業アイテムを参照するオプション:
+  - GitLab 18.1で`extensible_reference_filters`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/352861)されました。デフォルトでは無効になっています。
+  - GitLab 18.2で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052)になりました。機能フラグ`extensible_reference_filters`は削除されました。
+- `[epic:123]`の構文でエピックを参照するオプションが[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/352864)されました（GitLab 18.4）。
 
 {{< /history >}}
 
-GitLab Flavored Markdownは、GitLab固有の参照をレンダリングします。たとえば、イシュー、コミット、チームメンバー、またはプロジェクトチーム全体を参照できます。GitLab Flavored Markdownは、その参照をリンクに変換し、それらの間を移動できるようにします。プロジェクトへの参照はすべて、プロジェクト名ではなく**project slug**（プロジェクトのslug）を使用する必要があります。
+GitLab Flavored Markdownは、GitLab固有の参照をレンダリングします。たとえば、イシュー、コミット、チームメンバー、またはプロジェクトチーム全体を参照できます。GitLab Flavored Markdownは、その参照をリンクに変換し、それらの間を移動できるようにします。プロジェクトへの参照はすべて、プロジェクト名ではなく**プロジェクトのslug**を使用する必要があります。
 
 さらに、GitLab Flavored Markdownは特定のクロスプロジェクト参照を認識します。また、同じネームスペース内にある他のプロジェクトを参照するための短縮表記も用意されています。
 
-GitLab Flavored Markdownは、以下を認識します:
+GitLab Flavored Markdownは、以下を認識します。
 
-| 参照                                                                           | インプット                                                 | クロスプロジェクト参照                        | 同じネームスペース内のショートカット |
+| 参照                                                                           | 入力                                                 | クロスプロジェクト参照                        | 同じネームスペース内のショートカット |
 |--------------------------------------------------------------------------------------|-------------------------------------------------------|------------------------------------------------|------------------------------------|
 | 特定のユーザー                                                                        | `@user_name`                                          |                                                |                                    |
 | 特定のグループ                                                                       | `@group_name`                                         |                                                |                                    |
@@ -738,7 +745,7 @@ GitLab Flavored Markdownは、以下を認識します:
 | [Wikiページ](project/wiki/_index.md)（ページslugがタイトルと同じ場合）      | `[[Home]]`または`[wiki_page:Home]`                      | `[wiki_page:namespace/project:Home]`または`[wiki_page:group1/subgroup:Home]` |        |
 | [Wikiページ](project/wiki/_index.md)（ページslugがタイトルと異なる場合）   | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                                |                                    |
 
-**Footnotes**（脚注）:
+**脚注**:
 
 1. GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/384885)されました。イテレーションケイデンスの参照は、常に`[cadence:<ID>]`形式でレンダリングされます。たとえば、テキスト参照`[cadence:"plan"]`は、参照先イテレーションケイデンスのIDが`1`の場合、`[cadence:1]`としてレンダリングされます。
 1. ラベルまたはマイルストーンを参照する場合は、`namespace/project`の前に`/`を追加して、特定のラベルまたはマイルストーンを明示的に指定し、あいまいさをなくします。
@@ -783,7 +790,7 @@ GitLab Flavored Markdownは、以下を認識します:
 
 - 参照の末尾に`+s`を追加します。
 
-サマリーには、参照される作業アイテムの種類に応じて、該当する場合は、**assignees**（担当者）、**マイルストーン**、**health status**（ヘルスステータス）に関する情報が含まれます。
+サマリーには、参照される作業アイテムの種類に応じて、該当する場合は、**担当者**、**マイルストーン**、**ヘルスステータス**に関する情報が含まれます。
 
 たとえば、`#123+s`のような参照は`The issue title (#123) • First Assignee, Second Assignee+ • v15.10 • Needs attention`としてレンダリングされます。
 
@@ -823,9 +830,9 @@ GitLab Flavored Markdownは、以下を認識します:
   - 各セルには少なくとも1つのハイフンを含める必要がありますが、複数のハイフンを追加してもセルのレンダリング結果は変わりません。
   - ハイフン、空白、またはコロン以外の内容は許可されません。
 - 3行目以降にセルの値を記述します。
-  - Markdownでは、セルの内容を複数行に分けることは**can't**（できません）。セルは1行に収める必要がありますが、非常に長くすることはできます。必要に応じて、HTMLの`<br>`タグで改行を強制できます。
-  - セルのサイズは互いに**don't**（一致している必要はありません）。サイズについては柔軟ですが、パイプ記号（`|`）で区切る必要があります。
-  - 空のセルを作成**可能**。
+  - Markdownでは、セルの内容を複数行に分けることは**できません**。セルは1行に収める必要がありますが、非常に長くすることはできます。必要に応じて、HTMLの`<br>`タグで改行を強制できます。
+  - セルのサイズは互いに**一致している必要はありません**。サイズについては柔軟ですが、パイプ記号（`|`）で区切る必要があります。
+  - 空のセルを作成**できます**。
 - 列幅はセルの内容に基づいて動的に計算されます。
 - パイプ文字（`|`）を、テーブルの区切り文字ではなくテキストとして使用するには、バックスラッシュ（`\|`）で[エスケープ](#escape-characters)する必要があります。
 
@@ -833,13 +840,13 @@ GitLab Flavored Markdownは、以下を認識します:
 
 ```markdown
 | ヘッダー1 | ヘッダー2 | ヘッダー3 |
-| --- |
-| セル1 | セル2 | セル3 |
+| ---      | ------   | -------- |
+| セル1   | セル2   | セル3   |
 | セル4 | セル5はより長い | セル6は他のセルよりもはるかに長いですが問題ありません。セルが表示サイズに対して大きすぎる場合、最終的にはテキストが折り返されます。 |
-| セル7 | | セル9 |
+| セル7   |          | セル9   |
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > | ヘッダー1 | ヘッダー2 | ヘッダー3 |
 > | ---      | ------   | -------- |
@@ -849,16 +856,16 @@ GitLab Flavored Markdownは、以下を認識します:
 
 ### 配置 {#alignment}
 
-さらに、2行目の「ダッシュ」行の両端にコロン（`:`）を追加することにより、列内のテキストの配置を選択できます。この設定は、列内のすべてのセルに影響します:
+さらに、2行目の「ダッシュ」行の両端にコロン（`:`）を追加することにより、列内のテキストの配置を選択できます。この設定は、列内のすべてのセルに影響します。
 
 ```markdown
 | 左揃え | 中央揃え | 右揃え |
 | :----------- | :------: | ------------: |
-| セル1 | セル2 | セル3 |
-| セル4 | セル5 | セル6 |
+| セル1       | セル2   | セル3        |
+| セル4       | セル5   | セル6        |
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > | 左揃え | 中央揃え | 右揃え |
 > | :----------- | :------: | ------------: |
@@ -869,7 +876,7 @@ GitLab Flavored Markdownは、以下を認識します:
 
 ### 複数行を含むセル {#cells-with-multiple-lines}
 
-HTMLの書式設定を使用して、テーブルのレンダリングを調整できます。たとえば、`<br>`タグを使用して、セルを複数行にすることが可能です:
+HTMLの書式設定を使用して、テーブルのレンダリングを調整できます。たとえば、`<br>`タグを使用して、セルを複数行にすることが可能です。
 
 ```markdown
 | 名前 | 詳細 |
@@ -878,7 +885,7 @@ HTMLの書式設定を使用して、テーブルのレンダリングを調整�
 | 項目2 | この項目の内容:<br>- 複数の項目を<br>- 個別にリスト表示します |
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > | 名前  | 詳細 |
 > | ----- | ------- |
@@ -887,9 +894,9 @@ HTMLの書式設定を使用して、テーブルのレンダリングを調整�
 
 ### テーブル内のタスクリスト {#task-lists-in-tables}
 
-チェックボックス付きの[タスクリスト](#task-lists)を追加するには、HTMLの書式設定を使用します。次のいずれかを使用します:
+チェックボックス付きの[タスクリスト](#task-lists)を追加するには、HTMLの書式設定を使用します。次のいずれかを使用します。
 
-- **An HTML table with Markdown in the cells**（セル内にMarkdownを含むHTMLテーブル）。この方法で書式設定したテーブルは、完全に機能するタスクリストを生成します。
+- **セル内にMarkdownを含むHTMLテーブル**。この方法で書式設定したテーブルは、完全に機能するタスクリストを生成します。
 
   ```html
   <table>
@@ -914,24 +921,24 @@ HTMLの書式設定を使用して、テーブルのレンダリングを調整�
   </table>
   ```
 
-- **A Markdown table with HTML list tags**（HTMLリストタグを含むMarkdownテーブル）。この方法で作成したタスクは、選択しても状態が保存されません。また、この方法で書式設定したテーブルは、`docs.gitlab.com`上では正しくレンダリングされません。
+- **HTMLリストタグを含むMarkdownテーブル**。この方法で作成したタスクは、選択しても状態が保存されません。また、この方法で書式設定したテーブルは、`docs.gitlab.com`上では正しくレンダリングされません。
 
   ```markdown
   | ヘッダー1 | ヘッダー2 |
-  | --- | --- |
-  | セル1 | セル2 |
-  | セル3 | <ul><li> - [ ] タスク1 </li><li> - [ ] タスク2 </li></ul> |
+  | ---      | ---      |
+  | セル1   | セル2   |
+  | セル3   | <ul><li> - [ ] タスク1 </li><li> - [ ] タスク2 </li></ul> |
   ```
 
 [リッチテキストエディタでテーブルを作成](rich_text_editor.md#tables)し、タスクリストを挿入することもできます。
 
 ### スプレッドシートからコピーアンドペーストする {#copy-and-paste-from-a-spreadsheet}
 
-スプレッドシートソフトウェア（例: Microsoft Excel、Googleスプレッドシート、Apple Numbers）を使用して、スプレッドシートからGitLabにコピーアンドペーストすると、Markdownテーブルが作成されます。たとえば、次のスプレッドシートがあるとします:
+スプレッドシートソフトウェア（例: Microsoft Excel、Googleスプレッドシート、Apple Numbers）を使用して、スプレッドシートからGitLabにコピーアンドペーストすると、Markdownテーブルが作成されます。たとえば、次のスプレッドシートがあるとします。
 
 ![スプレッドシートからコピーする](img/markdown_copy_from_spreadsheet_v12_7.png)
 
-セルを選択してクリップボードにコピーします。GitLab Markdownエントリを開き、スプレッドシートを貼り付けます:
+セルを選択してクリップボードにコピーします。GitLab Markdownエントリを開き、スプレッドシートを貼り付けます。
 
 ![Markdownテーブルに貼り付ける](img/markdown_paste_table_v12_7.png)
 
@@ -939,12 +946,11 @@ HTMLの書式設定を使用して、テーブルのレンダリングを調整�
 
 {{< history >}}
 
-- GitLab 15.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353)されました。
-- GitLab 17.9でMarkdownを使用する機能が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/375177)されました。
+- Markdownレンダリングが[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/375177)されました（GitLab 17.9）。
 
 {{< /history >}}
 
-JSONコードブロックでテーブルをレンダリングするには、次の構文を使用します:
+JSONコードブロックでテーブルをレンダリングするには、次の構文を使用します。
 
 ````markdown
 ```json:table
@@ -952,7 +958,7 @@ JSONコードブロックでテーブルをレンダリングするには、次�
 ```
 ````
 
-この機能に関する次の動画チュートリアルをご覧ください:
+この機能に関する次の動画チュートリアルをご覧ください。
 
 <div class="video-fallback">
   参照用動画: <a href="https://www.youtube.com/watch?v=12yWKw1AdKY">Demo: JSON Tables in Markdown</a>（デモ: MarkdownにおけるJSONテーブル）。
@@ -960,6 +966,8 @@ JSONコードブロックでテーブルをレンダリングするには、次�
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/12yWKw1AdKY" frameborder="0" allowfullscreen> </iframe>
 </figure>
+
+> [!note]管理者は、Markdownでのiframeのレンダリングを有効にし、インスタンスレベルで許可されるiframe `src`ホストを構成できます。これらの設定は、[アプリケーション設定API](../api/settings.md#available-settings)で管理できます: `iframe_rendering_enabled`、`iframe_rendering_allowlist`、`iframe_rendering_allowlist_raw`。
 
 `items`属性は、データポイントを表すオブジェクトのリストです。
 
@@ -1120,7 +1128,7 @@ JSONが無効な場合は、エラーが発生します。
 
 {{< history >}}
 
-- オーバーレイでの画像のオープンが[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/377398)されました（GitLab 18.6）。
+- オーバーレイでの画像の表示が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/377398)されました（GitLab 18.6）。
 
 {{< /history >}}
 
@@ -1131,15 +1139,11 @@ DO NOT change the name of markdown_logo_v17_11.png. This file is used for a test
 spec/controllers/help_controller_spec.rb.
 -->
 
-<!-- markdownlint-disable proper-names -->
-
 ```markdown
 ![GitLabロゴ](img/markdown_logo_v17_11.png "タイトルテキスト")
 ```
 
 > ![GitLabロゴ](img/markdown_logo_v17_11.png "タイトルテキスト")
-
-<!-- markdownlint-enable proper-names -->
 
 画像リンクでは:
 
@@ -1152,26 +1156,19 @@ spec/controllers/help_controller_spec.rb.
 
 ### 動画 {#videos}
 
-動画拡張子を持つファイルにリンクする画像タグは、自動的に動画プレーヤーに変換されます。有効な動画拡張子は、`.mp4`、`.m4v`、`.mov`、`.webm`、`.ogv`です:
+動画拡張子を持つファイルにリンクする画像タグは、自動的に動画プレーヤーに変換されます。有効な動画拡張子は、`.mp4`、`.m4v`、`.mov`、`.webm`、`.ogv`です。
 
-動画の例を次に示します:
+動画の例を次に示します。
 
 ```markdown
 ![サンプル動画](img/markdown_video.mp4)
 ```
 
-この例は、[GitLab内でレンダリング](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#videos)した場合にのみ動作します:
+この例は、[GitLab内でレンダリング](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#videos)した場合にのみ動作します。
 
 > ![サンプル動画](img/markdown_video.mp4)
 
 ### 画像または動画のサイズを変更する {#change-image-or-video-dimensions}
-
-{{< history >}}
-
-- GitLab 15.7で画像のサポートが[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/28118)されました。
-- GitLab 15.9で動画のサポートが[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/17139)されました。
-
-{{< /history >}}
 
 画像の後に属性リストを追加することで、画像または動画の幅と高さを制御できます。値は整数で、単位は`px`（デフォルト）または`%`です。
 
@@ -1183,7 +1180,7 @@ spec/controllers/help_controller_spec.rb.
 ![GitLabロゴ](img/markdown_logo_v17_11.png "タイトルテキスト"){width=75%}
 ```
 
-この例は、[GitLab内でレンダリング](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#change-image-or-video-dimensions)した場合にのみ動作します:
+この例は、[GitLab内でレンダリング](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#change-image-or-video-dimensions)した場合にのみ動作します。
 
 > ![GitLabロゴ](img/markdown_logo_v17_11.png "タイトルテキスト"){width=100 height=100px}
 
@@ -1191,25 +1188,25 @@ Markdownの代わりにHTMLの`img`タグを使用し、`height`および`width`
 
 [GitLab 17.1以降](https://gitlab.com/gitlab-org/gitlab/-/issues/419913)、解像度の高いPNG画像をMarkdownテキストボックスに貼り付けると、サイズが常に付加されます。サイズは、Retina（およびその他の高解像度）ディスプレイに対応するように自動的に調整されます。たとえば、144ppiの画像はサイズの50%に、96ppiの画像はサイズの75%にサイズ変更されます。
 
-選択すると、画像は100%にスケールされるか、ウィンドウに収まる最大のスケールでオーバーレイで開きます。
+選択すると、画像は100％にスケールされるか、ウィンドウに収まる最大のサイズにスケールされたオーバーレイで開きます。
 
 ### オーディオ {#audio}
 
-動画と同様に、オーディオ拡張子を持つファイルのリンクタグも、自動的にオーディオプレーヤーに変換されます。有効なオーディオ拡張子は、`.mp3`、`.oga`、`.ogg`、`.spx`、`.wav`です:
+動画と同様に、オーディオ拡張子を持つファイルのリンクタグも、自動的にオーディオプレーヤーに変換されます。有効なオーディオ拡張子は、`.mp3`、`.oga`、`.ogg`、`.spx`、`.wav`です。
 
-オーディオクリップの例を次に示します:
+オーディオクリップの例を次に示します。
 
 ```markdown
 ![サンプルオーディオ](img/markdown_audio.mp3)
 ```
 
-この例は、[GitLab内でレンダリング](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#audio)した場合にのみ動作します:
+この例は、[GitLab内でレンダリング](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#audio)した場合にのみ動作します。
 
 > ![サンプルオーディオ](img/markdown_audio.mp3)
 
 ## 引用ブロック {#blockquotes}
 
-引用ブロックを使用して、補足説明などの情報を強調表示します。これは、引用ブロックの行の先頭に`>`を付けることで生成されます:
+引用ブロックを使用して、補足説明などの情報を強調表示します。これは、引用ブロックの行の先頭に`>`を付けることで生成されます。
 
 ```markdown
 > 引用ブロックは、返信テキストを再現するのに役立ちます。
@@ -1220,17 +1217,17 @@ Markdownの代わりにHTMLの`img`タグを使用し、`height`および`width`
 > この非常に長い行は、折り返されても適切に引用されます。どの環境でも折り返されるよう、この行の内容は十分に長くしてください。引用ブロックの中ではMarkdownを使用することもできます。
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > > 引用ブロックは、返信テキストを再現するのに役立ちます。この行は同じ引用の一部です。
 >
 > 引用の区切り。
 >
-> > この非常に長い行は、折り返されても適切に引用されます。どの環境でも折り返されるよう、この行の内容は十分に長くしてください。引用ブロックの中では*Markdown*を**Markdown**（使用）することもできます。
+> > この非常に長い行は、折り返されても適切に引用されます。どの環境でも折り返されるよう、この行の内容は十分に長くしてください。引用ブロックの中では*Markdown*を**使用**することもできます。
 
 ### 複数行の引用ブロック {#multiline-blockquote}
 
-`>>>`で囲んで複数行の引用ブロックを作成します:
+`>>>`で囲んで複数行の引用ブロックを作成します。
 
 ```markdown
 >>>
@@ -1252,17 +1249,17 @@ Markdownの代わりにHTMLの`img`タグを使用し、`height`および`width`
 
 コードとして表示すべき内容を強調し、通常のテキストと区別します。
 
-インラインコードは、単一のバッククォート（`` ` ``）で囲んで書式設定します:
+インラインコードは、単一のバッククォート（`` ` ``）で囲んで書式設定します。
 
 ```markdown
 インライン`code`に`back-ticks around`があります。
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > インライン`code`が、`back-ticks around`で囲まれています。
 
-より大きなコードの例で同様の効果を得るには、コードブロックを使用します。コードブロックを作成するには、次のいずれかを行います:
+より大きなコードの例で同様の効果を得るには、コードブロックを使用します。コードブロックを作成するには、次のいずれかを行います。
 
 - コードブロック全体をバッククォート（```` ``` ````）3つで囲みます。開始と終了のバッククォートの数が同じであれば、3つ以上のバッククォートも使用できます。
 - コードブロック全体をチルダ（`~~~`）3つで囲みます。
@@ -1274,19 +1271,19 @@ Markdownの代わりにHTMLの`img`タグを使用し、`height`および`width`
 Pythonコードブロック: 
 
 ```python
-def function(): 
+def function():
     #フェンス付きコードブロック内でインデントは正常に機能します
     s = "Pythonコード"
     print s
 ```
 
-4つのスペースを使用したコードブロック: 
+4つのスペースを使用するMarkdownコードブロック: 
 
     4つのスペースを使用するのは
     バッククォート3つで
     囲むのと同じです
 
-チルダを使用したJavaScriptコードブロック: 
+チルダを使用するJavaScriptコードブロック: 
 
 ~~~javascript
 var s = "JavaScript構文ハイライト";
@@ -1294,18 +1291,18 @@ alert(s);
 ~~~
 ````
 
-前の3つの例は次のようにレンダリングされます:
+前の3つの例は次のようにレンダリングされます。
 
 > Pythonコードブロック: 
 >
 > ```python
-> def function(): 
-> #フェンス付きコードブロック内でインデントは正常に機能します
-> s = "Pythonコード"
-> print s
+> def function():
+>     #フェンス付きコードブロック内でインデントは正常に機能します
+>     s = "Pythonコード"
+>     print s
 > ```
 >
-> 4つのスペースを使用したコードブロック: 
+> 4つのスペースを使用するMarkdownコードブロック: 
 >
 > ```plaintext
 > 4つのスペースを使用するのは
@@ -1313,7 +1310,7 @@ alert(s);
 > 囲むのと同じです
 > ```
 >
-> チルダを使用したJavaScriptコードブロック: 
+> チルダを使用するJavaScriptコードブロック: 
 >
 > ```javascript
 > var s = "JavaScript構文ハイライト";
@@ -1326,7 +1323,7 @@ GitLabは、コードブロックで構文をよりカラフルにハイライ�
 
 コードブロックを囲んで構文ハイライトを適用するには、コードの開始宣言（3つのバッククォート（```` ``` ````）または3つのチルダ（`~~~`））にコード言語を追加します。
 
-`plaintext`を使用するコードブロックや、コード言語が指定されていないコードブロックには、構文ハイライトは適用されません:
+`plaintext`を使用するコードブロックや、コード言語が指定されていないコードブロックには、構文ハイライトは適用されません。
 
 ````plaintext
 ```
@@ -1336,7 +1333,7 @@ s = "この行はハイライトされません。"
 ```
 ````
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > ```plaintext
 > 言語が指定されていないため、構文ハイライトは**適用されません**。
@@ -1346,7 +1343,7 @@ s = "この行はハイライトされません。"
 
 ## 図表とフローチャート {#diagrams-and-flowcharts}
 
-次のツールを使用して、テキストから図表を生成できます:
+次のツールを使用して、テキストから図表を生成できます。
 
 - [Mermaid](https://mermaidjs.github.io/)
 - [PlantUML](https://plantuml.com)
@@ -1364,14 +1361,15 @@ Wikiでは、[diagrams.netエディタ](project/wiki/markdown.md#diagramsnet-edi
 
 詳細については、[公式ページ](https://mermaidjs.github.io/)をご覧ください。[Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/)は、Mermaidの学習やMermaidコード内の問題のデバッグに役立ちます。図表の問題を特定し、解決するために使用できます。
 
-図表またはフローチャートを生成するには、`mermaid`ブロック内にテキストを記述します:
+GitLab.comは、Mermaidバージョン10をサポートしています。
+
+図表またはフローチャートを生成するには、`mermaid`ブロック内にテキストを記述します。
 
 ````markdown
 ```mermaid
-%%{init: { "fontFamily": GitLab Sans }}%%
-graph TD;
-    accTitle: 基本的なMermaid図の例
-    accDescr: ノードA、B、C、Dとそれらの間の接続を示す単純なフローチャート。
+graph TD
+    accTitle:基本的なMermaid図の例
+    accDescr:ノードA、B、C、Dとそれらの間の接続を示す簡単なフローチャート。
 
   A-->B;
   A-->C;
@@ -1380,13 +1378,12 @@ graph TD;
 ```
 ````
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 ```mermaid
-%%{init: { "fontFamily": GitLab Sans }}%%
-graph TD;
-    accTitle: 基本的なMermaid図の例
-    accDescr: ノードA、B、C、Dとそれらの間の接続を示す単純なフローチャート。
+graph TD
+    accTitle:基本的なMermaid図の例
+    accDescr:ノードA、B、C、Dとそれらの間の接続を示す簡単なフローチャート。
 
   A-->B;
   A-->C;
@@ -1394,14 +1391,13 @@ graph TD;
   C-->D;
 ```
 
-サブグラフを含めることもできます:
+サブグラフを含めることもできます。
 
 ````markdown
 ```mermaid
-%%{init: { "fontFamily": GitLab Sans }}%%
 graph TB
-    accTitle: サブグラフを持つMermaid図
-    accDescr: ノードと決定フローを含む2つのサブグラフを持つメイングラフを示すフローチャート。
+    accTitle:サブグラフを持つMermaid図
+    accDescr:ノードと決定フローを含む2つのサブグラフを持つメイングラフを示すフローチャート。
 
   SubGraph1 --> SubGraph1Flow
 
@@ -1419,13 +1415,12 @@ graph TB
 ```
 ````
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 ```mermaid
-%%{init: { "fontFamily": GitLab Sans }}%%
 graph TB
-    accTitle: レンダリングされたサブグラフを持つMermaid図
-    accDescr: レンダリングされた、ノードと決定フローを含む2つのサブグラフを持つメイングラフを示すフローチャート。
+    accTitle:レンダリングされたサブグラフを持つMermaid図
+    accDescr:レンダリングされたときのノードと決定フローを含む2つのサブグラフを持つメイングラフを示すフローチャート。
 
   SubGraph1 --> SubGraph1Flow
 
@@ -1463,13 +1458,6 @@ GitLabでKrokiを利用可能にするには、GitLab管理者が有効にする
 
 ## 数式 {#math-equations}
 
-{{< history >}}
-
-- GitLab 15.4でLaTeX互換のフェンスが`markdown_dollar_math`[フラグ](../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/21757)されました。デフォルトでは無効になっています。GitLab.comで有効になりました。
-- GitLab 15.8でLaTeX互換のフェンスが[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/371180)になりました。機能フラグ`markdown_dollar_math`は削除されました。
-
-{{< /history >}}
-
 LaTeX構文で記述された数式は[KaTeX](https://github.com/KaTeX/KaTeX)でレンダリングされます。_KaTeXはLaTeXの[サブセット](https://katex.org/docs/supported.html)のみをサポートしています。_この構文は、`:stem: latexmath`を使用するAsciiDoc Wikiおよびファイルでも機能します。詳細については、[Asciidoctorユーザーマニュアル](https://asciidoctor.org/docs/user-manual/#activating-stem-support)を参照してください。
 
 不正行為を防ぐため、GitLabは最初の50個のインライン数式インスタンスのみをレンダリングします。この制限は、[グループ](../api/graphql/reference/_index.md#mutationgroupupdate)または[GitLab Self-Managedインスタンス](../administration/instance_limits.md#math-rendering-limits)全体に対して無効にできます。
@@ -1478,12 +1466,17 @@ LaTeX構文で記述された数式は[KaTeX](https://github.com/KaTeX/KaTeX)で
 
 バッククォート付きのドル記号（``` $`...`$ ```）または単一のドル記号（`$...$`）で囲んだ数式は、テキスト内でインライン表示されます。
 
-二重のドル記号（`$$...$$`）で囲んだ数式、または言語に`math`と指定した[コードブロック](#code-spans-and-blocks)内の数式は、別の行にレンダリングされます:
+二重のドル記号（`$$...$$`）で囲んだ数式、または言語に`math`と指定した[コードブロック](#code-spans-and-blocks)内の数式は、別の行にレンダリングされます。
+
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the image.
+-->
 
 `````markdown
 This math is inline: $`a^2+b^2=c^2`$.
 
-この数式は、`` ```math ````ブロックを使用して別の行に表示されます: 
+This math is on a separate line using a ` ```math ` block:
 
 ```math
 a^2+b^2=c^2
@@ -1491,28 +1484,24 @@ a^2+b^2=c^2
 
 This math is on a separate line using inline `$$`: $$a^2+b^2=c^2$$
 
-This math is on a separate line using a `$$...$$` block: 
+This math is on a separate line using a `$$...$$` block:
 
 $$
 a^2+b^2=c^2
 $$
 `````
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 ![GitLabでの数式の例](img/markdown_math_v17_2.png)
 
-{{< alert type="note" >}}
-
-リッチテキストエディタは新しい数式ブロックの挿入に対応していません。新しい数式ブロックを挿入するには、プレーンテキストエディタを使用します。詳細については、[イシュー366527](https://gitlab.com/gitlab-org/gitlab/-/issues/366527)を参照してください。
-
-{{< /alert >}}
+> [!note]リッチテキストエディタは、新しい数式ブロックの挿入をサポートしていません。新しい数式ブロックを挿入するには、プレーンテキストエディタを使用します。詳細については、[イシュー366527](https://gitlab.com/gitlab-org/gitlab/-/issues/366527)を参照してください。
 
 ## 目次 {#table-of-contents}
 
 目次は、ドキュメント内のサブ見出しにリンクする順序なしリストです。イシュー、マージリクエスト、エピックには目次を追加できますが、ノートやコメントには追加できません。
 
-サポートされているコンテンツタイプの**description**（説明）フィールドに、次のいずれかのタグを単独の行として追加します:
+サポートされているコンテンツタイプの**説明**フィールドに、次のいずれかのタグを単独の行として追加します。
 
 <!--
 Tags for the table of contents are presented in a code block to work around a Markdown bug.
@@ -1532,14 +1521,15 @@ For more information, see https://gitlab.com/gitlab-org/gitlab/-/issues/359077.
 - マージリクエスト。
 - エピック。
 
-{{< alert type="note" >}}
+> [!note] TOCコードを単一の角かっこで使用すると、単独の行かどうかにかかわらず、目次がレンダリングされます。この動作は意図したものではありません。詳細については、[イシュー359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077)を参照してください。
 
-TOCコードを単一の角かっこで使用すると、単独の行かどうかにかかわらず、目次がレンダリングされます。この動作は意図したものではありません。詳細については、[イシュー359077](https://gitlab.com/gitlab-org/gitlab/-/issues/359077)を参照してください。
-
-{{< /alert >}}
+<!--
+Translation note: DO NOT TRANSLATE this example. The example must stay untranslated
+to stay in sync with the image.
+-->
 
 ```markdown
-これは、私のWikiページの紹介文です。
+これはWikiページの紹介文です。
 
 [[_TOC_]]
 
@@ -1564,7 +1554,12 @@ Second section content.
 
 アラートは、何かを強調したり注意を引いたりするために使用できます。アラートの構文では、Markdownの引用ブロック構文の後にアラートのタイプを指定します。Markdownをサポートするどのテキストボックスでもアラートを使用できます。
 
-使用できるアラートのタイプは次のとおりです:
+使用できるアラートのタイプは次のとおりです。
+
+<!--
+Translation note: DO NOT TRANSLATE any examples in this section. The examples must stay untranslated
+to stay in sync with the image.
+-->
 
 - 注: ざっと目を通す場合でも注意すべき情報:
 
@@ -1603,25 +1598,25 @@ Second section content.
 
 アラートに表示されるタイトルテキストは、デフォルトではアラートの名前になります。たとえば、`> [!warning]`アラートのタイトルは`Warning`です。
 
-アラートブロックのタイトルをオーバーライドするには、同じ行に任意のテキストを入力します。たとえば、警告の色を使用しつつタイトルを`Data deletion`にする場合は、次のように指定します:
+アラートブロックのタイトルをオーバーライドするには、同じ行に任意のテキストを入力します。たとえば、警告の色を使用しつつタイトルを`Data deletion`にする場合は、次のように指定します。
 
 ```markdown
 > [!warning] Data deletion
-> 次の手順を実行すると、データは回復できなくなります。
+> The following instructions will make your data unrecoverable.
 ```
 
 [複数行の引用ブロック](#multiline-blockquote)もアラート構文をサポートしています。これにより、大きくてより複雑なテキストをアラートで囲むことができます。
 
 ```markdown
->>> [!note] 考慮事項
-次の影響を考慮する必要があります: 
+>>> [!note] Things to consider
+You should consider the following ramifications:
 
-1. 考慮事項1
-1. 考慮事項2
+1. consideration 1
+1. consideration 2
 >>>
 ```
 
-アラートは次のようにレンダリングされます:
+アラートは次のようにレンダリングされます。
 
 ![GitLabでレンダリングされたMarkdownアラート](img/markdown_alerts_v18_3.png)
 
@@ -1651,7 +1646,7 @@ GitLabアプリケーションでは（ただしGitLabドキュメントは除�
 - `HSLA(540,70%,50%,0.3)`
 ```
 
-この例は、[GitLab内でレンダリング](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colors)した場合にのみ動作します:
+この例は、[GitLab内でレンダリング](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colors)した場合にのみ動作します。
 
 - `#F00`
 - `#F00A`
@@ -1681,7 +1676,7 @@ GitLabアプリケーションでは（ただしGitLabドキュメントは除�
 
 いずれの場合も、出力ではバックスラッシュが削除され、カラーチップはレンダリングされません。
 
-これは特に、インラインコードにイシュー番号などの値を含める際に、カラーチップが誤って表示されないようにするために便利です。
+誤ってカラーチップをトリガーせずに、インラインコードにイシュー番号などの値を含める場合に使用します。
 
 ## 絵文字 {#emoji}
 
@@ -1699,7 +1694,7 @@ GitLabアプリケーションでは（ただしGitLabドキュメントは除�
 サポートされているコードを調べてみてください。
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > ときには、ちょっと遊び心で<img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":monkey:" alt=":monkey:">いくつかの<img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/star2.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":star2:" alt=":star2:">を<img src="https://gitlab.com/gitlab-org/gitlab/-/raw/master/public/-/emojis/4/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border:0;padding:0;" title=":speech_balloon:" alt=":speech_balloon:">に加えたいことがあります。そこで、絵文字をご用意しました！
 >
@@ -1731,14 +1726,14 @@ GitLabでレンダリングされたMarkdownファイルを表示すると、フ
 
 GitLabでは、フロントマターはMarkdownファイルとWikiページでのみ使用されます。Markdownの書式設定がサポートされている他の場所では使用されません。フロントマターは必ずドキュメントの最上部に配置し、区切り文字で囲む必要があります。
 
-次の区切り文字がサポートされています:
+次の区切り文字がサポートされています。
 
 - YAML（`---`）:
 
   ```yaml
   ---
   title: フロントマターについて
-  example: 
+  example:
     language: yaml
   ---
   ```
@@ -1758,7 +1753,7 @@ GitLabでは、フロントマターはMarkdownファイルとWikiページで�
   ```json
   ;;;
   {
-    "title": "フロントマターについて"
+    "title":"フロントマターについて",
     "example": {
       "language": "json"
     }
@@ -1787,7 +1782,7 @@ $example = array(
 
 インクルード（インクルードディレクティブ）を使用して、ドキュメントの内容を別のドキュメント内に追加できます。
 
-たとえば、本を複数の章に分け、各章をメインのドキュメントに含めることができます:
+たとえば、本を複数の章に分け、各章をメインのドキュメントに含めることができます。
 
 ```markdown
 ::include{file=chapter1.md}
@@ -1837,19 +1832,19 @@ var s = "JavaScript構文ハイライト";
 alert(s);
 ```
 
-これを次のようにMarkdownファイルに含めることができます:
+これを次のようにMarkdownファイルに含めることができます。
 
 ````markdown
-このスクリプトには以下が含まれています: 
+このスクリプトには以下が含まれています:
 
 ```javascript
 ::include{file=javascript_code.js}
 ```
 ````
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
-> このスクリプトには以下が含まれています: 
+> このスクリプトには以下が含まれています:
 >
 > ```javascript
 > var s = "JavaScript構文ハイライト";
@@ -1864,11 +1859,7 @@ alert(s);
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
-
-{{< /alert >}}
+> [!flag] この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
 
 プレースホルダーは、プロジェクトのタイトルや最新のタグなど、特定の種類の変動するデータを表示するために使用できます。Markdownがレンダリングされるたびにプレースホルダーは対応する値に置き換わります。
 
@@ -1885,12 +1876,13 @@ alert(s);
 | `%{project_title}`        | `GitLab`            | プロジェクトのタイトル |
 | `%{group_name}`           | `gitlab-org`        | プロジェクトのグループ |
 | `%{default_branch}`       | `main`              | プロジェクトのリポジトリに設定されたデフォルトブランチ名 |
+| `%{current_ref}`          | `feature-branch`    | 表示されている現在の参照（ブランチ、タグ、またはコミットSHA） |
 | `%{commit_sha}`           | `ad10e011ce65492322037633ebc054efde37b143` | プロジェクトのリポジトリのデフォルトブランチへの最新コミットのID |
 | `%{latest_tag}`           | `v17.10.7-ee`       | プロジェクトのリポジトリに追加された最新のタグ |
 
 ## エスケープ文字 {#escape-characters}
 
-Markdownは、ページを書式設定するために次のASCII文字を予約しています:
+Markdownは、ページを書式設定するために次のASCII文字を予約しています。
 
 ```plaintext
 ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ \ ] ^ _ ` { | } ~
@@ -1903,43 +1895,79 @@ Markdownは、ページを書式設定するために次のASCII文字を予約�
 ```plaintext
 \# 見出しではありません
 
-| 食べ物            | この食べ物は好きですか？（丸で囲んでください） |
-|-----------------|---------------------------------|
-| ピザ          |  はい \| いいえ                     |
+| 食べ物  | この食べ物は好きですか？（丸で囲んでください） |
+|-------|---------------------------------|
+| ピザ | はい \| いいえ |
 
 \**太字ではなく、アスタリスクで囲まれた斜体のテキスト*\*
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > \# 見出しではありません
 >
-> | 食べ物            | この食べ物は好きですか？（丸で囲んでください）|
-> |-----------------|--------------------------------|
-> | ピザ          |  はい \| いいえ                     |
+> | 食べ物  | この食べ物は好きですか？（丸で囲んでください） |
+> |-------|---------------------------------|
+> | ピザ | はい \| いいえ                       |
 >
-> \**太字ではなく、アスタリスクで囲まれた斜体のテキスト*\*
+> **太字ではなく、アスタリスクで囲まれた斜体のテキスト**
 
-バックスラッシュは、常にそれに続く文字をエスケープするとは限りません。バックスラッシュは、次の場合に通常のテキストとして表示されます:
+バックスラッシュは、常にそれに続く文字をエスケープするとは限りません。バックスラッシュは、次の場合に通常のテキストとして表示されます。
 
 - バックスラッシュが`A`、`3`、スペースなどの予約されていない文字の前にある場合。
 - バックスラッシュが次のMarkdown要素の中にある場合:
-  - コードブロック
-  - コードスパン
   - 自動リンク
   - `<kbd>`などのインラインHTML
+  - コードブロック
+  - コードスパン
 
 このような場合には、同等のHTMLエンティティ（`]`を表す`&#93;`など）を使用する必要があります。
 
+### 追加のバッククォートを使用する {#use-additional-backticks}
+
+前述のアドバイスは、コードブロックまたはコードスパンには適用されません。リテラルコンテンツは常に表示されます。代わりに、追加のバッククォートを使用してコードをネストします。
+
+コードブロックに3つのバッククォートを含める必要がある場合は、より多くのバッククォートを使用してコードブロックを作成します:
+
+`````markdown
+Markdownでコードブロックを作成するには、3つ以上の一致するバッククォートを使用します: 
+
+````markdown
+```
+コード
+```
+````
+`````
+
+レンダリングすると、この例は次のように表示されます。
+
+> Markdownでコードブロックを作成するには、3つ以上の一致するバッククォートを使用します: 
+>
+> ````markdown
+> ```
+> コード
+> ```
+> ````
+
+コードスパンに1つ以上のバッククォートを含めるには、より多くの一致するバッククォートを使用してコードスパンを作成します。コンテンツがスペースで始まり、スペースで終わる場合、それらのスペースもトリミングされます:
+
+```markdown
+Markdownでコードスパンを作成するには、一致するバッククォートを使用します: `` `hello, world` ``
+```
+
+レンダリングすると、この例は次のように表示されます。
+
+> Markdownでコードスパンを作成するには、一致するバッククォートを使用します: `` `hello, world` ``
+
 ### バックスラッシュとバッククォートを併用する {#use-backslash-with-backticks}
 
-インラインコードサンプルの最後にバックスラッシュ（` \ `）がある場合、そのバックスラッシュが最後のバッククォートをエスケープしてしまうことがあります。この場合、インラインコードの前後に余分なスペースを追加します。次に例を示します:
+インラインコードサンプルの最後にバックスラッシュ（` \ `）がある場合、そのバックスラッシュが最後のバッククォートをエスケープしてしまうことがあります。この場合、インラインコードの前後に余分なスペースを追加します。次に例を示します。
 
 ```markdown
 Use the backslash ` \ ` character to escape inline code that ends in a ` backslash\ `.
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > Use the backslash ` \ ` character to escape inline code that ends in a ` backslash\ `.
 
@@ -1952,6 +1980,8 @@ Use the backslash ` \ ` character to escape inline code that ends in a ` backsla
 レンダリング時の番号は、タグ名にかかわらず参照タグの相対的な順序によって決まります。
 
 ノートはどこに記述しても、レンダリング結果では常にファイルの末尾に表示されます。
+
+> [!note]リッチテキストエディタは、新しい脚注の挿入をサポートしていません。新しい脚注を挿入するには、プレーンテキストエディタを使用します。詳細については、[イシュー365265](https://gitlab.com/gitlab-org/gitlab/-/issues/365265)を参照してください。
 
 例: 
 
@@ -1970,20 +2000,15 @@ Use the backslash ` \ ` character to escape inline code that ends in a ` backsla
   [^footnote-42]: このテキストは別の脚注です。
   ```
 
-レンダリングすると、脚注は次のように表示されます:
+レンダリングすると、脚注は次のように表示されます。
 
 > 脚注の参照タグは次のようになります: [^1]
 >
 > この参照タグは文字と数字を組み合わせたものです: [^footnote-42]
 >
 > [^1]: このテキストは脚注の中にあります。
+>
 > [^footnote-42]: このテキストは別の脚注です。
-
-{{< alert type="note" >}}
-
-リッチテキストエディタは新しい脚注の挿入に対応していません。新しい脚注を挿入するには、プレーンテキストエディタを使用します。詳細については、[イシュー365265](https://gitlab.com/gitlab-org/gitlab/-/issues/365265)を参照してください。
-
-{{< /alert >}}
 
 ## インラインHTML {#inline-html}
 
@@ -2001,7 +2026,7 @@ Markdownではraw HTMLを使用することもでき、通常は適切に機能�
 </dl>
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > <dl>
 >   <dt>定義リスト</dt>
@@ -2011,11 +2036,12 @@ Markdownではraw HTMLを使用することもでき、通常は適切に機能�
 >   <dd>**あまり**うまく動作*しません*。HTML<em>タグ</em>はほとんどの場合、<b>動作</b>します。</dd>
 > </dl>
 
-HTMLタグ内でMarkdownを使用することもできますが、Markdownを含む行を独立した行に分けた場合に限られます:
+HTMLタグ内でMarkdownを使用することもできますが、Markdownを含む行を独立した行に分けた場合に限られます。
 
 ```html
 <dl>
   <dt>HTML内のMarkdown</dt>
+  <dd>
 
   **あまり**うまく動作*しません*。HTMLタグはほとんどの場合、動作します。
 
@@ -2023,7 +2049,7 @@ HTMLタグ内でMarkdownを使用することもできますが、Markdownを含
 </dl>
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 <!--
 The example below uses HTML to force correct rendering on docs.gitlab.com,
@@ -2057,7 +2083,7 @@ HTMLの[`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/d
 </details>
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > <details>
 > <summary>クリックして展開</summary>
@@ -2072,7 +2098,7 @@ HTMLの[`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/d
 
 これらのタグ内ではMarkdownもサポートされています。
 
-次の例に示すように、Markdownセクションの前後には空行を入れてください:
+次の例に示すように、Markdownセクションの前後には空行を入れてください。
 
 ````html
 <details>
@@ -2096,7 +2122,7 @@ The example below uses HTML to force correct rendering on docs.gitlab.com, Markd
 works correctly in GitLab.
 -->
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > <details>
 > <summary>クリックして<em>展開。</em></summary>
@@ -2115,13 +2141,13 @@ works correctly in GitLab.
 次のページに進むには、<kbd>Enter</kbd>を押してください。
 ```
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > 次のページに進むには、<kbd>Enter</kbd>を押してください。
 
 ### 上付き文字と下付き文字 {#superscripts-and-subscripts}
 
-GitLab Flavored Markdownは、Redcarpetの上付き構文（`x^2`）をサポートしていません。上付き文字と下付き文字には、標準のHTML構文を使用してください:
+GitLab Flavored Markdownは、Redcarpetの上付き構文（`x^2`）をサポートしていません。上付き文字と下付き文字には、標準のHTML構文を使用してください。
 
 ```html
 水の化学式はH<sub>2</sub>Oで、
@@ -2130,7 +2156,7 @@ GitLab Flavored Markdownは、Redcarpetの上付き構文（`x^2`）をサポー
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-レンダリングすると、この例は次のように表示されます:
+レンダリングすると、この例は次のように表示されます。
 
 > 水の化学式はH<sub>2</sub>Oで、相対性理論の式はE = mc<sup>2</sup>です。
 
@@ -2156,7 +2182,7 @@ HTMLコメントを使用する際の注意点:
 - 永続的なドキュメントではなく、一時的なノートに使用する。
 - 機密情報や社外秘の情報は含めないこと。HTMLコメントは、Markdownのソースを閲覧できるすべての人に表示されます。
 
-HTMLコメントは標準のHTML構文`<!-- comment text -->`を使用し、1行または複数行にわたって記述できます:
+HTMLコメントは標準のHTML構文`<!-- comment text -->`を使用し、1行または複数行にわたって記述できます。
 
 ```html
 <!-- これは1行のコメントです -->
@@ -2172,7 +2198,7 @@ HTMLコメントは標準のHTML構文`<!-- comment text -->`を使用し、1行
 このテキストも表示されます。
 ```
 
-レンダリングされると、表示されるのは以下の表示可能なテキストのみです:
+レンダリングされると、表示されるのは以下の表示可能なテキストのみです。
 
 > このテキストは表示されます。
 >
@@ -2180,7 +2206,7 @@ HTMLコメントは標準のHTML構文`<!-- comment text -->`を使用し、1行
 
 #### コードブロック内のコメント {#comments-in-code-blocks}
 
-コードブロック内のHTMLコメントはリテラルテキストとして扱われ、そのまま表示されます:
+コードブロック内のHTMLコメントはリテラルテキストとして扱われ、そのまま表示されます。
 
 ````markdown
 ```html

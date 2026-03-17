@@ -10,6 +10,7 @@ module Packages
       include UpdateProjectStatistics
 
       STORE_COLUMN = :file_store
+      FILE_SHA256_MAX_LENGTH = 64.bytes
 
       # Used in destroying orphan symbols in worker
       enum :status, default: 0, processing: 1, error: 3
@@ -21,6 +22,8 @@ module Packages
 
       validates :package, :project, :file, :file_path, :signature, :object_storage_key, :size, presence: true
       validates :object_storage_key, uniqueness: { scope: :project_id }
+      validates :file_sha256,
+        bytesize: { maximum: -> { FILE_SHA256_MAX_LENGTH } }, if: :file_sha256_changed?
 
       validate :unique_signature_and_file_path_when_installable_package, on: :create
 

@@ -9,8 +9,7 @@ description: This is the table that stores information about the review summarie
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124402
 milestone: '16.2'
 gitlab_schema: gitlab_main_org
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
+allow_cross_foreign_keys: []
 desired_sharding_key:
   project_id:
     references: projects

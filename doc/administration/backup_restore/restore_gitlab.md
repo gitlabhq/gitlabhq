@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Restore GitLab
 ---
 
@@ -77,7 +77,7 @@ enabled, and GitLab Runners cannot sign in.
 > (domain/hostname) where they were created. If you restore a backup to a GitLab instance
 > with a different FQDN than the original instance, all WebAuthn devices will be disabled.
 > Users will need to re-register their WebAuthn devices after the restore is complete.
-> 
+>
 > For more information about WebAuthn and hostname requirements, see
 > [Two-factor authentication](../../user/profile/account/two_factor_authentication.md#information-for-gitlab-administrators).
 
@@ -397,7 +397,22 @@ is being discussed in [issue #17517](https://gitlab.com/gitlab-org/gitlab/-/issu
 
 ## Restoring an incremental repository backup
 
-Each backup archive contains a full self-contained backup, including those created through the [incremental repository backup procedure](backup_gitlab.md#incremental-repository-backups). To restore an incremental repository backup, use the same instructions as restoring any other regular backup archive.
+When you create an [incremental repository backup](backup_gitlab.md#incremental-repository-backups) by using
+`gitlab-backup`, the resulting backup archive contains all repository data needed for a complete restore.
+To restore, use the same instructions as [restoring any other regular backup archive](#restore-for-linux-package-installations).
+
+Internally, incremental repository backups store only the changes made after the previous backup.
+When you create an incremental backup, `gitlab-backup` bundles every step from the original full backup
+onward into the backup archive. This means the archive is self-contained, even though the individual repository
+backup bundles depend on each other.
+
+With [server-side repository backups](backup_gitlab.md#create-server-side-repository-backups),
+the backup archive does not contain repository data. Instead, repository data is stored in
+object storage by each Gitaly node, and each increment is stored as a separate object. In a
+server-side restore, Gitaly reads the backup manifest and applies each increment in order.
+
+> [!warning]
+> Do not delete incremental backup files from object storage. If an intermediate file is deleted (for example, through an object storage lifecycle policy), the backup chain is broken and the backup cannot be restored.
 
 ## Restore options
 
@@ -637,7 +652,6 @@ For more information, see:
 - PostgreSQL issue tracker:
   - [Not being a superuser](https://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com).
   - [Having different owners](https://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us).
-
 - Stack Overflow: [Resulting errors](https://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
 
 ### Restoring fails due to Git server hook

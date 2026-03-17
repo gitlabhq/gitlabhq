@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_security_coverage_fuzzing_latest_weekly
 description: Weekly counts for implicit Coverage Fuzzing latest CI template
 product_group: dynamic_analysis
+product_categories:
+- fuzz_testing
 value_type: number
 status: removed
 milestone: '15.5'

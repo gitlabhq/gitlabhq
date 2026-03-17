@@ -3,7 +3,7 @@ import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { initFindFileShortcut } from '~/projects/behaviors';
 import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert';
-import leaveByUrl from '~/namespaces/leave_by_url';
+import leaveByUrl, { NAMESPACE_TYPES } from '~/namespaces/leave_by_url';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
@@ -62,7 +62,7 @@ if (document.querySelector('.js-autodevops-banner')) {
     .catch(() => {});
 }
 
-leaveByUrl('project');
+leaveByUrl(NAMESPACE_TYPES.PROJECT);
 
 const initCodeDropdown = () => {
   const codeDropdownEl = document.querySelector('#js-project-show-empty-page #js-code-dropdown');

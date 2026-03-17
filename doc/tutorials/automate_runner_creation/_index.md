@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Tutorials
-info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: 'Tutorial: Automate runner creation and registration'
 ---
 
@@ -54,7 +54,7 @@ to store the token, like HashiCorp Vault or the Keeper Secrets Manager Terraform
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Personal access tokens**.
+1. In the left sidebar, select **Access** > **Personal access tokens**.
 1. Select **Add new token**.
 1. Enter a name and expiry date for the token.
    - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
@@ -85,7 +85,7 @@ gives access to all projects in the group.
 
 To create a project access token:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Access tokens**.
 1. Select **Add new token**
 1. Enter a name. The token name is visible to any user with permissions to view
@@ -94,8 +94,8 @@ To create a project access token:
    - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set
      to 365 days later than the current date.
-   - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
-
+   - By default, this date can be a maximum of 365 days later than the current date.
+     In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
    - An instance-wide [maximum lifetime](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens)
      setting can limit the maximum allowable lifetime on GitLab Self-Managed instances.
 1. From the **Select a role** dropdown list:
@@ -175,7 +175,6 @@ REST endpoint to create a runner:
    {{< /tab >}}
 
    {{< /tabs >}}
-
 1. Save the returned `token` value in a secure location or your secrets management
    solution. The `token` value is returned only once in the API response.
 

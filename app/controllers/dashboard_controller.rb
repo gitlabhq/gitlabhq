@@ -6,13 +6,23 @@ class DashboardController < Dashboard::ApplicationController
   include HomepageData
   include ::Gitlab::InternalEventsTracking
 
-  prepend_before_action(only: [:issues]) { authenticate_sessionless_user!(:rss) }
-  prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
+  prepend_before_action(only: [:issues, :work_items]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:issues_calendar, :work_items_calendar]) { authenticate_sessionless_user!(:ics) }
 
   before_action :event_filter, only: :activity
-  before_action :projects, only: [:issues, :merge_requests, :search_merge_requests]
-  before_action :set_show_full_reference, only: [:issues, :merge_requests, :search_merge_requests]
-  before_action :check_filters_presence!, only: [:issues, :merge_requests, :search_merge_requests]
+  before_action :projects, only: [:issues, :merge_requests, :search_merge_requests, :work_items, :work_items_calendar]
+  before_action :set_show_full_reference,
+    only: [:issues, :merge_requests, :search_merge_requests, :work_items, :work_items_calendar]
+
+  before_action only: [:issues] do
+    redirect_to_work_items_dashboard if current_user&.work_items_consolidated_list_enabled?
+  end
+
+  before_action only: [:issues_calendar] do
+    redirect_to_work_items_dashboard(format: :ics) if current_user&.work_items_consolidated_list_enabled?
+  end
+
+  before_action :check_filters_presence!, only: [:issues, :merge_requests, :search_merge_requests, :work_items]
 
   before_action only: [:merge_requests] do
     if request.query_string.present?
@@ -29,10 +39,11 @@ class DashboardController < Dashboard::ApplicationController
   feature_category :notifications, [:home]
   feature_category :user_profile, [:activity]
   feature_category :team_planning, [:issues, :issues_calendar]
+  feature_category :portfolio_management, [:work_items, :work_items_calendar]
   feature_category :code_review_workflow, [:merge_requests, :search_merge_requests]
 
   urgency :low, [:merge_requests, :activity, :search_merge_requests]
-  urgency :low, [:issues, :issues_calendar]
+  urgency :low, [:issues, :issues_calendar, :work_items, :work_items_calendar]
 
   def home
     if Feature.enabled?(:personal_homepage, current_user)
@@ -122,8 +133,19 @@ class DashboardController < Dashboard::ApplicationController
     finder_options
 
     respond_to do |format|
-      format.html { render }
+      format.html { render(action_name == 'work_items' ? :issues : action_name) }
       format.atom { head :bad_request }
+    end
+  end
+
+  def redirect_to_work_items_dashboard(format: nil)
+    format ||= request.format.symbol unless request.format.html?
+    params = request.query_parameters
+
+    if format
+      redirect_to work_items_dashboard_path(format, params), status: :moved_permanently
+    else
+      redirect_to work_items_dashboard_path(params), status: :moved_permanently
     end
   end
 end

@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Pipeline execution policies manage and enforce the execution of CI/CD pipelines, helping with security and compliance.
 title: Pipeline execution policies
 ---
@@ -33,6 +33,7 @@ Use pipeline execution policies to manage and enforce CI/CD jobs for multiple pr
 
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159858) the `suffix` field in GitLab 17.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165096) pipeline execution so later stages wait for the `.pipeline-policy-pre` stage to complete in GitLab 17.7.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558233) pipeline execution so that when a `.pipeline-policy-pre` stage fails, all later jobs are skipped in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ensure_pipeline_policy_pre_succeeds`. Enabled by default.
 
 {{< /history >}}
 
@@ -80,40 +81,43 @@ Note the following:
 
 ### `.pipeline-policy-pre` stage
 
-Jobs in the `.pipeline-policy-pre` stage always execute. This stage is designed for security and compliance use cases.
-Jobs in the pipeline do not begin until the `.pipeline-policy-pre` stage completes.
-
-If you don't require this behavior for your workflow, you can use the `.pre` stage or a custom stage instead.
-
-#### Ensure that `.pipeline-policy-pre` succeeds
-
 {{< details >}}
 
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/558233) pipeline execution so that when a `.pipeline-policy-pre` stage fails, all later jobs are skipped in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ensure_pipeline_policy_pre_succeeds`. Enabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
+Jobs in the `.pipeline-policy-pre` stage always execute.
+This stage is designed for security and compliance use cases.
+Jobs in the pipeline do not begin until the `.pipeline-policy-pre` stage completes.
+
+If the `.pipeline-policy-pre` stage fails or all jobs in the stage are skipped,
+all jobs in later stages are skipped, including:
+
+- Jobs with `needs: []`.
+- Jobs with `when: always`.
+
+If you do not require this behavior for your workflow,
+use the `.pre` stage or a custom stage instead.
+
 > [!note]
-> This feature is experimental and might change in future releases. Test it thoroughly in
-> non-production environments only, as it might be unstable in production.
-
-To ensure that `.pipeline-policy-pre` completes and succeeds, enable the `ensure_pipeline_policy_pre_succeeds`
-experiment in the security policy configuration. The `.gitlab/security-policies/policy.yml` YAML
-configuration file is stored in your security policy project:
-
-```yaml
-experiments:
-  ensure_pipeline_policy_pre_succeeds:
-    enabled: true
-```
-
-If the `.pipeline-policy-pre` stage fails or all jobs in the stage are skipped, all jobs in later stages are skipped, including:
-
-- Jobs with `needs: []`
-- Jobs with `when: always`
-
-When multiple pipeline execution policies apply, the experiment takes effect if enabled in any of them,
-ensuring that `.pipeline-policy-pre` must succeed.
+> In GitLab 18.9 and earlier, jobs with `needs: []` or `when: always`
+> could bypass a failed `.pipeline-policy-pre` stage unless you enabled
+> the `ensure_pipeline_policy_pre_succeeds` experiment.
+> This experiment is no longer required. The behavior is now the default.
+> On GitLab Self-Managed, an administrator
+> can [disable this feature flag](../../../administration/feature_flags/_index.md)
+> to revert to the previous behavior where only `needs` jobs are blocked.
 
 ### Job naming best practice
 
@@ -165,7 +169,7 @@ defined in the project's CI/CD configuration, also the reserved stages `.pipelin
 > [!note]
 > If your policy contains jobs only in the `.pre` and `.post` stages, the policy's pipeline is
 > evaluated as `empty`. It is not merged with the project's pipeline.
-> 
+>
 > To use the `.pre` and `.post` stages in a pipeline execution policy, you must include at least one
 > other job that runs in a different stage. For example: `.pipeline-policy-pre`.
 
@@ -256,6 +260,7 @@ from bypassing the pipeline execution policies.
 |-------------------------|----------|--------------------------|-------------|
 | `allowed` | `boolean`   | `true`, `false` | When `true`, other configurations can override policy variables. When `false`, other configurations cannot override policy variables. |
 | `exceptions` | `array` | `array` of `string` | Variables that are exceptions to the global rule. When `allowed: false`, the `exceptions` are an allowlist. When `allowed: true`, the `exceptions` are a denylist. |
+| `dotenv` | `string` | `respect_policy`, `allow_override` | Controls whether [dotenv artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdotenv) variables respect the `variables_override` policy rules. By default (when not specified or set to `respect_policy`), dotenv variables are subject to the same override rules as other variables. Set to `allow_override` to let dotenv variables bypass the policy rules. This option is provided for backward compatibility with workflows that rely on dotenv artifacts overriding policy variables. Using `allow_override` is not recommended because it weakens the security guarantees provided by `variables_override`. |
 
 This option controls how user-defined variables are handled in pipelines with policies enforced. This feature allows you to:
 
@@ -336,6 +341,12 @@ This configuration allows all user-defined variables except those that could dis
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
 specified projects, groups, or compliance framework labels. For more details, see
 [Scope](_index.md#configure-the-policy-scope).
+
+> [!note]
+> Setting a `policy_scope` field to an empty collection (for example, `including: []`) is treated
+> the same as omitting the field, so the policy applies to all projects for that scope dimension.
+> To disable a policy entirely, use `enabled: false`. For more details, see
+> [Empty collections in `policy_scope`](_index.md#empty-collections-in-policy_scope).
 
 ## Manage access to the CI/CD configuration
 
@@ -748,11 +759,22 @@ compliance_job:
 > Don't store sensitive information or credentials in variables because they are stored as part of the plaintext policy configuration
 > in a Git repository.
 
-Pipeline execution policy variables cannot be overridden from the outside. Pipeline execution jobs are executed in isolation, so variables defined in another policy or in the project's `.gitlab-ci.yml` file are never available to the pipeline execution policy.
+By default, pipeline execution policies run in isolation, which means they do not apply any variables defined outside of the policy.
 
-The [`variables_override` type](#variables_override-type) only allows you to configure user-defined variables to override the policy variables. This includes variables that users specify in the CI/CD settings or when running a new pipeline.
+When you enable the [`variables_override` setting](#variables_override-type) setting, pipeline execution policies can access the following user-defined variables:
 
-Variables can be shared with pipeline execution policies using group or project settings, which follow the standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence) rules. However, the precedence rules are more complex when using a pipeline execution policy as they can vary depending on the pipeline execution policy strategy:
+- Variables from group CI/CD settings.
+- Variables from project CI/CD settings.
+- Variables specified by users when running a new pipeline.
+
+However, even when the `variables_override` setting is enabled, pipeline execution policies cannot access the following types of variables:
+
+- Variables defined in other policies.
+- Variables defined in the project's `.gitlab-ci.yml` file.
+
+When enabled, the `variables_override` setting allows the policy to access and apply the variables according to standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence) rules.
+
+However, the precedence rules are more complex when using a pipeline execution policy as they can vary depending on the pipeline execution policy strategy:
 
 - `inject_policy` strategy: If the variable is defined in the pipeline execution policy, the job always uses this value. If a variable is not defined in a pipeline execution policy, the job applies the value from the group or project settings.
 - `inject_ci` strategy: If the variable is defined in the pipeline execution policy, the job always uses this value. If a variable is not defined in a pipeline execution policy, the job applies the value from the group or project settings.
@@ -802,10 +824,10 @@ In this case, the job variable value `Project job variable value` takes preceden
 > [!warning]
 > This feature does not work with pipeline execution policies created before GitLab 18.5.
 > To use this feature with older pipeline execution policies, you can either:
-> 
+>
 > - Make any change to the existing YAML configuration files for the pipeline execution policies.
 > - Copy, delete, and recreate the policies.
-> 
+>
 > For more information, see [recreate pipeline execution policies](#recreate-pipeline-execution-policies).
 
 You can use the `description`, `value` and `options` keywords to define CI/CD variables
@@ -825,7 +847,7 @@ To recreate a pipeline execution policy:
 
 <!-- markdownlint-disable MD044 -->
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Policies**.
 1. Select the pipeline execution policy you want to recreate.
 1. In the right sidebar, select the **YAML** tab and copy the contents of the entire policy file.
@@ -892,9 +914,9 @@ For more information about `changes:` behavior, see [jobs or pipelines run unexp
 
 ### Use the `.pipeline-policy-pre` stage for critical security checks
 
-Jobs in the `.pipeline-policy-pre` stage are designed for security and compliance use cases. All other pipeline jobs wait until this stage completes before they start.
-
-For improved security, consider enabling the experimental `ensure_pipeline_policy_pre_succeeds` feature to ensure that if the `.pipeline-policy-pre` stage fails, all subsequent jobs are skipped.
+Jobs in the `.pipeline-policy-pre` stage are designed for security and compliance use cases.
+All other pipeline jobs wait until this stage completes before they start.
+If the `.pipeline-policy-pre` stage fails, all subsequent jobs are skipped.
 
 #### Detect duplicate security configurations
 

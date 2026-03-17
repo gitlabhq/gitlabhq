@@ -45,6 +45,14 @@ module ActiveContext
           builder.fields.each { |field| do_add_field(collection, field) }
         end
 
+        def nullify_field(collection_name, field_name, batch_size:)
+          full_name = adapter.full_collection_name(collection_name)
+          collection = adapter.connection.collections.find_by(name: full_name)
+          raise "Collection #{full_name} not found" unless collection
+
+          do_nullify_field(collection, field_name, batch_size: batch_size)
+        end
+
         private
 
         def create_collection_record(name, number_of_partitions, options)
@@ -69,6 +77,10 @@ module ActiveContext
         end
 
         def do_add_field(...)
+          raise NotImplementedError
+        end
+
+        def do_nullify_field(...)
           raise NotImplementedError
         end
       end

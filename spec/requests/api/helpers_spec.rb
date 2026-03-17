@@ -326,14 +326,14 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
 
         it 'raises an error stating that the feature is not yet supported' do
           expect { current_user }.to raise_error Gitlab::Auth::GranularPermissionsError,
-            'Granular tokens are not yet supported'
+            'Access denied: Fine-grained personal access tokens are not yet supported.'
         end
       end
 
       context 'when authorization permissions and boundary type are not defined for an endpoint' do
         it 'raises an error stating that the permissions cannot be determined' do
           expect { current_user }.to raise_error Gitlab::Auth::GranularPermissionsError,
-            'Unable to determine boundaries and permissions for authorization'
+            "Access denied: This operation doesn't support fine-grained personal access tokens."
         end
       end
 
@@ -365,10 +365,11 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
 
         with_them do
           context 'when the granular token scopes are insufficient' do
+            let(:assignable) { Authz::PermissionGroups::Assignable.for_permission(permissions).first }
+            let(:perm_label) { "#{assignable.resource_name}: #{assignable.action.titleize}" }
             let(:message) do
-              msg = "Access denied: Your Personal Access Token lacks the required permissions: [#{permissions}]"
-              msg << " for \"#{boundary.path}\"" if boundary.path
-              msg << "."
+              "Access denied: This operation requires a fine-grained personal access token " \
+                "with the following #{boundary_type} permissions: [#{perm_label}]."
             end
 
             it 'raises an error that includes the missing scope' do

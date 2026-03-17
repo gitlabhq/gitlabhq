@@ -4,7 +4,7 @@ module Gitlab
   module GrapeOpenapi
     class Configuration
       attr_accessor :api_version, :api_prefix, :excluded_api_classes, :servers, :security_schemes, :info,
-        :tag_overrides
+        :tag_overrides, :annotations, :coercer_mappings
 
       def initialize
         @api_prefix = "api"
@@ -16,6 +16,8 @@ module Gitlab
         @security_schemes = []
 
         @tag_overrides = {}
+        @annotations = {}
+        @coercer_mappings = {}
       end
     end
   end

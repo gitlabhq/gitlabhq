@@ -312,7 +312,7 @@ export default class MergeRequestTabs {
     }
   }
 
-  tabShown(action, href, shouldScroll = true) {
+  async tabShown(action, href, shouldScroll = true) {
     toggleLoader(false);
 
     if (action !== this.currentTab && this.mergeRequestTabs) {
@@ -339,7 +339,13 @@ export default class MergeRequestTabs {
       const tab = this.mergeRequestTabs.querySelector(`.${action}-tab`);
       if (tab) tab.classList.add('active');
 
-      if (isInVueNoteablePage() && !this.loadedPages[action] && action in pageBundles) {
+      const skipPageBundle = this.isDiffAction(action) && this.createRapidDiffsApp;
+      if (
+        isInVueNoteablePage() &&
+        !this.loadedPages[action] &&
+        action in pageBundles &&
+        !skipPageBundle
+      ) {
         toggleLoader(true);
         pageBundles[action]()
           .then(({ default: init }) => {
@@ -370,7 +376,7 @@ export default class MergeRequestTabs {
       } else if (this.isDiffAction(action)) {
         if (this.createRapidDiffsApp) {
           if (!this.rapidDiffsApp) {
-            this.rapidDiffsApp = this.createRapidDiffsApp();
+            this.rapidDiffsApp = await this.createRapidDiffsApp();
             this.rapidDiffsApp.init();
           } else {
             this.rapidDiffsApp.show();
@@ -396,6 +402,7 @@ export default class MergeRequestTabs {
         this.mountPipelinesView();
       } else if (action === 'reports') {
         this.resetViewContainer();
+        this.mergeRequestPipelinesTable = destroyPipelines(this.mergeRequestPipelinesTable);
       } else {
         const notesTab = this.mergeRequestTabs.querySelector('.notes-tab');
         const notesPane = this.mergeRequestTabPanes.querySelector('#notes');
@@ -466,6 +473,21 @@ export default class MergeRequestTabs {
     this.currentAction = action;
 
     const pathname = location.pathname.replace(/\/*$/, '');
+
+    // For reports tab, preserve Vue Router sub-paths (e.g., /reports/security-scan)
+    const HAS_REPORTS_SUB_PATH = /merge_requests\/\d+\/reports\/.+/;
+    if (action === 'reports' && HAS_REPORTS_SUB_PATH.test(pathname)) {
+      window.history.replaceState(
+        {
+          url: window.location.href,
+          action,
+        },
+        document.title,
+        window.location.href,
+      );
+      const newState = pathname + location.search + location.hash;
+      return newState;
+    }
 
     // Remove a trailing '/commits' '/diffs' '/pipelines'
     let newStatePathname = pathname.replace(this.actionRegex, '');

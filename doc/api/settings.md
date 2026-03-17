@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Application settings API
 ---
 
@@ -141,6 +141,7 @@ Example response:
   "snippet_size_limit": 52428800,
   "issues_create_limit": 300,
   "raw_blob_request_limit": 300,
+  "raw_blob_request_limit_unauthenticated": 800,
   "wiki_page_max_content_bytes": 5242880,
   "require_admin_approval_after_user_signup": false,
   "require_personal_access_token_expiry": true,
@@ -164,6 +165,7 @@ Example response:
   "runner_jobs_patch_trace_api_limit": 200,
   "runner_jobs_endpoints_api_limit": 200,
   "security_txt_content": null,
+  "security_scan_stale_after_days": 90,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
   "concurrent_relation_batch_export_limit": 25,
   "relation_export_batch_size": 50,
@@ -206,6 +208,8 @@ these parameters:
 - `virtual_registries_endpoints_api_limit`
 - `project_secrets_limit`
 - `group_secrets_limit`
+- `security_mr_report_cache_lifetime_minutes`
+- `security_scan_stale_after_days`
 
 ```json
 {
@@ -260,7 +264,9 @@ PUT /application/settings
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal"
+  --url "https://gitlab.example.com/api/v4/application/settings" \
+  --data "signup_enabled=false" \
+  --data "default_project_visibility=internal"
 ```
 
 Example response:
@@ -356,6 +362,7 @@ Example response:
   "snippet_size_limit": 52428800,
   "issues_create_limit": 300,
   "raw_blob_request_limit": 300,
+  "raw_blob_request_limit_unauthenticated": 800,
   "wiki_page_max_content_bytes": 5242880,
   "require_admin_approval_after_user_signup": false,
   "require_personal_access_token_expiry": true,
@@ -391,6 +398,7 @@ Example response:
   "bulk_import_max_download_file_size": 5120,
   "project_jobs_api_rate_limit": 600,
   "security_txt_content": null,
+  "security_scan_stale_after_days": 90,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
   "concurrent_relation_batch_export_limit": 25,
   "relation_export_batch_size": 50,
@@ -425,6 +433,8 @@ these parameters:
 - `use_clickhouse_for_analytics`
 - `virtual_registries_endpoints_api_limit`
 - `lock_memberships_to_saml`
+- `security_mr_report_cache_lifetime_minutes`
+- `security_scan_stale_after_days`
 
 Example responses:
 
@@ -507,6 +517,7 @@ to configure other related settings. These requirements are
 | `ci_max_total_yaml_size_bytes`           | integer          | no                                   | The maximum amount of memory, in bytes, that can be allocated for the pipeline configuration, with all included YAML configuration files. |
 | `ci_max_includes`                        | integer          | no                                   | The [maximum number of includes](../administration/settings/continuous_integration.md#set-maximum-includes) per pipeline. Default is `150`. |
 | `ci_partitions_size_limit`               | integer          | no                                   | The maximum amount of disk space, in bytes, that can be used by a database partition for the CI tables before creating new partitions. Default is `100 GB`. |
+| `ci_partitions_in_seconds_limit`         | integer          | no                                   | The time window, in seconds, before new CI partitions are created and the system switches to the next set of partitions. Must be between 1 month and 6 months. Default is 1 month (`2592000`). |
 | `concurrent_github_import_jobs_limit`    | integer          | no                                   | Maximum number of simultaneous import jobs for the GitHub importer. Default is 1000. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
 | `concurrent_bitbucket_import_jobs_limit` | integer          | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Cloud importer. Default is 100. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
 | `concurrent_bitbucket_server_import_jobs_limit` | integer   | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Server importer. Default is 100. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
@@ -708,8 +719,10 @@ to configure other related settings. These requirements are
 | `kroki_enabled`                          | boolean          | no                                   | (**If enabled, requires**: `kroki_url`) Enable [Kroki integration](../administration/integration/kroki.md). Default is `false`. |
 | `kroki_url`                              | string           | required by: `kroki_enabled`         | The Kroki instance URL for integration. |
 | `kroki_formats`                          | object           | no                                   | Additional formats supported by the Kroki instance. Possible values are `true` or `false` for formats `bpmn`, `blockdiag`, `excalidraw`, and `mermaid` in the format `<format>: true` or `<format>: false`. |
+| `kroki_diagram_proxy_enabled`            | boolean          | no                                   | Enable [Kroki diagram proxy](../administration/integration/diagram_proxy.md). Default is `false`. |
 | `plantuml_enabled`                       | boolean          | no                                   | (**If enabled, requires**: `plantuml_url`) Enable [PlantUML integration](../administration/integration/plantuml.md). Default is `false`. |
 | `plantuml_url`                           | string           | required by: `plantuml_enabled`      | The PlantUML instance URL for integration. |
+| `plantuml_diagram_proxy_enabled`         | boolean          | no                                   | Enable [PlantUML diagram proxy](../administration/integration/diagram_proxy.md). Default is `false`. |
 | `polling_interval_multiplier`            | float            | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
 | `project_jobs_api_rate_limit`            | integer          | no                                   | Maximum authenticated requests to `/project/:id/jobs` per minute. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129319) in GitLab 16.5. Default: 600. |
@@ -736,6 +749,7 @@ to configure other related settings. These requirements are
 | `push_event_hooks_limit`                 | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered. Setting to `0` does not disable throttling. Default: `3`. |
 | `rate_limiting_response_text`            | string           | no                                   | When rate limiting is enabled via the `throttle_*` settings, send this plain text response when a rate limit is exceeded. 'Retry later' is sent if this is blank. |
 | `raw_blob_request_limit`                 | integer          | no                                   | Maximum number of requests per minute for each raw path (default is `300`). Set to `0` to disable throttling.|
+| `raw_blob_request_limit_unauthenticated` | integer          | no                                   | Maximum number of unauthenticated requests per minute across all raw paths in a project (default is `800`). Set to `0` to disable throttling.|
 | `search_rate_limit`                      | integer          | no                                   | Max number of requests per minute for performing a search while authenticated. Default: 30. To disable throttling, set to 0.|
 | `search_rate_limit_unauthenticated`      | integer          | no                                   | Max number of requests per minute for performing a search while unauthenticated. Default: 10. To disable throttling, set to 0.|
 | `recaptcha_enabled`                      | boolean          | no                                   | (**If enabled, requires**: `recaptcha_private_key` and `recaptcha_site_key`) Enable reCAPTCHA. |
@@ -763,6 +777,8 @@ to configure other related settings. These requirements are
 | `scan_execution_policies_action_limit`   | integer          | no                                   | Maximum number of `actions` per scan execution policy. Default: 0. Maximum: 20 |
 | `scan_execution_policies_schedule_limit` | integer          | no                                   | Maximum number of `type: schedule` rules per scan execution policy. Default: 0. Maximum: 20 |
 | `security_txt_content`                    | string          | no                                   | [Public security contact information](../administration/settings/security_contact_information.md). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433210) in GitLab 16.7. |
+| `security_mr_report_cache_lifetime_minutes` | integer       | no                                   | Number of minutes to cache security reports on merge requests (10-60). Default: 10. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223399) in GitLab 18.10. |
+| `security_scan_stale_after_days`          | integer          | no                                   | Number of days to retain security scan data before purging. Must be between 7 and 90 days. Default: 30 days for GitLab.com, 90 days for self-managed. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222998) in GitLab 18.9. |
 | `service_access_tokens_expiration_enforced` | boolean       | no                                   | Flag to indicate if token expiry date can be optional for service account users |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires**: `shared_runners_text` and `shared_runners_minutes`) Enable instance runners for new projects. |
 | `shared_runners_minutes`                 | integer          | required by: `shared_runners_enabled` | Set the maximum number of compute minutes that a group can use on instance runners per month. Premium and Ultimate only. |

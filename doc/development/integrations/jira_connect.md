@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: GitLab for Jira Cloud app development
 ---
 
@@ -69,8 +69,10 @@ To install the app in Jira:
    If the install was successful, you should see the **GitLab for Jira Cloud** app under **Manage apps**.
    You can also select **Getting Started** to open the configuration page rendered from your GitLab instance.
 
-   _Note that any changes to the app descriptor requires you to uninstall then reinstall the app._
-1. If the _Installed and ready to go!_ dialog opens asking you to **Get started**, do not get started yet
+   > [!note]
+   > any changes to the app descriptor requires you to uninstall then reinstall the app.
+
+1. If the **Installed and ready to go!** dialog opens asking you to **Get started**, do not get started yet
    and instead select **Close**.
 1. You must now [set up the OAuth authentication flow](#set-up-the-gitlab-oauth-authentication-flow).
 
@@ -138,10 +140,8 @@ To set up a development Jira Connect Proxy:
     recommend using Gitpod or a similar cloud development environment. For more
     information on using Gitpod with GDK, see the:
 
-    - [GDK with Gitpod](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitpod/)
-    documentation.
-    - [GDK in Gitpod](https://www.loom.com/share/9c9711d4876a40869b9294eecb24c54d)
-    video.
+    - [GDK with Gitpod](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitpod/) documentation.
+    - [GDK in Gitpod](https://www.loom.com/share/9c9711d4876a40869b9294eecb24c54d) video.
 
     <!-- vale gitlab_base.Spelling = NO -->
 
@@ -161,9 +161,7 @@ you must [make port `3000` public](https://gitlab-org.gitlab.io/gitlab-developme
 ### Set up the Jira Connect proxy instance
 
 1. For the **Jira Connect proxy** instance, follow the [GDK with Gitpod](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitpod/) instructions to start a new Gitpod workspace.
-
 1. Set up OAuth authentication on the **Jira Connect proxy** by following the [Set up the GitLab OAuth authentication flow](#set-up-the-gitlab-oauth-authentication-flow) section.
-
 1. Configure the **Jira Connect proxy** [to serve as a proxy](../../administration/settings/jira_cloud_app.md#configure-your-gitlab-instance-to-serve-as-a-proxy).
 
 ### Install the GitLab for Jira Cloud app in Jira
@@ -179,7 +177,6 @@ If the _Installed and ready to go!_ dialog opens, select **Close** (don't select
 ### Set up the secondary GitLab instance
 
 1. Set up a second GitLab instance using Gitpod, following the same [GDK with Gitpod](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitpod/) instructions as for the proxy instance
-
 1. Set up OAuth authentication on this instance following the same steps as in [Set up the GitLab OAuth authentication flow](#set-up-the-gitlab-oauth-authentication-flow), but with a crucial difference:
    - When setting the **Redirect URI**, use the URL of your **Jira Connect proxy** instance, not this secondary instance:
 

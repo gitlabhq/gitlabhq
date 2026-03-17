@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: External issue trackers
 ---
 
@@ -29,19 +29,16 @@ References are displayed as issue links.
 
 ## Disable the GitLab issue tracker
 
-To disable the GitLab issue tracker for a project:
+To disable work items for a project, including the GitLab issue tracker:
 
 1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
-1. Under **Issues**, turn off the toggle.
+1. Under **Work items**, turn off the toggle.
 1. Select **Save changes**.
 
-After you disable the GitLab issue tracker:
-
-- If an [external issue tracker is configured](#configure-an-external-issue-tracker),
-  **Issues** is visible in the left sidebar but redirects to the external issue tracker.
-- If no external issue tracker is configured, **Issues** is not visible in the left sidebar.
+After you disable the work items setting, **Work items** is not visible in the left sidebar.
+If you've configured an [external issue tracker](#configure-an-external-issue-tracker), it remains in the left sidebar.
 
 ## Configure an external issue tracker
 

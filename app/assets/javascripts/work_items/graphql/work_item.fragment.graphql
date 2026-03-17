@@ -1,6 +1,7 @@
 #import "ee_else_ce/work_items/graphql/work_item_widgets.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_permissions.fragment.graphql"
 #import "~/graphql_shared/fragments/author.fragment.graphql"
+#import "~/work_items/list/graphql/work_item_features.fragment.graphql"
 
 fragment WorkItem on WorkItem {
   id
@@ -50,5 +51,8 @@ fragment WorkItem on WorkItem {
   }
   widgets {
     ...WorkItemWidgets
+  }
+  features @include(if: $useWorkItemFeatures) {
+    ...WorkItemFeatures
   }
 }

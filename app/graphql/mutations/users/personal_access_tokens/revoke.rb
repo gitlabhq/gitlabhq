@@ -7,7 +7,7 @@ module Mutations
         graphql_name 'PersonalAccessTokenRevoke'
         description 'Revokes a specified personal access token.'
 
-        authorize :revoke_token
+        authorize :revoke_personal_access_token
 
         argument :id, ::Types::GlobalIDType[::PersonalAccessToken],
           required: true,

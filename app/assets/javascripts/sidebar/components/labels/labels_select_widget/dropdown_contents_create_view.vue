@@ -1,5 +1,5 @@
 <script>
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { GlAlert, GlTooltipDirective, GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import produce from 'immer';
 import { createAlert } from '~/alert';

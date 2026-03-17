@@ -1,5 +1,3 @@
 ---
 name: delete_epic_note
 description: Grants the ability to delete epic notes
-boundaries:
-  - group

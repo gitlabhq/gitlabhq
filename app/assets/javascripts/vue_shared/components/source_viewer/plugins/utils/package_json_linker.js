@@ -1,4 +1,4 @@
-import { unescape } from 'lodash';
+import { unescape } from 'lodash-es';
 import { createLink, generateHLJSOpenTag } from './dependency_linker_util';
 
 const NPM_URL = 'https://npmjs.com/package/';

@@ -66,7 +66,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
         stub_feature_flags(granular_personal_access_tokens: false)
       end
 
-      it_behaves_like 'error response', 'Granular tokens are not yet supported'
+      it_behaves_like 'error response', 'Access denied: Fine-grained personal access tokens are not yet supported.'
     end
 
     context 'when the token is missing' do
@@ -78,19 +78,30 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
     context 'when the boundary is missing' do
       let(:boundary) { nil }
 
-      it_behaves_like 'error response', 'Unable to determine boundaries for authorization'
+      it_behaves_like 'error response',
+        "Access denied: This operation doesn't support fine-grained personal access tokens."
     end
 
     context 'when no valid boundaries are passed in' do
       let(:boundary) { [nil, ' '] }
 
-      it_behaves_like 'error response', 'Unable to determine boundaries for authorization'
+      it_behaves_like 'error response',
+        "Access denied: This operation doesn't support fine-grained personal access tokens."
     end
 
     context 'when permissions are missing' do
       let(:permissions) { nil }
 
-      it_behaves_like 'error response', 'Unable to determine permissions for authorization'
+      it_behaves_like 'error response',
+        "Access denied: This operation doesn't support fine-grained personal access tokens."
+    end
+
+    context 'when both boundary and permissions are missing' do
+      let(:boundary) { nil }
+      let(:permissions) { nil }
+
+      it_behaves_like 'error response',
+        "Access denied: This operation doesn't support fine-grained personal access tokens."
     end
 
     context 'when the token does not support fine-grained permissions' do
@@ -109,16 +120,18 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
           allow(service).to receive(:granular_token_required?).and_return(true)
         end
 
-        it_behaves_like 'error response', 'Access denied: Your Personal Access Token lacks the required permissions: ' \
-          '[create_member_role].'
+        it_behaves_like 'error response',
+          'Access denied: This operation requires a fine-grained personal access token ' \
+            'with the following instance permissions: [Member Role: Create].'
       end
     end
 
     context 'when the token does not have the required permissions' do
-      let_it_be(:permissions) { [:create_member_role, :delete_member_role, :read_member_role] }
+      let_it_be(:granular_pat) { create(:granular_pat, boundary: boundary, permissions: :read_work_item) }
+      let_it_be(:permissions) { [:read_issue, :read_epic, :read_fork] }
 
-      it_behaves_like 'error response', 'Access denied: Your Personal Access Token lacks the required permissions: ' \
-        '[delete_member_role, read_member_role].'
+      it_behaves_like 'error response', 'Access denied: This operation requires a fine-grained personal access token ' \
+        'with the following instance permissions: [Project: Read, Work Item: Read].'
     end
 
     describe 'boundary prioritization' do
@@ -181,10 +194,8 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
         it 'returns the correct error message' do
           result = service.execute
 
-          project_boundary_message = "[delete_member_role] for \"#{project_boundary.path}\""
-          user_boundary_message = "[delete_member_role]"
-          expect(result.message).to eq("Access denied: Your Personal Access Token lacks the required permissions: " \
-            "#{project_boundary_message}, #{user_boundary_message}.")
+          expect(result.message).to eq('Access denied: This operation requires a fine-grained personal access token ' \
+            'with the following project permissions: [Member Role: Delete].')
           expect(result).to be_error
         end
       end

@@ -8,7 +8,7 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
@@ -114,6 +114,11 @@ export default {
       required: false,
       default: '',
     },
+    typeIconName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -210,6 +215,7 @@ export default {
         :id="$options.iconId"
         show-text
         :work-item-type="issuableType"
+        :type-icon-name="typeIconName"
         icon-class="gl-fill-icon-subtle"
       />
       <gl-popover

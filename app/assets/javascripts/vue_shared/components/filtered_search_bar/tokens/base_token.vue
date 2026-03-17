@@ -7,7 +7,7 @@ import {
   GlDropdownText,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import { debounce, last } from 'lodash';
+import { debounce, last } from 'lodash-es';
 
 import { stripQuotes } from '~/lib/utils/text_utility';
 import {
@@ -84,7 +84,7 @@ export default {
   },
   data() {
     return {
-      isFetching: false, // use this to avoid flash of `No suggestions found` before fetching
+      hasFetched: false, // use this to avoid flash of `No suggestions found` before fetching
       searchKey: '',
       selectedTokens: [],
       recentSuggestions: this.config.recentSuggestionsStorageKey
@@ -137,13 +137,14 @@ export default {
               !this.recentTokenIds.includes(this.valueIdentifier(tokenValue)) &&
               !this.preloadedTokenIds.includes(this.valueIdentifier(tokenValue)),
           );
+
       return this.applyMaxSuggestions(suggestions);
     },
     showDefaultSuggestions() {
       return this.availableDefaultSuggestions.length > 0 && !this.searchKey;
     },
     showNoMatchesText() {
-      return this.searchKey && !this.availableSuggestions.length && this.isFetching;
+      return this.searchKey && !this.availableSuggestions.length;
     },
     showRecentSuggestions() {
       return (
@@ -190,8 +191,9 @@ export default {
     },
     suggestionsLoading: {
       handler(loading) {
-        // If marked as loading, assume that fetching is occuring
-        this.isFetching = !loading;
+        if (loading) {
+          this.hasFetched = true;
+        }
       },
     },
     value: {
@@ -334,8 +336,8 @@ export default {
         :suggestions="preloadedSuggestions"
         :selections="selectedTokens"
       ></slot>
-      <gl-loading-icon v-if="!isFetching" size="sm" />
-      <template v-if="showAvailableSuggestions">
+      <gl-loading-icon v-if="suggestionsLoading" size="sm" />
+      <template v-else-if="showAvailableSuggestions">
         <slot
           name="suggestions-list"
           :suggestions="availableSuggestions"
@@ -345,9 +347,7 @@ export default {
       <gl-dropdown-text v-else-if="showNoMatchesText">
         {{ __('No matches found') }}
       </gl-dropdown-text>
-      <gl-dropdown-text v-else-if="isFetching && !showAvailableSuggestions">{{
-        __('No suggestions found')
-      }}</gl-dropdown-text>
+      <gl-dropdown-text v-else-if="hasFetched">{{ __('No suggestions found') }}</gl-dropdown-text>
       <slot name="footer"></slot>
     </template>
   </gl-filtered-search-token>

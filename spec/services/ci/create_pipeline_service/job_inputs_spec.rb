@@ -78,27 +78,5 @@ module Ci
         )
       end
     end
-
-    context 'when the ci_job_inputs feature flag is disabled' do
-      let(:config) do
-        <<~YAML
-          rspec:
-            script: echo
-            inputs:
-              test_input:
-                default: "hello"
-        YAML
-      end
-
-      before do
-        stub_feature_flags(ci_job_inputs: false)
-      end
-
-      it 'creates a failed pipeline with a config error' do
-        expect(pipeline).to be_persisted
-        expect(pipeline).to be_failed
-        expect(pipeline.errors.full_messages).to contain_exactly('jobs:rspec config contains unknown keys: inputs')
-      end
-    end
   end
 end

@@ -1,4 +1,4 @@
-import { property, isEqual } from 'lodash';
+import { property, isEqual } from 'lodash-es';
 import { diffModes, diffViewerModes } from '~/ide/constants';
 import {
   LINE_POSITION_LEFT,

@@ -142,7 +142,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillNamespaceState, feature_cate
           expect(namespaces.find(project_namespace.id).state).to eq(described_class::STATES[:deletion_scheduled])
         end
 
-        it 'populates state_metadata including delete_error' do
+        it 'populates state_metadata including last_error' do
           migration.perform
 
           metadata = fetch_metadata(project_namespace.id)

@@ -1,18 +1,18 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting GitLab Duo
 ---
 
 When working with GitLab Duo, you might encounter issues.
 
-Start by [running a health check](../../administration/gitlab_duo/configure/gitlab_self_managed.md#run-a-health-check-for-gitlab-duo)
+Start by [running a health check](../../administration/gitlab_duo/configure/_index.md#run-a-health-check-for-gitlab-duo)
 to determine if your instance meets the requirements to use GitLab Duo.
 
 For more information on troubleshooting GitLab Duo, see:
 
-- [Troubleshooting Code Suggestions (Classic)](../project/repository/code_suggestions/troubleshooting.md).
+- [Troubleshooting Code Suggestions](../project/repository/code_suggestions/troubleshooting.md).
 - [GitLab Duo Chat troubleshooting](../gitlab_duo_chat/troubleshooting.md).
 - [Troubleshooting GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/troubleshooting.md).
 
@@ -88,7 +88,7 @@ you can also do the following:
    curl --verbose --proxy "http://USERNAME:PASSWORD@example.com:8080" "https://customers.gitlab.com"
    ```
 
-1. Optional. If you are using a [proxy server](../../administration/gitlab_duo/configure/gitlab_self_managed.md#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo) between the GitLab
+1. Optional. If you are using a [proxy server](../../administration/gitlab_duo/configure/_index.md#allow-outbound-connections-from-the-gitlab-instance-to-gitlab-duo) between the GitLab
    application and the public internet,
    [disable DNS rebinding protection](../../security/webhooks.md#enforce-dns-rebinding-attack-protection).
 
@@ -164,12 +164,12 @@ This issue occurs when CORS policies block required resources.
 
 To resolve this issue:
 
-1. Update to GitLab Workflow Extension version 6.35.1 or later.
+1. Update to GitLab for VS Code version 6.35.1 or later.
 1. Add `https://*.cdn.web-ide.gitlab-static.net` to your CORS policy.
 1. To troubleshoot further, check HAR files for logs. For more information, see
-   [create HAR files](../../user/application_security/api_fuzzing/create_har_files.md).
+   [create HAR files](../application_security/api_fuzzing/create_har_files.md).
 
-For more information, see [CORS issues](../../user/project/web_ide/_index.md#cors-issues).
+For more information, see [CORS issues](../project/web_ide/_index.md#cors-issues).
 
 ## GitLab Duo features not available for users
 

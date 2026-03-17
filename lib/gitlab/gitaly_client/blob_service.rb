@@ -78,12 +78,13 @@ module Gitlab
           limit: limit
         )
 
+        timeout = Gitlab::Ci::Config::GitalyTimeout.current_timeout || GitalyClient.fast_timeout
         response = gitaly_client_call(
           @gitaly_repo.storage_name,
           :blob_service,
           :get_blobs,
           request,
-          timeout: GitalyClient.fast_timeout)
+          timeout: timeout)
 
         GitalyClient::BlobsStitcher.new(response)
       end

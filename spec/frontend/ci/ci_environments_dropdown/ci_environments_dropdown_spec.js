@@ -34,6 +34,16 @@ describe('Ci environments dropdown', () => {
     findListbox().vm.$emit('search', searchTerm);
   };
 
+  describe('template', () => {
+    beforeEach(() => {
+      createComponent({ props: { state: true } });
+    });
+
+    it('passes state prop to listbox component', () => {
+      expect(findListbox().props('state')).toBe(true);
+    });
+  });
+
   describe('create wildcard buttons', () => {
     describe('when canCreateWildcard is true and search has wildcard character', () => {
       beforeEach(() => {

@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: DevOps adoption by group
 ---
 
@@ -73,11 +73,11 @@ DevOps adoption data may take up to a minute to appear while GitLab processes th
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 To view DevOps adoption:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **DevOps adoption**.
 1. To view the features adopted by category in a month, hover over a bar.
 
@@ -85,11 +85,11 @@ To view DevOps adoption:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 To add a subgroup to the DevOps adoption report:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **DevOps adoption**.
 1. From the **Add or remove subgroups** dropdown list, select the subgroup you want to add.
 
@@ -97,14 +97,14 @@ To add a subgroup to the DevOps adoption report:
 
 Prerequisites:
 
-- You must have at least the Reporter role for the group.
+- You must have the Reporter, Developer, Maintainer, or Owner role for the group.
 
 To remove a subgroup from the DevOps adoption report:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **DevOps adoption**.
 1. Either:
 
 - From the **Add or remove subgroups** dropdown list, clear the subgroup you want to remove.
-- From the **Adoption by subgroup** table, in the row of the group you want to remove, select
-**Remove Group from the table** ({{< icon name="remove" >}}).
+- From the **Adoption by subgroup** table, in the row of the group you want to remove,
+  select **Remove Group from the table** ({{< icon name="remove" >}}).

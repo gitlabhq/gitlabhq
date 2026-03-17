@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab CI/CD instance configuration
 description: Manage GitLab CI/CD configuration.
 ---
@@ -41,7 +41,6 @@ For self-compiled installations:
    ```
 
 1. Save the `gitlab.yml` file.
-
 1. Restart GitLab:
 
    ```shell
@@ -57,7 +56,6 @@ For Linux package installations:
    ```
 
 1. Save the `/etc/gitlab/gitlab.rb` file.
-
 1. Reconfigure GitLab:
 
    ```shell

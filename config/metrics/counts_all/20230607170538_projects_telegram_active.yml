@@ -2,6 +2,8 @@
 key_path: counts.projects_telegram_active
 description: Count of projects with active integrations for Telegram
 product_group: import
+product_categories:
+- integrations
 value_type: number
 status: active
 milestone: "16.1"

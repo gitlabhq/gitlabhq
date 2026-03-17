@@ -28,6 +28,7 @@ module ActiveContext
           when :filter  then process_filter(node.value)
           when :prefix  then process_prefix(node.value)
           when :missing then process_missing(node)
+          when :exists  then process_exists(node)
           when :and     then process_and(node.children)
           when :or      then process_or(node.children)
           when :knn     then process_knn(node)
@@ -72,6 +73,12 @@ module ActiveContext
           quoted_column = quote_column(node.value)
 
           process_and(node.children).where("#{quoted_column} IS NULL")
+        end
+
+        def process_exists(node)
+          quoted_column = quote_column(node.value)
+
+          process_and(node.children).where("#{quoted_column} IS NOT NULL")
         end
 
         def process_and(children)
@@ -127,10 +134,10 @@ module ActiveContext
           # Start with base relation or filtered relation if there are children
           relation = node.children.any? ? process(node.children.first) : relation
 
-          preset_values = collection.current_search_embedding_version
+          embedding_model = collection.search_embedding_model
 
-          column = node.value[:target] || preset_values[:field]
-          vector = node.value[:vector] || get_embeddings(node.value[:content], preset_values)
+          column = node.value[:target] || embedding_model.field
+          vector = node.value[:vector] || get_embeddings(node.value[:content], embedding_model)
           limit = node.value[:k]
           vector_str = "[#{vector.join(',')}]"
           distance_expr = "#{quote_column(column)} <=> #{model.connection.quote(vector_str)}"

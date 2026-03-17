@@ -1,0 +1,467 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+#
+# Generate permission definition and resource metadata files in the correct location.
+
+require_relative '../config/bundler_setup'
+require 'fileutils'
+require 'optparse'
+require 'readline'
+require 'tempfile'
+require 'yaml'
+require 'active_support/core_ext/string/inflections'
+require 'active_support/core_ext/object/blank'
+require_relative '../lib/authz/validation'
+
+module PermissionHelpers
+  Abort = Class.new(StandardError)
+  Done = Class.new(StandardError)
+
+  def fail_with(message)
+    raise Abort, "\e[31merror\e[0m #{message}"
+  end
+
+  def warn_with(message)
+    $stderr.puts "\e[33mwarning\e[0m #{message}"
+  end
+end
+
+class PermissionOptionParser
+  extend PermissionHelpers
+
+  PERMISSION_NAME_REGEX = Authz::Validation::PERMISSION_NAME_REGEX
+  COMMON_ACTIONS = Authz::Validation::COMMON_ACTIONS.merge(other: 'Specify another action').transform_keys(&:to_s).freeze
+  DISALLOWED_ACTIONS = Authz::Validation::DISALLOWED_ACTIONS.keys.map(&:to_s).freeze
+
+  FEATURE_CATEGORIES_FILE = File.expand_path('../config/feature_categories.yml', __dir__).freeze
+
+  Options = Struct.new(
+    :name,
+    :action,
+    :resource,
+    :feature_category,
+    :description,
+    :resource_display_name,
+    :resource_description,
+    :dry_run,
+    :force,
+    keyword_init: true
+  )
+
+  class << self
+    def parse(argv)
+      options = Options.new
+
+      parser = OptionParser.new do |opts|
+        opts.banner = "Usage: #{__FILE__} [options] [<permission-name>]\n\n"
+
+        opts.on('-d', '--description [string]', String, 'Description for the permission') do |value|
+          options.description = value
+        end
+
+        opts.on('-f', '--force', 'Overwrite an existing permission') do |value|
+          options.force = value
+        end
+
+        opts.on('-a', '--action [string]', String,
+          'The permission action (create, read, update, delete, etc.)') do |value|
+          options.action = value
+        end
+
+        opts.on('-r', '--resource [string]', String, 'The permission resource (e.g., custom_dashboard)') do |value|
+          options.resource = value
+        end
+
+        opts.on('-c', '--feature-category [string]', String, 'The feature category for the permission') do |value|
+          unless feature_categories.include?(value)
+            fail_with "Unknown feature category '#{value}'"
+          end
+
+          options.feature_category = value
+        end
+
+        opts.on('--resource-display-name [string]', String,
+          'Display name for the resource (optional, metadata only)') do |value|
+          options.resource_display_name = value
+        end
+
+        opts.on('--resource-description [string]', String,
+          'Description for the resource (optional, metadata only)') do |value|
+          options.resource_description = value
+        end
+
+        opts.on('-n', '--dry-run', "Don't actually write anything, just print") do |value|
+          options.dry_run = value
+        end
+
+        opts.on('-h', '--help', 'Print help message') do
+          $stdout.puts opts
+          raise Done
+        end
+      end
+
+      parser.parse!(argv)
+
+      if argv.one?
+        options.name = argv.first.downcase.tr('-', '_')
+      elsif argv.any?
+        $stdout.puts parser.help
+        $stdout.puts
+        fail_with 'Too many arguments provided'
+      end
+
+      options
+    end
+
+    def feature_categories
+      @feature_categories ||= YAML.safe_load_file(FEATURE_CATEGORIES_FILE)
+    end
+
+    def action_list
+      COMMON_ACTIONS.keys.map.with_index do |action, index|
+        "  #{index + 1}. #{action.ljust(7)} - #{COMMON_ACTIONS[action]}"
+      end
+    end
+
+    def feature_category_list
+      categories = feature_categories
+      index_width = categories.length.to_s.length
+
+      categories.map.with_index do |category, index|
+        "  #{(index + 1).to_s.rjust(index_width)}. #{category}"
+      end
+    end
+
+    def fzf_available?
+      return @fzf_available if defined?(@fzf_available)
+
+      @fzf_available = find_compatible_command(%w[fzf])
+    end
+
+    def read_input
+      Readline.readline('?> ', false)&.strip
+    end
+
+    def prompt_with_suggestion(base_prompt, suggestion)
+      suggestion ? "#{base_prompt} [#{suggestion}]" : base_prompt
+    end
+
+    def prompt_readline(suggestion: nil)
+      input = read_input
+      input.blank? && suggestion ? suggestion : input
+    end
+
+    def prompt_fzf(list:, prompt:)
+      Tempfile.create('permission-fzf') do |f|
+        f.write(list.join("\n"))
+        f.flush
+
+        # Use file descriptor redirection so fzf has TTY access
+        selection = `fzf --tac --prompt='>> #{prompt}: ' < #{f.path}`.strip
+        raise Interrupt if $?.exitstatus == 130
+
+        selection.match(/(\d+)\./)&.[](1) || ""
+      end
+    end
+
+    def print_list(list)
+      return if list.empty?
+
+      $stdout.puts list.join("\n")
+      $stdout.puts
+    end
+
+    def print_prompt(prompt)
+      $stdout.puts
+      $stdout.puts ">> #{prompt}: "
+      $stdout.puts
+    end
+
+    def prompt_list(prompt:, list: nil, suggestion: nil)
+      # If we have a suggestion, always use readline (skip fzf)
+      # This allows the user to just press enter to accept the suggestion
+      if fzf_available? && !suggestion
+        prompt_fzf(list: list, prompt: prompt)
+      else
+        prompt_readline(suggestion: suggestion)
+      end
+    end
+
+    def read_action(suggestion: nil)
+      prompt = prompt_with_suggestion('Specify the permission action', suggestion)
+
+      loop do
+        # Show menu if not using fzf, or if using readline with a suggestion
+        if !fzf_available? || suggestion
+          print_prompt(prompt)
+          print_list(action_list)
+        end
+
+        action = prompt_list(prompt: prompt, list: action_list, suggestion: suggestion)
+
+        # Convert numeric selection to action name
+        if action.to_i.nonzero? && action.to_i <= COMMON_ACTIONS.keys.length
+          action = COMMON_ACTIONS.keys[action.to_i - 1]
+        end
+
+        action = action&.downcase&.strip
+
+        # If user selected "other", prompt for custom action
+        if action == 'other'
+          $stdout.puts "\n>> Enter action name: "
+          action = read_input
+        end
+
+        # Validate disallowed actions
+        if action && !action.empty? && DISALLOWED_ACTIONS.include?(action)
+          error_suggestion = Authz::Validation::DISALLOWED_ACTIONS[action.to_sym]
+          warn_with "Action '#{action}' is not allowed. Use '#{error_suggestion}' instead."
+          $stdout.flush
+          Readline.readline("Press enter to continue...", false)
+          next
+        elsif action && !action.empty?
+          $stdout.puts "You picked the action '#{action}'"
+          return action
+        else
+          warn_with "Invalid action specified '#{action}'"
+        end
+      end
+    end
+
+    def read_resource(suggestion: nil)
+      base_prompt = ">> Enter resource name (e.g., custom_dashboard, project)"
+      prompt_text = prompt_with_suggestion(base_prompt, suggestion)
+      $stdout.puts "\n#{prompt_text}\n"
+
+      loop do
+        resource = read_input
+        resource = suggestion if suggestion && resource&.empty?
+        resource = resource&.downcase&.tr('-', '_')
+
+        if resource && resource.match?(/\A[a-z_]+\z/) && !resource.end_with?('_')
+          $stdout.puts "You picked the resource '#{resource}'"
+          return resource
+        else
+          warn_with "Invalid resource. Use lowercase letters and underscores only."
+        end
+      end
+    end
+
+    def read_feature_category
+      prompt = 'Specify the feature category'
+
+      unless fzf_available?
+        print_prompt(prompt)
+        print_list(feature_category_list)
+      end
+
+      loop do
+        category = prompt_list(prompt: prompt, list: feature_category_list)
+        category = feature_categories[category.to_i - 1] unless category.to_i == 0
+
+        if feature_categories.include?(category)
+          $stdout.puts "You picked the feature category '#{category}'"
+          return category
+        else
+          warn_with "Invalid category specified '#{category}'"
+        end
+      end
+    end
+
+    def read_description(action:, resource:)
+      suggestion = "Grants the ability to #{action} #{resource.pluralize.tr('_', ' ')}"
+      $stdout.puts "\n>> Enter description [#{suggestion}]: "
+      input = read_input
+      input.empty? ? suggestion : input
+    end
+
+    def read_resource_display_name(resource:)
+      $stdout.puts "\n>> Enter resource display name (leave blank for '#{resource.titleize}') [optional]: "
+      read_input.presence
+    end
+
+    def read_resource_description
+      $stdout.puts "\n>> Enter resource description [optional]: "
+      read_input.presence
+    end
+
+    def find_compatible_command(commands)
+      commands.find do |cmd|
+        ENV['PATH'].split(File::PATH_SEPARATOR).any? do |dir|
+          path = File.join(dir, cmd)
+          File.executable?(path) && !File.directory?(path)
+        end
+      end
+    end
+  end
+end
+
+class PermissionCreator
+  include PermissionHelpers
+
+  PERMISSIONS_DIR = 'config/authz/permissions'
+  METADATA_FILENAME = '_metadata.yml'
+
+  attr_reader :options, :suggested_action, :suggested_resource
+
+  def initialize(options)
+    @options = options
+    @suggested_action = nil
+    @suggested_resource = nil
+  end
+
+  def execute
+    assert_name!
+
+    # Check if action and resource were provided via CLI flags before extracting suggestions
+    cli_provided = options.action && options.resource
+
+    # If permission name provided, extract suggestions for action and resource
+    extract_action_and_resource_from_name!
+
+    # Prompt for action/resource with suggestions from the permission name
+    options.action ||= PermissionOptionParser.read_action(suggestion: suggested_action)
+    options.resource ||= PermissionOptionParser.read_resource(suggestion: suggested_resource)
+
+    # Validate action (after it's set, whether from CLI or prompt)
+    validate_action!
+
+    # Check if permission already exists before asking for more details
+    assert_existing_permission!
+
+    # Auto-default description when action and resource were provided via CLI,
+    # otherwise prompt so the user can confirm or override
+    if cli_provided
+      options.description ||= default_description
+    else
+      options.description ||= PermissionOptionParser.read_description(action: options.action, resource: options.resource)
+    end
+
+    derive_and_validate!
+
+    # If creating metadata file, ask for feature category and optional resource metadata
+    if should_create_metadata?
+      prompted = !options.feature_category
+      options.feature_category ||= PermissionOptionParser.read_feature_category
+
+      # Only prompt for optional metadata fields when we already prompted for feature category
+      if prompted
+        options.resource_display_name ||= PermissionOptionParser.read_resource_display_name(resource: options.resource)
+        options.resource_description ||= PermissionOptionParser.read_resource_description
+      end
+    end
+
+    $stdout.puts "\e[32mcreate\e[0m #{permission_file_path}"
+
+    $stdout.puts "\e[32mcreate\e[0m #{metadata_file_path}" if should_create_metadata?
+
+    $stdout.puts permission_contents
+    $stdout.puts metadata_contents if should_create_metadata?
+
+    write unless options.dry_run
+
+    $stdout.puts
+    $stdout.puts "Run 'bundle exec rake gitlab:permissions:validate' to validate your permission"
+    raise PermissionHelpers::Done
+  end
+
+  private
+
+  def extract_action_and_resource_from_name!
+    return unless options.name
+
+    # Extract suggestions from the permission name
+    parts = options.name.split('_', 2)
+    @suggested_action = parts[0]
+    @suggested_resource = parts[1]
+  end
+
+  def default_description
+    "Grants the ability to #{options.action} #{options.resource.pluralize.tr('_', ' ')}"
+  end
+
+  def derive_and_validate!
+    # At this point, both action and resource should be set
+    # Reconstruct name to ensure consistency
+    options.name = "#{options.action}_#{options.resource}"
+
+    # Validate permission name format
+    return if options.name.match?(PermissionOptionParser::PERMISSION_NAME_REGEX)
+
+    fail_with "Permission name '#{options.name}' doesn't match required format: action_resource"
+  end
+
+  def assert_name!
+    # Name is optional - it will be prompted for if not provided
+    return unless options.name
+
+    # If name was provided, validate its format
+    return if options.name.match?(/\A[a-z0-9_-]+\z/)
+
+    fail_with "Provide a valid permission name"
+  end
+
+  def validate_action!
+    return unless options.action
+    return unless PermissionOptionParser::DISALLOWED_ACTIONS.include?(options.action)
+
+    suggestion = Authz::Validation::DISALLOWED_ACTIONS[options.action.to_sym]
+    fail_with "Action '#{options.action}' is not allowed. Use '#{suggestion}' instead."
+  end
+
+  def assert_existing_permission!
+    return unless File.exist?(permission_file_path)
+    return if options.force
+
+    fail_with "#{permission_file_path} already exists! Use `--force` to overwrite."
+  end
+
+  def permission_file_path
+    File.join(PERMISSIONS_DIR, options.resource, "#{options.action}.yml")
+  end
+
+  def metadata_file_path
+    File.join(PERMISSIONS_DIR, options.resource, METADATA_FILENAME)
+  end
+
+  def should_create_metadata?
+    !File.exist?(metadata_file_path)
+  end
+
+  def permission_contents
+    {
+      'name' => options.name,
+      'description' => options.description
+    }.to_yaml
+  end
+
+  def metadata_contents
+    {
+      'name' => options.resource_display_name,
+      'description' => options.resource_description,
+      'feature_category' => options.feature_category
+    }.compact.to_yaml
+  end
+
+  def write
+    FileUtils.mkdir_p(File.dirname(permission_file_path))
+    File.write(permission_file_path, permission_contents)
+    File.write(metadata_file_path, metadata_contents) if should_create_metadata?
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  begin
+    options = PermissionOptionParser.parse(ARGV)
+    PermissionCreator.new(options).execute
+  rescue PermissionHelpers::Abort => ex
+    warn ex.message
+    exit 1
+  rescue PermissionHelpers::Done
+    exit
+  rescue Interrupt, EOFError
+    $stderr.puts "\nAborted."
+    exit 130
+  end
+end

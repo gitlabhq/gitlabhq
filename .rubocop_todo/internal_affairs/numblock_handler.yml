@@ -1,9 +1,6 @@
 ---
 InternalAffairs/NumblockHandler:
   Exclude:
-    - 'rubocop/cop/avoid_break_from_strong_memoize.rb'
-    - 'rubocop/cop/avoid_return_from_blocks.rb'
-    - 'rubocop/cop/experiments_test_coverage.rb'
     - 'rubocop/cop/gitlab/policy_rule_boolean.rb'
     - 'rubocop/cop/gitlab/strong_memoize_attr.rb'
     - 'rubocop/cop/migration/background_migration_missing_active_concern.rb'

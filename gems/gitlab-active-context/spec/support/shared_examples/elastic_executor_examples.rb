@@ -418,4 +418,60 @@ RSpec.shared_examples 'an elastic executor' do
       end
     end
   end
+
+  describe '#nullify_field' do
+    let(:collection_name) { 'test_collection' }
+    let(:field_name) { 'description' }
+    let(:collection) { double('Collection', name: 'prefix_test_collection', number_of_partitions: 2) }
+
+    before do
+      allow(connection).to receive_message_chain(:collections, :find_by).and_return(collection)
+      allow(raw_client).to receive(:update_by_query).and_return({ 'updated' => 10 })
+    end
+
+    it 'calls update_by_query with correct parameters' do
+      executor.nullify_field(collection_name, field_name, batch_size: 100)
+
+      expect(raw_client).to have_received(:update_by_query).with(
+        index: 'prefix_test_collection',
+        max_docs: 100,
+        conflicts: 'proceed',
+        body: hash_including(
+          query: { exists: { field: field_name } },
+          script: hash_including(
+            lang: 'painless',
+            source: "ctx._source.remove('#{field_name}')"
+          )
+        )
+      )
+    end
+
+    it 'returns the number of updated documents' do
+      allow(raw_client).to receive(:update_by_query).and_return({ 'updated' => 42 })
+
+      result = executor.nullify_field(collection_name, field_name, batch_size: 100)
+
+      expect(result).to eq(42)
+    end
+
+    it 'returns 0 when no documents are updated' do
+      allow(raw_client).to receive(:update_by_query).and_return({})
+
+      result = executor.nullify_field(collection_name, field_name, batch_size: 100)
+
+      expect(result).to eq(0)
+    end
+
+    context 'when collection does not exist' do
+      before do
+        allow(connection).to receive_message_chain(:collections, :find_by).and_return(nil)
+      end
+
+      it 'raises an error' do
+        expect do
+          executor.nullify_field(collection_name, field_name, batch_size: 100)
+        end.to raise_error(/Collection .* not found/)
+      end
+    end
+  end
 end

@@ -57,6 +57,30 @@ RSpec.describe Mutations::WorkItems::SavedViews::Create, feature_category: :port
     end
   end
 
+  context 'with privacy settings' do
+    before_all do
+      project.add_planner(current_user)
+    end
+
+    it 'defaults to private' do
+      result = mutation.resolve(**arguments)
+
+      expect(result[:saved_view].private).to be true
+    end
+
+    it 'correctly sets private with is_private parameter' do
+      result = mutation.resolve(**arguments.merge(is_private: false))
+
+      expect(result[:saved_view].private).to be false
+    end
+
+    it 'correctly sets private with private parameter' do
+      result = mutation.resolve(**arguments.merge(private: false))
+
+      expect(result[:saved_view].private).to be false
+    end
+  end
+
   context 'when saved view creation fails' do
     before_all do
       project.add_planner(current_user)

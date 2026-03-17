@@ -11,7 +11,7 @@ module Mutations
 
         authorize :read_work_item
 
-        argument :children_ids, [::Types::GlobalIDType[::WorkItem]],
+        argument :children_ids, [::Types::GlobalIDType[::WorkItem]], # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
           required: true,
           description: 'Global IDs of children work items.',
           loads: ::Types::WorkItemType,

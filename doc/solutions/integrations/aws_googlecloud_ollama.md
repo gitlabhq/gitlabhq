@@ -110,7 +110,7 @@ A valid SSL certificate (such as Let's Encrypt) must be configured for the GitLa
 
 GitLab provides a convenient automated SSL setup process:
 
-- During the GitLab installation, simply specify your URL with "https://" prefix
+- During the GitLab installation, simply specify your URL with `https://` prefix
 - GitLab will automatically:
   - Obtain a Let's Encrypt SSL certificate
   - Install the certificate
@@ -216,7 +216,6 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
 
    > [!note]
    > Replace the IP address with your actual server's internal IP address.
-
 1. Reload and restart the service:
 
    ```shell
@@ -239,7 +238,6 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
    ```
 
    The `mistral:instruct` model requires approximately 4.1 GB of storage space and will take a while to download depending on your connection speed.
-
 1. Verify the model installation:
 
    ```shell
@@ -284,7 +282,6 @@ During the initial setup and testing phase, you can set AIGW_AUTH__BYPASS_EXTERN
    - Click "Add self-hosted model" button
 
    ![Configure Self-Hosted Model](img/self_hosted_model/self-hosted-model-initial_v17_10.png)
-
 1. Configure Model Settings
 
    - **Deployment name**: Choose a descriptive name (for example `Mistral-7B-Instruct-v0.3 on AWS Tokyo`)

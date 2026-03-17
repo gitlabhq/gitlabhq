@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: Documentation deployments
 ---
 
@@ -79,7 +79,6 @@ The process involves:
 - Building the site (`build:compile_site` job):
   - Pulls content from default branches of upstream projects (`gitlab`, `gitlab-runner`, `omnibus-gitlab`, `gitlab-operator` and `charts`).
   - Compiles the site using Hugo.
-
 - Deploying the site (`pages` job):
   - Takes the compiled site.
   - Deploys it to `docs.gitlab.com` with GitLab Pages.
@@ -108,7 +107,6 @@ The deployment of all documentation versions is handled by two GitLab Pages jobs
   - Deploys the upcoming unreleased version to `docs.gitlab.com`.
   - Triggered by pipelines on the default branch (`main`).
   - Takes compiled site from `build:compile_site` job.
-
 - [`pages-archives`](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab/ci/deploy.gitlab-ci.yml#L38) job:
   - Deploys stable versions:
     - The current stable version and two previous minor versions at `docs.gitlab.com/VERSION/`.

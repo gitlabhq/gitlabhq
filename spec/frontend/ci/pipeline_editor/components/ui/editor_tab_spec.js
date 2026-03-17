@@ -1,4 +1,4 @@
-import { GlAlert, GlBadge, GlTabs } from '@gitlab/ui';
+import { GlAlert, GlTabs } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import EditorTab from '~/ci/pipeline_editor/components/ui/editor_tab.vue';
@@ -33,7 +33,7 @@ describe('~/ci/pipeline_editor/components/ui/editor_tab.vue', () => {
           <editor-tab title="Tab 1" :title-link-attributes="{ 'data-testid': 'tab1-btn' }" :lazy="true">
             <mock-child content="${mockContent1}"/>
           </editor-tab>
-          <editor-tab title="Tab 2" :title-link-attributes="{ 'data-testid': 'tab2-btn' }" :lazy="true" badge-title="NEW">
+          <editor-tab title="Tab 2" :title-link-attributes="{ 'data-testid': 'tab2-btn' }" :lazy="true">
             <mock-child content="${mockContent2}"/>
           </editor-tab>
         </gl-tabs>
@@ -58,7 +58,6 @@ describe('~/ci/pipeline_editor/components/ui/editor_tab.vue', () => {
 
   const findSlotComponent = () => wrapper.findComponent(MockSourceEditor);
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findBadges = () => wrapper.findAllComponents(GlBadge);
 
   beforeEach(() => {
     mockChildMounted = jest.fn();
@@ -184,17 +183,6 @@ describe('~/ci/pipeline_editor/components/ui/editor_tab.vue', () => {
       expect(mockChildMounted).toHaveBeenCalledTimes(2);
       expect(mockChildMounted).toHaveBeenNthCalledWith(1, mockContent1);
       expect(mockChildMounted).toHaveBeenNthCalledWith(2, mockContent2);
-    });
-  });
-
-  describe('valid state', () => {
-    beforeEach(() => {
-      createMockedWrapper();
-    });
-
-    it('renders correct number of badges', () => {
-      expect(findBadges()).toHaveLength(1);
-      expect(findBadges().at(0).text()).toBe('NEW');
     });
   });
 });

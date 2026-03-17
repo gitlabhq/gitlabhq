@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Project topics
 description: Project organization, subscribe, and view.
 ---
@@ -31,9 +31,9 @@ Topics assigned to a project are displayed in the **Project overview** and [**Pr
 
 To explore project topics:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **Explore**.
-1. On the left sidebar, select **Topics**. The **Explore topics** page displays a list of all project topics.
+1. In the left sidebar, select **Topics**. The **Explore topics** page displays a list of all project topics.
 1. Optional. To filter topics by name, in the search box, enter your search criteria.
 1. To view the projects associated with a topic, select a topic.
    You can also access a topic page with the URL `https://gitlab.com/explore/projects/topics/<topic-name>`.
@@ -53,7 +53,6 @@ You can also sort the projects by:
 - Date
 - Name
 - Number of stars
-
 - To filter projects by name, in the search box, enter your search criteria.
 - To sort projects by other criteria, from the dropdown lists, select an option.
 
@@ -66,16 +65,13 @@ You can do this either from the **Explore topics** page or a project with topics
 To subscribe to a topic:
 
 - From the **Explore topics** page:
-
-  1. On the left sidebar, expand the top-most chevron ({{< icon name="chevron-down" >}}).
+  1. In the left sidebar, expand the top-most chevron ({{< icon name="chevron-down" >}}).
   1. Select **Explore**.
   1. Select **Topics**.
   1. Select the topic you want to subscribe to.
   1. In the upper-right corner, select **Subscribe to the new projects feed** ({{< icon name="rss" >}}).
-
 - From a project:
-
-  1. On the top bar, select **Search or go to** and find your project.
+  1. In the top bar, select **Search or go to** and find your project.
   1. In the **Project overview** page, from the **Topics** list select the topic you want to subscribe to.
   1. In the upper-right corner, select **Subscribe to the new projects feed** ({{< icon name="rss" >}}).
 
@@ -86,11 +82,11 @@ The URL of the result contains a feed token and the list of projects that have t
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To assign topics to a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Naming, description, topics**.
 1. In the **Project topics** text box, search for a topic. Popular topics are suggested as you type.

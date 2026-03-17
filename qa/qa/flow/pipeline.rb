@@ -71,11 +71,6 @@ module QA
         )
       end
 
-      def wait_for_latest_pipeline_to_start(project:, wait: 240)
-        Runtime::Logger.info("Waiting for #{project.name}'s latest pipeline to start...")
-        wait_for_latest_pipeline_to_have_status(project: project, status: 'running', wait: wait)
-      end
-
       # To wait for pipeline to complete regardless of status
       #
       def wait_for_latest_pipeline_to_finish(project:, wait: 240)

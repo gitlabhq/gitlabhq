@@ -77,31 +77,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
 
       step.perform!
     end
-
-    context 'when FF `ci_write_pipeline_variables_artifact` is disabled' do
-      before do
-        stub_feature_flags(ci_write_pipeline_variables_artifact: false)
-      end
-
-      it 'assigns variables to the pipeline' do
-        step.perform!
-
-        expect(pipeline.variables.map { |var| var.slice(:key, :secret_value) })
-          .to eq variables_attributes.map(&:with_indifferent_access)
-      end
-
-      it 'does not call PipelineVariablesArtifactBuilder' do
-        expect(Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder).not_to receive(:new)
-
-        step.perform!
-      end
-
-      it 'does not build a pipeline_variables artifact' do
-        step.perform!
-
-        expect(pipeline.pipeline_artifacts_pipeline_variables).to be_nil
-      end
-    end
   end
 
   it_behaves_like 'assigns pipeline variables'
@@ -253,6 +228,22 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
 
       expect(pipeline.pipeline_artifacts_pipeline_variables).to be_nil
     end
+  end
+
+  # TODO: Remove with FF `ci_stop_writing_to_pipeline_variables` cleanup
+  it 'does not assign variables_attributes to the pipeline' do
+    step.perform!
+
+    expect(pipeline.association(:variables).target).to be_empty
+  end
+
+  context 'when ci_stop_writing_to_pipeline_variables FF is disabled' do
+    before do
+      stub_feature_flags(ci_stop_writing_to_pipeline_variables: false)
+    end
+
+    it_behaves_like 'assigns pipeline variables'
+    it_behaves_like 'does not break the chain'
   end
 
   context 'when PipelineVariablesArtifactBuilder raises ActiveModel::ValidationError' do

@@ -53,15 +53,5 @@ RSpec.describe API::Entities::Ci::JobRequest::Response, feature_category: :conti
     it 'returns run_steps from job definition' do
       expect(runner_payload[:run]).to eq(job_definition_run_steps.to_json)
     end
-
-    context 'when feature flag read_from_ci_job_definition_run_steps is disabled' do
-      before do
-        stub_feature_flags(read_from_ci_job_definition_run_steps: false)
-      end
-
-      it 'returns run_steps from execution config' do
-        expect(runner_payload[:run]).to eq(job_execution_config_run_steps.to_json)
-      end
-    end
   end
 end

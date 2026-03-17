@@ -10,5 +10,3 @@ module QA
     end
   end
 end
-
-QA::Page::Project::Members.prepend_mod_with('Page::Component::DuoChatCallout', namespace: QA)

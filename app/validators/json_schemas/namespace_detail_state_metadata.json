@@ -18,6 +18,12 @@
         "null"
       ]
     },
+    "deletion_error": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "correlation_id": {
       "type": [
         "string",
@@ -30,6 +36,28 @@
     },
     "deletion_scheduled_by_user_id": {
       "type": "number"
+    },
+    "transfer_initiated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "transfer_initiated_by_user_id": {
+      "type": "number"
+    },
+    "transfer_target_parent_id": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "transfer_attempt_count": {
+      "type": "number"
+    },
+    "transfer_last_error": {
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "preserved_states": {
       "type": "object",
@@ -47,6 +75,13 @@
             "ancestor_inherited",
             "archived",
             "deletion_scheduled"
+          ]
+        },
+        "start_transfer": {
+          "type": "string",
+          "enum": [
+            "ancestor_inherited",
+            "archived"
           ]
         }
       },

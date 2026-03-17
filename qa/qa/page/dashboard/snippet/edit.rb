@@ -14,7 +14,7 @@ module QA
             element 'file-holder-container'
           end
 
-          view 'app/assets/javascripts/blob/components/blob_edit_header.vue' do
+          view 'app/assets/javascripts/snippets/components/snippet_blob_edit_header.vue' do
             element 'delete-file-button'
           end
 

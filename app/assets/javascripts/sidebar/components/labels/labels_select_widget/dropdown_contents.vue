@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlDropdown, GlDropdownItem, GlLink } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
 import DropdownContentsCreateView from './dropdown_contents_create_view.vue';

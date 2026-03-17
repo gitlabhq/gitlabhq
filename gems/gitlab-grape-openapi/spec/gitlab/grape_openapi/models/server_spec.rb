@@ -15,5 +15,41 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Server do
         expect(server.to_h).to eq({ url: 'https://gitlab.com/api/v4' })
       end
     end
+
+    context 'with server variables' do
+      subject(:server) do
+        described_class.new(
+          url: 'https://{hostname}/api',
+          description: 'GitLab REST API',
+          variables: {
+            hostname: Gitlab::GrapeOpenapi::Models::ServerVariable.new(
+              default: 'gitlab.com',
+              description: 'Your GitLab instance hostname'
+            )
+          }
+        )
+      end
+
+      it 'includes variables in the hash' do
+        expect(server.to_h).to eq({
+          url: 'https://{hostname}/api',
+          description: 'GitLab REST API',
+          variables: {
+            hostname: {
+              default: 'gitlab.com',
+              description: 'Your GitLab instance hostname'
+            }
+          }
+        })
+      end
+    end
+
+    context 'when variables is nil' do
+      subject(:server) { described_class.new(url: 'https://gitlab.com/api/v4', variables: nil) }
+
+      it 'does not include variables in the hash' do
+        expect(server.to_h).to eq({ url: 'https://gitlab.com/api/v4' })
+      end
+    end
   end
 end

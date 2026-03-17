@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: ジョブアーティファクトのトラブルシューティング
 ---
 
@@ -18,7 +18,7 @@ title: ジョブアーティファクトのトラブルシューティング
 
 デフォルトでは、ジョブは前のステージからすべてのアーティファクトをフェッチしますが、`dependencies`または`needs`を使用するジョブでは、デフォルトでフェッチ対象のアーティファクトが限定されています。
 
-これらのキーワードを使用する場合、アーティファクトは一部のジョブからのみフェッチされます。これらのキーワードでアーティファクトをフェッチする方法については、キーワードのリファレンスを確認してください。
+これらのキーワードを使用する場合、アーティファクトは一部のジョブからのみフェッチされます。これらのキーワードでアーティファクトをフェッチする方法については、キーワードリファレンスを確認してください。
 
 - [`dependencies`](../yaml/_index.md#dependencies)
 - [`needs`](../yaml/_index.md#needs)
@@ -28,15 +28,15 @@ title: ジョブアーティファクトのトラブルシューティング
 
 ジョブアーティファクトがディスク容量を過剰に使用している場合は、[ジョブアーティファクトの管理ドキュメント](../../administration/cicd/job_artifacts_troubleshooting.md#job-artifacts-using-too-much-disk-space)を参照してください。
 
-## エラーメッセージ`No files to upload`（アップロードするファイルがありません） {#error-message-no-files-to-upload}
+## エラーメッセージ`No files to upload` {#error-message-no-files-to-upload}
 
 このメッセージは、Runnerがアップロードするファイルを見つけられない場合にジョブログに表示されます。ファイルへのパスが間違っているか、ファイルが作成されていません。ジョブログを確認し、ファイル名と生成されなかった理由を示すその他のエラーまたは警告がないか探してください。
 
 より詳細なジョブログを確認するには、[CI/CDのデバッグログを有効にして](../variables/variables_troubleshooting.md#enable-debug-logging)ジョブを再試行してください。このログの生成により、ファイルが作成されなかった理由に関する詳細情報を得られる場合があります。
 
-## Windows Runnerでdotenvアーティファクトをアップロードする際のエラーメッセージ`FATAL: invalid argument`（致命的なエラー: 無効な引数） {#error-message-fatal-invalid-argument-when-uploading-a-dotenv-artifact-on-a-windows-runner}
+## Windows Runnerでdotenvアーティファクトをアップロードする際のエラーメッセージ`FATAL: invalid argument` {#error-message-fatal-invalid-argument-when-uploading-a-dotenv-artifact-on-a-windows-runner}
 
-PowerShellの`echo`コマンドは、UCS-2 LE BOM（バイトオーダーマーク）エンコードでファイルを書き込みますが、サポートされているのはUTF-8のみです。そのため、`echo`で[`dotenv`](../yaml/artifacts_reports.md)アーティファクトを作成しようとすると、`FATAL: invalid argument`（致命的なエラー: 無効な引数）エラーが発生します。
+PowerShellの`echo`コマンドは、UCS-2 LE BOM（バイトオーダーマーク）エンコードでファイルを書き込みますが、サポートされているのはUTF-8のみです。そのため、`echo`で[`dotenv`](../yaml/artifacts_reports.md)アーティファクトを作成しようとすると、`FATAL: invalid argument`エラーが発生します。
 
 代わりに、UTF-8を使用するPowerShell `Add-Content`を使用してください。
 
@@ -59,7 +59,7 @@ test-job:
 
 この設定が有効になっている場合、各refの成功した最新のパイプラインから生成されたジョブアーティファクトは期限切れにならず、削除されません。
 
-## エラーメッセージ`This job could not start because it could not retrieve the needed artifacts.`（このジョブは必要なアーティファクトを取得できなかったため開始できませんでした） {#error-message-this-job-could-not-start-because-it-could-not-retrieve-the-needed-artifacts}
+## エラーメッセージ`This job could not start because it could not retrieve the needed artifacts.` {#error-message-this-job-could-not-start-because-it-could-not-retrieve-the-needed-artifacts}
 
 必要なアーティファクトをフェッチできなかった場合、ジョブは開始できず、このエラーメッセージを返します。このエラーは、次の場合に返されます。
 
@@ -67,7 +67,7 @@ test-job:
 - アーティファクトがすでに期限切れになっている場合。[`artifacts:expire_in`](../yaml/_index.md#artifactsexpire_in)で有効期限を延長できます。
 - 権限不足のため、ジョブが関連リソースにアクセスできない場合。
 
-ジョブが[`needs:artifacts`](../yaml/_index.md#needsartifacts):キーワードと次のキーワードを組み合わせて使用している場合、以下のトラブルシューティング手順を参照してください。
+ジョブが[`needs:artifacts`](../yaml/_index.md#needsartifacts)キーワードと次のキーワードを組み合わせて使用している場合、以下のトラブルシューティング手順を参照してください。
 
 - [`needs:project`](#for-a-job-configured-with-needsproject)
 - [`needs:pipeline:job`](#for-a-job-configured-with-needspipelinejob)

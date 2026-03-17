@@ -1,11 +1,11 @@
 ---
 stage: AI-powered
 group: Duo Chat
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Duo Chat prompt examples
 ---
 
-GitLab Duo Chat (Agentic) can help you answer questions that require information from multiple files or GitLab resources.
+GitLab Duo Chat (agentic) can help you answer questions that require information from multiple files or GitLab resources.
 It can answer questions about your codebase, and you don't need to specify exact file paths.
 It can also understand the status of issues or merge requests, and create and edit files.
 

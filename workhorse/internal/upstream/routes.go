@@ -210,6 +210,7 @@ func (u *upstream) route(method string, metadata routeMetadata, handler http.Han
 	}
 }
 
+//nolint:unparam // matchers kept for API consistency with other route methods
 func (u *upstream) wsRoute(metadata routeMetadata, handler http.Handler, matchers ...matcherFunc) routeEntry {
 	method := "GET"
 	handler = u.observabilityMiddlewares(handler, method, metadata, nil)
@@ -304,7 +305,8 @@ func buildProxy(backend *url.URL, version string, rt http.RoundTripper, cfg conf
 // Routing table
 // We match against URI not containing the relativeUrlRoot:
 // see upstream.ServeHTTP
-
+//
+//nolint:funlen // Route configuration is inherently verbose; splitting would reduce readability
 func configureRoutes(u *upstream) {
 	api := u.APIClient
 	static := &staticpages.Static{DocumentRoot: u.DocumentRoot, Exclude: staticExclude, API: u.APIClient}

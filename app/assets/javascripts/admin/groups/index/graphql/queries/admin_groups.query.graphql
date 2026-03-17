@@ -30,6 +30,9 @@ query adminGroupsQuery(
       ... on Group {
         ...Group
         ...AdminGroup
+        projects {
+          count
+        }
       }
     }
     pageInfo {

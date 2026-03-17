@@ -1,5 +1,3 @@
 ---
 name: mark_database_migration
 description: Grants the ability to mark database migrations
-boundaries:
-  - instance

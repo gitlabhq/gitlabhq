@@ -35,7 +35,7 @@ export default {
   },
   props: {
     target: {
-      type: HTMLAnchorElement,
+      type: [HTMLAnchorElement, HTMLButtonElement],
       required: true,
     },
     milestoneId: {

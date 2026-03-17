@@ -1,0 +1,23 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_deprecate_npm_package
+description: Count of unique users who deprecated a npm package
+product_group: package_registry
+product_categories:
+- package_registry
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '18.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226350
+time_frame:
+- 28d
+- 7d
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: deprecate_npm_package
+  unique: user.id

@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Quota::Deployments do
   let(:ci_pipeline_deployments_limit) { 0 }
 
   before do
-    plan_limits.update!(ci_pipeline_deployments: ci_pipeline_deployments_limit)
+    namespace.actual_plan.actual_limits.update!(ci_pipeline_deployments: ci_pipeline_deployments_limit)
   end
 
   subject(:quota) { described_class.new(namespace, pipeline, command) }

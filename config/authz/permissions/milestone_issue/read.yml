@@ -1,6 +1,3 @@
 ---
 name: read_milestone_issue
 description: Grants the ability to read milestone issues
-boundaries:
-  - group
-  - project

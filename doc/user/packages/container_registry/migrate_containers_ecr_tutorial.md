@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Migrate container images from Amazon ECR to GitLab'
 description: Tutorial to automate the bulk migration of container images into GitLab from Amazon Elastic Container Registry.
 ---
@@ -21,7 +21,7 @@ When you put it all together, your `.gitlab-ci.yml` should look similar to the [
 
 You must have:
 
-- At least the Maintainer role in your GitLab project
+- The Maintainer or Owner role in your GitLab project
 - Access to your AWS account with permissions to create IAM users
 - Your AWS account ID
 - Your AWS region where ECR repositories are located
@@ -62,7 +62,7 @@ In AWS IAM, create a new policy and user with read-only access to ECR:
 
 Configure the required AWS credentials as variables in your GitLab project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and add:

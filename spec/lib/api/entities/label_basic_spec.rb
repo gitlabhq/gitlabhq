@@ -41,30 +41,6 @@ RSpec.describe API::Entities::LabelBasic, feature_category: :team_planning do
       let(:label) { create(:label, archived: true) }
 
       it { is_expected.to include(:archived) }
-
-      context 'when labels_archive feature is disabled' do
-        before do
-          stub_feature_flags(labels_archive: false)
-        end
-
-        context 'with group label' do
-          let(:label) { create(:group_label, group: group, archived: true) }
-
-          it { is_expected.not_to include(:archived) }
-        end
-
-        context 'with project label' do
-          let(:label) { create(:label, project: project, archived: true) }
-
-          it { is_expected.not_to include(:archived) }
-        end
-
-        context 'with admin label' do
-          let(:label) { create(:admin_label, archived: true) }
-
-          it { is_expected.not_to include(:archived) }
-        end
-      end
     end
   end
 end

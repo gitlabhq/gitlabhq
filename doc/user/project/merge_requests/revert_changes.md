@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: How to revert commits or merge requests in a GitLab project.
 title: Revert changes
 ---
@@ -47,7 +47,7 @@ Prerequisites:
 
 To revert merge request `Example`:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests**.
 1. From the secondary menu, select **Merged**, and select your merge request (here, `Example`).
 1. Scroll to the merge request reports area, and find the report showing the
@@ -78,7 +78,7 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. If you know the merge request that contains the commit:
    1. In the left sidebar, select **Code** > **Merge requests**, then select your merge request.
    1. Select **Commits**, then select the title of the commit you want to revert.

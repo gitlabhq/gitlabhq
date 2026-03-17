@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: URLs in GitLab
 ---
 
@@ -19,7 +19,7 @@ To ensure URLs work correctly across all deployment configurations follow the be
 ## General guidelines
 
 - Use Rails as the single source of truth for generating URLs. If you need a URL on the
-frontend, generate it in Rails and pass it to the frontend.
+  frontend, generate it in Rails and pass it to the frontend.
 - Use relative URLs for internal application links. Use absolute URLs only when:
   - Generating links for emails.
   - Constructing URLs for external services.

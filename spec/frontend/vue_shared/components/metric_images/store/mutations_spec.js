@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import * as types from '~/vue_shared/components/metric_images/store/mutation_types';
 import mutations from '~/vue_shared/components/metric_images/store/mutations';
 import { initialData } from '../mock_data';

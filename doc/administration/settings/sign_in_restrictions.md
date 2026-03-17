@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: Sign-in restrictions
 ---
@@ -190,7 +190,7 @@ Go to your list of active sessions:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Active sessions**.
+1. In the left sidebar, select **Access** > **Active sessions**.
 
 Sessions which have Admin Mode turned on display the text **Signed in on `date of session` with Admin Mode**.
 

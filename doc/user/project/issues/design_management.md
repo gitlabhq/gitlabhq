@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Design management (deprecated)
 ---
 
@@ -139,10 +139,10 @@ To add a design to an issue:
 1. Either:
    - Select **Upload designs** and then select images from your file browser. You can select up to
      10 files at once.
-   <!-- vale gitlab_base.SubstitutionWarning = NO -->
+     <!-- vale gitlab_base.SubstitutionWarning = NO -->
    - Select **click to upload** and then select images from your file browser. You can select up to
      10 files at once.
-   <!-- vale gitlab_base.SubstitutionWarning = YES -->
+     <!-- vale gitlab_base.SubstitutionWarning = YES -->
 
    - Drag a file from your file browser and drop it in the drop zone in the **Designs** section.
 
@@ -253,10 +253,7 @@ You can start [discussions](../../discussions/_index.md) on uploaded designs. To
 
 1. Go to an issue.
 1. Select the design.
-<!-- vale gitlab_base.SubstitutionWarning = NO -->
-<!-- Disable Vale so it doesn't catch "click" -->
 1. Select the image. A pin is created in that spot, identifying the discussion's location.
-<!-- vale gitlab_base.SubstitutionWarning = YES -->
 1. Enter your message.
 1. Select **Comment**.
 
@@ -336,7 +333,7 @@ and [project](../working_with_projects.md#view-project-activity) activity pages.
 You can use the GitLab-Figma plugin to upload your designs from Figma directly to your issues
 in GitLab.
 
-To use the plugin in Figma, install it from the [Figma Directory](https://www.figma.com/community/plugin/860845891704482356/gitlab)
+To use the plugin in Figma, install it from the [Figma directory](https://www.figma.com/community/plugin/860845891704482356/gitlab)
 and connect to GitLab through a personal access token.
 
 For more information, see the [plugin documentation](https://gitlab.com/gitlab-org/gitlab-figma-plugin/-/wikis/home).
@@ -362,4 +359,4 @@ The workaround is to select one of the previous versions from the dropdown list 
 **Designs** section.
 It's shown as either **Showing latest version** or **Showing version #N**.
 
-Issue [392540](https://gitlab.com/gitlab-org/gitlab/-/issues/392540) tracks improving this behavior.
+[Issue 392540](https://gitlab.com/gitlab-org/gitlab/-/issues/392540) tracks improving this behavior.

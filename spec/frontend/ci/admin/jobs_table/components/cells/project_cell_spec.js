@@ -1,4 +1,4 @@
-import { set } from 'lodash';
+import { set } from 'lodash-es';
 import { shallowMount } from '@vue/test-utils';
 import ProjectCell from '~/ci/admin/jobs_table/components/cells/project_cell.vue';
 import { mockAllJobsNodes } from 'jest/ci/jobs_mock_data';

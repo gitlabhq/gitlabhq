@@ -1,6 +1,4 @@
 <script>
-import { mapActions } from 'pinia';
-import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
 import NoteableDiscussion from './noteable_discussion.vue';
 
@@ -9,6 +7,9 @@ export default {
   components: {
     DesignNotePin,
     NoteableDiscussion,
+  },
+  inject: {
+    store: { type: Object },
   },
   props: {
     discussions: {
@@ -26,20 +27,6 @@ export default {
       default: false,
     },
   },
-  methods: {
-    ...mapActions(useDiffDiscussions, [
-      'replaceDiscussion',
-      'updateNote',
-      'deleteNote',
-      'editNote',
-      'setEditingMode',
-      'toggleDiscussionReplies',
-      'requestLastNoteEditing',
-      'startReplying',
-      'stopReplying',
-      'toggleAward',
-    ]),
-  },
 };
 </script>
 
@@ -51,19 +38,19 @@ export default {
         :key="discussion.id"
         :class="timelineLayout && index !== 0 && 'gl-mt-4'"
         :discussion="discussion"
-        :request-last-note-editing="requestLastNoteEditing"
+        :request-last-note-editing="store.requestLastNoteEditing"
         :timeline-layout="timelineLayout"
         :is-last-discussion="index === discussions.length - 1"
-        @toggleDiscussionReplies="toggleDiscussionReplies(discussion)"
-        @discussionUpdated="replaceDiscussion(discussion, $event)"
-        @noteUpdated="updateNote"
-        @noteDeleted="deleteNote"
-        @noteEdited="editNote"
-        @startEditing="setEditingMode($event, true)"
-        @cancelEditing="setEditingMode($event, false)"
-        @startReplying="startReplying(discussion)"
-        @stopReplying="stopReplying(discussion)"
-        @toggleAward="toggleAward"
+        @toggleDiscussionReplies="store.toggleDiscussionReplies(discussion)"
+        @discussionUpdated="store.replaceDiscussion(discussion, $event)"
+        @noteUpdated="store.updateNote"
+        @noteDeleted="store.deleteNote"
+        @noteEdited="store.editNote"
+        @startEditing="store.setEditingMode($event, true)"
+        @cancelEditing="store.setEditingMode($event, false)"
+        @startReplying="store.startReplying(discussion)"
+        @stopReplying="store.stopReplying(discussion)"
+        @toggleAward="store.toggleAward"
       >
         <template v-if="counterBadgeVisible" #avatar-badge>
           <design-note-pin

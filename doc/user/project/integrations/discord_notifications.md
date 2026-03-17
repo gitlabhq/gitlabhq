@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Discord notifications
 description: "Configure the Discord notifications integration to receive notifications from GitLab in Discord channels."
 ---
@@ -44,7 +44,7 @@ Prerequisites:
 
 With the webhook URL created in the Discord channel, you can set up the Discord Notifications integration in GitLab.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Discord Notifications**.
 1. Ensure that the **Active** toggle is enabled.

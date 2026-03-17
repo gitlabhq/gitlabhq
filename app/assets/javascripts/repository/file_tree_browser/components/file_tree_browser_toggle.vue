@@ -41,9 +41,6 @@ export default {
     shortcutsEnabled() {
       return !shouldDisableShortcuts();
     },
-    showTooltip() {
-      return this.shortcutsEnabled && !this.isAnimating;
-    },
     target() {
       return () => this.$refs.toggle?.$el;
     },
@@ -90,23 +87,23 @@ export default {
     @click="onClickToggle"
   >
     <gl-tooltip
-      v-if="showTooltip"
-      custom-class="file-browser-toggle-tooltip"
+      v-if="!isAnimating"
+      custom-class="gl-tooltip file-browser-toggle-tooltip"
       :target="target"
       placement="left"
       triggers="hover focus"
     >
       {{ toggleFileBrowserTitle }}
       <shortcut
-        class="gl-whitespace-nowrap"
+        v-if="shortcutsEnabled"
         :shortcuts="$options.TOGGLE_FILE_TREE_BROWSER_VISIBILITY.defaultKeys"
       />
     </gl-tooltip>
   </gl-button>
 </template>
 
-<style scoped>
+<style>
 .file-browser-toggle-tooltip .tooltip-inner {
-  max-width: 210px;
+  max-width: none;
 }
 </style>

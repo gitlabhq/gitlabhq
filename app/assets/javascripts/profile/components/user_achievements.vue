@@ -103,7 +103,7 @@ export default {
         <br />
         <gl-badge
           v-if="showCountBadge(userAchievement.count)"
-          class="gl-absolute gl-left-7 gl-top-7 gl-z-1"
+          class="gl-absolute -gl-right-4 gl-top-7 gl-z-1"
           variant="info"
           >{{ getCountBadge(userAchievement.count) }}</gl-badge
         >

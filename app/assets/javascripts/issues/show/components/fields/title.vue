@@ -35,8 +35,8 @@ export default {
       :placeholder="__('Title')"
       :aria-label="__('Title')"
       @input="(val) => $emit('input', val)"
-      @keydown.meta.enter.native="updateIssuable"
-      @keydown.ctrl.enter.native="updateIssuable"
+      @keydown.meta.enter="updateIssuable"
+      @keydown.ctrl.enter="updateIssuable"
     />
   </gl-form-group>
 </template>

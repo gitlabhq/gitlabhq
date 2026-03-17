@@ -10,6 +10,7 @@ module UserSettings
 
     before_action :set_user
     before_action :authorize_change_password!
+    before_action :set_hide_search_settings, only: [:edit, :update]
 
     layout :determine_layout
 
@@ -65,6 +66,10 @@ module UserSettings
     end
 
     private
+
+    def set_hide_search_settings
+      @hide_search_settings = true
+    end
 
     def set_user
       @user = current_user

@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Active sessions
 ---
 
@@ -21,7 +21,7 @@ To list all active sessions:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Active sessions**.
+1. In the left sidebar, select **Access** > **Active sessions**.
 
 ![Active sessions list](img/active_sessions_list_v12_7.png)
 
@@ -36,7 +36,7 @@ To revoke an active session:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Active sessions**.
+1. In the left sidebar, select **Access** > **Active sessions**.
 1. Select **Revoke** next to a session. The current session cannot be revoked, as this would sign you out of GitLab.
 
 > [!note]
@@ -57,18 +57,6 @@ To revoke all sessions for all users:
 1. Optional. List all active sessions with the following command:
 
    ```ruby
-   ActiveSession.list(User.all)
-   ```
-
-1. Revoke all sessions with the following command:
-
-   ```ruby
-   ActiveSession.destroy_all
-   ```
-
-1. Verify sessions are closed with the following command:
-
-   ```ruby
    # Show all users with active sessions
     puts "=== Currently Logged In Users ==="
     User.find_each do |user|
@@ -81,6 +69,16 @@ To revoke all sessions for all users:
         end
     end
    ```
+
+1. Revoke all sessions with the following command:
+
+   ```ruby
+   User.find_each do |user|
+      ActiveSession.destroy_all_but_current(user, nil)
+   end
+   ```
+
+1. Optional. Confirm all sessions have been revoked by running the "List all active sessions" command again.
 
 ### Revoke all sessions for a user
 

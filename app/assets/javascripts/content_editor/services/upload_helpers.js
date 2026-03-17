@@ -1,4 +1,4 @@
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { VARIANT_DANGER } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __, sprintf } from '~/locale';

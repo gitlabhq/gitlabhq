@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: '`NOT NULL` constraints'
 ---
 
@@ -74,9 +74,9 @@ The steps required are:
          examples of methods to look out for.
    1. Add a post-deployment migration to fix the existing records.
 
-     > [!note]
-     > Depending on the size of the table, a background migration for cleanup could be required in the next release.
-     > See the [`NOT NULL` constraints on large tables](not_null_constraints.md#not-null-constraints-on-large-tables) section for more information.
+      > [!note]
+      > Depending on the size of the table, a background migration for cleanup could be required in the next release.
+      > See the [`NOT NULL` constraints on large tables](not_null_constraints.md#not-null-constraints-on-large-tables) section for more information.
 
 1. Release `N.M+1` (next release)
 
@@ -365,7 +365,7 @@ scheduled after the background migration has completed, which could be several r
 
 1. **Optional.** If the constraint was validated asynchronously, validate the `NOT NULL` constraint once validation is complete:
    - Use [Database Lab](database_lab.md) to check if the validation was successful.
-   Run the command `\d+ table_name` and ensure that `NOT VALID` has been removed from the check constraint definition.
+     Run the command `\d+ table_name` and ensure that `NOT VALID` has been removed from the check constraint definition.
    - Add the migration to validate the `NOT NULL` constraint:
 
      ```ruby

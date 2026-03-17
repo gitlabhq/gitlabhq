@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Analytics Instrumentation
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: AI Event Instrumentation Guide
 ---
 
@@ -9,7 +9,7 @@ This guide describes all fields required for instrumenting AI and GitLab Duo Age
 AI events use two context schemas:
 
 - [Standard Context](https://gitlab.com/gitlab-org/iglu/-/tree/master/public/schemas/com.gitlab/gitlab_standard/jsonschema) - Contains general fields used across all GitLab events.
-See documentation for [Standard context](standard_context_fields.md) fields.
+  See documentation for [Standard context](standard_context_fields.md) fields.
 - [AI Context](https://gitlab.com/gitlab-org/iglu/-/tree/master/public/schemas/com.gitlab/ai_context/jsonschema) - Contains DAP-specific fields for workflow and session management, model information, and token tracking
 
 ## Overview
@@ -162,13 +162,9 @@ You can add new fields to the AI Context if you want to track new properties tha
 To add a new field to the AI Context:
 
 1. Create a merge request in the [iglu](https://gitlab.com/gitlab-org/iglu/-/tree/master/public/schemas/com.gitlab/ai_context/jsonschema?ref_type=heads) repository to update the schema.
-
 1. If the new field should be pseudonymized, add it to the appropriate pseudonymization configuration in the `snowplow-pseudonymization` project.
-
 1. Update the AI Context implementation in the GitLab codebase to support the new field.
-
 1. Start sending events that include the new field in AI Context.
-
 1. Update this documentation to describe the new field.
 
 ## Related Documentation

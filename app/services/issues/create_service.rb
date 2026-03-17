@@ -171,7 +171,7 @@ module Issues
     def after_commit_tasks(user, issue)
       issue.run_after_commit do
         NewIssueWorker.perform_async(issue.id, user.id, issue.class.to_s)
-        Issues::PlacementWorker.perform_async(nil, issue.project_id)
+        Issues::PlacementWorker.perform_async({ 'namespace_id' => issue.relative_positioning_namespace.id })
       end
     end
   end

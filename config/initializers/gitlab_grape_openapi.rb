@@ -17,8 +17,14 @@ Gitlab::GrapeOpenapi.configure do |config|
 
   config.servers = [
     Gitlab::GrapeOpenapi::Models::Server.new(
-      url: 'https://gitlab.com/api',
-      description: "GitLab REST API"
+      url: 'https://{hostname}/',
+      description: "GitLab REST API",
+      variables: {
+        hostname: Gitlab::GrapeOpenapi::Models::ServerVariable.new(
+          default: 'gitlab.com',
+          description: 'Your GitLab instance hostname'
+        )
+      }
     )
   ]
 
@@ -43,16 +49,34 @@ Gitlab::GrapeOpenapi.configure do |config|
     )
   ]
 
+  # key: `route_setting` value
+  # value: rendered annotation key
+  # e.g. route_setting :lifecycle, "experimental" => YAML: `x-gitlab-lifecycle: experimental`
+  config.annotations = {
+    lifecycle: 'x-gitlab-lifecycle'
+  }
+
   config.tag_overrides = {
+    'Ai catalog' => 'AI Catalog',
     'Api' => 'API',
     'bitbucket' => 'Bitbucket',
     'Ci' => 'CI',
     'Dora' => 'DORA',
+    'Duo workflows' => 'Duo Workflows',
+    'geo' => 'Geo',
     'Github' => 'GitHub',
+    'Gitlab duo' => 'GitLab Duo',
+    'Gitlab pages' => 'GitLab Pages',
+    'Gitlab' => 'GitLab',
     'Gpg' => 'GPG',
     'Glql' => 'GLQL',
     'google cloud' => 'Google Cloud',
+    'Jira connect' => 'Jira Connect',
     'Ldap' => 'LDAP',
+    'markdown' => 'Markdown',
+    'Ml model registry' => 'ML Model Registry',
+    'Mlops' => 'MLOps',
+    'Mcp' => 'MCP',
     'Npm' => 'NPM',
     'Oauth' => 'OAuth',
     'Pypi' => 'PyPi',
@@ -60,9 +84,44 @@ Gitlab::GrapeOpenapi.configure do |config|
     'Rubygem' => 'RubyGem',
     'Saml' => 'SAML',
     'Scim' => 'SCIM',
+    'sidekiq' => 'Sidekiq',
     'Ssh' => 'SSH',
+    'Terraform' => 'Terraform',
     'Todos' => 'To-Dos',
+    'unleash' => 'Unleash',
     'Vscode' => 'VSCode'
+  }.freeze
+
+  # CONFIGURE COERCER MAPPINGS
+  # Maps coerce_with classes to OpenAPI schema properties.
+  # When a parameter uses coerce_with and the coercer matches a pattern below,
+  # the OpenAPI schema will be generated according to the mapping.
+  # For query parameters, style and explode control URL serialization format.
+  config.coercer_mappings = {
+    # Comma-separated string -> Array of strings (e.g., "bug,feature" -> ["bug", "feature"])
+    "CommaSeparatedToArray" => {
+      type: "array",
+      items_type: "string",
+      style: "form",
+      explode: false
+    },
+    # Comma-separated string -> Array of integers (e.g., "1,2,3" -> [1, 2, 3])
+    "CommaSeparatedToIntegerArray" => {
+      type: "array",
+      items_type: "integer",
+      style: "form",
+      explode: false
+    },
+    # Hash with string keys -> Hash with integer values
+    "HashOfIntegerValues" => {
+      type: "object",
+      additional_properties: { type: "integer" }
+    },
+    # Base64-encoded string -> Decoded bytes
+    "urlsafe_decode64" => {
+      type: "string",
+      format: "byte"
+    }
   }.freeze
 
   # CONFIGURE EXCLUDED APIs
@@ -98,6 +157,8 @@ Gitlab::GrapeOpenapi.configure do |config|
     'API::Internal::Pages',
     'API::Internal::Lfs',
     'API::Internal::Base',
-    'API::Internal::AutoFlow'
+    'API::Internal::AutoFlow',
+    'API::Scim::InstanceScim',
+    'API::Scim::GroupScim'
   ]
 end

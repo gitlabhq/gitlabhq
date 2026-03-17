@@ -20,6 +20,8 @@ import { EVENT_OPEN_GLOBAL_SEARCH } from '~/vue_shared/global_search/constants';
 import getRefMixin from '~/repository/mixins/get_ref';
 import FileTreeBrowserPopover from '~/repository/file_tree_browser/components/file_tree_browser_popover.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
+import { createItemVisibilityObserver, observeElements } from '~/lib/utils/lazy_render_utils';
+import { scrollUp } from '~/lib/utils/scroll_utils';
 import {
   normalizePath,
   dedupeByFlatPathAndId,
@@ -28,8 +30,7 @@ import {
   shouldStopPagination,
   hasMorePages,
   isExpandable,
-  createItemVisibilityObserver,
-  observeElements,
+  generateSkeletonItem,
 } from '../utils';
 
 export default {
@@ -77,6 +78,7 @@ export default {
       appearedItems: {},
       itemObserver: null,
       activeItemId: null,
+      focusRAFId: null,
     };
   },
   computed: {
@@ -85,7 +87,7 @@ export default {
       return this.buildList('/', 0);
     },
     isRootLoading() {
-      return this.isDirectoryLoading('/');
+      return this.isDirectoryLoading('/') && this.isDirectoryEmpty('/');
     },
     filterSearchShortcutKey() {
       if (this.shortcutsDisabled) {
@@ -146,6 +148,9 @@ export default {
   beforeDestroy() {
     this.itemObserver?.disconnect();
     this.mousetrap.unbind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
+    if (this.focusRAFId) {
+      cancelAnimationFrame(this.focusRAFId);
+    }
   },
   methods: {
     async loadInitialPath() {
@@ -158,9 +163,12 @@ export default {
       const rootElement = this.fileTreeBrowserIsPeekOn
         ? document.querySelector('.file-tree-browser-peek')
         : document.querySelector('.js-static-panel-inner');
-      this.itemObserver = createItemVisibilityObserver((itemId, isVisible) => {
-        this.appearedItems = { ...this.appearedItems, [itemId]: isVisible };
-      }, rootElement);
+      this.itemObserver = createItemVisibilityObserver(
+        (itemId, isVisible) => {
+          this.appearedItems = { ...this.appearedItems, [itemId]: isVisible };
+        },
+        { rootElement },
+      );
 
       this.observeListItems();
     },
@@ -200,12 +208,16 @@ export default {
           loading: this.isDirectoryLoading(treePath),
         });
 
-        if (this.shouldRenderShowMore(treePath, path))
-          directoryList.push(generateShowMoreItem(tree.id, path, level));
+        if (this.shouldRenderShowMore(treePath, path)) {
+          if (this.loadingPathsMap[path]) directoryList.push(generateSkeletonItem(path, level));
+          else directoryList.push(generateShowMoreItem(tree.id, path, level));
+        }
 
         // Recursively add children for expanded directories
         if (this.expandedPathsMap[treePath]) {
-          directoryList.push(...this.buildList(treePath, level + 1));
+          if (this.isDirectoryLoading(treePath) && this.isDirectoryEmpty(treePath))
+            directoryList.push(generateSkeletonItem(treePath, level + 1));
+          else directoryList.push(...this.buildList(treePath, level + 1));
         }
       });
 
@@ -238,8 +250,10 @@ export default {
           level,
         });
 
-        if (this.shouldRenderShowMore(blobPath, path))
-          filesList.push(generateShowMoreItem(blob.id, path, level));
+        if (this.shouldRenderShowMore(blobPath, path)) {
+          if (this.loadingPathsMap[path]) filesList.push(generateSkeletonItem(path, level));
+          else filesList.push(generateShowMoreItem(blob.id, path, level));
+        }
       });
 
       return filesList;
@@ -261,8 +275,10 @@ export default {
           level,
         });
 
-        if (this.shouldRenderShowMore(submodulePath, path))
-          submodulesList.push(generateShowMoreItem(submodule.id, path, level));
+        if (this.shouldRenderShowMore(submodulePath, path)) {
+          if (this.loadingPathsMap[path]) submodulesList.push(generateSkeletonItem(path, level));
+          else submodulesList.push(generateShowMoreItem(submodule.id, path, level));
+        }
       });
 
       return submodulesList;
@@ -382,6 +398,11 @@ export default {
       return Boolean(this.loadingPathsMap[normalizePath(path)]);
     },
 
+    isDirectoryEmpty(path) {
+      const contents = this.getDirectoryContents(path);
+      return !contents.trees.length && !contents.blobs.length && !contents.submodules.length;
+    },
+
     getDirectoryContents(path) {
       return this.directoriesCache[path] || { trees: [], blobs: [], submodules: [] };
     },
@@ -445,7 +466,7 @@ export default {
         const index = event.key === 'Home' ? 0 : items.length - 1;
         if (items.length) {
           this.activeItemId = items[index].id;
-          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+          this.$nextTick(() => this.focusActiveItemThrottled());
         }
         return;
       }
@@ -471,7 +492,7 @@ export default {
 
         if (match) {
           this.activeItemId = match.id;
-          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+          this.$nextTick(() => this.focusActiveItemThrottled());
         }
         return;
       }
@@ -486,7 +507,7 @@ export default {
         const child = items[current + 1];
         if (item?.type === 'tree' && child?.level > item.level) {
           this.activeItemId = child.id;
-          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+          this.$nextTick(() => this.focusActiveItemThrottled());
         }
         return;
       }
@@ -504,7 +525,7 @@ export default {
           .find((i) => i.level === item.level - 1);
         if (parent) {
           this.activeItemId = parent.id;
-          this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+          this.$nextTick(() => this.focusActiveItemThrottled());
         }
         return;
       }
@@ -519,10 +540,21 @@ export default {
       if (next < 0 || next >= items.length) return;
 
       this.activeItemId = items[next].id;
-      this.$nextTick(() => this.$refs.activeItem?.[0]?.focus());
+      this.$nextTick(() => this.focusActiveItemThrottled());
     },
     observeListItems() {
       this.$nextTick(() => observeElements(this.$refs.fileTreeList, this.itemObserver));
+    },
+    focusActiveItem() {
+      this.$refs.activeItem?.[0]?.focus();
+    },
+    focusActiveItemThrottled() {
+      if (this.focusRAFId) return;
+
+      this.focusRAFId = requestAnimationFrame(() => {
+        this.focusActiveItem();
+        this.focusRAFId = null;
+      });
     },
     handleClickSubmodule(webUrl) {
       visitUrl(webUrl);
@@ -551,6 +583,7 @@ export default {
       });
     },
     onFileClick() {
+      scrollUp();
       this.trackEvent('click_file_tree_browser_on_repository_page');
     },
     onTreeClick(item) {
@@ -592,7 +625,7 @@ export default {
         :aria-label="$options.searchLabel"
         :aria-keyshortcuts="filterSearchShortcutKey"
         class="gl-w-full !gl-px-3"
-        button-text-classes="gl-flex gl-w-full gl-text-secondary"
+        button-text-classes="gl-flex gl-w-full gl-text-subtle"
         @click="onFilterBarClick"
       >
         <span class="gl-grow gl-text-left">{{ $options.searchLabel }}</span>
@@ -624,7 +657,7 @@ export default {
       >
         <li
           v-for="item in flatFilesList"
-          :key="`${item.path}-${item.type}`"
+          :key="item.isSkeleton || item.isShowMore ? item.id : `${item.path}-${item.type}`"
           :ref="item.id === activeItemId ? 'activeItem' : undefined"
           :data-item-id="item.id"
           role="treeitem"
@@ -640,7 +673,7 @@ export default {
           @click="activeItemId = item.id"
         >
           <file-row
-            v-if="appearedItems[item.id]"
+            v-if="item.isSkeleton || appearedItems[item.id]"
             :file="item"
             :level="item.level"
             :opened="item.opened"

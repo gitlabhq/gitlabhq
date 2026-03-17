@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.issues_with_embedded_grafana_charts_approx
 description: Count of issues where a user has embedded a Grafana chart
 product_group: platform_insights
+product_categories:
+- observability
 value_type: number
 status: removed
 time_frame: all

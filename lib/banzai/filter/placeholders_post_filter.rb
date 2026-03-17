@@ -325,13 +325,7 @@ module Banzai
 
         sanitize_link(node)
 
-        if node['class']&.include?('lazy')
-          # Looks like ImageLazyLoadFilter ran on the original. Perform the same transformation it
-          # does on the URLs; copy src (which may have been changed by the AssetProxyFilter) to data-src,
-          # and replace src with the placeholder image.
-          node['data-src'] = node['src'] if node['src'].present?
-          node['src'] = LazyImageTagHelper.placeholder_image
-        end
+        ImageLazyLoadFilter.apply_lazy_load(node) if node.classes.include?('lazy')
 
         # At this point, src will contain either:
         # * the new URL, if neither AssetProxyFilter nor ImageLazyLoadFilter applied;

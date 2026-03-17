@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure GitLab editor extensions for Visual Studio Code, JetBrains IDEs, Visual Studio, Eclipse, and Neovim.
 title: Configure editor extensions
 ---
@@ -19,7 +19,7 @@ Configure editor extensions settings for your GitLab instance.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2738) in GitLab Workflow 6.47.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2738) in GitLab for VS Code 6.47.0.
 
 {{< /history >}}
 

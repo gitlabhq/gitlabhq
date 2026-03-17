@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe Pajamas::EmptyStateComponent, type: :component, feature_category: :design_system do
   let(:title) { 'Empty state title' }
+  let(:slot_title) { nil }
   let(:primary_button_link) { '#learn-more-primary' }
   let(:primary_button_text) { 'Learn more' }
   let(:primary_button_options) { { data: { testid: 'primary-application-button' } } }
@@ -27,6 +28,7 @@ RSpec.describe Pajamas::EmptyStateComponent, type: :component, feature_category:
       secondary_button_text: secondary_button_text,
       secondary_button_options: secondary_button_options,
       compact: compact) do |c|
+      c.with_title { slot_title } if slot_title
       c.with_description { description } if description
     end
   end
@@ -61,6 +63,15 @@ RSpec.describe Pajamas::EmptyStateComponent, type: :component, feature_category:
     it 'renders section with flex direction column' do
       expect(find_section[:id]).to eq(empty_state_options[:id])
       expect(find_section[:class]).to eq("gl-flex gl-empty-state gl-text-center gl-flex-col")
+    end
+  end
+
+  describe 'when title slot is provided' do
+    let(:slot_title) { 'Custom slot title' }
+
+    it 'renders the title from slot instead of @title' do
+      expect(page).to have_css('h1', text: slot_title)
+      expect(page).not_to have_text(title)
     end
   end
 

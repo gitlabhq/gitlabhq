@@ -7,7 +7,7 @@ import {
   GlLoadingIcon,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-import { kebabCase, snakeCase } from 'lodash';
+import { kebabCase, snakeCase } from 'lodash-es';
 import {
   TYPE_EPIC,
   TYPE_ISSUE,

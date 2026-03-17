@@ -15,7 +15,7 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
       private_email = user.private_commit_email
 
       emails = [
-        [s_('Use primary email (%{email})') % { email: user.email }, ''],
+        [_('Use primary email (%{email})') % { email: user.email }, ''],
         [safe_format(s_("Profiles|Use a private email - %{email}"), email: private_email), Gitlab::PrivateCommitEmail::TOKEN],
         user.email,
         confirmed_email1.email,
@@ -130,7 +130,7 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
         pronouns: 'they/them',
         pronunciation: 'test-user',
         job_title: 'Developer',
-        user_detail_organization: 'GitLab',
+        company: 'GitLab',
         location: 'Remote',
         website_url: 'https://example.com',
         bio: 'Test bio')

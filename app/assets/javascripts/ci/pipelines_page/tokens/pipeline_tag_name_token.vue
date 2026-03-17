@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlLoadingIcon } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import Api from '~/api';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';

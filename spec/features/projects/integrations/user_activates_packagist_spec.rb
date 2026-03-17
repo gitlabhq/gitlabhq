@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates Packagist', feature_category: :integrations do
+RSpec.describe 'User activates Packagist', feature_category: :package_registry do
   include_context 'project integration activation'
 
   before do

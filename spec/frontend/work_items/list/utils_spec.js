@@ -14,10 +14,24 @@ import {
   savedViewFilterTokens,
   saveSavedViewParams,
   saveSavedViewResponse,
+  saveSavedViewWithSearchParams,
+  saveSavedViewWithSearchResponse,
   editSavedViewParams,
   editSavedViewResponse,
   editSavedViewFormOnlyParams,
   editSavedViewFormOnlyResponse,
+  savedViewFiltersWithWildcards,
+  savedViewFilterTokensWithWildcards,
+  savedViewFiltersWithNotParent,
+  savedViewFilterTokensWithNotParent,
+  savedViewFiltersWithSingleIn,
+  savedViewFilterTokensWithSingleIn,
+  savedViewFiltersWithHierarchyParent,
+  savedViewFilterTokensWithHierarchyParent,
+  savedViewFiltersWithHierarchyParentWildcard,
+  savedViewFilterTokensWithHierarchyParentWildcard,
+  savedViewFiltersWithMultipleSearchTokens,
+  savedViewFilterTokensWithMultipleSearchTokens,
 } from 'jest/work_items/list/mock_data';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/work_items/list/constants';
@@ -35,6 +49,8 @@ import {
   getSavedViewFilterTokens,
   saveSavedView,
   handleEnforceSubscriptionLimit,
+  updateCacheAfterViewReorder,
+  reorderSavedView,
 } from 'ee_else_ce/work_items/list/utils';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
@@ -247,6 +263,42 @@ describe('getSavedViewFilterTokens', () => {
   it('returns valid filter tokens given a saved view filters object', () => {
     expect(getSavedViewFilterTokens(savedViewFiltersObject)).toEqual(savedViewFilterTokens);
   });
+
+  it('capitalizes wildcard filter values', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithWildcards)).toEqual(
+      savedViewFilterTokensWithWildcards,
+    );
+  });
+
+  it('handles not[parentIds] filter', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithNotParent)).toEqual(
+      savedViewFilterTokensWithNotParent,
+    );
+  });
+
+  it('handles single value in filter', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithSingleIn)).toEqual(
+      savedViewFilterTokensWithSingleIn,
+    );
+  });
+
+  it('handles hierarchyFilters with parentIds', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithHierarchyParent)).toEqual(
+      savedViewFilterTokensWithHierarchyParent,
+    );
+  });
+
+  it('handles hierarchyFilters with parentWildcardId', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithHierarchyParentWildcard)).toEqual(
+      savedViewFilterTokensWithHierarchyParentWildcard,
+    );
+  });
+
+  it('splits saved view search string into multiple tokens', () => {
+    expect(getSavedViewFilterTokens(savedViewFiltersWithMultipleSearchTokens)).toEqual(
+      savedViewFilterTokensWithMultipleSearchTokens,
+    );
+  });
 });
 
 describe('handleEnforceSubscriptionLimit', () => {
@@ -420,6 +472,44 @@ describe('saveSavedView', () => {
       expect(result.data.workItemSavedViewCreate.savedView.id).toBe('gid://gitlab/SavedView/1');
     });
 
+    it('joins search filters before calling mutate', async () => {
+      const params = {
+        ...saveSavedViewWithSearchParams,
+        apolloClient: mockApolloClient,
+        subscribedSavedViewLimit: 5,
+      };
+
+      mockMutate.mockResolvedValue(saveSavedViewWithSearchResponse);
+
+      mockQuery.mockResolvedValue({
+        data: {
+          namespace: {
+            savedViews: {
+              nodes: [{ id: 'gid://gitlab/SavedView/1', name: 'View 1' }],
+            },
+          },
+        },
+      });
+
+      await saveSavedView(params);
+
+      expect(mockMutate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variables: {
+            input: {
+              namespacePath: 'my-group',
+              name: 'My View',
+              description: 'A test view',
+              private: false,
+              filters: { in: 'TITLE', search: 'work__SV__items' },
+              sort: 'CREATED_DESC',
+              displaySettings: { groupBy: 'assignee' },
+            },
+          },
+        }),
+      );
+    });
+
     it('calls handleEnforceSubscriptionLimit when enforceSubscriptionLimit is true', async () => {
       mockQuery = jest.fn().mockResolvedValue({
         data: {
@@ -476,6 +566,44 @@ describe('saveSavedView', () => {
       await saveSavedView(params);
 
       expect(mockQuery).not.toHaveBeenCalled();
+    });
+
+    it('does not update cache when mutation returns errors', async () => {
+      const errorResponse = {
+        data: {
+          workItemSavedViewCreate: {
+            savedView: null,
+            errors: ['You do not have permission to create this saved view.'],
+          },
+        },
+      };
+
+      mockMutate.mockResolvedValue(errorResponse);
+
+      mockQuery.mockResolvedValue({
+        data: {
+          namespace: {
+            savedViews: {
+              nodes: [],
+            },
+          },
+        },
+      });
+
+      const params = {
+        ...saveSavedViewParams,
+        apolloClient: mockApolloClient,
+        subscribedSavedViewLimit: 5,
+      };
+
+      await saveSavedView(params);
+
+      const { update } = mockMutate.mock.calls[0][0];
+      const mockCache = { readQuery: jest.fn(), writeQuery: jest.fn() };
+      update(mockCache, { data: errorResponse.data });
+
+      expect(mockCache.readQuery).not.toHaveBeenCalled();
+      expect(mockCache.writeQuery).not.toHaveBeenCalled();
     });
   });
 
@@ -550,5 +678,247 @@ describe('saveSavedView', () => {
       expect(callArgs.variables.input.sort).toBeUndefined();
       expect(callArgs.variables.input.displaySettings).toBeUndefined();
     });
+
+    it('does not update cache when mutation returns errors', async () => {
+      const errorResponse = {
+        data: {
+          workItemSavedViewUpdate: {
+            savedView: null,
+            errors: ['Only the author can change visibility settings'],
+          },
+        },
+      };
+
+      mockMutate.mockResolvedValue(errorResponse);
+
+      const params = {
+        ...editSavedViewParams,
+        apolloClient: mockApolloClient,
+        subscribedSavedViewLimit: 5,
+      };
+
+      await saveSavedView(params);
+
+      const { update } = mockMutate.mock.calls[0][0];
+      const mockCache = { readQuery: jest.fn(), writeQuery: jest.fn() };
+      update(mockCache, { data: errorResponse.data });
+
+      expect(mockCache.readQuery).not.toHaveBeenCalled();
+      expect(mockCache.writeQuery).not.toHaveBeenCalled();
+    });
+  });
+});
+
+describe('updateCacheAfterViewReorder', () => {
+  let mockCache;
+  const fullPath = 'test-group';
+
+  const mockViews = [
+    { id: 'gid://gitlab/SavedView/1', name: 'View 1' },
+    { id: 'gid://gitlab/SavedView/2', name: 'View 2' },
+    { id: 'gid://gitlab/SavedView/3', name: 'View 3' },
+  ];
+
+  const buildCacheData = (views) => ({
+    namespace: {
+      savedViews: {
+        nodes: views.map((v) => ({ ...v })),
+      },
+    },
+  });
+
+  beforeEach(() => {
+    mockCache = {
+      readQuery: jest.fn(),
+      writeQuery: jest.fn(),
+    };
+  });
+
+  it('moves a view after a reference view', () => {
+    mockCache.readQuery.mockReturnValue(buildCacheData(mockViews));
+
+    updateCacheAfterViewReorder({
+      cache: mockCache,
+      movedView: mockViews[2],
+      referenceView: mockViews[0],
+      position: 'after',
+      fullPath,
+    });
+
+    const writtenData = mockCache.writeQuery.mock.calls[0][0].data;
+    const reorderedIds = writtenData.namespace.savedViews.nodes.map((v) => v.id);
+
+    expect(reorderedIds).toEqual([
+      'gid://gitlab/SavedView/1',
+      'gid://gitlab/SavedView/3',
+      'gid://gitlab/SavedView/2',
+    ]);
+  });
+
+  it('moves a view before a reference view', () => {
+    mockCache.readQuery.mockReturnValue(buildCacheData(mockViews));
+
+    updateCacheAfterViewReorder({
+      cache: mockCache,
+      movedView: mockViews[2],
+      referenceView: mockViews[0],
+      position: 'before',
+      fullPath,
+    });
+
+    const writtenData = mockCache.writeQuery.mock.calls[0][0].data;
+    const reorderedIds = writtenData.namespace.savedViews.nodes.map((v) => v.id);
+
+    expect(reorderedIds).toEqual([
+      'gid://gitlab/SavedView/3',
+      'gid://gitlab/SavedView/1',
+      'gid://gitlab/SavedView/2',
+    ]);
+  });
+
+  it('appends to end when reference view is not found', () => {
+    mockCache.readQuery.mockReturnValue(buildCacheData(mockViews));
+
+    updateCacheAfterViewReorder({
+      cache: mockCache,
+      movedView: mockViews[0],
+      referenceView: { id: 'gid://gitlab/SavedView/999' },
+      position: 'after',
+      fullPath,
+    });
+
+    const writtenData = mockCache.writeQuery.mock.calls[0][0].data;
+    const reorderedIds = writtenData.namespace.savedViews.nodes.map((v) => v.id);
+
+    expect(reorderedIds).toEqual([
+      'gid://gitlab/SavedView/2',
+      'gid://gitlab/SavedView/3',
+      'gid://gitlab/SavedView/1',
+    ]);
+  });
+
+  it('does not write to cache when moved view is not found', () => {
+    mockCache.readQuery.mockReturnValue(buildCacheData(mockViews));
+
+    updateCacheAfterViewReorder({
+      cache: mockCache,
+      movedView: { id: 'gid://gitlab/SavedView/999' },
+      referenceView: mockViews[0],
+      position: 'after',
+      fullPath,
+    });
+
+    // writeQuery is still called but data should be unchanged
+    const writtenData = mockCache.writeQuery.mock.calls[0][0].data;
+    const reorderedIds = writtenData.namespace.savedViews.nodes.map((v) => v.id);
+
+    expect(reorderedIds).toEqual([
+      'gid://gitlab/SavedView/1',
+      'gid://gitlab/SavedView/2',
+      'gid://gitlab/SavedView/3',
+    ]);
+  });
+
+  it('does not write to cache when source data is null', () => {
+    mockCache.readQuery.mockReturnValue(null);
+
+    updateCacheAfterViewReorder({
+      cache: mockCache,
+      movedView: mockViews[2],
+      referenceView: mockViews[0],
+      position: 'after',
+      fullPath,
+    });
+
+    expect(mockCache.writeQuery).not.toHaveBeenCalled();
+  });
+
+  it('updates both subscribedOnly true and false cache variants', () => {
+    mockCache.readQuery.mockReturnValue(buildCacheData(mockViews));
+
+    updateCacheAfterViewReorder({
+      cache: mockCache,
+      movedView: mockViews[2],
+      referenceView: mockViews[0],
+      position: 'after',
+      fullPath,
+    });
+
+    expect(mockCache.readQuery).toHaveBeenCalledTimes(2);
+    expect(mockCache.writeQuery).toHaveBeenCalledTimes(2);
+
+    const firstCallVars = mockCache.readQuery.mock.calls[0][0].variables;
+    const secondCallVars = mockCache.readQuery.mock.calls[1][0].variables;
+
+    expect(firstCallVars.subscribedOnly).toBe(true);
+    expect(secondCallVars.subscribedOnly).toBe(false);
+  });
+});
+
+describe('reorderSavedView', () => {
+  let mockApolloClient;
+  let mockMutate;
+
+  const movedView = { id: 'gid://gitlab/SavedView/3', name: 'View 3' };
+  const referenceView = { id: 'gid://gitlab/SavedView/1', name: 'View 1' };
+
+  beforeEach(() => {
+    mockMutate = jest.fn().mockResolvedValue({});
+    mockApolloClient = { mutate: mockMutate };
+  });
+
+  it('calls mutate with moveAfterId when position is after', async () => {
+    await reorderSavedView({
+      apolloClient: mockApolloClient,
+      movedView,
+      referenceView,
+      position: 'after',
+      fullPath: 'test-group',
+    });
+
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: {
+          input: {
+            id: movedView.id,
+            moveAfterId: referenceView.id,
+          },
+        },
+      }),
+    );
+  });
+
+  it('calls mutate with moveBeforeId when position is before', async () => {
+    await reorderSavedView({
+      apolloClient: mockApolloClient,
+      movedView,
+      referenceView,
+      position: 'before',
+      fullPath: 'test-group',
+    });
+
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: {
+          input: {
+            id: movedView.id,
+            moveBeforeId: referenceView.id,
+          },
+        },
+      }),
+    );
+  });
+
+  it('passes an update function for cache update', async () => {
+    await reorderSavedView({
+      apolloClient: mockApolloClient,
+      movedView,
+      referenceView,
+      position: 'after',
+      fullPath: 'test-group',
+    });
+
+    const mutateCall = mockMutate.mock.calls[0][0];
+    expect(mutateCall.update).toBeInstanceOf(Function);
   });
 });

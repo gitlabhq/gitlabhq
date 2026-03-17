@@ -48,7 +48,7 @@ module ActiveContext
 
       refs = deserialize_all(specs_buffer)
 
-      preprocess_result = Reference.preprocess_references(refs)
+      preprocess_result = Reference.preprocess_references(refs, **queue.preprocess_options)
 
       preprocess_result[:successful].each { |ref| bulk_processor.process(ref) }
 

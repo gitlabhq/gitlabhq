@@ -138,7 +138,41 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :team_planning 
       )
     )
 
-    post_graphql(query, current_user: user, variables: { fullPath: project.full_path, iid: issue.iid.to_s })
+    post_graphql(query, current_user: user, variables: {
+      fullPath: project.full_path,
+      iid: issue.iid.to_s,
+      useWorkItemFeatures: false
+    })
+
+    expect_graphql_errors_to_be_empty
+  end
+
+  it "graphql/#{issue_popover_query_path}_with_features.json" do
+    query = get_graphql_query_as_string(issue_popover_query_path, ee: Gitlab.ee?)
+
+    issue = create(
+      :work_item,
+      :issue,
+      project: project,
+      assignees: [user],
+      confidential: true,
+      created_at: Time.parse('2020-07-01T04:08:01Z'),
+      due_date: Date.new(2020, 7, 5),
+      start_date: Date.new(2020, 7, 3),
+      milestone: create(
+        :milestone,
+        project: project,
+        title: '15.2',
+        start_date: Date.new(2020, 7, 1),
+        due_date: Date.new(2020, 7, 30)
+      )
+    )
+
+    post_graphql(query, current_user: user, variables: {
+      fullPath: project.full_path,
+      iid: issue.iid.to_s,
+      useWorkItemFeatures: true
+    })
 
     expect_graphql_errors_to_be_empty
   end

@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Using SSH keys with GitLab CI/CD
 ---
 
@@ -116,7 +116,6 @@ When your CI/CD jobs run in Docker containers, the environment is isolated. To d
    or per-job.
 
 1. Make sure the private server's [SSH host keys are verified](#verifying-the-ssh-host-keys).
-
 1. As a final step, add the public key from the one you created in the first
    step to the services that you want to have an access to from inside the build
    environment. If you are accessing a private GitLab repository you must add
@@ -134,7 +133,6 @@ You can generate the SSH key from the machine that GitLab Runner is installed
 on, and use that key for all projects that are run on this machine.
 
 1. First, sign in to the server that runs your jobs.
-
 1. Then, from the terminal, sign in as the `gitlab-runner` user:
 
    ```shell
@@ -144,7 +142,6 @@ on, and use that key for all projects that are run on this machine.
 1. [Generate a new SSH key pair](../../user/ssh.md#generate-an-ssh-key-pair).
    Do not add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
-
 1. As a final step, add the public key from the one you created earlier to the
    services that you want to have an access to from inside the build environment.
    If you are accessing a private GitLab repository you must add it as a

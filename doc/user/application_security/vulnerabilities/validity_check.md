@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Secret Detection
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Validity checks
 ---
 
@@ -46,7 +46,7 @@ Prerequisites:
 
 To enable validity checks for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. Under **Pipeline Secret Detection**, turn on the **Validity checks** toggle.
 

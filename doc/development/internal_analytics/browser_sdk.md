@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Analytics Instrumentation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Browser SDK
 ---
 
@@ -116,9 +116,7 @@ interface GitLabClientSDKOptions {
   ```
 
 - `Link Click Tracking`: With this plugin, the tracker adds click event listeners to all link elements. Link clicks are tracked as self-describing events. Each link-click event captures the link's `href` attribute. The event also has fields for the link's ID, classes, and target (where the linked document is opened, such as a new tab or new window).
-
 - `Performance Timing`: It collects performance-related data from a user's browser using the `Navigation Timing API`. This API provides detailed information about the various stages of loading a web page, such as domain lookup, connection time, content download, and rendering times. This plugin helps to gather insights into how well a website performs for users, identify potential performance bottlenecks, and improve the overall user experience.
-
 - `Error Tracking`: It helps to capture and track errors that occur on a website or application. By monitoring these errors, you can gain insights into potential issues with code or third-party libraries, which can help to improve the overall user experience, and maintain the quality of the website or application.
 
 By default all plugins are enabled. You can disable or enable these plugins through the `plugins` object:

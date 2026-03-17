@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-import { debounce, unionBy, uniqueId } from 'lodash';
+import { debounce, unionBy, uniqueId } from 'lodash-es';
 import { createAlert } from '~/alert';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';

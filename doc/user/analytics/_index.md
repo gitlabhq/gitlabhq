@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Instance, group, and project analytics.
 title: Analyze GitLab usage
 ---
@@ -19,8 +19,11 @@ title: Analyze GitLab usage
 
 {{< /history >}}
 
-GitLab provides different types of analytics insights for instances, groups, and [projects](../project/settings/_index.md#turn-off-project-analytics).
-Analytics features require different [roles and permissions](../permissions.md#project-analytics) for projects and groups.
+GitLab provides analytics features that give you insights into your software development lifecycle.
+Use these features to track productivity, code quality, deployment performance, and security.
+Analytics features are available for instances, groups, and [projects](../project/settings/_index.md#turn-off-project-analytics),
+and require different [roles and permissions](../permissions.md#project-analytics).
+This way, you can analyze data at the scale that matters to your team.
 
 ## Analytics features
 
@@ -64,7 +67,7 @@ Use these features to gain insights into CI/CD performance.
 
 | Feature | Description | Project-level | Group-level | Instance-level |
 | ------- | ----------- | ------------- | ----------- | -------------- |
-| [CI/CD analytics](ci_cd_analytics.md) | Pipeline duration and successes or failures. | {{< yes >}} | {{< yes >}} | {{< no >}} |
+| [CI/CD analytics](ci_cd_analytics.md) | Pipeline duration and successes or failures. | {{< yes >}} | {{< no >}} | {{< no >}} |
 | [DORA metrics](dora_metrics.md) | DORA metrics over time. | {{< yes >}} | {{< yes >}} | {{< no >}} |
 
 ### Security analytics

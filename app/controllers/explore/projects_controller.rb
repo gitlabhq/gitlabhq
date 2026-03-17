@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Explore::ProjectsController < Explore::ApplicationController
-  include PageLimiter
   include ParamsBackwardCompatibility
   include RendersMemberAccess
   include RendersProjectsList
@@ -9,87 +8,38 @@ class Explore::ProjectsController < Explore::ApplicationController
   include SortingPreference
 
   MIN_SEARCH_LENGTH = 3
-  PAGE_LIMIT = 50
   RSS_ENTRIES_LIMIT = 20
 
   before_action :set_non_archived_param
   before_action :set_sorting
+  before_action :show_alert_if_search_is_disabled, only: [:index]
 
   before_action only: [:index, :trending, :starred] do
-    push_frontend_feature_flag(:explore_projects_vue, current_user)
     push_frontend_feature_flag(:retire_trending_projects, current_user)
-
-    # For background information on the limit, see:
-    #   https://gitlab.com/gitlab-org/gitlab/-/issues/38357
-    #   https://gitlab.com/gitlab-org/gitlab/-/issues/262682
-    limit_pages(PAGE_LIMIT)
   end
-
-  rescue_from PageOutOfBoundsError, with: :page_out_of_bounds
 
   feature_category :groups_and_projects
   # TODO: Set higher urgency after addressing https://gitlab.com/gitlab-org/gitlab/-/issues/357913
   # and https://gitlab.com/gitlab-org/gitlab/-/issues/358945
   urgency :low, [:index, :topics, :trending, :starred, :topic]
 
-  def index
-    show_alert_if_search_is_disabled
-    @projects = load_projects
-
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: {
-          html: view_to_html_string("explore/projects/_projects", projects: @projects)
-        }
-      end
-    end
-  end
+  def index; end
 
   def trending
-    if Feature.enabled?(:retire_trending_projects, current_user)
-      respond_to do |format|
-        format.html { redirect_to active_explore_projects_path(sort: 'stars_desc') }
-        format.json { redirect_to active_explore_projects_path(sort: 'stars_desc', format: :json), status: :found }
-      end
-      return
-    end
-
-    params[:trending] = true
-    @projects = load_projects
+    return render :index unless Feature.enabled?(:retire_trending_projects, current_user)
 
     respond_to do |format|
-      format.html { render :index }
-      format.json do
-        render json: {
-          html: view_to_html_string("explore/projects/_projects", projects: @projects)
-        }
-      end
+      format.html { redirect_to active_explore_projects_path(sort: 'stars_desc') }
+      format.json { redirect_to active_explore_projects_path(sort: 'stars_desc', format: :json), status: :found }
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def starred
-    if Feature.enabled?(:explore_projects_vue, current_user)
-      respond_to do |format|
-        format.html { redirect_to active_explore_projects_path(sort: 'stars_desc') }
-        format.json { redirect_to active_explore_projects_path(sort: 'stars_desc', format: :json), status: :found }
-      end
-      return
-    end
-
-    @projects = load_projects.reorder('star_count DESC')
-
     respond_to do |format|
-      format.html { render :index }
-      format.json do
-        render json: {
-          html: view_to_html_string("explore/projects/_projects", projects: @projects)
-        }
-      end
+      format.html { redirect_to active_explore_projects_path(sort: 'stars_desc') }
+      format.json { redirect_to active_explore_projects_path(sort: 'stars_desc', format: :json), status: :found }
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def topics
     load_topics
@@ -165,22 +115,6 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   def sorting_field
     Project::SORTING_PREFERENCE_FIELD
-  end
-
-  def page_out_of_bounds(error)
-    @max_page_number = error.message
-
-    respond_to do |format|
-      format.html do
-        render "page_out_of_bounds", status: :bad_request
-      end
-
-      format.json do
-        render json: {
-          html: view_to_html_string("explore/projects/page_out_of_bounds")
-        }, status: :bad_request
-      end
-    end
   end
 
   def show_alert_if_search_is_disabled

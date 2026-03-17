@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Secret Detection
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Protect your project with pipeline secret detection'
 ---
 
@@ -52,7 +52,7 @@ Scan results are written to the CI/CD job log. Each scan also produces a compreh
 
 To check the results of the most recent scan:
 
-1. On the left sidebar, select **Build** > **Jobs**.
+1. In the left sidebar, select **Build** > **Jobs**.
 1. Select the most recent `secret_detection` job. If you haven't run a new pipeline, there should be only one job.
 1. Check the log output for the following:
    - Information about the scan, including the analyzer version and ruleset. Your project uses the default ruleset because you enabled secret detection automatically.
@@ -157,7 +157,7 @@ status in the vulnerability report:
 1. Merge the MR you created in the last step, then wait for the pipeline to finish.
 
    The fake secret is added to `main`, which causes the finding to become a vulnerability.
-1. On the left sidebar, select **Secure** > **Vulnerability report**.
+1. In the left sidebar, select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's **Description** to view:
    - Details about the secret type.
    - Remediation guidance.

@@ -39,6 +39,7 @@ module API
 
       # This endpoint is used by Docker Registry to push a set of event
       # that took place recently.
+      route_setting :authorization, skip_granular_token_authorization: true
       post 'events' do
         params['events'].each do |raw_event|
           event = ::ContainerRegistry::Event.new(raw_event)

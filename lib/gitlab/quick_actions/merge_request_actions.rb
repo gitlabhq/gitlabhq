@@ -311,70 +311,6 @@ module Gitlab
 
         ########################################################################
         #
-        # /assign_reviewer
-        #
-        desc do
-          if quick_action_target.allows_multiple_reviewers?
-            _('Assign reviewers')
-          else
-            _('Assign reviewer')
-          end
-        end
-        explanation do |users|
-          reviewers = reviewers_to_add(users)
-          if reviewers.blank?
-            _("Failed to assign a reviewer because no user was specified.")
-          else
-            _('Assigns %{reviewer_users_sentence} as %{reviewer_text}.') % { reviewer_users_sentence: reviewer_users_sentence(users),
-                                                                           reviewer_text: 'reviewer'.pluralize(reviewers.size) }
-          end
-        end
-        execution_message do |users = nil|
-          reviewers = reviewers_to_add(users)
-          if reviewers.blank?
-            _("Failed to assign a reviewer because no user was specified.")
-          else
-            processed_users = process_reviewer_users(users)
-            processed_msg = process_reviewer_users_message
-
-            if processed_users.present?
-              [
-                processed_msg,
-                _('Assigned %{reviewer_users_sentence} as %{reviewer_text}.') % {
-                  reviewer_users_sentence: reviewer_users_sentence(processed_users),
-                  reviewer_text: 'reviewer'.pluralize(processed_users.size)
-                }
-              ].compact.join(' ')
-            else
-              processed_msg
-            end
-          end
-        end
-        params do
-          quick_action_target.allows_multiple_reviewers? ? '@user1 @user2' : '@user'
-        end
-        types MergeRequest
-        condition do
-          current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
-        end
-        parse_params do |reviewer_param|
-          extract_users(reviewer_param)
-        end
-        command :assign_reviewer, :reviewer do |users|
-          processed_users = process_reviewer_users(users)
-
-          next if processed_users.empty?
-
-          if quick_action_target.allows_multiple_reviewers?
-            @updates[:reviewer_ids] ||= quick_action_target.reviewers.map(&:id)
-            @updates[:reviewer_ids] |= processed_users.map(&:id)
-          else
-            @updates[:reviewer_ids] = [processed_users.first.id]
-          end
-        end
-
-        ########################################################################
-        #
         # /request_review
         #
         desc do
@@ -416,7 +352,7 @@ module Gitlab
         parse_params do |reviewer_param|
           extract_users(reviewer_param)
         end
-        command :request_review do |users|
+        command :request_review, :assign_reviewer, :reviewer do |users|
           processed_users = process_reviewer_users(users)
 
           next if processed_users.empty?

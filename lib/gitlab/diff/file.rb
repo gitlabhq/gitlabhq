@@ -214,7 +214,11 @@ module Gitlab
 
       def highlighted_diff_lines
         @highlighted_diff_lines ||=
-          Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
+          Gitlab::Diff::Highlight.new(self, repository: self.repository, plain: !!@prevent_syntax_highlighting).highlight
+      end
+
+      def prevent_syntax_highlighting!
+        @prevent_syntax_highlighting = true
       end
 
       # Array[<Hash>] with right/left keys that contains Gitlab::Diff::Line objects which text is highlighted

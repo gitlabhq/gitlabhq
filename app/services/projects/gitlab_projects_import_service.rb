@@ -12,8 +12,8 @@ module Projects
 
     def initialize(user, import_params, override_params = nil, import_type:)
       @current_user = user
-      @params = import_params.dup
-      @override_params = override_params
+      @params = params_to_h(import_params.dup)
+      @override_params = params_to_h(override_params)
       @import_type = import_type.to_s
 
       raise ArgumentError, 'Invalid import_type provided' unless valid_import_type?
@@ -29,7 +29,7 @@ module Projects
 
     private
 
-    attr_reader :import_type
+    attr_reader :import_type, :override_params
 
     def valid_import_type?
       import_type == 'gitlab_project' || Gitlab::ImportSources.template?(import_type)
@@ -69,7 +69,9 @@ module Projects
 
     def prepare_import_params
       data = {}
-      data[:override_params] = @override_params if @override_params
+
+      override_params.reverse_merge!(name: params[:name]) if params[:name].present?
+      data[:override_params] = override_params
 
       if overwrite_project?
         data[:original_path] = params[:path]
@@ -80,7 +82,14 @@ module Projects
 
       params[:import_type] = import_type
       params[:organization_id] = current_namespace.organization_id
-      params[:import_data] = { data: data } if data.present?
+      params[:import_data] = { data: data }
+    end
+
+    def params_to_h(parameters)
+      return {} if parameters.blank?
+      return parameters if parameters.is_a?(Hash)
+
+      parameters.to_h
     end
   end
 end

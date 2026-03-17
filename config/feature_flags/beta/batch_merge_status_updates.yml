@@ -1,0 +1,10 @@
+---
+name: batch_merge_status_updates
+description: Update merge_status in batches during the refresh service
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/546431
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222401
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/588985
+milestone: '18.9'
+group: group::code review
+type: beta
+default_enabled: false

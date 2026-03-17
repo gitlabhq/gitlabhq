@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Database Review Guidelines
 ---
 
@@ -164,7 +164,6 @@ Include in the MR description:
 
   For example, if joins or a group by clause are optional, the versions without the group by clause
   and with less joins should be also included, while keeping the appropriate filters for the remaining tables.
-
 - If a query is always used with a limit and an offset, those should always be
   included with the maximum allowed limit used and a non 0 offset.
 
@@ -179,11 +178,9 @@ of these methods:
    Manually test your feature, then click the `pg` section of the performance bar
    to see the SQL queries executed. To see the queries for an API request, find and select
    the request using the drop-down menu on the right-hand side.
-
 1. **Check `development.log`**: Test your feature then look inside `log/development.log`
    in the GitLab directory to see all the queries executed by the application.
    This does not include queries executed in a Sidekiq worker.
-
 1. **Run specs with `ActiveRecord::Base.logger`**: You can log queries to stdout by adding
    these blocks to your RSpec tests:
 

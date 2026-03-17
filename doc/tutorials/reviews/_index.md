@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use merge request reviews to discuss and improve code before it is merged into your project.
 title: 'Tutorial: Review a merge request'
 ---
@@ -13,7 +13,7 @@ giving constructive, helpful feedback. By the end of the tutorial, you're ready 
 approve the merge request, or request more changes.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
+For an overview, see [merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
 <!-- Video published on 2023-04-29 -->
 
 To review a merge request:
@@ -38,7 +38,7 @@ To review a merge request:
 
 ## Go to the merge request
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Either:
    - Press <kbd>Shift</kbd>+<kbd>r</kbd> to go to your **Merge requests** page.
    - In the upper-right corner, select **Merge requests** ({{< icon name="merge-request" >}}).
@@ -123,7 +123,6 @@ more information, scan through the issue descriptions.
   In this example, even if the exact labels are unfamiliar to you, you can determine this merge request is about a database bug:
 
   ![The Labels section of a merge request, showing 10 labels in different colors, including "database" and "type: bug"](img/labels_v17_0.png)
-
 - Who are the reviewers? Scan the names in the reviewer list. Do they match
   the type of work you'd expect, based on the description and (optionally) the labels?
   Consider both who is present, and who is absent. What do those names tell you
@@ -165,7 +164,6 @@ When you first open the **Changes** page, focus on the broader details first:
   codebase are these files in?
 
   ![File browser showing 2 changed files with their locations and line change indicators](img/file_tree_v17_0.png)
-
 - Does the file list match your expectations? You've already read the description of
   the merge request. Are these the files you'd expect to see changed for this kind
   of work? Pay extra attention to changes to unexpected files, or if changes
@@ -301,7 +299,7 @@ your review. This avoids message overload to your recipients, and gives you a ch
 to recheck (and change) your words before you publish.
 
 Remember to be constructive and kind. The structure of
-[Conventional comments](https://conventionalcomments.org/) can help you write
+[conventional comments](https://conventionalcomments.org/) can help you write
 comments that are both thoughtful and constructive.
 
 First, write your comments you want to attach to specific lines or files:
@@ -315,7 +313,6 @@ First, write your comments you want to attach to specific lines or files:
    or select an entire file to comment on:
 
    ![Code diff interface showing a speech bubble button next to a line number with a tooltip for adding a comment to one or multiple lines](img/comment_on_any_diff_line_v16_6.png)
-
 1. In the text area, write your first comment. To keep your comments private until
    the end of your review, select **Start a review** below your comment.
 1. [Provide suggestions](../../user/project/merge_requests/reviews/suggestions.md)
@@ -355,7 +352,6 @@ your review. It's time to think broadly, one last time.
 1. On the top right, select **Your review** to show details about your review:
 
    ![The review drawer, showing a review in progress. It contains a single-line review comment, and a comment spanning two lines of code.](../../user/project/merge_requests/reviews/img/review_drawer_v18_3.png)
-
 1. Review your pending comments. Edit them as needed.
 1. Select the outcome of your review.
 

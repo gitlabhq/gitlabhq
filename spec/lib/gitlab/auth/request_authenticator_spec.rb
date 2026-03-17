@@ -340,7 +340,7 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
         let(:accessed_path) { '/v2/group1/dependency_proxy/containers/alpine/manifests/latest' }
 
         it 'returns nil' do
-          travel_to(Time.zone.now + Auth::DependencyProxyAuthenticationService.token_expire_at + 1.minute) do
+          travel_to(Time.zone.now + Auth::ContainerProxyAuthenticationService.token_expire_at + 1.minute) do
             expect(subject).to eq(nil)
           end
         end

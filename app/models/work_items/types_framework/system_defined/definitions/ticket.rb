@@ -45,6 +45,10 @@ module WorkItems
               }
             end
 
+            def allowed_child_types
+              [{ type: :task, maximum_depth: 1 }]
+            end
+
             def use_legacy_view?
               true
             end
@@ -57,7 +61,15 @@ module WorkItems
               false
             end
 
-            def filterable?
+            def creatable?
+              false
+            end
+
+            def can_be_conversion_target?
+              false
+            end
+
+            def filterable_board_view?(_resource_parent)
               true
             end
           end

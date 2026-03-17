@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Deploy keys
 description: Public SSH keys, repository access, bot users, and read-only access.
 ---
@@ -83,7 +83,7 @@ To help detect a potential secret leak, you can use the
 
 To view the deploy keys available to a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 
@@ -103,7 +103,7 @@ Prerequisites:
 - [Generate an SSH key pair](../../ssh.md#generate-an-ssh-key-pair). Put the private SSH
   key on the host that requires access to the repository.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. Select **Add new key**.
@@ -151,7 +151,7 @@ Prerequisites:
 
 To grant a public deploy key access to a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. Select **Publicly accessible deploy keys**.
@@ -168,7 +168,7 @@ Prerequisites:
 
 To edit the project access permissions of a deploy key:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. In the key's row, select **Edit** ({{< icon name="pencil" >}}).
@@ -185,7 +185,7 @@ Prerequisites:
 
 To disable a deploy key:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy keys**.
 1. Select **Disable** ({{< icon name="cancel" >}}).
@@ -236,7 +236,7 @@ To resolve this issue, you can use the deploy keys API to create deploy keys for
 
 1. [Create a service account user](../../../api/service_accounts.md#create-a-group-service-account).
 1. [Create a personal access token](../../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account) for that service account user. This token must have at least the `api` scope.
-1. [Invite the service account user to the project](../../profile/service_accounts.md#service-account-access-to-groups-and-projects).
+1. [Invite the service account user to the project](../../profile/service_accounts.md#add-a-service-account-to-a-group-or-project).
 1. Use the deploy key API to [create a deploy key for the service account user](../../../api/deploy_keys.md#add-deploy-key):
 
    ```shell

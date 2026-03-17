@@ -1759,6 +1759,23 @@ export const mockSourceBranches = [
   },
 ];
 
+export const MOCK_WORK_ITEM_TYPE_AGGREGATION_BUCKETS = [
+  { key: '1', count: 12, name: 'Issue', icon_name: 'issue-type-issue', base_type: 'issue' },
+  { key: '2', count: 5, name: 'Task', icon_name: 'issue-type-task', base_type: 'task' },
+  { key: '3', count: 3, name: 'Epic', icon_name: 'issue-type-epic', base_type: 'epic' },
+];
+
+export const MOCK_WORK_ITEM_TYPE_AGGREGATIONS = {
+  fetching: false,
+  error: false,
+  data: [
+    {
+      name: 'work_item_type_ids',
+      buckets: MOCK_WORK_ITEM_TYPE_AGGREGATION_BUCKETS,
+    },
+  ],
+};
+
 export const mockgetBlobSearchCountQuery = {
   data: {
     blobSearch: {

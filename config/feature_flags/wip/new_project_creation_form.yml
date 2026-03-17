@@ -2,8 +2,8 @@
 name: new_project_creation_form
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514700
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178859
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/19232
 milestone: '17.9'
-group: group::import
+group: group::organizations
 type: wip
 default_enabled: false

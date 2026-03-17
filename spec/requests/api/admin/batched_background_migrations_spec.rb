@@ -13,6 +13,14 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, :without_current_organiz
 
     it_behaves_like "GET request permissions for admin mode"
 
+    it_behaves_like 'authorizing granular token permissions', :read_batched_background_migration do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
+    end
+
     subject(:show_migration) do
       get api(path, admin, admin_mode: true), params: { database: database }
     end
@@ -97,6 +105,14 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, :without_current_organiz
     let(:path) { '/admin/batched_background_migrations' }
 
     it_behaves_like "GET request permissions for admin mode"
+
+    it_behaves_like 'authorizing granular token permissions', :read_batched_background_migration do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
+    end
 
     context 'when is an admin user' do
       it 'returns batched background migrations' do
@@ -199,6 +215,14 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, :without_current_organiz
 
     it_behaves_like "PUT request permissions for admin mode"
 
+    it_behaves_like 'authorizing granular token permissions', :resume_batched_background_migration do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        put api(path, personal_access_token: pat), params: params
+      end
+    end
+
     subject(:resume) do
       put api(path, admin, admin_mode: true), params: params
     end
@@ -265,6 +289,14 @@ RSpec.describe API::Admin::BatchedBackgroundMigrations, :without_current_organiz
     let(:path) { "/admin/batched_background_migrations/#{migration.id}/pause" }
 
     it_behaves_like "PUT request permissions for admin mode"
+
+    it_behaves_like 'authorizing granular token permissions', :pause_batched_background_migration do
+      let(:boundary_object) { :instance }
+      let(:user) { admin }
+      let(:request) do
+        put api(path, personal_access_token: pat), params: params
+      end
+    end
 
     it 'pauses the batched background migration' do
       put api(path, admin, admin_mode: true), params: params

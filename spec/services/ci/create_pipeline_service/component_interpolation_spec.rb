@@ -173,5 +173,50 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         )
       end
     end
+
+    context 'when component include times out' do
+      let(:component_path) do
+        "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/#{component_name}@#{component_version}"
+      end
+
+      let(:project_ci_yaml) do
+        <<~YAML
+        include:
+          - component: #{component_path}
+        job:
+          script: exit 0
+        YAML
+      end
+
+      before do
+        stub_const('Gitlab::Ci::Config::GITALY_TIMEOUT_SECONDS', 0.0001)
+      end
+
+      it 'fails with timeout error' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+        response = execute
+        pipeline = response.payload
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.error_messages.map(&:content)).to include(
+          'CI configuration fetch from Gitaly timed out. This may indicate Gitaly service slowness or an outage.'
+        )
+      end
+
+      context 'when ci_config_gitaly_timeout feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_config_gitaly_timeout: false)
+        end
+
+        it 'creates a pipeline successfully' do
+          response = execute
+          pipeline = response.payload
+
+          expect(response).to be_success
+          expect(pipeline).to be_created_successfully
+        end
+      end
+    end
   end
 end

@@ -105,7 +105,6 @@ describe('PipelineVariablesForm', () => {
 
       expect(findVariablesForm().props()).toMatchObject({
         isLoading: false,
-        userCalloutsFeatureName: 'pipeline_new_inputs_adoption_banner',
       });
     });
 

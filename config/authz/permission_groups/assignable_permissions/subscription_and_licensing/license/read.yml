@@ -1,0 +1,7 @@
+---
+name: read_license
+description: Grants the ability to read licenses
+permissions:
+  - read_license
+boundaries:
+  - instance

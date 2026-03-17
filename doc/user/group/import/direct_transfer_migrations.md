@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate groups and projects by using direct transfer
 description: "Migrate groups and projects between GitLab instances by using direct transfer."
 ---
@@ -16,7 +16,7 @@ description: "Migrate groups and projects between GitLab instances by using dire
 To migrate GitLab groups and projects by using direct transfer:
 
 1. Ensure you meet the [prerequisites](#prerequisites).
-1. Review [user contribution](../../import/mapping.md) and [user membership](#user-membership-mapping) mapping.
+1. Review [user contribution](../../import/mapping/_index.md) and [user membership](#user-membership-mapping) mapping.
 1. [Connect the source GitLab instance](#connect-the-source-gitlab-instance).
 1. [Select groups and projects to import](#select-the-groups-and-projects-to-import) and begin the migration.
 1. [Review the results of the import](#review-results-of-the-import).
@@ -24,13 +24,13 @@ To migrate GitLab groups and projects by using direct transfer:
 If there are any problems, you can:
 
 1. [Cancel](#cancel-a-running-migration) or [retry](#retry-failed-or-partially-successful-migrations) the migration.
-1. Check the [troubleshooting information](troubleshooting.md).
+1. See the [troubleshooting documentation](troubleshooting.md).
 
 ## Prerequisites
 
 {{< history >}}
 
-- Renaming milestone titles to avoid clashes on destination instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221447) in GitLab 18.9.
+- Renaming milestone titles to avoid clashes on destination instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221447) in GitLab 18.6.7 and later, 18.7.5 and later, and 18.8.5 and later.
 
 {{< /history >}}
 
@@ -47,7 +47,7 @@ Before migrating by using direct transfer, see the following prerequisites.
 
 To maximize the chance of a successful and performant migration:
 
-- Upgrade both the source and destination instances to GitLab 16.8 or later for bulk import and export of relations.
+- Upgrade both the source and destination instances to GitLab 16.8 or later.
   For more information, see [epic 9036](https://gitlab.com/groups/gitlab-org/-/epics/9036).
 - Migrate between versions that are as late as possible for bug fixes and other improvements.
 
@@ -64,11 +64,7 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
   by an instance administrator.
 - You must have a
   [personal access token](../../profile/personal_access_tokens.md) for
-  the source GitLab instance:
-  - For GitLab 15.1 and later source instances, the personal access token must
-    have the `api` scope.
-  - For GitLab 15.0 and earlier source instances, the personal access token must
-    have both the `api` and `read_repository` scopes.
+  the source GitLab instance with the `api` scope.
 - You must have the required permissions on the source and destination instances. For:
   - Most users, you need:
     - The Owner role on the source group to migrate from.
@@ -84,7 +80,7 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
   to **No one**. If required, this setting can be changed:
   - For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
   - For [specific groups](../_index.md#specify-who-can-add-projects-to-a-group).
-- Imported milestones with titles [matching existing milestones](../../../user/project/milestones/_index.md#milestone-title-rules) within the
+- Imported milestones with titles [matching existing milestones](../../project/milestones/_index.md#milestone-title-rules) within the
   destination namespace will have titles updated upon import. The new title will be appended with a unique suffix, e.g. `18.0` will become `18.0
   (imported-3d-1770206299)`. To avoid this, rename the milestone in the source group or project before initiating a direct transfer.
 
@@ -107,7 +103,7 @@ Instead, user memberships on the source instance are mapped to users on the dest
 The type of mapping for user memberships depends on the
 [membership type](../../project/members/_index.md#membership-types) on the source instance:
 
-- Imported memberships are initially mapped to [placeholder users](../../import/mapping.md#placeholder-users).
+- Imported memberships are initially mapped to [placeholder users](../../import/mapping/_index.md#placeholder-users).
 - Direct memberships are mapped as direct memberships on the destination instance.
 - Inherited memberships are mapped as inherited memberships on the destination instance.
 - Shared memberships are mapped as direct memberships on the destination instance unless the user has an existing shared
@@ -173,7 +169,7 @@ If you do not want to import all user memberships from the source instance, ensu
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them. Group and project paths must conform to [naming rules](../../reserved_names.md#rules-for-usernames-project-and-group-names-and-slugs) and are normalized if necessary to avoid import failures.
 1. Next to the groups you want to import, select either:
-   - **Import with projects**. If this is not available, see [prerequisites](#prerequisites).
+   - **Import with projects**. If this is not available, see the [prerequisites](#prerequisites).
    - **Import without projects**.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
@@ -191,7 +187,7 @@ If you do not want to import all user memberships from the source instance, ensu
 
 To review the results of an import:
 
-1. Go to the [Group import history page](#group-import-history).
+1. Go to the [group import history page](#group-import-history).
 1. To see the details of a failed import, select the **Show errors** link on any import with a **Failed** or **Partially completed** status.
 1. If the import has a **Partially completed** or **Complete** status, to see which items were and were not imported, select **View details**.
 
@@ -228,7 +224,7 @@ If required, you can cancel a running migration by using either the REST API or 
 ### Cancel with the REST API
 
 For information on canceling a running migration with the REST API, see
-[Cancel a migration](../../../api/bulk_imports.md#cancel-a-migration).
+[cancel a migration](../../../api/bulk_imports.md#cancel-a-migration).
 
 ### Cancel with a Rails console
 
@@ -263,9 +259,6 @@ destination instance from:
 
 ## Retry failed or partially successful migrations
 
-If your migrations fail, or partially succeed but are missing items, you can retry the migration. To retry a migration
-of a:
-
-- Top-level group and all of its subgroups and projects, use either the GitLab UI or the
-  [GitLab REST API](../../../api/bulk_imports.md).
-- Specific subgroups or projects, use the [GitLab REST API](../../../api/bulk_imports.md).
+If your migrations fail, or partially succeed but are missing items, you can retry the migration.
+To retry a migration of a top-level group and all of its subgroups and projects, or specific subgroups
+or projects, use either the GitLab UI or the [group and project migration by direct transfer API](../../../api/bulk_imports.md).

@@ -49,6 +49,7 @@ export default {
       >{{ value }}
       <gl-link
         v-if="hasHelpURL"
+        :aria-label="s__('Job|Job help')"
         :href="helpUrl"
         target="_blank"
         data-testid="job-sidebar-help-link"

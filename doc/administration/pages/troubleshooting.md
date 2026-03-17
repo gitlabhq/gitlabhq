@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting GitLab Pages administration
 ---
 
@@ -24,7 +24,7 @@ sudo gitlab-ctl tail gitlab-pages
 
 You can also find the log file in `/var/log/gitlab/gitlab-pages/current`.
 
-For more information, see [Getting the correlation ID from your logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
+For more information, see how to [get the correlation ID from your logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
 
 ## Debug GitLab Pages
 
@@ -88,7 +88,7 @@ To start tailing the logs:
    sudo gitlab-ctl tail nginx/gitlab_pages_access.log
    ```
 
-1. For **GitLab Pages** logs, run: Start by identifying the [correlation ID from your logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
+1. For **GitLab Pages** logs, run: Start by [identifying the correlation ID from your logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
 
    ```shell
    sudo gitlab-ctl tail gitlab-pages
@@ -105,7 +105,7 @@ To start tailing the logs:
    ```
 
 1. For **GitLab Rails** logs, run:
-   You can filter these logs based on the `correlation_id` [identified in GitLab Pages logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
+   You can filter these logs based on the `correlation_id` from [GitLab Pages logs](../logs/tracing_correlation_id.md#getting-the-correlation-id-from-your-logs).
 
    ```shell
    sudo gitlab-ctl tail gitlab-rails
@@ -249,11 +249,26 @@ To stop `systemd` from cleaning the Pages related content:
 ## Unable to access GitLab Pages
 
 If you can't access your GitLab Pages (such as receiving `502 Bad Gateway` errors, or a login loop)
-and in your Pages log shows this error:
+and your Pages log shows one of these errors:
 
-```plaintext
-"error":"retrieval context done: context deadline exceeded","host":"root.docs-cit.otenet.gr","level":"error","msg":"could not fetch domain information from a source"
-```
+- A context deadline exceeded error:
+
+  ```plaintext
+  "error":"retrieval context done: context deadline exceeded","host":"root.docs-cit.otenet.gr","level":"error","msg":"could not fetch domain information from a source"
+  ```
+
+- An HTTP/HTTPS protocol mismatch error:
+
+  ```plaintext
+  "error":"Get \"https://gitlab.example.com/api/v4/internal/pages?host=example.com\": http: server gave HTTP response to HTTPS client","level":"error","msg":"could not fetch domain information from a source"
+  ```
+
+  This error occurs when a load balancer or reverse proxy terminates TLS
+  before the request reaches GitLab. Pages tries to connect using the HTTPS
+  `external_url`, but receives a plain HTTP response.
+
+To resolve, set `internal_gitlab_server` to communicate directly with the
+local GitLab Rails instance, bypassing the external URL:
 
 1. Add the following to `/etc/gitlab/gitlab.rb`:
 
@@ -275,7 +290,7 @@ If you see the following error:
 ERRO[0010] Failed to connect to the internal GitLab API after 0.50s  error="failed to connect to internal Pages API: HTTP status: 401"
 ```
 
-If you are [Running GitLab Pages on a separate server](_index.md#running-gitlab-pages-on-a-separate-server)
+If you are [running GitLab Pages on a separate server](_index.md#running-gitlab-pages-on-a-separate-server),
 you must copy the `/etc/gitlab/gitlab-secrets.json` file
 from the **GitLab server** to the **Pages server**.
 
@@ -298,7 +313,7 @@ WARN[0010] Pages cannot communicate with an instance of the GitLab API. Please s
 ```
 
 This can happen if your `gitlab-secrets.json` file is out of date between GitLab Rails and GitLab
-Pages. Follow steps 8-10 of [Running GitLab Pages on a separate server](_index.md#running-gitlab-pages-on-a-separate-server),
+Pages. Follow steps 8-10 of [running GitLab Pages on a separate server](_index.md#running-gitlab-pages-on-a-separate-server)
 in all of your GitLab Pages instances.
 
 ## Intermittent 502 errors when using an AWS Network Load Balancer and GitLab Pages
@@ -318,7 +333,7 @@ container.
 ## 500 error with `securecookie: failed to generate random iv` and `Failed to save the session`
 
 This problem most likely results from an out-dated operating system.
-The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings via [`crypto/rand` in Go](https://pkg.go.dev/crypto/rand#pkg-variables).
+The [Pages daemon uses the `securecookie` library](https://gitlab.com/search?group_id=9970&project_id=734943&repository_ref=master&scope=blobs&search=securecookie&snippets=false) to get random strings using [`crypto/rand` in Go](https://pkg.go.dev/crypto/rand#pkg-variables).
 This requires the `getrandom` system call or `/dev/urandom` to be available on the host OS.
 Upgrading to an [officially supported operating system](../../install/package/_index.md#supported-platforms) is recommended.
 
@@ -367,7 +382,7 @@ Once added, reconfigure with `sudo gitlab-ctl reconfigure` and restart GitLab wi
 
 You may see this error if `pages_external_url` was updated at some point of time. Verify the following:
 
-1. Check the [System OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application):
+1. Check the [system OAuth application](../../integration/oauth_provider.md#create-an-instance-wide-application):
 
    1. In the upper-right corner, select **Admin**.
    1. Select **Applications** and then **Add new application**.
@@ -498,12 +513,51 @@ To resolve:
    sudo gitlab-ctl reconfigure
    ```
 
+### Multi-node OAuth secret synchronization
+
+When you run GitLab Pages across multiple nodes, the Pages OAuth secrets must be identical on all nodes.
+If the secrets are out of sync, some nodes may reject authentication requests with the
+same `Client authentication failed due to unknown client` error.
+
+To resolve this issue:
+
+1. Back up the secrets file on all GitLab nodes:
+
+   ```shell
+   sudo cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.$(date +\%Y\%m\%d)
+   ```
+
+1. On the first node, in the `/etc/gitlab/gitlab-secrets.json` file:
+
+   1. Remove the `gitlab_pages` section.
+   1. Save the file.
+   1. Reconfigure GitLab to regenerate the OAuth token:
+
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
+
+   1. Copy the updated `gitlab_pages` section.
+
+1. On all other nodes, paste the updated `gitlab_pages` section into
+   the corresponding `gitlab-secrets.json` files and save.
+
+1. Reconfigure GitLab so that the `gitlab-pages-config` file is populated with the updated secrets:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Verify that the secrets are consistent across all nodes by comparing the `gitlab_pages`
+   section in `/etc/gitlab/gitlab-secrets.json` and the contents of
+   `/var/opt/gitlab/gitlab-pages/gitlab-pages-config` on each node.
+
 ## Error: `Response size over 104857600 bytes`
 
 If the **pages** job succeeds but the **deploy** job fails, you might get an error that states `Response size over 104857600 bytes`.
 
 This error occurs when the decompressed Pages content exceeds the
-[Maximum Gzip-compressed size](../instance_limits.md#maximum-gzip-compressed-size) limit.
+[maximum Gzip-compressed size](../instance_limits.md#maximum-gzip-compressed-size) limit.
 
 To resolve this issue, increase the `max_http_decompressed_size` limit.
 Use one of the following methods:

@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
-  include Namespaces::StatefulHelpers
   using RSpec::Parameterized::TableSyntax
 
   let!(:user)         { create(:user) }
@@ -109,20 +108,20 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
     context 'when group state is deletion_scheduled' do
       before do
-        set_state(group, :deletion_scheduled)
+        group.update!(state: :deletion_scheduled)
       end
 
       it 'transitions the group state to deletion_in_progress' do
         expect(group).to receive(:start_deletion!).with(transition_user: user).and_call_original
 
         expect { destroy_group(group, user, true) }.to change { group.state }
-                                                         .from(Namespaces::Stateful::STATES[:deletion_scheduled])
-                                                         .to(Namespaces::Stateful::STATES[:deletion_in_progress])
+                                                         .from('deletion_scheduled')
+                                                         .to('deletion_in_progress')
       end
 
       context 'when group is already in deletion_in_progress state' do
         before do
-          set_state(group, :deletion_in_progress)
+          group.update!(state: :deletion_in_progress)
         end
 
         it 'does not call start_deletion!' do
@@ -158,14 +157,14 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
       context 'when group state is deletion_scheduled' do
         before do
-          set_state(group, :deletion_scheduled)
+          group.update!(state: :deletion_scheduled)
         end
 
         it 'reschedules the deletion by transitioning state back' do
           expect(group).to receive(:reschedule_deletion!).with(transition_user: user).and_call_original
 
           expect { destroy_group(group, user, false) }.to raise_error(StandardError)
-          expect(group.state).to eq(Namespaces::Stateful::STATES[:deletion_scheduled])
+          expect(group.state).to eq('deletion_scheduled')
         end
 
         it 'logs the rescheduling error' do
@@ -185,20 +184,20 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
     context 'when group state is deletion_scheduled' do
       before do
-        set_state(group, :deletion_scheduled)
+        group.update!(state: :deletion_scheduled)
       end
 
       it 'transitions the group state to deletion_in_progress' do
         expect(group).to receive(:start_deletion!).with(transition_user: user).and_call_original
 
         expect { destroy_group(group, user, false) }.to change { group.state }
-          .from(Namespaces::Stateful::STATES[:deletion_scheduled])
-          .to(Namespaces::Stateful::STATES[:deletion_in_progress])
+          .from('deletion_scheduled')
+          .to('deletion_in_progress')
       end
 
       context 'when group is already in deletion_in_progress state' do
         before do
-          set_state(group, :deletion_in_progress)
+          group.update!(state: :deletion_in_progress)
         end
 
         it 'does not call start_deletion!' do
@@ -217,8 +216,8 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
         with_them do
           before do
-            set_state(group, group_state)
-            set_state(nested_group, nested_group_state)
+            group.update!(state: group_state)
+            nested_group.update!(state: nested_group_state)
             allow_next_found_instance_of(Group) do |instance|
               allow(instance).to receive(:destroy).and_raise(StandardError)
             end
@@ -227,8 +226,8 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
           it 'restores each group to its original state before deletion started', :aggregate_failures do
             expect { destroy_group(group, user, false) }.to raise_error(StandardError)
 
-            expect(group.reload.state).to eq(Namespaces::Stateful::STATES[group_state])
-            expect(nested_group.reload.state).to eq(Namespaces::Stateful::STATES[nested_group_state])
+            expect(group.reload.state).to eq(group_state.to_s)
+            expect(nested_group.reload.state).to eq(nested_group_state.to_s)
           end
         end
       end

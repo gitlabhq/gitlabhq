@@ -221,8 +221,6 @@ class SearchController < ApplicationController
   end
 
   def search_type_valid?
-    return true if params[:search_type].nil?
-
     search_type_errors = search_service.search_type_errors
     if search_type_errors
       flash[:alert] = search_type_errors

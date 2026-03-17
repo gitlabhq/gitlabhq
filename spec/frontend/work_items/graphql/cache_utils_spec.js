@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { WIDGET_TYPE_HIERARCHY, STATE_CLOSED } from '~/work_items/constants';
 import {
   addHierarchyChild,

@@ -24,18 +24,22 @@ module QA
         it 'unlocks job artifacts from previous successful pipeline',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/394807' do
           project.visit_job('job_1')
+
           Page::Project::Job::Show.perform do |job|
+            job.close_dap_panel_if_exists
             expect(job).to have_locked_artifact
           end
 
           update_ci_file(job_name: 'job_2', script: 'echo test', pipeline_count: 2, status: 'success')
 
           project.visit_job('job_2')
+
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_locked_artifact
           end
 
           project.visit_job('job_1')
+
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_unlocked_artifact
           end
@@ -54,16 +58,20 @@ module QA
           update_ci_file(job_name: 'failed_job_2', script: 'exit 2', pipeline_count: 3, status: 'failed')
 
           project.visit_job('failed_job_2')
+
           Page::Project::Job::Show.perform do |job|
+            job.close_dap_panel_if_exists
             expect(job).to have_locked_artifact
           end
 
           project.visit_job('failed_job_1')
+
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_unlocked_artifact
           end
 
           project.visit_job('successful_job_1')
+
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_locked_artifact
           end
@@ -82,11 +90,14 @@ module QA
           update_ci_with_manual_job(job_name: 'successful_job_with_manual_2', script: 'echo test', pipeline_count: 3)
 
           project.visit_job('successful_job_with_manual_2')
+
           Page::Project::Job::Show.perform do |job|
+            job.close_dap_panel_if_exists
             expect(job).to have_locked_artifact
           end
 
           project.visit_job('successful_job_with_manual_1')
+
           Page::Project::Job::Show.perform do |job|
             expect(job).to have_unlocked_artifact
           end

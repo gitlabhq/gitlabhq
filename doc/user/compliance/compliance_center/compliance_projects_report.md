@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: View compliance frameworks applied to projects and groups, with options to manage, filter, and export framework assignments.
 title: Compliance projects report
 ---
@@ -37,7 +37,7 @@ Prerequisites:
 
 To view the compliance projects report:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 
@@ -60,7 +60,7 @@ Prerequisites:
 
 To apply a compliance framework to one project in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Next to the project you want to add the compliance framework to, select {{< icon name="pencil" >}} action.
@@ -68,7 +68,7 @@ To apply a compliance framework to one project in a group:
 
 To apply a compliance framework to multiple projects in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Select multiple projects.
@@ -95,14 +95,14 @@ Prerequisites:
 
 To remove a compliance framework from one project in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Next to the compliance framework to remove from the project, select {{< icon name="close" >}} on the framework label.
 
 To remove a compliance framework from multiple projects in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Select multiple projects.
@@ -128,7 +128,7 @@ Prerequisites:
 
 To export a report of compliance frameworks on projects in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. In the upper-right corner, select **Export**.
 1. Select **Export list of project frameworks**.
@@ -145,7 +145,7 @@ A report is compiled and delivered to your email inbox as an attachment.
 
 To filter the list of compliance frameworks:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. In the search field:
@@ -166,7 +166,7 @@ Prerequisites:
 
 To create a new compliance framework from the compliance projects report:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Select the **+ Add framework**.
@@ -183,7 +183,7 @@ Prerequisites:
 
 To edit a compliance framework from the compliance projects report:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over framework and select **Edit the framework**.
@@ -199,7 +199,7 @@ Prerequisites:
 
 To delete a compliance framework from the compliance projects report:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over framework and select **Edit the framework**.

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: Code contribution guidelines, style guides, and processes.
 title: Contribute to GitLab development
 ---
@@ -81,7 +81,6 @@ To write and test your code locally, choose a local development environment.
 - [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit), is a local
   development environment that includes an installation of GitLab Self-Managed, sample projects,
   and administrator access with which you can test functionality.
-
 - [GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-box.md),
   packages GDK into a pre-configured container image that you can connect to with VS Code.
   Follow [Configure GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-box.md) to set up GDK-in-a-box.

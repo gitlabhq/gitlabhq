@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Documentation for the REST API for issues statistics in GitLab.
 title: Issues statistics API
 ---
@@ -21,7 +21,7 @@ request on that project results in a `404` status code.
 
 ## Retrieve issues statistics for a user
 
-Retrieves statistics for issues accessible by the current user. By default, 
+Retrieves statistics for issues accessible by the current user. By default,
 it returns only issues created by the current user. To get all issues,
 set the `scope` attribute to `all`.
 

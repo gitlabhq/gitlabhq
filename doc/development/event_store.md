@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: GitLab EventStore
 ---
 
@@ -308,8 +308,8 @@ end
 
 ## Register the subscriber to the event
 
-To subscribe the worker to a specific event in `lib/gitlab/event_store.rb`,
-add a line like this to the `Gitlab::EventStore.configure!` method:
+To subscribe the worker to a specific event, create a subscriptions class
+and register the event inside the `register` method:
 
 > [!warning]
 > To [ensure compatibility with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers)
@@ -319,23 +319,34 @@ add a line like this to the `Gitlab::EventStore.configure!` method:
 ```ruby
 module Gitlab
   module EventStore
-    def self.configure!(store)
-      # ...
-
-      store.subscribe ::Sbom::ProcessTransferEventsWorker, to: ::Projects::ProjectTransferedEvent,
-        if: ->(event) do
-          actor = ::Project.actor_from_id(event.data[:project_id])
-          Feature.enabled?(:sync_project_archival_status_to_sbom_occurrences, actor)
+    module Subscriptions
+      class SbomSubscriptions < BaseSubscriptions
+        def register
+          store.subscribe ::Sbom::ProcessTransferEventsWorker, to: ::Projects::ProjectTransferedEvent,
+            if: ->(event) do
+              actor = ::Project.actor_from_id(event.data[:project_id])
+              Feature.enabled?(:sync_project_archival_status_to_sbom_occurrences, actor)
+            end
         end
-
-      # ...
+      end
     end
   end
 end
 ```
 
-A worker that is only defined in the EE codebase can subscribe to an event in the same way by
-declaring the subscription in `ee/lib/ee/gitlab/event_store.rb`.
+There should be a separate subscriptions class for each [bounded context](software_design.md#bounded-contexts).
+Subscriptions are organized using the bounded context of the worker, not the event.
+
+- FOSS workers should create subscriptions in `lib/gitlab/bounded_contexts/subscriptions/[context]_subscriptions.rb`
+- If a domain exists in both FOSS and EE, the EE code should be placed in
+  `ee/lib/ee/gitlab/event_store/subscriptions/[context]_subscriptions.rb`
+- EE-only domains should be placed in `ee/lib/gitlab/event_store/subscriptions/[context]_subscriptions.rb`
+
+Newly created subscription groups need to be added to the `SUBSCRIPTION_GROUPS` constant in
+`lib/gitlab/event_store.rb` or `EE_SUBSCRIPTION_GROUPS` in `ee/lib/ee/gitlab/event_store.rb`.
+
+Tests verifying that the worker is subscribed should be placed in the worker's spec file
+according to [testing the subscriber](#testing-the-subscriber).
 
 Subscriptions are stored in memory when the Rails app is loaded and they are immediately frozen.
 It's not possible to modify subscriptions at runtime.

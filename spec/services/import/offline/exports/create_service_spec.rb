@@ -61,16 +61,68 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
 
     it_behaves_like 'a success response'
 
+    it 'creates self-relation exports for all groups and projects', :aggregate_failures do
+      expect { result }.to change { BulkImports::Export.count }.by(4)
+
+      offline_export = result.payload
+      relation_exports = offline_export.bulk_import_exports
+
+      expect(relation_exports).to all(have_attributes(
+        user_id: current_user.id,
+        relation: BulkImports::FileTransfer::BaseConfig::SELF_RELATION,
+        status: BulkImports::Export::PENDING
+      ))
+
+      expect(relation_exports.pluck(:group_id)).to match_array([groups[0].id, groups[1].id, nil, nil])
+      expect(relation_exports.pluck(:project_id)).to match_array([projects[0].id, projects[1].id, nil, nil])
+    end
+
+    it 'sets the organization_id on the offline export' do
+      expect(result.payload).to have_attributes(organization_id: organization.id)
+    end
+
+    it 'enqueues the export worker' do
+      expect(Import::Offline::ExportWorker).to receive(:perform_async).with(Integer)
+
+      result
+    end
+
     context 'when only groups are exported' do
       let(:portable_params) { [{ type: 'group', full_path: groups[0].full_path }] }
 
       it_behaves_like 'a success response'
+
+      it 'creates self-relation exports only for groups' do
+        expect { result }.to change { BulkImports::Export.count }.by(1)
+
+        offline_export = result.payload
+
+        expect(offline_export.bulk_import_exports).to all(have_attributes(
+          group_id: groups[0].id,
+          user_id: current_user.id,
+          relation: BulkImports::FileTransfer::BaseConfig::SELF_RELATION,
+          status: BulkImports::Export::PENDING
+        ))
+      end
     end
 
     context 'when only projects are exported' do
       let(:portable_params) { [{ type: 'project', full_path: projects[0].full_path }] }
 
       it_behaves_like 'a success response'
+
+      it 'creates self-relation exports only for projects' do
+        expect { result }.to change { BulkImports::Export.count }.by(1)
+
+        offline_export = result.payload
+
+        expect(offline_export.bulk_import_exports).to all(have_attributes(
+          project_id: projects[0].id,
+          user_id: current_user.id,
+          relation: BulkImports::FileTransfer::BaseConfig::SELF_RELATION,
+          status: BulkImports::Export::PENDING
+        ))
+      end
     end
 
     context 'when portables contain duplicate paths' do
@@ -86,6 +138,22 @@ RSpec.describe Import::Offline::Exports::CreateService, :aggregate_failures, fea
       end
 
       it_behaves_like 'a success response'
+
+      it 'does not create duplicate self relation exports' do
+        expect { result }.to change { BulkImports::Export.count }.by(4)
+      end
+    end
+
+    context 'when portables have descendants' do
+      let_it_be(:subgroup) { create(:group, parent: groups[0]) }
+      let_it_be(:child_project) { create(:project, group: groups[0]) }
+
+      it 'does not create self relation exports for descendants' do
+        result
+
+        expect(BulkImports::Export.where(group_id: subgroup.id)).to be_empty
+        expect(BulkImports::Export.where(project_id: child_project.id)).to be_empty
+      end
     end
 
     context 'when portables are invalid' do

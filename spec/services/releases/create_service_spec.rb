@@ -323,7 +323,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
       it 'does not create any release' do
         expect do
           service.execute
-        end.not_to change(Release, :count)
+        end.not_to change { Release.count }
       end
 
       context 'with milestones as ids' do
@@ -408,11 +408,11 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
       let(:released_at) { 3.weeks.ago }
 
       it 'does not execute CreateEvidenceWorker' do
-        expect { subject }.not_to change(Releases::CreateEvidenceWorker.jobs, :size)
+        expect { subject }.not_to change { Releases::CreateEvidenceWorker.jobs.size }
       end
 
       it 'does not create an Evidence object', :sidekiq_inline do
-        expect { subject }.not_to change(Releases::Evidence, :count)
+        expect { subject }.not_to change { Releases::Evidence.count }
       end
 
       it 'is a historical release' do
@@ -434,7 +434,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
           expect(service).to receive(:execute).and_call_original
         end
 
-        expect { subject }.to change(Releases::Evidence, :count).by(1)
+        expect { subject }.to change { Releases::Evidence.count }.by(1)
       end
 
       it 'uses the last pipeline for evidence', :sidekiq_inline do
@@ -445,7 +445,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
           expect(service).to receive(:execute).and_call_original
         end
 
-        expect { subject }.to change(Releases::Evidence, :count).by(1)
+        expect { subject }.to change { Releases::Evidence.count }.by(1)
       end
 
       context 'when old evidence_pipeline is passed to service' do
@@ -462,7 +462,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
             expect(service).to receive(:execute).and_call_original
           end
 
-          expect { subject }.to change(Releases::Evidence, :count).by(1)
+          expect { subject }.to change { Releases::Evidence.count }.by(1)
         end
       end
 
@@ -478,7 +478,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
           expect(service).to receive(:execute).and_call_original
         end
 
-        expect { subject }.to change(Releases::Evidence, :count).by(1)
+        expect { subject }.to change { Releases::Evidence.count }.by(1)
       end
 
       it 'uses the last pipeline for evidence when tag is already created', :sidekiq_inline do
@@ -493,7 +493,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
           expect(service).to receive(:execute).and_call_original
         end
 
-        expect { subject }.to change(Releases::Evidence, :count).by(1)
+        expect { subject }.to change { Releases::Evidence.count }.by(1)
       end
     end
 
@@ -507,11 +507,11 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
       end
 
       it 'queues CreateEvidenceWorker' do
-        expect { subject }.to change(Releases::CreateEvidenceWorker.jobs, :size).by(1)
+        expect { subject }.to change { Releases::CreateEvidenceWorker.jobs.size }.by(1)
       end
 
       it 'creates Evidence', :sidekiq_inline do
-        expect { subject }.to change(Releases::Evidence, :count).by(1)
+        expect { subject }.to change { Releases::Evidence.count }.by(1)
       end
 
       it 'is not a historical release' do
@@ -533,11 +533,11 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
       let(:released_at) { 1.day.from_now }
 
       it 'does not execute CreateEvidenceWorker' do
-        expect { subject }.not_to change(Releases::CreateEvidenceWorker.jobs, :size)
+        expect { subject }.not_to change { Releases::CreateEvidenceWorker.jobs.size }
       end
 
       it 'does not create an Evidence object', :sidekiq_inline do
-        expect { subject }.not_to change(Releases::Evidence, :count)
+        expect { subject }.not_to change { Releases::Evidence.count }
       end
 
       it 'is not a historical release' do

@@ -1,13 +1,13 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Flows
 ---
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -64,12 +64,13 @@ To execute flows in the GitLab UI:
 - You must turn on flows with [the GitLab Duo settings](../../gitlab_duo/turn_on_off.md).
 - To use flows that create code, you must
   [configure push rules to allow a service account](../troubleshooting.md#configure-push-rules-to-allow-a-service-account).
+- Either [configure your own runners](execution.md#configure-runners) or ensure that [GitLab hosted runners](../../../ci/runners/hosted_runners/_index.md) are enabled in your project and working.
 
 ## Monitor running flows in the GitLab UI
 
 To view flows that are running for your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Sessions**.
 
 ## View flow history in the IDEs

@@ -10,7 +10,7 @@ import {
   parseBoolean,
 } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
-import { apolloProvider } from '~/graphql_shared/issuable_client';
+import { apolloProvider, defaultClient, currentReviewers } from '~/graphql_shared/issuable_client';
 import Translate from '~/vue_shared/translate';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
@@ -41,6 +41,23 @@ import MoveIssueButton from './components/move/move_issue_button.vue';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
+
+defaultClient.cache.policies.addTypePolicies({
+  MergeRequest: {
+    fields: {
+      reviewers: {
+        merge(existing, incoming, context) {
+          const nodes = incoming?.nodes || [];
+          currentReviewers(
+            // eslint-disable-next-line no-underscore-dangle
+            nodes.map((node) => context.cache.extract()[node.__ref] || node),
+          );
+          return incoming;
+        },
+      },
+    },
+  },
+});
 
 function getSidebarOptions(sidebarOptEl = document.querySelector('.js-sidebar-options')) {
   return JSON.parse(sidebarOptEl.innerHTML);
@@ -185,6 +202,11 @@ function mountSidebarReviewers(mediator) {
     new Vue({
       el: reviewersInputEl,
       name: 'SidebarReviewersInputsRoot',
+      apolloProvider,
+      provide: {
+        issuableIid: String(iid),
+        projectPath: fullPath,
+      },
       render(createElement) {
         return createElement(SidebarReviewersInputs);
       },

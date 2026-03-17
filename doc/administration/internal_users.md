@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Internal users
 description: Enable automated system operations through internal bot users for GitLab functionality.
 ---
@@ -44,7 +44,7 @@ Other examples of internal users:
 - [Alert Bot](../operations/incident_management/alerts.md#trigger-actions-from-alerts)
 - [Ghost User](../user/profile/account/delete_account.md#associated-records)
 - [Support Bot](../user/project/service_desk/configure.md#support-bot-user)
-- [Placeholder User](../user/import/mapping.md#placeholder-users) created during imports
+- [Placeholder User](../user/import/mapping/_index.md#placeholder-users) created during imports
 - Visual Review Bot
 - Resource access tokens, including [project access tokens](../user/project/settings/project_access_tokens.md)
   and [group access tokens](../user/group/settings/group_access_tokens.md), which are

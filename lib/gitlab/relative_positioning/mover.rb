@@ -3,11 +3,13 @@
 module Gitlab
   module RelativePositioning
     class Mover
-      attr_reader :range, :start_position
+      attr_reader :range, :start_position, :ideal_distance, :max_gap
 
-      def initialize(start, range)
+      def initialize(start, range, ideal_distance: IDEAL_DISTANCE, max_gap: MAX_GAP)
         @range = range
         @start_position = start
+        @ideal_distance = ideal_distance
+        @max_gap = max_gap
       end
 
       def move_to_end(object)
@@ -48,7 +50,7 @@ module Gitlab
       def context(object, ignoring: nil)
         return unless object
 
-        ItemContext.new(object, range, ignoring: ignoring)
+        ItemContext.new(object, range, ignoring: ignoring, ideal_distance: ideal_distance, max_gap: max_gap)
       end
 
       private
@@ -99,10 +101,12 @@ module Gitlab
 
         return [pos_left, pos_right] unless gap_too_small?(pos_left, pos_right)
 
-        gap = range.rhs.create_space_left
+        min_gap = pos_left == pos_right ? MIN_GAP + 1 : MIN_GAP
+
+        gap = range.lhs.shift_left(min_gap: min_gap, exclude: range.rhs.object)
         [pos_left - gap.delta, pos_right]
       rescue NoSpaceLeft
-        gap = range.lhs.create_space_right
+        gap = range.rhs.shift_right(min_gap: min_gap, exclude: range.lhs.object)
         [pos_left, pos_right + gap.delta]
       end
 
@@ -134,11 +138,11 @@ module Gitlab
 
         if gap_too_small?(pos_before, pos_after)
           raise NoSpaceLeft
-        elsif gap_width > MAX_GAP
+        elsif gap_width > max_gap
           if pos_before <= range.first
-            pos_after - IDEAL_DISTANCE
+            pos_after - ideal_distance
           elsif pos_after >= range.last
-            pos_before + IDEAL_DISTANCE
+            pos_before + ideal_distance
           else
             midpoint(pos_before, pos_after)
           end

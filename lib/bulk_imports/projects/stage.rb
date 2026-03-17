@@ -38,7 +38,7 @@ module BulkImports
           },
           project_attributes: {
             pipeline: BulkImports::Projects::Pipelines::ProjectAttributesPipeline,
-            stage: 1
+            stage: 2
           },
           labels: {
             pipeline: BulkImports::Common::Pipelines::LabelsPipeline,

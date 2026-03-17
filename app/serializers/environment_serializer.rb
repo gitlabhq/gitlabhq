@@ -3,7 +3,9 @@
 class EnvironmentSerializer < BaseSerializer
   include WithPagination
 
-  Item = Struct.new(:name, :size, :latest)
+  Item = Struct.new(:name, :folder_size, :latest) do
+    alias_method :size, :folder_size
+  end
 
   entity EnvironmentEntity
 
@@ -97,10 +99,11 @@ class EnvironmentSerializer < BaseSerializer
         metadata: [],
         job_environment: [],
         job_definition: [],
+        supply_chain_attestation: [],
         pipeline: {
-          manual_actions: [:metadata, :job_definition, :deployment],
-          scheduled_actions: [:metadata, :job_definition],
-          latest_successful_jobs: []
+          manual_actions: [:metadata, :job_definition, :deployment, :supply_chain_attestation],
+          scheduled_actions: [:metadata, :job_definition, :supply_chain_attestation],
+          latest_successful_jobs: [:supply_chain_attestation]
         },
         project: project_associations
       }

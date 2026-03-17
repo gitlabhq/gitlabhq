@@ -1,0 +1,3 @@
+---
+name: drop_sidekiq_job
+description: Grants the ability to drop Sidekiq jobs

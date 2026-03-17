@@ -7,16 +7,20 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
   let(:params) { {} }
   let(:body_params) { {} }
   let(:options) { { method: method, params: params } }
+  let(:request_body_registry) { Gitlab::GrapeOpenapi::RequestBodyRegistry.new }
+
+  let(:route_settings) { {} }
 
   let(:route) do
-    double('Route', path: route_path)
+    double('Route', path: route_path, settings: route_settings)
   end
 
   let(:parameters_instance) { instance_double(Gitlab::GrapeOpenapi::Models::RequestBody::Parameters) }
   let(:parameter_schema_instance) { instance_double(Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema) }
 
   subject(:request_body) do
-    described_class.convert(route: route, options: options, params: params)
+    described_class.convert(route: route, options: options, params: params,
+      request_body_registry: request_body_registry)
   end
 
   before do
@@ -218,19 +222,64 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
         end
       end
 
-      it 'includes schema with object type' do
-        schema = request_body[:content]['application/json'][:schema]
-        expect(schema[:type]).to eq('object')
+      context 'when the endpoint specifies consumes' do
+        let(:route_settings) { { description: { consumes: ['application/x-www-form-urlencoded'] } } }
+
+        it 'uses the specified content type' do
+          expect(request_body[:content]).to have_key('application/x-www-form-urlencoded')
+          expect(request_body[:content]).not_to have_key('application/json')
+        end
       end
 
-      it 'includes properties for all body parameters' do
-        properties = request_body[:content]['application/json'][:schema][:properties]
+      context 'when the endpoint specifies consumes with :json symbol' do
+        let(:route_settings) { { description: { consumes: [:json] } } }
+
+        it 'converts :json to application/json' do
+          expect(request_body[:content]).to have_key('application/json')
+        end
+      end
+
+      context 'when consumes is specified but endpoint also has file uploads' do
+        let(:route_settings) { { description: { consumes: ['application/octet-stream'] } } }
+
+        let(:body_params) do
+          {
+            name: { type: 'String', desc: 'User name', required: true },
+            file: { type: 'API::Validations::Types::WorkhorseFile', desc: 'File', required: false }
+          }
+        end
+
+        it 'uses the specified consumes content type over auto-detection' do
+          expect(request_body[:content]).to have_key('application/octet-stream')
+          expect(request_body[:content]).not_to have_key('multipart/form-data')
+        end
+      end
+
+      it 'includes schema reference' do
+        schema = request_body[:content]['application/json'][:schema]
+        expect(schema).to have_key('$ref')
+        expect(schema['$ref']).to start_with('#/components/schemas/')
+      end
+
+      it 'registers schema with object type in registry' do
+        request_body
+        schema_name = request_body[:content]['application/json'][:schema]['$ref'].split('/').last
+        registered_schema = request_body_registry.schemas[schema_name]
+        expect(registered_schema[:type]).to eq('object')
+      end
+
+      it 'includes properties for all body parameters in registered schema' do
+        request_body
+        schema_name = request_body[:content]['application/json'][:schema]['$ref'].split('/').last
+        properties = request_body_registry.schemas[schema_name][:properties]
         expect(properties).to have_key('name')
         expect(properties).to have_key('email')
       end
 
-      it 'marks required parameters in schema' do
-        schema = request_body[:content]['application/json'][:schema]
+      it 'marks required parameters in registered schema' do
+        request_body
+        schema_name = request_body[:content]['application/json'][:schema]['$ref'].split('/').last
+        schema = request_body_registry.schemas[schema_name]
         expect(schema[:required]).to include('name')
         expect(schema[:required]).not_to include('email')
       end
@@ -241,8 +290,10 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
         expect(parameter_schema_instance).to have_received(:build).with(:email, body_params[:email])
       end
 
-      it 'uses schema returned by ParameterSchema' do
-        properties = request_body[:content]['application/json'][:schema][:properties]
+      it 'uses schema returned by ParameterSchema in registered schema' do
+        request_body
+        schema_name = request_body[:content]['application/json'][:schema]['$ref'].split('/').last
+        properties = request_body_registry.schemas[schema_name][:properties]
         expect(properties['name']).to eq({ type: 'string', description: 'User name' })
         expect(properties['email']).to eq({ type: 'string', description: 'User email' })
       end
@@ -268,8 +319,10 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
         expect(request_body[:required]).to be(false)
       end
 
-      it 'does not include required array in schema when empty' do
-        schema = request_body[:content]['application/json'][:schema]
+      it 'does not include required array in registered schema when empty' do
+        request_body
+        schema_name = request_body[:content]['application/json'][:schema]['$ref'].split('/').last
+        schema = request_body_registry.schemas[schema_name]
         expect(schema).not_to have_key(:required)
       end
     end
@@ -287,8 +340,10 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
           .and_return({ type: 'string' })
       end
 
-      it 'converts parameter names to strings in schema' do
-        properties = request_body[:content]['application/json'][:schema][:properties]
+      it 'converts parameter names to strings in registered schema' do
+        request_body
+        schema_name = request_body[:content]['application/json'][:schema]['$ref'].split('/').last
+        properties = request_body_registry.schemas[schema_name][:properties]
         expect(properties.keys).to all(be_a(String))
         expect(properties).to have_key('name')
       end
@@ -320,8 +375,10 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
         .with(route: route, params: params)
     end
 
-    it 'uses body params from Parameters to build schema' do
-      properties = request_body[:content]['application/json'][:schema][:properties]
+    it 'uses body params from Parameters to build registered schema' do
+      request_body
+      schema_name = request_body[:content]['application/json'][:schema]['$ref'].split('/').last
+      properties = request_body_registry.schemas[schema_name][:properties]
 
       # Should only contain what Parameters returned
       expect(properties.keys).to contain_exactly('name', 'email')
@@ -367,8 +424,10 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::RequestBodyConverter do
       expect(parameter_schema_instance).to have_received(:build).with(:count, body_params[:count])
     end
 
-    it 'assigns returned schemas to properties' do
-      properties = request_body[:content]['application/json'][:schema][:properties]
+    it 'assigns returned schemas to properties in registered schema' do
+      request_body
+      schema_name = request_body[:content]['application/json'][:schema]['$ref'].split('/').last
+      properties = request_body_registry.schemas[schema_name][:properties]
 
       expect(properties['name']).to eq({ type: 'string', description: 'User name' })
       expect(properties['count']).to eq({ type: 'integer', description: 'Count' })

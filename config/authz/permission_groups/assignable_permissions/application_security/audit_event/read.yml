@@ -1,0 +1,7 @@
+---
+name: read_audit_event
+description: Grants the ability to read audit events
+boundaries:
+  - group
+permissions:
+  - read_audit_event

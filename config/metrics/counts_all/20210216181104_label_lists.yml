@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.label_lists
 description: Count of label lists created on Boards
 product_group: project_management
+product_categories:
+- portfolio_management
 value_type: number
 status: active
 time_frame: all

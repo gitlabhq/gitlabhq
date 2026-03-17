@@ -9,7 +9,14 @@ class LfsObject < ApplicationRecord
 
   STORE_COLUMN = :file_store
 
-  has_many :lfs_objects_projects
+  # `lfs_objects` is a gitlab_main_cell_local table and `lfs_objects_projects`
+  # is a gitlab_main_org table. Cross-schema foreign keys are not allowed, so
+  # we cannot use a DB-level `ON DELETE RESTRICT` FK. A loose FK is also not
+  # suitable here because it only supports async cascading deletes, not the
+  # RESTRICT action needed to prevent orphaned lfs_objects_projects rows.
+  # Therefore, we enforce this constraint at the application level instead.
+  has_many :lfs_objects_projects, dependent: :restrict_with_exception # rubocop:disable Cop/ActiveRecordDependent -- See comment above
+
   has_many :projects, -> { distinct }, through: :lfs_objects_projects
 
   scope :for_oids, ->(oids) { where(oid: oids) }

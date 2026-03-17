@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Terraform state administration
 description: Administer Terraform state storage.
 ---
@@ -32,7 +32,7 @@ or because your instance doesn't use Terraform.
 
 When Terraform state administration is disabled:
 
-- On the left sidebar, you cannot select **Operate** > **Terraform states**.
+- In the left sidebar, you cannot select **Operate** > **Terraform states**.
 - Any CI/CD jobs that access the Terraform state fail with this error:
 
   ```shell
@@ -105,7 +105,7 @@ For self-compiled installations:
 {{< /details >}}
 
 Instead of storing Terraform state files on disk, we recommend the use of
-[one of the supported object storage options](object_storage.md#supported-object-storage-providers).
+[one of the supported object storage options](object_storage.md#object-storage-provider-support).
 This configuration relies on valid credentials to be configured already.
 
 [Read more about using object storage with GitLab](object_storage.md).

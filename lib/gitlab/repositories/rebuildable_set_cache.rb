@@ -28,12 +28,31 @@ module Gitlab
         trusted: 'trusted'
       }.freeze
 
+      # Lua script for atomic SADD only if key exists.
+      # Prevents race condition where key expires between EXISTS check and SADD,
+      # which would create a partial cache with only one element.
+      SADD_IF_EXISTS_SCRIPT = <<~LUA
+        if redis.call('EXISTS', KEYS[1]) == 1 then
+          return redis.call('SADD', KEYS[1], ARGV[1])
+        end
+        return 0
+      LUA
+
+      # Lua script for atomic SREM only if key exists.
+      # Prevents race condition where key expires between EXISTS check and SREM.
+      SREM_IF_EXISTS_SCRIPT = <<~LUA
+        if redis.call('EXISTS', KEYS[1]) == 1 then
+          return redis.call('SREM', KEYS[1], ARGV[1])
+        end
+        return 0
+      LUA
+
       attr_reader :repository, :namespace, :expires_in
 
       def initialize(repository, extra_namespace: nil, expires_in: 2.weeks)
         @repository = repository
         @namespace = repository.full_path.to_s
-        @namespace += ":#{repository.project.id}" if repository.project
+        @namespace += ":{#{repository.project.id}}" if repository.project
         @namespace = "#{@namespace}:#{extra_namespace}" if extra_namespace
         @expires_in = expires_in
       end
@@ -62,6 +81,21 @@ module Gitlab
         exists_in_redis?(rebuild_flag_key(key))
       end
 
+      # Handle individual ref changes (add or remove)
+      # This is the entry point for incremental cache updates.
+      # @param key [String] Cache key (e.g., 'branch_names', 'tag_names')
+      # @param ref [String] Full ref path (e.g., "refs/heads/main")
+      # @param deleted [Boolean] Whether the ref was deleted
+      def handle_ref_change(key, ref, deleted)
+        ref_name = Gitlab::Git.ref_name(ref)
+
+        if rebuilding?(key)
+          dual_write(key, ref_name, deleted)
+        else
+          simple_update(key, ref_name, deleted)
+        end
+      end
+
       def write(key, value)
         full_key = cache_key(key)
 
@@ -76,6 +110,8 @@ module Gitlab
             multi.expire(full_key, expires_in)
           end
         end
+
+        mark_trusted(key)
 
         value
       end
@@ -114,6 +150,59 @@ module Gitlab
 
       private
 
+      # Update cache by adding or removing a single ref (no rebuild in progress)
+      # Uses Lua scripts to ensure atomic check-and-update operations.
+      # @param key [String] Cache key
+      # @param ref_name [String] Short ref name (e.g., "main")
+      # @param deleted [Boolean] Whether to remove (true) or add (false)
+      def simple_update(key, ref_name, deleted)
+        full_key = cache_key(key)
+
+        with do |redis|
+          if deleted
+            redis.eval(SREM_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
+          else
+            redis.eval(SADD_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
+          end
+        end
+      rescue ::Redis::BaseError => e
+        log_error(:simple_update_failed, key, e)
+        mark_untrusted(key)
+        raise
+      end
+
+      # Update cache and enqueue event during rebuild
+      # Ensures no events are lost during cache reconstruction
+      # @param key [String] Cache key
+      # @param ref_name [String] Short ref name (e.g., "main")
+      # @param deleted [Boolean] Whether to remove (true) or add (false)
+      def dual_write(key, ref_name, deleted)
+        full_key = cache_key(key)
+        pending = pending_key(key)
+        event = encode_event(ref_name, deleted)
+
+        with do |redis|
+          # Enqueue event first for rebuild process to reconcile.
+          # This ensures no events are lost even if a failure occurs
+          # between operations - cache updates self-heal naturally,
+          # but lost events cannot be recovered.
+          redis.pipelined do |pipeline|
+            pipeline.lpush(pending, event)
+            pipeline.expire(pending, PENDING_EVENT_TTL)
+          end
+
+          if deleted
+            redis.eval(SREM_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
+          else
+            redis.eval(SADD_IF_EXISTS_SCRIPT, keys: [full_key], argv: [ref_name])
+          end
+        end
+      rescue ::Redis::BaseError => e
+        log_error(:dual_write_failed, key, e)
+        mark_untrusted(key)
+        raise
+      end
+
       def suffixed_cache_key(type, suffix)
         "#{cache_namespace}:#{type}:#{suffix}:#{namespace}"
       end
@@ -122,6 +211,14 @@ module Gitlab
         with { |redis| redis.exists?(redis_key) } # rubocop:disable CodeReuse/ActiveRecord -- Not ActiveRecord
       rescue ::Redis::BaseError
         false
+      end
+
+      # Encode event for pending queue
+      # @param ref_name [String] Short ref name
+      # @param deleted [Boolean] Whether ref was deleted
+      # @return [String] Encoded event (e.g., "+main" or "-feature")
+      def encode_event(ref_name, deleted)
+        "#{deleted ? '-' : '+'}#{ref_name}"
       end
 
       def mark_trusted(key)
@@ -144,6 +241,17 @@ module Gitlab
         Gitlab::AppLogger.info(
           message: 'RebuildableSetCache cache miss',
           cache_key: key,
+          class: self.class.name
+        )
+      end
+
+      def log_error(event, key, error)
+        Gitlab::AppLogger.error(
+          message: 'RebuildableSetCache error',
+          event: event,
+          cache_key: key,
+          error_class: error.class.name,
+          error_message: error.message,
           class: self.class.name
         )
       end

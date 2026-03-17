@@ -235,6 +235,7 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :api do
         types
         updatedAfter
         updatedBefore
+        workItemTypeIds
       ]
 
       if Gitlab.ee?

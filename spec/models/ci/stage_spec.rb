@@ -128,6 +128,28 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
     end
   end
 
+  describe 'subscription callbacks' do
+    describe 'after status transition' do
+      let(:stage) { create(:ci_stage, pipeline: pipeline, project: pipeline.project, status: 'created') }
+
+      it 'triggers ci_stage_status_updated subscription' do
+        expect(GraphqlTriggers).to receive(:ci_stage_status_updated).with(stage)
+
+        stage.run
+      end
+
+      context 'with multiple status transitions' do
+        %w[running success failed canceled skipped].each do |target_status|
+          it "triggers subscription when transitioning to #{target_status}" do
+            expect(GraphqlTriggers).to receive(:ci_stage_status_updated).with(stage)
+
+            stage.set_status(target_status)
+          end
+        end
+      end
+    end
+  end
+
   describe 'ordered statuses in stage' do
     let_it_be(:stage) { create(:ci_stage, pipeline: pipeline, name: 'test') }
 
@@ -519,6 +541,19 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       end
 
       it { expect(stage.confirm_manual_job?).to be_falsy }
+    end
+  end
+
+  describe 'play_manual' do
+    let(:current_user) { create(:user) }
+    let(:stage) { create(:ci_stage, pipeline: pipeline) }
+
+    subject { stage.play_manual(current_user) }
+
+    it 'queues a worker to play all manual jobs' do
+      expect(Ci::PlayManualStageWorker).to receive(:perform_async).with(stage.id, current_user.id).once
+
+      subject
     end
   end
 end

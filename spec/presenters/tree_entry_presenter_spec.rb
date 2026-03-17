@@ -12,9 +12,9 @@ RSpec.describe TreeEntryPresenter do
   let(:ref) { 'master' }
 
   describe '.web_url' do
-    it {
+    it do
       expect(presenter.web_url).to eq("http://localhost/#{project.full_path}/-/tree/#{ref}/#{tree.path}")
-    }
+    end
   end
 
   describe '#web_path' do
@@ -31,9 +31,9 @@ RSpec.describe TreeEntryPresenter do
     end
 
     describe '#web_path' do
-      it {
+      it do
         expect(presenter.web_path).to eq("/#{project.full_path}/-/tree/#{ref}/#{tree.path}?ref_type=heads")
-      }
+      end
     end
   end
 end

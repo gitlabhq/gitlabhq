@@ -69,6 +69,7 @@
 - Projects::Integrations::Jira::ByIdsFinder
 - Projects::Integrations::Jira::IssuesFinder
 - PushRuleFinder
+- ProjectPushRuleFinder
 - Releases::EvidencePipelineFinder
 - Repositories::BranchNamesFinder
 - Repositories::ChangelogTagFinder

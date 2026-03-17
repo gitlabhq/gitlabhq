@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to set up, configure, and manage GitLab Geo database replication to keep primary and secondary sites synchronized, including requirements, replication methods, and troubleshooting guidance.
 title: Geo database replication
 ---
@@ -96,7 +96,6 @@ The following guide assumes that:
    ```
 
 1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
-
 1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your site:
 
    ```ruby
@@ -312,7 +311,6 @@ The following guide assumes that:
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt | grep 5432` to ensure that PostgreSQL is listening on port
    `5432` to the **primary** site's private address.
-
 1. A certificate was automatically generated when GitLab was reconfigured. This
    is used automatically to protect your PostgreSQL traffic from
    eavesdroppers. To protect against active ("man-in-the-middle") attackers,
@@ -357,7 +355,6 @@ The following guide assumes that:
    ```
 
 1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
-
 1. Stop application server and Sidekiq:
 
    ```shell
@@ -722,7 +719,6 @@ Leader instance**:
    ```
 
 1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
-
 1. Edit `/etc/gitlab/gitlab.rb` and add the following. Make sure that each password type has [matching values](#database-password-consistency-requirements) across all Geo sites.
 
    ```ruby
@@ -784,7 +780,6 @@ Leader instance**:
    ```
 
 1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
-
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
    ```ruby
@@ -965,7 +960,6 @@ For each node running a Patroni instance on the secondary site:
    ```
 
 1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
-
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
    > [!warning]

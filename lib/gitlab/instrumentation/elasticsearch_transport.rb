@@ -10,6 +10,14 @@ module Gitlab
         headers = (headers || {})
           .reverse_merge({ 'X-Opaque-Id': Labkit::Correlation::CorrelationId.current_or_new_id })
         response = super
+      rescue *::Gitlab::Search::Client::AUTHORIZATION_ERRORS => e
+        ::Gitlab::ErrorTracking.track_exception(e)
+
+        raise ::Gitlab::Search::Client::AuthorizationError, e.message
+      rescue *::Gitlab::Search::Client::TRANSPORT_ERRORS => e
+        ::Gitlab::ErrorTracking.track_exception(e)
+
+        raise ::Gitlab::Search::Client::ConnectionError, e.message
       ensure
         if ::Gitlab::SafeRequestStore.active?
           duration = (Time.now - start)
@@ -80,6 +88,10 @@ module Gitlab
   end
 end
 
-class ::Elasticsearch::Transport::Client
-  prepend ::Gitlab::Instrumentation::ElasticsearchTransportInterceptor
+module ::Elasticsearch
+  module Transport
+    class Client
+      prepend ::Gitlab::Instrumentation::ElasticsearchTransportInterceptor
+    end
+  end
 end

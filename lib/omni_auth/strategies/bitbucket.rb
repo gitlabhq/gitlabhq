@@ -8,7 +8,7 @@ module OmniAuth
       option :name, 'bitbucket'
 
       option :client_options, {
-        site: 'https://bitbucket.org',
+        site: 'https://api.bitbucket.org',
         authorize_url: 'https://bitbucket.org/site/oauth2/authorize',
         token_url: 'https://bitbucket.org/site/oauth2/access_token'
       }
@@ -27,7 +27,7 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= access_token.get('api/2.0/user').parsed
+        @raw_info ||= access_token.get('/2.0/user').parsed
       end
 
       def primary_email
@@ -36,8 +36,10 @@ module OmniAuth
       end
 
       def emails
-        email_response = access_token.get('api/2.0/user/emails').parsed
-        @emails ||= (email_response && email_response['values']) || []
+        @emails ||= begin
+          email_response = access_token.get('/2.0/user/emails').parsed
+          (email_response && email_response['values']) || []
+        end
       end
 
       def callback_url

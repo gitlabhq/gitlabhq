@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Set up a scan execution policy'
 ---
 
@@ -37,7 +37,7 @@ tutorial, you're starting with nothing, so the first step is to create a project
 
 To create project A:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **New project**.
 1. Select **Create blank project**.
 1. Complete the fields. For **Project name**, enter `go-example-a`.
@@ -65,7 +65,7 @@ configuration reusable and easier to maintain.
 
 To create the scan execution policy:
 
-1. On the top bar, select **Search or go to** and search for the `go-example-a` project.
+1. In the top bar, select **Search or go to** and search for the `go-example-a` project.
 1. Go to **Secure** > **Policies**.
 1. Select **New policy**.
 1. In the **Scan execution policy** section, select **Select policy**.
@@ -77,10 +77,9 @@ To create the scan execution policy:
 1. Select **Configure with a merge request**.
 
    The policy project `go-example-a - Security project` is created, and a merge request is created.
-
 1. Optional. Review the generated policy YAML in the merge request's **Changes** tab.
 1. Go to the **Overview** tab and select **Merge**.
-1. On the top bar, select **Search or go to** and search for the `go-example-a` project.
+1. In the top bar, select **Search or go to** and search for the `go-example-a` project.
 1. Go to **Secure** > **Policies**.
 
 You now have a scan execution policy that runs a secret detection scan on every MR, for any branch.
@@ -90,7 +89,7 @@ Test the policy by creating a merge request in project A.
 
 To test the scan execution policy:
 
-1. On the top bar, select **Search or go to** and find the project named `go-example-a`.
+1. In the top bar, select **Search or go to** and find the project named `go-example-a`.
 1. Go to **Code** > **Repository**.
 1. Select the `helloworld.go` file.
 1. Select **Edit** > **Edit single file**.
@@ -106,11 +105,9 @@ To test the scan execution policy:
 
    Let's check if the scan execution policy worked. Remember that we specified that secret detection
    is to run every time a pipeline runs, for any branch.
-
 1. In the merge request just created, go the **Pipelines** tab and select the created pipeline.
 
    Here you can see that a secret detection job ran. Let's check if it detected the test secret.
-
 1. Select the secret detection job.
 
    Near the bottom of the job's log, the following output confirms that the example secret was detected.
@@ -127,7 +124,7 @@ You've seen the policy work for one project. Create another project and apply th
 
 To create project B:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **New project**.
 1. Select **Create blank project**.
 1. Complete the fields. For **Project name**, enter `go-example-b`.
@@ -152,7 +149,7 @@ Now that you have another project, you link it to the same policy project.
 
 To link project B to the security policy project:
 
-1. On the top bar, select **Search or go to** and find the `go-example-b` project.
+1. In the top bar, select **Search or go to** and find the `go-example-b` project.
 1. Go to **Secure** > **Policies**.
 1. Select **Edit policy project**.
 1. Select the dropdown list, then search for the security policy project created at the start of
@@ -167,7 +164,7 @@ policy by creating an MR in project B.
 
 To test the scan execution policy:
 
-1. On the top bar, select **Search or go to** and find the `go-example-b` project.
+1. In the top bar, select **Search or go to** and find the `go-example-b` project.
 1. Go to **Code** > **Repository**.
 1. Select the `helloworld.go` file.
 1. Select **Edit** > **Edit single file**.
@@ -183,13 +180,10 @@ To test the scan execution policy:
 
    Let's check if the scan execution policy worked. Remember that we specified that secret detection
    is to run every time a pipeline runs, for any branch.
-
 1. In the merge request just created, go the **Pipelines** tab and select the created pipeline.
-
 1. In the merge request just created, select the pipeline's ID.
 
    Here you can see that a secret detection job ran. Let's check if it detected the test secret.
-
 1. Select the secret detection job.
 
    Near the bottom of the job's log, the following output confirms that the example secret was detected.

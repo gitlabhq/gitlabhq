@@ -3,7 +3,7 @@ import { ChunkWriter } from '~/streaming/chunk_writer';
 import { RenderBalancer } from '~/streaming/render_balancer';
 
 jest.mock('~/streaming/render_balancer');
-jest.mock('lodash/throttle', () => jest.fn());
+jest.mock('lodash', () => ({ ...jest.requireActual('lodash'), throttle: jest.fn((fn) => fn) }));
 
 describe('ChunkWriter', () => {
   let accumulator = '';

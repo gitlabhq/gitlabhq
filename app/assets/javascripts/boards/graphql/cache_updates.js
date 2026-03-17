@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { toNumber, uniq } from 'lodash';
+import { toNumber, uniq } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';

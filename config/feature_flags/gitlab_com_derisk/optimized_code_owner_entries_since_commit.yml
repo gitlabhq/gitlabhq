@@ -1,0 +1,10 @@
+---
+name: optimized_code_owner_entries_since_commit
+description: Use the lightweight FindChangedPaths Gitaly RPC instead of the full CommitDiff RPC when finding code owner entries that changed between consecutive MR diff versions.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/579591
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224888
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592386
+milestone: '18.10'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

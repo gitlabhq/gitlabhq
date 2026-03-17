@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Mobile DevOps
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Secure Files administration
 ---
 
@@ -103,7 +103,8 @@ are stored locally, follow the steps below.
 
 {{< /details >}}
 
-Instead of storing Secure Files on disk, you should use [one of the supported object storage options](../object_storage.md#supported-object-storage-providers).
+Instead of storing Secure Files on disk, you should use
+[one of the supported object storage options](../object_storage.md#object-storage-provider-support).
 This configuration relies on valid credentials to be configured already.
 
 ### Consolidated object storage

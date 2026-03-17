@@ -32,6 +32,11 @@ export default {
       type: Number,
       required: true,
     },
+    showCreateButton: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     mlflowUsageModalItem() {
@@ -71,7 +76,7 @@ export default {
         {{ modelsCountLabel }}
       </div>
     </template>
-    <template #right-actions>
+    <template v-if="showCreateButton" #right-actions>
       <gl-disclosure-dropdown
         :toggle-text="$options.i18n.createTitle"
         toggle-class="gl-w-full"

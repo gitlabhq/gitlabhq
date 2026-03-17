@@ -165,7 +165,11 @@ export default {
 
 <template>
   <div>
-    <model-experiments-header :page-title="$options.i18n.titleLabel" :count="count" />
+    <model-experiments-header
+      :page-title="$options.i18n.titleLabel"
+      :count="count"
+      :show-create-button="!showEmptyState"
+    />
 
     <template v-if="showExperimentsTable">
       <gl-table-lite :items="tableItems" :fields="$options.tableFields">
@@ -211,6 +215,7 @@ export default {
           v-gl-modal="$options.mlflowModalId"
           data-testid="empty-create-using-button"
           class="gl-mx-2 gl-mb-3 gl-mr-3"
+          category="primary"
         >
           {{ $options.i18n.createUsingMlflowLabel }}
         </gl-button>

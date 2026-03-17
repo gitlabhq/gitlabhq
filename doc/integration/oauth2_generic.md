@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Use Generic OAuth2 gem as an OAuth 2.0 authentication provider
 ---
 
@@ -57,7 +57,6 @@ To configure the provider:
    You should now be able to get a client ID and client secret. Where these
    appear is different for each provider. This may also be called application ID
    and application secret.
-
 1. On your GitLab server, complete the following steps.
 
    {{< tabs >}}

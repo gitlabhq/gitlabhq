@@ -1,5 +1,11 @@
-- experiment(:lightweight_trial_registration_redesign, actor: current_user) do |e|
-  - e.control do
-    = render 'devise/sessions/successful_verification', local_assigns
-  - e.candidate do
-    = render 'devise/sessions/successful_verification_lightweight', local_assigns
+= content_for :meta_tags do
+  %meta{ 'http-equiv': 'refresh', content: "3; url=#{@redirect_url}" }
+
+.gl-text-center.gl-max-w-xl.gl-mx-auto.gl-bg-subtle.gl-rounded-lg.gl-border.gl-py-4{ data: local_assigns.fetch(:data, {}) }
+  .svg-content.svg-80
+    = image_tag 'illustrations/secure-sm.svg'
+  %h2
+    = s_('IdentityVerification|Verification successful')
+  %p.gl-pt-2.gl-px-6
+    - redirect_url = link_to '', @redirect_url
+    = safe_format(s_("IdentityVerification|Your account has been successfully verified. You'll be redirected to your account in just a moment. You can also %{link_start}refresh the page%{link_end}."), tag_pair(redirect_url, :link_start, :link_end))

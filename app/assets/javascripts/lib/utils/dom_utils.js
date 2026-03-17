@@ -187,3 +187,20 @@ export const observeElementOnce = (element, callback) => {
   });
   observer.observe(element);
 };
+
+/**
+ * Toggles the visibility of an element by setting display style.
+ * Also handles elements hidden via 'hidden', 'gl-hidden', '!gl-hidden', or 'hide' classes.
+ * @param {HTMLElement} el - The element to show/hide
+ * @param {Boolean} show - true to show, false to hide
+ */
+export const toggleDisplay = (el, show) => {
+  if (!el) return;
+
+  if (show) {
+    el.classList.remove('hidden', 'gl-hidden', '!gl-hidden', 'hide');
+    el.style.display = '';
+  } else {
+    el.style.display = 'none';
+  }
+};

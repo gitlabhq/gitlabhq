@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Runner controllers
 description: Control job admission with runner controllers.
 ---
@@ -22,6 +22,7 @@ description: Control job admission with runner controllers.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218229) in GitLab 18.9 [with a flag](../../../administration/feature_flags/_index.md) named `job_router_admission_control`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+- [Runner scope introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/586417) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -87,10 +88,10 @@ Runner controllers support two mutually exclusive scoping types:
 
 | Scope | Description |
 |-------|-------------|
-| Instance-level | The runner controller evaluates jobs for all runners in the GitLab instance. This scope cannot be combined with runner-level scoping. |
-| Runner-level | The runner controller evaluates jobs only for specific runners. You can scope a controller to one or more runners. The runner must be an instance-level runner. |
+| Instance | The runner controller evaluates jobs for all runners in the GitLab instance. This scope cannot be combined with runner scope. |
+| Runner | The runner controller evaluates jobs only for specific runners. You can scope a controller to one or more runners. The runner must be an instance runner. |
 
-Additional scoping types are planned. For more information, see [issue 586419](https://gitlab.com/gitlab-org/gitlab/-/issues/586419).
+Additional scope types (group, project) are proposed in [issue 586419](https://gitlab.com/gitlab-org/gitlab/-/issues/586419).
 
 To manage runner controller scoping, see the [runner controllers API](../../../api/runner_controllers.md).
 
@@ -109,6 +110,8 @@ Prerequisites:
 
 ## Implement a runner controller
 
+For a step-by-step guide, see [Tutorial: Build a runner admission controller](../../../tutorials/build_runner_admission_controller/_index.md).
+
 To implement your own runner controller, you need to:
 
 1. Create a runner controller in GitLab.
@@ -121,8 +124,6 @@ To implement your own runner controller, you need to:
 For technical specifications and protobuf definitions, see the
 [runner controller documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/runner_controller.md)
 in the GitLab Agent for Kubernetes repository.
-
-For a step-by-step guide, see [Tutorial: Build a runner admission controller](../../../tutorials/build_runner_admission_controller/_index.md).
 
 ## Related topics
 

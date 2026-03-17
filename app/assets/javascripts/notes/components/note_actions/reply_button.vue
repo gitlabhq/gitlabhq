@@ -13,6 +13,13 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  props: {
+    ariaLabel: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
 };
 </script>
 
@@ -24,7 +31,7 @@ export default {
     category="tertiary"
     icon="reply"
     :title="$options.i18n.buttonText"
-    :aria-label="$options.i18n.buttonText"
+    :aria-label="ariaLabel || $options.i18n.buttonText"
     @click="$emit('start-replying')"
   />
 </template>

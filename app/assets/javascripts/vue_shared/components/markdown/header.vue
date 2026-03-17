@@ -3,7 +3,8 @@
 import { GlPopover, GlButton, GlTooltipDirective, GlFormInput } from '@gitlab/ui';
 import { GL_COLOR_ORANGE_50, GL_COLOR_ORANGE_200 } from '@gitlab/ui/src/tokens/build/js/tokens';
 import $ from 'jquery';
-import { escapeRegExp } from 'lodash';
+import { escapeRegExp } from 'lodash-es';
+import { MARKDOWN_EVENT_SHOW, MARKDOWN_EVENT_HIDE } from '~/behaviors/preview_markdown';
 import {
   keysFor,
   BOLD_TEXT,
@@ -194,7 +195,7 @@ export default {
     },
     findAndReplace_MatchCountText() {
       if (!this.findAndReplace.totalMatchCount) {
-        return s__('MarkdownEditor|No records');
+        return s__('MarkdownEditor|No results');
       }
 
       return sprintf(s__('MarkdownEditor|%{currentHighlight} of %{totalHighlights}'), {
@@ -271,15 +272,15 @@ export default {
     },
   },
   mounted() {
-    $(document).on('markdown-preview:show.vue', this.showMarkdownPreview);
-    $(document).on('markdown-preview:hide.vue', this.hideMarkdownPreview);
+    document.addEventListener(MARKDOWN_EVENT_SHOW, this.showMarkdownPreview);
+    document.addEventListener(MARKDOWN_EVENT_HIDE, this.hideMarkdownPreview);
     $(document).on('markdown-editor:find-and-replace:show', this.findAndReplace_show);
 
     this.updateSuggestPopoverVisibility();
   },
   beforeDestroy() {
-    $(document).off('markdown-preview:show.vue', this.showMarkdownPreview);
-    $(document).off('markdown-preview:hide.vue', this.hideMarkdownPreview);
+    document.removeEventListener(MARKDOWN_EVENT_SHOW, this.showMarkdownPreview);
+    document.removeEventListener(MARKDOWN_EVENT_HIDE, this.hideMarkdownPreview);
     $(document).off('markdown-editor:find-and-replace:show', this.findAndReplace_show);
   },
   methods: {
@@ -289,18 +290,21 @@ export default {
       this.suggestPopoverVisible = this.showSuggestPopover && this.canSuggest;
     },
     isValid(form) {
-      return (
-        !form ||
-        (form.find('.js-vue-markdown-field').length && $(this.$el).closest('form')[0] === form[0])
-      );
+      if (!form) return true;
+
+      const formEl = form.jquery ? form[0] : form;
+      const isVueMarkdownField = formEl.querySelector('.js-vue-markdown-field');
+      const belongsToThisForm = this.$el.closest('form') === formEl;
+
+      return isVueMarkdownField && belongsToThisForm;
     },
-    showMarkdownPreview(_, form) {
-      if (!this.isValid(form)) return;
+    showMarkdownPreview(e) {
+      if (!this.isValid(e?.detail?.form)) return;
 
       this.$emit('showPreview');
     },
-    hideMarkdownPreview(_, form) {
-      if (!this.isValid(form)) return;
+    hideMarkdownPreview(e) {
+      if (!this.isValid(e?.detail?.form)) return;
 
       this.$emit('hidePreview');
     },

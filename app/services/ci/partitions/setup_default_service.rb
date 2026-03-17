@@ -17,16 +17,16 @@ module Ci
       end
 
       def setup_active_partitions
-        active_partitions = Ci::Partition::DEFAULT_PARTITION_VALUES
-          .map { |value| { id: value, status: Ci::Partition.statuses[:active] } }
+        ready_partitions = Ci::Partition::DEFAULT_PARTITION_VALUES
+          .map { |value| { id: value, status: Ci::Partition.statuses[:ready] } }
 
-        Ci::Partition.upsert_all(active_partitions, unique_by: :id)
+        Ci::Partition.upsert_all(ready_partitions, unique_by: :id)
       end
 
       def setup_current_partition
         Ci::Partition
           .find(Ci::Pipeline.current_partition_value)
-          .update!(status: Ci::Partition.statuses[:current])
+          .update!(status: Ci::Partition.statuses[:current], current_from: Time.current)
       end
     end
   end

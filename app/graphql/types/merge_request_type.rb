@@ -310,6 +310,16 @@ module Types
       description: 'Allows assigning multiple reviewers to a merge request.',
       null: false
 
+    field :linked_work_items,
+      [Types::MergeRequests::LinkedWorkItemType],
+      null: true,
+      calls_gitaly: true,
+      experiment: { milestone: '18.10' },
+      description: 'Work items linked to this merge request (closing or mentioned).',
+      resolver: Resolvers::MergeRequests::LinkedWorkItemsResolver do
+        extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+      end
+
     field :retargeted, GraphQL::Types::Boolean, null: true,
       description: 'Indicates if merge request was retargeted.'
 

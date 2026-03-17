@@ -3,7 +3,7 @@
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
 
-InitializerConnections.raise_if_new_database_connection do
+InitializerConnections.warn_if_database_connection do
   Rails.application.routes.draw do
     # rubocop:disable Metrics/AbcSize -- listing routes is typical
     def draw_all_routes
@@ -63,6 +63,9 @@ InitializerConnections.raise_if_new_database_connection do
       get '/.well-known/oauth-authorization-server/api/v4/mcp', to: 'jwks#provider'
       get '/.well-known/openid-configuration/api/v4/mcp', to: 'jwks#provider'
       get '/.well-known/oauth-protected-resource/api/v4/mcp', to: 'oauth/protected_resource_metadata#show'
+      get '/.well-known/oauth-authorization-server/api/v4/orbit/mcp', to: 'jwks#provider'
+      get '/.well-known/openid-configuration/api/v4/orbit/mcp', to: 'jwks#provider'
+      get '/.well-known/oauth-protected-resource/api/v4/orbit/mcp', to: 'oauth/protected_resource_metadata#show'
 
       use_doorkeeper_device_authorization_grant do
         controller device_authorizations: 'oauth/device_authorizations'
@@ -77,6 +80,9 @@ InitializerConnections.raise_if_new_database_connection do
       match '/.well-known/oauth-authorization-server/api/v4/mcp', to: 'jwks#provider', via: :options
       match '/.well-known/openid-configuration/api/v4/mcp', to: 'jwks#provider', via: :options
       match '/.well-known/oauth-protected-resource/api/v4/mcp', to: 'oauth/protected_resource_metadata#show', via: :options
+      match '/.well-known/oauth-authorization-server/api/v4/orbit/mcp', to: 'jwks#provider', via: :options
+      match '/.well-known/openid-configuration/api/v4/orbit/mcp', to: 'jwks#provider', via: :options
+      match '/.well-known/oauth-protected-resource/api/v4/orbit/mcp', to: 'oauth/protected_resource_metadata#show', via: :options
 
       match '/oauth/token' => 'oauth/tokens#create', via: :options
       match '/oauth/revoke' => 'oauth/tokens#revoke', via: :options
@@ -138,6 +144,7 @@ InitializerConnections.raise_if_new_database_connection do
             filename: %r{[^/]+}
           },
           as: 'banzai_upload'
+        get '/diagram-proxy/:key' => 'banzai/diagram_proxy#proxy', as: :diagram_proxy
 
         get '/whats_new' => 'whats_new#index'
         post '/whats_new/mark_as_read' => 'whats_new#mark_as_read'
@@ -154,8 +161,10 @@ InitializerConnections.raise_if_new_database_connection do
 
         # HTTP Router
         # Creating a black hole for /-/http_router/version since it is taken by the
-        # cloudflare worker, see: https://gitlab.com/gitlab-org/cells/http-router/-/issues/47
+        # cloudflare worker, see: https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/work_items/150
         match '/http_router/version', to: proc { [204, {}, ['']] }, via: :all
+        # topology-service caching route, see: https://gitlab.com/gitlab-com/gl-infra/tenant-scale/cells-infrastructure/team/-/work_items/648
+        match '/topology-service/__cache/*path', to: proc { [204, {}, ['']] }, via: :all
 
         # '/-/health' implemented by BasicHealthCheck middleware
         get 'liveness' => 'health#liveness'

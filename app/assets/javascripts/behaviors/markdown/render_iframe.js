@@ -6,9 +6,7 @@ const IFRAME_SANDBOX_RESTRICTIONS = 'allow-scripts allow-popups allow-same-origi
 const elsProcessingMap = new WeakMap();
 
 function renderIframeEl(el) {
-  // Obtain src from data-canonical-src, then data-src, then src.
-  // See Banzai::Filter::AssetProxyFilter and Banzai::Filter::ImageLazyLoadFilter.
-  const src = el.dataset.canonicalSrc || el.dataset.src || el.src;
+  const { src } = el;
   if (!src) return;
 
   const srcUrl = new URL(src);
@@ -16,26 +14,39 @@ function renderIframeEl(el) {
   const allowlist = window.gon?.iframe_rendering_allowlist ?? [];
   const allowlistUrls = allowlist.map((domain) => new URL(`https://${domain}`));
   const allowed = allowlistUrls.some((allowlistUrl) => allowlistUrl.origin === srcUrl.origin);
-  if (!allowed) return;
+  if (!allowed) {
+    // This URL passed the allowlist at the time the Markdown content was
+    // created/last updated, but no longer does. We must remove the node
+    // entirely: if this instance uses the asset proxy, allowing it to remain in
+    // the DOM would create a bypass. Re-modifying the source content will allow
+    // it to show again (through the asset proxy, if enabled).
+    el.remove();
+    return;
+  }
+
+  const width = el.getAttribute('width');
+  const height = el.getAttribute('height');
+  const hasExplicitDimensions = width || height;
 
   const iframeEl = document.createElement('iframe');
   setAttributes(iframeEl, {
     src,
     sandbox: IFRAME_SANDBOX_RESTRICTIONS,
     frameBorder: 0,
-    class: 'gl-inset-0 gl-h-full gl-w-full',
     allowfullscreen: 'true',
     referrerpolicy: 'strict-origin-when-cross-origin',
   });
 
-  // We propagate these attributes, but currently the gl-h-full/gl-w-full above override them,
-  // as they can easily overrun the container and break the layout.
-  // For potential later use with some frontend design help.
-  if (el.getAttribute('width')) {
-    iframeEl.setAttribute('width', el.getAttribute('width'));
-  }
-  if (el.getAttribute('height')) {
-    iframeEl.setAttribute('height', el.getAttribute('height'));
+  if (hasExplicitDimensions) {
+    if (width) iframeEl.setAttribute('width', width);
+    if (height) iframeEl.setAttribute('height', height);
+    iframeEl.style.maxWidth = '100%';
+    if (width && height) {
+      iframeEl.style.aspectRatio = `${width} / ${height}`;
+      iframeEl.style.height = 'auto';
+    }
+  } else {
+    iframeEl.classList.add('gl-inset-0', 'gl-h-full', 'gl-w-full');
   }
 
   const wrapper = document.createElement('div');

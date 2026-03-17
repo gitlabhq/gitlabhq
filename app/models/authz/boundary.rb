@@ -32,12 +32,20 @@ module Authz
         namespace&.full_path
       end
 
+      def type_label
+        access.to_s.tr('_', ' ')
+      end
+
       attr_reader :boundary
     end
 
     class GroupBoundary < Base
       def access
         GranularScope::Access::SELECTED_MEMBERSHIPS
+      end
+
+      def type_label
+        'group'
       end
 
       def namespace
@@ -52,6 +60,10 @@ module Authz
     class ProjectBoundary < Base
       def access
         GranularScope::Access::SELECTED_MEMBERSHIPS
+      end
+
+      def type_label
+        'project'
       end
 
       def namespace

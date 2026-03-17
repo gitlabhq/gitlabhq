@@ -1,6 +1,6 @@
 <script>
 import produce from 'immer';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import {
   GlTooltipDirective as GlTooltip,
   GlButton,

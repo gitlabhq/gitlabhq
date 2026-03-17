@@ -1,4 +1,4 @@
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
 import {
   convertObjectPropsToCamelCase,

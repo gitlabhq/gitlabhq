@@ -6,7 +6,8 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
   describe 'associations' do
-    it { is_expected.to belong_to(:offline_export).class_name('Import::Offline::Export') }
+    it { is_expected.to belong_to(:offline_export).class_name('Import::Offline::Export').optional }
+    it { is_expected.to belong_to(:bulk_import).optional }
     it { is_expected.to belong_to(:organization) }
   end
 
@@ -29,6 +30,22 @@ RSpec.describe Import::Offline::Configuration, feature_category: :importers do
     it { is_expected.to allow_value('s3-compliant.bucket-name1').for(:bucket) }
     it { is_expected.not_to allow_value('CapitalLetters').for(:bucket) }
     it { is_expected.not_to allow_value('special.characters/\?<>@&=_ ').for(:bucket) }
+
+    describe 'bulk_import and offline_export should be mutually exclusive' do
+      where(:bulk_import, :offline_export, :expected_result) do
+        nil                 | nil                    | false
+        build(:bulk_import) | nil                    | true
+        nil                 | build(:offline_export) | true
+        build(:bulk_import) | build(:offline_export) | false
+      end
+
+      with_them do
+        it 'validates exclusivity' do
+          export = build(:offline_configuration, bulk_import: bulk_import, offline_export: offline_export)
+          expect(export.valid?).to be expected_result
+        end
+      end
+    end
 
     describe '#provider' do
       context 'when S3 compatible storage is allowed for offline transfer' do

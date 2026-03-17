@@ -25,6 +25,7 @@ class Issue < ApplicationRecord
   include EachBatch
   include PgFullTextSearchable
   include Gitlab::DueAtFilterable
+  include WorkItems::TypesFramework::HasType
   include Gitlab::Utils::StrongMemoize
 
   extend ::Gitlab::Utils::Override
@@ -228,7 +229,7 @@ class Issue < ApplicationRecord
 
   scope :preload_associated_models, -> { preload(:assignees, :labels, project: :namespace) }
   scope :with_web_entity_associations, -> do
-    preload(:author, :namespace, :labels, project: [:project_feature, :route, { namespace: :route }])
+    preload(:author, :namespace, :labels, project: [:project_feature, :route, { namespace: :route }, { group: :route }])
   end
 
   scope :preload_awardable, -> { preload(:award_emoji) }
@@ -256,6 +257,9 @@ class Issue < ApplicationRecord
 
     where.not(work_item_type_id: type_ids)
   }
+
+  scope :with_work_item_type_ids, ->(ids) { where(work_item_type_id: ids) }
+  scope :without_work_item_type_ids, ->(ids) { where.not(work_item_type_id: ids) }
 
   scope :public_only, -> { where(confidential: false) }
 
@@ -429,6 +433,12 @@ class Issue < ApplicationRecord
     else
       namespace.root_ancestor&.all_projects&.select(:id)
     end
+  end
+
+  def relative_positioning_namespace
+    return namespace if namespace.parent&.user_namespace?
+
+    namespace.root_ancestor
   end
 
   def self.relative_positioning_query_base(issue)
@@ -826,7 +836,7 @@ class Issue < ApplicationRecord
   # Persisted records will always have a work_item_type. This method is useful
   # in places where we use a non persisted issue to perform feature checks
   def work_item_type_with_default
-    work_item_type || work_item_type_provider.default_issue_type
+    work_item_type || work_items_types_provider.default_issue_type
   end
 
   def issue_type
@@ -911,7 +921,7 @@ class Issue < ApplicationRecord
   # On the other hand some other Issue types/conditions are only available through
   # WorkItems UI/workflows.
   #
-  # Overriden on EE (For OKRs and Epics)
+  # Overridden in EE (For OKRs and Epics)
   def show_as_work_item?
     return false if require_legacy_views?
     return true if group_level?
@@ -923,6 +933,8 @@ class Issue < ApplicationRecord
   # Legacy views/workflows only
   # - Service Desk were not converted to the work items framework.
   # - Incidents were not converted to the work items framework.
+  #
+  # Overridden in EE for test case check
   def require_legacy_views?
     from_service_desk? || work_item_type&.incident?
   end
@@ -1009,17 +1021,27 @@ class Issue < ApplicationRecord
   def ensure_work_item_type
     return if work_item_type.present? || work_item_type_id.present? || work_item_type_id_change&.last.present?
 
-    self.work_item_type = work_item_type_provider.default_issue_type
+    self.work_item_type = work_items_types_provider.default_issue_type
   end
 
   def ensure_namespace_traversal_ids
-    self.namespace_traversal_ids = self.namespace&.traversal_ids
+    # For new records and imports, always read traversal_ids fresh from the database to avoid
+    # stale in-memory association caches. This is critical during imports where a single
+    # project object is reused across many records and may have a cached project_namespace
+    # with outdated traversal_ids if a namespace transfer occurred mid-import.
+    # For existing records, the in-memory association is sufficient since the
+    # UpdateNamespaceTraversalIdsWorker corrects any stale values after a transfer.
+    self.namespace_traversal_ids = if new_record? || importing?
+                                     Namespace.where(id: namespace_id).pick(:traversal_ids)
+                                   else
+                                     namespace&.traversal_ids
+                                   end
   end
 
   def allowed_work_item_type_change
     return unless changes[:work_item_type_id]
 
-    involved_types = work_item_type_provider.base_types_by_ids(changes[:work_item_type_id].compact)
+    involved_types = work_items_types_provider.base_types_by_ids(changes[:work_item_type_id].compact)
     disallowed_types = involved_types - CHANGEABLE_BASE_TYPES
 
     return if disallowed_types.empty?
@@ -1038,11 +1060,6 @@ class Issue < ApplicationRecord
   def validate_due_date?
     true
   end
-
-  def work_item_type_provider
-    ::WorkItems::TypesFramework::Provider.new(namespace)
-  end
-  strong_memoize_attr :work_item_type_provider
 end
 
 Issue.prepend_mod_with('Issue')

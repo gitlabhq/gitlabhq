@@ -157,7 +157,6 @@ export default {
       'PipelineSchedules|An error occurred while trying to fetch the pipeline schedule.',
     ),
   },
-  userCalloutsFeatureName: 'pipeline_new_inputs_adoption_banner',
   computed: {
     dropdownTranslations() {
       return {
@@ -383,7 +382,6 @@ export default {
       v-if="canSetPipelineVariables"
       :initial-variables="variables"
       :editing="editing"
-      :user-callouts-feature-name="$options.userCalloutsFeatureName"
       @update-variables="updatedVariables = $event"
       @validity-change="handleValidityChange"
     />

@@ -11,10 +11,12 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
   let(:request_params) { { from: 'a', to: 'b' } }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/compare" }
   let(:url_params) { '?from=a&to=b' }
+  let(:current_user) { build_stubbed(:user) }
   let(:resource) { compare }
 
   subject(:presenter) do
-    described_class.new(compare, diff_view: diff_view, diff_options: diff_options, request_params: request_params)
+    described_class.new(compare, diff_view: diff_view, diff_options: diff_options, request_params: request_params,
+      current_user: current_user)
   end
 
   describe '#diffs_slice' do
@@ -25,6 +27,7 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
 
   it_behaves_like 'rapid diffs presenter base diffs_resource'
   it_behaves_like 'rapid diffs presenter diffs methods', sorted: false
+  it_behaves_like 'rapid diffs presenter syntax highlighting'
 
   describe '#diffs_stats_endpoint' do
     subject(:url) { presenter.diffs_stats_endpoint }

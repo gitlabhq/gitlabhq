@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting the container registry
 description: Troubleshoot common problems with your GitLab container registry.
 ---
@@ -9,16 +9,12 @@ description: Troubleshoot common problems with your GitLab container registry.
 Before investigating specific issues, try these troubleshooting steps:
 
 1. Verify that the system clock on your Docker client and GitLab server are synchronized (for example, through NTP).
-
 1. For S3-backed registries, verify your IAM permissions and S3 credentials (including region) are correct.
    For more information, see the [sample IAM policy](https://distribution.github.io/distribution/storage-drivers/s3/).
-
 1. Check for errors in the registry logs (for example, `/var/log/gitlab/registry/current`) and the GitLab production logs
    (for example, `/var/log/gitlab/gitlab-rails/production.log`).
-
 1. Review the NGINX configuration file for the container registry (for example, `/var/opt/gitlab/nginx/conf/gitlab-registry.conf`)
    to confirm which port receives requests.
-
 1. Verify that requests are correctly forwarded to the container registry:
 
    ```shell

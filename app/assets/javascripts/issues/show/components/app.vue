@@ -173,6 +173,11 @@ export default {
       required: false,
       default: TYPE_ISSUE,
     },
+    workItemTypeIconName: {
+      type: String,
+      required: false,
+      default: '',
+    },
     lockVersion: {
       type: Number,
       required: false,
@@ -527,7 +532,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="js-issuable-description-wrapper" :data-issuable-type="issuableType">
     <div v-if="canUpdate && showForm">
       <h1 class="gl-sr-only">{{ __('Edit issue') }}</h1>
       <form-component
@@ -592,6 +597,7 @@ export default {
           :moved-to-issue-url="movedToIssueUrl"
           :promoted-to-epic-url="promotedToEpicUrl"
           :service-desk-reply-to="serviceDeskReplyTo"
+          :work-item-type-icon-name="workItemTypeIconName"
         />
       </slot>
 

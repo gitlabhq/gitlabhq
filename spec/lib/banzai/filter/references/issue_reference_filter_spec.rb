@@ -41,7 +41,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
   describe 'performance' do
     let(:another_issue) { create(:issue, project: project) }
 
-    it 'does not have a N+1 query problem' do
+    it 'does not have a N+1 query problem', :request_store do
       single_reference = "Issue #{issue.to_reference}"
       multiple_references = "Issues #{issue.to_reference} and #{another_issue.to_reference}"
 
@@ -142,6 +142,20 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
       inner_html = 'element <code>node</code> inside'
       doc = reference_filter(%(<a href="#{written_reference}">#{inner_html}</a>))
       expect(doc.children.first.children.first.attr('data-original')).to eq inner_html
+    end
+
+    it 'includes data-original-href when reference is inside a link with custom content' do
+      inner_html = 'custom text'
+      doc = reference_filter(%(<a href="#{written_reference}">#{inner_html}</a>))
+      link = doc.children.first.children.first
+      expect(link.attr('data-original-href')).to eq written_reference
+      expect(link.attr('data-link')).to eq 'true'
+    end
+
+    it 'does not include data-original-href for plain text references' do
+      doc = reference_filter("Issue #{written_reference}")
+      link = doc.css('a').first
+      expect(link.attr('data-original-href')).to be_nil
     end
 
     it 'includes a data-reference-format attribute' do
@@ -629,7 +643,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
     let_it_be(:issue1) { create(:issue, project: project) }
     let_it_be(:issue2) { create(:issue, project: project) }
 
-    it 'does not have N+1 per multiple references per project' do
+    it 'does not have N+1 per multiple references per project', :request_store do
       single_reference = "Issue #{issue1.to_reference}"
       multiple_references = "Issues #{issue1.to_reference} and #{issue2.to_reference}"
 

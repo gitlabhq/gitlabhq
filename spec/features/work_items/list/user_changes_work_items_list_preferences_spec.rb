@@ -53,9 +53,9 @@ RSpec.describe 'Work Items List User Preferences', :js, feature_category: :team_
       end
     end
 
-    context 'when work_items_saved_views is disabled' do
+    context 'when work_item_planning_view is disabled' do
       before do
-        stub_feature_flags(work_items_saved_views: false)
+        stub_feature_flags(work_item_planning_view: false)
         sign_in(user)
         visit project_work_items_path(project)
         wait_for_all_requests
@@ -64,9 +64,9 @@ RSpec.describe 'Work Items List User Preferences', :js, feature_category: :team_
       it_behaves_like 'work items list preferences'
     end
 
-    context 'when work_items_saved_views is enabled' do
+    context 'when work_item_planning_view is enabled' do
       before do
-        stub_feature_flags(work_items_saved_views: true)
+        stub_feature_flags(work_item_planning_view: true)
         sign_in(user)
         visit project_work_items_path(project)
         wait_for_all_requests

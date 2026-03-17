@@ -255,5 +255,17 @@ RSpec.describe TestHooks::ProjectService, feature_category: :code_testing do
         expect(service.execute).to include(success_result)
       end
     end
+
+    context 'when resource deploy token events hook' do
+      let(:trigger) { 'resource_deploy_token_events' }
+      let(:trigger_key) { :resource_deploy_token_hooks }
+
+      it 'executes hook' do
+        allow(Gitlab::DataBuilder::ResourceDeployTokenPayload).to receive(:build).and_return(sample_data)
+
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
+        expect(service.execute).to include(success_result)
+      end
+    end
   end
 end

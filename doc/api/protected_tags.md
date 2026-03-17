@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Protected tags API
 ---
 
@@ -219,7 +219,7 @@ Example response:
 Elements in the `allowed_to_create` array should take the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`.
 Each user must have access to the project and each group must [have this project shared](../user/project/members/sharing_projects_groups.md).
 These access levels allow more granular control over protected tag access.
-For more information, see [Add a group to protected tags](../user/project/protected_tags.md#add-a-group-to-protected-tags).
+For more information, see [add a group to protected tags](../user/project/protected_tags.md#add-a-group-to-protected-tags).
 
 This example request demonstrates how to create a protected tag that allows creation access
 to a specific user and group:
@@ -227,7 +227,10 @@ to a specific user and group:
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/protected_tags?name=*-stable&allowed_to_create%5B%5D%5Buser_id%5D=10&allowed_to_create%5B%5D%5Bgroup_id%5D=20"
+  --url "https://gitlab.example.com/api/v4/projects/5/protected_tags" \
+  --data "name=*-stable" \
+  --data "allowed_to_create[][user_id]=10" \
+  --data "allowed_to_create[][group_id]=20"
 ```
 
 This example response includes:

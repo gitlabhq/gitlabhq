@@ -1,8 +1,9 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Analytics dashboards
+description: Visualize metrics about DevSecOps and AI features for your projects and groups, and track performance trends.
 ---
 
 {{< details >}}
@@ -58,7 +59,7 @@ Prerequisites:
 
 To view a list of dashboards for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
@@ -78,6 +79,6 @@ Prerequisites:
 
 To view a list of dashboards for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.

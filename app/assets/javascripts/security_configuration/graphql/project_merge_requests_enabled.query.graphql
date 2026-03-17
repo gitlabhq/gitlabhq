@@ -1,0 +1,7 @@
+# @feature_category: security_testing_configuration
+query getProjectMergeRequestsEnabled($projectFullPath: ID!) {
+  project(fullPath: $projectFullPath) {
+    id
+    mergeRequestsEnabled
+  }
+}

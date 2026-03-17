@@ -17,7 +17,7 @@
     */
 
 import { GlTooltip, GlAvatar } from '@gitlab/ui';
-import { isObject } from 'lodash';
+import { isObject } from 'lodash-es';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { __ } from '~/locale';
 import { placeholderImage } from '~/lazy_loader';

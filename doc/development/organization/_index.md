@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: 'Development Guidelines: learn about organization when developing GitLab.'
 title: Organization
 ---
@@ -20,6 +20,10 @@ The current development focus is achieving **feature parity** for organizations.
 
 Guidance on building new features on organizations, or migrating existing features from top-level group to organizations, will come in the future.
 Please contact the team on Slack (`#g_organizations`) if you wish to informally discuss this.
+
+## Database table design
+
+See the [sharding guidelines](sharding/_index.md).
 
 ## Using `Current.organization`
 
@@ -112,7 +116,6 @@ Some routes are not currently available under the organization scope:
 
 Enable the following feature flags to test organizations:
 
-- `organization_scoped_paths`
 - `ui_for_organizations`
 - `organization_switching`
 
@@ -148,11 +151,25 @@ you've discovered a cross-organization data leak. This is particularly useful wh
 
 ### Automated testing
 
-For automated testing strategies, see [Testing with Organizations](../../development/testing_guide/testing_with_organizations.md).
+For automated testing strategies, see [Testing with Organizations](../testing_guide/testing_with_organizations.md).
+
+## Frontend guidelines
+
+### REST API and GraphQL requests
+
+Providing the current organization context to REST API and GraphQL requests does not require any additional arguments. Behind the scenes the current organization is passed via the `X-GitLab-Organization-ID` header in [axios_utils.js#L15](https://gitlab.com/gitlab-org/gitlab/-/blob/3deab3ebc51cdbb14de4a593b35d3df2e26f34bc/app/assets/javascripts/lib/utils/axios_utils.js#L15) and [graphql.js#L183](https://gitlab.com/gitlab-org/gitlab/-/blob/3deab3ebc51cdbb14de4a593b35d3df2e26f34bc/app/assets/javascripts/lib/graphql.js#L183).
+
+### URLs
+
+Do not hardcode or construct URLs on the frontend as they will not support [organization routing](#organization-routing). See [URLs in GitLab](../urls_in_gitlab.md#frontend-guidelines) for guidelines on how to generate URLs on the frontend.
+
+### Accessing the current organization
+
+The current organization context is available on the frontend via `window.gon.current_organization`. Behind the scenes this is exposed to the frontend in [gon_helper.rb#L69](https://gitlab.com/gitlab-org/gitlab/-/blob/f8cdb7b281830854374686003edf7bb66b7a59fa/lib/gitlab/gon_helper.rb#L69).
 
 ## Related topics
 
 - [Sharding guidelines](sharding/_index.md)
 - [Organization user documentation](../../user/organization/_index.md)
-- [Testing with Organizations](../../development/testing_guide/testing_with_organizations.md)
+- [Testing with Organizations](../testing_guide/testing_with_organizations.md)
 - [Consolidating groups and projects](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/) architecture documentation

@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage.monitor.clusters_integrations_prometheus
 description: Users creating clusters with Prometheus integration enabled in last 28 days.
 product_group: platform_insights
+product_categories:
+- environment_management
 value_type: number
 status: removed
 time_frame: all

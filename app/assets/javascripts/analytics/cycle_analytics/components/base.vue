@@ -185,7 +185,7 @@ export default {
       :empty-state-message="emptyStageText"
       :no-data-svg-path="noDataSvgPath"
       :pagination="pagination"
-      @handleUpdatePagination="onHandleUpdatePagination"
+      @handle-update-pagination="onHandleUpdatePagination"
     />
     <url-sync v-if="isLoaded" :query="query" />
   </div>

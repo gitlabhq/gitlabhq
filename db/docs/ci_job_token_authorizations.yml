@@ -3,7 +3,7 @@ table_name: ci_job_token_authorizations
 classes:
 - Ci::JobToken::Authorization
 feature_categories:
-- secrets_management
+- system_access
 description: |
   Model where we log all inbound authorizations from CI_JOB_TOKEN.
   The purpose of this model is to assist project owners in enabling the job token scope

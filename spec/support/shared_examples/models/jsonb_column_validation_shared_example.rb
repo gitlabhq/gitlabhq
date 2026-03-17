@@ -10,7 +10,11 @@ module Support
 
     def todo?(model, column)
       @todo ||= YAML.load_file(TODO_YAML).to_set # rubocop:disable Gitlab/PredicateMemoization -- @todo is never `nil` or `false`.
-      @todo.include?("#{model.name}##{column}")
+      model.ancestors.any? do |klass|
+        next unless klass.is_a?(Class) && klass.name
+
+        @todo.include?("#{klass.name}##{column}")
+      end
     end
   end
 end

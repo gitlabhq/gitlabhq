@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Database table partitioning
 ---
 
@@ -20,11 +20,9 @@ there can be multiple benefits, such as:
 - Query performance can be improved greatly, because the database can
   cheaply eliminate much of the data from the search space, while still
   providing full SQL capabilities.
-
 - Bulk deletes can be achieved with minimal impact on the database by
   dropping entire partitions. This is a natural fit for features that need
   to periodically delete data that falls outside the retention window.
-
 - Administrative tasks like `VACUUM` and index rebuilds can operate on
   individual partitions, rather than across a single massive table.
 
@@ -60,7 +58,6 @@ is a good fit for your particular problem:
   writing data, to decide which partitions must be accessed. The
   partition key should be a column that would be included in a `WHERE`
   clause on almost all queries accessing that table.
-
 - **How the data is split**. What strategy does the database use
   to split the data across the partitions?
 

@@ -1,0 +1,10 @@
+---
+name: explore_analytics_dashboards
+description: "Adds the Analytics Dashboards space to the Explore page"
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20765
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224645
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592866
+milestone: '18.11'
+group: group::optimize
+type: wip
+default_enabled: false

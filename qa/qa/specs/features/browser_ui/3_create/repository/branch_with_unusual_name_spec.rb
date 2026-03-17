@@ -28,6 +28,7 @@ module QA
             # To prevent false positives: https://gitlab.com/gitlab-org/gitlab/-/issues/383863
             expect(show).to have_no_content('An error occurred')
 
+            show.close_dap_panel_if_exists
             show.click_file('test-folder')
 
             expect(show).to have_file('test-file.md')

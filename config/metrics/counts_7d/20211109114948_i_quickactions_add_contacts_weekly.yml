@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.quickactions.i_quickactions_add_contacts_weekly
 description: Count of WAU using the `/add_contacts` quick action
 product_group: product_planning
+product_categories:
+- service_desk
 value_type: number
 status: active
 milestone: '14.5'

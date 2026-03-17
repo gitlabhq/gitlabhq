@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Security dashboards
 description: Security dashboards, vulnerability trends, project ratings, and metrics.
 ---
@@ -72,7 +72,7 @@ with up to 365 days of historical data for a given project. The dashboard is a h
 
 To view a project's security dashboard:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security dashboard**.
 1. Filter and search for what you need.
    - To filter the chart by severity, select the legend name.
@@ -89,7 +89,7 @@ You can download an image of the vulnerability chart from the Project Security D
 to use in documentation, presentations, and so on. To download the image of the vulnerability
 chart:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security dashboard**.
 1. Select **Save chart as an image** ({{< icon name="download" >}}).
 
@@ -114,7 +114,7 @@ supplies the following:
 
 To view group security dashboard:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Security** > **Security dashboard**.
 1. Hover over the **Vulnerabilities over time** chart to get more details about vulnerabilities.
    - You can display the vulnerability trends over a 30, 60, or 90-day time frame (the default is 90 days).
@@ -141,6 +141,7 @@ you with a collection of metrics, ratings, and charts for the vulnerabilities de
 
 - Vulnerability trends over a 30, 60, or 90-day time frame for all projects in a group.
 - The total number of open vulnerabilities by severity.
+- The total risk score to compare vulnerability risk across projects.
 
 ### Prerequisites to view the dashboard
 
@@ -176,7 +177,7 @@ Both dashboards include:
 
 To view a security dashboard:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security dashboard**.
 
 ### Project security dashboard
@@ -198,6 +199,8 @@ supplies the following:
 
 - The [**Vulnerabilities over time**](#vulnerabilities-over-time) chart, which includes up to 90 days of history.
 - The [**Severity panels**](#vulnerability-severity-panel), which show open vulnerabilities by severity.
+- The [**Risk score**](#risk-score-panel) panel, which shows total risk and risk for each project.
+- The [**Vulnerabilities by age**](#vulnerabilities-by-age) chart, which groups open vulnerabilities by age buckets.
 
 ### Charts
 
@@ -224,7 +227,7 @@ To view details:
 > [!note]
 > Starting in GitLab 18.8 (available January 2026) on GitLab.com and in GitLab 18.9 (available February 2026) on GitLab Self-Managed and GitLab Dedicated, the Vulnerabilities over time chart excludes no longer detected vulnerabilities. This approach more accurately reflects the number of detected vulnerabilities that require attention. This change might result in a drop in the total number of vulnerabilities shown in the chart. This change applies automatically to vulnerabilities no longer detected in pipelines run from GitLab 18.9 onward. A background migration handles remaining vulnerabilities from earlier pipelines.
 >
-> Due to [issue 590022](https://gitlab.com/gitlab-org/gitlab/-/issues/590022) and [issue 590018](https://gitlab.com/gitlab-org/gitlab/-/issues/590018)), vulnerability counts in the **Vulnerabilities over time** chart may not be accurate. The first issue affects dependency scanning and container scanning vulnerabilities. The second issue affects vulnerabilities that were dismissed or resolved, and then confirmed.
+> Due to [issue 590022](https://gitlab.com/gitlab-org/gitlab/-/issues/590022) and [issue 590018](https://gitlab.com/gitlab-org/gitlab/-/issues/590018), vulnerability counts in the **Vulnerabilities over time** chart may not be accurate. The first issue affects dependency scanning and container scanning vulnerabilities. The second issue affects vulnerabilities that were dismissed or resolved, and then confirmed.
 
 ![vulnerabilities over time](img/vulnerabilities_over_time_chart_v18_5.png)
 
@@ -240,6 +243,33 @@ To view details:
    - Any page-level filters you have set are also applied.
 
 ![severity level](img/security_dashboard_severity_panels_v18_5.png)
+
+#### Risk score panel
+
+The risk score panel shows the overall security risk for the group. The panel has two views:
+
+1. The **No grouping** (default) view shows the total risk score of the group:
+   - The circular gauge shows the calculated risk score in the center.
+   - The color bars indicate the risk level:
+     - Green: Low risk
+     - Yellow: Medium risk
+     - Orange: High risk
+     - Red: Critical risk
+1. Select **Project** to compare risk scores for each project:
+   - Each project tile is color-coded according to the project's risk level.
+   - Hover over a tile to see details, including the project name and risk score.
+   - Select a tile and select the project's name to open that project's vulnerability report.
+
+![Security Dashboard Default View](img/group_security_dashboard_risk_score_v18_6.png)
+
+![Security Dashboard Project Grid view](img/group_security_dashboard_total_risk_score_project_v18_6.png)
+
+Risk scores are calculated from multiple factors, including:
+
+- Severity of vulnerabilities
+- Age of vulnerabilities
+- KEV (Known Exploited Vulnerabilities) status
+- EPSS (Exploit Prediction Scoring System) score
 
 #### Vulnerabilities by age
 
@@ -265,8 +295,12 @@ You can filter results at two levels:
 
 Available dashboard filters include:
 
-- **Report type:** Filter by scanner, including SAST, DAST, dependency scanning, and others.
-- **Project:** Limit results to specific projects. Available only for group security dashboards.
+- **Report type**: Filter by scanner, including SAST, DAST, dependency scanning, and others.
+- **Project**: Limit results to specific projects. Available only for group security dashboards.
+
+On the group security dashboard, you can also filter by:
+
+- **Security attributes**: Filter by the security attributes applied to your projects, which include categories for business impact, application, business unit, internet exposure, and location. These filters can be inclusive (using the **is one of** operator) or exclusive (using the **is not one of** operator). To configure your security attributes and apply them to projects, see [security attributes](../attributes/_index.md).
 
 Dashboard filter behavior:
 

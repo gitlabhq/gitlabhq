@@ -35,6 +35,59 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
     end
   end
 
+  describe 'GET #new' do
+    let(:new_work_item_url) { new_project_work_item_url(project) }
+
+    before do
+      sign_in(current_user)
+      project.add_developer(current_user)
+    end
+
+    context 'when related_issue is provided' do
+      it 'displays the new work item form' do
+        related_issue = create(:work_item, project: project)
+
+        get new_work_item_url, params: { add_related_issue: related_issue.iid }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include(<<~RELATED_ISSUE)
+        <div class="params-add-related-issue">
+        #{related_issue.id}
+        </div>
+        RELATED_ISSUE
+      end
+    end
+
+    context 'when related_issue is not accessible' do
+      let(:other_project) { create(:project) }
+      let(:inaccessible_issue) { create(:work_item, project: other_project) }
+
+      it 'renders the form without error' do
+        get new_work_item_url, params: { add_related_issue: inaccessible_issue.iid }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include(<<~RELATED_ISSUE)
+        <div class="params-add-related-issue">
+
+        </div>
+        RELATED_ISSUE
+      end
+    end
+
+    context 'when related_issue does not exist' do
+      it 'renders the form without error' do
+        get new_work_item_url, params: { add_related_issue: 9999 }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to include(<<~RELATED_ISSUE)
+        <div class="params-add-related-issue">
+
+        </div>
+        RELATED_ISSUE
+      end
+    end
+  end
+
   describe 'GET /:namespace/:project/-/work_items' do
     context 'when the user can read the project' do
       before do

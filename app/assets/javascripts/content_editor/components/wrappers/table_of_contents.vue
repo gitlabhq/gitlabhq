@@ -1,5 +1,5 @@
 <script>
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { NodeViewWrapper } from '@tiptap/vue-2';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { getHeadings } from '../../services/table_of_contents_utils';

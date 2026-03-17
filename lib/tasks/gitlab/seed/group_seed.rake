@@ -4,10 +4,6 @@
 #   1. 2 Subgroups per level
 #   1. 2 Users & group members per group
 #   1. 2 Epics, 2 Milestones & 2 Projects per group
-#   1. Project issues
-#
-# It also assigns each project's issue with one of group's or ascendants
-# groups milestone & epic.
 #
 # @param subgroups_depth - number of subgroup levels
 # @param username - user creating subgroups (i.e. GitLab admin)
@@ -207,37 +203,13 @@ class GroupSeeder
           skip_disk_validation: true
         }
 
-        project = nil
-
         Sidekiq::Worker.skipping_transaction_check do
           project = ::Projects::CreateService.new(@user, params).execute
           project.send(:_run_after_commit_queue)
           project.import_state.send(:_run_after_commit_queue)
           project.repository.expire_all_method_caches
         end
-
-        create_project_issues(project)
-        assign_issues_to_epics_and_milestones(project)
       end
-    end
-  end
-
-  def create_project_issues(project)
-    seeder = Quality::Seeders::Issues.new(project: project)
-    seeder.seed(backfill_weeks: 2, average_issues_per_week: 2)
-  end
-
-  def assign_issues_to_epics_and_milestones(project)
-    group_ids = project.group.self_and_ancestors.map(&:id)
-
-    project.issues.each do |issue|
-      issue_params = {
-        milestone: Milestone.where(group: group_ids).sample
-      }
-
-      issue_params[:epic] = Epic.where(group: group_ids).sample if Gitlab.ee?
-
-      issue.update(issue_params)
     end
   end
 end

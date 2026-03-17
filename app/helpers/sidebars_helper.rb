@@ -51,11 +51,7 @@ module SidebarsHelper
   end
 
   def super_sidebar_logged_out_context(panel:, panel_type:)
-    sidebar_context = super_sidebar_shared_context(panel: panel, panel_type: panel_type)
-
-    return sidebar_context unless project_studio_enabled?
-
-    sidebar_context.merge({
+    super_sidebar_shared_context(panel: panel, panel_type: panel_type).merge({
       sign_in_visible: header_link?(:sign_in).to_s,
       allow_signup: allow_signup?.to_s,
       new_user_registration_path: new_user_registration_path,
@@ -96,7 +92,13 @@ module SidebarsHelper
       },
       can_sign_out: current_user_menu?(:sign_out),
       sign_out_link: destroy_user_session_path,
-      issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
+
+      issues_dashboard_path: if user.work_items_consolidated_list_enabled?
+                               work_items_dashboard_path(assignee_username: user.username)
+                             else
+                               issues_dashboard_path(assignee_username: user.username)
+                             end,
+
       merge_request_dashboard_path: merge_requests_dashboard_path,
       todos_dashboard_path: dashboard_todos_path,
       compare_plans_url: compare_plans_url(user: user, project: project, group: group),
@@ -114,7 +116,8 @@ module SidebarsHelper
       shortcut_links: shortcut_links(user: user, project: project),
       track_visits_path: track_namespace_visits_path,
       work_items: work_items_modal_data(group, project),
-      has_multiple_organizations: user.has_multiple_organizations?
+      has_multiple_organizations: user.has_multiple_organizations?,
+      work_item_planning_view_enabled: user.work_items_consolidated_list_enabled?
     })
   end
 

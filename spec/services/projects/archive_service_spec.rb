@@ -118,7 +118,7 @@ RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects 
 
             expect(result).to be_success
             expect(project.reload.archived).to be(true)
-            expect(project.state).to eq(Namespaces::Stateful::STATES[:archived])
+            expect(project.state).to eq('archived')
           end
         end
 
@@ -139,7 +139,7 @@ RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects 
             result = service.execute
             expect(result).to be_success
             expect(project.reload.archived).to be(true)
-            expect(project.project_namespace.state).to eq(Namespaces::Stateful::STATES[:archived])
+            expect(project.project_namespace.state).to eq('archived')
           end
         end
 
@@ -155,7 +155,7 @@ RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects 
 
           it 'updates the project_namespace state' do
             expect { service.execute }.to change { project.project_namespace.state }
-              .from(Namespaces::Stateful::STATES[:ancestor_inherited]).to(Namespaces::Stateful::STATES[:archived])
+              .from('ancestor_inherited').to('archived')
           end
 
           it 'updates the project archived status to true' do

@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab as OpenID Connect identity provider
 ---
 
@@ -26,7 +26,7 @@ You can use [OmniAuth::OpenIDConnect](https://github.com/omniauth/omniauth_openi
 applications and there are many other available [client implementations](https://openid.net/developers/certified-openid-connect-implementations/).
 
 GitLab uses the `doorkeeper-openid_connect` gem to provide OIDC service. For more information, see
-the [doorkeeper-openid_connect repository](https://github.com/doorkeeper-gem/doorkeeper-openid_connect "Doorkeeper::OpenidConnect repository").
+the [`doorkeeper-openid_connect` repository](https://github.com/doorkeeper-gem/doorkeeper-openid_connect "Doorkeeper::OpenidConnect repository").
 
 ## Enable OIDC for OAuth applications
 

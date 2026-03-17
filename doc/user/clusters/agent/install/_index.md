@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Installing the agent for Kubernetes
 ---
 
@@ -118,7 +118,7 @@ The agent can be registered without creating an agent configuration file.
 
 You must register an agent before you can install the agent in your cluster. To register an agent:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
    If you have an [agent configuration file](#create-an-agent-configuration-file),
    it must be in this project. Your cluster manifest files should also be in this project.
 1. Select **Operate** > **Kubernetes clusters**.
@@ -168,7 +168,6 @@ cannot establish a network connection to the GitLab instance, but can be connect
    GitLab can authenticate to the agent in your cluster using:
    - A JWT token. Available in both `grpc://` and `grpcs://` configurations. You don't need to generate client certificates with this method.
 1. Add a URL configuration to the agent with the [cluster agents API](../../../../api/cluster_agents.md#create-a-url-configuration). If you delete the URL configuration, the receptive agent becomes an ordinary agent. You can associate a receptive agent with only one URL configuration at a time.
-
 1. Install the agent into the cluster. Use the command you copied when you registered the agent, but remove the `--set config.kasAddress=...` parameter.
 
    JWT token authentication example. Note the added `config.receptive.enabled=true` and `config.api.jwt` settings:

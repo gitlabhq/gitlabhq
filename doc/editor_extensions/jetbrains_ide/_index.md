@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect and use GitLab Duo in JetBrains IDEs.
 title: GitLab Duo plugin for JetBrains IDEs
 ---
@@ -11,13 +11,17 @@ with JetBrains IDEs like IntelliJ, PyCharm, GoLand, Webstorm, and Rubymine.
 
 After you [install and configure](setup.md) the extension, you can access the following features:
 
-- [GitLab Duo Chat (Agentic)](../../user/gitlab_duo_chat/agentic_chat.md): On the right tool window bar, select **GitLab Duo Agent Platform** <br>({{< icon name="duo-agentic-chat" >}}), and then select the chat tab.
-- [Software Development Flow](../../user/duo_agent_platform/flows/foundational_flows/software_development.md): On the right tool window bar, select **GitLab Duo Agent Platform** <br>({{< icon name="duo-agentic-chat" >}}), and then select the flows tab.
-- [GitLab Duo Chat (Classic)](../../user/gitlab_duo_chat/_index.md): On the right tool window bar, select **GitLab Duo Chat**
-  ({{< icon name="duo-chat" >}}). Or select some code and then, in the floating toolbar, select
-  **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}).
-- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md) and [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md): In the status bar, select **Duo** ({{< icon name="tanuki-ai" >}}).
-  The icon will change based on the feature status.
+- On the right tool window bar, **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}):
+  - The chat tab: Interact with GitLab Duo Chat (agentic), or use the **New chat** ({{< icon name="duo-chat-new" >}})
+    dropdown list to select a foundational or custom agent to work with.
+  - The flows tab: Use the Software Development Flow. Learn more about the
+    [difference between Chat and the flow](../../user/duo_agent_platform/flows/foundational_flows/software_development.md#flow-and-chat-comparison).
+- In the status bar, **Duo** ({{< icon name="tanuki-ai" >}}): Check the feature status of
+  GitLab Duo Code Suggestions and review suggestions in
+  your file as you author code.
+- On the right tool window bar, **GitLab Duo Chat** ({{< icon name="duo-chat" >}}): Interact with
+  GitLab Duo Chat (non-agentic). Or select some code and then, in the floating toolbar, select
+  **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}) for in-line conversations.
 
 ## Use with remote development
 
@@ -35,7 +39,7 @@ Some features in the plugin are in experiment or beta status. To use them, you m
 1. Go to your IDE's top menu bar and select **Settings**, or:
    - MacOS: press <kbd>Command</kbd>+<kbd>,</kbd>
    - Windows or Linux: press <kbd>Control</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd>
-1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
+1. In the left sidebar, expand **Tools**, then select **GitLab Duo**.
 1. Select **Enable Experiment or BETA features**.
 1. To apply the changes, restart your IDE.
 
@@ -53,7 +57,7 @@ The GitLab Duo plugin uses the telemetry settings in your JetBrains IDE to send 
 information to GitLab. To enable telemetry in your JetBrains IDE:
 
 1. Go to your IDE's top menu bar and select **Settings**. For example, in PyCharm, select **PyCharm** > **Settings**.
-1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
+1. In the left sidebar, expand **Tools**, then select **GitLab Duo**.
 1. Under **Advanced**, select the **Enable telemetry** checkbox.
 1. Select **OK** or **Apply** to save your changes.
 
@@ -94,7 +98,7 @@ To integrate GitLab for JetBrains with the 1Password CLI:
 From the IDE:
 
 1. Go to your IDE's top menu bar and select **Settings**.
-1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
+1. In the left sidebar, expand **Tools**, then select **GitLab Duo**.
 1. Under **Authentication**, select the **1Password CLI** tab.
 1. Select **Integrate with 1Password CLI**.
 1. Optional. For **Secret reference**, paste the secret reference you copied from 1Password.

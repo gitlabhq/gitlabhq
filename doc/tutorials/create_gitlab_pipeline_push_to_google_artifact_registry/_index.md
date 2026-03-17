@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: tutorials
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Create a GitLab pipeline to push to Google Artifact Registry'
 ---
 
@@ -26,7 +26,6 @@ Learn how to connect GitLab to Google Cloud and create a GitLab pipeline using r
    ```
 
    Replace `PROJECT_ID` with a name for the Google Cloud project you are creating.
-
 1. Select the Google Cloud project that you created:
 
    ```shell
@@ -34,9 +33,7 @@ Learn how to connect GitLab to Google Cloud and create a GitLab pipeline using r
    ```
 
    Replace `PROJECT_ID` with your Google Cloud project name.
-
 1. [Make sure that billing is enabled for your Google Cloud project](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#console).
-
 1. Enable the Compute Engine and Artifact Registry APIs:
 
    ```shell
@@ -45,9 +42,7 @@ Learn how to connect GitLab to Google Cloud and create a GitLab pipeline using r
 
 1. Set up the GitLab on Google Cloud integration by following the
    instructions in [Google Cloud Workload Identity Federation and IAM policies](../../integration/google_cloud_iam.md).
-
 1. [Create a standard mode Docker format Artifact Registry repository](https://cloud.google.com/artifact-registry/docs/repositories/create-repos#create).
-
 1. Connect your Artifact Registry repository to your GitLab project by following the
    instructions in [Set up the Google Artifact Registry in a GitLab project](../../user/project/integrations/google_artifact_management.md).
 
@@ -56,7 +51,6 @@ Learn how to connect GitLab to Google Cloud and create a GitLab pipeline using r
 1. To clone your GitLab repository to your working environment using SSH or
    HTTPS, follow the instructions in
    [Clone a Git repository to your local computer](../../topics/git/clone.md).
-
 1. If you are working in your local shell,
    [install Terraform](https://developer.hashicorp.com/terraform/install?product_intent=terraform). Terraform is already installed in
    Cloud Shell.
@@ -110,7 +104,6 @@ registry, and copies the image to Google Artifact Registry.
 
 1. In your GitLab project, create a
    [`.gitlab-ci.yml` file](../../ci/quick_start/_index.md#create-a-gitlab-ciyml-file).
-
 1. To create a pipeline that builds your image, pushes it to the GitLab container
    registry, and copies it to Google Artifact Registry, modify the contents of your
    `.gitlab-ci.yml` file to resemble the following.

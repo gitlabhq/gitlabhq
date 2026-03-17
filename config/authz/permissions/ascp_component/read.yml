@@ -1,5 +1,3 @@
 ---
 name: read_ascp_component
 description: Grants the ability to read ASCP components
-boundaries:
-  - project

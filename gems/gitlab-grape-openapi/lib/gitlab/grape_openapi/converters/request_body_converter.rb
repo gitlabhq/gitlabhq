@@ -9,16 +9,17 @@ module Gitlab
         GET_METHOD = 'GET'
         DELETE_METHOD = 'DELETE'
 
-        attr_reader :route, :options, :params
+        attr_reader :route, :options, :params, :request_body_registry
 
-        def self.convert(route:, options:, params:)
-          new(route: route, options: options, params: params).convert
+        def self.convert(route:, options:, params:, request_body_registry:)
+          new(route: route, options: options, params: params, request_body_registry: request_body_registry).convert
         end
 
-        def initialize(route:, options:, params:)
+        def initialize(route:, options:, params:, request_body_registry:)
           @route = route
           @options = options
           @params = params
+          @request_body_registry = request_body_registry
         end
 
         def convert
@@ -54,23 +55,34 @@ module Gitlab
           }
           schema[:required] = required_params unless required_params.empty?
 
+          schema_ref = request_body_registry.register(schema)
+
           {
             required: required_params.any?,
             content: {
               content_type(body_params) => {
-                schema: schema
+                schema: schema_ref
               }
             }
           }
         end
 
-        # TODO: not all endpoints use the MULTIPART_FORM_DATA_CONTENT_TYPE or DEFAULT_CONTENT_TYPE
-        #   content types. Come up with a way to find which one each endpoint uses, e.g., get it from
-        #   the endpoint's docs.
         def content_type(body_params)
+          custom_content_type = extract_consumes_content_type
+          return custom_content_type if custom_content_type
+
           return MULTIPART_FORM_DATA_CONTENT_TYPE if allows_file_upload?(body_params)
 
           DEFAULT_CONTENT_TYPE
+        end
+
+        def extract_consumes_content_type
+          consumes = route.settings.dig(:description, :consumes)
+          return nil if consumes.blank?
+
+          content_type = consumes.first
+          content_type = DEFAULT_CONTENT_TYPE if content_type == :json
+          content_type
         end
 
         def allows_file_upload?(body_params)

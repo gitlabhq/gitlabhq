@@ -25,6 +25,9 @@ namespace :explore do
     get '/*full_path' => 'catalog#show', as: :catalog, constraints: { full_path: /.*/ }
   end
   resources :snippets, only: [:index]
+
+  resources :analytics_dashboards, only: [:index]
+
   root to: 'projects#index'
 end
 

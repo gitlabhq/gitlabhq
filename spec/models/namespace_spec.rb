@@ -17,6 +17,12 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:repository_storage) { 'default' }
 
+  it_behaves_like 'cells claimable model',
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
+    subject_key: :organization_id,
+    source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_NAMESPACES,
+    claiming_attributes: [:id]
+
   describe 'associations' do
     it { is_expected.to belong_to :organization }
     it { is_expected.to have_many :projects }
@@ -984,11 +990,17 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:archived).to(:namespace_settings).allow_nil }
     it { is_expected.to delegate_method(:creator).to(:namespace_details) }
     it { is_expected.to delegate_method(:creator=).to(:namespace_details).with_arguments(:args) }
+    it { is_expected.to delegate_method(:deletion_error).to(:namespace_details) }
+    it { is_expected.to delegate_method(:deletion_error=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:description).to(:namespace_details) }
     it { is_expected.to delegate_method(:description=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:description_html).to(:namespace_details) }
+    it { is_expected.to delegate_method(:last_error).to(:namespace_details) }
+    it { is_expected.to delegate_method(:last_error=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:state_metadata).to(:namespace_details) }
     it { is_expected.to delegate_method(:state_metadata=).to(:namespace_details).with_arguments(:args) }
+    it { is_expected.to delegate_method(:deletion_scheduled_at).to(:namespace_details) }
+    it { is_expected.to delegate_method(:deletion_scheduled_at=).to(:namespace_details).with_arguments(:args) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked_by_ancestor?).to(:namespace_settings) }

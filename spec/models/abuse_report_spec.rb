@@ -31,6 +31,7 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     let(:ftp)   { 'ftp://example.com' }
     let(:javascript) { 'javascript:alert(window.opener.document.location)' }
 
+    it { is_expected.to validate_length_of(:message).is_at_most(AbuseReport::MAX_MESSAGE_SIZE) }
     it { is_expected.to validate_presence_of(:reporter) }
     it { is_expected.to validate_presence_of(:user).on(:create) }
     it { is_expected.to validate_presence_of(:message) }
@@ -65,17 +66,17 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.to allow_value(['https://gitlab.com'] * 20).for(:links_to_spam) }
     it { is_expected.not_to allow_value(['https://gitlab.com'] * 21).for(:links_to_spam) }
 
-    it {
+    it do
       is_expected.to allow_value([
         "https://gitlab.com/#{SecureRandom.alphanumeric(493)}"
       ]).for(:links_to_spam)
-    }
+    end
 
-    it {
+    it do
       is_expected.not_to allow_value([
         "https://gitlab.com/#{SecureRandom.alphanumeric(494)}"
       ]).for(:links_to_spam)
-    }
+    end
 
     context 'for screenshot' do
       let(:txt_file) { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
@@ -94,7 +95,7 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
 
       it { is_expected.to allow_value(nil).for(:evidence) }
 
-      it {
+      it do
         is_expected.to allow_value(
           {
             issues: [
@@ -127,7 +128,7 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
               virus_total_score: 0.2
             }
           }).for(:evidence)
-      }
+      end
     end
   end
 

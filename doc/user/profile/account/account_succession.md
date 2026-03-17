@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Designate an account succession beneficiary
 description: Designate an individual who can take ownership of your GitLab account.
 ---
@@ -39,7 +39,7 @@ To add an account manager:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Select **Add account manager**.
 1. Add the account manager details.
 1. Select **Add account manager**.
@@ -50,7 +50,7 @@ To edit an account manager:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Next to the account manager, select **Edit** ({{< icon name="pencil" >}}).
 1. Edit the account manager details.
 1. Select **Add account manager**.
@@ -61,7 +61,7 @@ To delete an account manager:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Next to the account manager, select **Delete** ({{< icon name="remove" >}}).
 1. Select **Delete account manager**.
 
@@ -79,7 +79,7 @@ To add an account successor:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Select **Add account successor**.
 1. Add the account successor details.
 1. Select **Add account successor**.
@@ -90,7 +90,7 @@ To edit an account successor:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Next to the account successor, select **Edit** ({{< icon name="pencil" >}}).
 1. Edit the account successor details.
 1. Select **Add account successor**.
@@ -101,7 +101,7 @@ To delete an account successor:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Next to the account successor, select **Delete** ({{< icon name="remove" >}}).
 1. Select **Delete account successor**.
 

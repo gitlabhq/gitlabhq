@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
-import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
+import DuoWorkflowAction from 'ee_component/ai/shared/widgets/duo_workflow_action.vue';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
 import { __, s__, n__, sprintf, formatNumber } from '~/locale';

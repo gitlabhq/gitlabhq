@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Utilization
-info: This page is maintained by Developer Relations, author @dnsmichi, see https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation
+info: This page is maintained by Developer Relations, author @dnsmichi, see <https://handbook.gitlab.com/handbook/marketing/developer-relations/developer-advocacy/content/#maintained-documentation>
 title: Automate storage management
 ---
 
@@ -33,10 +33,10 @@ Use the following scopes to [authenticate](../api/rest/authentication.md) with t
 
 - Storage analysis:
   - Read API access with the `read_api` scope.
-  - At least the Developer role on all projects.
+  - The Developer, Maintainer, or Owner role on all projects.
 - Storage clean up:
   - Full API access with the `api` scope.
-  - At least the Maintainer role on all projects.
+  - The Maintainer or Owner role on all projects.
 
 You can use command-line tools or a programming language to interact with the REST API.
 
@@ -97,7 +97,7 @@ see [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](htt
 For more information about other API client libraries, see [Third-party clients](../api/rest/third_party_clients.md).
 
 > [!note]
-> Use [GitLab Duo Code Suggestions](duo_agent_platform/code_suggestions/_index.md) or [GitLab Duo Code Suggestions (Classic)](project/repository/code_suggestions/_index.md) to write code more efficiently.
+> Use GitLab Duo Code Suggestions to write code more efficiently.
 
 ## Storage analysis
 

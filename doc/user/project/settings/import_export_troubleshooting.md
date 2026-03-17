@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting file export project migrations
 description: "Troubleshooting file export project migrations. Covers common errors, performance issues, and solutions."
 ---
@@ -212,7 +212,8 @@ ProjectExportWorker.new.perform(current_user.id, project.id)
 
 ## Manually execute export steps
 
-You usually export a project through [the web interface](import_export.md#export-a-project-and-its-data) or through [the API](../../../api/project_import_export.md). Exporting using these
+You usually export a project through [the web interface](import_export.md#export-a-project-and-its-data)
+or through the [project import and export API](../../../api/project_import_export.md). Exporting using these
 methods can sometimes fail without giving enough information to troubleshoot. In these cases,
 [open a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session) and loop through
 [all the defined exporters](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/projects/import_export/export_service.rb).
@@ -253,20 +254,6 @@ s.send(:save_upload)
 
 After the project is successfully uploaded, the exported project is located in a `.tar.gz` file in `/var/opt/gitlab/gitlab-rails/uploads/-/system/import_export_upload/export_file/`.
 
-## Import using the REST API fails when using a group access token
-
-[Group access tokens](../../group/settings/group_access_tokens.md)
-don't work for project or group import operations. When a group access token initiates an import,
-the import fails with this message:
-
-```plaintext
-Error adding importer user to Project members.
-Validation failed: User project bots cannot be added to other groups / projects
-```
-
-To use [Import REST API](../../../api/project_import_export.md),
-pass regular user account credentials such as [personal access tokens](../../profile/personal_access_tokens.md).
-
 ## Error: `PG::QueryCanceled: ERROR: canceling statement due to statement timeout`
 
 Some migrations can time out with the error: `PG::QueryCanceled: ERROR: canceling statement due to statement timeout`.
@@ -306,7 +293,7 @@ Read through the current performance problems using the Import/Export below.
 
 ### OOM errors
 
-Out of memory (OOM) errors are usually caused by the [Sidekiq Memory Killer](../../../administration/sidekiq/sidekiq_memory_killer.md):
+Out-of-memory (OOM) errors are usually caused by the [Sidekiq memory killer](../../../administration/sidekiq/sidekiq_memory_killer.md):
 
 ```shell
 SIDEKIQ_MEMORY_KILLER_MAX_RSS = 2000000

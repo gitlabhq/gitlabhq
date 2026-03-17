@@ -1,0 +1,8 @@
+name: security_findings_effective_severity
+description: Store effective severity (with overrides applied) in security_findings.severity column
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223880
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590349
+milestone: '18.10'
+type: gitlab_com_derisk
+group: group::security infrastructure
+default_enabled: false

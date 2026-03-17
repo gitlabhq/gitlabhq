@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate from Gitea
 description: "Migrate from Gitea to GitLab."
 ---
@@ -19,7 +19,7 @@ description: "Migrate from Gitea to GitLab."
 - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 - Ability to import projects with a `.` in their path [added](https://gitlab.com/gitlab-org/gitlab/-/issues/434175) in GitLab 16.11.
 - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461208) in GitLab 17.2.
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [post-migration user contribution and membership mapping](mapping.md) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [post-migration user contribution and membership mapping](mapping/_index.md) in GitLab 17.8.
 - Post-migration user and contribution membership mapping [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
@@ -103,7 +103,7 @@ contribution mapping method for imports.
 > - Migrations to GitLab Self-Managed and GitLab Dedicated 18.6 and later.
 >
 > Problems that are found in this mapping method are unlikely to be fixed. Use the
-> [post-migration method](mapping.md) instead that doesn't have these limitations.
+> [post-migration method](mapping/_index.md) instead that doesn't have these limitations.
 >
 > For more information, see [issue 512211](https://gitlab.com/gitlab-org/gitlab/-/work_items/512211).
 

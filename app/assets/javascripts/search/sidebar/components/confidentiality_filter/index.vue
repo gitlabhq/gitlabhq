@@ -2,6 +2,7 @@
 import { __ } from '~/locale';
 import {
   SCOPE_ISSUES,
+  SCOPE_WORK_ITEMS,
   CONFIDENTAL_FILTER_PARAM,
   CONFIDENTIAL_FILTERS,
 } from '~/search/sidebar/constants';
@@ -19,6 +20,11 @@ export default {
     filtersArray() {
       return {
         [SCOPE_ISSUES]: [
+          CONFIDENTIAL_FILTERS.ANY,
+          CONFIDENTIAL_FILTERS.CONFIDENTIAL,
+          CONFIDENTIAL_FILTERS.NOT_CONFIDENTIAL,
+        ],
+        [SCOPE_WORK_ITEMS]: [
           CONFIDENTIAL_FILTERS.ANY,
           CONFIDENTIAL_FILTERS.CONFIDENTIAL,
           CONFIDENTIAL_FILTERS.NOT_CONFIDENTIAL,

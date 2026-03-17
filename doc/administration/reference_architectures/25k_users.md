@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Reference architecture: Up to 500 RPS or 25,000 users'
 ---
 
@@ -45,7 +45,7 @@ For a full list of reference architectures, see
 
 **Footnotes**:
 
-<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
 1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported machine types](_index.md#supported-machine-types) for more information.
 2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.
@@ -404,14 +404,6 @@ frontend internal-pgbouncer-tcp-in
 
     default_backend pgbouncer
 
-frontend internal-praefect-tcp-in
-    bind *:2305
-    mode tcp
-    option tcplog
-    option clitcpka
-
-    default_backend praefect
-
 backend pgbouncer
     mode tcp
     option tcp-check
@@ -419,6 +411,16 @@ backend pgbouncer
     server pgbouncer1 10.6.0.31:6432 check
     server pgbouncer2 10.6.0.32:6432 check
     server pgbouncer3 10.6.0.33:6432 check
+
+# Praefect load balancing (skip both sections below if using DNS service discovery for Praefect)
+# For more information, see https://docs.gitlab.com/ee/administration/gitaly/praefect/configure.html#service-discovery
+frontend internal-praefect-tcp-in
+    bind *:2305
+    mode tcp
+    option tcplog
+    option clitcpka
+
+    default_backend praefect
 
 backend praefect
     mode tcp
@@ -488,9 +490,7 @@ To configure Consul:
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
 1. Go through the steps again for all the other Consul nodes, and
    make sure you set up the correct IPs.
 
@@ -684,7 +684,6 @@ For more information, see the various [Patroni replication methods](../postgresq
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/database/)
@@ -775,13 +774,11 @@ The following IPs will be used as an example:
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
    If an error `execute[generate databases.ini]` occurs, this is due to an existing
    [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/4713).
    It will be resolved when you run a second `reconfigure` after the next step.
-
 1. Create a `.pgpass` file so Consul is able to
    reload PgBouncer. Enter the PgBouncer password twice when asked:
 
@@ -952,7 +949,6 @@ a node and change its status from primary to replica (and vice versa).
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 #### Configure the replica Redis Cache nodes
@@ -1020,9 +1016,7 @@ a node and change its status from primary to replica (and vice versa).
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
 1. Go through the steps again for all the other replica nodes, and
    make sure to set up the IPs correctly.
 
@@ -1102,7 +1096,6 @@ a node and change its status from primary to replica (and vice versa).
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 #### Configure the replica Redis Persistent nodes
@@ -1164,9 +1157,7 @@ a node and change its status from primary to replica (and vice versa).
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
 1. Go through the steps again for all the other replica nodes, and
    make sure to set up the IPs correctly.
 
@@ -1206,29 +1197,44 @@ The recommended cluster setup includes the following components:
 - 3 Praefect nodes: Router and transaction manager for Gitaly Cluster (Praefect).
 - 1 Praefect PostgreSQL node: Database server for Praefect. A third-party solution
   is required for Praefect database connections to be made highly available.
-- [Service discovery](../gitaly/praefect/configure.md#configure-service-discovery):
-  Even distribution of traffic to Praefect nodes. For more information, see
-  [service discovery vs a TCP load balancer](#service-discovery-vs-tcp-load-balancer).
+- Load balancing: Even distribution of traffic to Praefect nodes. You can use a
+  [TCP load balancer](../gitaly/praefect/configure.md#load-balancer) (recommended for most setups)
+  or [service discovery DNS](../gitaly/praefect/configure.md#service-discovery) for advanced configurations.
+  For more information, see [load balancing for Praefect](#load-balancing-for-praefect).
 
 This section details how to configure the recommended standard setup in order.
 For more advanced setups refer to the
 [standalone Gitaly Cluster (Praefect) documentation](../gitaly/praefect/_index.md).
 
-### Service discovery vs TCP load balancer
+### Load balancing for Praefect
 
-A TCP load balancer is **not recommended** because TCP load balancers balance
-at the connection level, not the request level. With gRPC's HTTP/2 connections,
-multiple requests are multiplexed over long-lived connections. This means the
-load balancer's routing decision, made once when the connection is established,
-applies to all subsequent requests on that connection, which can lead:
+You can distribute traffic to Praefect nodes using either a TCP load balancer or service discovery DNS.
+A TCP load balancer is recommended for most setups as it works in all deployment scenarios.
 
-- To imbalanced traffic if some connections serve more requests than others.
-- To a situation where if a Praefect node goes down, clients
-  re-establish connections with the other Praefect nodes. Even if the downed node
-  comes back up, it won't receive as much traffic as the others.
+#### TCP load balancer
 
-Service discovery enables gRPC request-level round-robin balancing across
-Praefect nodes, ensuring even traffic distribution.
+A traditional TCP load balancer (such as HAProxy or AWS ELB) distributes traffic across Praefect nodes. This approach:
+
+- Works in all deployment scenarios (Omnibus, Cloud Native Hybrid)
+- Provides straightforward setup and operational management
+- Supports both TLS and non-TLS configurations
+- May experience uneven traffic distribution as connections can bunch on certain nodes
+- May take longer to rebalance traffic after a node restarts
+
+For configuration instructions, see [Load balancer](../gitaly/praefect/configure.md#load-balancer).
+
+#### Service discovery DNS
+
+Service discovery uses DNS to retrieve Praefect node addresses, allowing clients to distribute
+requests evenly across all available nodes. This approach:
+
+- Distributes traffic evenly across all Praefect nodes
+- Automatically rebalances traffic when nodes are added or restarted
+- Requires DNS infrastructure (such as Consul, CoreDNS, or similar)
+- Requires GitLab 18.9 or later when using TLS
+- Only available for Linux package (Omnibus) installations
+
+For configuration instructions, see [Service discovery](../gitaly/praefect/configure.md#service-discovery).
 
 ### Configure Praefect PostgreSQL
 
@@ -1299,9 +1305,7 @@ but do **not** provide the `EXTERNAL_URL` value.
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
-
 1. Follow the [post configuration](#praefect-postgresql-post-configuration).
 
 <div align="right">
@@ -1418,8 +1422,9 @@ To configure the Praefect nodes, on each one:
 
    <!--
    Updates to example must be made at:
-   - https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect/_index.md
-   - all reference architecture pages
+
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect/configure.md#praefect>
+   - All reference architecture pages
    -->
 
    ```ruby
@@ -1515,7 +1520,6 @@ To configure the Praefect nodes, on each one:
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
 1. Praefect requires to run some database migrations, much like the main GitLab application. For this
    you should select **one Praefect node only to run the migrations**, AKA the _Deploy Node_. This node
    must be configured first before the others as follows:
@@ -1572,9 +1576,10 @@ On each node:
 
    <!--
    Updates to example must be made at:
-   - https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
-   - https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
-   - all reference architecture pages
+
+   - <https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-linux-package-installation>
+   - <https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/configure_gitaly.md#configure-gitaly-server>
+   - All reference architecture pages
    -->
 
    ```ruby
@@ -1675,7 +1680,6 @@ On each node:
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
 1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ### Gitaly Cluster (Praefect) TLS support
@@ -1707,7 +1711,6 @@ Note the following:
 To configure Praefect with TLS:
 
 1. Create certificates for Praefect servers.
-
 1. On the Praefect servers, create the `/etc/gitlab/ssl` directory and copy your key
    and certificate there:
 
@@ -1733,7 +1736,6 @@ To configure Praefect with TLS:
    ```
 
 1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-
 1. On the Praefect clients (including each Gitaly server), copy the certificates,
    or their certificate authority, into `/etc/gitlab/trusted-certs`:
 
@@ -1831,14 +1833,21 @@ To configure the Sidekiq nodes, on each one:
 
    # Gitaly Cluster
    ## gitlab_rails['repositories_storages'] gets configured for the Praefect virtual storage
-   ## Address is the Internal Load Balancer for Praefect
-   ## Token is the praefect_external_token
+   ## TCP load balancer (recommended for most setups):
    gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => "tcp://10.6.0.40:2305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
    }
+
+   ## Alternatively, use service discovery DNS (requires DNS infrastructure):
+   # gitlab_rails['repositories_storages'] = {
+   #   "default" => {
+   #     "gitaly_address" => "dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305",
+   #     "gitaly_token" => '<praefect_external_token>'
+   #   }
+   # }
 
    # PostgreSQL
    gitlab_rails['db_host'] = '10.6.0.20' # internal load balancer IP
@@ -1905,7 +1914,6 @@ To configure the Sidekiq nodes, on each one:
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Linux package node you configured and add or replace
    the file of the same name on this server. If this is the first Linux package node you are configuring then you can skip this step.
-
 1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
 
    ```shell
@@ -1914,7 +1922,6 @@ To configure the Sidekiq nodes, on each one:
 
    Only a single designated node should handle migrations as detailed in the
    [GitLab Rails post-configuration](#gitlab-rails-post-configuration) section.
-
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 <div align="right">
@@ -1948,7 +1955,6 @@ On each node perform the following:
 1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
    package of your choice. Be sure to only add the GitLab package repository and install GitLab
    for your chosen operating system.
-
 1. Edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    To maintain uniformity of links across nodes, the `external_url`
    on the application server should point to the external URL that users will use
@@ -1959,14 +1965,21 @@ On each node perform the following:
    external_url 'https://gitlab.example.com'
 
    # gitlab_rails['repositories_storages'] gets configured for the Praefect virtual storage
-   # Address is the Internal Load Balancer for Praefect
-   # Token is the praefect_external_token
+   # TCP load balancer (recommended for most setups):
    gitlab_rails['repositories_storages'] = {
      "default" => {
        "gitaly_address" => "tcp://10.6.0.40:2305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
    }
+
+   # Alternatively, use service discovery DNS (requires DNS infrastructure):
+   # gitlab_rails['repositories_storages'] = {
+   #   "default" => {
+   #     "gitaly_address" => "dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305",
+   #     "gitaly_token" => '<praefect_external_token>'
+   #   }
+   # }
 
    ## Disable components that will not be on the GitLab application server
    roles(['application_role'])
@@ -2054,12 +2067,21 @@ On each node perform the following:
    `gitlab_rails['repositories_storages']` entry is configured with `tls` instead of `tcp`:
 
    ```ruby
+   # TCP load balancer with TLS (recommended for most setups):
    gitlab_rails['repositories_storages'] = {
      "default" => {
-       "gitaly_address" => "tls://10.6.0.40:2305", # internal load balancer IP
+       "gitaly_address" => "tls://10.6.0.40:3305", # internal load balancer IP
        "gitaly_token" => '<praefect_external_token>'
      }
    }
+
+   # Alternatively, use service discovery DNS with TLS (requires DNS infrastructure and GitLab 18.9+):
+   # gitlab_rails['repositories_storages'] = {
+   #   "default" => {
+   #     "gitaly_address" => "dns+tls://PRAEFECT_SERVICE_DISCOVERY_ADDRESS:3305",
+   #     "gitaly_token" => '<praefect_external_token>'
+   #   }
+   # }
    ```
 
    1. Copy the cert into `/etc/gitlab/trusted-certs`:
@@ -2082,7 +2104,6 @@ On each node perform the following:
 
    Only a single designated node should handle migrations as detailed in the
    [GitLab Rails post-configuration](#gitlab-rails-post-configuration) section.
-
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 1. [Enable incremental logging](#enable-incremental-logging).
 1. Confirm the node can connect to Gitaly:
@@ -2119,7 +2140,6 @@ the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/).
    This operation requires configuring the Rails node to connect to the primary database
    directly, [bypassing PgBouncer](../postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer).
    After migrations have completed, you must configure the node to pass through PgBouncer again.
-
 1. [Configure fast lookup of authorized SSH keys in the database](../operations/fast_ssh_key_lookup.md).
 
 <div align="right">
@@ -2143,7 +2163,6 @@ To configure the Monitoring node:
 1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
    package of your choice. Be sure to only add the GitLab package repository and install GitLab
    for your chosen operating system.
-
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
    ```ruby
@@ -2313,7 +2332,7 @@ services where applicable):
 
 **Footnotes**:
 
-<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
 1. Machine type examples are given for illustration purposes. These types are used in [validation and testing](_index.md#validation-and-test-results) but are not intended as prescriptive defaults. Switching to other machine types that meet the requirements as listed is supported, including ARM variants if available. See [Supported Machine Types](_index.md#supported-machine-types) for more information.
 2. Can be optionally run on reputable third-party external PaaS PostgreSQL solutions. See [Provide your own PostgreSQL instance](#provide-your-own-postgresql-instance) for more information.

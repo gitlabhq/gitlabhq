@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Disaster Recovery (Geo)
 description: Recover from a disaster, using a Geo instance.
 ---
@@ -17,10 +17,90 @@ Geo replicates your database, your Git repositories, and other assets.
 Some [known issues](../_index.md#known-issues) exist.
 
 > [!warning]
-> Multi-secondary configurations require the complete re-synchronization and re-configuration of all non-promoted secondaries and
-> causes downtime.
+>
+> - Multi-secondary configurations require the complete re-synchronization
+>   and re-configuration of all non-promoted secondaries and causes downtime.
+> - After the secondary site is promoted, the primary site is detached entirely.
+>   If you wish to restore the primary site, you must add it as a new secondary site.
 
-## Promoting a **secondary** Geo site in single-secondary configurations
+## The `gitlab-cluster.json` file
+
+When you promote a secondary site to a primary site with `gitlab-ctl geo promote`,
+the command automatically creates a `/etc/gitlab/gitlab-cluster.json` file on each node
+where it executes. In most circumstances, you don't need to manually edit this file.
+
+The `gitlab-cluster.json` file allows the promotion command to automate configuration
+changes without modifying `/etc/gitlab/gitlab.rb` directly. Programmatically editing
+`gitlab.rb` is error-prone, so `gitlab-cluster.json` serves as a machine-managed
+override layer.
+
+When both files exist, values in `gitlab-cluster.json` take precedence over the
+corresponding values in `gitlab.rb` when `gitlab-ctl reconfigure` executes. When you run this command,
+you see a warning similar to:
+
+```plaintext
+The 'geo_primary_role' is defined in /etc/gitlab/gitlab-cluster.json as 'true' and overrides the setting in the /etc/gitlab/gitlab.rb
+The 'geo_secondary_role' is defined in /etc/gitlab/gitlab-cluster.json as 'false' and overrides the setting in the /etc/gitlab/gitlab.rb
+```
+
+This warning is expected after promotion.
+
+### File structure
+
+A typical `gitlab-cluster.json` file looks like:
+
+```json
+{
+  "primary": true,
+  "secondary": false,
+  "geo_secondary": {
+    "enable": false
+  }
+}
+```
+
+| Key | Description |
+|---|---|
+| `primary` | When `true`, enables `geo_primary_role`, which configures the node as a Geo primary. |
+| `secondary` | When `true`, enables `geo_secondary_role`, which configures the node as a Geo secondary. |
+| `geo_secondary` | Contains settings related to the Geo secondary configuration, such as the tracking database. `"enable": false` disables secondary-specific services. |
+
+The `primary` and `secondary` keys map to the `geo_primary_role` and `geo_secondary_role`
+respectively. These roles are a convenience for single-node setups and should not be
+used in multi-node configurations where individual service roles are configured
+explicitly in `gitlab.rb`.
+
+### Remove the file
+
+After a successful promotion, you can keep `gitlab-cluster.json` in place. However,
+you should remove it in the following situations:
+
+- If you [bring a demoted primary back](bring_primary_back.md#configure-the-former-primary-site-to-be-a-secondary-site)
+  as a new secondary site, you must delete `gitlab-cluster.json` from every
+  Sidekiq, PostgreSQL, Gitaly, and Rails node.
+- After you update `gitlab.rb` to set a Geo role (for example, `roles(['geo_primary_role'])`), and you want
+  `gitlab.rb` to be the sole configuration source.
+- After you recover from a partial failover.
+
+  See [Recovering from a partial failover](failover_troubleshooting.md#recovering-from-a-partial-failover)
+  for details on when the file is manually created during recovery.
+
+To remove the file:
+
+- Run these commands:
+
+  ```shell
+  sudo rm /etc/gitlab/gitlab-cluster.json
+  sudo gitlab-ctl reconfigure
+  ```
+
+  In a multi-node setup, repeat these commands on every node in the site.
+
+For technical details about how `gitlab-cluster.json` interacts with the
+reconfigure process, see the
+[Omnibus reconfigure documentation](https://docs.gitlab.com/omnibus/development/reconfigure_in_detail/#gitlab-clusterjson-file).
+
+## Promoting a secondary Geo site in single-secondary configurations
 
 While you can't automatically promote a Geo replica and do a failover,
 you can promote it manually if you have `root` access to the machine.
@@ -29,13 +109,13 @@ This process promotes a **secondary** Geo site to a **primary** site. To regain
 geographic redundancy as quickly as possible, you should add a new **secondary** site
 immediately after following these instructions.
 
-### Step 1. Allow replication to finish if possible
+### Allow replication to finish if possible
 
 If the **secondary** site is still replicating data from the **primary** site, follow
 [the planned failover docs](planned_failover.md) as closely as possible in
 order to avoid unnecessary data loss.
 
-### Step 2. Permanently disable the **primary** site
+### Step 1. Permanently disable the **primary** site
 
 > [!warning]
 > If the **primary** site goes offline, there may be data saved on the **primary** site
@@ -73,13 +153,13 @@ must disable the **primary** site.
   - Revoke object storage permissions from the **primary** site.
   - Physically disconnect a machine.
 
-  If you plan to [update the primary domain DNS record](#step-4-optional-updating-the-primary-domain-dns-record),
+  If you plan to [update the primary domain DNS record](#optional-updating-the-primary-domain-dns-record),
   you may wish to maintain a low TTL to ensure fast propagation of DNS changes.
 
   > [!note]
   > The primary site's `/etc/gitlab/gitlab.rb` file is not copied to the secondary sites automatically during this process. Make sure that you back up the primary's `/etc/gitlab/gitlab.rb` file, so that you can later restore any needed values on your secondary sites.
 
-### Step 3. Promoting a **secondary** site
+### Step 2. Promoting a **secondary** site
 
 Note the following when promoting a secondary:
 
@@ -92,7 +172,7 @@ Note the following when promoting a secondary:
 - If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken`
   error message during this process, for more information, see this
   [troubleshooting advice](failover_troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
-- If you are using separate URLs, you should [point the primary domain DNS at the newly promoted site](#step-4-optional-updating-the-primary-domain-dns-record). Otherwise, runners must be registered again with the newly promoted site, and all Git remotes, bookmarks, and external integrations must be updated.
+- If you are using separate URLs, you should [point the primary domain DNS at the newly promoted site](#optional-updating-the-primary-domain-dns-record). Otherwise, runners must be registered again with the newly promoted site, and all Git remotes, bookmarks, and external integrations must be updated.
 - If you are using [location-aware DNS](../secondary_proxy/_index.md#configure-location-aware-dns), the runners should automatically connect to the new primary after the old primary is removed from the DNS entry.
 - If you don't expect the runners connected to the previous primary to come back, you should remove them:
   - Through the UI:
@@ -120,7 +200,19 @@ Note the following when promoting a secondary:
    previously for the **secondary** site.
 1. If successful, the **secondary** site is now promoted to the **primary** site.
 
-#### Promoting a **secondary** site with multiple nodes
+When you run `gitlab-ctl geo promote`, a [`gitlab-cluster.json`](#the-gitlab-clusterjson-file)
+file is created on the node. The file overrides Geo role settings in `gitlab.rb`
+when you reconfigure.
+
+### Step 3. (Optional) Removing the former secondary's tracking database
+
+If you have any `geo_secondary[]` configuration options enabled in your `/etc/gitlab/gitlab.rb`
+file, comment them out or remove them, and then [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
+for the changes to take effect.
+
+At this point, your promoted site is the new primary GitLab site. Optionally, if you wish to set up Geo again as a new secondary site, you can [bring the old site back as a secondary](bring_primary_back.md#configure-the-former-primary-site-to-be-a-secondary-site).
+
+### Promoting a **secondary** site with multiple nodes and a **single-secondary** site
 
 1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
 
@@ -153,6 +245,10 @@ Note the following when promoting a secondary:
 1. Verify you can connect to the newly-promoted **primary** site using the URL used
    previously for the **secondary** site.
 1. If successful, the **secondary** site is now promoted to the **primary** site.
+
+When you run `gitlab-ctl geo promote`, a [`gitlab-cluster.json`](#the-gitlab-clusterjson-file)
+file is created on the node. The file overrides Geo role settings in `gitlab.rb`
+when you reconfigure.
 
 #### Promoting a **secondary** site with a Patroni standby cluster
 
@@ -253,7 +349,7 @@ with the **secondary** site:
    previously for the **secondary** site.
 1. If successful, the **secondary** site is now promoted to the **primary** site.
 
-### Step 4. (Optional) Updating the primary domain DNS record
+### (Optional) Updating the primary domain DNS record
 
 Update DNS records for the primary domain to point to the **secondary** site.
 This removes the need to update all references to the primary domain, for example
@@ -311,29 +407,9 @@ changing Git remotes and API URLs.
    If you updated the DNS records for the primary domain, these changes may
    not have yet propagated depending on the previous DNS records TTL.
 
-### Step 5. (Optional) Add **secondary** Geo site to a promoted **primary** site
-
-Promoting a **secondary** site to **primary** site using the previous process does not enable
-Geo on the new **primary** site.
+### (Optional) Add **secondary** Geo site to a promoted **primary** site
 
 To bring a new **secondary** site online, follow the [Geo setup instructions](../setup/_index.md).
-
-### Step 6. Removing the former secondary's tracking database
-
-Every **secondary** has a special tracking database that is used to save the status of the synchronization of all the items from the **primary**.
-Because the **secondary** is already promoted, that data in the tracking database is no longer required.
-
-You can remove the data with the following command:
-
-```shell
-sudo rm -rf /var/opt/gitlab/geo-postgresql
-```
-
-If you have any `geo_secondary[]` configuration options enabled in your `gitlab.rb`
-file, comment them out or remove them, and then [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
-for the changes to take effect.
-
-At this point, your promoted site is a normal GitLab site without Geo configured. Optionally, you can [bring the old site back as a secondary](bring_primary_back.md#configure-the-former-primary-site-to-be-a-secondary-site).
 
 ## Promoting secondary Geo replica in multi-secondary configurations
 
@@ -532,7 +608,6 @@ must disable the **primary** site:
    ```
 
 1. Verify you can connect to the newly promoted primary using the URL used previously for the secondary.
-
 1. Success! The secondary has now been promoted to primary.
 
 ## Troubleshooting

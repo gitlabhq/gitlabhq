@@ -38,6 +38,11 @@ export default {
     isGroup: {},
     fullPath: {},
   },
+  provide() {
+    return {
+      viewContext: this.viewContext,
+    };
+  },
   inheritAttrs: false,
   props: {
     open: {
@@ -58,6 +63,10 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    viewContext: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -120,7 +129,7 @@ export default {
         if (data.workItemDelete.errors?.length) {
           throw new Error(data.workItemDelete.errors[0]);
         }
-        this.$emit('workItemDeleted', { id: workItemId });
+        this.$emit('work-item-deleted', { id: workItemId });
       } catch (error) {
         this.$emit('deleteWorkItemError');
         Sentry.captureException(error);

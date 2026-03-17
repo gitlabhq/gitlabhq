@@ -65,13 +65,11 @@ RSpec.shared_examples 'yaml backed permission' do
   let(:file_path) { "#{resource_name}/do_action.yml" }
   let(:source_file) { Rails.root.join(described_class::BASE_PATH, file_path).to_s }
   let(:name) { 'do_action_a_resource' }
-  let(:boundaries) { %w[project] }
   let(:definition) do
     {
       name: name,
       description: 'Test permission description',
-      feature_category: 'feature_category',
-      boundaries: boundaries
+      feature_category: 'feature_category'
     }
   end
 
@@ -160,18 +158,6 @@ RSpec.shared_examples 'yaml backed permission' do
       it 'returns the resource\'s feature_category' do
         expect(instance.feature_category).to eq 'a_resource_feature_category'
       end
-    end
-  end
-
-  describe '#boundaries' do
-    subject { instance.boundaries }
-
-    it { is_expected.to eq(boundaries) }
-
-    context 'when boundaries are not defined' do
-      let(:boundaries) { nil }
-
-      it { is_expected.to eq([]) }
     end
   end
 

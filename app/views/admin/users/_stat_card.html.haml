@@ -1,7 +1,10 @@
 = render Pajamas::CardComponent.new do |c|
+  - c.with_header do
+    %h2= title
   - c.with_body do
     %div
-      = render Pajamas::SingleStatComponent.new(title: title, stat_value: value, title_tag: 'h2')
+      .gl-heading-1.gl-m-0
+        = value
       - if href && link_title
         = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'gl-w-max', title: _("Filter list for %{title}").html_safe % { title: title } }, variant: :link, block: false, href: href) do
           = link_title

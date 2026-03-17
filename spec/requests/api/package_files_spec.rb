@@ -239,6 +239,17 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
       end
     end
 
+    shared_examples 'an instrumented service' do
+      it "triggers an internal event" do
+        expect { subject }.to trigger_internal_events('delete_package_from_registry')
+          .and increment_usage_metrics(
+            "counts.package_events_i_package_#{package.package_type}_delete_package",
+            'counts.package_events_i_package_delete_package',
+            'counts.package_events_i_package_delete_package_by_user'
+          )
+      end
+    end
+
     it_behaves_like 'enforcing job token policies', :admin_packages do
       before do
         source_project.add_maintainer(user)
@@ -400,6 +411,7 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
           end
 
           it_behaves_like 'handling job token and returning', status: :no_content
+          it_behaves_like 'an instrumented service'
         end
       end
     end
@@ -469,6 +481,7 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
 
       shared_examples 'deleting package' do
         it_behaves_like 'returning response status', :no_content
+        it_behaves_like 'an instrumented service'
         it { expect { subject }.to change { package.package_files.pending_destruction.count }.by(1) }
       end
 

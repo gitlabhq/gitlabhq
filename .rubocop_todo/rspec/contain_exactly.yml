@@ -88,7 +88,6 @@ RSpec/ContainExactly:
     - 'spec/graphql/types/project_member_relation_enum_spec.rb'
     - 'spec/graphql/types/security/report_types_enum_spec.rb'
     - 'spec/graphql/types/visibility_pipeline_id_type_enum_spec.rb'
-    - 'spec/helpers/integrations_helper_spec.rb'
     - 'spec/helpers/nav_helper_spec.rb'
     - 'spec/helpers/releases_helper_spec.rb'
     - 'spec/keeps/helpers/milestones_spec.rb'

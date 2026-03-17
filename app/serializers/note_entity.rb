@@ -27,6 +27,10 @@ class NoteEntity < API::Entities::Note
     note_presenter(note).note_html
   end
 
+  expose :body_first_line_html do |note|
+    note_presenter(note).note_first_line_html
+  end
+
   expose :last_edited_at, if: ->(note, _) { note.edited? }
   expose :last_edited_by, using: NoteUserEntity, if: ->(note, _) { note.edited? }
 

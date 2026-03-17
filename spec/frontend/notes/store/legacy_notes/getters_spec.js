@@ -3,6 +3,7 @@ import discussionWithTwoUnresolvedNotes from 'test_fixtures/merge_requests/resol
 import { DESC, ASC, NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
 import { createCustomGetters } from 'helpers/pinia_helpers';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useBatchComments } from '~/batch_comments/store';
@@ -50,6 +51,7 @@ const createRootState = () => {
 
 describe('Getters Notes Store', () => {
   let store;
+  let discussionsStore;
   let localGetters;
   let batchComments;
 
@@ -68,9 +70,10 @@ describe('Getters Notes Store', () => {
         ),
     );
     store = useNotes();
+    discussionsStore = useDiscussions();
     useLegacyDiffs();
+    discussionsStore.discussions = [individualNote];
     store.$patch({
-      discussions: [individualNote],
       targetNoteHash: 'hash',
       lastFetchedAt: 'timestamp',
       isNotesFetched: false,
@@ -116,7 +119,7 @@ describe('Getters Notes Store', () => {
         individualBotNote.individual_note = true;
 
         store.noteableData = { targetType: 'merge_request' };
-        store.discussions = [discussion, normalDiscussion, individualBotNote];
+        discussionsStore.discussions = [discussion, normalDiscussion, individualBotNote];
         store.mergeRequestFilters = ['bot_comments'];
 
         const discussions = getDiscussions();
@@ -133,7 +136,7 @@ describe('Getters Notes Store', () => {
       });
 
       it('should transform  discussion to individual notes in timeline view', () => {
-        store.discussions = [discussionMock];
+        discussionsStore.discussions = [discussionMock];
         store.isTimelineEnabled = true;
 
         const discussions = getDiscussions();
@@ -184,7 +187,7 @@ describe('Getters Notes Store', () => {
       const [discussion] = discussionWithTwoUnresolvedNotes;
       discussion.notes[0].resolved = true;
       discussion.notes[1].resolved = false;
-      store.discussions.push(discussion);
+      discussionsStore.discussions.push(discussion);
 
       expect(store.resolvedDiscussionsById).toEqual({
         [discussion.id]: discussion,
@@ -193,18 +196,15 @@ describe('Getters Notes Store', () => {
   });
 
   describe('Collapsed notes', () => {
-    const stateCollapsedNotes = {
-      discussions: collapseNotesMock,
-      targetNoteHash: 'hash',
-      lastFetchedAt: 'timestamp',
-
-      notesData: notesDataMock,
-      userData: userDataMock,
-      noteableData: noteableDataMock,
-    };
-
     it('should return a single system note when a description was updated multiple times', () => {
-      store.$patch(stateCollapsedNotes);
+      discussionsStore.discussions = collapseNotesMock;
+      store.$patch({
+        targetNoteHash: 'hash',
+        lastFetchedAt: 'timestamp',
+        notesData: notesDataMock,
+        userData: userDataMock,
+        noteableData: noteableDataMock,
+      });
       expect(store.filteredDiscussions).toHaveLength(1);
     });
   });
@@ -263,7 +263,7 @@ describe('Getters Notes Store', () => {
 
   describe('allResolvableDiscussions', () => {
     it('should return only resolvable discussions in same order', () => {
-      store.discussions = [
+      discussionsStore.discussions = [
         discussion3,
         unresolvableDiscussion,
         discussion1,
@@ -275,7 +275,7 @@ describe('Getters Notes Store', () => {
     });
 
     it('should return empty array if there are no resolvable discussions', () => {
-      store.discussions = [unresolvableDiscussion, unresolvableDiscussion];
+      discussionsStore.discussions = [unresolvableDiscussion, unresolvableDiscussion];
 
       expect(store.allResolvableDiscussions).toEqual([]);
     });
@@ -532,7 +532,7 @@ describe('Getters Notes Store', () => {
 
   describe('getDiscussion', () => {
     it('returns discussion by ID', () => {
-      store.discussions.push({ id: '1' });
+      discussionsStore.discussions.push({ id: '1' });
 
       expect(store.getDiscussion('1')).toEqual({ id: '1' });
     });
@@ -572,16 +572,12 @@ describe('Getters Notes Store', () => {
 
   describe('allDiscussionsExpanded', () => {
     it('returns true when every discussion is expanded', () => {
-      store.$patch({
-        discussions: [{ expanded: true }, { expanded: true }],
-      });
+      discussionsStore.discussions = [{ expanded: true }, { expanded: true }];
       expect(store.allDiscussionsExpanded).toBe(true);
     });
 
     it('returns false when at least one discussion is collapsed', () => {
-      store.$patch({
-        discussions: [{ expanded: true }, { expanded: false }],
-      });
+      discussionsStore.discussions = [{ expanded: true }, { expanded: false }];
       expect(store.allDiscussionsExpanded).toBe(false);
     });
   });

@@ -1,0 +1,7 @@
+---
+name: create_project_alias
+description: Grants the ability to create project aliases
+boundaries:
+  - instance
+permissions:
+  - create_project_alias

@@ -1,14 +1,14 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Describes Model Context Protocol and how to use it
 title: GitLab MCP clients
 ---
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -25,6 +25,7 @@ title: GitLab MCP clients
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/545956) in GitLab 18.2. Feature flag `duo_workflow_mcp_support` removed.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545956) from experiment to beta in GitLab 18.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
+- Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 
 {{< /history >}}
 
@@ -40,8 +41,8 @@ The same MCP configuration file works across all supported IDEs.
 
 The following features can act as MCP clients and connect to external tools from MCP servers:
 
-- [GitLab Duo Chat (Agentic)](../../../user/gitlab_duo_chat/agentic_chat.md)
-- The [Software Development Flow](../../../user/duo_agent_platform/flows/software_development.md)
+- [GitLab Duo Chat (agentic)](../../gitlab_duo_chat/agentic_chat.md)
+- The [Software Development Flow](../../duo_agent_platform/flows/foundational_flows/software_development.md)
 
 These features can then access external context and information to generate more powerful answers.
 
@@ -50,7 +51,11 @@ To use a feature with MCP:
 1. Turn on MCP for your group.
 1. Configure the MCP servers you want the feature to connect to.
 
-For a click-through demo, see [GitLab Duo Agent Platform - MCP integration](https://gitlab.navattic.com/mcp).
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see [GitLab Duo Chat (agentic) - MCP tool call approval](https://www.youtube.com/watch?v=_cHoTmG8Yj8).
+<!-- Video published on 2025-06-24 -->
+
+For a click-through demo, see [GitLab Duo Agent Platform - MCP client](https://gitlab.navattic.com/mcp).
 <!-- Demo published on 2025-08-05 -->
 
 ## Prerequisites
@@ -60,7 +65,7 @@ For a click-through demo, see [GitLab Duo Agent Platform - MCP integration](http
 For Visual Studio Code (VS Code) or VSCodium:
 
 - Install [VS Code](https://code.visualstudio.com/download) or [VSCodium](https://vscodium.com/).
-- Install and set up the GitLab Workflow extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
+- Install and set up the GitLab for VS Code extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
   or the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
   - For MCP support, install version 6.28.2 and later.
   - For workspace and user configuration, install version 6.35.6 and later.
@@ -74,7 +79,7 @@ For JetBrains IDEs:
 
 To allow the IDE to access external MCP tools:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **External MCP tools**, select the **Allow external MCP tools** checkbox.
@@ -87,7 +92,7 @@ The GitLab Language Server loads and merges the configuration files.
 
 ### Version compatibility
 
-| GitLab Workflow extension version | MCP features available |
+| GitLab for VS Code version | MCP features available |
 |-----------------------------------|------------------------|
 | 6.28.2 - 6.35.5  | Basic MCP support, with no workspace or user configuration |
 | 6.35.6 and later | Full MCP support, including workspace and user configuration |
@@ -285,13 +290,13 @@ For more information about available tools, see the
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/work_items/2155) in the GitLab Workflow extension for VS Code 6.55.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/work_items/2155) in the GitLab for VS Code extension 6.55.0.
 
 {{< /history >}}
 
 Prerequisites:
 
-- Have the GitLab Workflow extension for VS Code 6.55.0 or later installed.
+- Have the GitLab for VS Code extension 6.55.0 or later installed.
 - Have at least one MCP server configured in your user or workspace configuration.
 
 To view the status of your configured MCP servers:
@@ -343,7 +348,7 @@ When a GitLab Duo feature calls an external tool to answer a question,
 you must review that tool unless you've approved it for the entire session:
 
 1. Open VS Code.
-1. On the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
+1. In the left sidebar, select **GitLab Duo Agent Platform** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Chat** or **Flows** tab.
 1. In the text box, enter a question or specify a code task.
 1. Submit the question or code task.
@@ -367,11 +372,6 @@ you must review that tool unless you've approved it for the entire session:
      Chat might take action based on the reason you provide, such as
      suggesting a new approach, or creating an issue.
 
-## Related topics
-
-- [Get started with the Model Context Protocol](https://modelcontextprotocol.io/introduction)
-- [Demo - Agentic Chat MCP Tool Call Approval](https://www.youtube.com/watch?v=_cHoTmG8Yj8)
-
 ## Troubleshooting
 
 ### Delete the MCP authentication cache
@@ -391,4 +391,4 @@ Improvements to resolving `PATH` are tracked in [issue 1345](https://gitlab.com/
 
 ### Troubleshooting MCP in VS Code
 
-For troubleshooting information, see [troubleshooting the GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/troubleshooting.md).
+For troubleshooting information, see [troubleshooting the GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/troubleshooting.md).

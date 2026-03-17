@@ -17,6 +17,8 @@ describe('copyToClipboard', () => {
       window.isSecureContext = true;
     });
 
+    const error = new Error('Clipboard write failed');
+
     it('should use navigator.clipboard.writeText', async () => {
       mockWriteText.mockResolvedValue();
 
@@ -26,11 +28,26 @@ describe('copyToClipboard', () => {
       expect(document.execCommand).not.toHaveBeenCalled();
     });
 
+    it('should convert to a string before calling navigator.clipboard.writeText', async () => {
+      mockWriteText.mockResolvedValue();
+
+      await copyToClipboard(20);
+
+      expect(mockWriteText).toHaveBeenCalledWith('20');
+    });
+
     it('should reject when navigator.clipboard.writeText fails', async () => {
-      const error = new Error('Clipboard write failed');
       mockWriteText.mockRejectedValue(error);
 
       await expect(copyToClipboard('test text')).rejects.toThrow('Clipboard write failed');
+    });
+
+    it('should reject null', async () => {
+      await expect(copyToClipboard(null)).rejects.toThrow('Clipboard write failed');
+    });
+
+    it('should reject undefined', async () => {
+      await expect(copyToClipboard(undefined)).rejects.toThrow('Clipboard write failed');
     });
   });
 

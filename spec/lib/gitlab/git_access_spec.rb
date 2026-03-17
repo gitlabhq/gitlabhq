@@ -442,14 +442,14 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
         it 'denies git pull' do
           expect { pull_access_check }.to raise_error(described_class::ForbiddenError,
-            'Access denied: Your Personal Access Token lacks the required permissions: [download_code] ' \
-            "for \"#{project.full_path}\".")
+            'Access denied: This operation requires a fine-grained personal access token ' \
+            "with the following project permissions: [Code: Download].")
         end
 
         it 'denies git push' do
           expect { push_access_check }.to raise_error(described_class::ForbiddenError,
-            'Access denied: Your Personal Access Token lacks the required permissions: [push_code] ' \
-            "for \"#{project.full_path}\".")
+            'Access denied: This operation requires a fine-grained personal access token ' \
+            "with the following project permissions: [Code: Push].")
         end
       end
 
@@ -462,8 +462,8 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
         it 'denies git push' do
           expect { push_access_check }.to raise_error(described_class::ForbiddenError,
-            'Access denied: Your Personal Access Token lacks the required permissions: [push_code] ' \
-            "for \"#{project.full_path}\".")
+            'Access denied: This operation requires a fine-grained personal access token ' \
+            "with the following project permissions: [Code: Push].")
         end
       end
 
@@ -476,8 +476,8 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
         it 'denies git pull' do
           expect { pull_access_check }.to raise_error(described_class::ForbiddenError,
-            'Access denied: Your Personal Access Token lacks the required permissions: [download_code] ' \
-            "for \"#{project.full_path}\".")
+            'Access denied: This operation requires a fine-grained personal access token ' \
+            "with the following project permissions: [Code: Download].")
         end
       end
 
@@ -1305,14 +1305,33 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
         expect { access.check('git-receive-pack', changes) }.not_to exceed_query_limit(control).with_threshold(2)
       end
 
-      it 'raises TimeoutError when #check_access! raises a timeout error' do
-        message = "Push operation timed out\n\nTiming information for debugging purposes:\nRunning checks for ref: wow"
+      context 'when #check_access! raises a timeout error' do
+        let(:expected_message) { "Push operation timed out\n\nTiming information for debugging purposes:\nRunning checks for ref: wow" }
 
-        expect_next_instance_of(Gitlab::Checks::SingleChangeAccess) do |check|
-          expect(check).to receive(:validate!).and_raise(Gitlab::Checks::TimedLogger::TimeoutError)
+        before do
+          allow_next_instance_of(Gitlab::Checks::SingleChangeAccess) do |check|
+            allow(check).to receive(:validate!).and_raise(Gitlab::Checks::TimedLogger::TimeoutError)
+          end
         end
 
-        expect { access.check('git-receive-pack', changes) }.to raise_error(described_class::TimeoutError, message)
+        it 'logs the timeout details and raises TimeoutError' do
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(Gitlab::Checks::TimedLogger::TimeoutError), project_id: project.id, 'gl_user_id' => user.id, deploy_key_id: nil)
+          expect { access.check('git-receive-pack', changes) }.to raise_error(described_class::TimeoutError, expected_message)
+        end
+
+        context 'when the actor is a deploy key with access to the project' do
+          let(:deploy_key) { create(:deploy_key, user: user) }
+          let(:actor) { deploy_key }
+
+          before do
+            deploy_key.deploy_keys_projects.create!(project: project, can_push: true)
+          end
+
+          it 'logs the timeout details and raises TimeoutError' do
+            expect(Gitlab::ErrorTracking).to receive(:log_exception).with(instance_of(Gitlab::Checks::TimedLogger::TimeoutError), project_id: project.id, 'gl_user_id' => nil, deploy_key_id: deploy_key.id)
+            expect { access.check('git-receive-pack', changes) }.to raise_error(described_class::TimeoutError, expected_message)
+          end
+        end
       end
     end
   end

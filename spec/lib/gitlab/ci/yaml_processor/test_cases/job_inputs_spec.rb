@@ -47,17 +47,6 @@ module Gitlab
           }
         )
       end
-
-      context 'when the ci_job_inputs feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_job_inputs: false)
-        end
-
-        it 'returns an error about an unknown key' do
-          expect(result).not_to be_valid
-          expect(result.errors).to contain_exactly('jobs:job_with_inputs config contains unknown keys: inputs')
-        end
-      end
     end
   end
 end

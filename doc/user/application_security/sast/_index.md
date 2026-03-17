@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Static application security testing (SAST)
 description: Scanning, configuration, analyzers, vulnerabilities, reporting, customization, and integration.
 ---
@@ -148,7 +148,7 @@ Prerequisites:
 
 To enable and configure SAST with customizations:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. If the latest pipeline for the default branch of the project has completed and produced valid
    SAST artifacts, select **Configure SAST**, otherwise select **Enable SAST** in the static
@@ -178,7 +178,7 @@ Prerequisites:
 
 To enable and configure SAST with default settings:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the SAST section, select **Configure with a merge request**.
 
@@ -205,7 +205,7 @@ Prerequisites:
 
 To enable SAST in your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to **Build** > **Pipeline** editor.
 1. Add either the SAST CI/CD template or component.
 
@@ -261,8 +261,8 @@ Prerequisites:
 
 You can review vulnerabilities in a pipeline:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build** > **Pipelines**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. Either download results, or select a vulnerability to view its details (Ultimate only), including:
@@ -285,8 +285,8 @@ Prerequisites:
 
 - The Developer, Maintainer, or Owner role for the project.
 
-1. On the top bar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build** > **Pipelines**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. In the pipeline's **Security** tab, select **Download results**.
@@ -361,7 +361,7 @@ Prerequisites:
 
 To disable a rule, for example because it generates too many false positives:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Create a `.gitlab/sast-ruleset.toml` file at the root of your project if one does not already exist.
 1. In the vulnerability's details, locate the ID of the rule that triggered the finding.
 1. Use the rule ID to disable the rule. For example, to disable `gosec.G107-1`, add the following in `.gitlab/sast-ruleset.toml`:
@@ -439,7 +439,7 @@ These languages are supported by both GitLab Advanced SAST (Ultimate) and standa
 
 **Footnotes**:
 
-<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
 
 1. [GitLab Advanced SAST](gitlab_advanced_sast.md) - Ultimate tier only.
@@ -737,7 +737,6 @@ To scan a Rust application, complete these steps:
 
    For more details, see
    [Replace or add to the predefined rules](customize_rulesets.md#replace-or-add-to-the-default-rules).
-
 1. Override the `semgrep-sast` job to add a rule that detects Rust (`.rs`) files.
 
    Define the following in the `.gitlab-ci.yml` file:
@@ -798,7 +797,6 @@ To share precompiled artifacts, make the following changes to your project's `.g
 
 1. Disable automatic compilation by setting the `COMPILE: "false"` CI/CD variable in the
    `spotbugs-sast` job.
-
 1. Ensure the `spotbugs-sast` job depends on the compilation job by setting the `dependencies`
    keyword. This allows the `spotbugs-sast` job to download and use the artifacts created in the
    compilation job.
@@ -1069,7 +1067,6 @@ variables control which files are scanned and how thoroughly the analyzer search
    these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your
    own paths to be excluded. If you don't specify the default excluded paths, the defaults are overridden and only the
    paths you specify are excluded from SAST scans.
-
 1. <a id="sast-excluded-paths-semgrep"></a>For these analyzers, `SAST_EXCLUDED_PATHS` is implemented as a **pre-filter**,
    which is applied before the scan is executed.
 
@@ -1086,7 +1083,6 @@ variables control which files are scanned and how thoroughly the analyzer search
      - `a/b/tests/c/foo.py`
 
    Each pattern is a glob-style pattern that uses the same syntax as [gitignore](https://git-scm.com/docs/gitignore#_pattern_format).
-
 1. <a id="sast-excluded-paths-all-other-sast-analyzers"></a>For these analyzers, `SAST_EXCLUDED_PATHS` is implemented as
    a **post-filter**, which is applied after the scan is executed.
 
@@ -1100,7 +1096,6 @@ variables control which files are scanned and how thoroughly the analyzer search
 
    For analyzers that support `SAST_EXCLUDED_PATHS` as both a pre-filter and post-filter, the pre-filter is applied first,
    then the post-filter is applied to any vulnerabilities that remain.
-
 1. <a id="sast-spotbugs-excluded-build-paths-description"></a> For this variable, Path patterns can be globs
    (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns).
    Directories are excluded from the build process if the path pattern matches a supported build file:
@@ -1116,7 +1111,6 @@ variables control which files are scanned and how thoroughly the analyzer search
    For example, to exclude building and scanning a `maven` project containing a build file with the path `project/subdir/pom.xml`, pass a glob pattern that explicitly matches the build file, such as `project/*/*.xml` or `**/*.xml`, or an exact match such as `project/subdir/pom.xml`.
 
    Passing a parent directory for the pattern, such as `project` or `project/subdir`, does not exclude the directory from being built, because in this case, the build file is not explicitly matched by the pattern.
-
 1. <a id="search-max-depth-description"></a>The [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/v17.4.1-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
    searches the repository to detect the programming languages
    used, and selects the matching analyzers. Then, each analyzer searches the codebase to find the specific files or directories
@@ -1271,7 +1265,8 @@ When using the Semgrep-based analyzer, the following options are also available:
   ```
 
 - Ignore a line of code for specific rule - add `// nosemgrep: RULE_ID` comment at the end of the line (the prefix is according to the development language).
-
+- The `//nosemgrep` comment can alternatively be added to the line immediately preceding the detection. No other lines (including other comments) should be
+  between the ignore comment and the detected code.
 - Ignore a file or directory - create a `.semgrepignore` file in your repository's root directory or your project's working directory and add patterns for files and folders there. GitLab Semgrep analyzer automatically merges your custom `.semgrepignore` file with [GitLab built-in ignore patterns](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/abcea7419961320f9718a2f24fe438cc1a7f8e08/semgrepignore).
 
 > [!note]

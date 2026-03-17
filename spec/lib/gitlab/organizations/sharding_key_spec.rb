@@ -10,7 +10,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_be_missing_sharding_key) do
     [
       'ai_settings', # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
-      'award_emoji_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/580326
       'group_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
       'merge_request_diff_files_99208b8fac', # https://gitlab.com/gitlab-org/gitlab/-/issues/422767
       'project_secrets_managers', # https://gitlab.com/gitlab-org/gitlab/-/issues/583654
@@ -18,7 +17,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'packages_helm_metadata_cache_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587557
       'packages_nuget_symbol_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587558
       'packages_package_file_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587559
-      'slack_integrations_scopes_archived', # temp table: https://gitlab.com/gitlab-org/gitlab/-/issues/584705
       'snippet_repository_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/587561
       'supply_chain_attestation_states', # https://gitlab.com/gitlab-org/gitlab/-/work_items/588220
       'uploads_9ba88c4165' # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
@@ -29,11 +27,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) do
     [
-      *%w[
-        bulk_import_batch_trackers.organization_id
-        bulk_import_batch_trackers.namespace_id
-        bulk_import_batch_trackers.project_id
-      ], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933
       'keys.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/577246
       'spam_logs.organization_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/553470
       *%w[
@@ -57,6 +50,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'ci_pipeline_chat_data.project_id',
       'p_ci_pipeline_variables.project_id',
       'ci_pipeline_messages.project_id',
+      'security_findings.project_id', # https://gitlab.com/gitlab-org/gitlab/-/work_items/588191
       # LFK already present on ci_pipeline_schedules and cascade delete all ci resources.
       'ci_pipeline_schedule_variables.project_id',
       'ci_build_trace_chunks.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
@@ -102,7 +96,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'sbom_vulnerability_scans.project_id',
       'sbom_vulnerability_scan_results.project_id',
       'p_duo_workflows_checkpoints.project_id',
-      'p_duo_workflows_checkpoints.namespace_id'
+      'p_duo_workflows_checkpoints.namespace_id',
+      # No LFK needed: daily partitions are dropped after 1 day via retain_for
+      # https://gitlab.com/gitlab-org/gitlab/-/blob/ccc2459924e2805e43ad8f97eec15a6932d84f68/ee/app/models/analytics/knowledge_graph/code_indexing_task.rb#L13
+      'p_knowledge_graph_code_indexing_tasks.project_id'
     ]
   end
 
@@ -242,7 +239,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "authentication_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/561359",
       "cluster_platforms_kubernetes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/582113",
       "snippet_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517825",
-      "bulk_import_batch_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213933",
       "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
       "push_rules" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476212',
       "topics" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/463254',
@@ -301,14 +297,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "user_agent_details" => "https://gitlab.com/gitlab-org/gitlab/-/work_items/574387",
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
       "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
-      "award_emoji_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/580326",
-      "slack_integrations_scopes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/584705",
       "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694",
+      "slack_integrations_scopes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/584705",
       "keys" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553463",
-      "suggestions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550696",
-      "commit_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550692",
-      "note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550695",
-      "diff_note_positions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550693",
       "oauth_applications" => "https://gitlab.com/gitlab-org/gitlab/-/issues/579291"
     }
 

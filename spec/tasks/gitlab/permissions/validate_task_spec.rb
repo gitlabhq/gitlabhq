@@ -75,7 +75,8 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #######################################################################
           #
           #  The following permissions are missing a definition file.
-          #  Run bundle exec rails generate authz:permission <NAME> to generate definition files.
+          #  Run bin/permission <NAME> to generate definition files.
+          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-file
           #
           #    - undefined_permission
           #
@@ -110,7 +111,8 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #######################################################################
           #
           #  The following permissions are missing a definition file.
-          #  Run bundle exec rails generate authz:permission <NAME> to generate definition files.
+          #  Run bin/permission <NAME> to generate definition files.
+          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-file
           #
           #    - undefined_permission
           #
@@ -138,6 +140,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #######################################################################
           #
           #  The following permissions failed schema validation.
+          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-fields
           #
           #    - defined_permission
           #        - property '/key' is invalid: error_type=schema
@@ -148,19 +151,24 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
     end
 
     context 'when a defined permission contains a disallowed action' do
-      let(:permission_name) { 'admin_permission' }
-      let(:permission_source_file) { 'config/authz/permissions/permission/admin.yml' }
+      described_class::DISALLOWED_ACTIONS.each do |disallowed_action, preferred|
+        context "when action is #{disallowed_action}" do
+          let(:permission_name) { "#{disallowed_action}_permission" }
+          let(:permission_source_file) { "config/authz/permissions/permission/#{disallowed_action}.yml" }
 
-      it 'returns an error' do
-        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          it 'returns an error' do
+            expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
           #######################################################################
           #
           #  The following permissions contain a disallowed action.
+          #  Learn more: http://localhost/help/development/permissions/conventions.md#disallowed-actions
           #
-          #    - admin_permission: Prefer a granular action over admin.
+          #    - #{permission_name}: Prefer #{preferred} over #{disallowed_action}.
           #
           #######################################################################
-        OUTPUT
+            OUTPUT
+          end
+        end
       end
     end
 
@@ -173,6 +181,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
             #######################################################################
             #
             #  The following permission definitions do not exist at the expected path.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-naming-and-validation
             #
             #    - defined_permission in config/authz/permissions/defined_permission.yml
             #      Expected path: config/authz/permissions/<resource>/defined_permission.yml
@@ -190,6 +199,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
             #######################################################################
             #
             #  The following permission definitions do not exist at the expected path.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-naming-and-validation
             #
             #    - defined_permission in config/authz/permissions/another_dir/resource_dir/defined_permission.yml
             #      Expected path: config/authz/permissions/resource_dir/defined_permission.yml
@@ -208,6 +218,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
             #######################################################################
             #
             #  The following permission definitions do not exist at the expected path.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-naming-and-validation
             #
             #    - action_on_a_resource in config/authz/permissions/wrong_resource_name/wrong_action_name.yml
             #      Path must match 'config/authz/permissions/<resource>/<action>.yml' based on <resource> and <action> values from 'action_on_a_resource' ('<action>_<resource>')
@@ -228,6 +239,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #
           #  The following permissions have invalid names.
           #  Permission name must be in the format action_resource[_subresource].
+          #  Learn more: http://localhost/help/development/permissions/conventions.md#naming-permissions
           #
           #    - defined_permission-123
           #
@@ -247,6 +259,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #
           #  The following permissions have a definition file but are not found in declarative policy.
           #  Remove the definition files for the unknown permissions.
+          #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-definition-file
           #
           #    - defined_permission
           #
@@ -269,6 +282,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
             #######################################################################
             #
             #  The following permission resource directories are missing a _metadata.yml file.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#resource-metadata-fields
             #
             #    - config/authz/permissions/**/permission/
             #
@@ -295,6 +309,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
             #######################################################################
             #
             #  The following resource metadata files failed schema validation.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#resource-metadata-fields
             #
             #    - permission
             #        - property '/feature_category' does not match format: known_product_category
@@ -323,6 +338,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
             #
             #  The following resource directories contain only a _metadata.yml file with no permission definitions.
             #  Either add permission definitions or remove the directory.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/permission_definitions.md#permission-naming-and-validation
             #
             #    - config/authz/permissions/empty_resource/
             #

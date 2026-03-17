@@ -23,7 +23,7 @@ module QA
           element 'register-link'
         end
 
-        view 'app/views/devise/sessions/_new_base.html.haml' do
+        view 'app/assets/javascripts/authentication/sign_in/components/sign_in_form.vue' do
           element 'username-field'
           element 'password-field'
           element 'sign-in-button'
@@ -274,4 +274,3 @@ module QA
 end
 
 QA::Page::Main::Login.prepend_mod_with('Page::Main::Login', namespace: QA)
-QA::Page::Main::Login.prepend_mod_with('Page::Component::DuoChatCallout', namespace: QA)

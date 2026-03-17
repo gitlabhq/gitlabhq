@@ -50,6 +50,7 @@ export default {
       default: undefined,
     },
   },
+  emits: ['selected'],
   data() {
     return {
       loading: false,

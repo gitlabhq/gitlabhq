@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLabel } from '@gitlab/ui';
+import { GlLabel, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import MergeRequest from '~/merge_request_dashboard/components/merge_request.vue';
@@ -15,8 +15,13 @@ describe('Merge request dashboard merge request component', () => {
   let wrapper;
 
   const findBrokenBadge = () => wrapper.findByTestId('mr-broken-badge');
+  const findMilestoneLink = () => wrapper.find('[data-reference-type="milestone"]');
 
-  function createComponent(mergeRequest = {}, newMergeRequestIds = [], isShowingLabels = false) {
+  function createComponent(
+    mergeRequest = {},
+    newMergeRequestIds = [],
+    { isShowingLabels = false, stubs = {} } = {},
+  ) {
     const mockApollo = createMockApollo([
       [
         diffStatsQuery,
@@ -57,7 +62,9 @@ describe('Merge request dashboard merge request component', () => {
             webUrl: 'https://gitlab.com/root',
           },
           milestone: {
+            id: 'gid://gitlab/Milestone/10',
             title: '17.0',
+            webPath: '/groups/gitlab-org/-/milestones/10',
           },
           assignees: {
             nodes: [
@@ -114,6 +121,7 @@ describe('Merge request dashboard merge request component', () => {
           ...mergeRequest,
         },
       },
+      stubs,
     });
   }
 
@@ -167,7 +175,7 @@ describe('Merge request dashboard merge request component', () => {
     ${false}        | ${false} | ${'does not render'}
     ${true}         | ${true}  | ${'renders'}
   `('$existsText when isShowingLabels is $isShowingLabels', ({ exists, isShowingLabels }) => {
-    createComponent({}, [], isShowingLabels);
+    createComponent({}, [], { isShowingLabels });
 
     expect(wrapper.findByTestId('labels-container').exists()).toBe(exists);
     expect(wrapper.findComponent(GlLabel).exists()).toBe(exists);
@@ -177,5 +185,27 @@ describe('Merge request dashboard merge request component', () => {
     createComponent({}, [1]);
 
     expect(wrapper.classes()).toContain('gl-bg-green-50');
+  });
+
+  describe('milestone', () => {
+    it('renders milestone as a link with popover attributes', () => {
+      createComponent({}, [], { stubs: { GlSprintf } });
+      const milestoneLink = findMilestoneLink();
+
+      expect(milestoneLink.exists()).toBe(true);
+      expect(milestoneLink.text()).toContain('17.0');
+      expect(milestoneLink.attributes()).toMatchObject({
+        href: '/groups/gitlab-org/-/milestones/10',
+        'data-reference-type': 'milestone',
+        'data-placement': 'top',
+        'data-milestone': '10',
+      });
+    });
+
+    it('does not render milestone link when milestone is absent', () => {
+      createComponent({ milestone: null }, [], { stubs: { GlSprintf } });
+
+      expect(findMilestoneLink().exists()).toBe(false);
+    });
   });
 });

@@ -1,5 +1,3 @@
 ---
 name: erase_job
 description: Grants the ability to erase jobs
-boundaries:
-  - project

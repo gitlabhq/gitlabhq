@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting projects
 description: Problem solving, common issues, debugging, and error resolution.
 ---
@@ -87,7 +87,7 @@ If this fails, display why it doesn't work with:
 
 ```ruby
 project = Project.find_by_full_path('<project_path>')
-project.delete_error
+project.deletion_error
 ```
 
 ## Toggle a feature for all projects within a group
@@ -119,3 +119,7 @@ end
 To find features that can be toggled, run `pp p.project_feature`.
 Available permission levels are listed in
 [concerns/featurable.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/featurable.rb).
+
+## Support knowledge base
+
+If you're still having issues, see the [GitLab Support knowledge base](https://support.gitlab.com/hc/en-us/).

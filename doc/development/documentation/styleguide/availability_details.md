@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 description: Writing styles, markup, formatting, and other standards for GitLab Documentation.
 title: Product availability details
 ---
@@ -53,9 +53,13 @@ For tier, choose one:
 > [!note]
 > GitLab Dedicated and GitLab Dedicated for Government always include an Ultimate subscription.
 
+For GitLab Agent Platform features available on the Free tier, link to the [GitLab Credits](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom) page:
+
+- `[Free](../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate`
+
 ### Add-ons
 
-Use add-on information only for features in GitLab Duo Classic and GitLab Duo Self-Hosted.
+Use add-on information only for features in GitLab Duo and GitLab Duo Self-Hosted.
 
 Do not use add-on information for features in the GitLab Duo Agent Platform.
 

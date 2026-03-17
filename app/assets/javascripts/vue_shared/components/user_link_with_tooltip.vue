@@ -1,5 +1,5 @@
 <script>
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { GlAvatarLink, GlAvatar, GlTooltip } from '@gitlab/ui';
 
 export default {

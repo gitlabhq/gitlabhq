@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapState } from 'pinia';
-import { isArray } from 'lodash';
+import { isArray } from 'lodash-es';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import BaseImageDiffOverlay from './base_image_diff_overlay.vue';
 

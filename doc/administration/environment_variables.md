@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Environment variables
 description: Override supported environment variables.
 ---
@@ -46,6 +46,7 @@ You can use the following environment variables to override certain values:
 | `RAILS_ENV`                                  | string  | The Rails environment; can be one of `production`, `development`, `staging`, or `test`.                                                                                                                                                                                                                                          |
 | `GITLAB_RAILS_CACHE_DEFAULT_TTL_SECONDS`     | integer | The default TTL used for entries stored in the Rails-cache. Default is `28800`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95042) in 15.3.                                                                                                                                                               |
 | `GITLAB_CI_CONFIG_FETCH_TIMEOUT_SECONDS`     | integer | Timeout for resolving remote includes in CI config in seconds. Must be between `0` and `60`. Default is `30`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116383) in 15.11.                                                                                                                               |
+| `GITLAB_CI_CONFIG_GITALY_TIMEOUT_SECONDS`    | integer | Per-request timeout in seconds for Gitaly calls when fetching CI configuration files (local, project, and component includes). Default is `10`. Requires the `ci_config_gitaly_timeout` feature flag to be enabled.                                                              |
 | `GITLAB_CI_MAX_COMMIT_MESSAGE_SIZE_IN_BYTES` | integer | Maximum commit message size in bytes that can be sent to CI runner. Must be between `0` and `1000000`. Default is `100000`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/208666) in 18.6.                                                                                                                                                                           |
 | `GITLAB_DISABLE_MARKDOWN_TIMEOUT`            | string  | If set to `true`, `1`, or `yes`, Markdown rendering on the backend does not time out. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163662) in 17.4.                                                                                                                                    |
 | `GITLAB_LFS_LINK_BATCH_SIZE`                 | integer | Sets the batch size for linking LFS files. Default is `1000`.                                                                                                                                                                                                                                                                    |

@@ -3,6 +3,7 @@
 module Issues # rubocop:disable Gitlab/BoundedContexts -- existing Finders modules/classes are not bounded
   class IssueTypesFilter < Issuables::BaseFilter
     def filter(issues)
+      issues = by_work_item_type_ids(issues)
       by_issue_types(issues)
     end
 
@@ -15,13 +16,22 @@ module Issues # rubocop:disable Gitlab/BoundedContexts -- existing Finders modul
       issues.with_issue_type(param_types)
     end
 
+    def by_work_item_type_ids(issues)
+      return issues if work_item_type_ids.blank?
+
+      issues.with_work_item_type_ids(work_item_type_ids)
+    end
+
     def valid_param_types?
-      provider = ::WorkItems::TypesFramework::Provider.new(parent)
-      (provider.unfiltered_base_types & param_types).sort == param_types.sort
+      (::WorkItems::TypesFramework::Provider.unfiltered_base_types & param_types).sort == param_types.sort
     end
 
     def param_types
       Array.wrap(params[:issue_types]).map(&:to_s)
+    end
+
+    def work_item_type_ids
+      Array.wrap(params[:work_item_type_ids]).compact
     end
   end
 end # rubocop:enable Gitlab/BoundedContexts

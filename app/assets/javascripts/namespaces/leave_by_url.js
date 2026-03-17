@@ -4,7 +4,13 @@ import { getParameterByName } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 
 const PARAMETER_NAME = 'leave';
-const LEAVE_LINK_SELECTOR = '.js-leave-link';
+const PROJECT_LEAVE_LINK_SELECTOR = '.js-leave-link';
+const GROUP_LEAVE_LINK_SELECTOR = '#group-more-action-dropdown .js-leave-link';
+
+export const NAMESPACE_TYPES = {
+  GROUP: 'group',
+  PROJECT: 'project',
+};
 
 export default function leaveByUrl(namespaceType) {
   if (!namespaceType) throw new Error('namespaceType not provided');
@@ -13,6 +19,11 @@ export default function leaveByUrl(namespaceType) {
   if (!param) return;
 
   initRails();
+
+  const LEAVE_LINK_SELECTOR =
+    namespaceType === NAMESPACE_TYPES.GROUP
+      ? GROUP_LEAVE_LINK_SELECTOR
+      : PROJECT_LEAVE_LINK_SELECTOR;
 
   const leaveLink = document.querySelector(LEAVE_LINK_SELECTOR);
   if (leaveLink) {

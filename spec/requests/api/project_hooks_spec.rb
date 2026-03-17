@@ -62,6 +62,7 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
         milestone_events
         emoji_events
         resource_access_token_events
+        resource_deploy_token_events
       ]
     end
 

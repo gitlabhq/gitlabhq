@@ -2,11 +2,8 @@
 RSpec/NoExpectationExample:
   Exclude:
     - 'ee/spec/components/gitlab_subscriptions/discover_duo_pro_component_spec.rb'
-    - 'ee/spec/features/billings/billing_plans_spec.rb'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_drag_drop_spec.rb'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_filtering_spec.rb'
-    - 'ee/spec/features/groups/add_ons/discover_duo_pro_hand_raise_lead_spec.rb'
-    - 'ee/spec/features/groups/discovers/hand_raise_lead_spec.rb'
     - 'ee/spec/features/groups/group_roadmap_spec.rb'
     - 'ee/spec/features/groups/settings/protected_environments_spec.rb'
     - 'ee/spec/features/merge_request/user_merges_immediately_spec.rb'
@@ -17,7 +14,6 @@ RSpec/NoExpectationExample:
     - 'ee/spec/lib/gitlab/ci/runners_availability/allowed_plans_spec.rb'
     - 'ee/spec/lib/gitlab/ci/runners_availability/minutes_spec.rb'
     - 'ee/spec/lib/gitlab/database/desired_sharding_key_spec.rb'
-    - 'ee/spec/lib/gitlab/instrumentation/elasticsearch_transport_spec.rb'
     - 'ee/spec/lib/gitlab/llm/ai_gateway/client_spec.rb'
     - 'ee/spec/mailers/notify_spec.rb'
     - 'ee/spec/models/ci/minutes/project_monthly_usage_spec.rb'

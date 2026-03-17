@@ -10,7 +10,8 @@ class Projects::WebIdeSchemasController < Projects::ApplicationController
   def show
     return respond_422 unless branch_sha
 
-    result = ::Ide::SchemasConfigService.new(project, current_user, sha: branch_sha, filename: params[:filename]).execute
+    result = ::Ide::SchemasConfigService.new(project, current_user, sha: branch_sha,
+      filename: params[:filename]).execute
 
     if result[:status] == :success
       render json: result[:schema]

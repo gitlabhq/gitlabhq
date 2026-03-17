@@ -157,11 +157,11 @@ module Issues
     end
 
     def gap_size
-      RelativePositioning::MAX_GAP
+      Issue.relative_positioning_max_gap
     end
 
     def start_position
-      @start_position ||= (RelativePositioning::START_POSITION - ((gaps / 2) * gap_size)).to_i
+      @start_position ||= (Issue.relative_positioning_start_position - ((gaps / 2) * gap_size)).to_i
     end
 
     def with_retry(initial_batch_size, exit_batch_size)

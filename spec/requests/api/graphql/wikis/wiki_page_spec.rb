@@ -36,7 +36,8 @@ RSpec.describe 'getting a wiki page', feature_category: :wiki do
         'userPermissions' => {
           'readWikiPage' => true,
           'createNote' => true,
-          'markNoteAsInternal' => true
+          'markNoteAsInternal' => true,
+          'awardEmoji' => true
         }
       )
     end

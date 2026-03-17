@@ -1,5 +1,5 @@
 <script>
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { GlAlert } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import getCurrentUserOrganizationsQuery from '~/organizations/shared/graphql/queries/current_user_organizations.query.graphql';

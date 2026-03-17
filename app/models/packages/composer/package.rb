@@ -3,6 +3,9 @@
 module Packages
   module Composer
     class Package < ::Packages::Package
+      TARGET_SHA_MAX_LENGTH = 64.bytes
+      VERSION_CACHE_SHA_MAX_LENGTH = 255.bytes
+
       self.table_name = :packages_composer_packages
       self.inheritance_column = nil # rubocop:disable Database/AvoidInheritanceColumn -- suppress single table inheritance
 
@@ -16,6 +19,10 @@ module Packages
         },
         unless: -> { pending_destruction? }
       validates :name, format: { with: Gitlab::Regex.package_name_regex }
+      validates :target_sha, bytesize: { maximum: -> { TARGET_SHA_MAX_LENGTH } }, if: :target_sha_changed?
+      validates :version_cache_sha, bytesize: { maximum: -> {
+        VERSION_CACHE_SHA_MAX_LENGTH
+      } }, if: :version_cache_sha_changed?
 
       scope :with_composer_target, ->(target) { where(target_sha: target) }
 

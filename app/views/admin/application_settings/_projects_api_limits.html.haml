@@ -14,42 +14,42 @@
 
       %fieldset
         .form-group
-          = f.label :projects_api_rate_limit_unauthenticated, format(_('Maximum requests to the %{api_name} API per %{timeframe} per IP address for unauthenticated requests'), api_name: 'GET /projects', timeframe: '10 minutes'), class: 'label-bold'
+          = f.label :projects_api_rate_limit_unauthenticated, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per IP address for unauthenticated requests'), api_name: tag.code('GET /projects'), timeframe: '10 minutes'), class: 'label-bold'
           = f.number_field :projects_api_rate_limit_unauthenticated,  min: 0, class: 'form-control gl-form-input'
 
       %fieldset
         .form-group
-          = f.label :projects_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user for authenticated requests'), api_name: 'GET /projects', timeframe: '10 minutes'), class: 'label-bold'
+          = f.label :projects_api_limit, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per user for authenticated requests'), api_name: tag.code('GET /projects'), timeframe: '10 minutes'), class: 'label-bold'
           = f.number_field :projects_api_limit, min: 0, class: 'form-control gl-form-input'
 
       %fieldset
         .form-group
-          = f.label :project_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /projects/:id', timeframe: 'minute'), class: 'label-bold'
+          = f.label :project_api_limit, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: tag.code('GET /projects/:id'), timeframe: 'minute'), class: 'label-bold'
           = f.number_field :project_api_limit, min: 0, class: 'form-control gl-form-input'
 
       %fieldset
         .form-group
-          = f.label :user_projects_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/projects', timeframe: 'minute'), class: 'label-bold'
+          = f.label :user_projects_api_limit, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: tag.code('GET /users/:user_id/projects'), timeframe: 'minute'), class: 'label-bold'
           = f.number_field :user_projects_api_limit, min: 0, class: 'form-control gl-form-input'
 
       %fieldset
         .form-group
-          = f.label :user_contributed_projects_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/contributed_projects', timeframe: 'minute'), class: 'label-bold'
+          = f.label :user_contributed_projects_api_limit, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: tag.code('GET /users/:user_id/contributed_projects'), timeframe: 'minute'), class: 'label-bold'
           = f.number_field :user_contributed_projects_api_limit, min: 0, class: 'form-control gl-form-input'
 
       %fieldset
         .form-group
-          = f.label :user_starred_projects_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/starred_projects', timeframe: 'minute'), class: 'label-bold'
+          = f.label :user_starred_projects_api_limit, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: tag.code('GET /users/:user_id/starred_projects'), timeframe: 'minute'), class: 'label-bold'
           = f.number_field :user_starred_projects_api_limit, min: 0, class: 'form-control gl-form-input'
 
       %fieldset
         .form-group
-          = f.label :project_invited_groups_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /projects/:id/invited_groups', timeframe: 'minute'), class: 'label-bold'
+          = f.label :project_invited_groups_api_limit, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: tag.code('GET /projects/:id/invited_groups'), timeframe: 'minute'), class: 'label-bold'
           = f.number_field :project_invited_groups_api_limit, min: 0, class: 'form-control gl-form-input'
 
       %fieldset
         .form-group
-          = f.label :project_members_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /projects/:id/members/all', timeframe: 'minute'), class: 'label-bold'
+          = f.label :project_members_api_limit, safe_format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: tag.code('GET /projects/:id/members/all'), timeframe: 'minute'), class: 'label-bold'
           = f.number_field :project_members_api_limit, min: 0, class: 'form-control gl-form-input'
 
       = f.submit _('Save changes'), pajamas_button: true

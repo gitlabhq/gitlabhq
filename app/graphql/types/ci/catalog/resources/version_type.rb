@@ -8,6 +8,8 @@ module Types
         class VersionType < BaseObject
           graphql_name 'CiCatalogResourceVersion'
 
+          include ::Gitlab::Utils::StrongMemoize
+
           connection_type_class Types::CountableConnectionType
 
           field :id, ::Types::GlobalIDType[::Ci::Catalog::Resources::Version], null: false,
@@ -42,7 +44,15 @@ module Types
 
           markdown_field :readme_html, null: true
 
+          def readme
+            return unless can_read_code?
+
+            object.readme
+          end
+
           def readme_html_resolver
+            return unless can_read_code?
+
             ctx = context.to_h.dup.merge(project: object.project)
             ::MarkupHelper.markdown(object.readme, ctx, { requested_path: object.project.path })
           end
@@ -50,6 +60,13 @@ module Types
           def author
             Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
           end
+
+          private
+
+          def can_read_code?
+            Ability.allowed?(current_user, :read_code, object.project)
+          end
+          strong_memoize_attr :can_read_code?
         end
         # rubocop: enable Graphql/AuthorizeTypes
       end

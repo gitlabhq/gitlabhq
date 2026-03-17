@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Pipeline security
 description: Secrets management, job tokens, secure files, and cloud security.
 ---
@@ -15,7 +15,7 @@ description: Secrets management, job tokens, secure files, and cloud security.
 
 ## Secrets Management
 
-Secrets management is the systems that developers use to securely store sensitive data
+Secrets management is the system that developers use to securely store sensitive data
 in a secure environment with strict access controls. A **secret** is a sensitive credential
 that should be kept confidential. Examples of a secret include:
 

@@ -1,5 +1,3 @@
 ---
 name: create_oauth_application
 description: Grants the ability to create OAuth applications
-boundaries:
-  - instance

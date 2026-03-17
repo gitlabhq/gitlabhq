@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Resolve vulnerabilities with AI
 ---
 
@@ -142,7 +142,7 @@ Vulnerablilty Resolution is available in different workflows. You can:
 
 To resolve a vulnerability:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
@@ -180,7 +180,7 @@ Vulnerability Resolution automatically creates a merge request suggestion commen
 
 To resolve a vulnerability finding:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Search or go to** and find your project.
 1. Select **Merge requests**.
 1. Select a merge request.
    - Vulnerability findings supported by Vulnerability Resolution are indicated by the tanuki AI icon ({{< icon name="tanuki-ai" >}}).

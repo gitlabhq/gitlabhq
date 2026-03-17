@@ -1,5 +1,5 @@
 <script>
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
@@ -197,7 +197,6 @@ export default {
             toLine: chunk.startingFrom + chunk.totalLines,
             ignoreRevs: parseBoolean(getParameterByName('ignore_revs')),
           },
-          context: { batchKey: 'blameData' },
         });
 
         const blob = data?.project?.repository?.blobs?.nodes[0];
@@ -253,7 +252,8 @@ export default {
       <blame-skeleton-loader
         v-for="chunkIndex in activeLoadingChunks"
         :key="`loading-${chunkIndex}`"
-        :total-lines="1"
+        :start-line="chunks[chunkIndex].startingFrom"
+        :total-lines="chunks[chunkIndex].totalLines"
         class="gl-absolute gl-left-0"
         :style="{ transform: `translateY(${chunkOffsets[chunkIndex] || 0}px)` }"
       />
@@ -282,6 +282,7 @@ export default {
           :starting-from="chunk.startingFrom"
           :blame-path="blob.blamePath"
           :blob-path="blob.path"
+          :is-blame-active="showBlame"
           @appear="() => handleAppear(index)"
           @disappear="() => handleDisappear(index)"
         />

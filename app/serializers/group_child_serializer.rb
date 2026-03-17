@@ -14,9 +14,22 @@ class GroupChildSerializer < BaseSerializer
     self
   end
 
+  # Represents the resource with optional hierarchy expansion.
+  #
+  # @param resource [ActiveRecord::Relation, Array<GroupDescendant>] The resource(s) to serialize
+  # @param opts [Hash] Serialization options
+  # @option opts [ActiveRecord::Relation] :pagination_resource Resource for pagination metadata
+  #   when different from serialized resource
+  # @option opts [Boolean] :upto_preloaded_ancestors_only Limit to preloaded ancestors only
+  # @param entity_class [Class, nil] Entity class override
+  #
+  # @return [Hash, Array<Hash>] Serialized representation of the resource(s)
   def represent(resource, opts = {}, entity_class = nil)
     if should_expand_hierarchy
-      paginator.paginate(resource) if paginated?
+      # `pagination_resource` allows overriding the object that is used to derive the API pagination headers
+      pagination_resource = opts[:pagination_resource] || resource
+      paginator.paginate(pagination_resource) if paginated?
+
       represent_hierarchies(resource, opts)
     else
       super(resource, opts)

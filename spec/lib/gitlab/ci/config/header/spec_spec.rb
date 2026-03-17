@@ -127,6 +127,95 @@ RSpec.describe Gitlab::Ci::Config::Header::Spec, feature_category: :pipeline_com
     end
   end
 
+  context 'when spec contains description' do
+    let(:spec_hash) do
+      {
+        description: 'A short description of the component'
+      }
+    end
+
+    it 'passes validations' do
+      expect(config).to be_valid
+      expect(config.errors).to be_empty
+    end
+
+    it 'returns the description' do
+      expect(config.config_description).to eq('A short description of the component')
+    end
+  end
+
+  context 'when spec contains description with inputs' do
+    let(:spec_hash) do
+      {
+        description: 'A component that does something useful',
+        inputs: {
+          foo: {
+            default: 'bar'
+          }
+        }
+      }
+    end
+
+    it 'passes validations' do
+      expect(config).to be_valid
+      expect(config.errors).to be_empty
+    end
+
+    it 'returns both values correctly' do
+      expect(config.config_description).to eq('A component that does something useful')
+      expect(config.inputs_value).to eq({ foo: { default: 'bar' } })
+    end
+  end
+
+  context 'when spec contains description, inputs, and component' do
+    let(:spec_hash) do
+      {
+        description: 'Full featured component',
+        inputs: {
+          environment: { default: 'production' }
+        },
+        component: %w[name version]
+      }
+    end
+
+    it 'passes validations' do
+      expect(config).to be_valid
+      expect(config.errors).to be_empty
+    end
+
+    it 'returns all values correctly' do
+      expect(config.config_description).to eq('Full featured component')
+      expect(config.inputs_value).to eq({ environment: { default: 'production' } })
+      expect(config.component_value).to match_array([:name, :version])
+    end
+  end
+
+  context 'when description is not a string' do
+    let(:spec_hash) do
+      {
+        description: 123
+      }
+    end
+
+    it 'fails validations' do
+      expect(config).not_to be_valid
+      expect(config.errors).to include(/description should be a string/)
+    end
+  end
+
+  context 'when description exceeds maximum length' do
+    let(:spec_hash) do
+      {
+        description: 'a' * 257
+      }
+    end
+
+    it 'fails validations' do
+      expect(config).not_to be_valid
+      expect(config.errors).to include(/description is too long/)
+    end
+  end
+
   context 'when spec contains include' do
     let(:spec_hash) do
       {

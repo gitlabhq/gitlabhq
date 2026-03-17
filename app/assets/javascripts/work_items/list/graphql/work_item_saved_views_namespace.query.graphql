@@ -12,6 +12,7 @@ query savedViews($fullPath: ID!, $subscribedOnly: Boolean, $sort: WorkItemsSaved
         userPermissions {
           updateSavedView
           deleteSavedView
+          updateSavedViewVisibility
         }
       }
     }

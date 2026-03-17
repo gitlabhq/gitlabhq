@@ -29,7 +29,7 @@ RSpec.describe 'Projects > Settings > User transfers a project', :js, feature_ca
 
     return unless confirm
 
-    fill_in 'confirm_name_input', with: project.name
+    fill_in 'confirm_name_input', with: project.full_path
 
     click_button 'Confirm'
 

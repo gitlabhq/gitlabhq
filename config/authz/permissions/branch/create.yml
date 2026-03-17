@@ -1,5 +1,3 @@
 ---
 name: create_branch
 description: Grants the ability to create branches
-boundaries:
-  - project

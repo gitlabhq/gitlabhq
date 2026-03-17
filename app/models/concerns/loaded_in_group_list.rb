@@ -4,9 +4,9 @@ module LoadedInGroupList
   extend ActiveSupport::Concern
 
   class_methods do
-    def with_counts(archived: nil, active: nil)
-      projects_cte = projects_cte(archived, active)
-      subgroups_cte = subgroups_cte(archived, active)
+    def with_counts(archived: nil)
+      projects_cte = projects_cte(archived)
+      subgroups_cte = subgroups_cte(archived)
 
       selects_including_counts = [
         'namespaces.*',
@@ -20,10 +20,10 @@ module LoadedInGroupList
         .with(subgroups_cte.to_arel)
     end
 
-    def with_selects_for_list(archived: nil, active: nil)
+    def with_selects_for_list
       with_route
         .with_namespace_details
-        .with_counts(archived:, active:)
+        .with_counts
         .preload(
           :deletion_schedule,
           :namespace_settings,
@@ -40,16 +40,9 @@ module LoadedInGroupList
       archived ? relation.self_or_ancestors_archived : relation.self_and_ancestors_non_archived
     end
 
-    def by_active(relation, active)
-      return relation if active.nil?
-
-      active ? relation.self_and_ancestors_active : relation.self_or_ancestors_inactive
-    end
-
-    def projects_cte(archived = nil, active = nil)
+    def projects_cte(archived = nil)
       projects = Project.unscoped.select(:namespace_id)
       projects = by_archived(projects, archived)
-      projects = by_active(projects, active)
 
       Gitlab::SQL::CTE.new(:projects_cte, projects, materialized: false)
     end
@@ -63,10 +56,9 @@ module LoadedInGroupList
         .where(cte.table[:namespace_id].eq(namespaces[:id]))
     end
 
-    def subgroups_cte(archived = nil, active = nil)
+    def subgroups_cte(archived = nil)
       subgroups = Group.unscoped.select(:parent_id)
       subgroups = by_archived(subgroups, archived)
-      subgroups = by_active(subgroups, active)
 
       Gitlab::SQL::CTE.new(:subgroups_cte, subgroups, materialized: false)
     end

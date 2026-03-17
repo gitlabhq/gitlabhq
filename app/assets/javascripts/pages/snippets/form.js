@@ -1,10 +1,9 @@
-import $ from 'jquery';
 import GLForm from '~/gl_form';
 import ZenMode from '~/zen_mode';
 
 export default () => {
   // eslint-disable-next-line no-new
-  new GLForm($('.snippet-form'), {
+  new GLForm(document.querySelector('.snippet-form'), {
     members: false,
     issues: false,
     mergeRequests: false,

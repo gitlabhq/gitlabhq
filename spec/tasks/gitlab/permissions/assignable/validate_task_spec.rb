@@ -69,6 +69,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
             #######################################################################
             #
             #  The following permissions failed schema validation.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#create-the-assignable-permission-file
             #
             #    - modify_wiki
             #        - property '/key' is invalid: error_type=schema
@@ -87,6 +88,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
             #######################################################################
             #
             #  The following permissions failed schema validation.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#create-the-assignable-permission-file
             #
             #    - modify_wiki
             #        - property '/permissions/0' does not match format: known_permissions
@@ -104,6 +106,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
             #######################################################################
             #
             #  The following permissions failed schema validation.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#create-the-assignable-permission-file
             #
             #    - modify_wiki
             #        - property '/boundaries/0' is not one of: ["instance", "group", "project", "user"]
@@ -127,6 +130,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
           #
           #  The following permissions have duplicate names.
           #  Assignable permissions must have unique names.
+          #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#important-constraints
           #
           #    - duplicated_permission_name
           #
@@ -173,12 +177,32 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
           #
           #  The following raw permissions are used in multiple assignable permissions.
           #  Each raw permission should only belong to one assignable permission.
+          #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#important-constraints
           #
           #    - alpha_permission: found in apple_assignable, zebra_assignable
           #    - beta_permission: found in apple_assignable, zebra_assignable
           #
           #######################################################################
         OUTPUT
+      end
+
+      context 'when one of the duplicates is deprecated' do
+        let(:apple_assignable) do
+          Authz::PermissionGroups::Assignable.new(
+            {
+              name: 'apple_assignable',
+              description: 'Apple assignable',
+              permissions: %w[beta_permission alpha_permission unique_two],
+              boundaries: ['project'],
+              deprecated: true
+            },
+            Rails.root.join(permission_source_file).to_s
+          )
+        end
+
+        it 'does not flag the shared raw permissions as duplicates' do
+          expect { run }.to output(/Assignable permission definitions are up-to-date/).to_stdout
+        end
       end
     end
 
@@ -190,6 +214,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
           #######################################################################
           #
           #  The following permission definitions do not exist at the expected path.
+          #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#understanding-the-directory-structure
           #
           #    - modify_wiki in config/authz/permission_groups/assignable_permissions/weekee/update.yml
           #      Expected path: config/authz/permission_groups/assignable_permissions/<category>/weekee/update.yml
@@ -218,6 +243,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
             #######################################################################
             #
             #  The following assignable permission resource directories are missing a _metadata.yml file.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#when-do-you-need-metadata-files
             #
             #    - config/authz/permission_groups/assignable_permissions/wiki_category/wiki/
             #
@@ -246,6 +272,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
             #######################################################################
             #
             #  The following assignable permission resource metadata file failed schema validation.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#when-do-you-need-metadata-files
             #
             #    - wiki_category/wiki
             #        - root is missing required keys: description
@@ -283,6 +310,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
             #######################################################################
             #
             #  The following assignable permission category metadata file failed schema validation.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#understanding-the-directory-structure
             #
             #    - wiki_category
             #        - property '/invalid_key' is invalid: error_type=schema
@@ -333,6 +361,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
             #
             #  The following resource directories contain only a _metadata.yml file with no permission definitions.
             #  Either add permission definitions or remove the directory.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#understanding-the-directory-structure
             #
             #    - config/authz/permission_groups/assignable_permissions/some_category/empty_resource/
             #
@@ -383,6 +412,7 @@ RSpec.describe Tasks::Gitlab::Permissions::Assignable::ValidateTask, feature_cat
             #
             #  The following category directories contain only a _metadata.yml file with no resource subdirectories.
             #  Either add resource subdirectories or remove the directory.
+            #  Learn more: http://localhost/help/development/permissions/granular_access/assignable_permissions.md#understanding-the-directory-structure
             #
             #    - config/authz/permission_groups/assignable_permissions/empty_category/
             #

@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
-import BlobHeaderEdit from '~/blob/components/blob_edit_header.vue';
+import SnippetBlobEditHeader from '~/snippets/components/snippet_blob_edit_header.vue';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -48,7 +48,7 @@ describe('Snippet Blob Edit component', () => {
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findHeader = () => wrapper.findComponent(BlobHeaderEdit);
+  const findHeader = () => wrapper.findComponent(SnippetBlobEditHeader);
   const findContent = () => wrapper.findComponent(SourceEditor);
   const getLastUpdatedArgs = () => {
     const event = wrapper.emitted()['blob-updated'];

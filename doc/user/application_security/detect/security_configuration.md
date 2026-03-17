@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Platform Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Security configuration
 description: Configuration, testing, compliance, scanning, and enablement.
 ---
@@ -80,7 +80,7 @@ Not enabled
 
 To view a project's security configuration:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 
 To see a historic view of changes to the CI/CD configuration file, select **Configuration history**.
@@ -89,7 +89,7 @@ To see a historic view of changes to the CI/CD configuration file, select **Conf
 
 To edit a project's security configuration:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. Select the security scanner you want to enable or configure and follow the instructions.
 

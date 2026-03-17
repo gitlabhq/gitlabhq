@@ -31,6 +31,12 @@ export default {
     GroupsListItemPlanBadge: () =>
       import('ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue'),
   },
+  provide() {
+    return {
+      triggerDeleteLocation: 'list',
+      triggerRestoreLocation: 'list',
+    };
+  },
   props: {
     group: {
       type: Object,
@@ -102,7 +108,10 @@ export default {
       return numberToMetricPrefix(this.group.descendantGroupsCount);
     },
     projectsCount() {
-      return numberToMetricPrefix(this.group.projectsCount);
+      return this.group.projects?.count ?? this.group.projectsCount;
+    },
+    displayProjectsCount() {
+      return numberToMetricPrefix(this.projectsCount);
     },
     groupMembersCount() {
       return numberToMetricPrefix(this.group.groupMembersCount);
@@ -111,7 +120,7 @@ export default {
       return isNumeric(this.group.descendantGroupsCount);
     },
     showProjectsCount() {
-      return isNumeric(this.group.projectsCount);
+      return isNumeric(this.projectsCount);
     },
     showGroupMembersCount() {
       return isNumeric(this.group.groupMembersCount);
@@ -186,7 +195,7 @@ export default {
         v-if="showProjectsCount"
         :tooltip-text="$options.i18n.projects"
         icon-name="project"
-        :stat="projectsCount"
+        :stat="displayProjectsCount"
         data-testid="projects-count"
         @hover="$emit('hover-stat', 'projects-count')"
       />
@@ -201,7 +210,7 @@ export default {
     </template>
 
     <template v-if="hasActions" #actions>
-      <group-list-item-actions :group="group" @refetch="refetch" />
+      <group-list-item-actions :group="group" @action="refetch" />
     </template>
 
     <template #children>

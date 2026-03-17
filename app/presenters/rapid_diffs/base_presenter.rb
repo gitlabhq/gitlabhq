@@ -2,10 +2,11 @@
 
 module RapidDiffs
   class BasePresenter < Gitlab::View::Presenter::Delegated
-    def initialize(subject, diff_view:, diff_options:, request_params: nil, environment: nil)
+    def initialize(subject, diff_view:, diff_options:, current_user: nil, request_params: nil, environment: nil)
       super(subject)
       @diff_view = diff_view
       @diff_options = diff_options
+      @current_user = current_user
       @request_params = request_params
       @environment = environment
     end
@@ -17,21 +18,23 @@ module RapidDiffs
     end
 
     def diff_files(options = {})
-      diffs_resource(options).diff_files(sorted: sorted?)
+      transform_file_collection(diffs_resource(options).diff_files(sorted: sorted?))
     end
 
     def diffs_slice
       return if offset.nil? || offset == 0
 
-      @diffs_slice ||= resource.first_diffs_slice(offset, @diff_options)
+      @diffs_slice ||= transform_file_collection(resource.first_diffs_slice(offset, @diff_options))
     end
 
     def diff_files_for_streaming(diff_options = {})
-      resource.diffs_for_streaming(diff_options).diff_files(sorted: sorted?)
+      transform_file_collection(resource.diffs_for_streaming(diff_options).diff_files(sorted: sorted?))
     end
 
-    def diff_files_for_streaming_by_changed_paths(diff_options = {}, &)
-      resource.diffs_for_streaming_by_changed_paths(diff_options, &)
+    def diff_files_for_streaming_by_changed_paths(diff_options = {})
+      resource.diffs_for_streaming_by_changed_paths(diff_options) do |diff_files|
+        yield transform_file_array(diff_files) if block_given?
+      end
     end
 
     def linked_file
@@ -39,7 +42,12 @@ module RapidDiffs
 
       @linked_file ||= resource.diffs(@diff_options.merge({
         paths: [linked_file_params[:old_path], linked_file_params[:new_path]].compact
-      })).diff_files.first.tap { |file| file && (file.linked = true) }
+      })).diff_files.first.then do |file|
+        next unless file
+
+        file.linked = true
+        transform_file(file)
+      end
     end
 
     def diffs_stream_url
@@ -95,7 +103,27 @@ module RapidDiffs
       5
     end
 
+    def transform_file(diff_file)
+      diff_file.prevent_syntax_highlighting! unless highlight?
+      diff_file
+    end
+
     private
+
+    def highlight?
+      return @highlight if defined?(@highlight)
+
+      @highlight = @current_user.nil? || Gitlab::ColorSchemes.for_user(@current_user).css_class != 'none'
+    end
+
+    def transform_file_collection(diff_files)
+      diff_files.decorate! { |file| transform_file(file) }
+      diff_files
+    end
+
+    def transform_file_array(diff_files)
+      diff_files.map { |file| transform_file(file) }
+    end
 
     def diffs_count
       @diffs_count ||= begin

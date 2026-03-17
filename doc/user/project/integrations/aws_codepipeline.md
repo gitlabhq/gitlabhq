@@ -113,7 +113,6 @@ To use the `create-connection` command:
    ```
 
 1. The new connection is created with a `PENDING` status by default. Use the console to change the connection's status to `AVAILABLE`.
-
 1. [Use the AWS Console to complete the connection](#use-the-aws-management-console). Make sure you select your pending GitLab connection. Do not select **Create connection**.
 
 ## Related topics

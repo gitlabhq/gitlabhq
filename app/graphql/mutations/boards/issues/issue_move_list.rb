@@ -9,7 +9,7 @@ module Mutations
         ListID = ::GraphQL::Types::ID
         IssueID = ::GraphQL::Types::ID
 
-        argument :board_id, BoardGID,
+        argument :board_id, BoardGID, # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
           required: true,
           loads: Types::BoardType,
           description: 'Global ID of the board that the issue is in.'

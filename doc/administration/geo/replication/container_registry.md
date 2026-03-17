@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Container registry for a secondary site
 ---
 
@@ -154,7 +154,6 @@ For each application and Sidekiq node on the **secondary** site:
    ```
 
 1. Copy `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key` from the **primary** to the node.
-
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
    ```ruby
@@ -262,3 +261,26 @@ The `state` field represents sync state:
 - `"1"`: started sync (a sync job is currently running)
 - `"2"`: successfully synced
 - `"3"`: failed to sync
+
+### Repository not resynced after downtime
+
+If container registry replication was disabled for a period of time,
+either through the `geo_container_repository_replication` feature flag
+or a misconfiguration, images pushed during that period might not
+automatically sync to the **secondary** site.
+
+New container repositories created during the downtime are
+automatically picked up by the backfill worker after replication is
+re-enabled. However, updates to existing container repositories
+(for example, new tags pushed to an existing repository) are not
+automatically resynced. The Geo admin UI might still report 100%
+replication because the sync status is based on the registry entry
+state, not on content verification.
+
+Updated container repositories eventually resync after the
+**primary** site reverification cycle detects a checksum mismatch.
+For more information about the reverification interval, see
+[repository re-verification](../disaster_recovery/background_verification.md#repository-re-verification).
+
+To force an immediate resync instead of waiting for reverification,
+see [manually retry replication or verification](troubleshooting/synchronization_verification.md#manually-retry-replication-or-verification).

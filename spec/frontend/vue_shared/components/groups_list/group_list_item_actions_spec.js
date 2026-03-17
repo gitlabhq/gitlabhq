@@ -7,15 +7,15 @@ import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list
 import GroupDeleteModal from '~/groups/components/delete_modal.vue';
 import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
 import {
-  ACTION_COPY_ID,
   ACTION_ARCHIVE,
+  ACTION_COPY_ID,
   ACTION_DELETE,
   ACTION_DELETE_IMMEDIATELY,
   ACTION_EDIT,
   ACTION_LEAVE,
+  ACTION_REQUEST_ACCESS,
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
-  ACTION_REQUEST_ACCESS,
   ACTION_WITHDRAW_ACCESS_REQUEST,
 } from '~/vue_shared/components/list_actions/constants';
 import { groups } from 'jest/vue_shared/components/groups_list/mock_data';
@@ -25,9 +25,9 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   renderArchiveSuccessToast,
+  renderDeleteSuccessToast,
   renderRestoreSuccessToast,
   renderUnarchiveSuccessToast,
-  renderDeleteSuccessToast,
 } from '~/vue_shared/components/groups_list/utils';
 import { createAlert } from '~/alert';
 import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
@@ -60,11 +60,14 @@ describe('GroupListItemActions', () => {
   let wrapper;
   let axiosMock;
 
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
   const [group] = groups;
   const defaultProps = { group };
 
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = shallowMountExtended(GroupListItemActions, {
+      provide: { triggerRestoreLocation: 'list' },
       propsData: { ...defaultProps, ...propsData },
       mocks: {
         $toast: mockToast,
@@ -124,6 +127,9 @@ describe('GroupListItemActions', () => {
           },
           [ACTION_LEAVE]: {
             action: expect.any(Function),
+            extraAttrs: {
+              class: 'js-leave-link',
+            },
           },
         },
         availableActions: [
@@ -138,8 +144,6 @@ describe('GroupListItemActions', () => {
   });
 
   describe('when copy ID action is fired', () => {
-    const { bindInternalEventDocument } = useMockInternalEventsTracking();
-
     it('tracks event', async () => {
       copyToClipboard.mockResolvedValueOnce();
       createComponent();
@@ -183,8 +187,6 @@ describe('GroupListItemActions', () => {
       createComponent();
     });
 
-    const { bindInternalEventDocument } = useMockInternalEventsTracking();
-
     it('should call trackEvent method', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
@@ -205,7 +207,7 @@ describe('GroupListItemActions', () => {
         createComponent();
       });
 
-      it('calls archiveGroup, properly renders loading icon, and emits refetch event', async () => {
+      it('calls archiveGroup, properly renders loading icon, and emits action event', async () => {
         archiveGroup.mockResolvedValueOnce();
 
         await fireAction(ACTION_ARCHIVE);
@@ -216,7 +218,7 @@ describe('GroupListItemActions', () => {
         await waitForPromises();
 
         expect(findLoadingIcon().exists()).toBe(false);
-        expect(wrapper.emitted('refetch')).toEqual([[]]);
+        expect(wrapper.emitted('action')).toEqual([[ACTION_ARCHIVE]]);
         expect(renderArchiveSuccessToast).toHaveBeenCalledWith(group);
         expect(createAlert).not.toHaveBeenCalled();
       });
@@ -240,7 +242,7 @@ describe('GroupListItemActions', () => {
         await waitForPromises();
 
         expect(findLoadingIcon().exists()).toBe(false);
-        expect(wrapper.emitted('refetch')).toBeUndefined();
+        expect(wrapper.emitted('action')).toBeUndefined();
         expect(renderArchiveSuccessToast).not.toHaveBeenCalledWith(group);
         expect(createAlert).toHaveBeenCalledWith({
           message: 'An error occurred archiving this group. Please refresh the page to try again.',
@@ -255,8 +257,6 @@ describe('GroupListItemActions', () => {
     beforeEach(() => {
       createComponent();
     });
-
-    const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
     it('should call trackEvent method', async () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
@@ -274,7 +274,7 @@ describe('GroupListItemActions', () => {
     });
 
     describe('when API call is successful', () => {
-      it('calls unarchiveGroup, properly renders loading icon, and emits refetch event', async () => {
+      it('calls unarchiveGroup, properly renders loading icon, and emits action event', async () => {
         unarchiveGroup.mockResolvedValueOnce();
 
         await fireAction(ACTION_UNARCHIVE);
@@ -285,7 +285,7 @@ describe('GroupListItemActions', () => {
         await waitForPromises();
 
         expect(findLoadingIcon().exists()).toBe(false);
-        expect(wrapper.emitted('refetch')).toEqual([[]]);
+        expect(wrapper.emitted('action')).toEqual([[ACTION_UNARCHIVE]]);
         expect(renderUnarchiveSuccessToast).toHaveBeenCalledWith(group);
         expect(createAlert).not.toHaveBeenCalled();
       });
@@ -305,7 +305,7 @@ describe('GroupListItemActions', () => {
         await waitForPromises();
 
         expect(findLoadingIcon().exists()).toBe(false);
-        expect(wrapper.emitted('refetch')).toBeUndefined();
+        expect(wrapper.emitted('action')).toBeUndefined();
         expect(renderUnarchiveSuccessToast).not.toHaveBeenCalledWith(group);
         expect(createAlert).toHaveBeenCalledWith({
           message:
@@ -322,8 +322,22 @@ describe('GroupListItemActions', () => {
       createComponent();
     });
 
+    it('should call trackEvent method', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await fireAction(ACTION_RESTORE);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'trigger_restore_on_group',
+        {
+          label: 'list',
+        },
+        undefined,
+      );
+    });
+
     describe('when API call is successful', () => {
-      it('calls restoreGroup, properly renders loading icon, and emits refetch event', async () => {
+      it('calls restoreGroup, properly renders loading icon, and emits action event', async () => {
         restoreGroup.mockResolvedValueOnce();
 
         await fireAction(ACTION_RESTORE);
@@ -334,7 +348,7 @@ describe('GroupListItemActions', () => {
         await waitForPromises();
 
         expect(findLoadingIcon().exists()).toBe(false);
-        expect(wrapper.emitted('refetch')).toEqual([[]]);
+        expect(wrapper.emitted('action')).toEqual([[ACTION_RESTORE]]);
         expect(renderRestoreSuccessToast).toHaveBeenCalledWith(group);
         expect(createAlert).not.toHaveBeenCalled();
       });
@@ -354,7 +368,7 @@ describe('GroupListItemActions', () => {
         await waitForPromises();
 
         expect(findLoadingIcon().exists()).toBe(false);
-        expect(wrapper.emitted('refetch')).toBeUndefined();
+        expect(wrapper.emitted('action')).toBeUndefined();
         expect(renderRestoreSuccessToast).not.toHaveBeenCalledWith(group);
         expect(createAlert).toHaveBeenCalledWith({
           message: 'An error occurred restoring this group. Please refresh the page to try again.',
@@ -420,7 +434,7 @@ describe('GroupListItemActions', () => {
 
       describe('when deletion is confirmed', () => {
         describe('when API call is successful', () => {
-          it('calls DELETE on group path, properly sets loading state, and emits refetch event', async () => {
+          it('calls DELETE on group path, properly sets loading state, and shows success toast', async () => {
             axiosMock.onDelete(group.relativeWebUrl).reply(200);
 
             await deleteModalFirePrimaryEvent();
@@ -430,9 +444,26 @@ describe('GroupListItemActions', () => {
 
             expect(axiosMock.history.delete[0].params).toEqual(MOCK_DELETE_PARAMS);
             expect(findGroupDeleteModal().props('confirmLoading')).toBe(false);
-            expect(wrapper.emitted('refetch')).toEqual([[]]);
+            expect(wrapper.emitted('action')).toEqual([[ACTION_DELETE]]);
             expect(renderDeleteSuccessToast).toHaveBeenCalledWith(group);
             expect(createAlert).not.toHaveBeenCalled();
+          });
+
+          describe('when group is marked for deletion', () => {
+            it('emits action event with ACTION_DELETE_IMMEDIATELY', async () => {
+              createComponent({
+                propsData: {
+                  group: { ...group, markedForDeletion: true },
+                },
+              });
+
+              axiosMock.onDelete(group.relativeWebUrl).reply(200);
+
+              await deleteModalFirePrimaryEvent();
+              await waitForPromises();
+
+              expect(wrapper.emitted('action')).toEqual([[ACTION_DELETE_IMMEDIATELY]]);
+            });
           });
         });
 
@@ -447,7 +478,7 @@ describe('GroupListItemActions', () => {
 
             expect(axiosMock.history.delete[0].params).toEqual(MOCK_DELETE_PARAMS);
             expect(findGroupDeleteModal().props('confirmLoading')).toBe(false);
-            expect(wrapper.emitted('refetch')).toBeUndefined();
+            expect(wrapper.emitted('action')).toBeUndefined();
             expect(createAlert).toHaveBeenCalledWith({
               message:
                 'An error occurred deleting the group. Please refresh the page to try again.',
@@ -512,10 +543,10 @@ describe('GroupListItemActions', () => {
     });
 
     describe('when leave modal emits success event', () => {
-      it('emits refetch event', () => {
+      it('emits action event with ACTION_LEAVE', () => {
         findLeaveModal().vm.$emit('success');
 
-        expect(wrapper.emitted('refetch')).toEqual([[]]);
+        expect(wrapper.emitted('action')).toEqual([[ACTION_LEAVE]]);
       });
     });
   });

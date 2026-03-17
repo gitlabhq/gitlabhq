@@ -103,6 +103,9 @@ describe('TrainingProviderList component', () => {
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
+      stubs: {
+        GlCard,
+      },
       apolloProvider,
     });
   };

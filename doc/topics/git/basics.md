@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Common Git commands and workflows.
 title: Basic Git operations
 description: Create a project, clone a repository, stash changes, branches, and forks.
@@ -55,7 +55,7 @@ For more information, see [Stash changes](stash.md).
 ## Add files to a branch
 
 The `git add <filename>` command adds files to a Git repository or a branch.
-You an add new files, modify existing files, or delete files.
+You can add new files, modify existing files, or delete files.
 For more information, see [Add files to a branch](add_files.md).
 
 ## Merge requests

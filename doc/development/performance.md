@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Performance Guidelines
 ---
 
@@ -148,15 +148,15 @@ you to see where time is spent in a process. The
 [Stackprof](https://github.com/tmm1/stackprof) gem is included in GitLab,
 allowing you to profile which code is running on CPU in detail.
 
-Profiling an application *alters its performance*.
+Profiling an application _alters its performance_.
 Different profiling strategies have different overheads. Stackprof is a sampling
 profiler. It samples stack traces from running threads at a configurable
 frequency (for example, 100 hz, that is 100 stacks per second). This type of profiling
 has quite a low (albeit non-zero) overhead and is generally considered to be
 safe for production.
 
-A profiler can be a very useful tool during development, even if it does run *in
-an unrepresentative environment*. In particular, a method is not necessarily
+A profiler can be a very useful tool during development, even if it does run _in
+an unrepresentative environment_. In particular, a method is not necessarily
 troublesome just because it's executed many times, or takes a long time to
 execute. Profiles are tools you can use to better understand what is happening
 in an application - using that information wisely is up to you!

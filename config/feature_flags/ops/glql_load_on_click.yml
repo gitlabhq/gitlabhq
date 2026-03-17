@@ -5,5 +5,5 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517914
 feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/517546
 milestone: '17.9'
 type: ops
-group: group::knowledge
+group: group::platform insights
 default_enabled: false

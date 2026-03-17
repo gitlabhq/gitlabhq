@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_security_dast_api_latest_weekly
 description: Weekly counts for DAST API latest CI template
 product_group: dynamic_analysis
+product_categories:
+- api_security
 value_type: number
 status: removed
 milestone: '14.6'

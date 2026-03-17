@@ -14,23 +14,11 @@ RSpec.describe Ci::TimedOutBuilds::DropCancelingService, feature_category: :cont
     FactoryBot::Internal.sequences[:ci_partition_id].rewind
   end
 
-  before do
-    stub_feature_flags(enforce_job_timeouts_on_canceling_jobs: true)
-  end
-
   context 'when job timeout has been exceeded' do
     let(:started_at) { timeout.seconds.ago - described_class::MINUTE_BUFFER }
 
     it_behaves_like 'job is canceled with failure reason', 'job_execution_server_timeout'
     it_behaves_like 'when invalid dooms the job bypassing validations'
-
-    context 'when enforce_job_timeouts_on_canceling_jobs is disabled' do
-      before do
-        stub_feature_flags(enforce_job_timeouts_on_canceling_jobs: false)
-      end
-
-      it_behaves_like 'job is unchanged'
-    end
 
     context 'when job becomes complete before processing the timeout' do
       it 'does not doom the job' do

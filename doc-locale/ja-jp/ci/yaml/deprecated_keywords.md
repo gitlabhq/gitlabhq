@@ -1,17 +1,14 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 非推奨のキーワード
 ---
 
-一部のCI/CDキーワードは非推奨であり、使用は推奨されなくなりました。
+一部のCI/CDキーワードは非推奨であり、使用することは推奨されなくなりました。
 
-{{< alert type="warning" >}}
-
-これらのキーワードは引き続き使用して下位互換性を確保できますが、将来のメジャーマイルストーンでの削除が予定されている可能性があります。
-
-{{< /alert >}}
+> [!warning]
+> これらのキーワードは後方互換性を確保するために引き続き使用できますが、将来のメジャーマイルストーンで削除が予定される可能性があります。
 
 ## グローバル定義の`image`、`services`、`cache`、`before_script`、`after_script` {#globally-defined-image-services-cache-before_script-after_script}
 
@@ -33,32 +30,26 @@ default:
     - rm -rf tmp/
 ```
 
-### `only` / `except` {#only--except}
+## `only` / `except` {#only--except}
 
-{{< alert type="note" >}}
-
-`only`と`except`は非推奨になりました。ジョブをパイプラインに追加するタイミングを制御するには、代わりに[`rules`](_index.md#rules)を使用してください。
-
-{{< /alert >}}
+> [!note] 
+> `only`および`except`は非推奨です。ジョブをパイプラインに追加するタイミングを制御するには、代わりに[`rules`](_index.md#rules)を使用してください。
 
 `only`と`except`を使用すると、ジョブをパイプラインに追加するタイミングを制御できます。
 
 - `only`を使用して、ジョブの実行タイミングを定義します。
-- `except`を使用して、ジョブを実行**does not**（しない）タイミングを定義します。
+- `except`を使用して、ジョブを実行**しない**タイミングを定義します。
 
-#### `only:refs` / `except:refs` {#onlyrefs--exceptrefs}
+### `only:refs` / `except:refs` {#onlyrefs--exceptrefs}
 
-{{< alert type="note" >}}
-
-`only:refs`と`except:refs`は非推奨になりました。ref、正規表現、または変数を使用してジョブをパイプラインに追加するタイミングを制御するには、代わりに[`rules:if`](_index.md#rulesif)を使用してください。
-
-{{< /alert >}}
+> [!note]
+> `only:refs`および`except:refs`は非推奨です。ref、正規表現、または変数を使用してジョブをパイプラインに追加するタイミングを制御するには、代わりに[`rules:if`](_index.md#rulesif)を使用してください。
 
 `only:refs`キーワードと`except:refs`キーワードを使用して、ブランチ名またはパイプラインの種類に基づいて、ジョブをパイプラインに追加するタイミングを制御できます。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
-**サポートされている値**: 次の要素を任意の数だけ含む配列:
+**サポートされている値**: 次のものを任意の数だけ含む配列。
 
 - ブランチ名（`main`や`my-feature-branch`など）。
 - ブランチ名に一致する正規表現（`/^feature-.*/`など）。
@@ -70,14 +61,14 @@ default:
   | `branches`               | パイプラインのGit参照がブランチである場合。 |
   | `chat`                   | [GitLab ChatOps](../chatops/_index.md)コマンドを使用して作成されたパイプライン。 |
   | `external`               | GitLab以外のCIサービスを使用する場合。 |
-  | `external_pull_requests` | GitHubで外部プルリクエストが作成または更新された場合（「[外部プルリクエストのパイプライン](../ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests)」を参照）。 |
-  | `merge_requests`         | マージリクエストの作成時または更新時に作成されるパイプラインの場合。[マージリクエストパイプライン](../pipelines/merge_request_pipelines.md) 、[マージ結果パイプライン](../pipelines/merged_results_pipelines.md) 、[マージトレイン](../pipelines/merge_trains.md)を有効にします。 |
-  | `pipelines`              | [`CI_JOB_TOKEN`を使用したAPI](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api) 、または[`trigger`](_index.md#trigger)キーワードにより作成された[マルチプロジェクトパイプライン](../pipelines/downstream_pipelines.md#multi-project-pipelines)。 |
+  | `external_pull_requests` | GitHubで外部プルリクエストが作成または更新された場合（[外部プルリクエストのパイプライン](../ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests)を参照）。 |
+  | `merge_requests`         | マージリクエストの作成時または更新時に作成されるパイプラインの場合。[マージリクエストパイプライン](../pipelines/merge_request_pipelines.md)、[マージ結果パイプライン](../pipelines/merged_results_pipelines.md)、[マージトレイン](../pipelines/merge_trains.md)を有効にします。 |
+  | `pipelines`              | [`CI_JOB_TOKEN`を使用したAPI](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api)、または[`trigger`](_index.md#trigger)キーワードにより作成された[マルチプロジェクトパイプライン](../pipelines/downstream_pipelines.md#multi-project-pipelines)。 |
   | `pushes`                 | `git push`イベントによってトリガーされたパイプライン（ブランチとタグを含む）の場合。 |
   | `schedules`              | [スケジュールされたパイプライン](../pipelines/schedules.md)。 |
   | `tags`                   | パイプラインのGit参照がタグの場合。 |
   | `triggers`               | [トリガートークン](../triggers/_index.md#configure-cicd-jobs-to-run-in-triggered-pipelines)を使用して作成されたパイプライン。 |
-  | `web`                    | GitLab UIで、プロジェクトの**ビルド** > **パイプライン**セクションから**パイプラインを新規作成**を選択して作成されたパイプライン。 |
+  | `web`                    | GitLab UIのプロジェクトの**ビルド** > **パイプライン**セクションから、**新しいパイプライン**を選択して作成されたパイプライン。 |
 
 **`only:refs`と`except:refs`の例**:
 
@@ -100,7 +91,7 @@ job2:
 **補足情報**:
 
 - スケジュールされたパイプラインは特定のブランチで実行されるため、`only: branches`で構成されたジョブもスケジュールされたパイプラインで実行されます。スケジュールされたパイプラインで`only: branches`を含むジョブが実行されないようにするには、`except: schedules`を追加します。
-- 他のキーワードなしで使用される`only`または`except`は、`only: refs`または`except: refs`と同等です。たとえば、次の2つのジョブ構成の動作は同じです:
+- 他のキーワードなしで使用される`only`または`except`は、`only: refs`または`except: refs`と同等です。たとえば、次の2つのジョブ構成の動作は同じです。
 
   ```yaml
   job1:
@@ -117,7 +108,7 @@ job2:
 
 - ジョブが`only`、`except`、または[`rules`](_index.md#rules)のいずれも使用しない場合、デフォルトでは、`only`は`branches`と`tags`に設定されます。
 
-  たとえば、`job1`と`job2`は同等です:
+  たとえば、`job1`と`job2`は同等です。
 
   ```yaml
   job1:
@@ -130,13 +121,10 @@ job2:
       - tags
   ```
 
-#### `only:variables` / `except:variables` {#onlyvariables--exceptvariables}
+### `only:variables` / `except:variables` {#onlyvariables--exceptvariables}
 
-{{< alert type="note" >}}
-
-`only:variables`と`except:variables`は非推奨になりました。ref、正規表現、または変数を使用してジョブをパイプラインに追加するタイミングを制御するには、代わりに[`rules:if`](_index.md#rulesif)を使用してください。
-
-{{< /alert >}}
+> [!note] 
+> `only:variables`および`except:variables`は非推奨です。ref、正規表現、または変数を使用してジョブをパイプラインに追加するタイミングを制御するには、代わりに[`rules:if`](_index.md#rulesif)を使用してください。
 
 `only:variables`または`except:variables`キーワードを使用すると、[CI/CD変数](../variables/_index.md)のステータスに基づいて、ジョブをパイプラインに追加するタイミングを制御できます。
 
@@ -157,17 +145,14 @@ deploy:
       - $STAGING
 ```
 
-#### `only:changes` / `except:changes` {#onlychanges--exceptchanges}
+### `only:changes` / `except:changes` {#onlychanges--exceptchanges}
 
-{{< alert type="note" >}}
-
-`only:changes`と`except:changes`は非推奨になりました。変更されたファイルを使用してジョブをパイプラインに追加するタイミングを制御するには、代わりに[`rules:changes`](_index.md#ruleschanges)を使用します。
-
-{{< /alert >}}
+> [!note] 
+> `only:changes`および`except:changes`は非推奨です。変更されたファイルを使用してジョブをパイプラインに追加するタイミングを制御するには、代わりに[`rules:changes`](_index.md#ruleschanges)を使用します。
 
 `changes`キーワードを`only`とともに使用してジョブを実行するか、または`except`とともに使用してGitプッシュイベントでファイルが変更された場合にジョブをスキップします。
 
-パイプラインで`changes`を次のrefとともに使用します:
+パイプラインで`changes`を次のrefとともに使用します。
 
 - `branches`
 - `external_pull_requests`
@@ -175,10 +160,10 @@ deploy:
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
-**サポートされている値**: 次の要素を任意の数だけ含む配列:
+**サポートされている値**: 次のものを任意の数だけ含む配列。
 
 - ファイルのパス。
-- 次のもののワイルドカードパス:
+- 次のもののワイルドカードパス。
   - 単一のディレクトリ（例: `path/to/directory/*`）。
   - ディレクトリとそのすべてのサブディレクトリ（例: `path/to/directory/**/*`）。
 - 同じ拡張子または複数の拡張子を持つすべてのファイルを対象とするワイルドカード[glob](https://en.wikipedia.org/wiki/Glob_(programming))パス（例: `*.md`、`path/to/directory/*.{rb,py,sh}`）。
@@ -210,15 +195,12 @@ docker build:
 
 **関連トピック**:
 
-- [`only: changes`を使用すると、予期せずにジョブまたはパイプラインが実行される可能性があります](../jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes)。
+- [`only: changes`を使用すると、ジョブまたはパイプラインが予期せず実行される](../jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes)。
 
-#### `only:kubernetes` / `except:kubernetes` {#onlykubernetes--exceptkubernetes}
+### `only:kubernetes` / `except:kubernetes` {#onlykubernetes--exceptkubernetes}
 
-{{< alert type="note" >}}
-
-`only:kubernetes`と`except:kubernetes`は非推奨になりました。プロジェクトでKubernetesサービスがアクティブな場合にジョブをパイプラインに追加するかどうかを制御するには、代わりに[`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md)事前定義済みのCI/CD変数とともに[`rules:if`](_index.md#rulesif)を使用してください。
-
-{{< /alert >}}
+> [!note] 
+> `only:kubernetes`および`except:kubernetes`は非推奨です。プロジェクトでKubernetesサービスがアクティブな場合にジョブをパイプラインに追加するかどうかを制御するには、代わりに[`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md)事前定義済みのCI/CD変数とともに[`rules:if`](_index.md#rulesif)を使用してください。
 
 `only:kubernetes`または`except:kubernetes`を使用して、Kubernetesサービスがプロジェクトでアクティブな場合にジョブをパイプラインに追加するかどうかを制御します。
 
@@ -238,21 +220,18 @@ deploy:
 
 この例では、`deploy`ジョブが実行されるのは、プロジェクト内でKubernetesサービスがアクティブになっている場合のみです。
 
-### GitLab Pagesの`publish`キーワードと`pages`ジョブ名 {#publish-keyword-and-pages-job-name-for-gitlab-pages}
+## `publish`キーワードとGitLab Pagesの`pages`ジョブ名 {#publish-keyword-and-pages-job-name-for-gitlab-pages}
 
-GitLab Pagesのデプロイメントジョブに対するジョブレベルの`publish`キーワードと`pages`ジョブ名は非推奨になりました。
+ジョブレベルの`publish`キーワードと、GitLab Pagesのデプロイメントジョブに対する`pages`ジョブ名は非推奨です。
 
-pagesデプロイを制御するには、代わりに[`pages`](_index.md#pages)キーワードと[`pages.publish`](_index.md#pagespublish)キーワードを使用してください。
+ページのデプロイを制御するには、代わりに[`pages`](_index.md#pages)および[`pages.publish`](_index.md#pagespublish)キーワードを使用します。
 
-### `environment:kubernetes:namespace`と`environment:kubernetes:flux_resource_path` {#environmentkubernetesnamespace-and-environmentkubernetesflux_resource_path}
+## `environment:kubernetes:namespace`と`environment:kubernetes:flux_resource_path` {#environmentkubernetesnamespace-and-environmentkubernetesflux_resource_path}
 
-{{< alert type="note" >}}
+> [!note] 
+> `environment:kubernetes:namespace`と`environment:kubernetes:flux_resource_path`は、`kubernetes`の直下で使用すると非推奨になります。ダッシュボードの設定を構成するには、代わりに`environment:kubernetes:dashboard:namespace`と`environment:kubernetes:dashboard:flux_resource_path`を使用します。詳細については、[`environment:kubernetes`](_index.md#environmentkubernetes)を参照してください。
 
-`environment:kubernetes:namespace`および`environment:kubernetes:flux_resource_path`は、`kubernetes`の直下で使用すると非推奨になります。ダッシュボードの設定を構成するには、代わりに`environment:kubernetes:dashboard:namespace`と`environment:kubernetes:dashboard:flux_resource_path`を使用します。詳細については、[`environment:kubernetes`](_index.md#environmentkubernetes)を参照してください。
-
-{{< /alert >}}
-
-`environment:kubernetes:namespace`と`environment:kubernetes:flux_resource_path`を使用してKubernetesダッシュボードの設定を構成できますが、`kubernetes`セクションの直下で使用すると非推奨になります。
+`environment:kubernetes:namespace`と`environment:kubernetes:flux_resource_path`を使用してKubernetesダッシュボードの設定を構成できますが、これらを`kubernetes`セクションの直下で使用することは非推奨です。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 

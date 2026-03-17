@@ -1,4 +1,3 @@
-import { nextTick } from 'vue';
 import { GlButton } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
@@ -15,131 +14,139 @@ jest.mock('~/lib/utils/common_utils');
 describe('DiffLineDiscussions', () => {
   let wrapper;
 
+  const createDiscussion = (overrides = {}) => ({
+    id: '1',
+    diff_discussion: true,
+    hidden: false,
+    notes: [{}],
+    ...overrides,
+  });
+
   const createComponent = (
-    propsData = {},
+    discussions = [],
     provide = { userPermissions: { can_create_note: true } },
   ) => {
     wrapper = shallowMount(DiffLineDiscussions, {
-      propsData,
+      propsData: { discussions },
       provide,
     });
   };
 
-  const mountComponent = (
-    propsData = {},
-    provide = { userPermissions: { can_create_note: true }, endpoints: {} },
-  ) => {
+  const mountComponent = (discussions = []) => {
+    createTestingPinia({ stubActions: false });
+    const store = useDiffDiscussions();
     wrapper = mount(DiffLineDiscussions, {
-      propsData,
-      provide,
+      propsData: { discussions },
+      provide: { store, userPermissions: { can_create_note: true }, endpoints: {} },
       attachTo: document.body,
     });
   };
 
-  beforeEach(() => {
-    createTestingPinia({ stubActions: false });
-  });
-
   it('shows regular discussions', () => {
-    useDiffDiscussions().setInitialDiscussions([
-      {
-        id: '1',
-        diff_discussion: true,
-        position: { old_path: 'old', new_path: 'old', new_line: '1', old_line: '1' },
-        notes: [{}],
-      },
-    ]);
-    createComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
-    const discussions = wrapper.findComponent(DiffDiscussions).props('discussions');
-    expect(discussions).toHaveLength(1);
-    expect(discussions[0]).toStrictEqual(useDiffDiscussions().discussions[0]);
-  });
-
-  it('does not show hidden discussions', () => {
-    useDiffDiscussions().setInitialDiscussions([
-      {
-        id: '1',
-        diff_discussion: true,
-        hidden: true,
-        position: { old_path: 'old', new_path: 'old', new_line: '1', old_line: '1' },
-        notes: [{}],
-      },
-    ]);
-    createComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
-    expect(wrapper.findComponent(DiffDiscussions).exists()).toBe(false);
+    const discussion = createDiscussion();
+    createComponent([discussion]);
+    const rendered = wrapper.findComponent(DiffDiscussions).props('discussions');
+    expect(rendered).toHaveLength(1);
+    expect(rendered[0]).toStrictEqual(discussion);
   });
 
   it('shows new discussion form', () => {
-    useDiffDiscussions().addNewLineDiscussionForm({
-      oldPath: 'old',
-      newPath: 'old',
-      oldLine: '1',
-      newLine: '1',
-    });
-    createComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
-    expect(wrapper.findComponent(NewLineDiscussionForm).props('discussion')).toStrictEqual(
-      useDiffDiscussions().discussions[0],
-    );
-  });
-
-  it('emits empty event when there are no discussions', async () => {
-    useDiffDiscussions().addNewLineDiscussionForm({
-      oldPath: 'old',
-      newPath: 'old',
-      oldLine: '1',
-      newLine: '1',
-    });
-    createComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
-    useDiffDiscussions().removeNewLineDiscussionForm(useDiffDiscussions().discussions[0]);
-    await nextTick();
-    expect(wrapper.emitted('empty')).toStrictEqual([[]]);
+    const form = { id: 'form-1', isForm: true };
+    createComponent([form]);
+    expect(wrapper.findComponent(NewLineDiscussionForm).props('discussion')).toBe(form);
   });
 
   it('scrolls to note fragment once', () => {
     setWindowLocation('#note_abc');
     const mock = jest.fn();
     jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(mock);
-    useDiffDiscussions().setInitialDiscussions([
-      {
-        id: '1',
-        diff_discussion: true,
-        position: { old_path: 'old', new_path: 'old', new_line: '1', old_line: '1' },
+    const discussions = [
+      createDiscussion({
         notes: [{ id: 'abc', author: { id: 1 }, created_at: new Date().toDateString() }],
-      },
-    ]);
-    mountComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
-    mountComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
+      }),
+    ];
+    mountComponent(discussions);
+    mountComponent(discussions);
     expect(mock).toHaveBeenCalledTimes(1);
     expect(mock.mock.contexts[0]).toBe(document.querySelector('a[href="#note_abc"]'));
   });
 
-  describe('start another thread', () => {
-    it('can start another thread', () => {
-      isLoggedIn.mockReturnValue(true);
-      useDiffDiscussions().setInitialDiscussions([
+  describe('line highlighting', () => {
+    const getDiscussionWrapper = () =>
+      wrapper.findComponent(DiffDiscussions).element.closest('[class]');
+
+    it('emits highlight with line range on mouseenter', () => {
+      const discussion = createDiscussion({
+        position: { old_path: 'old', new_path: 'old', new_line: '1', old_line: '1' },
+      });
+      createComponent([discussion]);
+      getDiscussionWrapper().dispatchEvent(new MouseEvent('mouseenter'));
+      expect(wrapper.emitted('highlight')).toHaveLength(1);
+      expect(wrapper.emitted('highlight')[0]).toEqual([
         {
-          id: '1',
-          diff_discussion: true,
-          position: { old_path: 'old', new_path: 'old', new_line: '1', old_line: '1' },
-          notes: [{}],
+          start: { old_line: '1', new_line: '1' },
+          end: { old_line: '1', new_line: '1' },
         },
       ]);
-      createComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
+    });
+
+    it('emits highlight with line_range when present', () => {
+      const lineRange = {
+        start: { old_line: 1, new_line: null },
+        end: { old_line: 5, new_line: null },
+      };
+      const discussion = createDiscussion({
+        position: {
+          old_path: 'old',
+          new_path: 'old',
+          new_line: null,
+          old_line: 1,
+          line_range: lineRange,
+        },
+      });
+      createComponent([discussion]);
+      getDiscussionWrapper().dispatchEvent(new MouseEvent('mouseenter'));
+      expect(wrapper.emitted('highlight')[0]).toEqual([lineRange]);
+    });
+
+    it('emits highlight on mouseenter for form discussions', () => {
+      const form = {
+        isForm: true,
+        position: { old_line: '1', new_line: '1' },
+      };
+      createComponent([form]);
+      const formWrapper = wrapper.findComponent(NewLineDiscussionForm).element.closest('[class]');
+      formWrapper.dispatchEvent(new MouseEvent('mouseenter'));
+      expect(wrapper.emitted('highlight')).toHaveLength(1);
+    });
+
+    it('emits clearHighlight on mouseleave', () => {
+      const discussion = createDiscussion({
+        position: { old_path: 'old', new_path: 'old', new_line: '1', old_line: '1' },
+      });
+      createComponent([discussion]);
+      getDiscussionWrapper().dispatchEvent(new MouseEvent('mouseleave'));
+      expect(wrapper.emitted('clear-highlight')).toHaveLength(1);
+    });
+  });
+
+  describe('start another thread', () => {
+    it('emits start-thread', () => {
+      isLoggedIn.mockReturnValue(true);
+      createComponent([createDiscussion()]);
       wrapper.findComponent(GlButton).vm.$emit('click');
-      expect(useDiffDiscussions().discussions[1].isForm).toBe(true);
+      expect(wrapper.emitted('start-thread')).toHaveLength(1);
+    });
+
+    it('hides button when a form is present', () => {
+      isLoggedIn.mockReturnValue(true);
+      createComponent([createDiscussion(), { id: 'form-1', isForm: true }]);
+      expect(wrapper.findComponent(GlButton).exists()).toBe(false);
     });
 
     it('shows placeholder for guests', () => {
       isLoggedIn.mockReturnValue(false);
-      useDiffDiscussions().setInitialDiscussions([
-        {
-          id: '1',
-          diff_discussion: true,
-          position: { old_path: 'old', new_path: 'old', new_line: '1', old_line: '1' },
-          notes: [{}],
-        },
-      ]);
-      createComponent({ position: { oldPath: 'old', newPath: 'old', oldLine: '1', newLine: '1' } });
+      createComponent([createDiscussion()]);
       expect(wrapper.findComponent(NoteSignedOutWidget).exists()).toBe(true);
       expect(wrapper.findComponent(GlButton).exists()).toBe(false);
     });

@@ -5,6 +5,7 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
 
   before_action :chat_name_token, only: [:new]
   before_action :chat_name_params, only: [:new, :create, :deny]
+  before_action :set_hide_search_settings, only: [:index, :new]
 
   feature_category :integrations
 
@@ -51,6 +52,10 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
   end
 
   private
+
+  def set_hide_search_settings
+    @hide_search_settings = true
+  end
 
   def delete_chat_name_token
     chat_name_token.delete

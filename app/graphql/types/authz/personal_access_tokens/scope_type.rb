@@ -13,7 +13,7 @@ module Types
           case object
           when ::Authz::GranularScope
             Types::Authz::AccessTokens::GranularScopeType
-          when String
+          when String, Symbol
             Types::Authz::AccessTokens::LegacyScopeType
           else
             raise ::Gitlab::Graphql::Errors::BaseError, "Unknown scope type #{object.class.name}"

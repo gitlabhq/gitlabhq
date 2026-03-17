@@ -25,7 +25,10 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
   end
 
   context 'when service desk is enabled for the project' do
-    let_it_be_with_reload(:project) { create(:project, :repository, :private, group: group, path: 'test', service_desk_enabled: true) }
+    let_it_be_with_reload(:project) do
+      create(:project, :repository, :private, group: group, path: 'test', service_desk_enabled: true)
+    end
+
     let_it_be(:support_bot) { create(:support_bot) }
 
     let(:confidential_ticket) { true }
@@ -129,7 +132,8 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
         receiver.execute
         new_ticket = WorkItem.last
 
-        expect(new_ticket.issue_customer_relations_contacts.map(&:contact)).to contain_exactly(contact, contact2, contact3)
+        expect(new_ticket.issue_customer_relations_contacts.map(&:contact)).to contain_exactly(contact, contact2,
+          contact3)
       end
 
       it_behaves_like 'tickets should not be confidential is set'
@@ -292,6 +296,22 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             expect { subject }.not_to change { Issue.count }
           end
 
+          context 'when issue_email already existed but for a different namespace' do
+            let(:other_namespace) { create(:namespace) }
+
+            before do
+              Issue::Email.last.update!(namespace_id: other_namespace.id)
+            end
+
+            it 'does create a new issue and scopes the issue_email to the correct project namespace_id' do
+              expect { subject }.to change { Issue.count }.by(1).and(
+                change { Issue::Email.count }.from(1).to(2)
+              )
+
+              expect(Issue::Email.last.namespace_id).to eq(Issue.last.namespace_id)
+            end
+          end
+
           it 'adds a comment to the created issue' do
             subject
 
@@ -301,6 +321,15 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             expect(notes.count).to eq(1)
             expect(new_note.note).to eq("Service desk reply!\n\n`/label ~label2`")
             expect(new_note.author).to eql(support_bot)
+          end
+
+          it 'links external participant to the note' do
+            subject
+
+            new_note = WorkItem.last.notes.first
+
+            expect(new_note.note_metadata.external_author).to eq('alan@adventuretime.ooo')
+            expect(new_note.note_metadata.namespace_id).to eq(new_note.namespace_id)
           end
 
           it 'does not send thank you email' do
@@ -318,17 +347,27 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
               .to match_array(%w[alan@adventuretime.ooo jake@adventuretime.ooo])
           end
 
-          context 'when issue_email_participants FF is disabled' do
-            before do
-              # Was turned off after issue creation
-              stub_feature_flags(issue_email_participants: false)
+          context 'when issue is closed and reopen_on_external_participant_note is enabled' do
+            let(:reopen_note) { WorkItem.last.notes.last }
+            let(:work_item) { WorkItem.last }
+            let(:reopen_comment_body) do
+              s_(
+                "ServiceDesk|This issue has been reopened because it received a new comment from an external participant."
+              )
             end
 
-            it 'creates issue_email_participant for the author' do
-              subject
+            before do
+              settings.update!(reopen_issue_on_external_participant_note: true)
+              work_item.close
+            end
 
-              expect(WorkItem.last.issue_email_participants.map(&:email))
-                .to match_array(%w[jake@adventuretime.ooo])
+            it 'reopens issue and creates a confidential reopen note' do
+              expect { subject }.to change { work_item.notes.count }.by(2)
+              expect(work_item.reload).to be_open
+
+              expect(reopen_note).to be_confidential
+              expect(reopen_note.author).to eq(support_bot)
+              expect(reopen_note.note).to include(reopen_comment_body)
             end
           end
         end
@@ -517,7 +556,10 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           context 'when there are multiple projects with same key' do
             let_it_be(:project_with_same_key) { create(:project, group: group, service_desk_enabled: true) }
 
-            let(:email_raw) { service_desk_fixture('emails/service_desk_custom_address.eml', slug: project_with_same_key.full_path_slug.to_s) }
+            let(:email_raw) do
+              service_desk_fixture('emails/service_desk_custom_address.eml',
+                slug: project_with_same_key.full_path_slug.to_s)
+            end
 
             before do
               create(:service_desk_setting, project: project_with_same_key, project_key: service_desk_key)
@@ -660,7 +702,9 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
 
           context 'with valid service desk settings' do
             let_it_be(:user) { create(:user) }
-            let_it_be(:credentials) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
+            let_it_be(:credentials) do
+              build(:service_desk_custom_email_credential, project: project).save!(validate: false)
+            end
 
             let_it_be_with_reload(:verification) do
               create(:service_desk_custom_email_verification, project: project, token: 'ZROT4ZZXA-Y6', triggerer: user)

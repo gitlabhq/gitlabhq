@@ -169,4 +169,62 @@ RSpec.describe ActiveContext::Databases::Postgresql::Executor do
       end
     end
   end
+
+  describe '#nullify_field' do
+    let(:collection_name) { 'test_collection' }
+    let(:field_name) { 'description' }
+    let(:collection) { double('Collection', name: 'prefix_test_collection', number_of_partitions: 2) }
+
+    before do
+      allow(connection).to receive_message_chain(:collections, :find_by).and_return(collection)
+      allow(client).to receive(:with_connection).and_yield(pg_connection)
+      allow(pg_connection).to receive(:quote_table_name) { |name| "\"#{name}\"" }
+      allow(pg_connection).to receive(:quote_column_name) { |name| "\"#{name}\"" }
+      allow(pg_connection).to receive_messages(column_exists?: true, update: 5)
+    end
+
+    it 'executes correct SQL query with batch size and returns updated count' do
+      result = executor.nullify_field(collection_name, field_name, batch_size: 100)
+
+      expected_sql = <<~SQL.squish
+        UPDATE "prefix_test_collection"
+        SET "description" = NULL
+        WHERE (id, partition_id) IN (
+          SELECT id, partition_id FROM "prefix_test_collection"
+          WHERE "description" IS NOT NULL
+          LIMIT 100
+        )
+      SQL
+
+      expect(pg_connection).to have_received(:update) do |actual_sql|
+        expect(actual_sql.squish).to eq(expected_sql)
+      end
+      expect(result).to eq(5)
+    end
+
+    context 'when column does not exist' do
+      before do
+        allow(pg_connection).to receive(:column_exists?).and_return(false)
+      end
+
+      it 'returns 0 without executing update' do
+        result = executor.nullify_field(collection_name, field_name, batch_size: 100)
+
+        expect(result).to eq(0)
+        expect(pg_connection).not_to have_received(:update)
+      end
+    end
+
+    context 'when collection does not exist' do
+      before do
+        allow(connection).to receive_message_chain(:collections, :find_by).and_return(nil)
+      end
+
+      it 'raises an error' do
+        expect do
+          executor.nullify_field(collection_name, field_name, batch_size: 100)
+        end.to raise_error(/Collection .* not found/)
+      end
+    end
+  end
 end

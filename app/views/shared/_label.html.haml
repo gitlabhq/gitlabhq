@@ -7,10 +7,10 @@
 - tooltip_title = label_status_tooltip(label, status) if status
 - group = label.group || label.project&.group
 
-%li.js-label-list-item.gl-list-none.gl-border-b.gl-border-section.last-of-type:gl-border-b-0{ id: label_css_id, data: { id: label.id } }
-  .label-content.gl-pl-5.gl-pr-3.gl-py-4.gl-rounded-base{ class: "#{ 'gl-py-3' if force_priority }" }
+%li.js-label-list-item.gl-list-none.gl-border-b.last-of-type:gl-border-b-0{ id: label_css_id, data: { id: label.id } }
+  .label-content.gl-pl-3.gl-pr-2.gl-py-3
     = render "shared/label_row", label: label, force_priority: force_priority
-    %ul.label-actions-list
+    %ul.label-actions-list{ class: '@md/panel:gl-mt-4' }
       - if can?(current_user, :admin_label, @project) && !label.archived
         %li.gl-inline-block.js-toggle-priority.gl-ml-3{ data: { url: remove_priority_project_label_path(@project, label),
           dom_id: dom_id(label), type: label.type } }

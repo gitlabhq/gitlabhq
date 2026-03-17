@@ -1,5 +1,5 @@
 <script>
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { GlFormGroup, GlFormInput, GlFormCharacterCount } from '@gitlab/ui';
 import { n__, __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';

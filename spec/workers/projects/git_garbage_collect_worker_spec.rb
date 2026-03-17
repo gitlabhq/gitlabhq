@@ -5,11 +5,14 @@ require 'spec_helper'
 RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
-  it_behaves_like 'can collect git garbage' do
-    let(:resource) { project }
-    let(:statistics_service_klass) { Projects::UpdateStatisticsService }
-    let(:statistics_keys) { [:repository_size, :lfs_objects_size] }
-    let(:expected_default_lease) { "projects:#{resource.id}" }
+  context 'with quarantine',
+    quarantine: "https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/34478" do
+    it_behaves_like 'can collect git garbage' do
+      let(:resource) { project }
+      let(:statistics_service_klass) { Projects::UpdateStatisticsService }
+      let(:statistics_keys) { [:repository_size, :lfs_objects_size] }
+      let(:expected_default_lease) { "projects:#{resource.id}" }
+    end
   end
 
   context 'when is able to get the lease' do
@@ -27,6 +30,9 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
       let_it_be(:pool) { create(:pool_repository, :ready, source_project: project) }
 
       it 'ensures the repositories are linked' do
+        allow(subject).to receive(:gitaly_call)
+        allow(subject).to receive(:flush_ref_caches)
+
         expect(project.pool_repository).to receive(:link_repository).once
 
         subject.perform(*params)
@@ -55,9 +61,12 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
 
       before do
         stub_lfs_setting(enabled: true)
+        allow(subject).to receive(:gitaly_call)
+        allow(subject).to receive(:flush_ref_caches)
       end
 
-      it 'cleans up unreferenced LFS objects' do
+      it 'cleans up unreferenced LFS objects',
+        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/37721' do
         expect_next_instance_of(Gitlab::Cleanup::OrphanLfsFileReferences) do |svc|
           expect(svc.project).to eq(project)
           expect(svc.dry_run).to be_falsy
@@ -71,6 +80,7 @@ RSpec.describe Projects::GitGarbageCollectWorker, feature_category: :source_code
 
       context 'when optimize repository call fails' do
         before do
+          allow(subject).to receive(:gitaly_call).and_call_original
           allow(project.repository.gitaly_repository_client).to receive(:optimize_repository).and_raise('Boom')
         end
 

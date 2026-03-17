@@ -1,8 +1,8 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Back up your self-managed GitLab instance using gitlab-backup command, including database, repositories, and configuration files.
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Back up your self-managed GitLab instance using `gitlab-backup` command, including database, repositories, and configuration files.
 title: Back up GitLab
 description: Guide to backing up GitLab instances, covering backup strategies, data types, command options, and scaling considerations.
 ---
@@ -149,7 +149,7 @@ GitLab stores blobs (or files) such as issue attachments or LFS objects into eit
 - The file system in a specific location.
 - An [Object Storage](../object_storage.md) solution. Object Storage solutions can be:
   - Cloud based like Amazon S3 and Google Cloud Storage.
-  - Hosted by you (like MinIO).
+  - Self-hosted S3-compatible object storage.
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
 #### Object storage
@@ -176,7 +176,7 @@ GitLab container registry storage can be configured in either:
 - The file system in a specific location.
 - An Object Storage solution. Object Storage solutions can be:
   - Cloud based like Amazon S3 and Google Cloud Storage.
-  - Hosted by you (like MinIO).
+  - Self-hosted S3-compatible object storage.
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
 The backup command does not back up registry data when they are stored in Object Storage.
@@ -517,7 +517,7 @@ Depending on your installation type, slightly different components can be skippe
 
 {{< tab title="Linux package (Omnibus) / Docker / Self-compiled" >}}
 
-<!-- source: https://gitlab.com/gitlab-org/gitlab/-/blob/d693aa7f894c7306a0d20ab6d138a7b95785f2ff/lib/backup/manager.rb#L117-133 -->
+<!-- source: <https://gitlab.com/gitlab-org/gitlab/-/blob/d693aa7f894c7306a0d20ab6d138a7b95785f2ff/lib/backup/manager.rb#L117-133> -->
 
 - `db` (database)
 - `repositories` (Git repositories data, including wikis)
@@ -536,7 +536,7 @@ Depending on your installation type, slightly different components can be skippe
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-<!-- source: https://gitlab.com/gitlab-org/build/CNG/-/blob/068e146db915efcd875414e04403410b71a2e70c/gitlab-toolbox/scripts/bin/backup-utility#L19 -->
+<!-- source: <https://gitlab.com/gitlab-org/build/CNG/-/blob/068e146db915efcd875414e04403410b71a2e70c/gitlab-toolbox/scripts/bin/backup-utility#L19> -->
 
 - `db` (database)
 - `repositories` (Git repositories data, including wikis)
@@ -735,11 +735,17 @@ toolbox:
 > support incremental backups for all subtasks.
 
 Incremental repository backups can be faster than full repository backups because they only pack changes since the last backup into the backup bundle for each repository.
-The incremental backup archives are not linked to each other: each archive is a self-contained backup of the instance. There must be an existing backup
-to create an incremental backup from.
+Backup archives produced by `gitlab-backup` are portable and self-contained because they contain all the steps needed to restore each repository from the original full backup onward.
 
 To restore an incremental backup to a new GitLab instance (no pre-existing data), you must create the incremental backup from a full backup.
 Do not skip any backup components when creating the base backup.
+
+With server-side repository backups, incremental repository backup files are stored separately in object storage. Each increment depends on all prior steps back to the original full backup.
+
+> [!warning]
+> Do not delete incremental backup files from object storage. If an intermediate file is deleted (for example, through an object storage lifecycle policy), the backup chain is broken and the backup cannot be restored.
+
+For more details, see [Restoring an incremental repository backup](restore_gitlab.md#restoring-an-incremental-repository-backup).
 
 Use the `PREVIOUS_BACKUP=<backup-id>` option to choose the backup to use. By default, a backup file is created
 as documented in the [Backup ID](backup_archive_process.md#backup-id) section. You can override the `<backup-id>` portion of the filename by setting the
@@ -1619,7 +1625,6 @@ You can copy Git repository data using any method, as long as writes are prevent
    ```
 
 1. Use a [`tar` pipe to copy the entire repository's directory to another server or location](../operations/moving_repositories.md#use-a-tar-pipe-to-another-server).
-
 1. Use `sftp`, `scp`, `cp`, or any other copying method.
 
 #### Online backup through marking repositories as read-only (experimental)

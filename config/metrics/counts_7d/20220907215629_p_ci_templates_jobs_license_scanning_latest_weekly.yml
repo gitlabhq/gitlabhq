@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_templates.p_ci_templates_jobs_license_scanning_latest_weekly
 description: Weekly counts for License Scanning CI Latest template (Jobs folder)
 product_group: composition_analysis
+product_categories:
+- software_composition_analysis
 value_type: number
 status: active
 milestone: '15.4'

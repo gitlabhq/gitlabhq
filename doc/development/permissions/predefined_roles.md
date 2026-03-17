@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authorization
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Predefined system of user roles
 ---
 
@@ -21,6 +21,12 @@ Each user can be one of the following types:
 - [Administrator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/policies/base_policy.rb#L6) - read-write access.
 
 See the [permissions page](../../user/permissions.md) for details on how each user type is used.
+
+## Role definition YAML files
+
+Default roles are defined in YAML files under `config/authz/roles/`.
+Each file specifies the role's direct permissions and inheritance hierarchy.
+For the full schema and how permissions are resolved, see [Role definition YAML files](role_definitions.md).
 
 ## Groups and Projects
 

@@ -196,6 +196,7 @@ module Gitlab
           end
 
           options[:name] ||= index_name(table_name, column_name)
+          validate_index_name_length!(options[:name])
 
           partitioned_table
             .postgres_partitions
@@ -227,6 +228,13 @@ module Gitlab
         end
 
         private
+
+        def validate_index_name_length!(index_name)
+          return if index_name.to_s.length <= ::Gitlab::Database::MAX_INDEX_NAME_LENGTH
+
+          raise ArgumentError, "Index name '#{index_name}' is too long " \
+            "(#{index_name.length}/#{::Gitlab::Database::MAX_INDEX_NAME_LENGTH} characters)."
+        end
 
         def find_indexes(table_name, schema_name: connection.current_schema)
           indexes = connection.select_all(<<~SQL, 'SQL', [schema_name, table_name])

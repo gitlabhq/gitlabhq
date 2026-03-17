@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: 'Tutorial: Structure the package registry for enterprise scale'
 ---
 
@@ -178,7 +178,7 @@ This configuration automatically provides access to all packages across your org
 Next, add a read-only deploy token. This token provides access to the packages stored in the subgroups and projects of the organization,
 so your teams can use them for development.
 
-1. In your top-level group, on the left sidebar, select **Settings** > **Repository**.
+1. In your top-level group, in the left sidebar, select **Settings** > **Repository**.
 1. Expand **Deploy tokens**.
 1. Select **Add token**.
 1. Complete the fields, and set the scope to `read_repository`.

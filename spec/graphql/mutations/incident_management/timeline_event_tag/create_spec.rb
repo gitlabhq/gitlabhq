@@ -18,7 +18,7 @@ RSpec.describe Mutations::IncidentManagement::TimelineEventTag::Create, feature_
 
     context 'when user has permission to create timeline event tag' do
       it 'adds the tag to the project' do
-        expect { resolve }.to change(IncidentManagement::TimelineEventTag, :count).by(1)
+        expect { resolve }.to change { IncidentManagement::TimelineEventTag.count }.by(1)
         expect(project.incident_management_timeline_event_tags.by_names(['Test tag 1']).pluck_names)
           .to match_array(['Test tag 1'])
       end

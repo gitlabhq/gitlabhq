@@ -136,6 +136,14 @@ URL = "unix:/home/git/gitlab/redis/redis.socket"
   # Default: 0 (immediate retry, recommended for Kubernetes)
   retry_after_seconds = 0
 
+  # HTTP status code to return when shedding load
+  # Use a custom code (e.g., 529) to distinguish load shedding responses
+  # from other 503 errors (database timeouts, Gitaly issues, etc.).
+  # This allows NGINX to retry load shedding responses while not retrying
+  # other 503 errors.
+  # Default: 503 (Service Unavailable)
+  # status_code = 529
+
   # Strategy for calculating effective backlog across workers
   # Options: "max" (default), "sum"
   #   - "max": Use the maximum backlog across all workers

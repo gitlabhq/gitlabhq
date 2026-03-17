@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :with_license, feature_category: :importers do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, name: 'Project name') }
   let_it_be(:bulk_import) { create(:bulk_import) }
   let_it_be(:entity) { create(:bulk_import_entity, :project_entity, project: project, bulk_import: bulk_import) }
   let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
@@ -13,6 +13,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
   let(:extra) { {} }
   let(:project_attributes) do
     {
+      'name' => 'Source name',
       'description' => 'description',
       'visibility_level' => 0,
       'archived' => false,
@@ -37,7 +38,6 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
       'printing_merge_request_link_enabled' => true,
       'auto_cancel_pending_pipelines' => 'enabled',
       'service_desk_enabled' => false,
-      'delete_error' => nil,
       'disable_overriding_approvers_per_merge_request' => true,
       'resolve_outdated_diff_discussions' => true,
       'jobs_cache_index' => nil,
@@ -68,9 +68,15 @@ RSpec.describe BulkImports::Projects::Pipelines::ProjectAttributesPipeline, :wit
     end
 
     it 'imports project attributes', :aggregate_failures do
+      project_attributes.delete('name')
+
       project_attributes.each_pair do |key, value|
         expect(project.public_send(key)).to eq(value)
       end
+    end
+
+    it 'does not import project name' do
+      expect(project.name).not_to eq(project_attributes['name'])
     end
 
     context 'when project is archived' do

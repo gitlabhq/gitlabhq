@@ -1,5 +1,0 @@
-mutation setSortingPreference($input: UserPreferencesUpdateInput!) {
-  userPreferencesUpdate(input: $input) {
-    errors
-  }
-}

@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Customize SAST analyzer rules in GitLab by disabling, overriding, or replacing default rules.
 title: Customize rulesets
 ---
@@ -32,10 +32,9 @@ Ruleset
 : A collection of rules and their configuration, defined in the `sast-ruleset.toml` file.
 
 Passthrough
-
 : A passthrough is a configuration source that pulls ruleset customizations from a file, Git
-repository, URL, or inline configuration. You can combine multiple passthroughs into a chain, where
-each one can overwrite or append to the previous configuration.
+  repository, URL, or inline configuration. You can combine multiple passthroughs into a chain, where
+  each one can overwrite or append to the previous configuration.
 
 ## Rule customization options
 
@@ -50,6 +49,10 @@ The table below shows which customization options are available for each analyze
 | Disable default rules               | {{< yes >}}                                                                                                                                                      | {{< yes >}}                | {{< yes >}}                                        |
 | Override metadata of default rules  | {{< yes >}}                                                                                                                                                      | {{< yes >}}                | {{< yes >}}                                        |
 | Replace or add to default rules | Supports modifying the behavior of default non-taint, structural rules and the application of file and raw passthroughs. Other passthrough types are ignored. | Supports full passthroughs. | {{< no >}}                                         |
+
+> [!note]
+> The scope of GitLab support is limited to the Semgrep analyzer integration and default rulesets. If you replace or add to the default rules, you must manage compatibility issues that might occur as a result.
+> For more details, see the [Semgrep analyzer compatibility documentation](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/COMPATIBILITY.md).
 
 ### Disable default rules
 

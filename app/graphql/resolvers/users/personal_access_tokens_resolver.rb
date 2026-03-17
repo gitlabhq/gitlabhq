@@ -8,7 +8,7 @@ module Resolvers
 
       type Types::Authz::PersonalAccessTokens::PersonalAccessTokenType.connection_type, null: true
 
-      authorize :read_user_personal_access_tokens
+      authorize :read_personal_access_token
       authorizes_object!
 
       alias_method :user, :object

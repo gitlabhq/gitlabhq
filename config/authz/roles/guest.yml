@@ -1,0 +1,34 @@
+---
+name: guest
+description: View and comment on issues and epics. Cannot push code or access repository.
+  This role applies to private and internal projects only.
+inherits_from: []
+project:
+  permissions: []
+  raw_permissions:
+  - award_emoji
+  - create_issue
+  - create_note
+  - export_work_items
+  - read_analytics
+  - read_cycle_analytics
+  - read_insights
+  - read_issue
+  - read_issue_board
+  - read_issue_board_list
+  - read_label
+  - read_milestone
+  - read_note
+  - read_project
+  - read_project_member
+  - read_release
+  - read_snippet
+  - read_upload
+  - read_wiki
+  - upload_file
+group:
+  permissions: []
+  raw_permissions:
+  - award_emoji
+  - read_group
+  - read_release

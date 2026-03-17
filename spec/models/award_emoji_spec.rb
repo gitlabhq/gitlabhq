@@ -359,6 +359,7 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
     let(:personal_snippet_note) { create(:note_on_personal_snippet) }
     let(:snippet_organization_id) { personal_snippet.organization_id }
     let(:personal_snippet_organization) { personal_snippet.organization }
+    let(:wiki_page_meta) { create(:wiki_page_meta, project: project) }
 
     where(:awardable, :namespace_id, :organization_id) do
       ref(:issue)                 | ref(:project_namespace_id) | nil
@@ -367,6 +368,7 @@ RSpec.describe AwardEmoji, feature_category: :team_planning do
       ref(:personal_snippet)      | nil                        | ref(:snippet_organization_id)
       ref(:issue_note)            | ref(:project_namespace_id) | nil
       ref(:personal_snippet_note) | nil                        | ref(:snippet_organization_id)
+      ref(:wiki_page_meta)        | ref(:project_namespace_id) | nil
     end
 
     with_them do

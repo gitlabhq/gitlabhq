@@ -1,4 +1,4 @@
-import { flatMap } from 'lodash';
+import { flatMap } from 'lodash-es';
 import { Node } from '@tiptap/core';
 import { Editor } from '@tiptap/vue-2';
 import { nextTick } from 'vue';

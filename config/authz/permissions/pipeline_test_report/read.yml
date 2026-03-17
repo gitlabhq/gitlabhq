@@ -1,5 +1,3 @@
 ---
 name: read_pipeline_test_report
 description: Grants the ability to read pipeline test reports
-boundaries:
-  - project

@@ -17,6 +17,7 @@ import getAllowedWorkItemParentTypes from '~/work_items/graphql/work_item_allowe
 import {
   workItemResponseFactory,
   mockParticipantWidget,
+  mockAssignees,
   allowedParentTypesResponse,
   allowedParentTypesEmptyResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
@@ -107,6 +108,30 @@ describe('WorkItemAttributesWrapper component', () => {
       });
 
       expect(findWorkItemAssignees().exists()).toBe(false);
+    });
+
+    describe('when features.assignees is present', () => {
+      let firstAssignee;
+      let workItem;
+
+      beforeEach(() => {
+        [firstAssignee] = mockAssignees;
+        workItem = {
+          ...workItemResponseFactory().data.workItem,
+          features: {
+            assignees: {
+              allowsMultipleAssignees: true,
+              canInviteMembers: false,
+              assignees: { nodes: [firstAssignee] },
+            },
+          },
+        };
+        createComponent({ workItem });
+      });
+
+      it('renders assignees component', () => {
+        expect(findWorkItemAssignees().exists()).toBe(true);
+      });
     });
   });
 

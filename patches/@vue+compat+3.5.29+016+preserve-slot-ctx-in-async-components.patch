@@ -1,0 +1,38 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -11933,7 +11933,14 @@ function normalizeChildren(vnode, children) {
+       type = 32;
+       const slotFlag = children._;
+       if (!slotFlag && !isInternalObject(children)) {
+-        children._ctx = currentRenderingInstance;
++        // patch-package: Preserve existing _ctx for slot context in async component scenarios
++        // When async components resolve and create inner component vnodes, normalizeChildren
++        // is called again. Without this check, _ctx would be overwritten with the async wrapper
++        // instance instead of the original parent where the slot content was defined.
++        // This ensures directives in slot content can be resolved from the defining component.
++        if (!children._ctx) {
++          children._ctx = currentRenderingInstance;
++        }
+       } else if (slotFlag === 3 && currentRenderingInstance) {
+         if (currentRenderingInstance.slots._ === 1) {
+           children._ = 1;
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -11884,7 +11884,14 @@ function normalizeChildren(vnode, children) {
+       type = 32;
+       const slotFlag = children._;
+       if (!slotFlag && !isInternalObject(children)) {
+-        children._ctx = currentRenderingInstance;
++        // patch-package: Preserve existing _ctx for slot context in async component scenarios
++        // When async components resolve and create inner component vnodes, normalizeChildren
++        // is called again. Without this check, _ctx would be overwritten with the async wrapper
++        // instance instead of the original parent where the slot content was defined.
++        // This ensures directives in slot content can be resolved from the defining component.
++        if (!children._ctx) {
++          children._ctx = currentRenderingInstance;
++        }
+       } else if (slotFlag === 3 && currentRenderingInstance) {
+         if (currentRenderingInstance.slots._ === 1) {
+           children._ = 1;

@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Recommended deployments at scale.
 title: Reference architectures
 ---
@@ -422,11 +422,11 @@ Additionally, the following cloud provider services are recommended for use as p
 
 | Cloud Service  | GCP                                                    | AWS                                                | Azure                                                                                                   | Bare Metal               |
 |----------------|--------------------------------------------------------|----------------------------------------------------|---------------------------------------------------------------------------------------------------------|--------------------------|
-| Object Storage | [Cloud Storage](https://cloud.google.com/storage)      | [S3](https://aws.amazon.com/s3/)                   | [Azure Blob Storage](https://azure.microsoft.com/en-gb/products/storage/blobs)                          | [MinIO](https://min.io/) |
+| Object Storage | [Cloud Storage](https://cloud.google.com/storage)      | [S3](https://aws.amazon.com/s3/)                   | [Azure Blob Storage](https://azure.microsoft.com/en-gb/products/storage/blobs)                          | S3-compatible object storage |
 | Database       | [Cloud SQL](https://cloud.google.com/sql) <sup>2</sup> | [RDS](https://aws.amazon.com/rds/)                 | [Azure Database for PostgreSQL Flexible Server](https://azure.microsoft.com/en-gb/products/postgresql/) |                          |
 | Redis          | [Memorystore](https://cloud.google.com/memorystore)    | [ElastiCache](https://aws.amazon.com/elasticache/) | [Azure Cache for Redis (Premium)](https://azure.microsoft.com/en-gb/products/cache)                     |                          |
 
-<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
+<!-- Disable ordered list rule <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix> -->
 <!-- markdownlint-disable MD029 -->
 1. To ensure good performance, deploy the [Premium tier of Azure Cache for Redis](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview#service-tiers).
 2. For optimal performance, especially in larger environments (500 RPS / 25k users or higher),
@@ -491,7 +491,8 @@ Redis is primarily single threaded. For environments targeting the 200 RPS / 10,
 
 ### Best practices for object storage
 
-GitLab has been tested against [various object storage providers](../object_storage.md#supported-object-storage-providers) that are expected to work.
+GitLab has been tested against [various object storage providers](../object_storage.md#object-storage-provider-support)
+that are expected to work.
 
 Use a reputable solution that has full S3 compatibility.
 
@@ -568,19 +569,16 @@ Each reference architecture is tested against specific throughput targets based 
 
 The listed RPS targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads.
 
->>> [!note]
-
-- These RPS breakdowns represent test targets based on typical workload patterns. Your actual workload composition may vary. For guidance on assessing your specific RPS composition and when adjustments are needed, see [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
-- Network latency between components in test environments was observed at <5 ms but note this is not intended as a hard requirement.
-
->>>
+> [!note]
+>
+> - These RPS breakdowns represent test targets based on typical workload patterns. Your actual workload composition may
+>   vary. For guidance on assessing your specific RPS composition and when adjustments are needed, see
+>   [Understanding RPS composition](sizing.md#understanding-rps-composition-and-workload-patterns).
+> - Network latency between components in test environments was observed at <5 ms but note this is not intended as a hard requirement.
 
 ### Test coverage and results
 
-Testing is designed to be effective and provide good coverage for all reference architecture targets. Testing frequency varies by architecture type and size:
-
-- Linux package environments: Daily or weekly of all sizes on GCP and AWS.
-- Cloud Native environments: Weekly testing of select configurations on GCP and AWS.
+Testing is designed to be effective and provide good coverage for the reference architecture targets, spanning Linux package and Cloud Native environments. The specific environments and configurations tested are reviewed regularly to ensure the best coverage and cost-to-value balance, and may change over time.
 
 Our testing also includes prototype variations of these architectures being explored for potential future inclusion. Test results are publicly available on the [Reference Architecture wiki](https://gitlab.com/gitlab-org/reference-architectures/-/wikis/Benchmarks/Latest).
 

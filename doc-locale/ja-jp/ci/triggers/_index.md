@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: APIでパイプラインをトリガーする
 ---
 
@@ -16,7 +16,7 @@ title: APIでパイプラインをトリガーする
 
 [GitLab CI/CDに移行する](../migration/plan_a_migration.md)場合は、他のプロバイダーのジョブからAPIエンドポイントを呼び出すことで、GitLab CI/CDパイプラインをトリガーできます。たとえば、[Jenkins](../migration/jenkins.md)または[CircleCI](../migration/circleci.md)からの移行の一部として使用できます。
 
-APIで認証する場合は、以下を使用できます:
+APIで認証する場合は、以下を使用できます。
 
 - [パイプライントリガートークン](#create-a-pipeline-trigger-token)を使用して、[パイプライントリガーAPIエンドポイント](../../api/pipeline_triggers.md)でブランチまたはタグのパイプラインをトリガーする。
 - [CI/CDジョブトークン](../jobs/ci_job_token.md)を使用して、[マルチプロジェクトパイプラインをトリガー](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api)する。
@@ -26,13 +26,13 @@ APIで認証する場合は、以下を使用できます:
 
 パイプライントリガートークンを生成し、それを使用してAPIコールを認証することで、ブランチまたはタグのパイプラインをトリガーできます。このトークンは、ユーザーのプロジェクトのアクセスと権限を借用します。
 
-前提要件:
+前提条件: 
 
-- プロジェクトでのメンテナー以上のロールが必要です。
+- プロジェクトに対してメンテナーまたはオーナーのロールが必要です。
 
 トリガートークンを作成するには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **設定** > **CI/CD**を選択します。
 1. **パイプライントリガートークン**を展開します。
 1. **新しいトークンを追加**を選択します
@@ -40,11 +40,8 @@ APIで認証する場合は、以下を使用できます:
    - 自分が作成したすべてのトリガーについては、トークン全体を表示してコピーできます。
    - 他のプロジェクトメンバーが作成したトークンについては、最初の4文字のみを表示できます。
 
-{{< alert type="warning" >}}
-
-パブリックプロジェクトでトークンを平文で保存したり、悪意のあるユーザーがアクセスできる方法で保存したりすることは、セキュリティ上のリスクとなります。流出したトリガートークンは、予定外のデプロイを強制したり、CI/CD変数へのアクセスを試みたり、その他の不正な目的に使用されたりする恐れがあります。[マスクされたCI/CD変数](../variables/_index.md#mask-a-cicd-variable)は、トリガートークンのセキュリティを向上させるのに役立ちます。トークンを安全に保つ方法の詳細については、[セキュリティに関する考慮事項](../../security/tokens/_index.md#security-considerations)を参照してください。
-
-{{< /alert >}}
+> [!warning]
+> 公開プロジェクトにトークンを平文で保存したり、悪意のあるユーザーがアクセスできる方法で保存したりすることはセキュリティ上のリスクです。流出したトリガートークンは、予定外のデプロイを強制したり、CI/CD変数へのアクセスを試みたり、その他の不正な目的に使用されたりする恐れがあります。[マスクされたCI/CD変数](../variables/_index.md#mask-a-cicd-variable)は、トリガートークンのセキュリティを向上させるのに役立ちます。トークンを安全に保つ方法の詳細については、[セキュリティに関する考慮事項](../../security/tokens/_index.md#security-considerations)を参照してください。
 
 ## パイプラインをトリガーする {#trigger-a-pipeline}
 
@@ -54,7 +51,7 @@ APIで認証する場合は、以下を使用できます:
 
 cURLを使用して、[パイプライントリガーAPIエンドポイント](../../api/pipeline_triggers.md)でパイプラインをトリガーできます。例: 
 
-- 複数行のcURLコマンドを使用します:
+- 複数行のcURLコマンドを使用します。
 
   ```shell
   curl --request POST \
@@ -63,14 +60,14 @@ cURLを使用して、[パイプライントリガーAPIエンドポイント](.
        "https://gitlab.example.com/api/v4/projects/<project_id>/trigger/pipeline"
   ```
 
-- cURLを使用し、クエリ文字列で`<token>`と`<ref_name>`を渡します:
+- cURLを使用し、クエリ文字列で`<token>`と`<ref_name>`を渡します。
 
   ```shell
   curl --request POST \
        "https://gitlab.example.com/api/v4/projects/<project_id>/trigger/pipeline?token=<token>&ref=<ref_name>"
   ```
 
-それぞれの例で、以下の値を置き換えます:
+それぞれの例で、以下の値を置き換えます。
 
 - URLを`https://gitlab.com`またはインスタンスのURLに置き換えます。
 - `<token>`をトリガートークンに置き換えます。
@@ -81,7 +78,7 @@ cURLを使用して、[パイプライントリガーAPIエンドポイント](.
 
 パイプライントリガートークンが設定されたCI/CDジョブを使用して、別のパイプラインが実行されたときにパイプラインをトリガーできます。
 
-たとえば、`project-A`でタグが作成されたときに`project-B`の`main`ブランチでパイプラインをトリガーするには、プロジェクトAの`.gitlab-ci.yml`ファイルに次のジョブを追加します:
+たとえば、`project-A`でタグが作成されたときに`project-B`の`main`ブランチでパイプラインをトリガーするには、プロジェクトAの`.gitlab-ci.yml`ファイルに次のジョブを追加します。
 
 ```yaml
 trigger_pipeline:
@@ -101,13 +98,13 @@ trigger_pipeline:
 
 ### Webhookを使用する {#use-a-webhook}
 
-別のプロジェクトのWebhookからパイプラインをトリガーするには、プッシュイベントとタグイベントに対して次のようなWebhook URLを使用します:
+別のプロジェクトのWebhookからパイプラインをトリガーするには、プッシュイベントとタグイベントに対して次のようなWebhook URLを使用します。
 
 ```plaintext
 https://gitlab.example.com/api/v4/projects/<project_id>/ref/<ref_name>/trigger/pipeline?token=<token>
 ```
 
-以下の値を置き換えます:
+以下の値を置き換えます。
 
 - URLを`https://gitlab.com`またはインスタンスのURLに置き換えます。
 - `<project_id>`を`123456`などのプロジェクトIDに置き換えます。プロジェクトIDは、[プロジェクトの概要ページ](../../user/project/working_with_projects.md#find-the-project-id)に表示されています。
@@ -124,7 +121,7 @@ Webhookを使用してパイプラインをトリガーする場合は、`TRIGGE
 
 これらの変数は[最優先](../variables/_index.md#cicd-variable-precedence)され、同じ名前のすべての変数をオーバーライドします。
 
-パラメータの形式は`variables[key]=value`です。次に例を示します:
+パラメータの形式は`variables[key]=value`です。次に例を示します。
 
 ```shell
 curl --request POST \
@@ -140,11 +137,11 @@ curl --request POST \
 
 パイプラインの動作を制御する場合にインプットを使用すると、CI/CD変数を使用するよりもセキュリティと柔軟性が向上します。
 
-### APIコールでパイプラインのインプットを渡す {#pass-pipeline-inputs-in-the-api-call}
+### APIコールでパイプラインの入力を渡す {#pass-pipeline-inputs-in-the-api-call}
 
-トリガーAPIコールでパイプラインのインプットを渡すことができます。[インプット](../inputs/_index.md)は、組み込みの検証とドキュメントを使用してパイプラインをパラメータ化するための構造化された方法を提供します。
+トリガーAPIコールでパイプラインの入力を渡すことができます。[インプット](../inputs/_index.md)は、組み込みの検証とドキュメントを使用してパイプラインをパラメータ化するための構造化された方法を提供します。
 
-パラメータの形式は`inputs[name]=value`です。次に例を示します:
+パラメータの形式は`inputs[name]=value`です。次に例を示します。
 
 ```shell
 curl --request POST \
@@ -154,7 +151,7 @@ curl --request POST \
      "https://gitlab.example.com/api/v4/projects/123456/trigger/pipeline"
 ```
 
-インプット値は、パイプラインの`spec:inputs`セクションで定義された型と制約に従って検証されます:
+インプット値は、パイプラインの`spec:inputs`セクションで定義された型と制約に従って検証されます。
 
 ```yaml
 spec:
@@ -170,7 +167,7 @@ spec:
 
 パイプライントリガートークンを取り消すには:
 
-1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。[新しいナビゲーションをオン](../../user/interface_redesign.md#turn-new-navigation-on-or-off)にしている場合、このフィールドは上部のバーにあります。
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **設定** > **CI/CD**を選択します。
 1. **パイプラインのトリガー**を展開します。
 1. 取り消すトリガートークンの左側にある、**取り消し**（{{< icon name="remove" >}}）を選択します。
@@ -179,7 +176,7 @@ spec:
 
 ## トリガーされたパイプラインで実行するようにCI/CDジョブを設定する {#configure-cicd-jobs-to-run-in-triggered-pipelines}
 
-トリガーされたパイプラインで[ジョブを実行するタイミングを設定](../jobs/job_control.md)するには、次の方法を使用します:
+トリガーされたパイプラインで[ジョブを実行するタイミングを設定](../jobs/job_control.md)するには、次の方法を使用します。
 
 - [`rules`](../yaml/_index.md#rules)と[定義済みCI/CD変数](../variables/predefined_variables.md)`$CI_PIPELINE_SOURCE`を組み合わせて使用する。
 - [`only`/`except`](../yaml/deprecated_keywords.md#onlyrefs--exceptrefs)キーワードを使用する。ただし、推奨されるキーワードは`rules`です。
@@ -193,9 +190,9 @@ spec:
 
 ## どのパイプライントリガートークンが使用されたかを確認する {#see-which-pipeline-trigger-token-was-used}
 
-単一のジョブページにアクセスすると、どのパイプライントリガートークンによってジョブが実行されたかを確認できます。トリガートークンの一部が、右側のサイドバーの**Job details**（ジョブの詳細）に表示されます。
+単一のジョブページにアクセスすると、どのパイプライントリガートークンによってジョブが実行されたかを確認できます。右サイドバーの**Job details**の下に、パイプライントリガートークンの一部が表示されます。
 
-トリガートークンでトリガーされたパイプラインでは、**ビルド** > **ジョブ**において、ジョブに`triggered`というラベルが付きます。
+パイプライントリガートークンでトリガーされたパイプラインでは、**ビルド** > **ジョブ**でジョブが`triggered`とラベル付けされます。
 
 ## トラブルシューティング {#troubleshooting}
 
@@ -215,7 +212,7 @@ Webhookでパイプラインをトリガーすると、APIが`{"message":"403 Fo
 
 たとえば、別のブランチ名をデフォルトブランチとして使用しているプロジェクトで、誤ってブランチ名に`main`を指定してしまうといったケースが考えられます。
 
-このエラーのもう1つの原因として、`CI_PIPELINE_SOURCE`値が`trigger`の場合にパイプラインの作成を禁止するルールが設定されていることが考えられます。次に例を示します:
+このエラーのもう1つの原因として、`CI_PIPELINE_SOURCE`値が`trigger`の場合にパイプラインの作成を禁止するルールが設定されていることが考えられます。次に例を示します。
 
 ```yaml
 rules:

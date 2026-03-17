@@ -37,6 +37,7 @@ module Tooling
 
         %r{\A((ee|jh)/)?app/finders/(.+/)?integrations/} => [:database, :backend],
         [%r{\A((ee|jh)/)?db/(geo/)?(migrate|post_migrate)/}, %r{(:integrations|:\w+_tracker_data)\b}] => [:database],
+        %r{\A((ee|jh)/)?elastic/migrate/} => [:advanced_search_migration],
         [%r{\A((ee|jh)/)?(app|lib)/.+\.rb}, %r{\b(Integrations::|\.execute_(integrations|hooks))\b}] => [:backend],
         %r{\A(
           ((ee|jh)/)?app/((?!.*clusters)(?!.*alert_management)(?!.*views)(?!.*assets).+/)?integration.+ |

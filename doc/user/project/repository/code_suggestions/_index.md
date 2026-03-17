@@ -1,9 +1,9 @@
 ---
 stage: AI-powered
 group: AI Coding
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Code Suggestions (Classic) helps you write code in GitLab more efficiently by using AI to suggest code as you type.
-title: Code Suggestions (Classic)
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Code Suggestions helps you write code in GitLab more efficiently by using AI to suggest code as you type.
+title: Code Suggestions
 ---
 
 {{< details >}}
@@ -35,13 +35,12 @@ title: Code Suggestions (Classic)
 - Enabled Fireworks hosted `Codestral` by default via the feature flag `use_fireworks_codestral_code_completion` in GitLab 17.11.
 - Changed to include GitLab Duo Core in GitLab 18.0.
 - Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1.
-- To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for code generation to Claude Sonnet 4 in GitLab 18.2.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
 
 {{< /history >}}
 
-Use GitLab Duo Code Suggestions (Classic) to write code more efficiently by using generative AI to suggest code while you're developing.
+Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
@@ -52,9 +51,9 @@ Code Suggestions is also available as part of the [GitLab Duo Agent Platform](..
 
 ## Prerequisites
 
-To use Code Suggestions (Classic):
+To use Code Suggestions:
 
-- If you have the GitLab Duo Core add-on, [turn on IDE features](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+- If you have GitLab Duo Core, [turn on IDE features](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - [Set up Code Suggestions](set_up.md).
 
 > [!note]
@@ -193,7 +192,7 @@ Different language models can be the source for Code Suggestions.
 - On GitLab Self-Managed, two options exist:
   - GitLab can [host the models and connects to them through the cloud-based AI Gateway](set_up.md).
   - Your organization can [use GitLab Duo Self-Hosted](../../../../administration/gitlab_duo_self_hosted/_index.md),
-    which means you host the AI Gateway and language models. You can use GitLab AI vendor models,
+    which means you host the AI Gateway and language models. You can use GitLab-managed models,
     other supported language models, or to bring your own compatible model.
 
 ## How the prompt is built
@@ -220,7 +219,7 @@ Prompt caching is enabled by default to improve Code Suggestions latency. When p
 ### Turn off prompt caching
 
 You can turn off prompt caching for top-level groups in the GitLab Duo settings.
-This also turns off prompt caching for [GitLab Duo Chat (Agentic)](../../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
+This also turns off prompt caching for [GitLab Duo Chat (agentic)](../../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
 
 Prerequisites:
 
@@ -228,7 +227,7 @@ Prerequisites:
 
 On GitLab.com:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Disable the **Prompt caching** toggle.
@@ -237,7 +236,7 @@ On GitLab.com:
 On GitLab Self-Managed:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Prompt cache**, clear the **Turn on prompt caching** checkbox.
 1. Select **Save changes**.

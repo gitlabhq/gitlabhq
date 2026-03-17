@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_designs_added_monthly
 description: Count of MAU adding a design to an issue
 product_group: project_management
+product_categories:
+- design_management
 value_type: number
 status: removed
 time_frame: 28d

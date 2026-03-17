@@ -373,7 +373,7 @@ export default {
             [this.error] = data.workItemCreate.errors;
           } else {
             this.unsetError();
-            this.$emit('addChild');
+            this.$emit('add-child');
           }
         })
         .catch(() => {
@@ -517,7 +517,7 @@ export default {
         type="submit"
         :disabled="!canSubmitForm"
         :loading="submitInProgress"
-        data-testid="add-child-button"
+        data-testid="add-child-form-button"
       >
         {{ addOrCreateButtonLabel }}
       </gl-button>

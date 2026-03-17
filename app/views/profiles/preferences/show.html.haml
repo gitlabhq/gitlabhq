@@ -28,34 +28,19 @@
           mode.name,
           radio_options: { checked: user_color_mode_id == mode.id }
 
-  - if project_studio_enabled?
-    = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Theme'),
-      id: 'application-theme',
-      options: { class: 'js-preferences-form application-theme' }) do |c|
-      - c.with_description do
-        = s_('Preferences|Select the accent color for the application interface.')
-      - c.with_body do
-        .application-theme.gl-grid.gl-grid-cols-2.gl-gap-5{ class: '@sm/panel:gl-grid-cols-3 @lg/panel:gl-grid-cols-6' }
-          - Gitlab::Themes.each do |theme|
-            %label
-              .preview{ class: theme.css_class }
-              = f.gitlab_ui_radio_component :theme_id, theme.id,
-                theme.name,
-                radio_options: { checked: user_theme_id == theme.id }
-  - else
-    = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Navigation'),
-      id: 'navigation-theme',
-      options: { class: 'js-preferences-form application-theme' }) do |c|
-      - c.with_description do
-        = s_('Preferences|Choose the navigation theme.')
-      - c.with_body do
-        .application-theme.gl-grid.gl-grid-cols-2.gl-gap-5{ class: '@sm/panel:gl-grid-cols-3 @lg/panel:gl-grid-cols-6' }
-          - Gitlab::Themes.each do |theme|
-            %label
-              .preview{ class: theme.css_class }
-              = f.gitlab_ui_radio_component :theme_id, theme.id,
-                theme.name,
-                radio_options: { checked: user_theme_id == theme.id }
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Theme'),
+    id: 'application-theme',
+    options: { class: 'js-preferences-form application-theme' }) do |c|
+    - c.with_description do
+      = s_('Preferences|Select the accent color for the application interface.')
+    - c.with_body do
+      .application-theme.gl-grid.gl-grid-cols-2.gl-gap-5{ class: '@sm/panel:gl-grid-cols-3 @lg/panel:gl-grid-cols-6' }
+        - Gitlab::Themes.each do |theme|
+          %label
+            .preview{ class: theme.css_class }
+            = f.gitlab_ui_radio_component :theme_id, theme.id,
+              theme.name,
+              radio_options: { checked: user_theme_id == theme.id }
 
   = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Syntax highlighting'),
     id: 'syntax-highlighting-theme',

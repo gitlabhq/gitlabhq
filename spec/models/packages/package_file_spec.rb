@@ -232,6 +232,20 @@ RSpec.describe Packages::PackageFile, feature_category: :package_registry do
     end
   end
 
+  describe '.with_file_sha1' do
+    let_it_be(:file_sha1) { '415ab40ae9b7cc4e66d6769cb2c08106e8293b48' }
+    let_it_be(:package) { create(:generic_package) }
+    let_it_be(:package_file) { create(:package_file, file_sha1: file_sha1, package: package) }
+
+    let_it_be(:another_package_file) do
+      create(:package_file, file_sha1: 'd0941e68da8f38151ff86a61fc59f7c5cf9fcaa2', package: package)
+    end
+
+    subject { described_class.with_file_sha1(file_sha1) }
+
+    it { is_expected.to contain_exactly(package_file) }
+  end
+
   describe '.for_rubygem_with_file_name' do
     let_it_be(:non_ruby_package) { create(:nuget_package, project: project, package_type: :nuget) }
     let_it_be(:ruby_package) { create(:rubygems_package, project: project, package_type: :rubygems) }

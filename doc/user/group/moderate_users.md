@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Moderate users
 ---
 
@@ -49,7 +49,7 @@ Prerequisites:
 To manually ban a user:
 
 1. Go to the top-level group.
-1. On the left sidebar, select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Next to the member you want to ban, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. From the dropdown list, select **Ban member**.
 
@@ -67,7 +67,7 @@ Prerequisites:
 To unban a user:
 
 1. Go to the top-level group.
-1. On the left sidebar, select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select the **Banned** tab.
 1. For the account you want to unban, select **Unban**.
 
@@ -107,8 +107,8 @@ The following actions count as activity:
 
 To turn on automatic dormant member removal:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings** > **General**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Scroll to **Dormant members**.
 1. Select the **Remove dormant members after a period of inactivity** checkbox.

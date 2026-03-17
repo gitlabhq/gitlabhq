@@ -200,30 +200,61 @@
   left: calc(1px + var(--rd-line-number-area-extend-left) * -1);
 }
 
-.rd-hunk-lines:target {
-  --rd-line-background-color-override: var(--code-highlighted-line-background-color);
-  // handle empty cells
-  --code-line-number-background-color: var(--code-highlighted-line-background-color);
+.rd-hunk-lines:target,
+.rd-hunk-lines[data-highlight] {
+  --rd-highlight-color: var(--code-highlighted-line-background-color);
+  --rd-highlight-border-color: var(--code-highlighted-line-border-color);
+  --rd-line-background-color-override: var(--rd-highlight-color);
+  --code-line-number-background-color: var(--rd-highlight-color);
+  --rd-shadow-top: 0 -1px var(--rd-highlight-border-color);
+  --rd-shadow-bottom: 0 1px var(--rd-highlight-border-color);
   position: relative;
-  background-color: var(--code-highlighted-line-background-color);
+  background-color: var(--rd-highlight-color);
   border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
-  box-shadow:
-    0  1px var(--code-highlighted-line-border-color),
-    0 -1px var(--code-highlighted-line-border-color);
+  box-shadow: var(--rd-shadow-top), var(--rd-shadow-bottom);
   z-index: constants.$diff-file-highlighted-line-number-z-index;
 }
 
-.rd-hunk-lines:target td:first-child {
-  border-left-color: var(--code-highlighted-line-border-color);
+.rd-hunk-lines[data-highlight] {
+  --rd-shadow-top: 0 0 transparent;
+  --rd-shadow-bottom: 0 0 transparent;
 }
 
-.rd-hunk-lines:target td:last-child {
-  border-right-color: var(--code-highlighted-line-border-color);
+.rd-hunk-lines:target > td:first-child,
+.rd-hunk-lines[data-highlight] > td:first-child {
+  border-left-color: var(--rd-highlight-border-color);
+}
+
+.rd-hunk-lines:target > td:last-child,
+.rd-hunk-lines[data-highlight] > td:last-child {
+  border-right-color: var(--rd-highlight-border-color);
 }
 
 .rd-hunk-lines:target .rd-line-number {
   --rd-line-link-color: var(--code-line-number-hover-color);
   --rd-adjacent-line-border-color: var(--rd-line-border-color);
+}
+
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  .rd-hunk-lines:target > [data-change=added],
+  .rd-hunk-lines[data-highlight] > [data-change=added] {
+    --rd-line-background-color-override:
+      color-mix(in oklab, var(--rd-highlight-color) 60%, var(--rd-line-added-background-color));
+  }
+
+  .rd-hunk-lines:target > [data-change=removed],
+  .rd-hunk-lines[data-highlight] > [data-change=removed] {
+    --rd-line-background-color-override:
+      color-mix(in oklab, var(--rd-highlight-color) 60%, var(--rd-line-removed-background-color));
+  }
+}
+
+.rd-hunk-lines[data-highlight~=start] {
+  --rd-shadow-top: 0 -1px var(--rd-highlight-border-color);
+}
+
+.rd-hunk-lines[data-highlight~=end] {
+  --rd-shadow-bottom: 0 1px var(--rd-highlight-border-color);
 }
 
 // child combinator improves performance of the selector

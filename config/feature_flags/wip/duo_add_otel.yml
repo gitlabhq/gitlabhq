@@ -1,0 +1,8 @@
+---
+name: duo_add_otel
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224631
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/589701
+milestone: '18.10'
+type: wip
+group: group::embody
+default_enabled: false

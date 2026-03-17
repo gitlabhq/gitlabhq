@@ -3,7 +3,7 @@
  * Render modal to confirm rollback/redeploy.
  */
 import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import csrf from '~/lib/utils/csrf';
 import { __, s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';

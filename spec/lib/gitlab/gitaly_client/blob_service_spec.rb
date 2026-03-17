@@ -229,6 +229,44 @@ RSpec.describe Gitlab::GitalyClient::BlobService do
     end
   end
 
+  describe '#get_blobs', feature_category: :pipeline_composition do
+    let(:revision_paths) { [['master', 'README.md']] }
+
+    subject { client.get_blobs(revision_paths) }
+
+    it 'uses fast_timeout by default' do
+      expect(Gitlab::GitalyClient).to receive(:call).with(
+        storage_name,
+        :blob_service,
+        :get_blobs,
+        kind_of(Gitaly::GetBlobsRequest),
+        timeout: Gitlab::GitalyClient.fast_timeout
+      ).and_return([])
+
+      subject
+    end
+
+    context 'when GitalyTimeout is set' do
+      around do |example|
+        Gitlab::Ci::Config::GitalyTimeout.with_timeout(10) do
+          example.run
+        end
+      end
+
+      it 'uses the custom timeout' do
+        expect(Gitlab::GitalyClient).to receive(:call).with(
+          storage_name,
+          :blob_service,
+          :get_blobs,
+          kind_of(Gitaly::GetBlobsRequest),
+          timeout: 10
+        ).and_return([])
+
+        subject
+      end
+    end
+  end
+
   describe '#list_oversized_blobs' do
     subject { client.list_oversized_blobs(**expected_params.merge(file_size_limit_megabytes: 100)) }
 

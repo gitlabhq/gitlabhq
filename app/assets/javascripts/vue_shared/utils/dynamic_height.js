@@ -1,4 +1,4 @@
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 /**

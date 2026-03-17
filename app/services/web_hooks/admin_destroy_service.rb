@@ -4,6 +4,8 @@ module WebHooks
   # A variant of the destroy service that can only be used by an administrator
   # from a rake task.
   class AdminDestroyService < WebHooks::DestroyService
+    attr_reader :rake_task
+
     def initialize(rake_task:)
       super(nil)
       @rake_task = rake_task
@@ -18,3 +20,5 @@ module WebHooks
     end
   end
 end
+
+WebHooks::AdminDestroyService.prepend_mod_with('WebHooks::AdminDestroyService')

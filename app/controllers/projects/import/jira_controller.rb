@@ -7,7 +7,7 @@ module Projects
       before_action :authorize_read_project!
       before_action :validate_jira_import_settings!
 
-      feature_category :integrations
+      feature_category :team_planning
 
       def show; end
 

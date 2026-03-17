@@ -19,12 +19,12 @@ export const SORT_OPTION_NAME = {
 };
 
 export const SORT_OPTION_CREATED = {
-  value: 'created_at',
+  value: 'created',
   text: SORT_LABEL_CREATED,
 };
 
 export const SORT_OPTION_UPDATED = {
-  value: 'updated_at',
+  value: 'updated',
   text: SORT_LABEL_UPDATED,
 };
 
@@ -61,7 +61,7 @@ const baseTab = {
   queryPath: 'groups',
   paginationType: PAGINATION_TYPE_KEYSET,
   sortOptions: SORT_OPTIONS,
-  defaultSortOption: SORT_OPTION_UPDATED,
+  defaultSortOption: SORT_OPTION_CREATED,
 };
 
 export const ACTIVE_TAB = {

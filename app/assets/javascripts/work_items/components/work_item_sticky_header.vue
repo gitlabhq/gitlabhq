@@ -70,6 +70,9 @@ export default {
     workItemType() {
       return this.workItem.workItemType?.name;
     },
+    workItemTypeIconName() {
+      return this.workItem.workItemType?.iconName;
+    },
     workItemState() {
       return this.workItem.state;
     },
@@ -141,6 +144,7 @@ export default {
             v-if="workItemType"
             class="gl-align-middle"
             :work-item-type="workItemType"
+            :type-icon-name="workItemTypeIconName"
             show-tooltip-on-hover
             icon-class="gl-fill-icon-subtle"
           />

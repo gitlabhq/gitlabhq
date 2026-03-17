@@ -14,8 +14,10 @@ module Gitlab
               # reason because they can be used in the next pipeline creations.
               ::Gitlab::Ci::Pipeline::Create::JobDefinitionBuilder.new(pipeline, statuses).run
 
-              BulkInsertableAssociations.with_bulk_insert do
-                pipeline.save!
+              with_build_hooks_via_chain do
+                BulkInsertableAssociations.with_bulk_insert do
+                  pipeline.save!
+                end
               end
             end
           rescue ActiveRecord::RecordInvalid => e
@@ -32,6 +34,13 @@ module Gitlab
           end
 
           private
+
+          def with_build_hooks_via_chain
+            Gitlab::SafeRequestStore[:ci_triggering_build_hooks_via_chain] = true
+            yield
+          ensure
+            Gitlab::SafeRequestStore.delete(:ci_triggering_build_hooks_via_chain)
+          end
 
           def statuses
             pipeline

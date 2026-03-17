@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Stand-ups, retrospectives, and velocity
 ---
 
@@ -74,7 +74,7 @@ during retrospectives.
 
 To review an iteration report for a completed iteration:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Iterations**.
 1. At the top, select **Done** and select your iteration cadence.
 1. Select the most recently completed iteration.
@@ -88,7 +88,6 @@ You can use GitLab issues for asynchronous retrospectives.
    You can apply many of the same formats as for synchronous retrospectives.
    [See an example issue](https://gitlab.com/tech-marketing/demos/gitlab-agile-demo/scrum-public-demo/application-b/-/issues/7)
    that applies the retrospective outline proposed by James Shore.
-
 1. If there are many action items, consider creating separate issues to track them independently of the
    retrospective.
 1. After the team has finished triaging action items, close the retrospective issue.

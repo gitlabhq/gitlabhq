@@ -10,7 +10,9 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
   OAUTH_PATHS = [
     '/.well-known/oauth-authorization-server',
     '/.well-known/oauth-authorization-server/api/v4/mcp',
-    '/.well-known/openid-configuration/api/v4/mcp'
+    '/.well-known/openid-configuration/api/v4/mcp',
+    '/.well-known/oauth-authorization-server/api/v4/orbit/mcp',
+    '/.well-known/openid-configuration/api/v4/orbit/mcp'
   ].freeze
 
   def keys
@@ -20,7 +22,7 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
   end
 
   def provider
-    if request.path.in?(OAUTH_PATHS)
+    if request.path_info.in?(OAUTH_PATHS)
       expires_in 24.hours, public: true, must_revalidate: true, 'no-transform': true
       response_hash = provider_response
       response_hash[:registration_endpoint] = Gitlab::Utils.append_path(
@@ -60,8 +62,11 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
     response = super
     response[:claims_supported] += %w[project_path ci_config_ref_uri ref_path sha environment jti]
 
-    # Filter scopes for MCP-specific discovery endpoints
-    response[:scopes_supported] = [Gitlab::Auth::MCP_SCOPE.to_s] if request.path.end_with?('/api/v4/mcp')
+    if request.path.end_with?('/api/v4/mcp')
+      response[:scopes_supported] = [Gitlab::Auth::MCP_SCOPE.to_s]
+    elsif request.path.end_with?('/api/v4/orbit/mcp')
+      response[:scopes_supported] = [Gitlab::Auth::MCP_ORBIT_SCOPE.to_s]
+    end
 
     response
   end

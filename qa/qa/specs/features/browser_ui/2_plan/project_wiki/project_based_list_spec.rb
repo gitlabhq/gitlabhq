@@ -43,6 +43,7 @@ module QA
           large_wiki.visit!
 
           Page::Project::Wiki::Show.perform do |wiki|
+            wiki.close_dap_panel_if_exists
             wiki.expand_sidebar_if_collapsed
             wiki.click_view_all_pages
           end

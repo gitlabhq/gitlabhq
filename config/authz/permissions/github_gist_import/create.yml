@@ -1,5 +1,3 @@
 ---
 name: create_github_gist_import
 description: Grants the ability to import gists from GitHub
-boundaries:
-  - user

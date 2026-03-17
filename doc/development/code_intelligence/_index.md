@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: Developer documentation for the Code Intelligence feature.
 title: Code intelligence development guidelines
 ---
@@ -42,13 +42,10 @@ sequenceDiagram
    [describes](https://sourcegraph.com/docs/code-search/code-navigation/writing_an_indexer#writing-an-indexer)
    interactions between a method or function and its definitions or references. The
    document is marked to be stored as an LSIF report artifact.
-
 1. After receiving a request for storing the artifact, Workhorse asks
    GitLab Rails to authorize the upload.
-
 1. GitLab Rails validates whether the artifact can be uploaded and sends
    `ProcessLsif: true` header if the LSIF artifact can be processed.
-
 1. Workhorse reads the LSIF document line by line and generates code intelligence
    data for each file in the project. The output is a zipped directory of JSON
    files which imitates the structure of the project:
@@ -78,7 +75,6 @@ sequenceDiagram
    generates metadata for it. The metadata makes it possible to view a single
    file in a ZIP file without unpacking or loading the whole file. That allows us
    to access code intelligence data for a single file.
-
 1. When a file is viewed in the GitLab application, frontend fetches code
    intelligence data for the file directly from the object storage. The file
    contains information about code units in the file. For example:

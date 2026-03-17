@@ -9,10 +9,15 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can be reverted', :smoke, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347709' do
+      it 'can be reverted', :smoke, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347709',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/36477',
+          type: 'flaky'
+        } do
         revertible_merge_request.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|
+          merge_request.close_dap_panel_if_exists
           merge_request.merge!
           expect(merge_request).to be_revertible, 'Expected merge request to be in a state to be reverted.'
           merge_request.revert_change!

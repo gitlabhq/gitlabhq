@@ -34,18 +34,21 @@ async function transformImageMarkdown(md, file) {
 }
 
 export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
+  // Accept both jQuery and DOM elements
+  const $form = form.jquery ? form : $(form);
+
   const divHover = '<div class="div-dropzone-hover"></div>';
   const iconPaperclip = spriteIcon('paperclip', 'div-dropzone-icon s24');
-  const $attachingFileMessage = form.find('.attaching-file-message');
-  const $cancelButton = form.find('.button-cancel-uploading-files');
-  const $retryLink = form.find('.retry-uploading-link');
-  const $uploadProgress = form.find('.uploading-progress');
-  const $uploadingErrorContainer = form.find('.uploading-error-container');
-  const $uploadingErrorMessage = form.find('.uploading-error-message');
-  const $uploadingProgressContainer = form.find('.uploading-progress-container');
-  const uploadsPath = form.data('uploads-path') || window.uploads_path || null;
+  const $attachingFileMessage = $form.find('.attaching-file-message');
+  const $cancelButton = $form.find('.button-cancel-uploading-files');
+  const $retryLink = $form.find('.retry-uploading-link');
+  const $uploadProgress = $form.find('.uploading-progress');
+  const $uploadingErrorContainer = $form.find('.uploading-error-container');
+  const $uploadingErrorMessage = $form.find('.uploading-error-message');
+  const $uploadingProgressContainer = $form.find('.uploading-progress-container');
+  const uploadsPath = $form.data('uploads-path') || window.uploads_path || null;
   const maxFileSize = gon.max_file_size || 10;
-  const formTextarea = form.find('.js-gfm-input');
+  const formTextarea = $form.find('.js-gfm-input');
   let handlePaste;
   let pasteText;
   let addFileToForm;
@@ -57,7 +60,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
 
   // Add dropzone area to the form.
   const $mdArea = formTextarea.closest('.md-area');
-  const $formDropzone = form.find('.div-dropzone');
+  const $formDropzone = $form.find('.div-dropzone');
   $formDropzone.parent().addClass('div-dropzone-wrapper');
   $formDropzone.append(divHover);
   $formDropzone.find('.div-dropzone-hover').append(iconPaperclip);
@@ -72,7 +75,7 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
   const dropzone = $formDropzone.dropzone({
     url: uploadsPath,
     dictDefaultMessage: '',
-    clickable: form.get(0).querySelector('[data-button-type="attach-file"]') ?? true,
+    clickable: $form.get(0).querySelector('[data-button-type="attach-file"]') ?? true,
     paramName: 'file',
     maxFilesize: maxFileSize,
     uploadMultiple: false,
@@ -81,15 +84,15 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     ...config,
     dragover: () => {
       $mdArea.addClass('is-dropzone-hover');
-      form.find('.div-dropzone-hover').css('opacity', 0.7);
+      $form.find('.div-dropzone-hover').css('opacity', 0.7);
     },
     dragleave: () => {
       $mdArea.removeClass('is-dropzone-hover');
-      form.find('.div-dropzone-hover').css('opacity', 0);
+      $form.find('.div-dropzone-hover').css('opacity', 0);
     },
     drop: () => {
       $mdArea.removeClass('is-dropzone-hover');
-      form.find('.div-dropzone-hover').css('opacity', 0);
+      $form.find('.div-dropzone-hover').css('opacity', 0);
       formTextarea.focus();
     },
     async success(header, response) {
@@ -284,9 +287,9 @@ export default function dropzoneInput(form, config = { parallelUploads: 2 }) {
     formTextarea.focus();
   }
 
-  form.find('.markdown-selector').click(handleAttachFile);
+  $form.find('.markdown-selector').click(handleAttachFile);
 
-  const $attachFileButton = form.find('.js-attach-file-button');
+  const $attachFileButton = $form.find('.js-attach-file-button');
   if ($attachFileButton.length) {
     $attachFileButton.get(0).addEventListener('click', handleAttachFile);
   }

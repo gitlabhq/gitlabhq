@@ -1,6 +1,6 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __ } from '~/locale';

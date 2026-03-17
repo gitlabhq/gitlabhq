@@ -3,6 +3,8 @@ data_category: optional
 key_path: analytics_unique_visits.analytics_unique_visits_for_any_target_monthly
 description: Unique visitors to any analytics feature by month
 product_group: optimize
+product_categories:
+- product_analytics
 value_type: number
 status: active
 time_frame: 28d

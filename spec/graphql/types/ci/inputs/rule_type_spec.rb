@@ -83,4 +83,46 @@ RSpec.describe Types::Ci::Inputs::RuleType, feature_category: :pipeline_composit
       end
     end
   end
+
+  describe 'numeric values in options and default' do
+    let(:rule) { described_class.authorized_new(rule_hash, query_context) }
+
+    context 'with numeric options' do
+      let(:rule_hash) do
+        {
+          'if' => '$[[ inputs.env ]] == "prod"',
+          'options' => [1, 50, 100],
+          'default' => 50
+        }
+      end
+
+      it 'preserves numeric types in options array' do
+        expect(rule_hash['options']).to match_array([1, 50, 100])
+        expect(rule_hash['options']).to all(be_a(Integer))
+      end
+
+      it 'preserves numeric type in default value' do
+        expect(rule_hash['default']).to eq(50)
+        expect(rule_hash['default']).to be_a(Integer)
+      end
+    end
+
+    context 'with mixed type options' do
+      let(:rule_hash) do
+        {
+          'if' => '$[[ inputs.env ]] == "prod"',
+          'options' => [1, 'string', true, nil],
+          'default' => 'string'
+        }
+      end
+
+      it 'preserves all value types in options array' do
+        expect(rule_hash['options']).to match_array([1, 'string', true, nil])
+        expect(rule_hash['options'][0]).to be_a(Integer)
+        expect(rule_hash['options'][1]).to be_a(String)
+        expect(rule_hash['options'][2]).to be(true)
+        expect(rule_hash['options'][3]).to be_nil
+      end
+    end
+  end
 end

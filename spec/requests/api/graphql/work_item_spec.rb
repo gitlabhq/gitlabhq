@@ -818,7 +818,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       end
 
       describe 'linked resources widget' do
-        let_it_be(:linked_resources_type) { create(:work_item_type, :non_default, widgets: [:linked_resources]) }
+        # already have linked resources
+        let_it_be(:linked_resources_type) { build(:work_item_system_defined_type, :task) }
         let_it_be(:work_item) { create(:work_item, project: project, work_item_type: linked_resources_type) }
         let_it_be(:resource1) do
           create(:zoom_meeting, issue_id: work_item.id, project: project, url: 'https://zoom.us/j/123456789')

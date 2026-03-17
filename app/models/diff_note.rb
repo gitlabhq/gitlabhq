@@ -26,7 +26,8 @@ class DiffNote < Note
   validate :validate_diff_file_and_line, on: :create, if: :requires_diff_file_validation_during_import?
 
   before_validation :set_line_code, if: :on_text?, unless: :importing?
-  after_save :keep_around_commits, unless: -> { importing? || skip_keep_around_commits }
+  after_save :sync_keep_around_commits, unless: -> { importing? || skip_keep_around_commits }
+  after_commit :enqueue_keep_around_commits, on: [:create, :update], unless: -> { importing? || skip_keep_around_commits }
 
   NoteDiffFileCreationError = Class.new(StandardError)
 

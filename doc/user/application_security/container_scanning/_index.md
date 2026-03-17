@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Composition Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Container scanning
 description: Image vulnerability scanning, configuration, customization, and reporting.
 ---
@@ -100,7 +100,7 @@ in the `.gitlab-ci.yml` file. You then merge the merge request to enable contain
 
 To enable container scanning:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **Container Scanning** row, select **Configure with a merge request**.
 1. Select **Create merge request**.
@@ -115,7 +115,7 @@ you have a complex GitLab configuration file or you need to use non-default opti
 
 To enable container scanning:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline editor**.
 1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
    content.
@@ -144,8 +144,8 @@ Pipelines now include a container scanning job.
 
 You can review vulnerabilities in a pipeline:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build** > **Pipelines**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. Select a vulnerability to view its details, including:
@@ -313,6 +313,53 @@ specific to container scanning. You can also use any of the [predefined CI/CD va
    the availability of a fixed package for a vulnerability, using `CS_IGNORE_STATUSES` can lead to
    false positive or false negative filtering of findings when this setting is enabled.
 
+#### Configure Trivy directly with native environment variables
+
+In addition to the GitLab-specific `CS_*` variables listed above, you can configure Trivy directly
+by setting any of its [native environment variables](https://trivy.dev/docs/v0.69/guide/configuration/#environment-variables)
+in your `container_scanning` job. The GitLab container scanning analyzer passes all environment
+variables through to Trivy automatically.
+
+For example, to manually specify the OS distribution for a container image where Trivy cannot
+auto-detect it (such as a customized base image):
+
+```yaml
+include:
+  - template: Jobs/Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    GIT_STRATEGY: fetch
+    TRIVY_DISTRO: "alma/10"
+```
+
+> [!note]
+> The `--distro` flag used by `TRIVY_DISTRO` is [experimental in Trivy](https://trivy.dev/docs/v0.69/guide/references/configuration/cli/trivy_image/).
+> Results may vary depending on the Trivy version and the distribution specified.
+
+##### Variables managed by the GitLab wrapper
+
+The following `TRIVY_*` variables are set internally by the GitLab container scanning analyzer.
+They are controlled by the corresponding GitLab CI/CD variables and cannot be overridden directly:
+
+| Trivy variable      | GitLab CI/CD variable    |
+|---------------------|--------------------------|
+| `TRIVY_CACHE_DIR`   | (internal, not exposed)  |
+| `TRIVY_USERNAME`    | `CS_REGISTRY_USER`       |
+| `TRIVY_PASSWORD`    | `CS_REGISTRY_PASSWORD`   |
+| `TRIVY_DEBUG`       | `SECURE_LOG_LEVEL`       |
+| `TRIVY_INSECURE`    | `CS_DOCKER_INSECURE`     |
+| `TRIVY_NON_SSL`     | `CS_REGISTRY_INSECURE`   |
+
+##### Known issue with `TRIVY_DB_REPOSITORY`
+
+Setting `TRIVY_DB_REPOSITORY` to point Trivy to a custom vulnerability database has no effect.
+The GitLab container scanning analyzer bundles the vulnerability database inside the analyzer
+image and passes `--skip-db-update` to Trivy at runtime, so Trivy never downloads a database
+regardless of this variable. To use a custom database location, see
+[Use a Trivy Java database mirror](#use-a-trivy-java-database-mirror) for the Java database,
+or [offline environment](#offline-environment) for general offline setups.
+
 ### Overriding the container scanning template
 
 If you want to override the job definition (for example, to change properties like `variables`), you
@@ -389,7 +436,7 @@ For example, to scan an image in AWS Elastic Container Registry:
       - ruby -r open-uri -e "IO.copy_stream(URI.open('https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip'), 'awscliv2.zip')"
       - unzip awscliv2.zip
       - sudo ./aws/install
-      - export AWS_ECR_PASSWORD=$(aws ecr get-login-password --region region)
+      - export AWS_ECR_PASSWORD=$(aws ecr get-login-password --region <region>)
 
   include:
     - template: Jobs/Container-Scanning.gitlab-ci.yml
@@ -564,7 +611,6 @@ This example excludes from `gl-container-scanning-report.json`:
 ##### File format
 
 - `generalallowlist` block allows you to specify CVE IDs globally. All vulnerabilities with matching CVE IDs are excluded from the scan report.
-
 - `images` block allows you to specify CVE IDs for each container image independently. All vulnerabilities from the given image with matching CVE IDs are excluded from the scan report. The image name is retrieved from one of the environment variables used to specify the Docker image to be scanned, such as `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` or `CS_IMAGE`. The image provided in this block **must** match this value and **must not** include the tag value. For example, if you specify the image to be scanned using `CS_IMAGE=alpine:3.7`, then you would use `alpine` in the `images` block, but you cannot use `alpine:3.7`.
 
   You can specify container image in multiple ways:
@@ -833,7 +879,6 @@ against a Docker container without needing to run it within the context of a CI 
 image directly, follow these steps:
 
 1. Run Docker Desktop or Docker Machine.
-
 1. Run the analyzer's Docker image, passing the image and tag you want to analyze in the
    `CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG` variables:
 
@@ -894,7 +939,6 @@ container_scanning:
 ```
 
 - After enabling this feature, the generated CycloneDX report will include license information for components detected in your container images.
-
 - You can view this license information in the dependency list page or as part of the downloadable CycloneDX job artifact.
 
 It is important to mention that only SPDX licenses are supported. However, licenses that are non-compliant with SPDX will still be ingested without any user-facing error.
@@ -951,7 +995,7 @@ Support for populating the vulnerability report with all present advisory data, 
 
 To enable Container Scanning for the GitLab Container Registry:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. Scroll down to the **Container Scanning For Registry** section and turn on the toggle.
 
@@ -965,7 +1009,7 @@ UI. You can use a project, group, or instance CI/CD variable.
 
 To configure a custom scanner image:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **CI/CD**.
 1. Expand the **Variables** section.
 1. Select **Add variable** and fill in the details:
@@ -1024,7 +1068,7 @@ Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.
 
 To enable remediation support, the scanning tool must have access to the `Dockerfile` specified by
-the CI/CD variable`CS_DOCKERFILE_PATH`. To ensure that the scanning tool
+the CI/CD variable `CS_DOCKERFILE_PATH`. To ensure that the scanning tool
 has access to this
 file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/runners/configure_runners.md#git-strategy) in
 your `.gitlab-ci.yml` file by following the instructions described in this document's

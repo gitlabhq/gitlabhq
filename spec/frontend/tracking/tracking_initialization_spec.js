@@ -18,7 +18,6 @@ describe('Tracking', () => {
   let setAnonymousUrlsSpy;
   let bindInternalEventDocumentSpy;
   let trackInternalLoadEventsSpy;
-  let initBrowserSDKSpy;
 
   beforeAll(() => {
     window.gl = window.gl || {};
@@ -102,9 +101,6 @@ describe('Tracking', () => {
       trackInternalLoadEventsSpy = jest
         .spyOn(InternalEvents, 'trackInternalLoadEvents')
         .mockImplementation(() => null);
-      initBrowserSDKSpy = jest
-        .spyOn(InternalEvents, 'initBrowserSDK')
-        .mockImplementation(() => null);
     });
 
     it('should activate features based on what has been enabled', () => {
@@ -161,11 +157,6 @@ describe('Tracking', () => {
       expect(trackInternalLoadEventsSpy).toHaveBeenCalled();
     });
 
-    it('calls initBrowserSDKSpy', () => {
-      initDefaultTrackers();
-      expect(initBrowserSDKSpy).toHaveBeenCalled();
-    });
-
     describe('when there are experiment contexts', () => {
       const experimentContexts = [
         {
@@ -203,7 +194,6 @@ describe('Tracking', () => {
       expect(setAnonymousUrlsSpy).not.toHaveBeenCalled();
       expect(bindInternalEventDocumentSpy).not.toHaveBeenCalled();
       expect(trackInternalLoadEventsSpy).not.toHaveBeenCalled();
-      expect(initBrowserSDKSpy).not.toHaveBeenCalled();
     });
 
     it('flushes pending events before other tracking methods', () => {
@@ -222,9 +212,6 @@ describe('Tracking', () => {
       );
       expect(flushPendingEventsSpy.mock.invocationCallOrder[0]).toBeLessThan(
         trackInternalLoadEventsSpy.mock.invocationCallOrder[0],
-      );
-      expect(flushPendingEventsSpy.mock.invocationCallOrder[0]).toBeLessThan(
-        initBrowserSDKSpy.mock.invocationCallOrder[0],
       );
     });
 
@@ -251,7 +238,6 @@ describe('Tracking', () => {
       expect(trackLoadEventsSpy).toHaveBeenCalled();
       expect(bindInternalEventDocumentSpy).toHaveBeenCalled();
       expect(trackInternalLoadEventsSpy).toHaveBeenCalled();
-      expect(initBrowserSDKSpy).toHaveBeenCalled();
     });
   });
 

@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to operate on large time-decay data
 title: Time-decay data
 ---
@@ -268,7 +268,6 @@ The process required follows:
 
    Using the `created_at` column is straightforward in this case: it is a natural
    partitioning key when a retention policy exists and there were no conflicting access patterns.
-
 1. After we decide on the partitioning key, we can create the partitions and backfill
    them (copy data from the existing table). We can't just partition an existing table;
    we have to create a new partitioned table.
@@ -280,12 +279,10 @@ The process required follows:
    [MR with all the necessary details on how to start partitioning a table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55938)
 
    It required 15 days and 7.6 hours to complete that process.
-
 1. One milestone after the initial partitioning starts, clean up after the background migration
    used to backfill and finish executing any remaining jobs, retry failed jobs, etc.
 
    [MR with all the necessary details](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57580)
-
 1. Add any remaining foreign keys and secondary indexes to the partitioned table. This brings
    its schema on par with the original non partitioned table before we can swap them in the next milestone.
 
@@ -293,7 +290,6 @@ The process required follows:
    would slow down the initial backfilling of the table (in this case for more than half a billion
    records, which can add up significantly). So we create a lightweight, vanilla version of the
    table, copy all the data and then add any remaining indexes and foreign keys.
-
 1. Swap the base table with partitioned copy: this is when the partitioned table
    starts actively being used by the application.
 
@@ -303,11 +299,9 @@ The process required follows:
    happening on the partitioned table. That allows us to swap back the tables if it is necessary.
 
    [MR with all the necessary details](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60184)
-
 1. Last step, one milestone after the swap: drop the non-partitioned table
 
    [Issue with all the necessary details](https://gitlab.com/gitlab-org/gitlab/-/issues/323678)
-
 1. After the non-partitioned table is dropped, we can add a worker to implement the
    pruning strategy by dropping past partitions.
 

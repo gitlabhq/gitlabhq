@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab-managed Terraform/OpenTofu state
 ---
 
@@ -146,7 +146,7 @@ You can access the GitLab-managed OpenTofu state from your local machine.
    [initialized for CI/CD](#initialize-an-opentofu-state-as-a-backend-by-using-gitlab-cicd).
 1. Copy a pre-populated OpenTofu `init` command:
 
-   1. On the top bar, select **Search or go to** and find your project.
+   1. In the top bar, select **Search or go to** and find your project.
    1. Select **Operate** > **Terraform states**.
    1. Next to the environment you want to use, select **Actions**
       ({{< icon name="ellipsis_v" >}}) and select **Copy Terraform init command**.
@@ -364,7 +364,7 @@ To read the OpenTofu state in the target project, you need the Developer, Mainta
 
 To view OpenTofu state files:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Terraform states**.
 
 [An epic exists](https://gitlab.com/groups/gitlab-org/-/epics/4563) to track improvements to this UI.
@@ -462,7 +462,7 @@ You can also use [the GraphQL API](../../../api/graphql/reference/_index.md#muta
 
 To remove a state file using the UI:
 
-1. On the left sidebar, select **Operate** > **Terraform states**.
+1. In the left sidebar, select **Operate** > **Terraform states**.
 1. In the **Actions** column, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Remove state file and versions**.
 
 {{< /tab >}}
@@ -507,7 +507,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 To lock or unlock a state file using the UI:
 
-1. On the left sidebar, select **Operate** > **Terraform states**.
+1. In the left sidebar, select **Operate** > **Terraform states**.
 1. In the **Actions** column, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Lock** to lock or **Actions** ({{< icon name="ellipsis_v" >}}) > **Unlock**.
 
 {{< /tab >}}
@@ -552,7 +552,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 To download the latest state file using the UI:
 
-1. On the left sidebar, select **Operate** > **Terraform states**.
+1. In the left sidebar, select **Operate** > **Terraform states**.
 1. In the **Actions** column, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Download JSON**.
 
 There is no way to download a specific version of the state using the UI.

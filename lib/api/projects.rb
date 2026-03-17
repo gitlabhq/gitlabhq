@@ -114,7 +114,7 @@ module API
           return render_api_error!(error, 400) if error
 
           destroy_conditionally!(user_project) do
-            ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
+            ::Projects::DestroyService.new(user_project, current_user, {}).async_execute # rubocop:disable Gitlab/HardDeleteCalls -- permanently_remove is checked
           end
 
           return accepted!

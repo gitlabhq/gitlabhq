@@ -1,0 +1,11 @@
+---
+migration_job_name: DeleteNoLongerUsedCiPipelinePlaceholderReferences
+description: Deletes placeholder references that are no longer necessary. Most placeholder references associated with
+  placeholder users are no longer required since a different process that does not use references was introduced in
+  https://gitlab.com/gitlab-org/gitlab/-/merge_requests/209033.
+  This migration deletes references that were not deleted in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/213417
+feature_category: importers
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226159
+milestone: '18.10'
+queued_migration_version: 20260305180143
+finalized_by: # version of the migration that finalized this BBM

@@ -171,9 +171,46 @@ RSpec.describe Gitlab::Auth::Ldap::Adapter do
           search: nil,
           get_operation_result: double(code: 1, message: 'some error')
         )
+        allow(Gitlab::AppLogger).to receive(:warn)
       end
 
-      it { is_expected.to eq [] }
+      context 'when ldap_raise_on_search_error is enabled' do
+        before do
+          stub_feature_flags(ldap_raise_on_search_error: true)
+        end
+
+        let(:err_message) { "LDAP search error code: 1, message: some error" }
+
+        it_behaves_like 'connection retry'
+      end
+
+      context 'when ldap_raise_on_search_error is disabled' do
+        before do
+          stub_feature_flags(ldap_raise_on_search_error: false)
+        end
+
+        it { is_expected.to eq [] }
+
+        it 'logs a warning with the response code' do
+          adapter.ldap_search(base: :dn, filter: :filter)
+          expect(Gitlab::AppLogger).to have_received(:warn).with(
+            "LDAP search error code: 1, message: some error"
+          )
+        end
+      end
+    end
+
+    described_class::NON_ERROR_LDAP_RESPONSE_CODES.each do |code|
+      context "when the search returns nil with non-error response code #{code}" do
+        before do
+          allow(ldap).to receive_messages(
+            search: nil,
+            get_operation_result: double(code: code, message: 'non-error response')
+          )
+        end
+
+        it { is_expected.to eq [] }
+      end
     end
 
     context "when the search raises an LDAP exception" do

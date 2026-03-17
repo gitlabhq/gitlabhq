@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Google Cloud Workload Identity Federation and IAM policies
 ---
 
@@ -95,7 +95,7 @@ To set up the Workload Identity Federation you can either:
 
 To use the GitLab UI to set up the Workload Identity Federation:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Locate the Google Cloud IAM integration and select **Configure**.
 1. Select **Guided setup** and follow the instructions.
@@ -181,7 +181,7 @@ For more information, see the Google Cloud documentation about how to [define an
 
 After you create the workload identity pool and provider, to complete the setup in GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Locate the Google Cloud IAM integration and select **Configure**.
 1. Select **Manual setup**
@@ -253,12 +253,9 @@ artifacts to the Google Artifact Registry from the GitLab project `gitlab-org/my
 
 1. Sign into the Google Cloud Console and go to the
    [**Workload Identity Federation** page](https://console.cloud.google.com/iam-admin/workload-identity-pools?supportedpurview=project).
-
 1. In the **Display name** column, select your workload identity pool.
-
 1. In the **Providers** section, next to the workload identity provider you want to edit,
    select **Edit** ({{< icon name="pencil" >}}) to open **Provider details**.
-
 1. In the **Attribute mapping** section, select **Add mapping**.
 1. In the **Google N** text box, enter:
 
@@ -276,9 +273,7 @@ artifacts to the Google Artifact Registry from the GitLab project `gitlab-org/my
 
    The Google attribute `my_project_maintainer` is mapped to the GitLab claims
    `maintainer_access==true` and the `project_path=="gitlab-org/my-project"`.
-
 1. In the Google Cloud Console, go to the [**IAM** page](https://console.cloud.google.com/iam-admin/iam?supportedpurview=project).
-
 1. Select **Grant access**.
 1. In the **New principals** text box, enter the principal set including the
    `attribute.my_project_maintainer/true` in the following format:

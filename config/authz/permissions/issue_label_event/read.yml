@@ -1,5 +1,3 @@
 ---
 name: read_issue_label_event
 description: Grants the ability to read issue label events
-boundaries:
-  - project

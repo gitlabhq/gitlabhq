@@ -33,7 +33,7 @@ describe('User Lists Table', () => {
 
   it('should set the title for a tooltip on the created stamp', () => {
     expect(wrapper.find('[data-testid="ffUserListTimestamp"]').attributes('title')).toBe(
-      localeDateFormat.asDateTimeFull.format(userList.created_at),
+      localeDateFormat.asDateTimeFullWithWeekday.format(userList.created_at),
     );
   });
 

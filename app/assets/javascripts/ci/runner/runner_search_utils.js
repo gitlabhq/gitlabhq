@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { queryToObject, setUrlParams } from '~/lib/utils/url_utility';
 import {
   filterToQueryObject,

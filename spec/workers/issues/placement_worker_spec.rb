@@ -21,7 +21,7 @@ RSpec.describe Issues::PlacementWorker, feature_category: :team_planning do
     let_it_be(:irrelevant) { create(:issue, relative_position: nil, created_at: time) }
 
     shared_examples 'running the issue placement worker' do
-      let(:issue_id) { issue.id }
+      let(:namespace_id) { group.id }
       let(:project_id) { project.id }
 
       it 'places all issues created at most 5 minutes before this one at the end, most recent last' do
@@ -52,7 +52,7 @@ RSpec.describe Issues::PlacementWorker, feature_category: :team_planning do
                              .with(have_attributes(count: described_class::QUERY_LIMIT))
                              .and_call_original
 
-          expect(described_class).to receive(:perform_async).with(nil, project.id)
+          expect(described_class).to receive(:perform_async).with({ 'namespace_id' => namespace_id })
 
           run_worker
 
@@ -75,7 +75,7 @@ RSpec.describe Issues::PlacementWorker, feature_category: :team_planning do
       end
 
       context 'we are passed bad IDs' do
-        let(:issue_id) { non_existing_record_id }
+        let(:namespace_id) { non_existing_record_id }
         let(:project_id) { non_existing_record_id }
 
         def max_positions_by_project
@@ -104,24 +104,21 @@ RSpec.describe Issues::PlacementWorker, feature_category: :team_planning do
         expect(Issues::RebalancingWorker).to receive(:perform_async).with(nil, nil, project.group.id)
         expect(Gitlab::ErrorTracking)
           .to receive(:log_exception)
-          .with(RelativePositioning::NoSpaceLeft, worker_arguments)
+          .with(RelativePositioning::NoSpaceLeft, namespace_id: group.id)
 
         run_worker
       end
     end
 
-    context 'passing an issue ID' do
+    context 'passing a namespace ID' do
       def run_worker
-        described_class.new.perform(issue_id)
+        described_class.new.perform({ 'namespace_id' => namespace_id })
       end
-
-      let(:worker_arguments) { { issue_id: issue_id, project_id: nil } }
 
       it_behaves_like 'running the issue placement worker'
 
       context 'when block_issue_repositioning is enabled' do
-        let(:issue_id) { issue.id }
-        let(:project_id) { project.id }
+        let(:namespace_id) { group.id }
 
         before do
           stub_feature_flags(block_issue_repositioning: group)
@@ -138,9 +135,54 @@ RSpec.describe Issues::PlacementWorker, feature_category: :team_planning do
         described_class.new.perform(nil, project_id)
       end
 
-      let(:worker_arguments) { { issue_id: nil, project_id: project_id } }
-
       it_behaves_like 'running the issue placement worker'
+    end
+
+    context 'with a project in a personal namespace' do
+      let_it_be(:personal_project) { create(:project) }
+      let_it_be(:personal_unplaced) { { author: author, project: personal_project, relative_position: nil } }
+      let_it_be_with_reload(:personal_issue) { create(:issue, **personal_unplaced, created_at: time) }
+      let_it_be_with_reload(:personal_issue_a) { create(:issue, **personal_unplaced, created_at: time - 1.minute) }
+      let_it_be_with_reload(:personal_issue_b) { create(:issue, **personal_unplaced, created_at: time + 1.minute) }
+
+      shared_examples 'running the issue placement worker for a personal namespace' do
+        it 'places issues in the personal namespace project' do
+          run_worker
+
+          expect(personal_project.issues.where(relative_position: nil)).not_to exist
+          expect(personal_project.issues.order_by_relative_position)
+            .to eq([personal_issue_a, personal_issue, personal_issue_b])
+        end
+
+        it 'does not affect issues in other projects' do
+          expect { run_worker }.not_to change { irrelevant.reset.relative_position }
+        end
+
+        it 'schedules rebalancing if needed' do
+          personal_issue_a.update!(relative_position: RelativePositioning::MAX_POSITION)
+
+          expect(Issues::RebalancingWorker).to receive(:perform_async)
+            .with(nil, personal_project.id, nil)
+
+          run_worker
+        end
+      end
+
+      context 'passing a namespace ID' do
+        def run_worker
+          described_class.new.perform({ 'namespace_id' => personal_project.project_namespace.id })
+        end
+
+        it_behaves_like 'running the issue placement worker for a personal namespace'
+      end
+
+      context 'passing a project ID' do
+        def run_worker
+          described_class.new.perform(nil, personal_project.id)
+        end
+
+        it_behaves_like 'running the issue placement worker for a personal namespace'
+      end
     end
   end
 

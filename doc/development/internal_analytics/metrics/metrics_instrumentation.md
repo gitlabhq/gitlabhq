@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Analytics Instrumentation
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Metrics instrumentation guide
 ---
 
@@ -15,10 +15,8 @@ For a video tutorial, see the [Adding Service Ping metric via instrumentation cl
 - **Instrumentation class**:
   - Inherits one of the metric classes: `DatabaseMetric`, `NumbersMetric` or `GenericMetric`.
   - Implements the logic that calculates the value for a Service Ping metric.
-
 - **Metric definition**
   The Service Data metric YAML definition.
-
 - **Hardening**:
   Hardening a method is the process that ensures the method fails safe, returning a fallback value like -1.
 
@@ -356,9 +354,7 @@ This guide describes how to migrate a Service Ping metric from [`lib/gitlab/usag
 - [Generic metric](#generic-metrics)
 
 1. Determine the location of instrumentation class: either under `ee` or outside `ee`.
-
 1. [Generate the instrumentation class file](#create-a-new-metric-instrumentation-class).
-
 1. Fill the instrumentation class body:
 
    - Add code logic for the metric. This might be similar to the metric implementation in `usage_data.rb`.
@@ -366,9 +362,7 @@ This guide describes how to migrate a Service Ping metric from [`lib/gitlab/usag
    - Add tests for Service Ping.
 
 1. [Generate the metric definition file](metrics_dictionary.md#create-a-new-metric-definition).
-
 1. Remove the code from [`lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data.rb) or [`ee/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/ee/gitlab/usage_data.rb).
-
 1. Remove the tests from [`spec/lib/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/usage_data_spec.rb) or [`ee/spec/lib/ee/gitlab/usage_data.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/lib/ee/gitlab/usage_data_spec.rb).
 
 ## Troubleshoot metrics

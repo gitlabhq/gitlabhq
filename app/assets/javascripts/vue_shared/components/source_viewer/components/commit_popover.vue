@@ -60,7 +60,7 @@ export default {
   >
     <div class="gl-flex gl-flex-col gl-gap-3">
       <!-- Authored time -->
-      <div class="gl-text-secondary" data-testid="commit-authored-time">
+      <div class="gl-text-subtle" data-testid="commit-authored-time">
         {{ authoredText }}
       </div>
 
@@ -74,17 +74,17 @@ export default {
       </gl-link>
 
       <!-- Author info -->
-      <div class="gl-flex gl-items-center gl-gap-2 gl-text-secondary">
+      <div class="gl-flex gl-items-center gl-gap-2 gl-text-subtle">
         <gl-avatar :src="avatarUrl" :size="16" :alt="authorName" />
         <span data-testid="commit-author">{{ authorName }}</span>
       </div>
 
       <!-- Commit SHA -->
       <div class="gl-flex gl-items-center gl-gap-2">
-        <gl-icon name="commit" :size="14" class="gl-text-secondary" />
+        <gl-icon name="commit" :size="14" class="gl-text-subtle" />
         <gl-link
           :href="commitUrl"
-          class="gl-font-monospace gl-text-secondary hover:gl-text-default"
+          class="gl-font-monospace gl-text-subtle hover:gl-text-default"
           data-testid="commit-sha-link"
         >
           {{ commit.shortId }}

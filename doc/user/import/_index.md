@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Import and migrate to GitLab
 description: Repository migration, third-party repositories, and user contribution mapping.
 ---
@@ -22,7 +22,7 @@ description: Repository migration, third-party repositories, and user contributi
 Bring your existing work into GitLab.
 
 A migration tool is available for some third-party platforms. Some support
-[post-migration mapping](mapping.md) of user contribution and membership.
+[post-migration mapping](mapping/_index.md) of user contribution and membership.
 
 | Migrate from                                                                | Groups                  | Projects    | Migration tool | Post-migration mapping |
 |:----------------------------------------------------------------------------|:------------------------|:------------|:---------------|:-----------------------|
@@ -57,7 +57,7 @@ you can use external tools, for example:
 ## Migrate by engaging Professional Services
 
 If you prefer, you can engage GitLab Professional Services to migrate groups and projects to GitLab instead of doing it
-yourself. For more information, see the [Professional Services Full Catalog](https://about.gitlab.com/services/catalog/).
+yourself. For more information, see the [Professional Services catalog](https://about.gitlab.com/services/catalog/).
 
 ## View project import history
 

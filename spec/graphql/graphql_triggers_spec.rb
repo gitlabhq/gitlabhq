@@ -260,6 +260,20 @@ RSpec.describe GraphqlTriggers, feature_category: :api do
     end
   end
 
+  describe '.ci_stage_status_updated' do
+    let_it_be(:stage) { create(:ci_stage) }
+
+    it 'triggers the ci_stage_status_updated subscription' do
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_stage_status_updated,
+        { stage_id: stage.to_gid },
+        stage
+      )
+
+      described_class.ci_stage_status_updated(stage)
+    end
+  end
+
   describe '.ci_pipeline_schedule_status_updated' do
     let_it_be(:schedule) { create(:ci_pipeline_schedule, project: project, owner: project.first_owner) }
 

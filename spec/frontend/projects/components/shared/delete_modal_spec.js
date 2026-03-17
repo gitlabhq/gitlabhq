@@ -1,4 +1,4 @@
-import { GlModal, GlAlert } from '@gitlab/ui';
+import { GlAlert, GlModal } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import GroupsProjectsDeleteModal from '~/groups_projects/components/delete_modal.vue';
@@ -6,11 +6,12 @@ import { sprintf } from '~/locale';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
-
-jest.mock('lodash/uniqueId', () => () => 'fake-id');
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 describe('DeleteModal', () => {
   let wrapper;
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const defaultPropsData = {
     visible: false,
@@ -28,6 +29,7 @@ describe('DeleteModal', () => {
 
   const createComponent = (propsData) => {
     wrapper = mountExtended(DeleteModal, {
+      provide: { triggerDeleteLocation: 'list' },
       propsData: {
         ...defaultPropsData,
         ...propsData,
@@ -109,6 +111,44 @@ describe('DeleteModal', () => {
     it('displays correct alert body', () => {
       expect(alertText()).toContain(
         sprintf(DeleteModal.i18n.isNotForkAlertBody, { strongStart: '', strongEnd: '' }),
+      );
+    });
+  });
+
+  describe('event tracking', () => {
+    it('tracks event when primary is clicked with scheduled deletion', () => {
+      createComponent({ markedForDeletion: false });
+
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findGroupsProjectsDeleteModal().vm.$emit('primary');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'trigger_delete_on_project',
+        {
+          label: 'list',
+          property: 'false',
+          actor: 'user',
+        },
+        undefined,
+      );
+    });
+
+    it('tracks event when primary is clicked with permanent deletion', () => {
+      createComponent({ markedForDeletion: true });
+
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findGroupsProjectsDeleteModal().vm.$emit('primary');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'trigger_delete_on_project',
+        {
+          label: 'list',
+          property: 'true',
+          actor: 'user',
+        },
+        undefined,
       );
     });
   });

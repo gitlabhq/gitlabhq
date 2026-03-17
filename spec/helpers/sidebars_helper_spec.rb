@@ -149,8 +149,39 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         shortcut_links: global_shortcut_links,
         track_visits_path: track_namespace_visits_path,
         work_items: nil,
-        has_multiple_organizations: false
+        has_multiple_organizations: false,
+        work_item_planning_view_enabled: false
       })
+    end
+
+    describe 'work_item_planning_view_enabled feature flag' do
+      context 'when work_items_consolidated_list_user feature flag is enabled' do
+        before do
+          stub_feature_flags(work_items_consolidated_list_user: true)
+        end
+
+        it 'sets work_item_planning_view_enabled to true', :use_clean_rails_memory_store_caching do
+          expect(subject[:work_item_planning_view_enabled]).to be(true)
+        end
+
+        it 'sets issues_dashboard_path to work_items dashboard', :use_clean_rails_memory_store_caching do
+          expect(subject[:issues_dashboard_path]).to eq(work_items_dashboard_path(assignee_username: user.username))
+        end
+      end
+
+      context 'when work_items_consolidated_list_user feature flag is disabled' do
+        before do
+          stub_feature_flags(work_items_consolidated_list_user: false)
+        end
+
+        it 'sets work_item_planning_view_enabled to false', :use_clean_rails_memory_store_caching do
+          expect(subject[:work_item_planning_view_enabled]).to be(false)
+        end
+
+        it 'sets issues_dashboard_path to issues dashboard', :use_clean_rails_memory_store_caching do
+          expect(subject[:issues_dashboard_path]).to eq(issues_dashboard_path(assignee_username: user.username))
+        end
+      end
     end
 
     it 'returns sidebar values for work item context with group id', :use_clean_rails_memory_store_caching do

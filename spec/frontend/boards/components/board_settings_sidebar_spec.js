@@ -3,9 +3,8 @@ import { shallowMount } from '@vue/test-utils';
 import { MountingPortal } from 'portal-vue';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
@@ -18,6 +17,7 @@ Vue.use(VueApollo);
 describe('BoardSettingsSidebar', () => {
   let wrapper;
   let mockApollo;
+  let rejectMutation;
   const labelTitle = mockLabelList.label.title;
   const labelColor = mockLabelList.label.color;
   const modalID = 'board-settings-sidebar-modal';
@@ -26,16 +26,17 @@ describe('BoardSettingsSidebar', () => {
     .fn()
     .mockResolvedValue(destroyBoardListMutationResponse);
   const errorMessage = 'Failed to delete list';
-  const destroyBoardListMutationHandlerFailure = jest
-    .fn()
-    .mockRejectedValue(new Error(errorMessage));
 
   const createComponent = ({
     canAdminList = false,
     list = {},
     destroyBoardListMutationHandler = destroyBoardListMutationHandlerSuccess,
   } = {}) => {
-    mockApollo = createMockApollo([[destroyBoardListMutation, destroyBoardListMutationHandler]]);
+    ({
+      apolloProvider: mockApollo,
+
+      rejectMutation,
+    } = createControlledMockApollo([[destroyBoardListMutation, destroyBoardListMutationHandler]]));
 
     wrapper = extendedWrapper(
       shallowMount(BoardSettingsSidebar, {
@@ -158,14 +159,13 @@ describe('BoardSettingsSidebar', () => {
       createComponent({
         canAdminList: true,
         list: mockLabelList,
-        destroyBoardListMutationHandler: destroyBoardListMutationHandlerFailure,
       });
 
       findRemoveButton().vm.$emit('click');
 
       wrapper.findComponent(GlModal).vm.$emit('primary');
 
-      await waitForPromises();
+      await rejectMutation(destroyBoardListMutation, new Error(errorMessage));
 
       expect(cacheUpdates.setError).toHaveBeenCalled();
     });

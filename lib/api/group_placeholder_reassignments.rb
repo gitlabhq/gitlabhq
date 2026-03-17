@@ -20,8 +20,10 @@ module API
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Download the list of pending placeholder assignments for a group' do
-        detail 'This feature was added in GitLab 17.10'
+        detail 'Downloads a CSV file of pending placeholder assignments for a group.
+          This feature was added in GitLab 17.10'
         success code: 200
+        tags ['groups']
       end
       route_setting :authorization, permissions: :read_placeholder_reassignment, boundary_type: :group
       get ':id/placeholder_reassignments' do
@@ -41,7 +43,9 @@ module API
       end
 
       desc 'Workhorse authorization for the reassignment CSV file' do
-        detail 'This feature was introduced in GitLab 17.10'
+        detail 'Authorizes Workhorse to handle CSV file uploads for placeholder reassignments.
+          This feature was introduced in GitLab 17.10'
+        tags ['groups']
       end
       route_setting :authorization, permissions: :authorize_placeholder_reassignment, boundary_type: :group
       post ':id/placeholder_reassignments/authorize' do
@@ -56,6 +60,10 @@ module API
         )
       end
 
+      desc 'Upload placeholder reassignments CSV file' do
+        detail 'Uploads a CSV file containing placeholder reassignments for a group'
+        tags ['groups']
+      end
       params do
         requires :file,
           type: ::API::Validations::Types::WorkhorseFile,

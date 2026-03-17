@@ -47,7 +47,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
           wait_for_requests
 
-          expect(find_by_testid('resolve-line-button')['aria-label']).to eq("Resolved by #{user.name}")
+          expect(find_by_testid('resolve-line-button')['aria-label']).to include("Resolved by #{user.name}, @#{user.username}")
         end
 
         page.within '.diff-content' do
@@ -239,7 +239,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
           resolve_button.click
           wait_for_requests
 
-          expect(resolve_button['aria-label']).to eq("Resolved by #{user.name}")
+          expect(resolve_button['aria-label']).to include("Resolved by #{user.name}, @#{user.username}")
         end
       end
 
@@ -262,7 +262,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
 
           wait_for_requests
 
-          expect(first('[data-testid="resolve-line-button"]')['aria-label']).to eq("Resolved by #{user.name}")
+          expect(first('[data-testid="resolve-line-button"]')['aria-label']).to include("Resolved by #{user.name}, @#{user.username}")
         end
 
         page.within(first('.discussions-counter')) do
@@ -279,7 +279,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
         wait_for_requests
 
         resolve_buttons.each do |button|
-          expect(button['aria-label']).to eq("Resolved by #{user.name}")
+          expect(button['aria-label']).to include("Resolved by #{user.name}, @#{user.username}")
         end
 
         page.within(first('.discussions-counter')) do
@@ -349,7 +349,7 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js, feat
           resolve_button.click
           wait_for_requests
 
-          expect(resolve_button['aria-label']).to eq("Resolved by #{user.name}")
+          expect(resolve_button['aria-label']).to include("Resolved by #{user.name}, @#{user.username}")
         end
       end
 

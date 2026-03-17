@@ -57,7 +57,7 @@ RSpec.describe Types::WorkItems::WidgetDefinitions::HierarchyType, feature_categ
     context 'when show_popover is set to true' do
       before do
         allow(widget_definition).to receive(:widget_options).and_return(
-          { hierarchy: { propagates_milestone: true } }
+          { propagates_milestone: true }
         )
       end
 
@@ -69,7 +69,7 @@ RSpec.describe Types::WorkItems::WidgetDefinitions::HierarchyType, feature_categ
     context 'when show_popover is set to false' do
       before do
         allow(widget_definition).to receive(:widget_options).and_return(
-          { hierarchy: { propagates_milestone: false } }
+          { propagates_milestone: false }
         )
       end
 
@@ -113,7 +113,7 @@ RSpec.describe Types::WorkItems::WidgetDefinitions::HierarchyType, feature_categ
     context 'when show_popover is set to true' do
       before do
         allow(widget_definition).to receive(:widget_options).and_return(
-          { hierarchy: { auto_expand_tree_on_move: true } }
+          { auto_expand_tree_on_move: true }
         )
       end
 
@@ -125,7 +125,7 @@ RSpec.describe Types::WorkItems::WidgetDefinitions::HierarchyType, feature_categ
     context 'when show_popover is set to false' do
       before do
         allow(widget_definition).to receive(:widget_options).and_return(
-          { hierarchy: { auto_expand_tree_on_move: false } }
+          { auto_expand_tree_on_move: false }
         )
       end
 

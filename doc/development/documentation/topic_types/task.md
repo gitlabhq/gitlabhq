@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: Task topic type
 ---
 
@@ -46,13 +46,14 @@ Prerequisites:
 
 To create an issue:
 
-1. In the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**.
-1. In the upper-right corner, select **New issue**.
-1. Complete the fields. (If you have reference content that lists each field, link to it here.)
+1. On the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**.
+1. In the upper-right corner, select **New item**.
+1. From the **Type** dropdown list, select **Issue** if it is not already selected.
+1. Enter a title and description. If you have reference content that lists each field, link to it here.
 1. Select **Create issue**.
 
-The issue is created. You can view it by going to **Plan** > **Issues**.
+The issue is created. To view it, filter the **Work items** list by **Type** = **Issue** and select your issue.
 ```
 
 ## Task topic titles

@@ -1,7 +1,7 @@
 ---
 stage: Platforms
 group: Scalability
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: GitLab Application Service Level Indicators (SLIs)
 ---
 
@@ -18,6 +18,7 @@ monitored.
 1. `global_search_error_rate`
 1. `global_search_indexing_apdex`
 1. [`sidekiq_execution`](sidekiq_execution.md)
+1. [`zoekt_tasks`](zoekt_tasks.md)
 
 ## Defining a new SLI
 

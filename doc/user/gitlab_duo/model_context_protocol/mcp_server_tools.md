@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use these tools to interact with GitLab through the GitLab MCP server.
 title: GitLab MCP server tools
 ---
@@ -179,6 +179,68 @@ Example:
 Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 ```
 
+## `manage_pipeline`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583826) in GitLab 18.10.
+
+{{< /history >}}
+
+Manages CI/CD pipelines in a GitLab project.
+
+| Parameter     | Type    | Required    | Description |
+|---------------|---------|-------------|-------------|
+| `id`          | string  | Yes         | ID or URL-encoded path of the project. |
+| `list`        | boolean | No          | If `true`, lists all pipelines in a project. |
+| `ref`         | string  | No          | Branch or tag name. If set, creates a new pipeline on a branch or tag. Optional for filtering lists. |
+| `pipeline_id` | integer | No          | ID of the pipeline. If only this parameter is set, deletes a pipeline and all related data. |
+| `retry`       | boolean | No          | If `true` and `pipeline_id` is set, retries failed or canceled pipeline jobs. |
+| `cancel`      | boolean | No          | If `true` and `pipeline_id` is set, cancels all jobs in a running pipeline. |
+| `name`        | string  | No          | Name of the pipeline. If this parameter and `pipeline_id` are set, updates the pipeline metadata. |
+| `variables`   | array   | No          | Pipeline variables in array format (`[{key, value, variable_type}]`). |
+| `inputs`      | hash    | No          | Pipeline input parameters as key-value pairs. |
+| `page`        | integer | No          | Current page number. Default is `1`. |
+| `per_page`    | integer | No          | Number of items per page. Default is `20`. |
+
+Examples:
+
+- List pipelines:
+
+  ```plaintext
+  List all pipelines for project gitlab-org/gitlab
+  ```
+
+- Create a pipeline:
+
+  ```plaintext
+  Create a pipeline on the main branch for project gitlab-org/gitlab
+  ```
+
+- Update a pipeline:
+
+  ```plaintext
+  Rename pipeline 12345 to "My deploy pipeline" in project gitlab-org/gitlab
+  ```
+
+- Retry a pipeline:
+
+  ```plaintext
+  Retry failed jobs in pipeline 12345 for project gitlab-org/gitlab
+  ```
+
+- Cancel a pipeline:
+
+  ```plaintext
+  Cancel pipeline 12345 in project gitlab-org/gitlab
+  ```
+
+- Delete a pipeline:
+
+  ```plaintext
+  Delete pipeline 12345 in project gitlab-org/gitlab
+  ```
+
 ## `create_workitem_note`
 
 {{< history >}}
@@ -278,7 +340,7 @@ Searches for labels in a GitLab project or group.
 
 | Parameter    | Type    | Required | Description |
 |--------------|---------|----------|-------------|
-| `full_path`  | string  | Yes      | Full path of the project or group (for example, `namespace/project`). |
+| `full_path`  | string  | Yes      | Full path of the project or group (for example, `group/project`). |
 | `is_project` | boolean | Yes      | Whether to search in a project (`true`) or group (`false`). |
 | `search`     | string  | No       | Search term to filter labels by title. |
 

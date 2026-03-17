@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snippet Blob Header Editing rendering matches the snapshot 1`] = `
+<div
+  class="file-title-flex-parent js-file-title"
+>
+  <div
+    class="gl-flex gl-items-center gl-w-full"
+  >
+    <gl-form-input-stub
+      class="form-control js-snippet-file-name"
+      name="snippet_file_name"
+      placeholder="File name (e.g. test.rb)"
+      type="text"
+      value="foo.md"
+    />
+  </div>
+</div>
+`;

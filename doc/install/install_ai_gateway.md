@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Gateway between GitLab and large language models.
 title: Install the GitLab AI Gateway
 ---
@@ -94,13 +94,10 @@ Newer features are available from nightly builds, but backwards compatibility is
      exclusively against the local GitLab instance.
    - Eliminates the 20-second delay caused by unreachable CustomersDot calls.
 1. Configure the [AI gateway URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-local-ai-gateway) and the [GitLab Duo Agent Platform service URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
-1. Configure the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable based on your model setup:
-   - If you are using a self-hosted model without TLS, set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable to `false` in your GitLab instance:
-
-     - For Linux package installations: In `gitlab_rails['env']`, set `'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`.
-     - For self-compiled installations: In `/etc/default/gitlab`, set `export DUO_AGENT_PLATFORM_SERVICE_SECURE=false`.
-
-   - If you are using a [GitLab AI vendor model](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#gitlab-ai-vendor-models), do not set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable.
+1. Optional. If your local GitLab Duo Agent Platform endpoint uses TLS:
+   1. In the upper-right corner, select **Admin**.
+   1. Select **GitLab Duo** > **Change configuration**.
+   1. Select the **Use TLS for the GitLab Duo Agent Platform service** checkbox.
 
 ## Set up Docker with NGINX and SSL
 
@@ -326,9 +323,7 @@ To deploy and validate the solution:
    ```
 
 1. Configure your [GitLab instance to access the AI Gateway](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-local-ai-gateway).
-
 1. Configure your GitLab instance to access the URL for the [GitLab Duo Agent Platform service](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
-
 1. Perform the health check and confirm that the AI Gateway and Agent Platform are both accessible.
 
 ## Install by using Helm chart
@@ -368,7 +363,6 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
    ```
 
 1. Get version number of the latest package in the [chart's Package Registry](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/packages).
-
 1. For the AI Gateway to access the API, it must know where the GitLab instance
    is located. To do this, set the `gitlab.url` and `gitlab.apiUrl` together with
    the `ingress.hosts` and `ingress.tls` values as follows:
@@ -525,12 +519,7 @@ To upgrade the AI Gateway, download the newest Docker image tag.
    ```
 
 1. Pull and [run the new image](#start-a-container-from-the-image).
-
 1. Ensure that the environment variables are all set correctly.
-
-## Extra installation steps for GitLab Dedicated instances
-
-To access a Self-hosted AI Gateway, see [Self-hosted AI Gateway for GitLab Dedicated instances](../administration/dedicated/configure_instance/_index.md#self-hosted-ai-gateway-for-gitlab-dedicated-instances).
 
 ## Security updates and image verification
 
@@ -623,7 +612,7 @@ If access issues persist, check that authentication is correctly configured, and
 
 In case of persistent issues, the error message may suggest bypassing authentication with `AIGW_AUTH__BYPASS_EXTERNAL=true`, but only do this for troubleshooting.
 
-You can also run a [health check](../administration/gitlab_duo/configure/gitlab_self_managed.md#run-a-health-check-for-gitlab-duo) by going to **Admin** > **GitLab Duo**.
+You can also run a [health check](../administration/gitlab_duo/configure/_index.md#run-a-health-check-for-gitlab-duo) by going to **Admin** > **GitLab Duo**.
 
 These tests are performed for offline environments:
 

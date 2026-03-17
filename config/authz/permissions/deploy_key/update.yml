@@ -1,5 +1,3 @@
 ---
 name: update_deploy_key
 description: Grants the ability to modify deploy keys
-boundaries:
-  - project

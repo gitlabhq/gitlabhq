@@ -185,6 +185,22 @@ module Gitlab
                 context.mask_variables_from(location)
               end
             end
+
+            def log_and_raise_timeout_error
+              log_gitaly_timeout
+
+              raise Context::TimeoutError, 'CI configuration fetch from Gitaly timed out. ' \
+                'This may indicate Gitaly service slowness or an outage.'
+            end
+
+            def log_gitaly_timeout
+              Gitlab::AppJsonLogger.warn(
+                class: self.class.name,
+                message: 'CI config Gitaly request timed out',
+                project_id: context.project&.id,
+                extra: { timeout_s: Config::GITALY_TIMEOUT_SECONDS, location: masked_location }
+              )
+            end
           end
         end
       end

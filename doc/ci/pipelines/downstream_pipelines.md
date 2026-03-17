@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Downstream pipelines
 ---
 
@@ -425,8 +425,10 @@ In this example:
 
 ### Mirror the status of a downstream pipeline in the trigger job
 
-You can mirror the status of the downstream pipeline in the trigger job
-by using [`strategy: mirror`](../yaml/_index.md#triggerstrategy):
+You can mirror the status of the downstream pipeline in the trigger job by using
+[`trigger: strategy`](../yaml/_index.md#triggerstrategy):
+
+With `strategy: mirror`, the trigger job always has the same status as the downstream pipeline.
 
 {{< tabs >}}
 
@@ -454,6 +456,9 @@ trigger_job:
 {{< /tab >}}
 
 {{< /tabs >}}
+
+`strategy: depend` is not recommended, because the trigger job status does not always match the status of
+the downstream pipeline. See the [additional details in the `trigger:strategy` reference](../yaml/_index.md#triggerstrategy).
 
 ### View multi-project pipelines in pipeline graphs
 
@@ -625,7 +630,7 @@ upstream pipeline:
 > [!warning]
 > Make sure the upstream job finishes before the downstream job starts, otherwise you cannot fetch the artifacts.
 > Use [`needs`](../yaml/_index.md#needs) to make the downstream job wait for the upstream job.
-> 
+>
 > For more information, see [issue 356016](https://gitlab.com/gitlab-org/gitlab/-/issues/356016).
 
 ### Fetch artifacts from an upstream merge request pipeline

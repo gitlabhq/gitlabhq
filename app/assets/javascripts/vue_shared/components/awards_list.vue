@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { groupBy } from 'lodash';
+import { groupBy } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import EmojiPicker from '~/emoji/components/picker.vue';
 import { __, sprintf } from '~/locale';

@@ -1,26 +1,26 @@
 ---
 stage: Application Security Testing
 group: Composition Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Dependency scanning by using SBOM
 ---
 
 {{< details >}}
 
 - Tier: Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Limited Availability (GitLab.com)
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Limited Availability (GitLab.com and GitLab Self-Managed)
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.1 and officially released as an [Experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.3 with a flag named `dependency_scanning_using_sbom_reports`.
-- Released [lock file-based dependency scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer as an [Experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.4.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) for default branch only in GitLab 17.5.
-- Released as Beta with support for all branches and [Enabled by default with the latest dependency scanning CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/issues/519597) for Cargo, Conda, Cocoapods, and Swift in GitLab 17.9.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/8026) in GitLab 17.4 as an [experiment](../../../../policy/development_stages_support.md#experiment) for default branch only [with a feature flag](../../../../administration/feature_flags/_index.md) named `dependency_scanning_using_sbom_reports`. Disabled by default.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.5.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/15960) from experiment to beta with support for all branches and [Enabled by default with the latest dependency scanning CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/issues/519597) for Cargo, Conda, Cocoapods, and Swift in GitLab 17.9.
 - Feature flag `dependency_scanning_using_sbom_reports` removed in GitLab 17.10.
-- Released as Limited Availability on GitLab.com only with a new [V2 CI/CD dependency scanning template](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201175/) in GitLab 18.5. Using the dependency scanning SBOM API behind feature flag `dependency_scanning_sbom_scan_api` disabled by default.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/work_items/15960) from beta to limited availability for GitLab.com only with a new [V2 CI/CD dependency scanning template](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201175/) in GitLab 18.5 [with a feature flag](../../../../administration/feature_flags/_index.md) named `dependency_scanning_sbom_scan_api`. Disabled by default.
+- Feature flag `dependency_scanning_using_sbom_reports` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/work_items/551861) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -33,8 +33,9 @@ aspects of inspecting the items your code uses. These items typically include ap
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
-Dependency scanning can run in the development phase of your application's lifecycle. Every time a
-pipeline produces an SBOM report, security findings are identified and compared between the source
+Dependency scanning can run in the development phase of your application's lifecycle. Using the new
+dependency scanning analyzer in CI/CD pipelines, project dependencies are detected and reported in CycloneDX
+SBOM reports. Security findings are identified and compared between the source
 and target branches. Findings and their severity are listed in the merge request, enabling you to
 proactively address the risk to your application, before the code change is committed. Security
 findings for reported SBOM components are also identified by
@@ -48,20 +49,19 @@ we encourage you to use all of our security scanners. For a comparison of these 
 
 Share any feedback on the new dependency scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
 
-## Getting started
+## Turn on dependency scanning
 
-If you are new to dependency scanning, follow these steps to enable it for your project.
+If you are new to dependency scanning, follow these steps to turn it on for your project.
 
 - Prerequisites for all GitLab instances:
-
-  - A [supported lock file or dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files),
+  - The Developer, Maintainer, or Owner role for the project.
+  - A [supported lock file or dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files). Alternatively, a [manifest file](#manifest-fallback) can be used as a fallback option for the supported languages.
     either in the repository or created in the CI/CD pipeline and passed as an artifact to the `dependency-scanning` job.
-  - Runners must have the
+  - For self-managed runners, GitLab Runner with the
     [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
-    [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor installed. On GitLab.com this is provided by default.
-
+    [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
+  - For hosted runners on GitLab.com, this configuration is enabled by default.
 - Additional prerequisites for GitLab Self-Managed only:
-
   - [Package metadata](../../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync)
     for all PURL types to be scanned must be synchronized in the GitLab instance.
 
@@ -69,15 +69,20 @@ If you are new to dependency scanning, follow these steps to enable it for your 
     > If this data is not available in the GitLab instance, dependency scanning cannot identify
     > vulnerabilities.
 
-To enable dependency scanning:
+To turn on dependency scanning:
 
-- Include the `v2` dependency scanning CI/CD template `Dependency-Scanning.v2.gitlab-ci.yml` in your
-  project's `.gitlab-ci.yml` file.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Code** > **Repository**.
+1. Select the `.gitlab-ci.yml` file.
+1. Select **Edit** > **Edit single file**.
+1. Add the `v2` dependency scanning CI/CD template:
 
-  ```yaml
-  include:
-    - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
-  ```
+   ```yaml
+   include:
+     - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+   ```
+
+1. Select **Commit changes**.
 
 ### Create lock file or dependency graph
 
@@ -387,7 +392,7 @@ build:
 Dependency scanning analyzer outputs:
 
 - A CycloneDX SBOM for each supported lock file or dependency graph export detected.
-- A single dependency scanning report for all scanned SBOM documents (GitLab.com only).
+- A single dependency scanning report for all scanned SBOM documents (GitLab.com and GitLab Self-Managed only).
 
 ### CycloneDX Software Bill of Materials
 
@@ -465,8 +470,14 @@ merge cyclonedx sboms:
 
 ### Dependency scanning report
 
-The dependency scanning analyzer outputs a single dependency scanning report containing vulnerabilities
-for all lock files scanned.
+{{< details >}}
+
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+The dependency scanning analyzer generates a dependency scanning report that documents all
+vulnerabilities identified in dependencies identified in the CycloneDX SBOM files.
 
 The dependency scanning report is:
 
@@ -570,6 +581,7 @@ following [PURL types](https://github.com/package-url/purl-spec/blob/34658984613
 | Java                      | ivy             | `ivy-report.xml`                                | Dependency graph exports generated by the `report` Apache Ant task.                                                                                                    | {{< no >}}               | {{< yes >}}                  |
 | Java                      | Maven           | `maven.graph.json`                              | Dependency graph exports generated by `mvn dependency:tree -DoutputType=json`.                                                                                         | {{< yes >}}              | {{< yes >}}                  |
 | Java/Kotlin               | Gradle          | `dependencies.lock`, `dependencies.direct.lock` | Lock files generated by [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin).                                              | {{< yes >}}              | {{< yes >}}                  |
+| Java/Kotlin               | Gradle          | `gradle.lockfile`                               | Lock files generated by `gradle dependencies --write-locks`.                                                                                                            | {{< no >}}               | {{< yes >}}                 |
 | Java/Kotlin               | Gradle          | `gradle-html-dependency-report.js`              | Dependency graph exports generated by the [htmlDependencyReport](https://docs.gradle.org/current/dsl/org.gradle.api.tasks.diagnostics.DependencyReportTask.html) task. | {{< yes >}}              | {{< yes >}}                  |
 | JavaScript/TypeScript     | npm             | `package-lock.json`, `npm-shrinkwrap.json`      | Lock files generated by `npm` v5 or later (earlier versions, which do not generate a `lockfileVersion` attribute, are not supported).                                  | {{< yes >}}              | {{< yes >}}                 |
 | JavaScript/TypeScript     | pnpm            | `pnpm-lock.yaml`                                | Lock files generated by `pnpm`.                                                                                                                                        | {{< yes >}}              | {{< yes >}}                 |
@@ -699,14 +711,23 @@ variables:
 
 ### Manifest fallback
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/585886) in GitLab 18.9. Only Maven manifest files supported.
+- [Updated](https://gitlab.com/gitlab-org/gitlab/-/work_items/586921) in GitLab 18.9. Support for Python requirements file added.
+- [Updated](https://gitlab.com/gitlab-org/gitlab/-/work_items/588788) in GitLab 18.10. Support for Gradle manifest files added.
+
+{{< /history >}}
+
 When a supported lock file or dependency graph export is not available, the dependency scanning analyzer can extract dependencies from supported manifest files as a fallback.
 
 The following manifest files are supported:
 
-| Language | Package manager | Manifest file      |
-|----------|-----------------|--------------------|
-| Java     | Maven           | `pom.xml`          |
-| Python   | pip             | `requirements.txt` |
+| Language | Package manager | Manifest file                      |
+|----------|-----------------|------------------------------------|
+| Java     | Maven           | `pom.xml`                          |
+| Python   | pip             | `requirements.txt`                 |
+| Java     | Gradle          | `build.gradle`, `build.gradle.kts` |
 
 > [!warning]
 >

@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Set up SAML SSO for GitLab.com groups'
 ---
 
@@ -34,7 +34,7 @@ that tell your IdP how to communicate with your GitLab group.
 
 To gather the GitLab information:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Note these values:
    - **Identifier**
@@ -226,7 +226,7 @@ which strengthens security. However, it prevents access through other authentica
 
 To turn on SSO enforcement:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Select **Enforce SSO-only authentication for web activity for this group**.
 1. Select **Save changes**.

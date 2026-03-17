@@ -35,6 +35,18 @@ RSpec.describe API::UsageDataNonSqlMetrics, :aggregate_failures, feature_categor
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['counts']).to be_a(Hash)
           end
+
+          it_behaves_like 'authorizing granular token permissions', :read_usage_data_metric do
+            let(:boundary_object) { :instance }
+            let(:user) { admin }
+            let(:request) do
+              get api(endpoint, personal_access_token: pat)
+            end
+
+            before do
+              create :non_sql_service_ping, payload: { counts: { abc: 12 } }
+            end
+          end
         end
 
         context "with no recent NonSqlServicePing entry" do

@@ -2,6 +2,8 @@
 key_path: counts_monthly.ci_builds
 description: Total monthly (28D) ci builds in Gitlab repositories for all project and project types
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 value_type: number
 status: active
 milestone: "16.1"

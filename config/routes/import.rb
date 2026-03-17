@@ -83,6 +83,8 @@ namespace :import do
     end
   end
 
+  resource :offline, only: [:show], controller: :offline
+
   resource :manifest, only: [:create, :new], controller: :manifest do
     get :status
     get :realtime_changes

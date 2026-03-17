@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: AI-native features and functionality.
 title: GitLab Duo data usage
 ---
@@ -37,10 +37,7 @@ with Anthropic, Fireworks AI, AWS, and Google.
 These vendors discard model input and output data immediately after the output is
 provided and do not store input and output data for abuse monitoring. The exception
 to this is when Fireworks AI, Anthropic, and VertexAI prompt caching is enabled for
-Code Suggestions and GitLab Duo Chat (Agentic).
-
-For more information on how to turn off prompt caching, see
-prompt caching with [Code Suggestions](../duo_agent_platform/code_suggestions/_index.md#prompt-caching) or [Code Suggestions (Classic)](../project/repository/code_suggestions/_index.md#prompt-caching).
+Code Suggestions and GitLab Duo Chat (agentic).
 
 > [!note]
 > For OpenAI models, you cannot turn off prompt caching. If you have turned off prompt caching and you use an OpenAI model, GitLab attempts to invalidate the cache by adding the current timestamp to the prompt. Ensure that you use a model that is suitable for your data retention requirements.
@@ -85,6 +82,18 @@ GitLab Duo collects aggregated or de-identified first-party usage data through a
   - Number of suggestions shown, accepted, rejected, or that had errors
   - Duration of time that a suggestion was shown
 
+## GitLab Model Context Protocol server
+
+The following information applies to [GitLab Model Context Protocol (MCP) server](model_context_protocol/mcp_server.md) usage in GitLab
+Self-Managed instances.
+
+GitLab does not transmit, store, retain, or process any data when the GitLab MCP server is used. All
+communication occurs directly between the MCP client and the GitLab MCP server in your environment.
+
+Repository data and metadata are not sent to GitLab.
+
+You control which MCP clients connect to your instance. Each client's own privacy and data retention policies apply.
+
 ## Model accuracy and quality
 
 Generative AI may produce unexpected results that may be:
@@ -128,7 +137,7 @@ Secret scanning runs in the following scenarios:
 > [!note]
 > Secret scanning does not occur when you interact with GitLab Duo Chat through the web interface.
 
-## Collecting usage data
+## Share group usage data with GitLab
 
 {{< history >}}
 
@@ -136,30 +145,12 @@ Secret scanning runs in the following scenarios:
 
 {{< /history >}}
 
-To help improve service quality, you can share GitLab Duo interaction data with GitLab.
+To help improve service quality, you can share usage data about GitLab Duo Agent Platform features with GitLab.
 
-When you turn on data collection, GitLab logs information about GitLab Duo feature usage.
+After you turn on data collection, AI interactions from all projects and subgroups in your namespace are logged with GitLab.
 This data is used exclusively for service improvement and debugging, and not for training AI models.
 
-### Which data is logged
-
-When data collection is enabled, the following data is logged:
-
-- Full prompt and response text from interactions with GitLab Duo.
-- Session context, including sessions that were ongoing at the time the setting is enabled.
-- Model metadata (model version, token counts, latency).
-- Tool calls and their results.
-- Session IDs to correlate with user feedback.
-
-The following information is not included in logs, as long as users don't include it in their own prompts:
-
-- User IDs or usernames.
-- Email addresses or personal identifiers.
-- Project or namespace identifiers.
-
-GitLab does not remove identifiers that users have included in their prompt.
-
-### Configure data collection for a group
+You can also turn on usage data collection [for an instance](../../administration/gitlab_duo/configure/_index.md#share-usage-data-with-gitlab)
 
 Prerequisites:
 
@@ -169,24 +160,26 @@ Prerequisites:
 
 To turn on data collection for your group:
 
-1. On top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings** > **General**.
-1. Expand **GitLab Duo features**.
-1. Select the **Collect usage data** checkbox.
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **GitLab Duo**.
+1. Select **Change configuration**.
+1. Under **Data collection**, select the **Collect usage data** checkbox.
 1. Select **Save changes**.
 
-After you turn on data collection, AI interactions from all projects and subgroups in your namespace are logged with GitLab.
+### Agent Platform usage data
 
-### Configure data collection for an instance
+When you turn on data collection, the following data is logged:
 
-To configure data collection for GitLab Self-Managed, see [these instructions](../../administration/gitlab_duo_self_hosted/configure_duo_features.md#enable-extended-logging-for-debugging).
+- Full prompt and response text from interactions with GitLab Duo.
+- Session context, including sessions that were ongoing at the time the setting is enabled.
+- Model metadata (model version, token counts, latency).
+- Tool calls and their results.
+- Session IDs to correlate with user feedback.
 
-When you turn on logging in a fully self-hosted configuration, detailed logs are stored on your infrastructure and are not shared with GitLab unless your self-hosted AI Gateway is explicitly configured to send traces to an external observability service.
+The following information is not included in logs, unless users include it in their own prompts:
 
-## GitLab Duo Self-Hosted
+- User IDs or usernames.
+- Email addresses or personal identifiers.
+- Project or namespace identifiers.
 
-When you are using [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
-and the self-hosted AI Gateway, you do not share any data with GitLab.
-
-GitLab Self-Managed administrators can use [Service Ping](../../administration/settings/usage_statistics.md#service-ping)
-to send usage statistics to GitLab. This is separate to the [telemetry data](#telemetry).
+GitLab does not remove identifiers that users have included in their prompt.

@@ -106,7 +106,11 @@ module Autocomplete
     end
 
     def preload_associations(items)
-      ActiveRecord::Associations::Preloader.new(records: items, associations: :status).call
+      ActiveRecord::Associations::Preloader.new(records: items, associations: associations_to_preload).call
+    end
+
+    def associations_to_preload
+      [:status]
     end
 
     def use_minimum_char_limit

@@ -3,6 +3,17 @@
 RSpec.shared_examples 'repository_storage_moves API' do |container_type|
   include AccessMatchersForRequest
 
+  def boundary_object_for(container_type, container)
+    case container_type
+    when 'snippets'
+      :instance
+    when 'projects', 'groups'
+      container
+    else
+      raise ArgumentError, "Unexpected container_type: #{container_type.inspect}"
+    end
+  end
+
   let_it_be(:user) { create(:admin) }
 
   shared_examples 'get single container repository storage move' do
@@ -145,6 +156,13 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
 
     it_behaves_like 'get container repository storage move list'
 
+    it_behaves_like 'authorizing granular token permissions', :read_repository_storage_move do
+      let(:boundary_object) { boundary_object_for(container_type, container) }
+      let(:request) do
+        get api(url, personal_access_token: pat)
+      end
+    end
+
     context 'non-existent container' do
       let(:container_id) { non_existing_record_id }
 
@@ -162,6 +180,14 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
 
     it_behaves_like 'get single container repository storage move'
 
+    it_behaves_like 'authorizing granular token permissions', :read_repository_storage_move do
+      let(:repository_storage_move_id) { storage_move.id }
+      let(:boundary_object) { boundary_object_for(container_type, container) }
+      let(:request) do
+        get api(url, personal_access_token: pat)
+      end
+    end
+
     context 'non-existent container' do
       let(:container_id) { non_existing_record_id }
       let(:repository_storage_move_id) { storage_move.id }
@@ -175,19 +201,47 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
   end
 
   describe "GET /#{container_type.singularize}_repository_storage_moves" do
-    it_behaves_like 'get container repository storage move list' do
-      let(:url) { "/#{container_type.singularize}_repository_storage_moves" }
+    let(:url) { "/#{container_type.singularize}_repository_storage_moves" }
+
+    it_behaves_like 'get container repository storage move list'
+
+    it_behaves_like 'authorizing granular token permissions', :read_repository_storage_move do
+      let(:boundary_object) { :instance }
+      let(:request) do
+        get api(url, personal_access_token: pat)
+      end
     end
   end
 
   describe "GET /#{container_type.singularize}_repository_storage_moves/:repository_storage_move_id" do
-    it_behaves_like 'get single container repository storage move' do
-      let(:url) { "/#{container_type.singularize}_repository_storage_moves/#{repository_storage_move_id}" }
+    let(:url) { "/#{container_type.singularize}_repository_storage_moves/#{repository_storage_move_id}" }
+
+    it_behaves_like 'get single container repository storage move'
+
+    it_behaves_like 'authorizing granular token permissions', :read_repository_storage_move do
+      let(:repository_storage_move_id) { storage_move.id }
+      let(:boundary_object) { :instance }
+      let(:request) do
+        get api(url, personal_access_token: pat)
+      end
     end
   end
 
   describe "POST /#{container_type}/:id/repository_storage_moves", :aggregate_failures do
     it_behaves_like 'post single container repository storage move'
+
+    context 'with granular permissions' do
+      before do
+        stub_storage_settings('test_second_storage' => {})
+      end
+
+      it_behaves_like 'authorizing granular token permissions', :create_repository_storage_move do
+        let(:boundary_object) { boundary_object_for(container_type, container) }
+        let(:request) do
+          post api("/#{container_type}/#{container.id}/repository_storage_moves", personal_access_token: pat), params: { destination_storage_name: 'test_second_storage' }
+        end
+      end
+    end
   end
 
   describe "POST /#{container_type.singularize}_repository_storage_moves" do
@@ -212,6 +266,16 @@ RSpec.shared_examples 'repository_storage_moves API' do |container_type|
       create_container_repository_storage_moves
 
       expect(response).to have_gitlab_http_status(:accepted)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_repository_storage_move do
+      let(:boundary_object) { :instance }
+      let(:request) do
+        post api(url, personal_access_token: pat), params: {
+          source_storage_name: source_storage_name,
+          destination_storage_name: destination_storage_name
+        }
+      end
     end
 
     context 'source_storage_name is invalid' do

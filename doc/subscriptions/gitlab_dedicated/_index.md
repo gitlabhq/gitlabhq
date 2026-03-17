@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: Switchboard
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Discover available features and benefits of a single-tenant SaaS solution.
 title: GitLab Dedicated
 ---
@@ -76,7 +76,7 @@ Data is encrypted at rest and in transit using the latest encryption standards.
 
 Optionally, you can use your own AWS Key Management Service (KMS) encryption key for data at rest. This option gives you full control over the data you store in GitLab.
 
-For more information, see [encrypted data at rest (BYOK)](../../administration/dedicated/encryption.md#encrypted-data-at-rest).
+For more information, see [GitLab Dedicated encryption](../../administration/dedicated/encryption.md).
 
 #### Email service
 
@@ -199,8 +199,8 @@ ClickHouse Cloud integration, which is enabled by default for eligible customers
 
 - Your GitLab Dedicated tenant is deployed to a commercial AWS region.
   GitLab Dedicated for Government is not supported.
-- Your tenant's primary region supports ClickHouse Cloud. For supported regions, see
-  [primary regions](../../administration/dedicated/create_instance/data_residency_high_availability.md#primary-regions).
+- ClickHouse Cloud is available only in supported regions. For more information, see
+  [supported regions](../../administration/dedicated/create_instance/data_residency_high_availability.md#supported-regions).
 
 #### GitLab Pages
 
@@ -287,6 +287,7 @@ This section lists the features that are not available for GitLab Dedicated.
 | Kerberos authentication                       | Single sign-on authentication using Kerberos protocol.                | Must authenticate separately to GitLab.                      |
 | FortiAuthenticator/FortiToken 2FA             | Two-factor authentication using Fortinet security solutions.          | Cannot integrate existing Fortinet 2FA infrastructure.       |
 | Git clone using HTTPS with username/password  | Git operations using username and password authentication over HTTPS. | Must use access tokens for Git operations.                   |
+| SSH certificate authentication                   | SSH authentication using CA-issued certificates.                      | Must use another SSH authentication method, such as SSH keys.    |
 | [Sigstore](../../ci/yaml/signing_examples.md) | Keyless signing and verification for software supply chain security.  | Must use traditional code signing methods.                   |
 | Port remapping                                | Remap ports like SSH (22) to different inbound ports.                 | GitLab Dedicated only uses default communication ports.      |
 

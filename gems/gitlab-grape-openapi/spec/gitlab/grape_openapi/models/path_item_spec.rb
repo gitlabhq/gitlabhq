@@ -49,6 +49,16 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::PathItem do
       expect(path_item.operations['get']).to eq(get_operation)
       expect(path_item.operations['post']).to eq(post_operation)
     end
+
+    context 'when operation is hidden' do
+      before do
+        allow(operation).to receive(:hidden?).and_return(true)
+      end
+
+      it 'ignores the request to add the operation' do
+        expect { path_item.add_operation(:post, operation) }.not_to change { path_item.operations.count }
+      end
+    end
   end
 
   describe '#to_h' do

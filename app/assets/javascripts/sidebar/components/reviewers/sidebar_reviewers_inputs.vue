@@ -1,10 +1,27 @@
 <script>
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { sidebarState } from '~/sidebar/sidebar_state';
+import getMergeRequestReviewersQuery from '~/sidebar/queries/get_merge_request_reviewers.query.graphql';
 
 export default {
+  inject: ['issuableIid', 'projectPath'],
+  apollo: {
+    issuable: {
+      query: getMergeRequestReviewersQuery,
+      variables() {
+        return {
+          iid: this.issuableIid,
+          fullPath: this.projectPath,
+        };
+      },
+      update(data) {
+        return data.namespace?.issuable;
+      },
+    },
+  },
   data() {
-    return sidebarState;
+    return {
+      issuable: null,
+    };
   },
   computed: {
     reviewers() {

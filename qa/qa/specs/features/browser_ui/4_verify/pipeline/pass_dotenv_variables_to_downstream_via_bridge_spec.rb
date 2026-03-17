@@ -36,6 +36,7 @@ module QA
       it 'runs the pipeline with composed config',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348088' do
         Page::Project::Pipeline::Show.perform do |parent_pipeline|
+          parent_pipeline.close_dap_panel_if_exists
           Support::Waiter.wait_until { parent_pipeline.has_linked_pipeline? }
           parent_pipeline.expand_linked_pipeline
           parent_pipeline.click_job('downstream_test')

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use Code Owners to define experts for your codebase, and set review requirements based on file type or location.
 title: Advanced `CODEOWNERS` configuration
 ---
@@ -130,7 +130,7 @@ Valid entries for `n` are integers `≥ 1`. `[1]` is optional because it is the 
 
 To require multiple approvals from Code Owners:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Next to the default branch, select **View details**.
@@ -187,7 +187,7 @@ The eligible Code Owners are:
 
 To make members of a group eligible as Code Owners for projects they don't
 directly belong to, you can
-[invite the group](../../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)
+[invite the group](../members/sharing_projects_groups.md#invite-a-group-to-a-group)
 to a parent group of the project. When you invite a group, its direct members
 become eligible as Code Owners for all projects in the parent group's hierarchy.
 

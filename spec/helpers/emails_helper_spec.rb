@@ -111,6 +111,69 @@ RSpec.describe EmailsHelper, feature_category: :shared do
 
       it { is_expected.to end_with "on #{Gitlab.config.gitlab.host}." }
     end
+
+    context 'with all links' do
+      let(:unsubscribe_url) { 'http://example.com/unsubscribe' }
+      let(:params) do
+        {
+          reason: nil,
+          show_manage_notifications_link: true,
+          show_help_link: true,
+          unsubscribe_url: unsubscribe_url
+        }
+      end
+
+      it 'returns HTML links for html format' do
+        result = helper.notification_reason_text(**params, format: :html)
+
+        aggregate_failures do
+          expect(result).to include('<a href=')
+          expect(result).to include('Unsubscribe')
+          expect(result).to include('Manage all notifications')
+          expect(result).to include('Help')
+        end
+      end
+
+      it 'returns plain text URLs for text format' do
+        result = helper.notification_reason_text(**params, format: :text)
+
+        aggregate_failures do
+          expect(result).not_to include('<a href=')
+          expect(result).to include("Unsubscribe from this thread: #{unsubscribe_url}")
+          expect(result).to include("Manage all notifications: #{profile_notifications_url}")
+          expect(result).to include("Help: #{help_url}")
+        end
+      end
+    end
+
+    context 'with manage label subscriptions link' do
+      let(:label_url) { 'http://example.com/labels' }
+      let(:params) { { show_help_link: true, manage_label_subscriptions_url: label_url } }
+
+      it 'returns plain text URLs for text format' do
+        result = helper.notification_reason_text(**params, format: :text)
+
+        aggregate_failures do
+          expect(result).not_to include('<a href=')
+          expect(result).to include("Manage label subscriptions: #{label_url}")
+          expect(result).to include("Help: #{help_url}")
+        end
+      end
+    end
+
+    context 'with manage notifications link but no unsubscribe_url' do
+      let(:params) { { reason: nil, show_manage_notifications_link: true, show_help_link: true } }
+
+      it 'returns plain text URLs for text format' do
+        result = helper.notification_reason_text(**params, format: :text)
+
+        aggregate_failures do
+          expect(result).not_to include('<a href=')
+          expect(result).to include("Manage all notifications: #{profile_notifications_url}")
+          expect(result).to include("Help: #{help_url}")
+        end
+      end
+    end
   end
 
   describe 'sanitize_name' do

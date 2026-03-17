@@ -1,6 +1,3 @@
 ---
 name: approve_access_request
 description: Grants ability to approve access requests
-boundaries:
-  - group
-  - project

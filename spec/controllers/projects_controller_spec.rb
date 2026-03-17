@@ -1033,26 +1033,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
     end
 
-    context 'when updating non boolean values on project setting' do
-      it 'updates project settings attributes accordingly' do
-        put :update, params: {
-          namespace_id: project.namespace,
-          id: project.path,
-          project: {
-            project_setting_attributes: {
-              merge_request_title_regex: 'aaa',
-              merge_request_title_regex_description: 'Test description'
-            }
-          }
-        }
-
-        project.reload
-
-        expect(project.merge_request_title_regex).to eq('aaa')
-        expect(project.merge_request_title_regex_description).to eq('Test description')
-      end
-    end
-
     context 'when updating boolean values on project_settings' do
       using RSpec::Parameterized::TableSyntax
 
@@ -1431,7 +1411,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           }, format: :js
 
           expect(forked_project.reload.forked?).to be_falsey
-          expect(flash[:notice]).to eq(s_('The fork relationship has been removed.'))
+          expect(flash[:notice]).to eq(_('The fork relationship has been removed.'))
           expect(response).to redirect_to(edit_project_path(forked_project))
         end
       end
@@ -1632,6 +1612,31 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
     end
 
+    context 'with suggestion on merge request' do
+      let(:project) { create(:project, :repository, maintainers: [user]) }
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:diff_refs) { merge_request.diff_refs }
+
+      it 'includes suggestions in response' do
+        post :preview_markdown, params: {
+          namespace_id: project.namespace.full_path,
+          project_id: project.path,
+          text: "```suggestion\nfoo\n```",
+          preview_suggestions: 'true',
+          target_type: 'MergeRequest',
+          target_id: merge_request.iid,
+          file_path: 'files/ruby/popen.rb',
+          line: '10',
+          base_sha: diff_refs.base_sha,
+          head_sha: diff_refs.head_sha,
+          start_sha: diff_refs.start_sha
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['references']['suggestions']).not_to be_empty
+      end
+    end
+
     context 'when path parameter is provided' do
       let(:project_with_repo) { create(:project, :repository) }
       let(:preview_markdown_params) do
@@ -1679,6 +1684,27 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         post :preview_markdown, params: preview_markdown_params
 
         expect(json_response['body']).to include(expanded_path)
+      end
+    end
+
+    context 'when render_quick_actions is true' do
+      let_it_be(:issue) { create(:issue, project: public_project) }
+
+      before do
+        public_project.add_maintainer(user)
+      end
+
+      it 'keeps quick actions in the rendered output' do
+        post :preview_markdown, params: {
+          namespace_id: public_project.namespace,
+          project_id: public_project,
+          text: "Some text\n/assign #{user.to_reference}",
+          target_type: 'Issue',
+          target_id: issue.iid,
+          render_quick_actions: 'true'
+        }
+
+        expect(json_response['body']).to include('/assign')
       end
     end
 

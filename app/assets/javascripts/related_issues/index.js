@@ -12,7 +12,7 @@ export function initRelatedIssues() {
 
   return new Vue({
     el,
-    name: 'RelatedIssuesRoot',
+    name: 'RelatedIssuesAppRoot',
     apolloProvider,
     provide: {
       fullPath: el.dataset.fullPath,

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate GitLab data by using direct transfer
 description: "Use a direct connection to migrate GitLab data."
 ---
@@ -49,7 +49,8 @@ Migrating groups by direct transfer copies the groups from one place to another.
   - Another top-level group.
   - The subgroup of any existing top-level group.
   - Another GitLab instance, including GitLab.com.
-- In the [API](../../../api/bulk_imports.md), copy top-level groups and subgroups to these locations.
+- In the [group and project migration by direct transfer API](../../../api/bulk_imports.md),
+  copy top-level groups and subgroups to these locations.
 - Copy groups with or without projects.
   Copying groups with projects is available by default on GitLab.com.
 
@@ -86,7 +87,7 @@ transfer, you must use the [API](../../../api/bulk_imports.md#start-a-group-or-p
   to the importing user rather than the original author.
 - Direct transfer does not support consolidating groups or projects from different source groups
   into a single destination group. To consolidate groups or projects, either restructure on the
-  source instance before migration, or restructure on the destination instance [after placeholder user reassignment is complete](../../import/mapping.md#completing-the-reassignment). See [issue 589460](https://gitlab.com/gitlab-org/gitlab/-/work_items/589460).
+  source instance before migration, or restructure on the destination instance [after placeholder user reassignment is complete](../../import/mapping/_index.md#completing-the-reassignment). See [issue 589460](https://gitlab.com/gitlab-org/gitlab/-/work_items/589460).
 
 ## Estimating migration duration
 
@@ -100,7 +101,11 @@ Estimating the duration of migration by direct transfer is difficult. The follow
   very different amounts of time to migrate if one of the projects has a lot more attachments, comments, and other items on the merge requests. Therefore, the number
   of merge requests on a project is a poor predictor of how long a project will take to migrate.
 
-There's no exact formula to reliably estimate a migration. However, the average durations of each pipeline worker importing a project relation can help you to get an idea of how long importing your projects might take:
+There's no exact formula to reliably estimate a migration. However, the average durations of each pipeline worker
+importing a project {{< glossary-tooltip text="relation" >}} can help you to get an idea of how long importing your
+projects might take.
+
+In this context, a relation is a type of exportable item.
 
 | Project resource type       | Average time (in seconds) to import a record |
 |:----------------------------|:---------------------------------------------|
@@ -145,7 +150,7 @@ If you are migrating large projects and encounter problems with timeouts or dura
 
 For default limits, see [migration by direct transfer limits](../../../administration/instance_limits.md#direct-transfer-migration).
 
-You can test the maximum relation size limit using these APIs:
+You can test the maximum relation size limit by using these APIs:
 
 - [Group relations export API](../../../api/group_relations_export.md).
 - [Project relations export API](../../../api/project_relations_export.md)

@@ -1,4 +1,4 @@
-import { clamp } from 'lodash';
+import { clamp } from 'lodash-es';
 import {
   ARROW_DOWN_KEY,
   ARROW_UP_KEY,

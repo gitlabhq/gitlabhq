@@ -172,7 +172,7 @@ module NavbarStructureHelper
     insert_after_sub_nav_item(
       _('Artifacts'),
       within: _('Build'),
-      new_sub_nav_item_name: s_('Attestations')
+      new_sub_nav_item_name: _('Attestations')
     )
   end
 

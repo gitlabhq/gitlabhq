@@ -190,7 +190,7 @@ module API
           render_api_error!(error, 400) if error
 
           destroy_conditionally!(group) do
-            ::Groups::DestroyService.new(group, current_user).async_execute
+            ::Groups::DestroyService.new(group, current_user).async_execute # rubocop:disable Gitlab/HardDeleteCalls -- permanently_remove is checked
           end
 
           return accepted!
@@ -434,7 +434,9 @@ module API
         delete_group(group)
       end
 
-      desc 'Restore a group.'
+      desc 'Restore a group.' do
+        tags %w[groups]
+      end
       route_setting :authorization, permissions: :restore_group, boundary_type: :group
       post ':id/restore', feature_category: :groups_and_projects do
         authorize! :remove_group, user_group
@@ -583,7 +585,7 @@ module API
         use :group_list_params
         use :with_custom_attributes
       end
-      route_setting :authorization, permissions: :read_sub_group, boundary_type: :group
+      route_setting :authorization, permissions: :read_subgroup, boundary_type: :group
       get ":id/subgroups", feature_category: :groups_and_projects, urgency: :low do
         groups = find_groups(declared_params(include_missing: false), params[:id])
         present_groups params, groups
@@ -743,6 +745,9 @@ module API
         end
       end
 
+      desc 'Unshare a group with a group' do
+        tags ['groups']
+      end
       params do
         requires :group_id, type: Integer, desc: 'The ID of the shared group'
       end

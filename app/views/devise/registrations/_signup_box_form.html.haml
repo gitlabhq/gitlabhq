@@ -21,7 +21,7 @@
     .col.form-group
       = f.label :first_name, _('First name'), for: 'new_user_first_name'
       = f.text_field :first_name,
-        class: 'form-control gl-form-input top js-block-emoji js-validate-length js-track-error',
+        class: 'form-control gl-form-input js-block-emoji js-validate-length js-track-error',
         data: { max_length: max_first_name_length,
         max_length_message: safe_format(s_('SignUp|First name is too long (maximum is %{max_length} characters).'),
                             max_length: max_first_name_length),
@@ -32,7 +32,7 @@
     .col.form-group
       = f.label :last_name, _('Last name'), for: 'new_user_last_name'
       = f.text_field :last_name,
-        class: 'form-control gl-form-input top js-block-emoji js-validate-length js-track-error',
+        class: 'form-control gl-form-input js-block-emoji js-validate-length js-track-error',
         data: { max_length: max_last_name_length,
         max_length_message: safe_format(s_('SignUp|Last name is too long (maximum is %{max_length} characters).'),
                             max_length: max_last_name_length),
@@ -43,7 +43,7 @@
   .username.form-group
     = f.label :username, _('Username')
     = f.text_field :username,
-      class: 'form-control gl-form-input middle js-block-emoji js-validate-length js-validate-username js-track-error',
+      class: 'form-control gl-form-input js-block-emoji js-validate-length js-validate-username js-track-error',
       data: signup_username_data_attributes.merge(track_action_for_errors: preregistration_tracking_label),
       pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
       required: true,
@@ -58,7 +58,7 @@
     .form-group
       = f.label :email, _('Email')
       = f.email_field :email,
-        class: 'form-control gl-form-input middle js-validate-email js-track-error',
+        class: 'form-control gl-form-input js-validate-email js-track-error',
         data: { testid: 'new-user-email-field', track_action_for_errors: preregistration_tracking_label },
         required: true,
         title: _('Please provide a valid email address.')

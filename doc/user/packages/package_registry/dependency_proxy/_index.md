@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Dependency proxy for packages
 ---
 
@@ -98,7 +98,7 @@ The dependency proxy uses the [same permissions as the package registry](../_ind
 
 At a minimum, any user who can use the dependency proxy can also use the project's package registry.
 
-To ensure the cache is properly filled over time, you should make sure a user with at least the Developer role pulls packages with the dependency proxy.
+To ensure the cache is properly filled over time, you should make sure a user with the Developer, Maintainer, or Owner role pulls packages with the dependency proxy.
 
 ## Configure a client
 
@@ -228,7 +228,7 @@ The dependency proxy must be configured with:
 
 To set those parameters:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Dependency Proxy**, complete the form for your package format:

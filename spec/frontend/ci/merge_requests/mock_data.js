@@ -537,3 +537,55 @@ export const mockPipelines = [
     __typename: 'Pipeline',
   },
 ];
+
+export const generatePipelineCreationRequestsResponse = ({
+  requests = [],
+  mergeRequestId = 'gid://gitlab/MergeRequest/1',
+} = {}) => ({
+  data: {
+    project: {
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/1',
+      fullPath: 'root/project-1',
+      mergeRequest: {
+        __typename: 'MergeRequest',
+        id: mergeRequestId,
+        iid: '1',
+        title: 'Fix everything',
+        webPath: '/merge_requests/1',
+        pipelineCreationRequests: requests,
+      },
+    },
+  },
+});
+
+export const generatePipelineCreationSubscriptionResponse = ({
+  requests = [],
+  mergeRequestId = 'gid://gitlab/MergeRequest/1',
+} = {}) => ({
+  data: {
+    ciPipelineCreationRequestsUpdated: {
+      __typename: 'MergeRequest',
+      id: mergeRequestId,
+      iid: '1',
+      title: 'Fix everything',
+      webPath: '/merge_requests/1',
+      pipelineCreationRequests: requests,
+    },
+  },
+});
+
+export const generatePipelineCreationRequest = ({
+  status = 'SUCCEEDED',
+  pipelineId = 'gid://gitlab/Ci::Pipeline/999',
+  error = null,
+  pipeline = null,
+} = {}) => ({
+  status,
+  pipelineId,
+  error,
+  pipeline:
+    pipeline ||
+    (status === 'SUCCEEDED' ? generateMockPipeline({ id: pipelineId.split('/').pop() }) : null),
+  __typename: 'CiPipelineCreationRequest',
+});

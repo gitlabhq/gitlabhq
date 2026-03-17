@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: REST API to create, manage, and monitor CI/CD pipelines.
 title: Pipelines API
 ---
@@ -56,6 +56,8 @@ control the pagination of results.
 | `created_before` | datetime       | No       | Return pipelines created before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `username`       | string         | No       | The username of the user who triggered pipelines |
 | `yaml_errors`    | boolean        | No       | Returns pipelines with invalid configurations |
+
+When `scope` is set to `branches` or `tags`, the API returns only the latest pipeline for each branch or tag ref.
 
 ```shell
 curl \

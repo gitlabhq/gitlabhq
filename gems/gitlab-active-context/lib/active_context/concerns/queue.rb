@@ -118,6 +118,10 @@ module ActiveContext
         def name_elements
           name.to_s.split('::')
         end
+
+        def preprocess_options
+          {}
+        end
       end
     end
   end

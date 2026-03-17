@@ -72,7 +72,7 @@ RSpec.shared_examples 'work items rolled up dates' do
 
       def add_new_child(title:, milestone: nil, start_date: nil, due_date: nil)
         within_testid('work-item-tree') do
-          click_button 'Add'
+          find_by_testid('add-tree-child-button').click
           click_button 'New epic'
           wait_for_all_requests
 
@@ -90,7 +90,7 @@ RSpec.shared_examples 'work items rolled up dates' do
 
       def add_existing_child(child_work_item, type)
         within_testid('work-item-tree') do
-          click_button 'Add'
+          find_by_testid('add-tree-child-button').click
           click_button "Existing #{type}"
 
           find_by_testid('work-item-token-select-input').set(child_work_item.title)

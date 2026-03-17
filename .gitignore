@@ -5,6 +5,8 @@
 *.rej
 /AGENTS.local.md
 /opencode.json
+/.claude
+/CLAUDE.md
 .dir-locals.el
 .DS_Store
 /OpenCode.md
@@ -81,6 +83,7 @@ node_modules
 /.gitlab_workhorse_secret
 /.gitlab_pages_secret
 /.gitlab_kas_secret
+/.gitlab_knowledge_graph_secret
 /.gitlab_openbao_authentication_token_secret
 /.gitlab_suggested_reviewers_secret
 /.gitlab_zoekt_username

@@ -1,0 +1,8 @@
+---
+name: transfer_ci_minute
+description: Grants the ability to transfer CI minutes
+boundaries:
+  - group
+  - user
+permissions:
+  - transfer_ci_minute

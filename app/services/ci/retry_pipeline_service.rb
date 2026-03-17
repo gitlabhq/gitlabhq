@@ -2,8 +2,6 @@
 
 module Ci
   class RetryPipelineService < ::BaseService
-    include Gitlab::OptimisticLocking
-
     def execute(pipeline)
       access_response = check_access(pipeline)
       return access_response if access_response.error?
@@ -17,7 +15,9 @@ module Ci
       end
 
       pipeline.processables.latest.skipped.find_each do |skipped|
-        retry_optimistic_lock(skipped, name: 'ci_retry_pipeline') { |job| job.process(current_user) }
+        Gitlab::OptimisticLocking.retry_lock_with_transaction(skipped, name: 'ci_retry_pipeline') do |job|
+          job.process(current_user)
+        end
       end
 
       pipeline.reset_source_bridge!(current_user)
@@ -34,8 +34,6 @@ module Ci
     rescue Gitlab::Access::AccessDeniedError => e
       ServiceResponse.error(message: e.message, http_status: :forbidden)
     rescue ActiveRecord::StaleObjectError
-      raise unless Feature.enabled?(:rescue_stale_object_errors_in_pipeline_processing, project)
-
       ServiceResponse.error(message: 'Error updating stale job', http_status: :conflict)
     end
 

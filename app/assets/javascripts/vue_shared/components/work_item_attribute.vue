@@ -74,6 +74,11 @@ export default {
       required: false,
       default: undefined,
     },
+    popoverAttributes: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     tooltipTarget() {
@@ -81,6 +86,9 @@ export default {
         const ref = this.$refs.wrapperRef;
         return ref?.$el || ref;
       };
+    },
+    hasPopover() {
+      return this.popoverAttributes !== null;
     },
   },
   methods: {
@@ -104,6 +112,7 @@ export default {
     :href="isLink ? href : null"
     :data-testid="anchorId"
     :aria-label="ariaLabel"
+    v-bind="hasPopover ? popoverAttributes : {}"
     @click="handleClick"
   >
     <!-- icon  -->
@@ -128,7 +137,7 @@ export default {
       />
     </slot>
     <!-- tooltip  -->
-    <gl-tooltip :target="tooltipTarget" :placement="tooltipPlacement">
+    <gl-tooltip v-if="!hasPopover" :target="tooltipTarget" :placement="tooltipPlacement">
       <slot name="tooltip-text">
         <template v-if="tooltipText">
           {{ tooltipText }}

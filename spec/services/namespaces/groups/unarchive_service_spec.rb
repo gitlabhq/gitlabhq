@@ -78,7 +78,7 @@ RSpec.describe Namespaces::Groups::UnarchiveService, '#execute', feature_categor
       it 'updates the namespace state' do
         service_response
 
-        expect(group.state).to be(Namespaces::Stateful::STATES[:ancestor_inherited])
+        expect(group.state).to eq('ancestor_inherited')
       end
 
       it 'unarchives all descendant groups', :aggregate_failures do

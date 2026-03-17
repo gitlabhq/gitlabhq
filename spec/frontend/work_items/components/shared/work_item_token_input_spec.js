@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import { GlTokenSelector, GlAlert } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';

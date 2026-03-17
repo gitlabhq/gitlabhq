@@ -1,11 +1,12 @@
 <script>
 import { GlIcon, GlLink, GlPopover } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, sprintf } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import updateParentMutation from '~/work_items/graphql/update_parent.mutation.graphql';
 import { isValidURL } from '~/lib/utils/url_utility';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import {
   findMilestoneWidget,
@@ -39,6 +40,7 @@ export default {
     IssuePopover: () => import('~/issuable/popover/components/issue_popover.vue'),
     WorkItemSidebarDropdownWidget,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['getWorkItemTypeConfiguration', 'workItemTypesConfiguration'],
   props: {
     workItemId: {
@@ -148,7 +150,11 @@ export default {
     },
     selectedParentMilestone() {
       const selectedParent = this.visibleWorkItems?.find(({ id }) => id === this.localSelectedItem);
-      return findMilestoneWidget(selectedParent)?.milestone || null;
+      return (
+        (this.glFeatures?.workItemFeaturesField
+          ? selectedParent?.features?.milestone?.milestone
+          : findMilestoneWidget(selectedParent)?.milestone) || null
+      );
     },
     showCustomNoneValue() {
       return this.hasParent && this.parent === null;
@@ -204,7 +210,7 @@ export default {
       },
       variables() {
         // TODO: Remove the this.isIssue check once issues are migrated to work items
-        return {
+        const baseVariables = {
           fullPath: this.isIssue ? this.groupPath : this.fullPath,
           searchTerm: this.searchTerm,
           types: [...this.allowedParentTypes, ...this.allowedParentTypesForNewWorkItemEnums],
@@ -213,6 +219,13 @@ export default {
           isNumber: false,
           includeAncestors: true,
         };
+
+        // We don't consume any widgets in the project query
+        const conditionalVariables = this.areAnyAllowedParentTypesGroupWorkItems
+          ? { useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField) }
+          : {};
+
+        return { ...baseVariables, ...conditionalVariables };
       },
       skip() {
         return !this.searchStarted && !this.allowedChildTypes?.length;

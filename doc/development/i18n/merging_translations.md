@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Localization
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Merging translations from Crowdin
 ---
 
@@ -19,7 +19,7 @@ By default Crowdin commits translations with `[skip ci]` in the commit
 message. This avoids an excessive number of pipelines from running.
 Before merging translations, make sure to trigger a pipeline to validate
 translations. Static analysis validates things Crowdin doesn't do. Create
-a new pipeline at [`https://gitlab.com/gitlab-org/gitlab/pipelines/new`](https://gitlab.com/gitlab-org/gitlab/pipelines/new)
+a new pipeline at <https://gitlab.com/gitlab-org/gitlab/pipelines/new>.
 (requires the Developer role) for the `master-i18n` branch.
 
 The pipeline job validates translations with the [`PoLinter` class](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/i18n/po_linter.rb).
@@ -92,5 +92,4 @@ and must be regularly updated.
 To update the translation levels:
 
 1. Get the translation levels (percentage of approved words) from [Crowdin](https://crowdin.com/project/gitlab-ee/settings#translations).
-
 1. Update the hard-coded translation levels in [`i18n.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/i18n.rb#L40).

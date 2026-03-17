@@ -1,7 +1,7 @@
 ---
 stage: none - [facilitated functionality](https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality)
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Profile preferences
 ---
 
@@ -42,7 +42,7 @@ To change the appearance:
 
 {{< /history >}}
 
-You can change the navigation theme of the GitLab UI. These colors are displayed on the left sidebar.
+You can change the navigation theme of the GitLab UI. These colors are displayed in the left sidebar.
 Using individual navigation themes might help you differentiate between your different
 GitLab instances.
 
@@ -152,7 +152,7 @@ To choose your homepage view:
 
 ### Customize default content on your group overview page
 
-You can change the main content on your group overview page. Your group overview page is the page that shows when you select **Groups** on the left sidebar. You can customize the default content for your group overview page to the:
+You can change the main content on your group overview page. Your group overview page is the page that shows when you select **Groups** in the left sidebar. You can customize the default content for your group overview page to the:
 
 - Details Dashboard (default), which includes an overview of group activities and projects.
 - Security Dashboard, which might include group security policies and other security topics.
@@ -169,7 +169,7 @@ To change the default content on your group overview page:
 
 ### Customize default content on your project overview page
 
-Your project overview page is the page you view when you select **Project overview** on the left sidebar. You can set your main project overview page to the Activity page, the README file, and other content.
+Your project overview page is the page you view when you select **Project overview** in the left sidebar. You can set your main project overview page to the Activity page, the README file, and other content.
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
@@ -188,18 +188,27 @@ Your project overview page is the page you view when you select **Project overvi
 {{< /history >}}
 
 Set a default GitLab Duo namespace to ensure GitLab Duo is available to use with your project.
-GitLab Duo cannot automatically detect your namespace in the following scenarios:
+Your default GitLab Duo namespace determines your available [AI models](../gitlab_duo/model_selection.md)
+and GitLab Duo features, and your consumption of [GitLab Credits](../../subscriptions/gitlab_credits.md).
+
+Your default GitLab Duo namespace determines feature availability and credit consumption in the following scenarios:
 
 - You're not a member of the project you're working in.
 - You belong to multiple GitLab Duo namespaces.
 - You work in your IDE with a project that does not have a GitLab remote configured.
 - You use GitLab Duo in the CLI.
 
-In such cases, the default namespace is used to determine what models to use.
+When you work in a project or group where you're a direct or inherited member, the top-level group
+of that project or group is used instead for feature availability and credit consumption:
 
-If you do not set a default namespace, GitLab Duo Chat (Agentic) and the GitLab Duo Agent Platform are disabled.
-For projects you're not a member of, your default namespace determines your
-[GitLab Credits](../../subscriptions/gitlab_credits.md) and available GitLab Duo features.
+- If you use GitLab Duo features in a project you're a member of,
+  usage is billed to the top-level group of that project.
+- If you use GitLab Duo features outside a project (for example, in your IDE without
+  an open project or in the CLI), usage is billed to your default namespace.
+- If you use GitLab Duo features in a project you're not a member of,
+  usage is billed to your default namespace.
+
+If you do not set a default namespace, GitLab Duo Chat (agentic) and the GitLab Duo Agent Platform are disabled.
 
 To set a default GitLab Duo namespace:
 
@@ -209,9 +218,28 @@ To set a default GitLab Duo namespace:
 1. From the **Default GitLab Duo namespace** dropdown list, select the namespace you want to set as your default.
 1. Select **Save changes**.
 
-For the [GitLab Workflow extension](../../editor_extensions/visual_studio_code/setup.md#configure-gitlab-duo)
-and the [GitLab Duo plugin for JetBrains IDEs](../../editor_extensions/jetbrains_ide/setup.md#set-the-default-namespace),
-you must also set a default namespace in the extension's settings.
+#### Namespace resolution in your local environment
+
+{{< history >}}
+
+- Access to user default namespaces for IDEs [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/work_items/2043) in GitLab 18.10.
+- Access to user default namespaces introduced in GitLab for VS Code 6.71.7.
+- Access to user default namespaces introduced in GitLab Duo CLI 8.76.0.
+
+{{< /history >}}
+
+When you use GitLab Duo in an IDE or the CLI, the first available namespace determines feature
+availability and credit consumption. GitLab Duo checks for a namespace in this order:
+
+1. The project namespace, if your project is linked to a remote repository in GitLab.
+1. The default namespace set in your user preferences.
+1. For IDEs, the default namespace set in the editor extension's settings:
+   - For VS Code, under **Extensions** > **GitLab** > **Manage** ({{< icon name="settings" >}}) > **Settings** > **GitLab** > **Duo Agent Platform**.
+   - For JetBrains IDEs, under **Settings** > **Tools** > **GitLab Duo** > **GitLab Duo Agent Platform**.
+   - For Visual Studio, under **Tools** > **Options** > **GitLab** > **General**.
+
+If the first namespace identified does not have access to the requested feature or available credits,
+the feature is not available. GitLab Duo does not fall back to the next namespace in the list.
 
 ### Hide shortcut buttons
 
@@ -241,7 +269,7 @@ You can view changes to whitespace in diffs.
 
 To view diffs on the Web IDE, follow these steps:
 
-1. On the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
+1. In the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
 1. Under the **Changes** tab, select your file.
 
 ### Show whitespace changes in diffs
@@ -396,15 +424,6 @@ To customize the time format:
 1. Go to the **Time preferences** section.
 1. Under **Time format**, select either the **System**, **12-hour**, or **24-hour** option.
 1. Select **Save changes**.
-
-<!--- start_remove The following content will be removed on remove_date: '2026-02-19' -->
-
-## Disable exact code search (removed)
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/554933) in GitLab 18.3
-and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/210974) in 18.6.
-
-<!--- end_remove -->
 
 ## User identities in CI job JSON web tokens
 

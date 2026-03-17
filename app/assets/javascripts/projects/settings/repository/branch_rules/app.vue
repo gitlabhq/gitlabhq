@@ -4,6 +4,7 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
+import BranchRule from 'ee_else_ce/projects/settings/repository/branch_rules/components/branch_rule.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
@@ -12,7 +13,6 @@ import {
 } from '~/projects/settings/branch_rules/tracking/constants';
 import BranchRuleModal from '../../components/branch_rule_modal.vue';
 import createBranchRuleMutation from './graphql/mutations/create_branch_rule.mutation.graphql';
-import BranchRule from './components/branch_rule.vue';
 import { I18N, PROTECTED_BRANCHES_ANCHOR, BRANCH_PROTECTION_MODAL_ID } from './constants';
 
 const PAGE_SIZE = 20;

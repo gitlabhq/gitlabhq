@@ -1,4 +1,4 @@
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 
 export const createLink = (href, innerText) =>
   `<a href="${escape(href)}" target="_blank" rel="nofollow noreferrer noopener">${escape(

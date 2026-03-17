@@ -16,4 +16,14 @@ module TestidHelpers
   def within_testid(testid, context: page, **kwargs, &block)
     context.within("[data-testid='#{testid}']", **kwargs, &block)
   end
+
+  RSpec::Matchers.define :have_no_testid do |testid, **kwargs|
+    match do |context|
+      context.has_no_css?("[data-testid='#{testid}']", **kwargs)
+    end
+
+    failure_message do
+      "expected not to find element with data-testid='#{testid}'"
+    end
+  end
 end

@@ -450,6 +450,7 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
       :releases_events | 'Releases events'
       :milestone_events | 'Milestone events'
       :resource_access_token_events | 'Project or group access token events'
+      :resource_deploy_token_events | 'Project deploy token events'
       :vulnerability_events | 'Vulnerability events'
     end
 

@@ -53,14 +53,8 @@ RSpec.describe Cells::OutstandingLease, feature_category: :cell do
     end
 
     it 'calls begin_update and creates an OutstandingLease' do
-      expected_request = Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateRequest.new(
-        create_records: create_records,
-        destroy_records: destroy_records,
-        cell_id: cell_id
-      )
-
-      expect(mock_service)
-        .to receive(:begin_update).with(expected_request, deadline: nil).and_return(mock_response)
+      expect(mock_service).to receive(:begin_update)
+        .with(create_records: create_records, destroy_records: destroy_records, deadline: nil).and_return(mock_response)
 
       lease = described_class.create_from_request!(create_records: create_records, destroy_records: destroy_records)
 
@@ -72,14 +66,9 @@ RSpec.describe Cells::OutstandingLease, feature_category: :cell do
       let(:deadline) { GRPC::Core::TimeConsts.from_relative_time(5.0) }
 
       it 'calls begin_update with deadline and creates an OutstandingLease' do
-        expected_request = Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateRequest.new(
-          create_records: create_records,
-          destroy_records: destroy_records,
-          cell_id: cell_id
-        )
-
-        expect(mock_service)
-          .to receive(:begin_update).with(expected_request, deadline: deadline).and_return(mock_response)
+        expect(mock_service).to receive(:begin_update)
+          .with(create_records: create_records, destroy_records: destroy_records, deadline: deadline)
+          .and_return(mock_response)
 
         lease = described_class.create_from_request!(
           create_records: create_records,

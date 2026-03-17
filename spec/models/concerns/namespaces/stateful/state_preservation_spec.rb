@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :groups_and_projects do
-  include Namespaces::StatefulHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
@@ -13,7 +12,8 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
     it 'defines state memory mappings' do
       expect(described_class::STATE_MEMORY_CONFIG).to eq({
         schedule_deletion: :cancel_deletion,
-        start_deletion: :reschedule_deletion
+        start_deletion: :reschedule_deletion,
+        start_transfer: [:complete_transfer, :cancel_transfer]
       })
     end
 
@@ -24,7 +24,7 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
 
   describe 'state preservation' do
     before do
-      namespace.state = Namespaces::Stateful::STATES[:ancestor_inherited]
+      namespace.state = :ancestor_inherited
     end
 
     describe '#preserve_previous_state?' do
@@ -145,7 +145,7 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
 
         with_them do
           before do
-            namespace.state = Namespaces::Stateful::STATES[initial_state]
+            namespace.state = initial_state
             namespace.send(:"#{event}!", transition_user: user)
             namespace.namespace_details.reload
           end
@@ -169,7 +169,7 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
           let(:restore_event) { described_class::STATE_MEMORY_CONFIG[preserved_key] }
 
           before do
-            namespace.state = Namespaces::Stateful::STATES[initial_state]
+            namespace.state = initial_state
             namespace.namespace_details.update!(
               state_metadata: { preserved_states: { preserved_key => preserved_state } }
             )
@@ -182,7 +182,7 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
 
       describe 'clearing preserved states' do
         before do
-          namespace.state = Namespaces::Stateful::STATES[:deletion_scheduled]
+          namespace.state = :deletion_scheduled
           namespace.namespace_details.update_column(:state_metadata, {
             'preserved_states' => preserved_states
           })
@@ -224,7 +224,7 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
 
           with_them do
             it 'preserves state through schedule -> start -> cancel cycle' do
-              set_state(namespace, initial_state)
+              namespace.update!(state: initial_state)
 
               namespace.schedule_deletion(transition_user: user)
               expect(namespace.state_name).to eq(:deletion_scheduled)
@@ -252,7 +252,7 @@ RSpec.describe Namespaces::Stateful::StatePreservation, feature_category: :group
 
           with_them do
             it 'preserves state through start -> reschedule cycle' do
-              set_state(namespace, initial_state)
+              namespace.update!(state: initial_state)
 
               namespace.start_deletion(transition_user: user)
               expect(namespace.state_name).to eq(:deletion_in_progress)

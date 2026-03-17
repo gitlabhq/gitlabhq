@@ -1,5 +1,5 @@
 <script>
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { GlButton, GlTooltipDirective as GlTooltip, GlSprintf } from '@gitlab/ui';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/vue-2';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';

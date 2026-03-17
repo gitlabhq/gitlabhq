@@ -44,4 +44,38 @@ RSpec.describe Ci::Catalog::Resources::Components::LastUsage, type: :model, feat
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
+
+  describe '.for_catalog_resource_with_component_versions' do
+    let_it_be(:catalog_resource) { component.catalog_resource }
+    let_it_be(:other_catalog_resource) { create(:ci_catalog_resource) }
+    let_it_be(:other_component) { create(:ci_catalog_resource_component, catalog_resource: other_catalog_resource) }
+
+    let_it_be(:usage) do
+      create(:catalog_resource_component_last_usage, component: component, catalog_resource: catalog_resource)
+    end
+
+    let_it_be(:other_usage) do
+      create(:catalog_resource_component_last_usage, component: other_component,
+        catalog_resource: other_catalog_resource)
+    end
+
+    it 'returns usages for the given catalog resource' do
+      result = described_class.for_catalog_resource_with_component_versions(catalog_resource.id)
+
+      expect(result).to contain_exactly(usage)
+    end
+
+    it 'eager loads component and version associations' do
+      result = described_class.for_catalog_resource_with_component_versions(catalog_resource.id).to_a
+
+      recorder = ActiveRecord::QueryRecorder.new { result.first.component.version }
+      expect(recorder.count).to eq(0)
+    end
+
+    it 'returns empty when no usages exist for the given catalog resource' do
+      result = described_class.for_catalog_resource_with_component_versions(non_existing_record_id)
+
+      expect(result).to be_empty
+    end
+  end
 end

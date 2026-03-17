@@ -1,0 +1,7 @@
+---
+name: delete_topic
+description: Grants the ability to delete topics
+boundaries:
+  - instance
+permissions:
+  - delete_topic

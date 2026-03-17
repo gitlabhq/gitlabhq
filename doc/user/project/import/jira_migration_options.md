@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments.
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>.
 title: Jira migration options
 ---
 
@@ -50,7 +50,7 @@ To import the Jira issue data from a CSV file into your GitLab project:
    1. Sign in to your GitLab account and [create a group](../../group/_index.md#create-a-group) to host your migrated projects.
    1. In the new group, [create a new project](../_index.md#create-a-blank-project) to hold the migrated Jira issues.
 1. Import the Jira data into GitLab:
-   1. In your new GitLab project, on the left sidebar, select **Plan** > **Issues**.
+   1. In your new GitLab project, in the left sidebar, select **Plan** > **Work items**.
    1. Select **Actions** ({{< icon name="ellipsis_v" >}}) > **Import from Jira**.
    1. Follow the on-screen instructions to complete the import process.
 1. Verify the migration:
@@ -64,7 +64,7 @@ To import the Jira issue data from a CSV file into your GitLab project:
 
 ## Let GitLab Professional Services handle the migration for you
 
-For a high-level overview of the Jira migration service, see the [Jira Migration Service](https://drive.google.com/file/d/1p0rv02OnjfSiNoeDT2u4MhviozS--Yan/view) data sheet.
+For a high-level overview, see the [Jira migration service](https://drive.google.com/file/d/1p0rv02OnjfSiNoeDT2u4MhviozS--Yan/view) data sheet.
 
 To get a personalized quote, visit the [GitLab Professional Services](https://about.gitlab.com/services/) page and select **Request Service**.
 

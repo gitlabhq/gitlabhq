@@ -84,7 +84,8 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         1 + # INSERT INTO "ci_stages"
           1 + # INSERT INTO "ci_builds"
           1 + # INSERT INTO "p_ci_job_definition_instances"
-          1 # INSERT INTO "p_ci_build_sources"
+          1 + # INSERT INTO "p_ci_build_sources"
+          5 # Preloading queries for build tracking (user, job_definition, namespace, project associations)
       end
 
       before do
@@ -141,15 +142,11 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         expect(pipeline.error_messages).to be_empty
       end
 
-      it 'increments the prometheus counter' do
-        counter = spy('pipeline created counter')
-
-        allow(Gitlab::Ci::Pipeline::Metrics)
-          .to receive(:pipelines_created_counter).and_return(counter)
+      it 'enqueues PipelineCreationMetricsWorker' do
+        expect(Ci::PipelineCreationMetricsWorker)
+          .to receive(:perform_async).with(kind_of(Integer), nil, anything, anything)
 
         pipeline
-
-        expect(counter).to have_received(:increment)
       end
 
       it 'schedules TrackPipelineTriggerEventsWorker via PipelineCreatedEvent' do
@@ -171,14 +168,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
         expect(histogram).to have_received(:observe)
           .with({ source: 'push', plan: project.actual_plan_name }, 5)
-      end
-
-      it 'tracks included template usage' do
-        expect_next_instance_of(Gitlab::Ci::Pipeline::Chain::TemplateUsage) do |instance|
-          expect(instance).to receive(:perform!)
-        end
-
-        execute_service
       end
 
       it 'tracks included catalog component usage' do
@@ -1184,7 +1173,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
-    context 'when pipeline variables are specified' do
+    shared_examples 'when pipeline variables are specified' do
       subject(:pipeline) { execute_service(variables_attributes: variables_attributes).payload }
 
       context 'with valid pipeline variables' do
@@ -1227,6 +1216,16 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
           expect(pipeline.errors[:base]).to eq(['Duplicate variable names: hello, other'])
         end
       end
+    end
+
+    it_behaves_like 'when pipeline variables are specified'
+
+    context 'when ci_stop_writing_to_pipeline_variables FF is disabled' do
+      before do
+        stub_feature_flags(ci_stop_writing_to_pipeline_variables: false)
+      end
+
+      it_behaves_like 'when pipeline variables are specified'
     end
 
     describe 'Pipeline for external pull requests' do
@@ -1888,6 +1887,30 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
       it 'does not write to ci_builds_metadata' do
         expect { execute_service }.to not_change { Ci::BuildMetadata.count }
+      end
+    end
+
+    describe 'stop writing to p_ci_builds_execution_configs' do
+      let(:config) do
+        YAML.dump(
+          job: {
+            variables:
+              { CI_SAY_HI_TO: "Sally" },
+            run: [{
+              name: 'say_hi',
+              step: 'gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@v5',
+              inputs: { echo: "hello, ${{job.CI_SAY_HI_TO}}" }
+            }]
+          }
+        )
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'does not write to p_ci_builds_execution_configs' do
+        expect { execute_service }.to not_change { Ci::BuildExecutionConfig.count }
       end
     end
   end

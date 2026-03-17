@@ -1,5 +1,5 @@
 <script>
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { observeElementOnce } from '~/lib/utils/dom_utils';
 import { getScrollingElement } from '~/lib/utils/panels';
 

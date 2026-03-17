@@ -13,11 +13,7 @@ module Subscriptions
         payload_type Types::Ci::JobType
 
         def authorized?(stage_id:)
-          stage = force(GitlabSchema.find_by_gid(stage_id))
-
-          unauthorized! unless stage && Ability.allowed?(current_user, :read_build, stage.project)
-
-          true
+          authorize_object_or_gid!(:read_build, gid: stage_id)
         end
 
         def update(stage_id:)

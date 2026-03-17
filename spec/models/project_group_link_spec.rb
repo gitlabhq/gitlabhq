@@ -48,8 +48,8 @@ RSpec.describe ProjectGroupLink, feature_category: :groups_and_projects do
       it 'returns all records which are greater than Guests access' do
         expect(described_class.non_guests).to match_array([
           project_group_link_reporter,
-                                                            project_group_link_developer,
-                                                            project_group_link_maintainer
+          project_group_link_developer,
+          project_group_link_maintainer
         ])
       end
     end

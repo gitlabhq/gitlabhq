@@ -13,6 +13,10 @@ module Banzai
       IGNORED_ANCESTOR_TAGS = %w[pre code tt].to_set
       IGNORE_UNICODE_EMOJIS = %w[™ © ®].freeze
 
+      # A lightweight pre-filter pattern to quickly detect if text might contain
+      # emoji alpha codes before invoking the expensive TanukiEmoji pattern.
+      POTENTIAL_EMOJI_PATTERN = /:[a-z0-9_+-][a-z0-9_-]*:/i
+
       def call
         @emoji_count = 0
 
@@ -23,7 +27,9 @@ module Banzai
           content = node.to_html
 
           html = emoji_unicode_element_unicode_filter(content)
-          html = emoji_name_element_unicode_filter(html) if content.include?(':')
+          if content.include?(':') && POTENTIAL_EMOJI_PATTERN.match?(html)
+            html = emoji_name_element_unicode_filter(html)
+          end
 
           next if html == content
 

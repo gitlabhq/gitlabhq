@@ -16,6 +16,7 @@ import {
   STATE_EVENT_CLOSE,
   STATE_EVENT_REOPEN,
   TRACKING_CATEGORY_SHOW,
+  VIEW_CONTEXT,
   LINKED_CATEGORIES_MAP,
   i18n,
   STATE_CLOSED,
@@ -38,6 +39,9 @@ export default {
     GlLink,
   },
   mixins: [Tracking.mixin()],
+  inject: {
+    viewContext: { default: VIEW_CONTEXT.fullScreen },
+  },
   props: {
     workItemState: {
       type: String,
@@ -190,6 +194,7 @@ export default {
         category: TRACKING_CATEGORY_SHOW,
         label: 'item_state',
         property: `type_${this.workItemType}`,
+        extra: { viewContext: this.viewContext },
       };
     },
     toggleInProgressText() {

@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Batched background migrations
 ---
 
@@ -1230,7 +1230,6 @@ You can view failures in two ways:
 
   1. Remember the retry mechanism. Having a failure does not mean the job failed.
      Always check the last status of the job.
-
 - Via database:
 
   1. Get the batched background migration `CLASS_NAME`.
@@ -1305,20 +1304,34 @@ for more details.
    end
    ```
 
-1. If possible update the entire sub-batch in a single query
-   instead of updating each model separately.
+1. If possible, update the entire sub-batch in a single query instead of updating each model separately. When doing so, always include a limit guard and extract it in a materialized CTE to eliminate any chance for query plan flips.
    This can be achieve in different ways, depending on the scenario.
 
-   - Generate an `UPDATE` query, and use `FROM` to join the tables
-   that provide the necessary values
-   ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184051)).
-   - Generate an `UPDATE` query, and use `FROM(VALUES( ...))` to
-   pass values calculated beforehand
-   ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177993)).
+   - Generate an `UPDATE` query, and use `FROM` to join the tables that provide the necessary values
+     ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184051)).
+   - Generate an `UPDATE` query, and use `FROM(VALUES( ...))` to pass values calculated beforehand
+     ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177993)).
    - Pass all keys and values to `ActiveRelation#update`.
 
    ```ruby
    # good
+   def perform
+     each_sub_batch do |sub_batch|
+       connection.execute <<~SQL
+         WITH sub_batch_ids AS MATERIALIZED (
+           #{sub_batch.select(:id).limit(sub_batch_size).to_sql}
+         )
+         UPDATE fork_networks
+         SET organization_id = projects.organization_id
+         FROM projects
+         WHERE fork_networks.id IN (SELECT id FROM sub_batch_ids)
+         AND fork_networks.root_project_id = projects.id
+         AND fork_networks.organization_id IS NULL
+       SQL
+     end
+   end
+
+   # bad - uses pluck and does not use a limit
    def perform
      each_sub_batch do |sub_batch|
        connection.execute <<~SQL
@@ -1386,7 +1399,6 @@ background migration.
    > correctly handled by the batched migration framework. Any subclass of
    > `BatchedMigrationJob` is initialized with the necessary arguments to
    > execute the batch, and a connection to the tracking database.
-
 1. Create a database migration that adds a new trigger to the database. Example:
 
    ```ruby
@@ -1513,7 +1525,6 @@ background migration.
    If the application does not depend on the data being 100% migrated (for
    instance, the data is advisory, and not mission-critical), then you can skip this
    final step. This step confirms that the migration is completed, and all of the rows were migrated.
-
 1. Add a database migration to remove the trigger.
 
    ```ruby

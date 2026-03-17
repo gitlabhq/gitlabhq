@@ -53,11 +53,12 @@ class Project < ApplicationRecord
 
   cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::PROJECT_IDS, feature_flag: :cells_claims_projects
 
-  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::PROJECT, subject_key: :id
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
   columns_changing_default :organization_id
 
   ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
+  ignore_column :delete_error, remove_with: '18.11', remove_after: '2026-03-19'
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -206,6 +207,7 @@ class Project < ApplicationRecord
   # Sync deletion via DB Trigger to ensure we do not have
   # a project without a project_namespace (or vice-versa)
   belongs_to :project_namespace, autosave: true, class_name: 'Namespaces::ProjectNamespace', foreign_key: 'project_namespace_id', inverse_of: :project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- needed to unclaim
+
   alias_method :parent, :namespace
   alias_attribute :parent_id, :namespace_id
 
@@ -555,9 +557,13 @@ class Project < ApplicationRecord
       :reschedule_deletion!,
       :cancel_deletion,
       :cancel_deletion!,
+      :deletion_error,
+      :deletion_error=,
       :deletion_in_progress?,
       :deletion_scheduled?,
-      :namespace_details
+      :namespace_details,
+      :deletion_scheduled_at,
+      :deletion_scheduled_at=
   end
 
   delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, :model_registry_access_level, to: :project_feature, allow_nil: true
@@ -683,15 +689,14 @@ class Project < ApplicationRecord
 
   # Scopes
   scope :deletion_in_progress, -> {
-    joins(:project_namespace).where(namespaces: { state: Namespaces::Stateful::STATES[:deletion_in_progress] })
+    joins(:project_namespace).where(namespaces: { state: :deletion_in_progress })
   }
 
   scope :not_deletion_in_progress, -> {
-    deletion_in_progress_state = Namespaces::Stateful::STATES[:deletion_in_progress]
     where(
       Namespace.select(1)
         .where(Namespace.arel_table[:id].eq(arel_table[:project_namespace_id]))
-        .where(state: deletion_in_progress_state)
+        .where(state: :deletion_in_progress)
         .arel.exists.not
     )
   }
@@ -892,6 +897,20 @@ class Project < ApplicationRecord
       .where.not(Group.self_or_ancestors_archived_setting_subquery.exists)
   end
 
+  # NOTE: This scope must always be chained with a namespace filter (e.g. .in_namespace()).
+  # It has no namespace constraint and will scan all projects if used standalone.
+  # See: Integrations::PropagateService#create_integration_for_projects_without_integration_belonging_to_group
+  scope :without_integration_excluding_ancestor_archived_check, ->(integration) {
+    integrations = Integration
+      .select('1')
+      .where("#{Integration.table_name}.project_id = projects.id")
+      .where(type: integration.type)
+
+    where('NOT EXISTS (?)', integrations)
+      .where(pending_delete: false)
+      .where(archived: false)
+  }
+
   scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
   scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
 
@@ -916,17 +935,8 @@ class Project < ApplicationRecord
   scope :with_slack_integration, -> { joins(:slack_integration) }
   # .with_slack_slash_commands_integration can generate poorly performing queries. It is intended only for UsagePing.
   scope :with_slack_slash_commands_integration, -> { joins(:slack_slash_commands_integration) }
-  scope :inside_path, ->(path) do
-    # We need routes alias rs for JOIN so it does not conflict with
-    # includes(:route) which we use in ProjectsFinder.
-    joins("INNER JOIN routes rs ON rs.source_id = projects.id AND rs.source_type = 'Project'")
-      .where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
-      .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
-  end
-  scope :inside_path_preloaded, ->(path) do
-    preload(:topics, :project_topics, :route)
-      .inside_path(path)
-  end
+
+  scope :include_topics, -> { includes(:topics, :project_topics) }
 
   scope :with_jira_installation, ->(installation_id) do
     joins(namespace: :jira_connect_subscriptions)
@@ -1218,7 +1228,7 @@ class Project < ApplicationRecord
     last_activity_cutoff = ::Gitlab::CurrentSettings.inactive_projects_send_warning_email_after_months.months.ago
 
     joins(:statistics)
-      .where((project_statistics[:storage_size]).gt(minimum_size_mb))
+      .where(project_statistics[:storage_size].gt(minimum_size_mb))
       .where('last_activity_at < ?', last_activity_cutoff)
   end
 
@@ -2727,6 +2737,8 @@ class Project < ApplicationRecord
     repository.remove_prohibited_refs
     wiki.repository.expire_content_cache
 
+    track_project_repository
+
     DetectRepositoryLanguagesWorker.perform_async(id)
     ProjectCacheWorker.perform_async(self.id, [], %w[repository_size wiki_size])
     AuthorizedProjectUpdate::ProjectRecalculateWorker.perform_async(id)
@@ -3614,16 +3626,10 @@ class Project < ApplicationRecord
     group&.allow_iframes_in_markdown_feature_flag_enabled? || Feature.enabled?(:allow_iframes_in_markdown, self, type: :wip)
   end
 
-  def work_items_saved_views_enabled?(user = nil)
-    return true if group&.work_items_saved_views_enabled?(user) || Feature.enabled?(:work_items_saved_views, type: :wip)
-
-    user.present? && Feature.enabled?(:work_items_saved_views_user, user)
-  end
-
   def work_items_consolidated_list_enabled?(user = nil)
     # work_item_planning_view is the feature flag used to determine whether the consolidated list is enabled or not
     # The global check is required for projects which do not have an associated group (i.e. from a user namespace)
-    return true if group&.work_items_consolidated_list_enabled?(user) || Feature.enabled?(:work_item_planning_view, type: :wip)
+    return true if group&.work_items_consolidated_list_enabled?(user) || Feature.enabled?(:work_item_planning_view, type: :beta)
 
     user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end

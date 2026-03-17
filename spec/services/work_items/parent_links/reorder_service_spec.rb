@@ -6,10 +6,10 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
   describe '#execute' do
     let_it_be(:guest) { create(:user) }
     let_it_be(:project) { create(:project) }
-    let_it_be_with_reload(:parent) { create(:work_item, :objective, project: project) }
-    let_it_be_with_reload(:work_item) { create(:work_item, :objective, project: project) }
-    let_it_be_with_reload(:top_adjacent) { create(:work_item, :objective, project: project) }
-    let_it_be_with_reload(:last_adjacent) { create(:work_item, :objective, project: project) }
+    let_it_be_with_reload(:parent) { create(:work_item, :issue, project: project) }
+    let_it_be_with_reload(:work_item) { create(:work_item, :task, project: project) }
+    let_it_be_with_reload(:top_adjacent) { create(:work_item, :task, project: project) }
+    let_it_be_with_reload(:last_adjacent) { create(:work_item, :task, project: project) }
 
     let(:parent_link_class) { WorkItems::ParentLink }
     let(:user) { guest }
@@ -137,8 +137,8 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
         it 'creates notes', :aggregate_failures do
           subject
 
-          expect(parent.notes.last.note).to eq("added #{work_item.to_reference} as child objective")
-          expect(work_item.notes.last.note).to eq("added #{parent.to_reference} as parent objective")
+          expect(parent.notes.last.note).to eq("added #{work_item.to_reference} as child task")
+          expect(work_item.notes.last.note).to eq("added #{parent.to_reference} as parent issue")
         end
       end
 
@@ -162,7 +162,7 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
         end
 
         context 'when previous parent was in place' do
-          let_it_be(:previous_parent) { create(:work_item, :objective, project: project) }
+          let_it_be(:previous_parent) { create(:work_item, :issue, project: project) }
 
           before_all do
             create(:parent_link, work_item: work_item, work_item_parent: previous_parent)

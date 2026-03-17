@@ -78,6 +78,9 @@ module WebHooks
       validates :name, length: { maximum: 255 }
       validates :description, length: { maximum: 2048 }
 
+      validates :filter,
+        json_schema: { filename: 'filter', size_limit: 8.kilobytes }
+
       enum :branch_filter_strategy, {
         wildcard: 0,
         regex: 1,

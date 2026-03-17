@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlButton, GlIcon, GlModalDirective } from '@gitlab/ui';
+import { GlBadge, GlButton, GlIcon, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
@@ -36,6 +36,7 @@ export default {
   },
   directives: {
     GlModal: GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
   i18n: {
@@ -95,7 +96,7 @@ export default {
 
 <template>
   <header
-    class="super-topbar js-super-topbar gl-grid gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-outline-none forced-colors:gl-outline-0"
+    class="super-topbar js-super-topbar gl-grid gl-grid-cols-[1fr_1fr] gl-items-center gl-outline-none sm:gl-grid-cols-[1fr_auto_1fr] forced-colors:gl-outline-0"
     tabindex="0"
     autofocus
   >
@@ -143,7 +144,7 @@ export default {
       v-gl-modal="$options.SEARCH_MODAL_ID"
       button-text-classes="gl-flex gl-items-center"
       category="tertiary"
-      class="topbar-search-button !gl-rounded-[.75rem] !gl-bg-default !gl-pl-3 hover:!gl-border-alpha-dark-40 md:!gl-pr-2 dark:!gl-bg-alpha-light-8 dark:hover:!gl-border-alpha-light-36"
+      class="topbar-search-button !gl-hidden !gl-rounded-[.75rem] !gl-bg-default !gl-pl-3 hover:!gl-border-alpha-dark-40 sm:!gl-flex md:!gl-pr-2 dark:!gl-bg-alpha-light-8 dark:hover:!gl-border-alpha-light-36"
       data-testid="super-topbar-search-button"
       @drop.prevent="onSearchButtonDrop"
       @dragover.prevent
@@ -156,6 +157,17 @@ export default {
     </gl-button>
 
     <div class="gl-flex gl-justify-end gl-gap-3">
+      <gl-button
+        v-gl-modal="$options.SEARCH_MODAL_ID"
+        v-gl-tooltip.bottom="$options.i18n.searchBtnText"
+        icon="search"
+        size="small"
+        class="gl-self-center sm:!gl-hidden"
+        :aria-label="$options.i18n.searchBtnText"
+        data-testid="super-topbar-search-button-xs"
+        @drop.prevent="onSearchButtonDrop"
+        @dragover.prevent
+      />
       <template v-if="isLoggedIn">
         <create-menu
           v-if="isLoggedIn && sidebarData.create_new_menu_groups.length > 0"

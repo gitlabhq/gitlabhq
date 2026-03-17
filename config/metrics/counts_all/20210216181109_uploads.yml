@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.uploads
 description: Count of Uploads via Notes and Descriptions
 product_group: project_management
+product_categories:
+- team_planning
 value_type: number
 status: active
 time_frame: all

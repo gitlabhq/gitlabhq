@@ -1,7 +1,7 @@
 <script>
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { localeDateFormat, newDate, timeFor } from '~/lib/utils/datetime_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, sprintf } from '~/locale';
 
 export default {
@@ -16,56 +16,12 @@ export default {
     },
   },
   computed: {
-    milestoneDue() {
-      const dueDate = this.milestone.due_date || this.milestone.dueDate;
-
-      return dueDate ? newDate(dueDate) : null;
-    },
-    milestoneStart() {
-      const startDate = this.milestone.start_date || this.milestone.startDate;
-
-      return startDate ? newDate(startDate) : null;
-    },
-    isMilestoneStarted() {
-      if (!this.milestoneStart) {
-        return false;
-      }
-      return Date.now() > this.milestoneStart;
-    },
-    isMilestonePastDue() {
-      if (!this.milestoneDue) {
-        return false;
-      }
-      return Date.now() > this.milestoneDue;
-    },
-    milestoneDatesAbsolute() {
-      if (this.milestoneDue) {
-        return `(${localeDateFormat.asDate.format(this.milestoneDue)})`;
-      }
-      if (this.milestoneStart) {
-        return `(${localeDateFormat.asDate.format(this.milestoneStart)})`;
-      }
-      return '';
-    },
-    milestoneDatesHuman() {
-      if (this.milestoneStart || this.milestoneDue) {
-        if (this.milestoneDue) {
-          return timeFor(
-            this.milestoneDue,
-            sprintf(__('Expired %{expiredOn}'), {
-              expiredOn: this.timeFormatted(this.milestoneDue),
-            }),
-          );
-        }
-
-        return sprintf(
-          this.isMilestoneStarted ? __('Started %{startsIn}') : __('Starts %{startsIn}'),
-          {
-            startsIn: this.timeFormatted(this.milestoneStart),
-          },
-        );
-      }
-      return '';
+    popoverAttributes() {
+      return {
+        'data-reference-type': 'milestone',
+        'data-placement': 'top',
+        'data-milestone': getIdFromGraphQLId(this.milestone.id),
+      };
     },
   },
   methods: {
@@ -81,25 +37,14 @@ export default {
   <work-item-attribute
     anchor-id="board-card-milestone"
     wrapper-component="button"
-    wrapper-component-class="issue-milestone-details gl-flex gl-max-w-15 gl-gap-2 gl-items-center !gl-cursor-help gl-bg-transparent gl-border-0 gl-p-0 gl-text-subtle focus-visible:gl-focus-inset"
+    wrapper-component-class="issue-milestone-details gl-flex gl-max-w-15 gl-gap-2 gl-items-center !gl-cursor-help gl-bg-transparent gl-border-0 gl-p-0 gl-text-subtle focus-visible:gl-focus-inset has-popover"
     icon-name="milestone"
     icon-class="!gl-shrink-0 gl-text-subtle"
     :title="milestone.title"
     title-component-class="milestone-title gl-inline-block gl-truncate"
     :aria-label="createAriaLabel()"
+    :popover-attributes="popoverAttributes"
   >
-    <template #tooltip-text>
-      <span class="gl-font-bold">{{ __('Milestone') }}</span> <br />
-      <span>{{ milestone.title }}</span> <br />
-      <span
-        v-if="milestoneStart || milestoneDue"
-        :class="{
-          'gl-text-danger': isMilestonePastDue,
-          'gl-text-subtle': !isMilestonePastDue,
-        }"
-        ><span>{{ milestoneDatesHuman }}</span
-        ><br /><span>{{ milestoneDatesAbsolute }}</span>
-      </span>
-    </template>
+    {{ milestone.title }}
   </work-item-attribute>
 </template>

@@ -44,15 +44,7 @@ module WorkItems
       # We use the base types in cases where we know an item needs to have a certain type
       # which doesn't apply to custom types.
       def unfiltered_base_types
-        # TODO: Remove the comment once we integrate the system defined types in the provider
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-        # if use_system_defined_types?
-        #   type_class.all.map(&:base_type)
-        # else
-        #   type_class.base_types.keys
-        # end
-
-        type_class.base_types.keys
+        type_class.all.map(&:base_type)
       end
 
       # This method exists here because we want to have full control in this class
@@ -68,27 +60,15 @@ module WorkItems
       end
 
       def all
-        type_class.all
+        resolve_all
       end
 
       def by_base_types(names)
-        type_class.by_type(names)
+        Array(names).filter_map { |name| resolve_by_base_type(name.to_s) }
       end
 
       def ids_by_base_types(types)
-        # TODO: Remove the comment once we integrate the system defined types in the provider
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-        # if use_system_defined_types?
-        #   by_base_types(types).map(&:id)
-        # else
-        #   Array(types).filter_map do |type|
-        #     type_class::BASE_TYPES.dig(type.to_sym, :id)
-        #   end
-        # end
-
-        Array(types).filter_map do |type|
-          type_class::BASE_TYPES.dig(type.to_sym, :id)
-        end
+        by_base_types(types).map(&:id)
       end
 
       def type_exists?(type)
@@ -96,15 +76,16 @@ module WorkItems
       end
 
       def find_by_base_type(name)
-        type_class.default_by_type(name)
+        resolve_by_base_type(name.to_s)
       end
 
       def find_by_name(name)
-        type_class.find_by(name: name.to_s)
+        name_str = name.to_s
+        resolve_all.find { |type| type.name == name_str }
       end
 
       def default_issue_type
-        type_class.default_issue_type
+        find_by_base_type(:issue)
       end
 
       def find_by_gid(gid)
@@ -114,84 +95,55 @@ module WorkItems
         find_by_id(model_id)
       end
 
-      # Id is ambiguous in terms of system-defined and custom types.
-      # So we'll deprecate this method long term.
-      #
-      # This has some API related usages where a work item type id is passed.
-      # We should change these interfaces to use a GID instead so we can properly distinguish
-      # between system-defined and custom types.
-      #
-      # For now it looks like we can use the GID in most cases.
       def find_by_id(id)
-        type_class.find_by(id: id.to_i)
+        resolve_by_id(id.to_i)
       end
 
       def by_ids(ids)
-        integer_ids = Array.wrap(ids).map(&:to_i)
-        type_class.where(id: integer_ids)
-      end
-
-      # This method should be removed as it's only used in the old WorkItems::Type model
-      # and not in the new WorkItems::TypesFramework::SystemDefined::Type model.
-      # The `with_widget_definition_preload` method is specific to the old model
-      # and is not needed when using system-defined types.
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/581931
-      def by_ids_with_widget_definition_preload(ids)
-        # TODO: Remove the comment once we integrate the system defined types in the provider
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-        #   if use_system_defined_types?
-        #     by_ids(ids)
-        #   else
-        #     by_ids(ids).with_widget_definition_preload
-        #   end
-
-        by_ids(ids).with_widget_definition_preload
+        Array.wrap(ids).filter_map { |id| resolve_by_id(id.to_i) }
       end
 
       def base_types_by_ids(ids)
-        type_class.where(id: ids).map(&:base_type).uniq
+        by_ids(ids).map(&:base_type).uniq
       end
 
       def all_ordered_by_name
-        type_class.order_by_name_asc
+        resolve_all.sort_by { |type| type.name.downcase }
       end
 
       def by_ids_ordered_by_name(ids)
-        # TODO: Remove the comment once we integrate the system defined types in the provider
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-        # if use_system_defined_types?
-        #   type_class.by_ids_ordered_by_name(ids)
-        # else
-        #   by_ids(ids).order_by_name_asc
-        # end
-
-        by_ids(ids).order_by_name_asc
+        by_ids(ids).sort_by { |type| type.name.downcase }
       end
 
       def by_base_types_ordered_by_name(names)
-        # TODO: Remove the comment once we integrate the system defined types in the provider
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219133
-        #
-        # if use_system_defined_types?
-        #   type_class.by_base_type_ordered_by_name(names)
-        # else
-        #   by_base_types(names).order_by_name_asc
-        # end
-
-        by_base_types(names).order_by_name_asc
+        by_base_types(names).sort_by { |type| type.name.downcase }
       end
 
       private
 
-      def type_class
-        # TODO: Introduce system defined types behind feature flag here.
-        # See https://gitlab.com/gitlab-org/gitlab/-/work_items/581926
-        WorkItems::Type
+      # Override in EE to include custom types via the indexed cache.
+      # In CE, resolves from system-defined types only.
+      def resolve_by_id(id)
+        type_class.find_by(id: id)
       end
 
-      def use_system_defined_types?
-        Feature.enabled?(:work_item_system_defined_type, :instance)
+      # Override in EE to return the converted custom type when one exists.
+      # In CE, returns the system-defined type for the given base_type.
+      def resolve_by_base_type(name)
+        type_class.default_by_type(name)
+      end
+
+      # Override in EE to return all types (system-defined + custom) from the indexed cache.
+      # In CE, returns system-defined types only.
+      def resolve_all
+        type_class.all
+      end
+
+      def type_class
+        WorkItems::TypesFramework::SystemDefined::Type
       end
     end
   end
 end
+
+WorkItems::TypesFramework::Provider.prepend_mod

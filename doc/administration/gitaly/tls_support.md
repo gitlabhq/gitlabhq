@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Gitaly TLS support
 ---
 
@@ -91,7 +91,7 @@ The process for configuring TLS support depends on your installation type.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add:
 
-   <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
+   <!-- Updates to following example must also be made at <https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-linux-package-installation> -->
 
    ```ruby
    gitaly['configuration'] = {

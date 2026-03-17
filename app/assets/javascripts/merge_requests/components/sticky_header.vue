@@ -253,9 +253,9 @@ export default {
             </gl-sprintf>
           </div>
         </div>
-        <div class="gl-flex gl-w-full gl-justify-between">
+        <div class="gl-flex gl-w-full gl-min-w-0 gl-items-center gl-justify-between">
           <ul
-            class="merge-request-tabs nav-tabs nav nav-links gl-m-0 gl-flex gl-flex-nowrap gl-border-b-0 gl-p-0"
+            class="merge-request-tabs nav-tabs nav nav-links gl-m-0 gl-flex gl-min-w-0 gl-flex-nowrap gl-border-b-0 gl-p-0"
           >
             <li
               v-for="(tab, index) in tabs"
@@ -275,11 +275,11 @@ export default {
               </gl-link>
             </li>
           </ul>
-          <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-3">
+          <div class="gl-flex gl-shrink-0 gl-flex-nowrap gl-items-center gl-gap-3">
             <discussion-counter
               :blocks-merge="blocksMerge"
               :can-resolve-discussion="canResolveDiscussion"
-              hide-options
+              compact
             />
             <template v-if="isSignedIn">
               <todo-widget

@@ -12,23 +12,28 @@ module Organizations
 
     rule { public_organization }.policy do
       enable :read_organization
+      enable :read_work_item_type
     end
 
     rule { admin }.policy do
       enable :admin_organization
+      enable :access_organization_admin_area
       enable :create_group
       enable :read_organization
       enable :read_organization_user
+      enable :read_work_item_type
     end
 
     rule { organization_owner }.policy do
       enable :admin_organization
+      enable :access_organization_admin_area
       enable :read_organization_user
     end
 
     rule { organization_user }.policy do
       enable :read_organization
       enable :create_group
+      enable :read_work_item_type
     end
   end
 end

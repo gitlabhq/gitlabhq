@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Testing feature flags with end-to-end tests
 ---
 
@@ -66,7 +66,6 @@ To view the individual test errors, click the `Pipeline` link and view the faili
 #### Determine if the failures are known
 
 1. Check the previous full runs in the [#e2e-run-staging](https://gitlab.enterprise.slack.com/archives/CBS3YKMGD) or [#e2e-run-production](https://gitlab.enterprise.slack.com/archives/CCNNKFP8B) Slack channels that were triggered before your feature flag toggle. If the same tests failed with the same error messages, it's likely the failures aren't related to your toggle.
-
 1. In case the test hasn't failed recently but is flaky, search for a failure issue for the test:
 
    - From the issues list in the [Test Failure Issues](https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues)

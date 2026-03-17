@@ -17,11 +17,36 @@ export function initNewDiscussionToggle(appElement) {
     );
   }
 
+  function hasGutterToggle(row, cellIndex) {
+    const discussionRow = row.nextElementSibling;
+    if (discussionRow?.dataset.discussionRow !== 'true') return false;
+    const cell = discussionRow.children[Math.min(cellIndex, discussionRow.children.length - 1)];
+    return cell?.querySelector('[data-gutter-toggle]') !== null;
+  }
+
+  function getLineNumber(row, side) {
+    const el = row.querySelector(`[data-position="${side}"] [data-line-number]`);
+    return el ? Number(el.dataset.lineNumber) : null;
+  }
+
+  function setTogglePosition(row) {
+    const { change } = toggle.parentElement.dataset;
+    const oldLine = change === 'added' ? null : getLineNumber(row, 'old');
+    const newLine = change === 'removed' ? null : getLineNumber(row, 'new');
+    const position = { old_line: oldLine, new_line: newLine, type: null };
+    toggle.lineRange = { start: position, end: position };
+  }
+
   function moveTo(target) {
     const row = target.closest('tr');
     if (row.querySelector('[data-position="old"]:first-child + [data-position="new"]')) {
+      if (hasGutterToggle(row, 0)) {
+        toggle.hidden = true;
+        return;
+      }
       if (row.contains(toggle)) return;
       row.querySelector('[data-position]').prepend(toggle);
+      setTogglePosition(row);
       return;
     }
     const cell = target.closest('[data-position]');
@@ -31,7 +56,13 @@ export function initNewDiscussionToggle(appElement) {
       toggle.hidden = true;
       return;
     }
+    const cellIndex = cell.dataset.position === 'old' ? 0 : 1;
+    if (hasGutterToggle(row, cellIndex)) {
+      toggle.hidden = true;
+      return;
+    }
     matchingCell.prepend(toggle);
+    setTogglePosition(row);
   }
 
   function onEnter(event) {

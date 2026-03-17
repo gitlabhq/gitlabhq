@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Configure Gitaly
 ---
 
@@ -250,8 +250,8 @@ Gitaly and GitLab use two shared secrets for authentication:
 <!--
 Updates to example must be made at:
 
-- https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
-- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
+- <https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-linux-package-installation>
+- <https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect/configure.md#praefect>
 - All reference architecture pages
 -->
 
@@ -324,7 +324,7 @@ connections):
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective Gitaly server:
 
-   <!-- Updates to following example must also be made at https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab -->
+   <!-- Updates to following example must also be made at <https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-linux-package-installation> -->
 
    On `gitaly1.internal`:
 
@@ -1577,7 +1577,7 @@ go_cloud_url = "s3://<bucket>?region=us-west-1"
 
 #### Configure S3-compatible servers
 
-S3-compatible servers such as MinIO are configured similarly to S3 with the addition of the `endpoint` parameter.
+S3-compatible servers are configured similarly to S3 with the addition of the `endpoint` parameter.
 
 The following parameters are supported:
 
@@ -1601,12 +1601,12 @@ Edit `/etc/gitlab/gitlab.rb` and configure the `go_cloud_url`:
 
 ```ruby
 gitaly['env'] = {
-    'AWS_ACCESS_KEY_ID' => 'minio_access_key_id',
-    'AWS_SECRET_ACCESS_KEY' => 'minio_secret_access_key'
+    'AWS_ACCESS_KEY_ID' => '<your_access_key_id>',
+    'AWS_SECRET_ACCESS_KEY' => '<your_secret_access_key>'
 }
 gitaly['configuration'] = {
     backup: {
-        go_cloud_url: 's3://<bucket>?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true'
+        go_cloud_url: 's3://<bucket>?region=us-east-1&endpoint=s3.example.com:9000&disableSSL=true&s3ForcePathStyle=true'
     }
 }
 ```
@@ -1619,7 +1619,7 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 
 ```toml
 [backup]
-go_cloud_url = "s3://<bucket>?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true"
+go_cloud_url = "s3://<bucket>?region=us-east-1&endpoint=s3.example.com:9000&disableSSL=true&s3ForcePathStyle=true"
 ```
 
 {{< /tab >}}

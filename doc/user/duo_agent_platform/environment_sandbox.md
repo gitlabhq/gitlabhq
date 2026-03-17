@@ -1,8 +1,7 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see
-  https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Remote execution environment sandbox
 ---
 
@@ -23,18 +22,13 @@ while maintaining necessary connectivity for legitimate flow operations.
 
 ## When the sandbox is applied
 
-The execution environment sandbox is automatically applied only when
-using the default GitLab Docker image
-(release [v0.0.6](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/-/tags/v0.0.6) and later)
-for the GitLab Duo Agent Platform.
+The execution environment sandbox is automatically applied when using a compatible Docker image with Anthropic Sandbox Runtime (SRT) installed. This includes using the default GitLab Docker image
+(release [v0.0.6](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/-/tags/v0.0.6) and later) or a [custom image with SRT installed](#install-anthropic-sandbox-runtime-srt-on-a-custom-image).
 
 The sandbox is enabled when:
 
-- No custom Docker image is specified in `agent-config.yml` file.
+- Anthropic Sandbox Runtime (SRT) is available in the Docker image.
 - GitLab Duo Agent Platform sessions are being executed on a runner (local environments are not being sandboxed).
-
-If you specify a [custom Docker image](flows/execution.md#change-the-default-docker-image),
-the sandbox is not applied, and your flow can access any domain reachable from your runner.
 
 For information about CI/CD variable differences between default and custom
 image configurations, see
@@ -46,7 +40,7 @@ To use the execution environment sandbox, you need:
 
 - GitLab Duo Agent Platform enabled in your project.
 - Privileged runner mode enabled. It is [required for sandboxing to function](flows/execution.md#configure-runners).
-- [Default GitLab Docker](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/container_registry) image on version `v0.0.6` or above, (sandbox does not apply to custom images).
+- A compatible Docker image: this could be the [default GitLab Docker](https://gitlab.com/gitlab-org/duo-workflow/default-docker-image/container_registry) image on version `v0.0.6` or above, or a [custom image with Anthropic Sandbox Runtime (SRT) installed](#install-anthropic-sandbox-runtime-srt-on-a-custom-image).
 
 ## How it works
 
@@ -59,15 +53,73 @@ The execution environment sandbox uses [Anthropic Sandbox Runtime (SRT)](https:/
 - Graceful fallback: If SRT is unavailable or required operating system privileges
   are missing, the flow runs directly with a warning message.
 
+## Install Anthropic Sandbox Runtime (SRT) on a custom image
+
+If you use a custom image, for example, with an [`agent-config.yml`](flows/execution.md#create-the-configuration-file),
+Anthropic SRT version `0.0.20` or later must be installed and available in the environment.
+
+SRT is available through `npm` as `@anthropic-ai/sandbox-runtime`. The following example shows the installation stage
+in a Dockerfile:
+
+```dockerfile
+# Install srt sandboxing with cache clearing and verification
+ARG SANDBOX_RUNTIME_VERSION=0.0.20
+RUN npm cache clean --force && \
+    npm install -g @anthropic-ai/sandbox-runtime@${SANDBOX_RUNTIME_VERSION} && \
+    test -s "$(npm root -g)/@anthropic-ai/sandbox-runtime/package.json" && \
+    srt --version
+
+```
+
+At runtime, the runner checks that the SRT is available and working:
+
+```shell
+$ if which srt > /dev/null; then
+$ echo "SRT found, creating config..."
+SRT found, creating config...
+$ echo '{"network":{"allowedDomains":["host.docker.internal","localhost","gitlab.com","*.gitlab.com","duo-workflow-svc.runway.gitlab.net"],"deniedDomains":[],"allowUnixSockets":["/var/run/docker.sock"],"allowLocalBinding":true},"filesystem":{"denyRead":["~/.ssh"],"allowWrite":["./","/tmp/"],"denyWrite":[],"allowGitConfig":true}}' > /tmp/srt-settings.json
+$ echo "Testing SRT sandbox capabilities..."
+Testing SRT sandbox capabilities...
+```
+
+The following error might occur during runtime, which may indicate that dependencies for SRT are
+not available:
+
+```shell
+Warning: SRT found but can't create sandbox (insufficient privileges), running command directly
+```
+
+To resolve this:
+
+1. Use bash to verify the image with the following command:
+
+   ```shell
+   docker run --rm -it <image>:<tag> /bin/bash
+   ```
+
+1. Use `srt`:
+
+   ```shell
+   srt ls
+   ```
+
+1. If the following error displays, you must install additional dependencies to your custom image:
+
+   ```shell
+   Error: Sandbox dependencies are not available on this system. Required: ripgrep (rg), bubblewrap (bwrap), and socat.
+   ```
+
 ## Network and filesystem restrictions
 
 When the execution environment sandbox is applied, the following restrictions are enforced.
 
-### Network configuration
+### Configure sandbox settings
 
-The sandbox allows network access to:
+Use an [`agent-config.yml`](flows/execution.md#create-the-configuration-file) file to configure some of your sandbox settings.
 
-- [Allowlisted domains](#allowlisted-domains) (auto-configured).
+By default, the sandbox permits access to the following configurations:
+
+- Default allow-listed domains. These are configured automatically and cannot be changed or updated.
 - Unix socket access (Docker socket).
 - Local binding.
 
@@ -79,16 +131,212 @@ The sandbox enforces the following filesystem restrictions:
 - Write allowed: Current directory (`./`) and temporary directory (`/tmp/`).
 - Git configuration access: Allowed.
 
-## Allowlisted domains
+### Configure a network policy
 
-Only following domains are automatically allowlisted for network access:
+SRT is included in the default GitLab-provided Docker image. You can also
+[install SRT on a custom image](#install-anthropic-sandbox-runtime-srt-on-a-custom-image).
 
-- `host.docker.internal`
+When SRT is installed, flows can access only the following domains by default.
+These domains are always allowed and cannot be removed:
+
 - `localhost`
-- Your GitLab instance domain
-- Your GitLab instance wildcard domain (for example, `*.gitlab.example.com`)
+- `host.docker.internal`
+- Your GitLab instance domain (for example, `gitlab.com`, `*.gitlab.com`)
+- The GitLab Duo Workflow Service domain
 
-To track progress on allowlist customization, see [this epic](https://gitlab.com/groups/gitlab-org/-/epics/20247).
+If you use a custom image without SRT,
+no network restrictions are applied and the flow can access any domain
+reachable from the runner.
+
+To allow or deny additional domains, add a `network_policy` to your
+`agent-config.yml` file.
+
+> [!note]
+> The `network_policy` does not allow `"*"` in the `allowed_domains` or the `denied_domains`. SRT does not support turning on all network traffic.
+> However, wildcards are allowed as part of domains, for example `"*.domain.com"`.
+
+```yaml
+network_policy:
+  include_recommended_allowed: true # default: false
+  allowed_domains:
+    - my-own-site.com
+  denied_domains:
+    - malicious.com
+```
+
+### Default allowed domain list
+
+The setting `include_recommended_allowed` includes a list of domains used for packages and development:
+
+- `github.com`
+- `www.github.com`
+- `api.github.com`
+- `npm.pkg.github.com`
+- `raw.githubusercontent.com`
+- `pkg-npm.githubusercontent.com`
+- `objects.githubusercontent.com`
+- `codeload.github.com`
+- `avatars.githubusercontent.com`
+- `camo.githubusercontent.com`
+- `gist.github.com`
+- `gitlab.com`
+- `www.gitlab.com`
+- `registry.gitlab.com`
+- `bitbucket.org`
+- `www.bitbucket.org`
+- `api.bitbucket.org`
+- `registry-1.docker.io`
+- `auth.docker.io`
+- `index.docker.io`
+- `hub.docker.com`
+- `www.docker.com`
+- `production.cloudflare.docker.com`
+- `download.docker.com`
+- `gcr.io`
+- `*.gcr.io`
+- `ghcr.io`
+- `mcr.microsoft.com`
+- `*.data.mcr.microsoft.com`
+- `public.ecr.aws`
+- `cloud.google.com`
+- `accounts.google.com`
+- `gcloud.google.com`
+- `storage.googleapis.com`
+- `compute.googleapis.com`
+- `container.googleapis.com`
+- `artifactregistry.googleapis.com`
+- `cloudresourcemanager.googleapis.com`
+- `oauth2.googleapis.com`
+- `www.googleapis.com`
+- `login.microsoftonline.com`
+- `packages.microsoft.com`
+- `dotnet.microsoft.com`
+- `dot.net`
+- `dev.azure.com`
+- `s3.amazonaws.com`
+- `*.s3.amazonaws.com`
+- `*.codeartifact.amazonaws.com`
+- `*.s3.api.aws`
+- `*.codeartifact.api.aws`
+- `download.oracle.com`
+- `yum.oracle.com`
+- `registry.npmjs.org`
+- `www.npmjs.com`
+- `www.npmjs.org`
+- `npmjs.com`
+- `npmjs.org`
+- `yarnpkg.com`
+- `registry.yarnpkg.com`
+- `pypi.org`
+- `www.pypi.org`
+- `files.pythonhosted.org`
+- `pythonhosted.org`
+- `test.pypi.org`
+- `pypi.python.org`
+- `pypa.io`
+- `www.pypa.io`
+- `rubygems.org`
+- `www.rubygems.org`
+- `api.rubygems.org`
+- `index.rubygems.org`
+- `ruby-lang.org`
+- `www.ruby-lang.org`
+- `rubyonrails.org`
+- `www.rubyonrails.org`
+- `rvm.io`
+- `get.rvm.io`
+- `crates.io`
+- `www.crates.io`
+- `index.crates.io`
+- `static.crates.io`
+- `rustup.rs`
+- `static.rust-lang.org`
+- `www.rust-lang.org`
+- `proxy.golang.org`
+- `sum.golang.org`
+- `index.golang.org`
+- `golang.org`
+- `www.golang.org`
+- `goproxy.io`
+- `pkg.go.dev`
+- `maven.org`
+- `repo.maven.org`
+- `central.maven.org`
+- `repo1.maven.org`
+- `jcenter.bintray.com`
+- `gradle.org`
+- `www.gradle.org`
+- `services.gradle.org`
+- `plugins.gradle.org`
+- `kotlin.org`
+- `www.kotlin.org`
+- `spring.io`
+- `repo.spring.io`
+- `packagist.org`
+- `www.packagist.org`
+- `repo.packagist.org`
+- `nuget.org`
+- `www.nuget.org`
+- `api.nuget.org`
+- `pub.dev`
+- `api.pub.dev`
+- `hex.pm`
+- `www.hex.pm`
+- `cpan.org`
+- `www.cpan.org`
+- `metacpan.org`
+- `www.metacpan.org`
+- `api.metacpan.org`
+- `cocoapods.org`
+- `www.cocoapods.org`
+- `cdn.cocoapods.org`
+- `haskell.org`
+- `www.haskell.org`
+- `hackage.haskell.org`
+- `swift.org`
+- `www.swift.org`
+- `archive.ubuntu.com`
+- `security.ubuntu.com`
+- `ubuntu.com`
+- `www.ubuntu.com`
+- `*.ubuntu.com`
+- `ppa.launchpad.net`
+- `launchpad.net`
+- `www.launchpad.net`
+- `dl.k8s.io`
+- `pkgs.k8s.io`
+- `k8s.io`
+- `www.k8s.io`
+- `releases.hashicorp.com`
+- `apt.releases.hashicorp.com`
+- `rpm.releases.hashicorp.com`
+- `archive.releases.hashicorp.com`
+- `hashicorp.com`
+- `www.hashicorp.com`
+- `repo.anaconda.com`
+- `conda.anaconda.org`
+- `anaconda.org`
+- `www.anaconda.com`
+- `anaconda.com`
+- `continuum.io`
+- `apache.org`
+- `www.apache.org`
+- `archive.apache.org`
+- `downloads.apache.org`
+- `eclipse.org`
+- `www.eclipse.org`
+- `download.eclipse.org`
+- `nodejs.org`
+- `www.nodejs.org`
+- `sourceforge.net`
+- `*.sourceforge.net`
+- `packagecloud.io`
+- `*.packagecloud.io`
+- `json-schema.org`
+- `www.json-schema.org`
+- `json.schemastore.org`
+- `www.schemastore.org`
+- `*.modelcontextprotocol.io`
 
 ## Warnings and fallback behavior
 

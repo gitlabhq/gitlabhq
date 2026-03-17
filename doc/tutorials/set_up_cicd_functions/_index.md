@@ -1,13 +1,13 @@
 ---
 stage: Verify
 group: CI Functions Platform
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Set up CI/CD Functions'
 ---
 
 This tutorial shows you how to create and use functions in your pipelines.
 
-Steps are reusable and composable pieces of a job. Each function defines structured inputs and
+Functions are reusable and composable pieces of a job. Each function defines structured inputs and
 outputs that can be consumed by other functions. You can configure functions in local files, GitLab.com repositories,
 or any other Git source.
 
@@ -156,7 +156,6 @@ You can have more than one function in a job.
    This `hello_steps` function provides a non-default input `who` of `gitlab functions`.
 
    For an example of how this code should look in your repository, see the [Steps tutorial, part 2a](https://gitlab.com/gitlab-org/step-runner/-/tree/main/examples/tutorial_part_2a).
-
 1. Commit and push the changes:
 
    ```shell
@@ -211,7 +210,6 @@ To refactor your functions, move them from the `.gitlab-ci.yml` to a dedicated f
    This new function has no inputs, so the `spec` is empty.
    It is a `steps` type, which has the same syntax as functions in `.gitlab-ci.yml`.
    However, the local reference now points to your function in the `hello` directory.
-
 1. To use the new function, modify `.gitlab-ci.yml`:
 
    ```yaml
@@ -225,7 +223,6 @@ To refactor your functions, move them from the `.gitlab-ci.yml` to a dedicated f
    You've refactored the details of the job into a separate file.
 
    For an example of how this code should look in your repository, see the [Steps tutorial, part 2b](https://gitlab.com/gitlab-org/step-runner/-/tree/main/examples/tutorial_part_2b).
-
 1. Commit and push the changes:
 
    ```shell
@@ -323,7 +320,6 @@ The echo function takes a single input `echo`, prints it to the logs, and output
    ```
 
    For an example of how this code should look in your repository, see the [Steps tutorial, part 2c](https://gitlab.com/gitlab-org/step-runner/-/tree/main/examples/tutorial_part_2c).
-
 1. Commit and push the changes:
 
    ```shell

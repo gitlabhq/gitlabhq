@@ -9,6 +9,7 @@ import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
@@ -38,6 +39,7 @@ describe('issue_note_body component', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useDiscussions();
     useLegacyDiffs();
     useNotes().setNoteableData(noteableDataMock);
     useNotes().setNotesData(notesDataMock);
@@ -159,7 +161,7 @@ describe('issue_note_body component', () => {
             user_type: userType,
           },
         };
-        useNotes().discussions = [{ id: 'discussion1', notes: [duoNote] }];
+        useDiscussions().discussions = [{ id: 'discussion1', notes: [duoNote] }];
 
         createComponent({ note: duoNote });
 
@@ -178,7 +180,7 @@ describe('issue_note_body component', () => {
           user_type: 'duo_code_review_bot',
         },
       };
-      useNotes().discussions = [{ id: 'discussion1', notes: [note, duoNote] }];
+      useDiscussions().discussions = [{ id: 'discussion1', notes: [note, duoNote] }];
 
       createComponent({ note: duoNote });
 
@@ -201,7 +203,7 @@ describe('issue_note_body component', () => {
 
     it('renders feedback text for the first DiffNote from GitLabDuo', () => {
       const duoNote = createDuoNote();
-      useNotes().discussions = [{ id: 'discussion1', notes: [duoNote] }];
+      useDiscussions().discussions = [{ id: 'discussion1', notes: [duoNote] }];
 
       createComponent({
         note: duoNote,
@@ -213,7 +215,7 @@ describe('issue_note_body component', () => {
 
     it('does not render feedback text for non-DiffNote from GitLabDuo', () => {
       const duoNote = createDuoNote({ type: 'DiscussionNote' });
-      useNotes().discussions = [{ id: 'discussion1', notes: [duoNote] }];
+      useDiscussions().discussions = [{ id: 'discussion1', notes: [duoNote] }];
 
       createComponent({
         note: duoNote,
@@ -225,7 +227,7 @@ describe('issue_note_body component', () => {
 
     it('does not render feedback text for follow-up DiffNote from GitLabDuo', () => {
       const duoNote = createDuoNote({ id: '2' });
-      useNotes().discussions = [{ id: 'discussion1', notes: [{ id: '1' }, duoNote] }];
+      useDiscussions().discussions = [{ id: 'discussion1', notes: [{ id: '1' }, duoNote] }];
 
       createComponent({
         note: duoNote,
@@ -237,7 +239,7 @@ describe('issue_note_body component', () => {
 
     it('shows default awards list with thumbsup and thumbsdown for first DiffNote from GitLabDuo', () => {
       const duoNote = createDuoNote();
-      useNotes().discussions = [{ id: 'discussion1', notes: [duoNote] }];
+      useDiscussions().discussions = [{ id: 'discussion1', notes: [duoNote] }];
 
       createComponent({
         note: duoNote,

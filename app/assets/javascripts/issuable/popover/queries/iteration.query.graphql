@@ -4,6 +4,10 @@ query iteration($id: IterationID!, $fullPath: String) {
   iteration(id: $id) {
     ...IterationFragment
     state
+    group @gl_introduced(version: "18.10.0") {
+      id
+      fullPath
+    }
     report(fullPath: $fullPath) {
       stats {
         total {

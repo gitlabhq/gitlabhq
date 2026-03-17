@@ -68,6 +68,11 @@ export default {
       required: false,
       default: null,
     },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -155,6 +160,7 @@ export default {
       :fluid-width="fluidWidth"
       :placement="placement"
       :block="block"
+      :loading="loading"
       @search="search"
       @select="$emit($options.model.event, $event)"
     >

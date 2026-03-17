@@ -233,14 +233,14 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
     let(:ci_config_path) { nil }
 
     where(:config_source, :expected_result) do
-      :external_project_source  | true
-      :remote_source            | true
-      :auto_devops_source       | false
-      :bridge_source            | false
-      :compliance_source        | false
-      :parameter_source         | false
-      :repository_source        | false
-      nil                       | false
+      :external_project_source       | true
+      :remote_source                 | true
+      :auto_devops_source            | false
+      :bridge_source                 | false
+      :compliance_source             | false
+      :parameter_source              | false
+      :repository_source             | false
+      nil                            | false
     end
 
     with_them do

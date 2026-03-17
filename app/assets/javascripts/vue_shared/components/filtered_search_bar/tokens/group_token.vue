@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearchSuggestion } from '@gitlab/ui';
-import { pick } from 'lodash';
+import { pick } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import searchGroupsQuery from '~/boards/graphql/sub_groups.query.graphql';

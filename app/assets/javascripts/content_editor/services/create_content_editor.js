@@ -1,5 +1,5 @@
 import { Editor } from '@tiptap/vue-2';
-import { isFunction, flatMap } from 'lodash';
+import { isFunction, flatMap } from 'lodash-es';
 import eventHubFactory from '~/helpers/event_hub_factory';
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '../constants';
 import * as builtInExtensions from '../extensions';

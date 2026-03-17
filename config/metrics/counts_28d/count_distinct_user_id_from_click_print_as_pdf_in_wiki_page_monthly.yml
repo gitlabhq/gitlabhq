@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_user_id_from_click_print_as_pdf_in_wiki_page_monthly
 description: Monthly count of unique users who clicked 'Print as PDF' in Wiki page dropdown
 product_group: knowledge
+product_categories:
+- wiki
 performance_indicator_type: []
 value_type: number
 status: active

@@ -49,6 +49,7 @@ export default function initProjectPermissionsSettings() {
       confirmDangerMessage,
       confirmButtonText,
       htmlConfirmationMessage: parseBoolean(htmlConfirmationMessage),
+      groupPathRegex: new RegExp(`^(${componentProps.groupPathRegex})$`),
     },
     render: (createElement) =>
       createElement(settingsPanel, {

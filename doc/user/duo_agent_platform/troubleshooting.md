@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting the GitLab Duo Agent Platform
 ---
 
@@ -33,6 +33,21 @@ If you are trying to run a flow but it's not visible in the GitLab UI:
    1. Enable the affected flow in the top-level group and save the configuration.
    1. Wait a few minutes for the setting to propagate across your groups.
 
+## Insufficient permissions to create a new pipeline for imported projects
+
+If you are trying to run foundational flows in an imported project or a project created from a template,
+you might get the error: `Error in creating workload: Insufficient permissions to create a new pipeline`.
+
+To fix this issue:
+
+1. Go to the top-level group.
+1. Select **Settings** > **General**.
+1. Expand **GitLab Duo features**.
+1. Under **Flow execution**, identify the foundational flows you want to turn on.
+1. Disable the flows in the top-level group and save the configuration.
+1. Enable the same flows in the top-level group and save the configuration.
+1. Wait a few minutes for the setting to propagate across projects in the group.
+
 ## Session is stuck in created state
 
 If a session for your flow does not start:
@@ -44,7 +59,7 @@ If a session for your flow does not start:
 In the GitLab UI, foundational flows use a service account that:
 
 - Creates commits with its own email address.
-- Creates branches with the `workloads/` prefix (for example, `workloads/a1b2c3d4e5f`).
+- Creates a [workload pipeline](../../ci/pipelines/pipeline_types.md#workload-pipeline).
 
 Prerequisites:
 
@@ -59,16 +74,16 @@ To configure push rules for a project:
    1. Locate the service account user and copy the email address.
 
 1. Allow the email address to push to the project:
-   1. On the top bar, select **Search or go to** and find your project.
+   1. In the top bar, select **Search or go to** and find your project.
    1. Select **Settings** > **Repository**.
    1. Expand **Push rules**.
    1. In **Commit author's email**, add a regular expression that allows the email address you just copied.
    1. Select **Save push rules**.
 
-1. Allow the `workloads/` and `duo/feature/` branch prefixes:
+1. Allow the `duo/feature/` branch prefix:
    1. In the **Push rules** section, find **Branch name**.
-   1. Add a regular expression that allows branches starting with `workloads/` and `duo/feature/`.
-      For example: `^(workloads|duo/feature)/.*$`
+   1. Add a regular expression that allows branches starting with ^duo/(fix|feature|refactor|docs/).*
+      For example: `^(duo/feature)/.*$`
    1. Select **Save push rules**.
 
 To create push rules for the instance:

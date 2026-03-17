@@ -6,13 +6,14 @@ graphql-verify:
     - .ruby-cache
     - .default-before_script
     - .graphql:rules:graphql-verify
-  stage: test
+  stage: lint
   needs:
     - job: cache:ruby-gems
       optional: true
   script:
     - bundle exec rake gitlab:graphql:validate
     - bundle exec rake gitlab:graphql:check_docs
+    - bundle exec rake gitlab:graphql:check_introspection_sync
     - bundle exec rake gitlab:graphql:generate_all_introspection_schemas
     - bundle exec rake gitlab:graphql:schema:dump
     - node scripts/frontend/graphql_possible_types_extraction.js --check

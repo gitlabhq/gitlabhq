@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Jira issue management
 ---
 
@@ -65,7 +65,7 @@ You can [disable comments](#disable-comments-on-jira-issues) on issues.
 With this integration, you can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enable this feature:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge checks** section, select **Require an associated issue from Jira**.
 1. Select **Save**.
@@ -103,7 +103,7 @@ The regex pattern must follow the [RE2 syntax](https://github.com/google/re2/wik
 
 To define a regex pattern for Jira issue keys:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Go to the **Jira issue matching** section.
@@ -127,7 +127,7 @@ GitLab matches `JIRA#ALPHA-1` rather than `ALPHA-1`.
 
 To define a prefix for Jira issue keys:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Go to the **Jira issue matching** section.

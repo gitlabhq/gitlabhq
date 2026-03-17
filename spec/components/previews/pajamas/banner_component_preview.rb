@@ -6,18 +6,16 @@ module Pajamas
     # See its design reference [here](https://design.gitlab.com/components/banner).
     #
     # @param button_text text
-    # @param button_link text
     # @param content textarea
     # @param variant select {{ Pajamas::BannerComponent::VARIANT_OPTIONS }}
     def default(
       button_text: "Learn more",
-      button_link: "https://about.gitlab.com/",
       content: "Add your message here.",
       variant: :promotion
     )
       render(Pajamas::BannerComponent.new(
         button_text: button_text,
-        button_link: button_link,
+        button_link: "#",
         svg_path: "illustrations/devops-sm.svg",
         variant: variant
       )) do |c|

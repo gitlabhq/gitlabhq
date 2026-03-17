@@ -287,7 +287,6 @@ export default {
           data-testid="access-token-options"
           icon="ellipsis_v"
           :no-caret="true"
-          :disabled="busy"
           category="tertiary"
           :fluid-width="true"
           :items="options(item)"

@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab quick actions
 description: Commands, shortcuts, and inline actions.
 ---
@@ -134,11 +134,9 @@ Add up to six email participants.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 18.10. Feature flag `issue_email_participants` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 **Availability**:
 
@@ -241,7 +239,9 @@ Assign one or more users to the work item.
 
 ### `assign_reviewer`
 
-Assign one or more users as reviewers.
+Assign one or more users as reviewers, or request a new review from existing reviewers.
+
+**Alias for [`/request_review`](#request_review).**
 
 **Availability**:
 
@@ -274,10 +274,13 @@ Assign one or more users as reviewers.
 
 **Additional details**:
 
+- If the user is not already a reviewer, assigns them as a reviewer.
+- If the user is already a reviewer, requests a new review from them (resets their review state and sends notifications).
 - You can assign multiple users in a single command by separating usernames with spaces.
-- `/reviewer` is an alias for `/assign_reviewer`.
+- `/reviewer` is also an alias for this command.
 - To replace reviewers, use [`/reassign_reviewer`](#reassign_reviewer).
 - To remove reviewers, use [`/unassign_reviewer`](#unassign_reviewer).
+- For more information, see [`/request_review`](#request_review).
 
 ### `award`
 
@@ -803,7 +806,7 @@ Set the due date.
 
 **Additional details**:
 
-- For more date format examples, see [Chronic](https://gitlab.com/gitlab-org/ruby/gems/gitlab-chronic#examples).
+- For more date format examples, see [Chronic examples](https://gitlab.com/gitlab-org/ruby/gems/gitlab-chronic#examples).
 - To remove the due date, use [`/remove_due_date`](#remove_due_date).
 
 ### `duplicate`
@@ -1421,7 +1424,7 @@ Rebase the source branch on the latest commit of the target branch. If there are
 
 **Additional details**:
 
-- For help, see [troubleshooting information](../../topics/git/troubleshooting_git.md).
+- For help, see [troubleshooting Git](../../topics/git/troubleshooting_git.md).
 
 ### `relabel`
 
@@ -1589,11 +1592,9 @@ Remove up to six email participants.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 18.10. Feature flag `issue_email_participants` removed.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag. For more information, see the history.
 
 **Availability**:
 
@@ -1830,7 +1831,9 @@ Assign a reviewer or request a new review from one or more users.
 
 **Additional details**:
 
-- Behaves like [`/assign_reviewer`](#assign_reviewer), but also requests a new review from currently assigned reviewers.
+- Can also be invoked using [`/assign_reviewer`](#assign_reviewer) or `/reviewer`.
+- If the user is not already a reviewer, assigns them as a reviewer.
+- If the user is already a reviewer, requests a new review from them (resets their review state and sends notifications).
 - For more information, see [request a review](merge_requests/reviews/_index.md#request-a-review).
 
 ### `run_pipeline`

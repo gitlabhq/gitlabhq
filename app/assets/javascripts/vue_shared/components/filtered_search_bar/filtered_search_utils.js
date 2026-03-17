@@ -1,4 +1,4 @@
-import { isEmpty, uniqWith, isEqual, isString } from 'lodash';
+import { isEmpty, uniqWith, isEqual, isString } from 'lodash-es';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { queryToObject } from '~/lib/utils/url_utility';
 

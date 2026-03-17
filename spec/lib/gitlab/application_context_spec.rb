@@ -11,7 +11,9 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         :auth_fail_token_id,
         :auth_fail_requested_scopes,
         :http_router_rule_action,
-        :http_router_rule_type
+        :http_router_rule_type,
+        :auth_fail_token_type,
+        :auth_fail_auth_header_type
       )
     end
   end
@@ -157,7 +159,7 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
 
       # If a newly added key is added to the context hash, we need to list it in
       # the known keys constant. This spec ensures that we do.
-      expect((context.to_lazy_hash.keys - described_class.known_keys)).to eq([])
+      expect(context.to_lazy_hash.keys - described_class.known_keys).to eq([])
     end
 
     describe 'setting the client' do
@@ -259,6 +261,32 @@ RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
         context = described_class.new(kubernetes_agent: cluster_agent)
 
         expect(result(context)).to include(kubernetes_agent_id: cluster_agent.id)
+      end
+    end
+
+    context 'when using auth failure context' do
+      it 'sets the auth_fail_token_type value' do
+        context = described_class.new(auth_fail_token_type: 'PersonalAccessToken')
+
+        expect(result(context)).to include(auth_fail_token_type: 'PersonalAccessToken')
+      end
+
+      it 'sets the auth_fail_auth_header_type value' do
+        context = described_class.new(auth_fail_auth_header_type: 'bearer')
+
+        expect(result(context)).to include(auth_fail_auth_header_type: 'bearer')
+      end
+
+      it 'sets both auth failure values together' do
+        context = described_class.new(
+          auth_fail_token_type: 'CiJobToken',
+          auth_fail_auth_header_type: 'private_token_header'
+        )
+
+        expect(result(context)).to include(
+          auth_fail_token_type: 'CiJobToken',
+          auth_fail_auth_header_type: 'private_token_header'
+        )
       end
     end
   end

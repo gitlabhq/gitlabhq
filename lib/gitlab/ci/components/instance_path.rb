@@ -7,7 +7,7 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
         include ::Gitlab::LoopHelpers
 
-        attr_reader :reference
+        attr_reader :reference, :logger
 
         SHORTHAND_SEMVER_PATTERN = /^\d+(\.\d+)?$/
         LATEST = '~latest'
@@ -20,43 +20,51 @@ module Gitlab
           "#{Gitlab.config.gitlab.server_fqdn}/"
         end
 
-        def initialize(address:)
+        def initialize(address:, logger: nil)
           @full_path, @reference = address.to_s.split('@', 2)
+          @logger = logger
         end
 
         def fetch_content!(current_user:)
           return unless project
           return unless sha
 
-          raise Gitlab::Access::AccessDeniedError unless Ability.allowed?(current_user, :download_code, project)
+          allowed = instrument(:config_component_check_access) do
+            Ability.allowed?(current_user, :download_code, project)
+          end
+          raise Gitlab::Access::AccessDeniedError unless allowed
 
-          return fetch_component_content if ::Feature.disabled?(:ci_optimize_component_fetching, project)
-
-          Rails.cache.fetch("ci_component_content:#{project_full_path}:#{sha}:#{component_name}", expires_in: 1.day) do
+          instrument(:config_component_fetch_content) do
             fetch_component_content
           end
         end
 
         def project
-          Project.find_by_full_path(project_full_path, follow_redirects: true)
+          instrument(:config_component_find_project) do
+            Project.find_by_full_path(project_full_path, follow_redirects: true)
+          end
         end
         strong_memoize_attr :project
 
         def sha
-          return unless project
+          instrument(:config_component_find_sha) do
+            next unless project
 
-          if ::Feature.enabled?(:ci_optimize_component_fetching, project)
-            # First, we try finding the sha from the catalog.
-            # Otherwise, from the repository.
-            find_catalog_version&.sha || sha_by_released_tag || sha_by_ref
-          else
-            legacy_find_version_sha
+            if ::Feature.enabled?(:ci_optimize_component_fetching, project)
+              # First, we try finding the sha from the catalog.
+              # Otherwise, from the repository.
+              find_catalog_version&.sha || sha_by_released_tag || sha_by_ref
+            else
+              legacy_find_version_sha
+            end
           end
         end
         strong_memoize_attr :sha
 
         def matched_version
-          find_catalog_version&.semver&.to_s
+          instrument(:config_component_matched_version) do
+            find_catalog_version&.semver&.to_s
+          end
         end
         strong_memoize_attr :matched_version
 
@@ -76,6 +84,15 @@ module Gitlab
         private
 
         def fetch_component_content
+          return fetch_component_content_uncached if ::Feature.disabled?(:ci_optimize_component_fetching, project)
+
+          Rails.cache.fetch("ci_component_content:#{project_full_path}:#{sha}:#{component_name}",
+            expires_in: 1.day) do
+            fetch_component_content_uncached
+          end
+        end
+
+        def fetch_component_content_uncached
           component_project = ::Ci::Catalog::ComponentsProject.new(project, sha)
           component_project.fetch_component(component_name)
         end
@@ -87,14 +104,16 @@ module Gitlab
         end
 
         def find_catalog_version
-          return unless project.catalog_resource
+          instrument(:config_component_find_catalog_version) do
+            next unless project.catalog_resource
 
-          if reference == LATEST
-            catalog_resource_version_latest
-          elsif reference.match?(SHORTHAND_SEMVER_PATTERN)
-            catalog_resource_version_by_short_semver
-          else
-            project.catalog_resource.versions.by_name(reference).first
+            if reference == LATEST
+              catalog_resource_version_latest
+            elsif reference.match?(SHORTHAND_SEMVER_PATTERN)
+              catalog_resource_version_by_short_semver
+            else
+              project.catalog_resource.versions.by_name(reference).first
+            end
           end
         end
         strong_memoize_attr :find_catalog_version
@@ -151,6 +170,12 @@ module Gitlab
           return unless index
 
           path[0..index - 1]
+        end
+
+        def instrument(operation, &block)
+          return yield unless logger
+
+          logger.instrument(operation, &block)
         end
       end
     end

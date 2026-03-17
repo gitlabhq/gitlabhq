@@ -1,7 +1,7 @@
 import { GlLink, GlModal } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
-import merge from 'lodash/merge';
+import { merge } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import createStore from '~/vue_shared/components/metric_images/store';

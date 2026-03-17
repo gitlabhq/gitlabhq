@@ -239,6 +239,47 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
 
       it_behaves_like 'sends notification about expiry of bot user tokens'
 
+      context 'when a project bot has revoked tokens from rotation history' do
+        # Created first -> lower ID -> .first returns this without .not_revoked
+        let_it_be(:revoked_token) do
+          create(:resource_access_token, resource: resource, expires_at: 2.days.ago, revoked: true)
+        end
+
+        # Created second -> higher ID -> only returned when not_revoked filters out the above
+        let_it_be(:active_expiring_token) do
+          create(:resource_access_token, resource: resource, expires_at: 5.days.from_now, user: revoked_token.user)
+        end
+
+        it 'uses the active token for webhook execution' do
+          hook_data = { interval: :seven_days }
+          project_hook = create(:project_hook, project: resource, resource_access_token_events: true)
+
+          expect(Gitlab::DataBuilder::ResourceAccessTokenPayload).to receive(:build)
+            .with(active_expiring_token, :expiring, resource, { interval: :seven_days }).and_return(hook_data)
+          expect(fake_wh_service).to receive(:async_execute).once
+
+          expect(WebHookService)
+            .to receive(:new)
+            .with(
+              project_hook,
+              { interval: :seven_days },
+              'resource_access_token_hooks',
+              idempotency_key: anything
+            ) { fake_wh_service }
+
+          worker.perform
+        end
+
+        it 'sends notification with the active token name' do
+          expect_next_instance_of(NotificationService) do |notification_service|
+            expect(notification_service).to receive(:bot_resource_access_token_about_to_expire)
+              .with(active_expiring_token.user, active_expiring_token.name, a_hash_including(days_to_expire: 7))
+          end
+
+          worker.perform
+        end
+      end
+
       context 'and a token is expiring' do
         let_it_be(:expiring_token) { create(:resource_access_token, resource: resource, expires_at: 5.days.from_now) }
 

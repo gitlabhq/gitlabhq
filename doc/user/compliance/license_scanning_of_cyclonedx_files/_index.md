@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Composition Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: License scanning of CycloneDX files
 ---
 
@@ -43,12 +43,19 @@ The ability to provide other licenses is tracked in [epic 10861](https://gitlab.
 To enable License scanning of CycloneDX files:
 
 - Using the dependency scanning template
-  - Enable [dependency scanning](../../application_security/dependency_scanning/_index.md#getting-started)
+  - Turn on [dependency scanning](../../application_security/dependency_scanning/_index.md#turn-on-dependency-scanning)
       and ensure that its prerequisites are met.
   - On GitLab Self-Managed, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the **Admin** area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
 - Or use the [CI/CD component](../../../ci/components/_index.md) for applicable package registries.
 
 ## Supported languages and package managers
+
+{{< history >}}
+
+- Support for Swift [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/506756) in GitLab 17.9.
+- Support for Dart [introduced](https://gitlab.com/groups/gitlab-org/-/epics/18351) in GitLab 18.10.
+
+{{< /history >}}
 
 License scanning is supported for the following languages and package managers:
 
@@ -82,6 +89,12 @@ License scanning is supported for the following languages and package managers:
     </tr>
     <tr>
       <td>C++</td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Dart</td>
+      <td><a href="https://pub.dev/">pub</a></td>
       <td>Yes</td>
       <td>No</td>
     </tr>
@@ -200,6 +213,7 @@ license names.
 | npm             | <https://deps.dev/>                                              |
 | NuGet           | <https://api.nuget.org/v3/catalog0/index.json>                   |
 | Packagist       | <https://packagist.org/packages/list.json>                       |
+| pub             | <https://pub.dev/>                                               |
 | PyPI            | <https://warehouse.pypa.io/api-reference/bigquery-datasets.html> |
 | RubyGems        | <https://rubygems.org/versions>                                  |
 
@@ -254,7 +268,7 @@ Choose which license information source to use when both are available.
 
 To configure the preferred source of license information for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **License information source** section, select either:
    - **SBOM** (default) - Uses license information from CycloneDX reports.

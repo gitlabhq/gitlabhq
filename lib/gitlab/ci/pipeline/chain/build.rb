@@ -14,7 +14,7 @@ module Gitlab
               before_sha: @command.before_sha,
               source_sha: @command.source_sha,
               target_sha: @command.target_sha,
-              tag: @command.tag_exists?,
+              tag: @command.tag?,
               trigger: @command.trigger,
               user: Gitlab::Auth::Identity.invert_composite_identity(@command.current_user),
               pipeline_schedule: @command.schedule,

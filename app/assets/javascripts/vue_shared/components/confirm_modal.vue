@@ -1,6 +1,6 @@
 <script>
 import { GlModal, GlAlert } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import csrf from '~/lib/utils/csrf';
 import eventHub, { EVENT_OPEN_CONFIRM_MODAL } from './confirm_modal_eventhub';

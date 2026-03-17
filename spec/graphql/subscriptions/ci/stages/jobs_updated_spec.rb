@@ -69,7 +69,7 @@ RSpec.describe Subscriptions::Ci::Stages::JobsUpdated, feature_category: :contin
       context 'when user cannot read the project jobs' do
         before do
           allow(Ability).to receive(:allowed?)
-            .with(current_user, :read_build, project)
+            .with(current_user, :read_build, job)
             .and_return(false)
         end
 

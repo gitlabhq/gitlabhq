@@ -42,24 +42,24 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
         allow(Gitlab.config.jira_connect).to receive(:additional_iframe_ancestors).and_return(['http://localhost:*', 'http://dev.gitlab.com'])
       end
 
-      it {
+      it do
         is_expected.to include('frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com http://localhost:* http://dev.gitlab.com')
-      }
+      end
 
       context 'and display_url is different from base_url' do
-        let_it_be(:installation) {
+        let_it_be(:installation) do
           create(:jira_connect_installation,
             base_url: 'https://jira.atlassian.net',
             display_url: 'https://custom.jira.com',
             instance_url: 'http://self-managed-gitlab.com')
-        }
+        end
 
-        it {
+        it do
           is_expected.to include(
             'frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com ' \
               'http://localhost:* http://dev.gitlab.com https://custom.jira.com'
           )
-        }
+        end
       end
     end
 

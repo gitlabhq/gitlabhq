@@ -397,36 +397,36 @@ module Gitlab
         increment_method_missing_count(command_name)
       end
 
-      def read_command(command_name, *args, **kwargs, &block)
+      def read_command(command_name, ...)
         if @instance
-          send_command(@instance, command_name, *args, **kwargs, &block)
+          send_command(@instance, command_name, ...)
         else
-          read_from_default(command_name, *args, **kwargs, &block)
+          read_from_default(command_name, ...)
         end
       end
 
-      def write_command(command_name, *args, **kwargs, &block)
+      def write_command(command_name, ...)
         if @instance
-          send_command(@instance, command_name, *args, **kwargs, &block)
+          send_command(@instance, command_name, ...)
         else
-          write_both(command_name, *args, **kwargs, &block)
+          write_both(command_name, ...)
         end
       end
 
-      def read_from_default(command_name, *args, **kwargs, &block)
-        send_command(default_store, command_name, *args, **kwargs, &block)
+      def read_from_default(command_name, ...)
+        send_command(default_store, command_name, ...)
       rescue StandardError => e
         log_error(e, command_name,
           multi_store_error_message: FAILED_TO_READ_ERROR_MESSAGE)
         raise
       end
 
-      def write_both(command_name, *args, **kwargs, &block)
-        result = send_command(default_store, command_name, *args, **kwargs, &block)
+      def write_both(command_name, ...)
+        result = send_command(default_store, command_name, ...)
 
         # write to the non-default store only if write on default store is successful
         begin
-          send_command(non_default_store, command_name, *args, **kwargs, &block)
+          send_command(non_default_store, command_name, ...)
         rescue StandardError => e
           log_error(e, command_name,
             multi_store_error_message: FAILED_TO_WRITE_ERROR_MESSAGE)
@@ -436,11 +436,11 @@ module Gitlab
       end
 
       # Run the entire pipeline on both stores. We assume that `&block` is idempotent.
-      def pipelined_both(command_name, *args, **kwargs, &block)
-        result_default = send_command(default_store, command_name, *args, **kwargs, &block)
+      def pipelined_both(command_name, ...)
+        result_default = send_command(default_store, command_name, ...)
 
         begin
-          result_non_default = send_command(non_default_store, command_name, *args, **kwargs, &block)
+          result_non_default = send_command(non_default_store, command_name, ...)
         rescue StandardError => e
           log_error(e, command_name, multi_store_error_message: FAILED_TO_RUN_PIPELINE)
         end

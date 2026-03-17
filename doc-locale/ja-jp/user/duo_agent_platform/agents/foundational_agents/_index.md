@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Workflow Catalog
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 基本エージェント
 ---
 
@@ -9,8 +9,6 @@ title: 基本エージェント
 
 - プラン: Premium、Ultimate
 - 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
-
-この機能は[GitLabクレジット](../../../../subscriptions/gitlab_credits.md)を使用します。
 
 {{< /details >}}
 
@@ -27,9 +25,14 @@ title: 基本エージェント
 
 基本エージェントは、GitLabによって構築および管理されており、GitLab管理バッジ（{{< icon name="tanuki-verified" >}}）が表示されます。
 
+## 前提条件 {#prerequisites}
+
+- GitLab Duo Agent Platformの[前提条件](../../_index.md#prerequisites)を満たしている必要があります。
+- [基本エージェントが有効になっている](#turn-foundational-agents-on-or-off)必要があります。
+
 ## 利用可能な基本エージェント {#available-foundational-agents}
 
-次の基本エージェントを利用できます:
+以下の基本エージェントは、GitLab UI、VS Code、およびJetBrains IDEで利用できます:
 
 - [プランナー](planner.md)。プロダクト管理および計画ワークフローに対応。
 - [セキュリティ分析](security_analyst_agent.md)。セキュリティ分析および脆弱性管理に対応。
@@ -41,7 +44,7 @@ title: 基本エージェント
 
 前提条件: 
 
-- プロジェクトのメンテナーロール以上が必要です。
+- プロジェクトのメンテナーまたはオーナーロールを持っている必要があります。
 
 エージェントを複製するには:
 

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Remote Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Create a GitLab workspaces proxy to authenticate and authorize workspaces in your cluster.
 title: 'Tutorial: Set up the GitLab agent for Kubernetes'
 ---
@@ -96,7 +96,7 @@ The GitLab agent server for Kubernetes (KAS) is the component that communicates 
 
 To configure the `remote_development` module in the agent project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In your project, create a `.gitlab/agents/<agentName>/config.yaml` file.
    `agentName` is the name of the agent you configured when you set up workspace infrastructure.
 1. In `config.yaml`, use the following configuration for workspace settings:
@@ -112,7 +112,7 @@ For a full list of configuration options, see the workspace [configuration refer
 > [!note]
 > The GitLab agent for Kubernetes is configured in one project, but you can use it in other project workspaces.
 > A separate agent is not required for each project.
-> 
+>
 > The configured agent is not visible until you
 > [allow the agent in your group](#allow-the-gitlab-agent-for-kubernetes-in-your-group).
 
@@ -126,7 +126,7 @@ use that agent.
 
 To allow your GitLab agent for Kubernetes in a group and make it available to all projects in that group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Workspaces**.
 1. In the **Group agents** section, select the **All agents** tab.
 1. For the GitLab agent for Kubernetes, select **Allow**.

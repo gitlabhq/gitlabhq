@@ -9,6 +9,7 @@ import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   NAME_TO_TEXT_LOWERCASE_MAP,
   TRACKING_CATEGORY_SHOW,
+  VIEW_CONTEXT,
   WIDGET_TYPE_START_AND_DUE_DATE,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
@@ -28,6 +29,9 @@ export default {
     WorkItemSidebarWidget,
   },
   mixins: [Tracking.mixin()],
+  inject: {
+    viewContext: { default: VIEW_CONTEXT.fullScreen },
+  },
   props: {
     workItem: {
       type: Object,
@@ -94,6 +98,7 @@ export default {
         category: TRACKING_CATEGORY_SHOW,
         label: 'item_dates',
         property: `type_${this.workItemType}`,
+        extra: { viewContext: this.viewContext },
       };
     },
     startDateValue() {
@@ -246,6 +251,8 @@ export default {
     <template #editing-content="{ stopEditing }">
       <div
         class="gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-3 gl-pt-2 @sm/panel:gl-flex-row @md/panel:gl-flex-col"
+        data-testid="date-pickers-wrapper"
+        @keydown.esc="stopEditing"
       >
         <gl-form-group
           class="work-item-date-input gl-m-0 gl-flex gl-items-center gl-gap-3"
@@ -264,7 +271,6 @@ export default {
             data-testid="start-date-picker"
             @clear="clearStartDatePicker"
             @close="handleStartDateInput"
-            @keydown.esc.native="stopEditing"
           />
         </gl-form-group>
         <gl-form-group
@@ -284,7 +290,6 @@ export default {
             :target="null"
             data-testid="due-date-picker"
             @clear="clearDueDatePicker"
-            @keydown.esc.native="stopEditing"
           />
         </gl-form-group>
       </div>

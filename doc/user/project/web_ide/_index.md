@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Remote Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use the Web IDE to edit multiple files in the GitLab UI, stage commits, and create merge requests.
 title: Web IDE
 ---
@@ -32,24 +32,24 @@ You can access the Web IDE through several methods.
 
 ### With a keyboard shortcut
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Use the <kbd>.</kbd> keyboard shortcut.
 
 ### From a directory
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to your directory.
 1. Select **Code** > **Open in Web IDE**.
 
 ### From a file
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to your file.
 1. Select **Edit** > **Open in Web IDE**.
 
 ### From a merge request
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to your merge request.
 1. In the upper right, select **Code** > **Open in Web IDE**.
 
@@ -357,7 +357,7 @@ The [AsciiDoc](https://open-vsx.org/extension/asciidoctor/asciidoctor-vscode) ex
 
 ## Related topics
 
-- [GitLab Duo Chat (Classic) in the Web IDE](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-the-web-ide)
+- [GitLab Duo Chat (non-agentic) in the Web IDE](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-the-web-ide)
 
 ## Troubleshooting
 

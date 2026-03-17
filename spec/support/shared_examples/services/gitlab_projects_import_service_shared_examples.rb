@@ -22,13 +22,63 @@ RSpec.shared_examples 'gitlab projects import validations' do |import_type:|
     end
   end
 
-  context 'override params' do
+  context 'with override params' do
+    let(:override_params) { { description: 'Hello', name: 'Name override' } }
+
+    before do
+      import_params.delete(:name)
+    end
+
     it 'stores them as import data when passed' do
       project = described_class
-                  .new(namespace.owner, import_params, { description: 'Hello' }, import_type: import_type)
+                  .new(namespace.owner, import_params, override_params, import_type: import_type)
                   .execute
 
-      expect(project.import_data.data['override_params']['description']).to eq('Hello')
+      expect(project.import_data.data['override_params']).to eq(override_params.stringify_keys)
+    end
+
+    context 'and name is not in override params' do
+      let(:override_params) { { description: 'Hello' } }
+
+      it 'does not store name in import data' do
+        project = described_class
+                    .new(namespace.owner, import_params, override_params, import_type: import_type)
+                    .execute
+
+        expect(project.import_data.data['override_params']).not_to include('name')
+      end
+    end
+  end
+
+  context 'with name attribute' do
+    before do
+      import_params[:name] = 'Test project'
+    end
+
+    it 'stores name in import data to prevent overwrite on import' do
+      project = subject.execute
+
+      expect(project.import_data.data['override_params']['name']).to eq('Test project')
+    end
+
+    context 'and name is in override params' do
+      it 'stores name from override params to import data' do
+        project = described_class
+                    .new(namespace.owner, import_params, { name: 'Name override' }, import_type: import_type)
+                    .execute
+
+        expect(project.import_data.data['override_params']['name']).to eq('Name override')
+      end
+    end
+  end
+
+  context 'without name attribute or override params' do
+    it 'does not store name in import data' do
+      import_params.delete(:name)
+
+      project = subject.execute
+
+      expect(project.import_data&.data&.dig('override_params', 'name')).to be_nil
     end
   end
 

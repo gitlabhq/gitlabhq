@@ -10,7 +10,7 @@ class AddPartitionIdToVulnerabilities < Gitlab::Database::Migration[2.3]
 
   def up
     with_lock_retries do
-      add_column :vulnerabilities, :partition_id, :bigint, default: 1, if_not_exists: true
+      add_column :vulnerabilities, :partition_id, :bigint, default: 1, if_not_exists: true # rubocop:disable Migration/PreventAddingColumns -- table size was reclassified after this migration was created
     end
   end
 

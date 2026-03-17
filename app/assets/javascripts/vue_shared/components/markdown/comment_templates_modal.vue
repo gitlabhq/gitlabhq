@@ -10,7 +10,7 @@ import {
   GlDisclosureDropdownGroup,
 } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import modalKeyboardNavigationMixin from '~/vue_shared/mixins/modal_keyboard_navigation_mixin';
 import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
 import { InternalEvents } from '~/tracking';

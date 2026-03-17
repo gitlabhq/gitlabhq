@@ -7,16 +7,24 @@ module Gitlab
       extend Gitlab::Utils::Override
 
       override :name
-      def name = :project
+      def name
+        :project
+      end
 
       override :access_checker_class
-      def access_checker_class = Gitlab::GitAccessProject
+      def access_checker_class
+        Gitlab::GitAccessProject
+      end
 
       override :guest_read_ability
-      def guest_read_ability = :download_code
+      def guest_read_ability
+        :download_code
+      end
 
       override :container_class
-      def container_class = Project
+      def container_class
+        Project
+      end
 
       override :project_for
       def project_for(container)

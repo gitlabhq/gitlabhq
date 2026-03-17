@@ -11,6 +11,7 @@ module Gitlab
       ConfigError = Class.new(StandardError)
       TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_FETCH_TIMEOUT_SECONDS', 30).to_i.clamp(0, 60).seconds
       TIMEOUT_MESSAGE = 'Request timed out when fetching configuration files.'
+      GITALY_TIMEOUT_SECONDS = ENV.fetch('GITLAB_CI_CONFIG_GITALY_TIMEOUT_SECONDS', 10).to_i.clamp(1, 60)
 
       RESCUE_ERRORS = [
         Gitlab::Config::Loader::FormatError,
@@ -36,7 +37,15 @@ module Gitlab
         @context = self.logger.instrument(:config_build_context, once: true) do
           pipeline ||= ::Ci::Pipeline.new(project: project, sha: sha, ref: ref, user: user, source: source)
 
-          build_context(project: project, pipeline: pipeline, sha: sha, user: user, parent_pipeline: parent_pipeline, pipeline_config: pipeline_config, pipeline_policy_context: pipeline_policy_context)
+          build_context(
+            project: project,
+            pipeline: pipeline,
+            sha: sha,
+            user: user,
+            parent_pipeline: parent_pipeline,
+            pipeline_config: pipeline_config,
+            pipeline_policy_context: pipeline_policy_context
+          )
         end
 
         @context.set_deadline(TIMEOUT_SECONDS)
@@ -162,13 +171,9 @@ module Gitlab
       def expand_config(config, inputs)
         build_config(config, inputs)
 
-      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError => e
+      rescue Gitlab::Config::Loader::Yaml::DataTooLargeError, Gitlab::Ci::Config::External::Context::TimeoutError => e
         track_and_raise_for_dev_exception(e)
         raise Config::ConfigError, e.message
-
-      rescue Gitlab::Ci::Config::External::Context::TimeoutError => e
-        track_and_raise_for_dev_exception(e)
-        raise Config::ConfigError, TIMEOUT_MESSAGE
 
       rescue Gitlab::Ci::Config::Yaml::LoadError => e
         raise Config::ConfigError, e.message
@@ -194,7 +199,10 @@ module Gitlab
         end
 
         initial_config = logger.instrument(:config_external_process, once: true) do
-          Config::External::Processor.new(initial_config, @context).perform
+          gitaly_timeout = Feature.enabled?(:ci_config_gitaly_timeout, @project) ? GITALY_TIMEOUT_SECONDS : nil
+          Config::GitalyTimeout.with_timeout(gitaly_timeout) do
+            Config::External::Processor.new(initial_config, @context).perform
+          end
         end
 
         initial_config = logger.instrument(:config_yaml_extend, once: true) do
@@ -220,7 +228,8 @@ module Gitlab
         end
       end
 
-      def build_context(project:, pipeline:, sha:, user:, parent_pipeline:, pipeline_config:, pipeline_policy_context:)
+      def build_context(
+        project:, pipeline:, sha:, user:, parent_pipeline:, pipeline_config:, pipeline_policy_context:)
         Config::External::Context.new(
           project: project,
           pipeline: pipeline,

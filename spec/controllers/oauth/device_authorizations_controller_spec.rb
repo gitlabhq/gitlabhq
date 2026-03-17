@@ -10,7 +10,11 @@ RSpec.describe Oauth::DeviceAuthorizationsController, feature_category: :system_
   end
 
   describe "GET #index" do
+    subject { get :index, format: :html }
+
     render_views
+
+    it_behaves_like "RequestPayloadLogger information appended"
 
     context "when requested with HTML format" do
       it "renders the 'doorkeeper/device_authorization_grant/index' template" do
@@ -34,13 +38,19 @@ RSpec.describe Oauth::DeviceAuthorizationsController, feature_category: :system_
   end
 
   describe 'POST #confirm' do
+    subject { post :confirm, params: { user_code: user_code }, format: :html }
+
     let(:user_code) { 'valid_user_code' }
     let(:device_grant) { instance_double('Doorkeeper::DeviceAuthorizationGrant::DeviceGrant', scopes: 'read write') }
     let(:invalid_user_code) { 'invalid_user_code' }
 
     before do
       allow(controller).to receive(:device_grant_model).and_return(Doorkeeper::DeviceAuthorizationGrant::DeviceGrant)
+      allow(Doorkeeper::DeviceAuthorizationGrant::DeviceGrant).to receive(:find_by)
+        .with(user_code: user_code).and_return(device_grant)
     end
+
+    it_behaves_like "RequestPayloadLogger information appended"
 
     context 'with valid user_code' do
       before do

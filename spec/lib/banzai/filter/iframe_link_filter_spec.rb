@@ -94,38 +94,6 @@ RSpec.describe Banzai::Filter::IframeLinkFilter, feature_category: :markdown do
     it_behaves_like 'an unchanged element'
   end
 
-  context 'when data-canonical-src is empty' do
-    let(:image) { %(<img src="#{src}" data-canonical-src=""/>) }
-
-    context 'and src is for an iframe' do
-      let(:src) { "https://www.youtube.com/embed/foo" }
-
-      it_behaves_like 'an iframe element'
-    end
-
-    context 'and src is an image' do
-      let(:src) { 'https://path/my_image.jpg' }
-
-      it_behaves_like 'an unchanged element'
-    end
-  end
-
-  context 'when data-canonical-src is set' do
-    it 'uses the correct src' do
-      proxy_src = 'https://assets.example.com/6d8b63'
-      canonical_src = 'https://www.youtube.com/embed/foo'
-      image = %(<img src="#{proxy_src}" data-canonical-src="#{canonical_src}"/>)
-      container = filter(image).children.first
-
-      expect(container['class']).to eq 'media-container img-container'
-
-      iframe = container.children.first
-
-      expect(iframe['src']).to eq proxy_src
-      expect(iframe['data-canonical-src']).to eq canonical_src
-    end
-  end
-
   context 'when allow_iframes_in_markdown is disabled' do
     before do
       stub_feature_flags(allow_iframes_in_markdown: false)

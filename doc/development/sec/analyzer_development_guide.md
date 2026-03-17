@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Static Analysis
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Sec section analyzer development
 ---
 
@@ -306,7 +306,6 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
    The list of administrators who have credentials for this account can be found in the [service account access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/29538#admin-users).
 
    Administrators can find the login credentials in the shared GitLab `1password` vault.
-
 1. Create a new [Personal Access Token](../../user/profile/personal_access_tokens.md) with `api` scope for the `gl-service-dev-secure-analyzers-automation` service account.
 1. Update the `password` field of the `GitLab API Token - gl-service-dev-secure-analyzers-automation` account in the shared GitLab `1password` vault to the new Personal Access Token created in step 2 (above), and set the `Expires at` field to indicate when the token expires.
 1. Update the expiry date of the `GITLAB_TOKEN` field in the [Service account used in the automatic release process](#service-account-used-in-the-automatic-release-process) table.
@@ -573,7 +572,6 @@ In order to push images to this location:
    Images for this project will be published to `registry.gitlab.com/security-products/<ANALYZER-NAME>:<TAG>`.
 
    For example: `registry.gitlab.com/security-products/semgrep:5`
-
 1. Configure the project `https://gitlab.com/security-products/<ANALYZER-NAME>` as follows:
 
    1. Add the following permissions:
@@ -804,9 +802,7 @@ This issue will guide you through the whole release process. In general, you hav
   - [Supported languages in SAST](../../user/application_security/sast/_index.md#supported-languages-and-frameworks)
   - [Supported languages in DS](../../user/application_security/dependency_scanning/_index.md#supported-languages-and-package-managers)
   - [Supported languages in LS](../../user/compliance/license_scanning_of_cyclonedx_files/_index.md#supported-languages-and-package-managers)
-
 - Check that CI **_job definitions are still accurate_** in vendored CI/CD templates and **_all of the ENV vars are propagated_** to the Docker containers upon `docker run` per tool.
-
   - [SAST vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
   - [Dependency scanning vendored CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
   - [Container scanning CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)

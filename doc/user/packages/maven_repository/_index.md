@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Maven packages in the package registry
 ---
 
@@ -907,7 +907,7 @@ To prevent users from publishing duplicate Maven packages, you can use the [Grap
 
 In the UI:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Packages and registries**.
 1. In the **Maven** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
@@ -992,7 +992,6 @@ you can configure GitLab CI/CD to build new packages automatically.
 You can create a new package each time the default branch is updated.
 
 1. Create a `ci_settings.xml` file that serves as Maven's `settings.xml` file.
-
 1. Add the `server` section with the same ID you defined in your `pom.xml` file.
    For example, use `gitlab-maven` as the ID:
 
@@ -1065,7 +1064,6 @@ You can create a package each time the default branch
 is updated.
 
 1. Authenticate with [a CI job token in Gradle](#edit-the-client-configuration).
-
 1. Add a `deploy` job to your `.gitlab-ci.yml` file:
 
    ```yaml
@@ -1248,7 +1246,7 @@ For example, "1.0.0", "1.0-SNAPSHOT", and "1.0.0-alpha" are valid, but "1..0" or
 The `403 Forbidden` error with the message `Authorization failed` usually indicates either an authentication or permissions issue. Check that:
 
 - You're using the correct token type (personal access token, deploy token, or CI/CD job token). For more information, see [Authenticate to the package registry](#authenticate-to-the-package-registry).
-- The token has the necessary permissions. Only users with at least the Developer role can publish packages. For more information, see [GitLab permissions](../../permissions.md#project-packages-and-registries).
+- The token has the necessary permissions. Only users with the Developer, Maintainer, or Owner role can publish packages. For more information, see [GitLab permissions](../../permissions.md#project-packages-and-registries).
 - The package you're publishing is not protected by push protection rules. For more information about package protection rules, see [how to protect a package](../package_registry/package_protection_rules.md#protect-a-package).
 
 ### `Artifact already exists` errors when publishing

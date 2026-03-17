@@ -215,7 +215,7 @@ RSpec.shared_examples 'work items labels' do |namespace_type|
         label_text = find('.gl-label:first-child').text
 
         within('.gl-label:first-child') do
-          find('button.gl-label-close[aria-label="Remove label"]').click
+          find('button.gl-label-close[aria-label^="Remove label"]').click
         end
 
         expect(page).not_to have_css '.gl-label', text: label_text
@@ -410,6 +410,8 @@ end
 
 RSpec.shared_examples 'authored work item guest user permissions' do
   it 'shows expected actions based on guest permissions on authored work item', :aggregate_failures do
+    skip unless Gitlab.ee? # Skip for CE, as key results are EE only types
+
     within_testid 'work-item-actions-dropdown' do
       click_button _('More actions')
 
@@ -1119,7 +1121,7 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
 
   it 'adds an existing child item', :aggregate_failures do
     within_testid testid do
-      click_button 'Add'
+      find_by_testid('add-tree-child-button').click
       click_button "Existing #{type}"
       fill_in 'Search existing items', with: child_item.title
       click_button child_item.title
@@ -1155,7 +1157,7 @@ RSpec.shared_examples 'work items hierarchy' do |testid, type|
   end
 
   def create_child(type, title)
-    click_button 'Add'
+    find_by_testid('add-tree-child-button').click
     click_button "New #{type}"
     fill_in 'Add a title', with: title
     click_button "Create #{type}"
@@ -1192,7 +1194,7 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
 
       expect(page).not_to have_selector('[data-testid="link-work-item-form"]')
 
-      click_button 'Add'
+      find('[data-testid="link-item-add-button"]').click
 
       expect(page).to have_selector('[data-testid="link-work-item-form"]')
 
@@ -1249,7 +1251,7 @@ RSpec.shared_examples 'work items linked items' do |is_group = false|
     within_testid('work-item-relationships') do
       expect(page).to be_axe_clean.within(selector).skipping :'link-in-text-block'
 
-      click_button 'Add'
+      find_by_testid('link-item-add-button').click
       fill_in 'Search existing items', with: linked_item.title
 
       expect(page).to be_axe_clean.within(selector).skipping :'aria-input-field-name',

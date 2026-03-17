@@ -306,7 +306,7 @@ describe('MergeRequestTabs', () => {
       ${'/group/project/-/merge_requests/1/diffs'}            | ${'commits'} | ${'/group/project/-/merge_requests/1/commits'}
       ${'/group/project/-/merge_requests/1/commits'}          | ${'diffs'}   | ${'/group/project/-/merge_requests/1/diffs'}
       ${'/group/project/-/merge_requests/1/reports/security'} | ${'show'}    | ${'/group/project/-/merge_requests/1'}
-      ${'/group/project/-/merge_requests/1/reports/security'} | ${'reports'} | ${'/group/project/-/merge_requests/1/reports'}
+      ${'/group/project/-/merge_requests/1/reports/security'} | ${'reports'} | ${'/group/project/-/merge_requests/1/reports/security'}
       ${'/group/project/-/merge_requests/1/commits'}          | ${'commits'} | ${'/group/project/-/merge_requests/1/commits'}
       ${'/group/project/-/merge_requests/1/diffs/'}           | ${'show'}    | ${'/group/project/-/merge_requests/1'}
       ${'/group/project/-/merge_requests/1/commits.html'}     | ${'show'}    | ${'/group/project/-/merge_requests/1'}
@@ -467,48 +467,87 @@ describe('MergeRequestTabs', () => {
           }));
         });
 
-        it('stats Rapid Diffs app', () => {
+        it('starts Rapid Diffs app', async () => {
           testContext.class = new MergeRequestTabs({
             stubLocation,
             createRapidDiffsApp,
           });
-          testContext.class.tabShown('diffs', 'not-a-vue-page');
+          await testContext.class.tabShown('diffs', 'not-a-vue-page');
           expect(createRapidDiffsApp).toHaveBeenCalledTimes(1);
           expect(init).toHaveBeenCalledTimes(1);
         });
 
-        it('creates a single Rapid Diffs app instance', () => {
+        it('creates a single Rapid Diffs app instance', async () => {
           testContext.class = new MergeRequestTabs({
             stubLocation,
             createRapidDiffsApp,
           });
-          testContext.class.tabShown('diffs', 'not-a-vue-page');
-          testContext.class.tabShown('new', 'not-a-vue-page');
-          testContext.class.tabShown('diffs', 'not-a-vue-page');
+          await testContext.class.tabShown('diffs', 'not-a-vue-page');
+          await testContext.class.tabShown('new', 'not-a-vue-page');
+          await testContext.class.tabShown('diffs', 'not-a-vue-page');
           expect(createRapidDiffsApp).toHaveBeenCalledTimes(1);
           expect(init).toHaveBeenCalledTimes(1);
         });
 
-        it('hides Rapid Diffs', () => {
+        it('hides Rapid Diffs', async () => {
           testContext.class = new MergeRequestTabs({
             stubLocation,
             createRapidDiffsApp,
           });
-          testContext.class.tabShown('diffs', 'not-a-vue-page');
-          testContext.class.tabShown('new', 'not-a-vue-page');
+          await testContext.class.tabShown('diffs', 'not-a-vue-page');
+          await testContext.class.tabShown('new', 'not-a-vue-page');
           expect(hide).toHaveBeenCalledTimes(1);
         });
 
-        it('shows Rapid Diffs', () => {
+        it('shows Rapid Diffs', async () => {
           testContext.class = new MergeRequestTabs({
             stubLocation,
             createRapidDiffsApp,
           });
-          testContext.class.tabShown('diffs', 'not-a-vue-page');
-          testContext.class.tabShown('new', 'not-a-vue-page');
-          testContext.class.tabShown('diffs', 'not-a-vue-page');
+          await testContext.class.tabShown('diffs', 'not-a-vue-page');
+          await testContext.class.tabShown('new', 'not-a-vue-page');
+          await testContext.class.tabShown('diffs', 'not-a-vue-page');
           expect(show).toHaveBeenCalledTimes(1);
         });
+      });
+    });
+
+    describe('destroyPipelines', () => {
+      beforeEach(() => {
+        testContext.class.mergeRequestTabs = document.createElement('div');
+        testContext.class.mergeRequestTabPanes = document.createElement('div');
+        testContext.class.currentTab = 'pipelines';
+        testContext.class.commitsTab = document.createElement('div');
+        testContext.class.mergeRequestPipelinesTable = { $destroy: jest.fn() };
+        document.body.innerHTML += '<div id="commit-pipeline-table-view"></div>';
+      });
+
+      afterEach(() => {
+        document.querySelector('#commit-pipeline-table-view')?.remove();
+      });
+
+      it.each`
+        tab
+        ${'commits'}
+        ${'new'}
+        ${'diffs'}
+        ${'reports'}
+        ${'show'}
+      `('destroys pipelines when switching to $tab tab', ({ tab }) => {
+        const { $destroy } = testContext.class.mergeRequestPipelinesTable;
+
+        testContext.class.tabShown(tab, 'foobar');
+
+        expect($destroy).toHaveBeenCalled();
+        expect(testContext.class.mergeRequestPipelinesTable).toBeNull();
+      });
+
+      it('does not destroy pipelines when switching to pipelines tab', () => {
+        const { $destroy } = testContext.class.mergeRequestPipelinesTable;
+
+        testContext.class.tabShown('pipelines', 'foobar');
+
+        expect($destroy).not.toHaveBeenCalled();
       });
     });
   });

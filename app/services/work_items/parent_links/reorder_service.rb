@@ -21,7 +21,7 @@ module WorkItems
       end
 
       def reorder(link, adjacent_work_item, relative_position)
-        WorkItems::ParentLink.move_nulls_to_end(RelativePositioning.mover.context(link).relative_siblings)
+        WorkItems::ParentLink.move_nulls_to_end(WorkItems::ParentLink.mover.context(link).relative_siblings)
 
         move_link(link, adjacent_work_item, relative_position)
       end

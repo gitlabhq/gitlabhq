@@ -373,6 +373,12 @@ module QA
         reload!.api_response[:default_branch] || Runtime::Env.default_branch
       end
 
+      def change_default_branch(default_branch)
+        response = put(request_url(api_put_path), default_branch: default_branch)
+
+        parse_body(response)
+      end
+
       def project_import_status
         response = get(request_url("/projects/#{id}/import"))
 
@@ -662,8 +668,7 @@ module QA
           :snippets_enabled,
           :shared_runners_enabled,
           :request_access_enabled,
-          :avatar_url,
-          :created_at
+          :avatar_url
         )
       end
 

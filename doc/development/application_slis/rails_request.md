@@ -1,7 +1,7 @@
 ---
 stage: Platforms
 group: Scalability
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Rails request SLIs (service level indicators)
 ---
 
@@ -23,15 +23,12 @@ regular controller endpoints.
    incremented for every request that did not result in a response
    with a `5xx` status code. It ensures slow failures are not
    counted twice, because the request is already counted in the error SLI.
-
 1. `gitlab_sli_rails_request_apdex_success_total`: This counter gets
    incremented for every successful request that performed faster than
    the [defined target duration depending on the endpoint's urgency](#adjusting-request-urgency).
-
 1. `gitlab_sli_rails_request_error_total`: This counter gets
    incremented for every request that resulted in a response
    with a `5xx` status code.
-
 1. `gitlab_sli_rails_request_total`: This counter gets
    incremented for every request.
 
@@ -39,7 +36,6 @@ These counters are labeled with:
 
 1. `endpoint_id`: The identification of the Rails Controller or the
    Grape-API endpoint.
-
 1. `feature_category`: The feature category specified for that
    controller or API endpoint.
 
@@ -88,7 +84,6 @@ a case-by-case basis. Take the following into account:
    requiring a lot of data, 5 seconds could be acceptable.
 
    A product manager can help to identify how an endpoint is used.
-
 1. The workload for some endpoints can sometimes differ greatly
    depending on the parameters specified by the caller. The urgency
    needs to accommodate those differences. In some cases, you could
@@ -101,7 +96,6 @@ a case-by-case basis. Take the following into account:
    hit for every merge request being viewed, but rarely renders
    anything, then we should pick the target that
    would still accommodate the endpoint performing work.
-
 1. Consider the dependent resources consumed by the endpoint. If the endpoint
    loads a lot of data from Gitaly or the database, and this causes
    unsatisfactory performance, consider optimizing the
@@ -115,7 +109,6 @@ a case-by-case basis. Take the following into account:
    If the endpoint consumes a lot of CPU time, we should also consider
    this: these kinds of requests are the kind of noisy neighbors we
    should try to keep as short as possible.
-
 1. Traffic characteristics should also be taken into account. If the
    traffic to the endpoint sometimes bursts, like CI traffic spinning up a
    big batch of jobs hitting the same endpoint, then having these
@@ -142,7 +135,6 @@ still meets SLO for the fleet that handles the request. You can use the
 information in the logs to check:
 
 1. Open [this table in Kibana](https://log.gprd.gitlab.net/goto/bbb6465c68eb83642269e64a467df3df)
-
 1. The table loads information for the busiest endpoints by
    default. To speed the response, add both:
 
@@ -162,7 +154,6 @@ information in the logs to check:
 1. Check the [appropriate percentile duration](#request-apdex-slo) for
    the service handling the endpoint. The overall duration should
    be lower than your intended target.
-
 1. If the overall duration is below the intended target, check the peaks over time
    in [this graph](https://log.gprd.gitlab.net/goto/9319c4a402461d204d13f3a4924a89fc)
    in Kibana. Here, the percentile in question should not peak above

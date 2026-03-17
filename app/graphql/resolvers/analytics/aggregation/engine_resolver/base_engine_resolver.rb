@@ -47,7 +47,8 @@ module Resolvers
           end
 
           def build_aggregation_request(arguments)
-            selections = lookahead.selections.first.selections
+            nodes_selection = lookahead.selections.detect { |s| s.name == :nodes }
+            selections = nodes_selection&.selections || []
 
             # prepare order
             order = build_order(arguments.delete(:order_by))

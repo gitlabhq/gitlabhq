@@ -167,6 +167,26 @@ describe('Reviewer dropdown component', () => {
       });
     });
 
+    describe('request cancellation', () => {
+      it('aborts the in-flight request when a new search is triggered before it completes', () => {
+        const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+
+        findDropdown().vm.$emit('shown');
+        findDropdown().vm.$emit('search', 'bob');
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
+        expect(abortSpy).toHaveBeenCalledTimes(1);
+      });
+
+      it('does not abort when no prior request is in flight', () => {
+        const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+
+        findDropdown().vm.$emit('shown');
+
+        expect(abortSpy).not.toHaveBeenCalled();
+      });
+    });
+
     describe('with the user already selected', () => {
       it('renders users from autocomplete endpoint and skips "ineligible" pre-selected reviewers', async () => {
         findDropdown().vm.$emit('shown');

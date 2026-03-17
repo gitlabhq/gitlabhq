@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate from Jira
 description: "Import your Jira project issues to GitLab."
 ---
@@ -33,8 +33,8 @@ imported into the GitLab issue's description as plain text.
 Text in Jira issues is not parsed to GitLab Flavored Markdown which can result in broken text formatting.
 For more information, see [issue 379104](https://gitlab.com/gitlab-org/gitlab/-/issues/379104).
 
-There is an [epic](https://gitlab.com/groups/gitlab-org/-/epics/2738) tracking the addition of issue assignees, comments, and much more in the future
-iterations of the GitLab Jira importer.
+[Epic 2738](https://gitlab.com/groups/gitlab-org/-/epics/2738) tracks the addition of issue assignees,
+comments, and other iterations of the GitLab Jira importer.
 
 ## Prerequisites
 

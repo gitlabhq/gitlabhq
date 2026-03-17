@@ -1,4 +1,0 @@
-fragment Milestone on Milestone {
-  id
-  title
-}

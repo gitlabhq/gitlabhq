@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlCollapsibleListbox, GlModalDirective } from '@gitlab/ui';
 import { produce } from 'immer';
-import { differenceBy, debounce } from 'lodash';
+import { differenceBy, debounce } from 'lodash-es';
 
 import BoardForm from 'ee_else_ce/boards/components/board_form.vue';
 

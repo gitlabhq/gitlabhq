@@ -2,7 +2,7 @@
 
 module JiraConnect
   class RepositoriesController < JiraConnect::ApplicationController
-    feature_category :integrations
+    feature_category :team_planning
 
     def search
       repositories = available_repositories.by_name(search_query).page(query_params[:page]).per(query_params[:limit])

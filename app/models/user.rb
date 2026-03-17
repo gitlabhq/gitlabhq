@@ -42,7 +42,7 @@ class User < ApplicationRecord
   cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::USER_IDS, feature_flag: :cells_claims_users
   cells_claims_attribute :username, type: CLAIMS_BUCKET_TYPE::USERNAMES, feature_flag: :cells_claims_users
 
-  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::USER, subject_key: :id
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
   ignore_column :skype, remove_after: '2025-09-18', remove_with: '18.4'
 
@@ -376,6 +376,7 @@ class User < ApplicationRecord
   validates :notified_of_own_activity, allow_nil: false, inclusion: { in: [true, false] }
   validates :project_view, presence: true
   validates :composite_identity_enforced, inclusion: { in: [false] }, unless: -> { service_account? }
+  validate :immutable_username_with_enforced_composite_identity, if: :username_changed?, on: :update
 
   after_initialize :set_projects_limit
   # Ensures we get a user_detail on all new user records.
@@ -535,6 +536,7 @@ class User < ApplicationRecord
   delegate :website_url, :website_url=, to: :user_detail, allow_nil: true
   delegate :location, :location=, to: :user_detail, allow_nil: true
   delegate :organization, :organization=, to: :user_detail, prefix: true, allow_nil: true
+  delegate :company, :company=, to: :user_detail, allow_nil: true
   delegate :discord, :discord=, to: :user_detail, allow_nil: true
   delegate :github, :github=, to: :user_detail, allow_nil: true
   delegate :project_authorizations_recalculated_at, :project_authorizations_recalculated_at=, to: :user_detail, allow_nil: true
@@ -1489,8 +1491,15 @@ class User < ApplicationRecord
   end
 
   def email_based_otp_required?
+    # Ensure that `email_otp_required_after` is set to a valid state.
+    set_email_otp_required_after_based_on_restrictions(save: true)
+
     Feature.enabled?(:email_based_mfa, self) &&
-      !!email_otp_required_after&.past?
+      email_otp_required_after.present? && email_otp_required_after <= Time.zone.now
+  end
+
+  def work_items_consolidated_list_enabled?
+    Feature.enabled?(:work_items_consolidated_list_user, self)
   end
 
   def update_otp_secret!
@@ -2395,7 +2404,7 @@ class User < ApplicationRecord
         include_assigned: true,
         author_id: id,
         review_states: %w[reviewed requested_changes],
-        ignored_reviewer_username: ::Users::Internal.duo_code_review_bot.username
+        ignored_reviewer_username: ::Users::Internal.in_organization(organization_id).duo_code_review_bot.username
       }
 
       begin
@@ -2418,6 +2427,8 @@ class User < ApplicationRecord
     Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', user_preference.role_based?, merge_request_dashboard_show_drafts?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
       return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
 
+      duo_code_review_bot_username = ::Users::Internal.in_organization(organization_id).duo_code_review_bot.username
+
       params = {
         state: 'opened',
         non_archived: true,
@@ -2426,12 +2437,19 @@ class User < ApplicationRecord
       }
 
       unless user_preference.role_based?
-        params[:or] = { reviewer_wildcard: 'none', review_states: %w[reviewed requested_changes], only_reviewer_username: 'GitLabDuo' }
+        params[:or] = {
+          reviewer_wildcard: 'none',
+          review_states: %w[reviewed requested_changes],
+          only_reviewer_username: duo_code_review_bot_username
+        }
       end
 
       unless merge_request_dashboard_show_drafts?
         params[:draft] = false
-        params[:or] = { reviewer_wildcard: 'NONE', only_reviewer_username: ::Users::Internal.duo_code_review_bot.username }
+        params[:or] = {
+          reviewer_wildcard: 'NONE',
+          only_reviewer_username: duo_code_review_bot_username
+        }
       end
 
       begin
@@ -2533,6 +2551,7 @@ class User < ApplicationRecord
   #
   # rubocop: disable CodeReuse/ServiceClass
   def increment_failed_attempts!
+    return if service_account?
     return if ::Gitlab::Database.read_only?
 
     increment_failed_attempts
@@ -2633,6 +2652,8 @@ class User < ApplicationRecord
 
   # override, from Devise
   def lock_access!(opts = {})
+    return if service_account?
+
     Gitlab::AppLogger.info("Account Locked: username=#{username}")
     audit_lock_access(reason: opts.delete(:reason))
     super
@@ -2893,6 +2914,13 @@ class User < ApplicationRecord
     admin?
   end
 
+  def can_access_organization_admin_area?(organization)
+    return false unless organization
+    return false unless Feature.enabled?(:org_admin_area, organization)
+
+    can?(:access_organization_admin_area, organization)
+  end
+
   def free_or_trial_owned_group_ids
     @free_or_trial_owned_group_ids ||= owned_groups.free_or_trial.ids
   end
@@ -2905,6 +2933,12 @@ class User < ApplicationRecord
 
   def composite_identity_enforced!
     @composite_identity_enforced_override = true
+  end
+
+  def immutable_username_with_enforced_composite_identity
+    if composite_identity_enforced?
+      errors.add(:base, _('You cannot update the username of a service account associated with a composite identity.'))
+    end
   end
 
   protected

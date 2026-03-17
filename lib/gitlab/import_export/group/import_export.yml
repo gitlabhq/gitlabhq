@@ -113,6 +113,8 @@ methods:
     - :type
   badges:
     - :type
+  group:
+    - emails_enabled
   notes:
     - :type
   events:

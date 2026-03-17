@@ -4,6 +4,8 @@ key_path: redis_hll_counters.quickactions.i_quickactions_assign_single_weekly
 description: Count of WAU using the `/assign @user1` quick action to assign a single
   individual to an issuable
 product_group: project_management
+product_categories:
+- team_planning
 value_type: number
 status: active
 time_frame: 7d

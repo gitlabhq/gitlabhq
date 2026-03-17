@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Compliance status report
 ---
 
@@ -42,7 +42,7 @@ Prerequisites:
 
 To view the compliance status report:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. In the **Compliance reports** section, select **Compliance status report**.
 
@@ -75,7 +75,7 @@ Prerequisites:
 
 To export the compliance status report for projects in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. In the upper-right corner, select **Export**.
 1. Select **Export compliance status report**.

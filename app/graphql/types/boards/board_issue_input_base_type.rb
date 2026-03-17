@@ -24,10 +24,17 @@ module Types
         as: :issue_types,
         description: 'Filter by the given issue types.',
         required: false
+      argument :work_item_type_ids,
+        [::Types::GlobalIDType[::WorkItems::Type]],
+        required: false,
+        description: 'Filter by work item type global IDs.',
+        prepare: ->(global_ids, _ctx) { global_ids.map(&:model_id) }
 
       argument :milestone_wildcard_id, ::Types::MilestoneWildcardIdEnum,
         required: false,
         description: 'Filter by milestone ID wildcard.'
+
+      validates mutually_exclusive: [:issue_types, :work_item_type_ids]
     end
   end
 end

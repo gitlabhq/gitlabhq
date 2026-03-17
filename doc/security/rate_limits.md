@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Rate limits
 ---
 
@@ -15,7 +15,7 @@ title: Rate limits
 > [!note]
 > For GitLab.com, see
 > [GitLab.com-specific rate limits](../user/gitlab_com/_index.md#rate-limits-on-gitlabcom).
-> 
+>
 > For GitLab Dedicated, see
 > [Authenticated user rate limits](../administration/dedicated/user_rate_limits.md).
 
@@ -186,7 +186,7 @@ GET /groups/:id/members/all
 GET /projects/:id/members/all
 ```
 
-Administrators can [configure the rate limit](../administration/settings/rate_limit_on_members_api.md)
+Administrators can [configure the rate limit](../administration/settings/rate_limit_on_groups_api.md)
 for the projects endpoint.
 
 ### Repository blob and file access

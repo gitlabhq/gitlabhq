@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Composition analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Scans container images in a Kubernetes cluster for vulnerabilities.
 title: Operational container scanning
 ---
@@ -305,7 +305,7 @@ container_scanning:
 
 To view vulnerability information in GitLab:
 
-1. On the top bar, select **Search or go to** and find the project that contains the agent configuration file.
+1. In the top bar, select **Search or go to** and find the project that contains the agent configuration file.
 1. Select **Operate** > **Kubernetes clusters**.
 1. Select the **Agent** tab.
 1. Select an agent to view the cluster vulnerabilities.

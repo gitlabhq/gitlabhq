@@ -335,32 +335,34 @@ describe('UserToken', () => {
       });
     });
 
-    describe('valueField config', () => {
-      it('uses username as default value', async () => {
+    describe('valueField config property', () => {
+      it('uses username as default value', () => {
         wrapper = createComponent({
           active: true,
-          data: { users: mockUsers },
+          config: {
+            ...mockAuthorToken,
+            preloadedUsers: mockPreloadedUsers,
+            defaultUsers: [],
+          },
           stubs: { Portal: true },
         });
 
-        await activateSuggestionsList();
-
-        const suggestions = findSuggestions();
-        expect(suggestions.at(2).props('value')).toBe(mockUsers[0].username);
+        expect(findSuggestions().at(0).props('value')).toBe(mockUsers[0].username);
       });
 
-      it('uses custom field when valueField is specified', async () => {
+      it('uses custom field when valueField is specified', () => {
         wrapper = createComponent({
           active: true,
-          config: { ...mockAuthorToken, valueField: 'name' },
-          data: { users: mockUsers },
+          config: {
+            ...mockAuthorToken,
+            preloadedUsers: mockPreloadedUsers,
+            defaultUsers: [],
+            valueField: 'name',
+          },
           stubs: { Portal: true },
         });
 
-        await activateSuggestionsList();
-
-        const suggestions = findSuggestions();
-        expect(suggestions.at(2).props('value')).toBe(mockUsers[0].name);
+        expect(findSuggestions().at(0).props('value')).toBe(mockUsers[0].name);
       });
     });
 

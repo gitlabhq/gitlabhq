@@ -2,7 +2,7 @@
 stage: none
 group: Tutorials
 description: Tutorial on how to fix errors in a shop application in Python with GitLab Duo.
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Use GitLab Duo to fix errors in a Python shop application'
 ---
 
@@ -326,7 +326,6 @@ Now, you will use Code Suggestions (specifically code generation) to improve the
 database error handling and connection management:
 
 1. Open the `app/database.py` file in your IDE.
-
 1. First, fix the hard coded database path. Position your cursor at the line
    where `DATABASE_PATH` is defined, and enter the following:
 
@@ -602,7 +601,6 @@ Next you'll use Code Suggestions to improve error handling in the routes.
 Now, you'll use Code Suggestions to improve error handling in the routes:
 
 1. Open the `app/routes/shop.py` file in your IDE.
-
 1. First, let's add better error handling to the GET routes. Position your cursor
    at the beginning of the `get_all_books` function, and enter the following:
 
@@ -783,7 +781,6 @@ The final improvement you're going to make is to use Chat to improve the Flask
 application configuration.
 
 1. Open the `app/__init__.py` file in your IDE.
-
 1. Open Chat in your IDE and enter:
 
    ```plaintext
@@ -991,7 +988,6 @@ everything works correctly:
    - `DELETE /books/999` with a non-existent ID.
 
 1. Validate that the error handling works correctly for all error cases.
-
 1. Optional. Ask Chat how to validate that the error handling works correctly.
 
 ## Summary
@@ -1012,14 +1008,15 @@ These improvements have made the application more reliable, secure, and maintain
 - [GitLab Duo use cases](../use_cases.md)
 - [Get started with GitLab Duo](../../get_started/getting_started_gitlab_duo.md).
 - Blog post: [Streamline DevSecOps engineering workflows with GitLab Duo](https://about.gitlab.com/blog/streamline-devsecops-engineering-workflows-with-gitlab-duo/)
-<!-- markdownlint-disable -->
+  <!-- markdownlint-disable -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
-  [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ)
+  [GitLab Duo Chat (agentic)](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ)
   <!-- Video published on 2025-06-02 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
-  [GitLab Duo Chat (Classic)](https://youtu.be/ZQBAuf-CTAY?si=0o9-xJ_ATTsL1oew)
+  [GitLab Duo Chat (non-agentic)](https://youtu.be/ZQBAuf-CTAY?si=0o9-xJ_ATTsL1oew)
   <!-- Video published on 2024-04-18 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [GitLab Duo Code Suggestions](https://youtu.be/ds7SG1wgcVM?si=MfbzPIDpikGhoPh7)
-<!-- Video published on 2024-01-24 -->
+  <!-- Video published on 2024-01-24 -->
+
 <!-- markdownlint-enable -->

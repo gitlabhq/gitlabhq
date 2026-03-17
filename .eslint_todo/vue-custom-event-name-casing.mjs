@@ -4,7 +4,6 @@
 export default {
   files: [
     'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_trigger.vue',
-    'app/assets/javascripts/analytics/cycle_analytics/components/stage_table.vue',
     'app/assets/javascripts/analytics/cycle_analytics/components/value_stream_filters.vue',
     'app/assets/javascripts/analytics/shared/components/date_ranges_dropdown.vue',
     'app/assets/javascripts/behaviors/components/diagram_performance_warning.vue',
@@ -135,8 +134,8 @@ export default {
     'app/assets/javascripts/projects/new_v2/components/project_destination_select.vue',
     'app/assets/javascripts/projects/new_v2/components/project_name_validator.vue',
     'app/assets/javascripts/projects/new_v2/components/shared_project_creation_fields.vue',
-    'app/assets/javascripts/projects/settings/branch_rules/components/edit/branch_dropdown.vue',
-    'app/assets/javascripts/projects/settings/branch_rules/components/view/access_levels_drawer.vue',
+
+    'app/assets/javascripts/projects/settings/branch_rules/components/access_levels_drawer.vue',
     'app/assets/javascripts/projects/settings/components/transfer_project_form.vue',
     'app/assets/javascripts/rapid_diffs/app/discussions/discussion_notes.vue',
     'app/assets/javascripts/rapid_diffs/app/discussions/note_actions.vue',

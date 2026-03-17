@@ -1,21 +1,22 @@
 // eslint-disable-next-line import/order
 const crypto = require('./helpers/patched_crypto');
 
-const { VUE_VERSION: EXPLICIT_VUE_VERSION } = process.env;
-const { VUE_COMPILER_VERSION = EXPLICIT_VUE_VERSION } = process.env;
-if (![undefined, '2', '3'].includes(EXPLICIT_VUE_VERSION)) {
+const { VUE_VERSION = '2', VUE_COMPILER_VERSION = '2' } = process.env;
+
+if (!['2', '3'].includes(VUE_VERSION)) {
+  throw new Error(`Invalid VUE_VERSION value: ${VUE_VERSION}. Only '2' or '3' are supported`);
+}
+if (!['2', '3'].includes(VUE_COMPILER_VERSION)) {
   throw new Error(
-    `Invalid VUE_VERSION value: ${EXPLICIT_VUE_VERSION}. Only '2' and '3' are supported`,
+    `Invalid VUE_COMPILER_VERSION value: ${VUE_COMPILER_VERSION}. Only '2' or '3' are supported`,
   );
 }
-const USE_VUE3 = EXPLICIT_VUE_VERSION === '3';
-const USE_VUE3_COMPILER = VUE_COMPILER_VERSION === '3';
 
-if (USE_VUE3) {
-  console.log('[V] Using Vue.js 3');
-} else {
-  console.log('[V] Using Vue.js 2');
-}
+const USE_VUE3 = VUE_VERSION === '3';
+const USE_VUE3_COMPILER = USE_VUE3 && VUE_COMPILER_VERSION === '3';
+
+console.log(`[V] Using Vue.js ${VUE_VERSION} (compiler ${VUE_COMPILER_VERSION})`);
+
 const VUE_LOADER_MODULE = USE_VUE3_COMPILER ? 'vue-loader-vue3' : 'vue-loader';
 
 const fs = require('fs');
@@ -30,7 +31,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { VueLoaderPlugin } = require(VUE_LOADER_MODULE);
 // eslint-disable-next-line import/no-dynamic-require
 const VUE_LOADER_VERSION = require(`${VUE_LOADER_MODULE}/package.json`).version;
-const VUE_VERSION = require('vue/package.json').version;
+const EXACT_VUE_VERSION = require('vue/package.json').version;
 
 const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -113,6 +114,7 @@ const alias = {
   images: path.join(ROOT_PATH, 'app/assets/images'),
   vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
   jquery$: 'jquery/dist/jquery.slim.js',
+  lodash: 'lodash-es',
   shared_queries: path.join(ROOT_PATH, 'app/graphql/queries'),
 
   // the following resolves files which are different between CE and EE
@@ -221,9 +223,9 @@ const defaultJsOptions = {
     // Ensure that changing supported browsers will refresh the cache
     // in order to not pull in outdated files that import core-js
     SUPPORTED_BROWSERS_HASH,
-    // An EXPLICIT_VUE_VERSION changes how we alias certain packages
+    // A VUE_VERSION changes how we alias certain packages
     // use a different cache to prevent issues when switching between versions
-    EXPLICIT_VUE_VERSION,
+    VUE_VERSION,
   ].join('|'),
   cacheCompression: false,
 };
@@ -235,9 +237,9 @@ const vueLoaderOptions = {
   cacheIdentifier: [
     process.env.NODE_ENV || 'development',
     webpack.version,
-    VUE_VERSION,
+    EXACT_VUE_VERSION,
     VUE_LOADER_VERSION,
-    EXPLICIT_VUE_VERSION,
+    VUE_VERSION,
   ].join('|'),
   compilerOptions: {
     whitespace: 'preserve',
@@ -286,6 +288,10 @@ if (USE_VUE3) {
       ROOT_PATH,
       'vendor/assets/javascripts/vue-virtual-scroller-vue3/src/index.js',
     ),
+    'vue-virtual-scroll-list': path.join(
+      ROOT_PATH,
+      'app/assets/javascripts/vue_shared/vue_virtual_scroll_list_vue3.js',
+    ),
     'portal-vue-vue3-impl$': path.join(
       ROOT_PATH,
       'app/assets/javascripts/lib/utils/vue3compat/portal_vue_vue3.js',
@@ -308,6 +314,8 @@ if (USE_VUE3) {
     // Has no real effect here, since we're using thread-loader which serializes config passing to threads
     // Implemented in custom compiler itself instead, kept here for future upgrade and consistency with vite
     vueLoaderOptions.compilerOptions.isCustomElement = isCustomElement;
+  } else {
+    vueLoaderOptions.compiler = path.join(ROOT_PATH, 'config/vue3migration/vue2_compiler.js');
   }
 } else {
   Object.assign(alias, {
@@ -355,7 +363,6 @@ module.exports = {
       sandboxed_swagger: './lib/swagger.js',
       super_sidebar: './entrypoints/super_sidebar.js',
       tracker: './entrypoints/tracker.js',
-      analytics: './entrypoints/analytics.js',
       graphql_explorer: './entrypoints/graphql_explorer.js',
       ...incrementalCompiler.filterEntryPoints(generateEntries({ defaultEntries, entriesState })),
     };

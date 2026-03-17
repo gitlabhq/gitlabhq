@@ -1275,6 +1275,26 @@ RSpec.describe Issues::UpdateService, :mailer, :request_store, feature_category:
 
           expect(issue.reload.assignees).to eq([new_assignee])
         end
+
+        it 'attributes the system note to the human user, not the service account' do
+          update_issue(assignee_ids: [new_assignee.id])
+
+          system_note = issue.notes.last
+          expect(system_note.author).to eq(user)
+        end
+
+        context 'when the service account is acting via OAuth token (authentication context)' do
+          before do
+            ::Gitlab::Auth::Identity.link_from_scoped_user(new_assignee, user, context: :authentication)
+          end
+
+          it 'attributes the system note to the service account' do
+            update_issue(assignee_ids: [new_assignee.id])
+
+            system_note = issue.notes.last
+            expect(system_note.author).to eq(new_assignee)
+          end
+        end
       end
 
       context 'when assignee is a regular user account with composite_identity_enforced' do

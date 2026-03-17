@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Mattermost
 ---
 
@@ -98,7 +98,6 @@ By default, Mattermost uses the Linux package bundled PostgreSQL service. If you
 1. Create a PostgreSQL user matching the `user` value, and `password` value that you have defined in `mattermost['sql_data_source']`.
 1. Create a PostgreSQL database matching the `dbname` value that was used.
 1. Ensure that the `user` has permissions to the database that was created with `dbname`.
-
 1. Reconfigure GitLab and restart Mattermost to apply the changes:
 
    ```shell
@@ -355,7 +354,7 @@ If you have only configured Mattermost using `gitlab.rb`, you can upgrade GitLab
 
 If this is not the case, there are two options:
 
-1. Update [`gitlab.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template#L706)
+1. Update [`gitlab.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/b350e3cd5b06a94adb463ece4d41b9f3df6ab282/files/gitlab-config-template/gitlab.rb.template#L549)
    with the changes done to `config.json`. This might require adding some parameters as not all
    settings in `config.json` are available in `gitlab.rb`. Once complete, the Linux package should be
    able to upgrade GitLab Mattermost from one version to the next.

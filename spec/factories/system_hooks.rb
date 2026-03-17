@@ -6,6 +6,7 @@ FactoryBot.define do
     name { generate(:name) }
     description { "Description of #{name}" }
     organization { association(:organization) }
+    filter { {} }
 
     trait :url_variables do
       url_variables { { 'abc' => 'supers3cret', 'def' => 'foobar' } }

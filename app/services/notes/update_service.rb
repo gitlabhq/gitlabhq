@@ -42,6 +42,8 @@ module Notes
 
         update_todos(note, old_mentioned_users)
 
+        notify_added_mentions(note, old_mentioned_users)
+
         update_suggestions(note)
 
         execute_note_webhook(note)
@@ -110,6 +112,17 @@ module Notes
       return unless note.previous_changes.include?('note')
 
       TodoService.new.update_note(note, current_user, old_mentioned_users)
+    end
+
+    def notify_added_mentions(note, old_mentioned_users)
+      return unless Feature.enabled?(:email_on_added_mentions, note.project)
+      return unless note.previous_changes.include?('note')
+      return unless current_user.can_trigger_notifications?
+
+      added_mentions = note.mentioned_users(current_user) - old_mentioned_users
+      return if added_mentions.empty?
+
+      notification_service.async.new_mentions_in_note(note, added_mentions, current_user)
     end
 
     def track_note_edit_usage_for_issues(note)

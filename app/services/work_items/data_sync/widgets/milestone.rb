@@ -37,7 +37,7 @@ module WorkItems
         end
 
         def matching_milestone
-          params = { project_ids: target_work_item.project&.id, group_ids: ancestors }
+          params = { project_ids: target_work_item.project&.id, group_ids: ancestors, state: 'all' }
           milestone = by_id(params)
 
           return milestone if milestone.present?

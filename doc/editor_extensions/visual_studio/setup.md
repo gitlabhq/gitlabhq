@@ -1,14 +1,14 @@
 ---
 stage: AI-powered
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect and use GitLab Duo in Visual Studio.
-title: Install and set up the GitLab extension for Visual Studio
+title: Install and set up the GitLab for Visual Studio extension
 ---
 
 To get the extension, use any of these methods:
 
-- Inside Visual Studio, select **Extensions** from the activity bar, and search for `GitLab`.
+- Inside Visual Studio, select **Extensions** from the activity bar, and search for `GitLab for Visual Studio`.
 - From the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
 - From GitLab, either from the
   [list of releases](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/releases), or by
@@ -36,7 +36,7 @@ If you are on GitLab Self-Managed, create a personal access token.
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Personal access tokens**.
+1. In the left sidebar, select **Access** > **Personal access tokens**.
 1. Select **Add new token**.
 1. Enter a name, description, and expiration date.
 1. Select the `api` and `read_user` scopes.
@@ -46,7 +46,7 @@ If you are on GitLab Self-Managed, create a personal access token.
 
 To authenticate with GitLab:
 
-1. In Visual Studio, on the top bar, go to **Tools** > **Options** > **GitLab**.
+1. In Visual Studio, in the top bar, go to **Tools** > **Options** > **GitLab**.
 1. In the **Access Token** text box, paste your token. The token is not displayed, nor is it accessible to others.
 1. In the **GitLab URL** text box, enter the URL of your GitLab instance. For GitLab.com, use `https://gitlab.com`.
 
@@ -55,7 +55,7 @@ To authenticate with GitLab:
 The GitLab extension uses the telemetry settings in Visual Studio to send usage and error
 information to GitLab. To enable telemetry in GitLab for Visual Studio:
 
-1. In Visual Studio, on the top bar, go to **Tools** > **Options**.
+1. In Visual Studio, in the top bar, go to **Tools** > **Options**.
 1. In the left sidebar, expand **GitLab** and select **General**.
 1. In the **Enable telemetry** dropdown list, select **True**.
 1. Select **OK**.
@@ -90,12 +90,7 @@ prerequisites:
 
 - For agentic features, you meet the prerequisites for [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md#prerequisites).
 - You have GitLab Duo [turned on](../../user/gitlab_duo/turn_on_off.md).
-- You open a project that is linked to a remote repository on GitLab, or you set a
-  default GitLab Duo namespace in the extension:
-  1. In Visual Studio, go to **Tools** > **Options** > **GitLab**.
-  1. Under **GitLab**, select **General**.
-  1. Enter a value for **Default namespace (DAP)**.
-  1. Select **OK**.
-- For GitLab Duo Code Suggestions, you meet the additional prerequisites:
-  - [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
-  - [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
+- For flows, you have [foundational flows turned on](../../user/duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- You have a [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)
+  set or have a project open that has GitLab Duo access.
+- For GitLab Duo Code Suggestions, you [meet the additional prerequisites](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites).

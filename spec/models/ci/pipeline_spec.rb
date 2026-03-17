@@ -94,6 +94,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :git_author_full_text }
+  it { is_expected.to respond_to :git_author_login }
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
   it { is_expected.to delegate_method(:name).to(:pipeline_metadata).allow_nil }
@@ -1790,6 +1791,81 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     it { expect(pipeline.sha).to start_with(subject) }
   end
 
+  describe '#git_author_login' do
+    let(:pipeline) { build_stubbed(:ci_empty_pipeline, :created, project: project) }
+
+    subject { pipeline.git_author_login }
+
+    context 'when commit is nil' do
+      before do
+        allow(pipeline).to receive(:commit).and_return(nil)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when commit author email is nil' do
+      before do
+        allow(pipeline).to receive(:commit).and_return(double(author_email: nil))
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when no user is found for the email' do
+      before do
+        allow(pipeline).to receive(:commit).and_return(double(author_email: 'unknown@example.com'))
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when user is found' do
+      let_it_be(:author) { create(:user, :public_email) }
+
+      before do
+        allow(pipeline).to receive(:commit).and_return(double(author_email: author.public_email))
+      end
+
+      it 'returns the username' do
+        expect(subject).to eq(author.username)
+      end
+
+      context 'when user has a private profile' do
+        before do
+          author.update!(private_profile: true)
+        end
+
+        after do
+          author.update!(private_profile: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when public_email does not match the commit email' do
+        before do
+          allow(pipeline).to receive(:commit).and_return(double(author_email: 'other@example.com'))
+          create(:email, :confirmed, user: author, email: 'other@example.com')
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when user has no public_email set' do
+        let_it_be(:author_no_public) { create(:user) }
+
+        before do
+          author_no_public.update_column(:public_email, nil)
+          create(:email, :confirmed, user: author_no_public, email: 'private-only@example.com')
+          allow(pipeline).to receive(:commit).and_return(double(author_email: 'private-only@example.com'))
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+  end
+
   describe '#retried' do
     subject { pipeline.retried }
 
@@ -2109,34 +2185,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           ])
         end
       end
-
-      context 'when the FF `ci_read_pipeline_variables_from_artifact` is disabled' do
-        before do
-          stub_feature_flags(ci_read_pipeline_variables_from_artifact: false)
-        end
-
-        it 'returns an array of Ci::PipelineVariable objects' do
-          expect(pipeline.variables).to match_array([
-            have_attributes(class: Ci::PipelineVariable, **variables_attributes.first),
-            have_attributes(class: Ci::PipelineVariable, **variables_attributes.last)
-          ])
-        end
-      end
     end
 
     shared_examples 'when pipeline does not have pipeline variables' do
       it 'returns an empty result' do
         expect(pipeline.variables).to be_empty
-      end
-
-      context 'when the FF `ci_read_pipeline_variables_from_artifact` is disabled' do
-        before do
-          stub_feature_flags(ci_read_pipeline_variables_from_artifact: false)
-        end
-
-        it 'returns an empty result' do
-          expect(pipeline.variables).to be_empty
-        end
       end
     end
 
@@ -2173,6 +2226,47 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       it_behaves_like 'when pipeline does not have pipeline variables'
+    end
+  end
+
+  describe 'nested attributes for variables' do
+    let_it_be(:variables_attributes) { [{ key: 'TEST', secret_value: 'value' }] }
+    let_it_be_with_refind(:persisted_pipeline) do
+      create(:ci_pipeline, project: project).tap { |pipeline| pipeline.variables_attributes = variables_attributes }
+    end
+
+    let(:pipeline) do
+      build(:ci_pipeline, project: project).tap { |pipeline| pipeline.variables_attributes = variables_attributes }
+    end
+
+    it 'rejects variables_attributes' do
+      expect(pipeline.association(:variables).target).to be_empty
+    end
+
+    context 'when pipeline is persisted' do
+      let(:pipeline) { persisted_pipeline }
+
+      it 'rejects variables_attributes' do
+        expect(pipeline.association(:variables).reader).to be_empty
+      end
+    end
+
+    context 'when ci_stop_writing_to_pipeline_variables FF is disabled' do
+      before do
+        stub_feature_flags(ci_stop_writing_to_pipeline_variables: false)
+      end
+
+      it 'accepts variables_attributes' do
+        expect(pipeline.association(:variables).target).not_to be_empty
+      end
+
+      context 'when pipeline is persisted' do
+        let(:pipeline) { persisted_pipeline }
+
+        it 'rejects variables_attributes' do
+          expect(pipeline.association(:variables).reader).to be_empty
+        end
+      end
     end
   end
 
@@ -3824,6 +3918,78 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'returns latest pipelines for ref and statuses' do
           expect(latest_pipelines_for_ref_by_statuses).to match_array([ref1_success, ref1_failed])
         end
+      end
+    end
+  end
+
+  describe '.find_by_id_through_partition' do
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+
+    context 'when ci_partition_pruning_workers feature flag is enabled' do
+      context 'when pipeline belongs to the current partition' do
+        let_it_be(:current_partition) do
+          Ci::Partition.with_status(:current).update_all(status: Ci::Partition.statuses[:active])
+          Ci::Partition.find_or_create_by!(id: pipeline.partition_id, status: Ci::Partition.statuses[:current])
+        end
+
+        it 'finds the pipeline using the partition-scoped query' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            described_class.find_by_id_through_partition(pipeline.id)
+          end
+
+          expect(recorder.log)
+            .to include(/"partition_id" = #{current_partition.id} AND "p_ci_pipelines"."id" = #{pipeline.id}/)
+        end
+
+        it 'returns the pipeline' do
+          expect(described_class.find_by_id_through_partition(pipeline.id)).to eq(pipeline)
+        end
+      end
+
+      context 'when pipeline does not belong to the current partition' do
+        let_it_be(:current_partition) do
+          Ci::Partition.with_status(:current).update_all(status: Ci::Partition.statuses[:active])
+          Ci::Partition.find_or_create_by!(id: pipeline.partition_id + 1, status: Ci::Partition.statuses[:current])
+        end
+
+        it 'falls back to the unscoped query' do
+          recorder = ActiveRecord::QueryRecorder.new do
+            described_class.find_by_id_through_partition(pipeline.id)
+          end
+
+          expect(recorder.log)
+            .to include(/WHERE "p_ci_pipelines"."id" = #{pipeline.id}/)
+        end
+
+        it 'returns the pipeline' do
+          expect(described_class.find_by_id_through_partition(pipeline.id)).to eq(pipeline)
+        end
+      end
+    end
+
+    context 'when pipeline does not exist' do
+      it 'returns nil' do
+        expect(described_class.find_by_id_through_partition(non_existing_record_id)).to be_nil
+      end
+    end
+
+    context 'when id is nil' do
+      it 'returns nil' do
+        expect(described_class.find_by_id_through_partition(nil)).to be_nil
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(ci_partition_pruning_workers: false)
+      end
+
+      it 'skips the partition-scoped query and uses the unscoped lookup' do
+        expect(described_class.find_by_id_through_partition(pipeline.id)).to eq(pipeline)
+      end
+
+      it 'returns nil when pipeline does not exist' do
+        expect(described_class.find_by_id_through_partition(non_existing_record_id)).to be_nil
       end
     end
   end
@@ -5553,6 +5719,73 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#builds_with_cte' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:build_1) { create(:ci_build, pipeline: pipeline, project: project) }
+    let_it_be(:build_2) { create(:ci_build, pipeline: pipeline, project: project) }
+    let_it_be(:other_pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:other_build) { create(:ci_build, pipeline: other_pipeline, project: project) }
+
+    subject { pipeline.builds_with_cte.pluck(:id) }
+
+    it 'returns build IDs belonging to the pipeline' do
+      expect(subject).to contain_exactly(build_1.id, build_2.id)
+    end
+
+    it 'does not include builds from other pipelines' do
+      expect(subject).not_to include(other_build.id)
+    end
+
+    context 'when pipeline has no builds' do
+      let_it_be(:empty_pipeline) { create(:ci_pipeline, project: project) }
+
+      it 'returns an empty result' do
+        expect(empty_pipeline.builds_with_cte.pluck(:id)).to be_empty
+      end
+    end
+  end
+
+  describe '#destroy_job_artifact_associations' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline, project: project) }
+
+    it 'uses Ci::Pipelines::DestroyAssociationsService' do
+      expect_next_instance_of(Ci::Pipelines::DestroyAssociationsService, pipeline) do |service|
+        expect(service).to receive(:destroy_records).and_call_original
+      end
+
+      pipeline.send(:destroy_job_artifact_associations)
+    end
+
+    it 'destroys the artifacts' do
+      artifact = create(:ci_job_artifact, :zip, job: build, project: project)
+
+      pipeline.send(:destroy_job_artifact_associations)
+
+      expect(Ci::JobArtifact.where(id: artifact.id)).to be_empty
+    end
+
+    context 'when ci_pipeline_destroy_two_level_batching is disabled' do
+      before do
+        stub_feature_flags(ci_pipeline_destroy_two_level_batching: false)
+      end
+
+      it 'falls back to perform_fast_destroy' do
+        expect(pipeline).to receive(:perform_fast_destroy).with(pipeline.job_artifacts)
+
+        pipeline.send(:destroy_job_artifact_associations)
+      end
+
+      it 'destroys the artifacts' do
+        artifact = create(:ci_job_artifact, :zip, job: build, project: project)
+
+        pipeline.send(:destroy_job_artifact_associations)
+
+        expect(Ci::JobArtifact.where(id: artifact.id)).to be_empty
+      end
+    end
+  end
+
   describe '#has_reports?' do
     subject { pipeline.has_reports?(Ci::JobArtifact.of_report_type(:test)) }
 
@@ -7274,7 +7507,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       )
     end
 
-    shared_examples 'when no projects have variables' do
+    context 'when no projects have variables' do
       let(:project_ids) { [project.id, project_with_code_coverage_artifact.id] }
 
       it 'returns an empty result' do
@@ -7282,7 +7515,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
-    shared_examples 'when project_ids contain non-existent project IDs' do
+    context 'when project_ids contain non-existent project IDs' do
       let(:project_ids) { [project_with_ci_pipeline_variable1.id, non_existing_record_id] }
 
       it 'returns existing project IDs that have pipeline variables' do
@@ -7290,33 +7523,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
-    shared_examples 'when there are more projects with pipeline variables than the limit' do
+    context 'when there are more projects with pipeline variables than the limit' do
       let(:limit) { 1 }
 
       it 'returns project IDs that have pipeline variables up to the limit' do
         expect(projects_with_variables.size).to eq(1)
       end
-    end
-
-    it_behaves_like 'when no projects have variables'
-    it_behaves_like 'when project_ids contain non-existent project IDs'
-    it_behaves_like 'when there are more projects with pipeline variables than the limit'
-
-    context 'when FF `query_projects_with_variables_from_ci_pipeline_artifacts` is disabled' do
-      before do
-        stub_feature_flags(query_projects_with_variables_from_ci_pipeline_artifacts: false)
-      end
-
-      it 'returns project IDs within the given project_ids list that have ci_pipeline_variables records' do
-        expect(projects_with_variables).to contain_exactly(
-          project_with_ci_pipeline_variable1.id,
-          project_with_ci_pipeline_variable_and_pipeline_variables_artifact.id
-        )
-      end
-
-      it_behaves_like 'when no projects have variables'
-      it_behaves_like 'when project_ids contain non-existent project IDs'
-      it_behaves_like 'when there are more projects with pipeline variables than the limit'
     end
   end
 

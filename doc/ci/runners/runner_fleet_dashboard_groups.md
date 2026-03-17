@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: CI Platform
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Runner fleet dashboard for groups
 ---
 
@@ -47,7 +47,7 @@ Prerequisites:
 
 - You must have the Maintainer role for the group.
 - For GitLab Self-Managed, to view the **Runner usage** and **Wait time to pick a job** metrics,
-configure the [ClickHouse integration](../../integration/clickhouse.md).
+  configure the [ClickHouse integration](../../integration/clickhouse.md).
 
 To view the runner fleet dashboard for groups:
 

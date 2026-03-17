@@ -7,11 +7,8 @@ title: 'Tutorial: Configuring AWS ECR Pull Through Cache Rules for Authenticated
 ---
 
 1. Open the Amazon ECR console at <https://console.aws.amazon.com/ecr/>.
-
 1. From the navigation bar, choose the Region to configure your private registry settings in.
-
 1. In the navigation pane, choose Private registry, Pull through cache.
-
 1. On the Pull through cache configuration page, choose Add rule.
 
 On Step 1: Specify a source page, for Registry, choose GitLab Container Registry, Next.

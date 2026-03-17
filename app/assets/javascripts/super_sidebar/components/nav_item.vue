@@ -291,39 +291,23 @@ export default {
         </gl-badge>
       </span>
     </component>
-    <template v-if="isPinnable">
-      <gl-button
-        v-if="isPinned"
-        v-gl-tooltip.noninteractive.right.viewport="$options.i18n.unpinItem"
-        :aria-label="unpinAriaLabel"
-        category="tertiary"
-        class="show-on-focus-or-hover--target transition-opacity-on-hover--target always-animate gl-absolute gl-right-3 gl-top-1/2 -gl-translate-y-1/2"
-        :class="{ 'gl-pointer-events-none': !canClickPinButton }"
-        data-testid="nav-item-unpin"
-        icon="thumbtack-solid"
-        size="small"
-        @click="pinRemove"
-        @keydown.enter.stop.prevent="pinRemove"
-        @keydown.space.stop.prevent="pinRemove"
-        @keydown.escape="$emit('nav-pin-keydown-esc')"
-        @transitionend="togglePointerEvents"
-      />
-      <gl-button
-        v-else
-        v-gl-tooltip.noninteractive.right.viewport="$options.i18n.pinItem"
-        :aria-label="pinAriaLabel"
-        category="tertiary"
-        class="show-on-focus-or-hover--target transition-opacity-on-hover--target always-animate gl-absolute gl-right-3 gl-top-1/2 -gl-translate-y-1/2"
-        :class="{ 'gl-pointer-events-none': !canClickPinButton }"
-        data-testid="nav-item-pin"
-        icon="thumbtack"
-        size="small"
-        @click="pinAdd"
-        @keydown.enter.stop.prevent="pinAdd"
-        @keydown.space.stop.prevent="pinAdd"
-        @keydown.escape="$emit('nav-pin-keydown-esc')"
-        @transitionend="togglePointerEvents"
-      />
-    </template>
+    <gl-button
+      v-if="isPinnable"
+      v-gl-tooltip.noninteractive.right.viewport="
+        isPinned ? $options.i18n.unpinItem : $options.i18n.pinItem
+      "
+      :aria-label="isPinned ? unpinAriaLabel : pinAriaLabel"
+      category="tertiary"
+      class="show-on-focus-or-hover--target transition-opacity-on-hover--target always-animate gl-absolute gl-right-3 gl-top-1/2 -gl-translate-y-1/2"
+      :class="{ 'gl-pointer-events-none': !canClickPinButton }"
+      :data-testid="isPinned ? 'nav-item-unpin' : 'nav-item-pin'"
+      :icon="isPinned ? 'thumbtack-solid' : 'thumbtack'"
+      size="small"
+      @click="isPinned ? pinRemove() : pinAdd()"
+      @keydown.enter.stop.prevent="isPinned ? pinRemove() : pinAdd()"
+      @keydown.space.stop.prevent="isPinned ? pinRemove() : pinAdd()"
+      @keydown.escape="$emit('nav-pin-keydown-esc')"
+      @transitionend="togglePointerEvents"
+    />
   </li>
 </template>

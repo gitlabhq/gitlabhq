@@ -121,11 +121,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Duration, feature_category: :continuous_int
     end
 
     def calculate(data)
-      periods = data.shuffle.map do |(first, last)|
-        described_class::Period.new(first, last)
+      periods = data.shuffle.map do |(started_at, finished_at)|
+        described_class::Period.new(started_at: started_at, finished_at: finished_at)
       end
 
-      described_class.send(:from_periods, periods.sort_by(&:first))
+      described_class.send(:from_periods, periods.sort_by(&:started_at))
     end
   end
 

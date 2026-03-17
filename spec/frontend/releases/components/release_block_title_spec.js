@@ -1,5 +1,5 @@
 import { GlLink, GlBadge } from '@gitlab/ui';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import originalRelease from 'test_fixtures/api/releases/release.json';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';

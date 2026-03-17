@@ -26,6 +26,15 @@ class ExternalIssue
     "External Issue #{self}"
   end
 
+  def web_url
+    tracker = project.external_issue_tracker
+    return unless tracker
+
+    URI.parse(tracker.issue_url(id)).to_s
+  rescue URI::InvalidURIError
+    nil
+  end
+
   def ==(other)
     other.is_a?(self.class) && (to_s == other.to_s)
   end

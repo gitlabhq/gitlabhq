@@ -16,7 +16,7 @@ module Users
     end
 
     def execute
-      return ServiceResponse.error(message: s_('Not permitted to reset user feed token')) unless reset_permitted?
+      return ServiceResponse.error(message: _('Not permitted to reset user feed token')) unless reset_permitted?
 
       result = Users::UpdateService.new(current_user, user: user).execute(&:reset_feed_token!)
       if result[:status] == :success

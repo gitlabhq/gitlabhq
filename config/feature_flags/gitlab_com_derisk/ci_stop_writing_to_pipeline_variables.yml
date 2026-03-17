@@ -1,0 +1,13 @@
+---
+name: ci_stop_writing_to_pipeline_variables
+description: |
+  Stops writing pipeline variables to the p_ci_pipeline_variables table.
+  Pipeline variables are still stored as encrypted artifacts in object storage
+  via pipeline_artifacts_pipeline_variables.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/580848
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226628
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/586502
+milestone: '18.10'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

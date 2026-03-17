@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Project webhooks API
 description: "Set up and manage webhooks for a project with the REST API."
 ---
@@ -35,9 +35,9 @@ Supported attributes:
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
-## Get a project webhook
+## Retrieve a project webhook
 
-Get a specific webhook for a project.
+Retrieves a specified webhook for a project.
 
 ```plaintext
 GET /projects/:id/hooks/:hook_id
@@ -90,7 +90,7 @@ Example response:
 }
 ```
 
-## Get a list of project webhook events
+## List project webhook events
 
 {{< history >}}
 
@@ -98,7 +98,7 @@ Example response:
 
 {{< /history >}}
 
-Get a list of events for a specific project webhook in the past 7 days from start date.
+Lists all events for a specified project webhook in the past 7 days from start date.
 
 ```plaintext
 GET /projects/:id/hooks/:hook_id/events
@@ -441,8 +441,9 @@ Supported attributes:
 | `tag_push_events`              | boolean           | No       | Trigger project webhook on tag push events. |
 | `token`                        | string            | No       | Secret token to validate received payloads; the token isn't returned in the response. |
 | `wiki_page_events`             | boolean           | No       | Trigger project webhook on wiki events. |
+| `resource_deploy_token_events` | boolean           | No       | Trigger project webhook on project deploy token expiry events. |
 
-## Edit a project webhook
+## Update a project webhook
 
 {{< history >}}
 
@@ -450,7 +451,7 @@ Supported attributes:
 
 {{< /history >}}
 
-Edit a project webhook for a specified project.
+Updates a project webhook for a specified project.
 
 ```plaintext
 PUT /projects/:id/hooks/:hook_id
@@ -486,6 +487,7 @@ Supported attributes:
 | `tag_push_events`              | boolean           | No       | Trigger project webhook on tag push events. |
 | `token`                        | string            | No       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `wiki_page_events`             | boolean           | No       | Trigger project webhook on wiki page events. |
+| `resource_deploy_token_events` | boolean           | No       | Trigger project webhook on project deploy token expiry events. |
 
 ## Delete project webhook
 
@@ -536,7 +538,7 @@ Supported attributes:
 |:----------|:------------------|:---------|:------------|
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `milestone_events`, `emoji_events`, or `resource_access_token_events`. |
+| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `milestone_events`, `emoji_events`,`resource_access_token_events` or `resource_deploy_token_events`. |
 
 Example response:
 

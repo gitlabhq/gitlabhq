@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :importers do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:portable) { create(:group) }
+  let_it_be_with_reload(:user) { create(:user) }
+  let_it_be_with_reload(:portable) { create(:group) }
 
   let(:relation) { 'labels' }
   let(:jid) { '123' }
@@ -145,6 +145,34 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
 
         expect(export.finished?).to eq(true)
         expect(export.batches.count).to eq(0)
+      end
+    end
+
+    context 'with offline_export_id' do
+      let_it_be(:offline_export) { create(:offline_export, user: user) }
+
+      subject(:service) { described_class.new(user, portable, relation, jid, offline_export_id: offline_export.id) }
+
+      it 'creates export with offline_export_id' do
+        service.execute
+
+        expect(portable.bulk_import_exports).not_to be_empty
+
+        portable.bulk_import_exports.all? do |export|
+          expect(export.offline_export_id).to eq(offline_export.id)
+          expect(export.user_id).to be_nil
+        end
+      end
+
+      it 'reuses existing export with same offline_export_id' do
+        _existing_export = create(:bulk_import_export,
+          group: portable,
+          offline_export_id: offline_export.id,
+          relation: relation,
+          user: nil
+        )
+
+        expect { service.execute }.not_to change { portable.bulk_import_exports.count }
       end
     end
   end

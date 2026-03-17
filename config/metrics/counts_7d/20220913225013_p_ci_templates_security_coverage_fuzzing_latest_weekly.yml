@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_templates.p_ci_templates_security_coverage_fuzzing_latest_weekly
 description: Count of distinct projects that included the Security/Coverage-Fuzzing.latest.gitlab-ci.yml template in a pipeline
 product_group: dynamic_analysis
+product_categories:
+- fuzz_testing
 value_type: number
 status: active
 milestone: '15.5'

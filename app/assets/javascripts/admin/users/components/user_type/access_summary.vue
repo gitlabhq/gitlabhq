@@ -2,6 +2,7 @@
 import { GlIcon } from '@gitlab/ui';
 
 export default {
+  name: 'AccessSummary',
   components: { GlIcon },
   contentClass: 'gl-ml-5 gl-text-subtle',
   listClass: 'gl-mb-0 gl-ml-2 gl-pl-7 gl-text-subtle',

@@ -1,5 +1,3 @@
 ---
 name: update_pull_mirror
 description: Grants the ability to update pull mirror configuration
-boundaries:
-  - project

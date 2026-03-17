@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: Configuration and contribution guidelines.
 title: Contribute to GitLab Pages development
 ---
@@ -152,7 +152,6 @@ GitLab Pages access control is disabled by default. To enable it:
 1. Set the value of your `redirect-uri` to the `pages-domain` authorization endpoint
    (for example, `http://pages.gdk.test:3010/auth`).
    The `redirect-uri` must not contain any GitLab Pages site domain.
-
 1. Add the auth client configuration:
 
    - With GDK, in `gdk.yml`:

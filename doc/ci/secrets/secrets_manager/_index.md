@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Secrets Manager
 ignore_in_report: true
 ---
@@ -85,6 +85,10 @@ After you create a secret, you can use it in the pipeline configuration or in jo
 
 ## Use secrets in job scripts
 
+Prerequisites:
+
+- GitLab Runner 18.6 or later.
+
 To access secrets defined with the secret manager, use the [`secrets`](../../yaml/_index.md#secrets) and `gitlab_secrets_manager` keywords:
 
 ```yaml
@@ -115,6 +119,8 @@ To update the secrets permissions for a project:
 1. Under **Secrets manager**, in the **Secrets manager user permissions** section, you can manage the user permissions:
    - Select **Add** to add permissions rules for specific users, groups, or roles.
    - You can set permission scopes to read, create, update, and delete secrets.
+
+Users with the Owner role for the project always have permissions to perform all operations in the Secrets Manager.
 
 ## Deletion of a project
 

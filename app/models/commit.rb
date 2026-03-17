@@ -598,10 +598,6 @@ class Commit
     raw_diffs.any?(&:encoded_file_path)
   end
 
-  def valid_full_sha
-    id.match(Gitlab::Git::Commit::FULL_SHA_PATTERN).to_s
-  end
-
   def first_diffs_slice(limit, diff_options = {})
     diffs(diff_options.merge(max_files: limit)).diff_files
   end

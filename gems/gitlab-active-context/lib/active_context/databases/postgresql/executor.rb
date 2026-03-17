@@ -236,6 +236,27 @@ module ActiveContext
           create_indices(strategy, [field])
         end
 
+        def do_nullify_field(collection, field_name, batch_size:)
+          adapter.client.with_connection do |connection|
+            next 0 unless connection.column_exists?(collection.name, field_name)
+
+            quoted_table = connection.quote_table_name(collection.name)
+            quoted_column = connection.quote_column_name(field_name)
+
+            sql = <<~SQL.squish
+              UPDATE #{quoted_table}
+              SET #{quoted_column} = NULL
+              WHERE (id, partition_id) IN (
+                SELECT id, partition_id FROM #{quoted_table}
+                WHERE #{quoted_column} IS NOT NULL
+                LIMIT #{batch_size}
+              )
+            SQL
+
+            connection.update(sql)
+          end
+        end
+
         def add_column_to_existing_table(connection, table_name, field)
           return if connection.column_exists?(table_name, field.name)
 

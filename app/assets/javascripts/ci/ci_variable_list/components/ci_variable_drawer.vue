@@ -1,5 +1,5 @@
 <script>
-import { isEqual, omit, isEmpty } from 'lodash';
+import { isEqual, omit, isEmpty } from 'lodash-es';
 import {
   GlAlert,
   GlButton,

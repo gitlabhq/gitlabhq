@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Migration Style Guide
 ---
 
@@ -63,8 +63,8 @@ work it needs to perform and how long it takes to complete:
    - Creating a new table, example: `create_table`.
    - Adding a new column to an existing table, example: `add_column`.
 
-    > [!note]
-    > Post-deployment migration is often abbreviated as PDM.
+   > [!note]
+   > Post-deployment migration is often abbreviated as PDM.
 
 1. [**Batched background migrations.**](database/batched_background_migrations.md) These aren't regular Rails migrations, but application code that is
    executed via Sidekiq jobs, although a post-deployment migration is used to schedule them. Use them only for data migrations that
@@ -301,9 +301,7 @@ In all cases, remember to select the appropriate migration type
 depending on [how long a migration takes](#how-long-a-migration-should-take)
 
 - Split the migration into **multiple single-transaction migrations**.
-
 - Use **multiple transactions** by [using `disable_ddl_transaction!`](#disable-transaction-wrapped-migration).
-
 - Keep using a single-transaction migration after **adjusting statement and lock timeout settings**.
   If your heavy workload must use the guarantees of a transaction,
   you should check your migration can execute without hitting the timeout limits.
@@ -326,7 +324,6 @@ temporarily set the statement timeout to `0` per transaction or per connection.
 
 - You use the per-connection option when your statement does not support
   running inside an explicit transaction, like `CREATE INDEX CONCURRENTLY`.
-
 - If your statement does support an explicit transaction block,
   like `ALTER TABLE ... VALIDATE CONSTRAINT`,
   the per-transaction option should be used.
@@ -1560,6 +1557,47 @@ Any table which has some high read operation compared to current [high-traffic t
 As a general rule, we discourage adding columns to high-traffic tables that are purely for
 analytics or reporting of GitLab.com. This can have negative performance impacts for all
 GitLab Self-Managed instances without providing direct feature value to them.
+
+### Creating triggers
+
+Creating a trigger on high-traffic tables can lead to lock contention timeouts during deployment.
+To mitigate this, we can create the trigger in a post-deployment migration using the [`with_lock_retries`](#retry-mechanism-when-acquiring-database-locks)
+helper method. We should also ensure that the migration is idempotent so it can be retried when it fails in between and won't fail
+because a function or trigger already exists.
+
+```ruby
+class AddTriggersToHighTrafficTable < Gitlab::Database::Migration[2.3]
+  milestone '18.10'
+
+  disable_ddl_transaction!
+
+  TRIGGER_FUNCTION_NAME = 'function_name_here'
+  TRIGGER_NAME = 'trigger_name_here'
+  TABLE_NAME = :table_name
+
+  def up
+    with_lock_retries do
+      create_trigger_function(TRIGGER_FUNCTION_NAME, replace: true) do
+        # function body
+      end
+
+      create_trigger(TABLE_NAME, TRIGGER_NAME, TRIGGER_FUNCTION_NAME, fires: 'AFTER INSERT', replace: true)
+    end
+  end
+
+  def down
+    with_lock_retries do
+      drop_trigger(TABLE_NAME, TRIGGER_NAME, if_exists: true)
+    end
+
+    drop_function(TRIGGER_FUNCTION_NAME, if_exists: true)
+  end
+end
+```
+
+`disable_ddl_transaction!` is required to use `with_lock_retries`. In case `create_trigger` helper can't be used
+to create a trigger (e.g. trigger runs for each statement instead of each row), use `CREATE OR REPLACE TRIGGER`
+when creating the trigger.
 
 ## Milestone
 

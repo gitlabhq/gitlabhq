@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Understand how to name, manage, and protect Git branches.
 title: Branch rules
 ---
@@ -50,7 +50,7 @@ Prerequisites:
 
 To view the branch rules overview list:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 
@@ -58,7 +58,7 @@ To view the branch rules overview list:
 
 To view branch rules and protections for a single branch:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 1. Identify the branch you want and select **View details**.
@@ -82,7 +82,7 @@ Prerequisites:
 
 To create a branch rule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Select **Add branch rule**.
@@ -104,7 +104,7 @@ To create a branch rule:
 
 To add protections to a new branch:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Select **Add branch rule**.
@@ -143,7 +143,7 @@ To add a merge request approval rule:
      GitLab suggests approvers based on previous authors of the files changed by the merge request.
 1. Select **Save changes**.
 
-For additional information, see [Approval rules](../../merge_requests/approvals/rules.md#approvals-for-protected-branches).
+For additional information, see [approval rules](../../merge_requests/approvals/rules.md#approvals-for-protected-branches).
 
 ### Edit squash commits option
 
@@ -215,7 +215,7 @@ To add a status check service:
 
 ![Branch rules status checks](img/branch_rule_status_check_v17_4.png)
 
-For more information, see [External status checks](../../merge_requests/status_checks.md).
+For more information, see [external status checks](../../merge_requests/status_checks.md).
 
 ## Edit a branch rule target
 
@@ -235,7 +235,7 @@ Prerequisites:
 
 To edit a branch rule target:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 1. Identify the branch you want and select **View details**.
@@ -268,7 +268,7 @@ Prerequisites:
 
 To delete a branch rule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Next to a rule you want to delete, select **View details**.

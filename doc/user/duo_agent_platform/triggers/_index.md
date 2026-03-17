@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Triggers
 ---
 
@@ -21,7 +21,7 @@ title: Triggers
 {{< /history >}}
 
 > [!flag]
-> The availability of this feature is controlled by a feature flag.
+> To change the location of your flow configuration file, you must enable a feature flag.
 > For more information, see the history.
 
 A trigger determines when a flow runs.
@@ -34,6 +34,7 @@ in a discussion, or when you assign them as a reviewer.
 {{< history >}}
 
 - **Assign** and **Assign reviewer** event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567787) in GitLab 18.5.
+- Pipeline events trigger event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212797) in GitLab 18.9 as an [experiment](../../../policy/development_stages_support.md) with a [flag](../../../administration/feature_flags/_index.md) named `ai_flow_trigger_pipeline_hooks`. Disabled by default.
 
 {{< /history >}}
 
@@ -43,7 +44,7 @@ Prerequisites:
 
 To create a trigger:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Triggers**.
 1. Select **New flow trigger**.
 1. In **Description**, enter a description for the trigger.
@@ -54,27 +55,30 @@ To create a trigger:
      to an issue or merge request.
    - **Assign reviewer**: When the service account user is assigned
      as a reviewer to a merge request.
+   - **Pipeline events**: When a pipeline changes state.
+     The possible states are `created`, `started`, `succeeded`, and `failed`.
 1. From the **Service account** dropdown list,
-   select a user to be [the composite identity](../../duo_agent_platform/composite_identity.md).
+   select a user to be [the composite identity](../composite_identity.md).
 1. For **Configuration source**, select one of the following:
    - **AI Catalog**: From the flows configured for this project,
      select a flow for the trigger to execute.
    - **Configuration path**: Enter the path to the flow configuration file
      (for example, `.gitlab/duo/flows/claude.yaml`).
+     To view this option, the `ai_catalog_create_third_party_flows` flag must be enabled.
 1. Select **Create flow trigger**.
 
 The trigger now appears in **Automate** > **Triggers**.
 
 ### Edit a trigger
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Triggers**.
 1. For the trigger you want to change, select **Edit flow trigger** ({{< icon name="pencil" >}}).
 1. Make the changes and select **Save changes**.
 
 ### Delete a trigger
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Triggers**.
 1. For the trigger you want to change, select **Delete flow trigger** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **OK**.

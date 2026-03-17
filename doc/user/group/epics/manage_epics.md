@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Manage epics
 ---
 
@@ -26,18 +26,19 @@ to them.
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To create an epic in the group you're in:
 
 1. Get to the New Epic form:
-   - Go to your group and from the left sidebar select **Epics**. Then select **New epic**.
-   - From an epic in your group, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}). Then select **New related epic**.
-   - From anywhere, in the top menu, select **New** ({{< icon name="plus-square" >}}). Then select **New epic**.
-   - In an empty [roadmap](../roadmap/_index.md), select **New epic**.
+   - Go to your group and from the left sidebar select **Work items**. Then select **New item**.
+   - From an epic in your group, in the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}). Then select **New related item**.
+   - From anywhere, in the top menu, select **New** ({{< icon name="plus-square" >}}). Then select **New work item**.
+   - In an empty [roadmap](../roadmap/_index.md), select **New work item**.
 
-1. Enter a title.
+1. From the **Type** dropdown list, select **Epic** if it is not already selected.
 1. Complete the fields.
+   - Enter a title.
    - Enter a description.
    - To [make the epic confidential](#make-an-epic-confidential), select the checkbox next to **Turn on confidentiality**.
    - Choose labels.
@@ -89,7 +90,7 @@ After you create an epic, you can edit the following details:
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To edit an epic's title or description:
 
@@ -114,7 +115,7 @@ When you view an epic that has a list in the description, you can also reorder t
 
 Prerequisites:
 
-- You must have at least the Planner role for the project, be the author of the epic, or be
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project, be the author of the epic, or be
   assigned to the epic.
 - The epic's description must have an [ordered, unordered](../../markdown.md#lists), or
   [task](../../markdown.md#task-lists) list.
@@ -138,12 +139,12 @@ To reorder list items, when viewing an epic:
 
 Prerequisites:
 
-- You must have at least the Planner role for the parent epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 To update multiple epics at the same time:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Epics**.
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Epic**.
 1. Select **Bulk edit**. On the right, a sidebar with editable fields appears.
 1. Select the checkboxes next to each epic you want to edit.
 1. From the sidebar, edit the available fields.
@@ -233,12 +234,13 @@ assigns them.
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To change the assignee on an epic:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Epics**, then select your epic to view it.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Epic**.
+1. Select your epic to view it.
 1. In the right sidebar, in the **Assignees** section, select **Edit**.
 1. From the dropdown list, select the users to add as an assignee.
 1. Select any area outside the dropdown list.
@@ -288,13 +290,13 @@ On epic boards, the color shows on the epic's card accent:
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To change an epic's color:
 
 1. In the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Epics**.
-1. Select **New epic** or select an existing epic.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Epic**.
+1. Select an epic.
 1. In the right sidebar, in the **Color** section, select **Edit**.
 1. Select an existing color or enter an RGB or hex value.
 1. Select any area outside the dialog.
@@ -331,7 +333,7 @@ Deleting an epic releases all existing issues from their associated epic in the 
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To close an epic:
 
@@ -351,7 +353,7 @@ You can reopen an epic that was closed.
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To do so, either:
 
@@ -370,10 +372,6 @@ If an issue belongs to an epic, you can go to the parent epic from:
 
 ## View epics list
 
-In a group, the left sidebar displays the total count of open epics.
-This number indicates all epics associated with the group and its subgroups, including epics you
-might not have permission to view.
-
 Prerequisites:
 
 - You must be a member of either:
@@ -383,8 +381,8 @@ Prerequisites:
 
 To view epics in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Epics**.
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Epic**.
 
 To set which attributes are shown for epics on the epics list, [configure display preferences](../../work_items/_index.md#configure-list-display-preferences).
 
@@ -400,7 +398,7 @@ Whether you can view an epic depends on the [group visibility level](../../publi
 the epic's [confidentiality status](#make-an-epic-confidential):
 
 - Public group and a non-confidential epic: Anyone can view the epic.
-- Private group and non-confidential epic: You must have at least the Guest role for the group, or be a member of a project in the group or one of its subgroups.
+- Private group and non-confidential epic: You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the group, or be a member of a project in the group or one of its subgroups.
 - Confidential epic (regardless of group visibility): You must have at least the Planner
   role for the group.
 
@@ -414,7 +412,7 @@ the epic's [confidentiality status](#make-an-epic-confidential):
 
 {{< /history >}}
 
-When you select an epic from the Epics page or an epic board, it opens in a details panel.
+When you select an epic from the work items page or an epic board, it opens in a details panel.
 You can then view and edit its details without losing context of the epic list or board.
 
 When using the drawer:
@@ -428,21 +426,16 @@ When using the drawer:
 
 To open an epic in the full page view:
 
-- Open the epic in a new tab. From the list of epics, either:
+- Open the epic in a new tab. From the list of work items, either:
   - Right-click the epic and open it in a new browser tab.
   - Hold <kbd>Command</kbd> or <kbd>Control</kbd> and select the epic.
 - Select an epic, and from the drawer, either:
   - In the upper-left corner, select the issue reference, for example `my_project#123`.
   - In the upper-right corner, select **Open in full page** ({{< icon name="maximize" >}}).
 
-To always open issues in full page view, see [set preference whether to open items in a drawer](../../work_items/_index.md#configure-list-display-preferences).
+To always open work items in full page view, see [set preference whether to open items in a drawer](../../work_items/_index.md#configure-list-display-preferences).
 
-### Cached epic count
-
-The total count of open epics displayed in the sidebar is cached if higher
-than 1000. The cached value is rounded to thousands or millions and updated every 24 hours.
-
-## Filter the list of epics
+## Filter a list of epics
 
 {{< history >}}
 
@@ -450,7 +443,7 @@ than 1000. The cached value is rounded to thousands or millions and updated ever
 
 {{< /history >}}
 
-You can filter the list of epics by:
+You can filter a list of epics by:
 
 - Title or description (select **Search within**)
 - Author name / username
@@ -462,15 +455,15 @@ You can filter the list of epics by:
 - Reaction emoji
 - Parent
 - Subscribed
-- [Custom fields](../../../user/work_items/custom_fields.md) enabled for epics
+- [Custom fields](../../work_items/custom_fields.md) enabled for epics
 
 To filter:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Epics**.
-1. Select the field **Search or filter results**.
-1. From the dropdown list, select the scope or enter plain text to search by epic title or description.
-1. Press <kbd>Enter</kbd> on your keyboard. The list is filtered.
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Epic**.
+1. Select additional filters, operators, and values as needed.
+   To search by title or description, type in the filter bar.
+1. Press <kbd>Enter</kbd> or select the magnifying glass ({{< icon name="search" >}}).
 
 ### Filter with the OR operator
 
@@ -482,10 +475,11 @@ To filter:
 
 {{< /history >}}
 
-You can use the OR operator (**is one of: `||`**) when you [filter the list of epics](#filter-the-list-of-epics) by:
+You can use the OR operator (**is one of: `||`**) when you [filter the list of epics](#filter-a-list-of-epics) by:
 
-- Authors
-- Labels
+- Assignee
+- Author
+- Label
 
 `is one of` represents an inclusive OR. For example, if you filter by `Label is one of Deliverable` and
 `Label is one of UX`, GitLab shows epics with either `Deliverable`, `UX`, or both labels.
@@ -536,7 +530,7 @@ If you're working on items that contain private information, you can make an epi
 
 Prerequisites:
 
-- You must have at least the Planner role for the epic's group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the epic's group.
 
 To make an epic confidential:
 
@@ -559,6 +553,37 @@ Only epics, issues, and tasks that you can access show on the list.
 You can always view the issues assigned to the epic if they are in the group's child project.
 It's possible because the visibility setting of a project must be the same as or less restrictive than
 of its parent group.
+
+### Configure child item display preferences
+
+{{< history >}}
+
+- Display options for child items [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/551231) in GitLab 18.10.
+
+{{< /history >}}
+
+You can configure what information is displayed in the **Child items** section, so that you can focus on what matters most for your workflow.
+
+> [!note]
+> When you change the information displayed in one epic, you change it for all work items in your groups and projects.
+
+1. At the top-right corner of the **Child items** section header, select **Display options** ({{< icon name="preferences" >}}).
+
+   By default, all options and fields are visible.
+1. To change the displayed information, turn the following toggles on or off:
+
+   - For display options:
+     - **Show closed items**
+   - For fields displayed:
+     - **Status**
+     - **Assignee**
+     - **Labels**
+     - **Weight**
+     - **Milestone**
+     - **Iteration**
+     - **Dates**
+     - **Health**
+     - **Blocked/Blocking**
 
 ### View count and weight of issues in an epic
 
@@ -631,12 +656,12 @@ To address risks to timely delivery of your planned work, incorporate a review o
 
 Prerequisites:
 
-- You must have at least the Planner role for the group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the group.
 
 To change the health status of an epic:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Epics**.
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Epic**.
 1. Select an epic.
 1. In the right sidebar, in the **Health status** section, select **Edit**.
 1. From the dropdown list, select a status.
@@ -674,7 +699,7 @@ current parent.
 
 Prerequisites:
 
-- You must have at least the Guest role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
 
 To add an existing issue to an epic:
 
@@ -702,7 +727,7 @@ then [add an existing issue to an epic](#add-an-existing-issue-to-an-epic).
 
 Prerequisites:
 
-- You must have at least the Guest role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
 
 To create an issue from an epic:
 
@@ -721,7 +746,7 @@ After you remove an issue from an epic, the issue is no longer associated with t
 
 Prerequisites:
 
-- You must have at least the Guest role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
 
 To remove an issue from an epic:
 
@@ -738,7 +763,7 @@ You can reorder the list of issues by dragging them.
 
 Prerequisites:
 
-- You must have at least the Guest role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
 
 To reorder issues assigned to an epic:
 
@@ -759,7 +784,7 @@ tab. You can move issues from one epic to another.
 
 Prerequisites:
 
-- You must have at least the Guest role for the issue's project and the epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the issue's project and the epic's group.
 
 To move an issue to another epic:
 
@@ -795,12 +820,12 @@ This helps organize and track related work across multiple epics.
 
 Prerequisites:
 
-- You must have at least the Guest role for either the parent epic's group or the child epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for either the parent epic's group or the child epic's group.
 
 To add a parent epic:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. Select **Plan** > **Epics**.
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Epic**.
 1. Select an epic.
 1. In the right sidebar, in the **Parent** section, select **Edit**.
 1. In the search box, enter part of the parent epic's title.
@@ -815,7 +840,7 @@ Add a child epic that belongs to a group that is different from the parent epic'
 
 Prerequisites:
 
-- You must have at least the Guest role for both the child and parent epics' groups.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for both the child and parent epics' groups.
 - Multi-level child epics must be available for both the child and parent epics' groups.
 
 To add a child epic from another group, paste the epic's URL when [adding an existing epic](#add-a-child-epic-to-an-epic).
@@ -826,17 +851,18 @@ From an epic, view its child epics and related milestones on the [roadmap](../ro
 
 Prerequisites:
 
-- You must have at least the Guest role for the parent epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 To view child epics from the parent:
 
-- In an epic, in the **Child items** section, select **Roadmap view**.
+- In the **Child items** section header, select **Display options** ({{< icon name="preferences" >}}) >
+  **View on a roadmap**.
 
 ### Add a child epic to an epic
 
 Prerequisites:
 
-- You must have at least the Guest role for the parent epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 #### New epic
 
@@ -854,7 +880,8 @@ To add an existing epic as child epic:
 1. In an epic, in the **Child items** section, select **Add** > **Existing epic**.
 1. Identify the epic to be added, using either of the following methods:
    - Paste the link of the epic.
-   - Search for the desired issue by entering part of the epic's title, then selecting the desired match. This search is only available for epics in the same group hierarchy.
+   - Search for the desired epic by entering part of its title, then selecting the desired match.
+  This search is limited to epics in the same group hierarchy.
 
    If there are multiple epics to be added, press <kbd>Space</kbd> and repeat this step.
 1. Select **Add**.
@@ -868,7 +895,7 @@ Issues and child epics cannot be intermingled.
 
 Prerequisites:
 
-- You must have at least the Guest role for the parent epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 To move child epics to another epic:
 
@@ -882,7 +909,7 @@ You can reorder the list of child epics.
 
 Prerequisites:
 
-- You must have at least the Guest role for the parent epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 To reorder child epics assigned to an epic:
 
@@ -893,7 +920,7 @@ To reorder child epics assigned to an epic:
 
 Prerequisites:
 
-- You must have at least the Guest role for the parent epic's group.
+- You must have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the parent epic's group.
 
 To remove a child epic from a parent epic:
 

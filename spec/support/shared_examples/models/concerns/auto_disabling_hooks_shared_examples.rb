@@ -331,7 +331,10 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
 
     context 'when hook exceeds the permanently disabled threshold' do
       before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::PERMANENTLY_DISABLED_FAILURE_THRESHOLD)
+        hook.update!(
+          recent_failures: WebHooks::AutoDisabling::PERMANENTLY_DISABLED_FAILURE_THRESHOLD,
+          disabled_until: 1.minute.ago
+        )
         hook.backoff!
       end
 

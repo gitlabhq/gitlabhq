@@ -109,6 +109,27 @@ RSpec.describe Ci::CreatePipelineService,
         end
       end
 
+      context 'when expanded job name exceeds the character limit' do
+        let(:long_value) { 'a' * 245 }
+        let(:config) do
+          <<-EOY
+          job:
+            script: "echo job"
+            parallel:
+              matrix:
+                - VARIANT: alpha
+                  OPTIONS: #{long_value}
+          EOY
+        end
+
+        it 'creates a pipeline with an error' do
+          expect(pipeline.errors.full_messages).to include(
+            a_string_including('name is too long (maximum is 255 characters)')
+          )
+          expect(pipeline).not_to be_created_successfully
+        end
+      end
+
       context 'with matrix expressions in needs:parallel:matrix' do
         let(:config) do
           <<-EOY

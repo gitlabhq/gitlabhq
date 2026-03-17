@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Integrate your server with GitLab.com
 ---
 
@@ -20,7 +20,7 @@ GitLab.com generates an application ID and secret key for you to use.
 1. Sign in to GitLab.com.
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Applications**.
+1. In the left sidebar, select **Access** > **Applications**.
 1. Provide the required details for **Add new application**.
    - Name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
    - Redirect URI:
@@ -113,7 +113,6 @@ GitLab.com generates an application ID and secret key for you to use.
    > [!note]
    > In GitLab 15.1 and earlier, the `site` parameter requires an `/api/v4` suffix.
    > You should drop this suffix after upgrading to GitLab 15.2 or later.
-
 1. Change `'YOUR_APP_ID'` to the Application ID from the GitLab.com application page.
 1. Change `'YOUR_APP_SECRET'` to the secret from the GitLab.com application page.
 1. Save the configuration file.

@@ -6,6 +6,17 @@ module Authn
 
     belongs_to :organization, class_name: 'Organizations::Organization'
 
+    scope :with_token_digests, ->(hashed_tokens) do
+      return none if hashed_tokens.blank?
+
+      where(secret: hashed_tokens)
+    end
+
+    # Hashes raw token
+    def self.encode(raw_token_value)
+      ::Gitlab::DoorkeeperSecretStoring::Sha512Hash.transform_secret(raw_token_value)
+    end
+
     # Check whether the given plain text secret matches our stored secret
     #
     # @param input [#to_s] Plain secret provided by user

@@ -27,7 +27,7 @@ module SessionsHelper
   end
 
   def verification_data(user)
-    permitted_to_skip = permitted_to_skip_email_otp_in_grace_period?(user)
+    permitted_to_skip = permitted_to_skip_email_otp_in_warning_period?(user)
 
     {
       username: user.username,
@@ -39,9 +39,7 @@ module SessionsHelper
   end
 
   def fallback_to_email_otp_permitted?(user)
-    Feature.enabled?(:email_based_mfa, user) &&
-      user.email_otp_required_after&.past? &&
-      !treat_as_locked?(user)
+    user.email_based_otp_required? && !treat_as_locked?(user)
   end
 
   def passkey_authentication_data(params)

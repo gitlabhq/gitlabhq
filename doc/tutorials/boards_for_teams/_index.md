@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Set up issue boards for team hand-off'
 ---
 
@@ -99,7 +99,7 @@ projects you create later.
 
 To create each label:
 
-1. On the top bar, select **Search or go to** and find your **Paperclip Software Factory** group.
+1. In the top bar, select **Search or go to** and find your **Paperclip Software Factory** group.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `Frontend`.
@@ -124,7 +124,7 @@ to manage issues from all the projects that you might create later in this group
 
 To create a new group issue board:
 
-1. On the top bar, select **Search or go to** and find your **Paperclip Software Factory** group.
+1. In the top bar, select **Search or go to** and find your **Paperclip Software Factory** group.
 1. Select **Plan** > **Issue boards**.
 1. Create the UX workflow and Frontend workflow boards.
 
@@ -190,7 +190,7 @@ Repeat these steps to create a few more issues with the same labels.
 You should now see at least one issue there, ready for your product designers to start working on!
 
 Congratulations! Now your teams can start collaborating on amazing software.
-As a next step, you can try out [the goal workflow](#the-goal-workflow) for yourself using these boards,
+As a next step, you can try out the [goal workflow](#the-goal-workflow) for yourself using these boards,
 simulating the two teams interacting.
 
 ## Learn more about project management in GitLab

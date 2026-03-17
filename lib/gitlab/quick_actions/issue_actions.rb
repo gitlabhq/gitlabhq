@@ -230,7 +230,6 @@ module Gitlab
         types Issue
         condition do
           quick_action_target.persisted? &&
-            Feature.enabled?(:issue_email_participants, parent) &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target) &&
             quick_action_target.resource_parent.is_a?(Project)
         end
@@ -250,7 +249,6 @@ module Gitlab
         types Issue
         condition do
           quick_action_target.persisted? &&
-            Feature.enabled?(:issue_email_participants, parent) &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target) &&
             quick_action_target.issue_email_participants.any?
         end

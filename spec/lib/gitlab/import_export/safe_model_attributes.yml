@@ -627,6 +627,7 @@ ProjectHook:
 - milestone_events
 - emoji_events
 - resource_access_token_events
+- resource_deploy_token_events
 ProtectedBranch:
 - id
 - project_id
@@ -685,7 +686,6 @@ Project:
 - service_desk_enabled
 - last_repository_updated_at
 - ci_config_path
-- delete_error
 - merge_requests_ff_only_enabled
 - merge_requests_rebase_enabled
 - jobs_cache_index
@@ -701,6 +701,7 @@ Project:
 - merge_request_title_regex
 - merge_request_title_regex_description
 - max_artifacts_size
+- name
 Author:
 - name
 ProjectFeature:

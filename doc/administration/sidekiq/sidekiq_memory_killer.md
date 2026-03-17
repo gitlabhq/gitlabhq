@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Tenant Services
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Reducing memory use
 ---
 
@@ -35,18 +35,15 @@ Sidekiq memory limits are controlled using [environment variables](https://docs.
   for longer than `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`, the graceful restart is triggered.
   If `SIDEKIQ_MEMORY_KILLER_MAX_RSS` is not set, or its value is set to 0, the soft limit is not monitored.
   `SIDEKIQ_MEMORY_KILLER_MAX_RSS` defaults to `2000000`.
-
 - `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`: defines the grace time period in seconds for which the Sidekiq process is allowed to run
   above the allowed RSS soft limit. If the Sidekiq process goes below the allowed RSS (soft limit)
   within `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`, the restart is aborted. Default value is 900 seconds (15 minutes).
-
 - `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS` (KB): defines the Sidekiq process hard limit for allowed RSS.
   If the Sidekiq process RSS (expressed in kilobytes) exceeds `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS`,
   an immediate graceful restart of Sidekiq is triggered. If this value is not set, or set to 0,
-  the hard limit is not be monitored.
+  the hard limit is not monitored.
 
 - `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL`: defines how often to check the process RSS. Defaults to 3 seconds.
-
 - `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`: defines the maximum time allowed for all Sidekiq jobs to finish.
   No new jobs are accepted during that time. Defaults to 30 seconds.
 

@@ -8,6 +8,7 @@ export const SCOPE_NOTES = 'notes';
 export const SCOPE_COMMITS = 'commits';
 export const SCOPE_MILESTONES = 'milestones';
 export const SCOPE_WIKI_BLOBS = 'wiki_blobs';
+export const SCOPE_WORK_ITEMS = 'work_items';
 export const SCOPE_EPICS = 'epics';
 export const SCOPE_USERS = 'users';
 
@@ -127,3 +128,7 @@ export const STATE_FILTERS = {
     value: 'merged',
   },
 };
+
+export const WORK_ITEM_TYPE_FILTER_PARAM = 'type';
+export const WORK_ITEM_TYPE_FILTER_HEADER = __('Type');
+export const WORK_ITEM_TYPE_AGGREGATION_NAME = 'work_item_type_ids';

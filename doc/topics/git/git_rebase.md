@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Introduction to Git rebase and force push, methods to resolve merge conflicts through the command line.
 title: Rebase and resolve merge conflicts
 ---
@@ -71,7 +71,6 @@ To use Git to rebase your branch against the target branch:
 
    Changes added to `my-branch` after this point are lost
    if you restore from the backup branch.
-
 1. Rebase against the `main` branch:
 
    ```shell
@@ -127,7 +126,6 @@ To rebase interactively:
 
    Changes added to `my-branch` after this point are lost
    if you restore from the backup branch.
-
 1. In the GitLab UI, in your merge request, confirm the number of commits
    to rebase in the **Commits** tab.
 1. Open these commits. For example, to edit the last five commits:
@@ -187,7 +185,7 @@ To rebase interactively:
      git push origin my-branch --force-with-lease
      ```
 
-     Some actions require a force push to make changes to the branch. For more information, see [Force push to a remote branch](#force-push-to-a-remote-branch).
+     Some actions require a force push to make changes to the branch. For more information, see [force push to a remote branch](#force-push-to-a-remote-branch).
 
 ## Resolve conflicts from the command line
 
@@ -233,7 +231,6 @@ Prerequisites:
    > You can run `git rebase --abort` to stop the process before this point.
    > Git aborts the rebase and rolls back the branch to the state
    > before running `git rebase`. After you run `git rebase --continue`, you cannot abort the rebase.
-
 1. Continue the rebase:
 
    ```shell
@@ -261,7 +258,7 @@ you can't force push unless you:
 - Unprotect it.
 - Allow force pushes.
 
-For more information, see [Allow force push on a protected branch](../../user/project/repository/branches/protected.md#allow-force-push).
+For more information, see [allow force push on a protected branch](../../user/project/repository/branches/protected.md#allow-force-push).
 
 ## Restore your backed up branch
 
@@ -299,7 +296,7 @@ the merge request.
 
 ## Troubleshooting
 
-For CI/CD pipeline troubleshooting information, see [Debugging CI/CD pipelines](../../ci/debugging.md).
+For CI/CD pipeline troubleshooting information, see [debugging CI/CD pipelines](../../ci/debugging.md).
 
 ### `Unmergeable state` after `/rebase` quick action
 

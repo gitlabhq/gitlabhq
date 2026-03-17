@@ -75,12 +75,19 @@ module Gitlab
 
       # Overridden in EE
       def validate_job!(name, job)
+        validate_job_name_length!(name)
         validate_job_stage!(name, job)
         validate_job_dependencies!(name, job)
         validate_job_needs!(name, job)
         validate_dynamic_child_pipeline_dependencies!(name, job)
         validate_job_environment!(name, job)
         validate_job_pages_publish!(name, job)
+      end
+
+      def validate_job_name_length!(name)
+        return if name.to_s.length <= ::Ci::BuildName::MAX_JOB_NAME_LENGTH
+
+        error!("#{name} job: name is too long (maximum is #{::Ci::BuildName::MAX_JOB_NAME_LENGTH} characters)")
       end
 
       def validate_job_stage!(name, job)

@@ -1,7 +1,7 @@
 import { pinia } from '~/pinia/instance';
 import { RapidDiffsFacade } from '~/rapid_diffs/app';
 import { adapters } from '~/rapid_diffs/app/adapter_configs/commit';
-import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
+import { useCommitDiffDiscussions } from '~/rapid_diffs/stores/commit_discussions_store';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
@@ -43,10 +43,12 @@ class CommitRapidDiffsApp extends RapidDiffsFacade {
 
   async #initDiscussions() {
     try {
+      const store = useCommitDiffDiscussions(pinia);
+      store.setDiscussionsEndpoint(this.appData.discussionsEndpoint);
       const {
         data: { discussions },
       } = await axios.get(this.appData.discussionsEndpoint);
-      useDiffDiscussions(pinia).setInitialDiscussions(discussions);
+      store.setInitialDiscussions(discussions);
       initNewDiscussionToggle(this.root);
       initTimeline(this.appData);
       // eslint-disable-next-line no-new
@@ -55,7 +57,7 @@ class CommitRapidDiffsApp extends RapidDiffsFacade {
         fieldName: 'note',
         selector: '[data-rapid-diffs]',
         onSuccess: ({ id, note }) => {
-          useDiffDiscussions(pinia).updateNoteTextById(id, note);
+          store.updateNoteTextById(id, note);
         },
         onError: (error) => {
           createAlert({

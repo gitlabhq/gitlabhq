@@ -22,7 +22,7 @@ module VerifiesWithEmail
     return unless user = find_user || find_verification_user
     return unless user.active?
 
-    if session[:verification_user_id] && token = verification_params[:verification_token].presence
+    if session[:verifies_with_email_user_id] && token = verification_params[:verification_token].presence
       # The verification token is submitted, verify it
       verify_token(user, token)
     elsif require_email_verification_enabled?(user)
@@ -86,7 +86,7 @@ module VerifiesWithEmail
   end
 
   def successful_verification
-    session.delete(:verification_user_id)
+    session.delete(:verifies_with_email_user_id)
     @redirect_url = after_sign_in_path_for(current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
     render layout: 'minimal'
@@ -94,12 +94,12 @@ module VerifiesWithEmail
 
   def skip_verification_for_now
     return respond_422 unless user = find_verification_user
-    return render_403 unless permitted_to_skip_email_otp_in_grace_period?(user)
+    return render_403 unless permitted_to_skip_email_otp_in_warning_period?(user)
 
     handle_verification_success(
       user,
       :skipped,
-      'user chose to skip verification in grace period'
+      'user chose to skip verification in warning period'
     )
 
     render json: {
@@ -119,7 +119,7 @@ module VerifiesWithEmail
 
       # remove verification_user_id from session to indicate that skip verification workflow is done
       # this ensures the confirmation page cannot be visited by user manually navigating to this path
-      session.delete(:verification_user_id)
+      session.delete(:verifies_with_email_user_id)
     else
       render json: { status: :failure }
     end
@@ -130,7 +130,7 @@ module VerifiesWithEmail
 
     if fallback_to_email_otp_permitted?(user)
       clear_two_factor_attempt!
-      session[:verification_user_id] = user.id
+      session[:verifies_with_email_user_id] = user.id
       resend_verification_code
     else
       render json: { success: false, message: _('Not permitted.') }, status: :bad_request
@@ -144,9 +144,9 @@ module VerifiesWithEmail
   end
 
   def find_verification_user
-    return unless session[:verification_user_id]
+    return unless session[:verifies_with_email_user_id]
 
-    User.find_by_id(session[:verification_user_id])
+    User.find_by_id(session[:verifies_with_email_user_id])
   end
 
   def lock_and_send_verification_instructions(user, secondary_email: nil, reason: nil)
@@ -246,17 +246,12 @@ module VerifiesWithEmail
   def require_email_based_otp?(user)
     return false unless Feature.enabled?(:email_based_mfa, user)
 
-    # As a final time-of-use check, ensure that
-    # `email_otp_required_after` is set to a valid state
-    user.set_email_otp_required_after_based_on_restrictions(save: true)
-
     password_based_login? &&
       # Skip on first log in (which occurs for most during account
       # creation), to avoid double email verification with
       # Devise::Confirmable
       user.last_sign_in_at.present? &&
-      user.email_otp_required_after.present? &&
-      (user.email_otp_required_after <= Time.zone.now || in_email_otp_grace_period?(user))
+      (user.email_based_otp_required? || in_email_otp_warning_period?(user))
   end
 
   def verify_token(user, token)
@@ -328,14 +323,14 @@ module VerifiesWithEmail
   def permitted_to_view_skip_verification_confirmation?
     current_user &&
       Feature.enabled?(:email_based_mfa, current_user) &&
-      permitted_to_skip_email_otp_in_grace_period?(current_user) &&
+      permitted_to_skip_email_otp_in_warning_period?(current_user) &&
       # User should not be able to visit users_skip_verification_confirmation_path after
       # finishing token verification OR after completing the skip verification workflow
-      session[:verification_user_id]
+      session[:verifies_with_email_user_id]
   end
 
   def prompt_for_email_verification(user)
-    session[:verification_user_id] = user.id
+    session[:verifies_with_email_user_id] = user.id
     self.resource = user
     add_gon_variables # Necessary to set the sprite_icons path, since we skip the ApplicationController before_filters
 

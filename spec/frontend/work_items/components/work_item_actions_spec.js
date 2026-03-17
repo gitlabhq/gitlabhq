@@ -367,6 +367,7 @@ describe('WorkItemActions component', () => {
             discussionLocked: true,
           },
         },
+        useWorkItemFeatures: false,
       });
     });
 
@@ -760,9 +761,9 @@ describe('WorkItemActions component', () => {
     it('emits `workItemCreated` when `CreateWorkItemModal` emits `workItemCreated`', () => {
       createComponent();
 
-      findCreateWorkItemModal().vm.$emit('workItemCreated');
+      findCreateWorkItemModal().vm.$emit('work-item-created');
 
-      expect(wrapper.emitted('workItemCreated')).toHaveLength(1);
+      expect(wrapper.emitted('work-item-created')).toHaveLength(1);
     });
   });
 

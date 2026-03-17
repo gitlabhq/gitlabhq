@@ -6,7 +6,7 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import { RSS_FILTER_EXCLUDE_EPIC, RSS_FILTER_EPIC_ONLY } from '~/work_items/constants';

@@ -1004,6 +1004,9 @@ Gitlab.ee do
   Settings.cron_jobs['security_scans_purge_worker'] ||= {}
   Settings.cron_jobs['security_scans_purge_worker']['cron'] ||= '0 */4 * * 6,0'
   Settings.cron_jobs['security_scans_purge_worker']['job_class'] = 'Security::Scans::PurgeWorker'
+  Settings.cron_jobs['security_finding_enrichments_purge_worker'] ||= {}
+  Settings.cron_jobs['security_finding_enrichments_purge_worker']['cron'] ||= '0 */4 * * 6,0'
+  Settings.cron_jobs['security_finding_enrichments_purge_worker']['job_class'] = 'Security::FindingEnrichments::PurgeWorker'
   Settings.cron_jobs['security_destroy_expired_sbom_scans_worker'] ||= {}
   Settings.cron_jobs['security_destroy_expired_sbom_scans_worker']['cron'] ||= '0 2 * * *'
   Settings.cron_jobs['security_destroy_expired_sbom_scans_worker']['job_class'] = 'Security::VulnerabilityScanning::DestroyExpiredSbomScansWorker'
@@ -1110,6 +1113,9 @@ Gitlab.ee do
   Settings.cron_jobs['ai_active_context_migration_worker'] ||= {}
   Settings.cron_jobs['ai_active_context_migration_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['ai_active_context_migration_worker']['job_class'] ||= 'Ai::ActiveContext::MigrationWorker'
+  Settings.cron_jobs['ai_active_context_task_worker'] ||= {}
+  Settings.cron_jobs['ai_active_context_task_worker']['cron'] ||= '*/5 * * * *'
+  Settings.cron_jobs['ai_active_context_task_worker']['job_class'] ||= 'Ai::ActiveContext::TaskWorker'
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker'] ||= {}
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['cron'] ||= '*/11 * * * *'
   Settings.cron_jobs['namespaces_enable_descendants_cache_cron_worker']['job_class'] = 'Namespaces::EnableDescendantsCacheCronWorker'
@@ -1128,9 +1134,12 @@ Gitlab.ee do
   Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker'] ||= {}
   Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker']['cron'] ||= '*/30 * * * *'
   Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker']['job_class'] ||= 'Ai::DuoWorkflows::FailStuckWorkflowsWorker'
-  Settings.cron_jobs['secret_rotation_reminder_batch_worker'] ||= {}
-  Settings.cron_jobs['secret_rotation_reminder_batch_worker']['cron'] ||= '* * * * *'
-  Settings.cron_jobs['secret_rotation_reminder_batch_worker']['job_class'] = 'SecretsManagement::SecretRotationReminderBatchWorker'
+  Settings.cron_jobs['project_secret_rotation_reminder_batch_worker'] ||= {}
+  Settings.cron_jobs['project_secret_rotation_reminder_batch_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['project_secret_rotation_reminder_batch_worker']['job_class'] = 'SecretsManagement::ProjectSecretRotationReminderBatchWorker'
+  Settings.cron_jobs['group_secret_rotation_reminder_batch_worker'] ||= {}
+  Settings.cron_jobs['group_secret_rotation_reminder_batch_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['group_secret_rotation_reminder_batch_worker']['job_class'] = 'SecretsManagement::GroupSecretRotationReminderBatchWorker'
   Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker'] ||= {}
   Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['project_secrets_manager_maintenance_tasks_cron_worker']['job_class'] = 'SecretsManagement::ProjectSecretsManagerMaintenanceTasksCronWorker'
@@ -1250,6 +1259,16 @@ Settings.gitlab_kas['client_timeout_seconds'] ||= 5
 # Settings.gitlab_kas['external_k8s_proxy_url'] ||= 'grpc://localhost:8154' # NOTE: Do not set a default until all distributions have been updated with a correct value
 
 #
+# Knowledge Graph
+#
+Gitlab.ee do
+  Settings['knowledge_graph'] ||= {}
+  Settings.knowledge_graph['secret_file'] ||= Rails.root.join('.gitlab_knowledge_graph_secret')
+  Settings.knowledge_graph['enabled'] ||= false
+  Settings.knowledge_graph['grpc_endpoint'] ||= ENV.fetch('KNOWLEDGE_GRAPH_GRPC_ENDPOINT', 'localhost:50054')
+end
+
+#
 # Authentication
 #
 Settings['authn'] ||= {}
@@ -1263,6 +1282,7 @@ Settings.authn['iam_service'] ||= {}
 Settings.authn.iam_service['enabled'] ||= Gitlab::Utils.to_boolean(ENV['IAM_SERVICE_ENABLED']) || false
 Settings.authn.iam_service['url'] ||= ENV['IAM_SERVICE_URL'] || 'http://localhost:8084'
 Settings.authn.iam_service['audience'] ||= ENV['IAM_SERVICE_AUDIENCE'] || 'gitlab-rails'
+Settings.authn.iam_service['jwks_cache_ttl'] ||= ENV['IAM_SERVICE_JWKS_CACHE_TTL']&.to_i || 3600
 
 #
 # Gitlab Secrets Manager Openbao Integration
@@ -1301,25 +1321,14 @@ Gitlab.ee do
     "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/#{os_info.sub('/', '-')}-duo-workflow-executor.tar.gz"
   end
 
-  secure = Gitlab::Utils.to_boolean(ENV['DUO_AGENT_PLATFORM_SERVICE_SECURE'], default: true)
-
   Settings.duo_workflow.reverse_merge!(
-    secure: secure,
+    secure: true,
     service_url: nil, # service_url is constructued in Gitlab::DuoWorkflow::Client
     debug: false,
     executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/duo-workflow-executor.tar.gz",
     executor_binary_urls: executor_binary_urls,
     executor_version: executor_version
   )
-end
-
-#
-# Zoekt credentials
-#
-Gitlab.ee do
-  Settings['zoekt'] ||= {}
-  Settings.zoekt['username_file'] ||= Rails.root.join('.gitlab_zoekt_username')
-  Settings.zoekt['password_file'] ||= Rails.root.join('.gitlab_zoekt_password')
 end
 
 #

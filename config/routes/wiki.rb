@@ -6,7 +6,7 @@ scope(controller: :wikis) do
     get :pages
     get :templates
     get :new
-    get '/', to: redirect { |params, request| "#{request.path}/home" }
+    get '/', action: :index
     post '/', to: 'wikis#create'
     scope '-' do
       resource :confluence, only: :show

@@ -31,15 +31,21 @@ RSpec.describe SplitMetadataMigration, migration: :gitlab_ci, feature_category: 
 
   before do
     statements = [
-      'DROP TABLE IF EXISTS gitlab_partitions_dynamic.ci_builds_100 CASCADE;',
-      'CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_builds PARTITION OF p_ci_builds FOR VALUES IN (100);'
+      'CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic.ci_builds_100 PARTITION OF p_ci_builds FOR VALUES IN (100)',
+      'ALTER TABLE gitlab_partitions_dynamic.ci_builds_100 RENAME TO ci_builds'
     ]
 
     statements += (1..4).map do |i|
-      "CREATE OR REPLACE VIEW #{view_prefix}_#{i} AS SELECT id, partition_id FROM p_ci_builds WHERE partition_id = 100;"
+      "CREATE OR REPLACE VIEW #{view_prefix}_#{i} AS SELECT id, partition_id FROM p_ci_builds WHERE partition_id = 100"
     end
 
-    Ci::ApplicationRecord.connection.execute(statements.join("\n"))
+    Ci::ApplicationRecord.connection.execute(statements.join(";\n"))
+  end
+
+  after do
+    Ci::ApplicationRecord.connection.execute(<<~SQL)
+      ALTER TABLE gitlab_partitions_dynamic.ci_builds RENAME TO ci_builds_100;
+    SQL
   end
 
   describe '#up' do

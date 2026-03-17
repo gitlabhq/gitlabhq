@@ -22,6 +22,19 @@ export default {
     [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
   },
+  eventTracking: {
+    filteredSearch: {
+      [FILTERED_SEARCH_TERM_KEY]: 'search_on_explore_groups',
+    },
+    pagination: 'click_pagination_on_explore_groups',
+    tabs: 'click_tab_on_explore_groups',
+    sort: 'click_sort_on_explore_groups',
+    hoverStat: 'hover_stat_on_explore_groups',
+    hoverVisibility: 'hover_visibility_icon_on_explore_groups',
+    initialLoad: 'initial_load_on_explore_groups',
+    clickItem: 'click_group_on_explore_groups',
+    clickItemAfterFilter: 'click_group_after_filter_on_explore_groups',
+  },
   name: 'ExploreGroupsApp',
   components: { TabsWithList },
   props: {
@@ -42,6 +55,7 @@ export default {
     :filtered-search-input-placeholder="__('Search')"
     :timestamp-type-map="$options.timestampTypeMap"
     :initial-sort="initialSort"
+    :event-tracking="$options.eventTracking"
     :should-update-active-tab-count-from-tab-query="false"
   />
 </template>

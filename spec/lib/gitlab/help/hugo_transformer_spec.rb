@@ -540,6 +540,22 @@ RSpec.describe Gitlab::Help::HugoTransformer, feature_category: :gitlab_docs do
       expect(transformer.transform(content).strip).to eq(expected_content.strip)
     end
 
+    it 'handles glossary-tooltip shortcodes' do
+      content = <<~MARKDOWN
+        # Documentation
+
+        {{< glossary-tooltip text="API" >}} is a set of rules that allows different software applications to communicate with each other.
+
+      MARKDOWN
+      expected_content = <<~MARKDOWN
+        # Documentation
+
+        API is a set of rules that allows different software applications to communicate with each other.
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
     it 'handles markdown attributes by removing them from the content' do
       content = <<~MARKDOWN
         # Documentation

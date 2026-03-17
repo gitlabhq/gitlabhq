@@ -18,6 +18,7 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
       id project_id group_id inherit_from_id instance template
       created_at updated_at
       encrypted_properties encrypted_properties_iv organization_id project_id group_id
+      event_filters
     ]
   end
 
@@ -56,6 +57,26 @@ RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :
           created_at: eq(Time.current),
           updated_at: eq(Time.current)
         )
+      end
+
+      it 'propagates JSONB filters data correctly' do
+        filter = {
+          'global' => {
+            'rules' => [
+              { 'field' => 'user.id', 'operator' => 'eq', 'value' => 1 }
+            ]
+          },
+          'push' => {
+            'rules' => [
+              { 'field' => 'object_kind', 'operator' => 'eq', 'value' => 'work_item' }
+            ]
+          }
+        }
+        integration.update!(filter: filter)
+
+        execute_service
+
+        expect(created_integration.filter).to eq(filter)
       end
     end
 

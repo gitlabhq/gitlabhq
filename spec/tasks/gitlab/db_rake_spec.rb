@@ -363,6 +363,32 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
           end
         end
 
+        context 'when has cell configuration but cell ID is not found in topology service' do
+          before do
+            allow(connection).to receive(:tables).and_return([])
+
+            allow_next_instance_of(Gitlab::TopologyServiceClient::HealthService) do |instance|
+              allow(instance).to receive(:service_healthy?).and_return(topology_service_healthy)
+            end
+
+            allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
+              allow(instance).to receive(:cell_sequence_ranges)
+                .and_raise(Gitlab::TopologyServiceClient::CellNotFoundError, "Cell '1' not found on Topology Service")
+            end
+          end
+
+          it 'fails the rake task with CellNotFoundError' do
+            expect(Rake::Task['db:schema:load']).to receive(:invoke)
+            expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
+            expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
+            expect(Rake::Task['db:migrate']).not_to receive(:invoke)
+            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).not_to receive(:invoke)
+
+            expect { run_rake_task('gitlab:db:configure') }
+              .to raise_error(Gitlab::TopologyServiceClient::CellNotFoundError, "Cell '1' not found on Topology Service")
+          end
+        end
+
         context 'when has cell configuration but config skips altering cell sequences' do
           let(:skip_sequence_alteration) { true }
 
@@ -572,6 +598,35 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).not_to receive(:invoke)
 
             run_rake_task('gitlab:db:configure')
+          end
+        end
+
+        context 'when has cell configuration but cell ID is not found in topology service' do
+          before do
+            allow(main_model.connection).to receive(:tables).and_return(%w[schema_migrations])
+            allow(ci_model.connection).to receive(:tables).and_return([])
+
+            allow_next_instance_of(Gitlab::TopologyServiceClient::HealthService) do |instance|
+              allow(instance).to receive(:service_healthy?).and_return(topology_service_healthy)
+            end
+
+            allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
+              allow(instance).to receive(:cell_sequence_ranges)
+                .and_raise(Gitlab::TopologyServiceClient::CellNotFoundError, "Cell '1' not found on Topology Service")
+            end
+          end
+
+          it 'fails the rake task with CellNotFoundError' do
+            expect(Rake::Task['db:schema:load:main']).to receive(:invoke)
+            expect(Rake::Task['db:schema:load:ci']).to receive(:invoke)
+            expect(Rake::Task['db:migrate:main']).not_to receive(:invoke)
+            expect(Rake::Task['db:migrate:ci']).not_to receive(:invoke)
+            expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
+            expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
+            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).not_to receive(:invoke)
+
+            expect { run_rake_task('gitlab:db:configure') }
+              .to raise_error(Gitlab::TopologyServiceClient::CellNotFoundError, "Cell '1' not found on Topology Service")
           end
         end
 

@@ -1,14 +1,14 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Project access tokens
 description: Authentication, create, revoke, and token expiration.
 ---
 
 {{< details >}}
 
-Tier: Premium, Ultimate
+Tier: Free, Premium, Ultimate
 Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -19,44 +19,67 @@ Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /history >}}
 
-Project access tokens are similar to passwords, except you can limit access to resources,
-select a limited role, and provide an expiry date.
+Project access tokens provide authenticated access to a specific project. They are similar to
+group access tokens and personal access tokens, but are scoped to the associated project rather
+than a group or user. You cannot use project access tokens to access resources in other projects,
+or to create other group, project, or personal access tokens.
 
-> [!note]
-> Access to a specific project is controlled by a combination of [roles and permissions](../../permissions.md) and token scopes.
+You can use a project access token to authenticate:
 
-Use a project access token to authenticate:
-
-- With the GitLab API.
-- With Git, when using HTTP Basic Authentication, use:
+- With the [GitLab API](../../../api/rest/authentication.md#personal-project-and-group-access-tokens).
+- With Git over HTTPS. Use:
   - Any non-blank value as a username.
   - The project access token as the password.
 
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
 > [!note]
-> On GitLab SaaS, you can use project access tokens with a Premium or Ultimate subscription. With a
-> [trial license](https://about.gitlab.com/free-trial/) you can also create one project access token.
-> 
-> On GitLab Self-Managed instances, you can use project access tokens with any subscription. If
-> you have the Free tier, you can [restrict the creation of project access tokens](#restrict-the-creation-of-project-access-tokens) to limit potential abuse.
+> On GitLab.com, project access tokens require a Premium or Ultimate subscription. During a
+> [trial](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded),
+> you are limited to one project access token.
+>
+> On GitLab Self-Managed and GitLab Dedicated, project access tokens are available with any license.
 
-Project access tokens are similar to group access tokens and personal access tokens, but are
-scoped only to the associated project. You cannot use project access tokens to access resources
-that belong to other projects.
+## View your access tokens
 
-On GitLab Self-Managed instances, project access tokens are subject to the same maximum lifetime limits as personal access tokens if the limit is set.
+{{< history >}}
 
-You cannot use project access tokens to create other group, project, or personal access tokens.
+- In GitLab 16.0 and earlier, token usage information is updated every 24 hours.
+- The frequency of token usage information updates [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/410168) in GitLab 16.1 from 24 hours to 10 minutes.
+- Ability to view IP addresses [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428577) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `pat_ip`. Enabled by default in 17.9.
+- Ability to view IP addresses made [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513302) in GitLab 17.10. Feature flag `pat_ip` removed.
 
-Project access tokens inherit the [default prefix setting](../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
-configured for personal access tokens.
+{{< /history >}}
+
+The project access tokens page displays information about your access tokens.
+
+From this page, you can perform the following actions:
+
+- Create, rotate, and revoke project access tokens.
+- View all active and inactive project access tokens.
+- View token information, including, scopes, assigned roles, and expiration dates.
+- View usage information, including usage dates, and of the last five distinct connection IP addresses.
+  > [!note]
+  > GitLab periodically updates token usage information when the token performs a Git operation or
+  > authenticates an operation with the [REST](../../../api/rest/_index.md) or
+  > [GraphQL](../../../api/graphql/_index.md) API. Token usage times are updated every 10 minutes,
+  > token usage IP addresses update every minute.
+
+To view your project access tokens:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Settings** > **Access tokens**.
+
+Active and usable access tokens are stored in the **Active project access tokens** section.
+Expired, rotated, or revoked tokens are stored in the **Inactive project access tokens** section.
 
 ## Create a project access token
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89114) in GitLab 15.1, Owners can select Owner role for project access tokens.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days and default role of Guest is populated in the UI.
-- Ability to create non-expiring project access tokens was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369122) in GitLab 15.4 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
+- Ability to create non-expiring project access tokens was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
 - Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../../administration/feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
 - Project access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
@@ -68,49 +91,33 @@ configured for personal access tokens.
 
 To create a project access token:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Access tokens**.
 1. Select **Add new token**.
 1. In **Token name**, enter a name. The token name is visible to any user with permissions to view the project.
 1. Optional. In **Token description**, enter a description for the token.
 1. In **Expiration date**, enter an expiry date for the token.
-   - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
-   - If you do not enter an expiry date, the expiry date is automatically set to 30 days later than the current date.
-   - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can extend this limit to 400 days.
-   - An instance-wide maximum lifetime setting can limit the maximum allowable lifetime in GitLab Self-Managed instances.
+   - The token expires at midnight UTC on that date.
+   - If you do not enter a date, the expiry date is set to 365 days from today.
+   - By default, the expiry date cannot be more than 365 days from today. On GitLab 17.6 and later,
+     administrators can [modify the maximum lifetime of access tokens](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
 1. Select a role for the token.
-1. Select the desired scopes.
+1. Select one or more [project access token scopes](#project-access-token-scopes).
 1. Select **Create project access token**.
 
-A project access token is displayed. Save the project access token somewhere safe. After you leave or refresh the page, you can't view it again.
+A project access token is displayed. Save the project access token somewhere safe. After you leave
+or refresh the page, you cannot view it again.
+
+All project access tokens inherit the
+[default prefix setting](../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
+configured for personal access tokens.
 
 > [!warning]
 > Project access tokens are treated as internal users.
-> If an internal user creates a project access token, that token is able to access
+> If an internal user creates a project access token, that token can access
 > all projects that have visibility level set to Internal.
 
-## Revoke or rotate a project access token
-
-{{< history >}}
-
-- Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
-- Ability to view expired and revoked tokens until they are automatically deleted and [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
-
-{{< /history >}}
-
-In GitLab 17.9 and later, you can view both active and inactive project
-access tokens on the access tokens page.
-
-The inactive project access tokens table displays revoked and expired tokens until they are [automatically deleted](#inactive-token-retention).
-
-To revoke or rotate a project access token:
-
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Settings** > **Access tokens**.
-1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}) or **Rotate** ({{< icon name="retry" >}}).
-1. On the confirmation dialog, select **Revoke** or **Rotate**.
-
-## Scopes for a project access token
+### Project access token scopes
 
 {{< history >}}
 
@@ -120,34 +127,78 @@ To revoke or rotate a project access token:
 
 {{< /history >}}
 
-The scope determines the actions you can perform when you authenticate with a project access token.
+Scopes define the actions available when you authenticate with a project access token.
 
-> [!note]
-> See the warning in [create a project access token](#create-a-project-access-token) regarding internal projects.
-
-| Scope              | Description                                                                                                                                                                                                                                                                              |
-|:-------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Scope              | Description |
+| ------------------ | ----------- |
 | `api`              | Grants complete read and write access to the scoped project API, including the [container registry](../../packages/container_registry/_index.md), the [dependency proxy](../../packages/dependency_proxy/_index.md), and the [package registry](../../packages/package_registry/_index.md). |
-| `read_api`         | Grants read access to the scoped project API, including the [package registry](../../packages/package_registry/_index.md).                                                                                                                                                                |
-| `read_registry`    | Grants read access (pull) to the [container registry](../../packages/container_registry/_index.md) images if a project is private and authorization is required.                                                                                                                          |
-| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/_index.md). You need both read and write access to push images.                                                                                                                              |
-| `read_repository`  | Grants read access (pull) to the repository.                                                                                                                                                                                                                                             |
-| `write_repository` | Grants read and write access (pull and push) to the repository.                                                                                                                                                                                                                          |
-| `create_runner`    | Grants permission to create runners in the project.                                                                                                                                                                                                                                      |
-| `manage_runner`    | Grants permission to manage runners in the project.                                                                                                                                                                                                                                      |
-| `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                          |
-| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project.                                                                                                                                                                                         |
+| `read_api`         | Grants read access to the scoped project API, including the [package registry](../../packages/package_registry/_index.md). |
+| `read_registry`    | Grants read access (pull) to [container registry](../../packages/container_registry/_index.md) images if the project is private and authorization is required. Available only when the container registry is enabled. |
+| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/_index.md). To push images, you must include the `read_registry` scope. Available only when the container registry is enabled. |
+| `read_repository`  | Grants read access (pull) to the repository in the project. |
+| `write_repository` | Grants read and write access (pull and push) to the repository in the project. |
+| `create_runner`    | Grants permission to create runners in the project. |
+| `manage_runner`    | Grants permission to manage runners in the project. |
+| `ai_features`      | Grants permission to perform API actions for GitLab Duo, the Code Suggestions API, and the GitLab Duo Chat API. Designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see the individual extension documentation. Does not work for GitLab Self-Managed versions 16.5, 16.6, and 16.7. |
+| `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes in the project. |
 | `self_rotate`      | Grants permission to rotate this token using the [personal access token API](../../../api/personal_access_tokens.md#rotate-a-personal-access-token). Does not allow rotation of other tokens. |
 
-## Restrict the creation of project access tokens
+> [!warning]
+> If you have enabled [external authorization](../../../administration/settings/external_authorization.md),
+> personal access tokens cannot access container or package registries. To restore access,
+> turn off external authorization.
 
-To limit potential abuse, you can restrict users from creating tokens for a group hierarchy. This setting is only configurable for a top-level group and applies to every downstream project and subgroup. Any existing project access tokens remain valid until their expiration date or until manually revoked.
+## Rotate a project access token
 
-1. On the top bar, select **Search or go to** and find your group.
-   This group must be at the top level.
-1. Select **Settings** > **General**.
-1. Expand **Permissions and group features**.
-1. In **Permissions**, clear the **Users can create project access tokens and group access tokens in this group** checkbox.
+{{< history >}}
+
+- Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+- Ability to view expired and revoked tokens until they are automatically deleted [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
+
+{{< /history >}}
+
+Rotate a token to create a new token with the same permissions and scope as the original.
+The original token becomes inactive immediately, and GitLab retains both versions for
+audit purposes. You can view both active and inactive tokens on the access tokens page.
+
+On GitLab Self-Managed and GitLab Dedicated, you can modify the
+[retention period for inactive tokens](../../../administration/settings/account_and_limit_settings.md#inactive-project-and-group-access-token-retention-period).
+
+> [!warning]
+> This action cannot be undone. Tools that rely on a rotated access token will stop working until
+> you reference your new token.
+
+To rotate a project access token:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Settings** > **Access tokens**.
+1. For the relevant token, select **Rotate** ({{< icon name="retry" >}}).
+1. In the confirmation dialog, select **Rotate**.
+
+## Revoke a project access token
+
+{{< history >}}
+
+- Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+- Ability to view expired and revoked tokens until they are automatically deleted [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
+
+{{< /history >}}
+
+Revoke a token to immediately invalidate it and prevent further use. Revoked tokens are not
+deleted immediately, but you can filter token lists to show only active tokens. By default,
+GitLab deletes revoked group and project access tokens after 30 days. For more information, see
+[inactive token retention](../../../administration/settings/account_and_limit_settings.md#inactive-project-and-group-access-token-retention-period).
+
+> [!warning]
+> This action cannot be undone. Tools that rely on a revoked access token will stop working until
+> you add a new token.
+
+To revoke a project access token:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Settings** > **Access tokens**.
+1. For the relevant token, select **Revoke** ({{< icon name="remove" >}}).
+1. In the confirmation dialog, select **Revoke**.
 
 ## Access token expiration
 
@@ -195,15 +246,19 @@ automatically applied:
 
 {{< /history >}}
 
-GitLab runs a check every day at 1:00 AM UTC to identify project access tokens that are expiring in the near future. Members of the project with the Maintainer or Owner role are notified by email when these tokens expire in a certain number of days. The number of days differs depending on the version of GitLab:
+GitLab runs a daily check at 1:00 AM UTC to identify project access tokens that expire soon.
+Direct members with the Owner or Maintainer role are notified by email seven days before a token
+expires. In GitLab 17.6 and later, notifications are also sent 30 and 60 days before a token expires.
 
-- In GitLab 17.6 and later, project maintainers and owners are notified by email when the check identifies their project access tokens as expiring in the next 60 days. An additional email is sent when the check identifies their project access tokens as expiring in the next 30 days.
-- Project maintainers and owners are notified by email when the check identifies their project access tokens as expiring in the next seven days.
-- In GitLab 17.7 and later, project members who have inherited the Owner or Maintainer role due to the project belonging to a group can also receive notification emails. You can enable this by changing:
-  - The [group setting](../../group/manage.md#expiry-emails-for-group-and-project-access-tokens) in any of the parent groups of the project.
-  - On GitLab Self-Managed, the [instance setting](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members).
+In GitLab 17.7 and later, members with an inherited Owner or Maintainer role can also receive
+these emails. You can configure this for every group and project on the
+[GitLab instance](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members)
+or a [specific parent group](../../group/manage.md#expiry-emails-for-group-and-project-access-tokens).
+If applied to a parent group, this setting is inherited by all descendant groups and projects.
 
-Your expired access tokens are listed in the [inactive project access tokens table](#revoke-or-rotate-a-project-access-token) until they are [automatically deleted](#inactive-token-retention).
+Expired tokens appear in the inactive project access tokens section until they're automatically
+deleted. On GitLab Self-Managed, you can modify this
+[retention period](../../../administration/settings/account_and_limit_settings.md#inactive-project-and-group-access-token-retention-period).
 
 ## Bot users for projects
 
@@ -214,60 +269,33 @@ Your expired access tokens are listed in the [inactive project access tokens tab
 
 {{< /history >}}
 
-Bot users for projects are [GitLab-created non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users).
-Each time you create a project access token, a bot user is created and added to the project.
-This user is not a billable user, so it does not count toward the license limit.
+When you create a project access token, GitLab creates a bot user and associates it with the token.
 
-The bot users for projects have [permissions](../../permissions.md#project-permissions) that correspond with the
-selected role and [scope](#scopes-for-a-project-access-token) of the project access token.
+Bot users have the following properties:
 
-- The name is set to the name of the token.
-- The username is set to `project_{project_id}_bot_{random_string}`. For example, `project_123_bot_4ffca233d8298ea1`.
-- The email is set to `project_{project_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}`. For example, `project_123_bot_4ffca233d8298ea1@noreply.example.com`.
+- They are granted permissions that correspond with the role and scope of the associated access token.
+- They are members of the project, but cannot be removed from the project or added directly
+  to any other groups or projects.
+- They are [non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users)
+  and do not count towards your license limit.
+- Their contributions are associated with the bot user account.
+- When removed, their contributions are moved to a
+  [ghost user](../../profile/account/delete_account.md#associated-records).
 
-API calls made with a project access token are associated with the corresponding bot user.
+When the bot user is created, the following attributes are defined:
 
-Bot users for projects:
+| Attribute | Value                                                                                                    | Example |
+| --------- | -------------------------------------------------------------------------------------------------------- | ------- |
+| Name      | The name of the associated access token.                                                                 | `Main token - Read registry` |
+| Username  | Generated in this format: `project_{project_id}_bot_{random_string}`                                     | `project_123_bot_4ffca233d8298ea1` |
+| Email     | Generated in this format: `project_{project_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}` | `project_123_bot_4ffca233d8298ea1@noreply.example.com` |
 
-- Are included in a project's member list but cannot be modified.
-- Cannot be added to any other project.
-- Can have a maximum role of Owner for a project. For more information, see
-  [Create a project access token](../../../api/project_access_tokens.md#create-a-project-access-token).
+## Restrict the creation of project access tokens
 
-When the project access token is [revoked](#revoke-or-rotate-a-project-access-token):
+To limit potential abuse, you can restrict users from creating access tokens for projects in a
+top-level group. Any existing tokens remain valid until they expire or are manually revoked.
 
-- The bot user is retained as per [inactive token retention setting](#inactive-token-retention).
-- The bot user is deleted 30 days after the token expiration date. This applies even if the token is revoked before the
-  expiration date. After deletion, all existing user records are associated to [a ghost user](../../profile/account/delete_account.md#associated-records).
-
-> [!note]
-> The original expiration date of the token always defines when the bot user is deleted. For example, if a token is revoked on April 5 but expires on April 20, the bot user will be deleted around May 20 (30 days after the expiration date).
-
-For more information, see [bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).
-
-## Inactive token retention
-
-By default, GitLab deletes group and project access tokens and their [token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) 30 days after the last active token from the token family becomes inactive. This removes all tokens in the token family and the associated bot user and migrates the bot user contributions to a system-wide "Ghost User".
-
-Prerequisites:
-
-- Administrator access.
-
-To modify the retention period for inactive tokens:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **General**.
-1. Expand **Account and limit**.
-1. In the **Inactive project and group access token retention period** text box, modify the retention period.
-   - If a number is defined, all group and project access tokens are deleted after they are inactive for the specified number of days.
-   - If the field is blank, inactive tokens are never deleted.
-1. Select **Save changes**.
-
-You can also use the [application settings API](../../../api/settings.md) to modify the `inactive_resource_access_tokens_delete_after_days` attribute.
-
-## Token availability
-
-More than one project access token is only available in paid subscriptions. In Premium and Ultimate trial subscriptions, only one project access token is included. For more information, see the ["What is included" section of the GitLab Trial FAQ](https://about.gitlab.com/free-trial/#what-is-included-in-my-free-trial-what-is-excluded).
+For more information, see [restrict the creation of group and project access tokens](../../group/settings/group_access_tokens.md#restrict-the-creation-of-group-and-project-access-tokens).
 
 ## Related topics
 

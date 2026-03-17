@@ -18,6 +18,7 @@
     - '[ "$FOSS_ONLY" = "1" ] && rm -rf ee/ qa/spec/ee/ qa/qa/specs/features/ee/ qa/qa/ee/ qa/qa/ee.rb'
     - export GOPATH=$CI_PROJECT_DIR/.go
     - mkdir -p $GOPATH
+    - (command -v git &> /dev/null && git config --global http.https://gitlab.com/gitlab-org/gitlab.proactiveAuth basic) || true
     - source scripts/utils.sh
     - log_disk_usage "true"  # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
 
@@ -152,7 +153,7 @@
 
 .es8-services:
   services:
-    - name: elasticsearch:8.19.11
+    - name: elasticsearch:8.19.12
 
 .es8-variables:
   variables:
@@ -192,12 +193,34 @@
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 
+.pgvector17-services:
+  services:
+    - name: pgvector/pgvector:pg17
+      alias: pgvector
+      variables:
+        POSTGRES_PASSWORD: password
+
 .use-pg17-opensearch-latest-ee:
   extends:
     - .use-pg17
   services:
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.opensearch-latest-services, services]
+
+.use-pg17-pgvector17-es8-ee:
+  extends:
+    - .use-pg17
+    - .es8-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.pgvector17-services, services]
+    - !reference [.es8-services, services]
+  variables:
+    PGVECTOR_HOST: pgvector
+    PGVECTOR_PORT: "5432"
+    PGVECTOR_DATABASE: postgres
+    PGVECTOR_USER: postgres
+    PGVECTOR_PASSWORD: password
 
 .os1-services:
   services:
@@ -308,7 +331,7 @@
         docker run --rm --privileged ${QEMU_IMAGE} --install all;
         echo -e "section_end:`date +%s`:emulator_install\r\e[0K"
       fi
-    - docker buildx create --use --driver-opt network=host # creates and sets to active buildkit builder
+    - docker buildx create --use --driver-opt network=host  # creates and sets to active buildkit builder
 
 .use-buildx:
   extends: .use-docker-in-docker
@@ -480,7 +503,7 @@
     - !reference [.ruby-gems-cache]
     - *gitaly-binaries-cache
     - *workhorse-cache
-    - *zoekt-elasticsearch-indexer-cache # gitlab-ci has a limit of max 4 caches, so these binaries are cached together
+    - *zoekt-elasticsearch-indexer-cache  # gitlab-ci has a limit of max 4 caches, so these binaries are cached together
 
 .static-analysis-cache:
   extends: .cache-analytics

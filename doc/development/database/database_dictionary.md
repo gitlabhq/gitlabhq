@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Database Dictionary
 ---
 
@@ -46,12 +46,14 @@ table_size: small
 | `milestone`                     | String        | yes         | The milestone that introduced this table. |
 | `gitlab_schema`                 | String        | yes         | GitLab schema name. |
 | `notes`                         | String        | no          | Use for comments, as Psych cannot parse YAML comments. |
-| `table_size`                    | String        | yes         | Classification of current table size on GitLab.com[^1]. The size includes indexes. For partitioned tables, the size is the size of the largest partition. Valid options are `unknown`, `small` (< 10 GB), `medium` (< 50 GB), `large` (< 100 GB), `over_limit` (above 100 GB). |
+| `table_size`                    | String        | yes         | Classification of current table size on GitLab.com. <sup>1</sup> The size includes indexes. For partitioned tables, the size is the size of the largest partition. Valid options are `unknown`, `small` (< 10 GB), `medium` (< 50 GB), `large` (< 100 GB), `over_limit` (above 100 GB). |
 | `organization_transfer_support` | String        | conditional | Required when `sharding_key` includes `organization_id`. See [Organization transfer support](#organization-transfer-support). |
 | `sharding_key`                  | Hash          | conditional | Identifies the column used to relate the table to an organization. Only set when the column has a `NOT NULL` constraint. See [Sharding key fields](#sharding-key-fields). |
 | `desired_sharding_key`          | Hash          | conditional | Identifies the intended sharding key column when it exists but doesn't have a `NOT NULL` constraint yet. See [Sharding key fields](#sharding-key-fields). |
 
-[^1] New tables are usually `small` by default as they contain no data. This attribute is updated automatically monthly.
+**Footnotes**:
+
+1. New tables are usually `small` by default as they contain no data. This attribute is updated automatically monthly.
 
 ### Process
 
@@ -178,12 +180,17 @@ The `organization_transfer_support` field is **required** when a table's `shardi
 organization_transfer_support: <status_value>
 ```
 
-The value must be either `supported` or `todo`.
+The value must be one of: `supported`, `todo`, or `no_work_needed`.
 
 ### Status values
 
 - **`supported`**: The table is properly handled in the organization transfer services.
   - Required for all **new** tables sharded by `organization_id`.
-  - The table must be referenced in `app/services/organizations/users/transfer_service.rb` or `app/services/organizations/groups/transfer_service.rb`.
+  - The table must be referenced in one of the transfer services:
+    - `app/services/organizations/transfer/groups_service.rb`
+    - `app/services/organizations/transfer/users_service.rb`
+    - `ee/app/services/ee/organizations/transfer/groups_service.rb`
 - **`todo`**: The table needs organization transfer support but doesn't have it yet.
   - Used for **existing** tables that were sharded by `organization_id` previously.
+- **`no_work_needed`**: The table has been reviewed and does not require any updates during organization transfers.
+  - Used when the table's `organization_id` is derived from or cascades through other relationships that are already handled.

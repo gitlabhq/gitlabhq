@@ -53,12 +53,6 @@ module Gitlab
         # We select the import states again, because they may have transitioned from
         # scheduled/started to finished/failed while we were looking up their Sidekiq status.
         completed_import_states = enqueued_import_states_with_jid.id_in(completed_import_state_ids)
-        completed_import_state_jids = completed_import_states.map { |import_state| import_state.jid }.join(', ')
-
-        ::Import::Framework::Logger.info(
-          message: 'Marked stuck import jobs as failed',
-          job_ids: completed_import_state_jids
-        )
 
         completed_import_states
           .each { |import_state| mark_as_failed(import_state) }
@@ -72,7 +66,9 @@ module Gitlab
           import_state: import_state,
           exception: e,
           error_source: self.class.name,
-          fail_import: true
+          fail_import: true,
+          message: 'Marking stuck import job as failed',
+          extra_attributes: { jid: import_state.jid }
         )
       end
 

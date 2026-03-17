@@ -25,11 +25,46 @@
 #       :project_id
 #     end
 #
+# The following class methods may be overridden to customize positioning behaviour,
+# for example when the underlying column has been migrated to bigint:
+#
+#     def self.relative_positioning_min_position = Gitlab::Database::MIN_BIGINT_VALUE
+#     def self.relative_positioning_max_position = Gitlab::Database::MAX_BIGINT_VALUE
+#
 module RelativePositioning
   extend ActiveSupport::Concern
   include ::Gitlab::RelativePositioning
 
   class_methods do
+    def relative_positioning_min_position
+      ::Gitlab::RelativePositioning::MIN_POSITION
+    end
+
+    def relative_positioning_max_position
+      ::Gitlab::RelativePositioning::MAX_POSITION
+    end
+
+    def relative_positioning_start_position
+      ::Gitlab::RelativePositioning::START_POSITION
+    end
+
+    def relative_positioning_ideal_distance
+      ::Gitlab::RelativePositioning::IDEAL_DISTANCE
+    end
+
+    def relative_positioning_max_gap
+      ::Gitlab::RelativePositioning::MAX_GAP
+    end
+
+    def mover
+      ::Gitlab::RelativePositioning::Mover.new(
+        relative_positioning_start_position,
+        relative_positioning_min_position..relative_positioning_max_position,
+        ideal_distance: relative_positioning_ideal_distance,
+        max_gap: relative_positioning_max_gap
+      )
+    end
+
     def move_nulls_to_end(objects)
       move_nulls(objects, at_end: true)
     end
@@ -42,27 +77,31 @@ module RelativePositioning
 
     # @api private
     def gap_size(context, gaps:, at_end:, starting_from:)
-      total_width = IDEAL_DISTANCE * gaps
-      size = if at_end && starting_from + total_width >= MAX_POSITION
-               (MAX_POSITION - starting_from) / gaps
-             elsif !at_end && starting_from - total_width <= MIN_POSITION
-               (starting_from - MIN_POSITION) / gaps
+      ideal = relative_positioning_ideal_distance
+      min_pos = relative_positioning_min_position
+      max_pos = relative_positioning_max_position
+
+      total_width = ideal * gaps
+      size = if at_end && starting_from + total_width >= max_pos
+               (max_pos - starting_from) / gaps
+             elsif !at_end && starting_from - total_width <= min_pos
+               (starting_from - min_pos) / gaps
              else
-               IDEAL_DISTANCE
+               ideal
              end
 
-      return [size, starting_from] if size >= MIN_GAP
+      return [size, starting_from] if size >= ::Gitlab::RelativePositioning::MIN_GAP
 
       terminus = context.at_position(starting_from)
 
       if at_end
         terminus.shift_left
         max_relative_position = terminus.relative_position
-        [[(MAX_POSITION - max_relative_position) / gaps, IDEAL_DISTANCE].min, max_relative_position]
+        [[(max_pos - max_relative_position) / gaps, ideal].min, max_relative_position]
       else
         terminus.shift_right
         min_relative_position = terminus.relative_position
-        [[(min_relative_position - MIN_POSITION) / gaps, IDEAL_DISTANCE].min, min_relative_position]
+        [[(min_relative_position - min_pos) / gaps, ideal].min, min_relative_position]
       end
     end
 
@@ -82,7 +121,7 @@ module RelativePositioning
       objects.first.check_repositioning_allowed!
 
       number_of_gaps = objects.size # 1 to the nearest neighbour, and one between each
-      representative = RelativePositioning.mover.context(objects.first)
+      representative = mover.context(objects.first)
 
       position = if at_end
                    representative.max_relative_position
@@ -90,7 +129,7 @@ module RelativePositioning
                    representative.min_relative_position
                  end
 
-      position ||= START_POSITION # If there are no positioned siblings, start from START_POSITION
+      position ||= relative_positioning_start_position
 
       gap = 0
       attempts = 10 # consolidate up to 10 gaps to find enough space
@@ -100,11 +139,13 @@ module RelativePositioning
       end
 
       # Allow placing items next to each other, if we have to.
-      gap = 1 if gap < MIN_GAP
+      gap = 1 if gap < ::Gitlab::RelativePositioning::MIN_GAP
       delta = at_end ? gap : -gap
       indexed = (at_end ? objects : objects.reverse).each_with_index
 
-      lower_bound, upper_bound = at_end ? [position, MAX_POSITION] : [MIN_POSITION, position]
+      min_pos = relative_positioning_min_position
+      max_pos = relative_positioning_max_position
+      lower_bound, upper_bound = at_end ? [position, max_pos] : [min_pos, position]
 
       representative.model_class.transaction do
         indexed.each_slice(100) do |batch|
@@ -121,10 +162,6 @@ module RelativePositioning
     end
   end
 
-  def self.mover
-    ::Gitlab::RelativePositioning::Mover.new(START_POSITION, (MIN_POSITION..MAX_POSITION))
-  end
-
   # To be overriden on child classes whenever
   # blocking position updates is necessary.
   def check_repositioning_allowed!
@@ -134,38 +171,38 @@ module RelativePositioning
   def move_between(before, after)
     before, after = [before, after].sort_by(&:relative_position) if before && after
 
-    RelativePositioning.mover.move(self, before, after)
+    self.class.mover.move(self, before, after)
   rescue NoSpaceLeft => e
     could_not_move(e)
     raise e
   end
 
   def move_after(before = self)
-    RelativePositioning.mover.move(self, before, nil)
+    self.class.mover.move(self, before, nil)
   rescue NoSpaceLeft => e
     could_not_move(e)
     raise e
   end
 
   def move_before(after = self)
-    RelativePositioning.mover.move(self, nil, after)
+    self.class.mover.move(self, nil, after)
   rescue NoSpaceLeft => e
     could_not_move(e)
     raise e
   end
 
   def move_to_end
-    RelativePositioning.mover.move_to_end(self)
+    self.class.mover.move_to_end(self)
   rescue NoSpaceLeft => e
     could_not_move(e)
-    self.relative_position = MAX_POSITION
+    self.relative_position = self.class.relative_positioning_max_position
   end
 
   def move_to_start
-    RelativePositioning.mover.move_to_start(self)
+    self.class.mover.move_to_start(self)
   rescue NoSpaceLeft => e
     could_not_move(e)
-    self.relative_position = MIN_POSITION
+    self.relative_position = self.class.relative_positioning_min_position
   end
 
   def next_object_by_relative_position(ignoring: nil, order: :asc)

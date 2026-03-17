@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use Git branches to develop new features. Add branch protections to critical branches to ensure only trusted users can merge into them.
 title: Default branch
 ---
@@ -46,7 +46,7 @@ Prerequisites:
 
 To update the default branch for an individual [project](../../_index.md):
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch defaults**. For **Default branch**, select a new default branch.
 1. Optional. Select the **Auto-close referenced issues on default branch** checkbox to close
@@ -54,7 +54,7 @@ To update the default branch for an individual [project](../../_index.md):
    [uses a closing pattern](../../issues/managing_issues.md#closing-issues-automatically).
 1. Select **Save changes**.
 
-You can also use the `default_branch` attribute of the [Projects API](../../../../api/projects.md).
+You can also use the `default_branch` attribute of the [projects API](../../../../api/projects.md).
 When you create a project with the API and set `initialize_with_readme` to `true`,
 you can specify the `default_branch` parameter as either:
 
@@ -94,7 +94,7 @@ Prerequisites:
 
 To change the default branch name for new projects in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Repository**.
 1. Expand **Default branch**.
 1. For **Initial default branch name**, select a new default branch.
@@ -199,7 +199,7 @@ on a per-group basis. In
 [enforce protection of initial default branches](#prevent-overrides-of-default-branch-protection)
 which locks this setting for group owners.
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Repository**.
 1. Expand **Default branch**.
 1. Select [**Initial default branch protection**](#protect-initial-default-branches).

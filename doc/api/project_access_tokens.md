@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Project access tokens API
 ---
 
@@ -142,7 +142,7 @@ POST projects/:id/access_tokens
 | `id`           | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
 | `name`         | string            | yes      | Name of the token. |
 | `description`  | string            | no       | Description of the project access token. Maximum: 255 characters. |
-| `scopes`       | `Array[String]`   | yes      | List of [scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token) available to the token. |
+| `scopes`       | `Array[String]`   | yes      | List of [scopes](../user/project/settings/project_access_tokens.md#project-access-token-scopes) available to the token. |
 | `access_level` | integer           | no       | Role for the token. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Default value: `40`. |
 | `expires_at`   | date              | yes      | Expiration date of the token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 

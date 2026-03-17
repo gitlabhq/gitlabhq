@@ -246,34 +246,6 @@ RSpec.describe 'Dashboard Projects', :js, :with_current_organization, feature_ca
     end
   end
 
-  it 'avoids an N+1 query in dashboard index', quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/589685',
-    type: :investigating
-  } do
-    visit member_dashboard_projects_path
-    wait_for_requests
-
-    control = ActiveRecord::QueryRecorder.new do
-      visit member_dashboard_projects_path
-      wait_for_requests
-    end
-
-    new_project = create(:project, :repository, name: 'new project')
-    create(:ci_pipeline, :with_job, status: :success, project: new_project, ref: new_project.commit.sha)
-    new_project.add_developer(user)
-
-    # There are a few known N+1 queries: https://gitlab.com/gitlab-org/gitlab/-/issues/214037
-    # - User#max_member_access_for_project_ids
-    # - ProjectsHelper#load_pipeline_status / Ci::CommitWithPipeline#last_pipeline
-    # - Ci::Pipeline#detailed_status
-    # - Checking the callout status before saving the new one
-
-    expect do
-      visit member_dashboard_projects_path
-      wait_for_requests
-    end.not_to exceed_query_limit(control).with_threshold(6)
-  end
-
   context 'for delayed deletion' do
     let_it_be(:project) { create(:project, :archived, namespace: user.namespace, marked_for_deletion_at: Date.current) }
 

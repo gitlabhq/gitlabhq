@@ -32,7 +32,7 @@ module IncidentManagement
 
     def create_issue_for(alert)
       AlertManagement::CreateAlertIssueService
-        .new(alert, Users::Internal.alert_bot)
+        .new(alert, Users::Internal.in_organization(alert.project.organization_id).alert_bot)
         .execute
     end
 

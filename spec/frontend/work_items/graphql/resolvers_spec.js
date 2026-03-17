@@ -10,7 +10,10 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_HIERARCHY,
 } from '~/work_items/constants';
-import { createWorkItemQueryResponse } from 'ee_else_ce_jest/work_items/mock_data';
+import {
+  createWorkItemQueryResponse,
+  createWorkItemQueryResponseWithFeatures,
+} from 'ee_else_ce_jest/work_items/mock_data';
 
 describe('work items graphql resolvers', () => {
   describe('updateNewWorkItemCache', () => {
@@ -46,6 +49,17 @@ describe('work items graphql resolvers', () => {
       return queryResult.data.namespace.workItem.widgets.find(({ type }) => type === widgetName);
     };
 
+    const queryWithFeatures = async (featureName = null) => {
+      const queryResult = await mockApolloClient.query({
+        query: workItemByIidQuery,
+        variables: { fullPath: fullPathWithId, iid, useWorkItemFeatures: true },
+      });
+
+      if (featureName == null) return queryResult.data.namespace.workItem;
+
+      return queryResult.data.namespace.workItem.features[featureName];
+    };
+
     beforeEach(() => {
       const mockApollo = createMockApollo([], {
         Mutation: {
@@ -54,10 +68,17 @@ describe('work items graphql resolvers', () => {
           },
         },
       });
+
       mockApollo.clients.defaultClient.cache.writeQuery({
         query: workItemByIidQuery,
         variables: { fullPath: fullPathWithId, iid },
         data: createWorkItemQueryResponse().data,
+      });
+
+      mockApollo.clients.defaultClient.cache.writeQuery({
+        query: workItemByIidQuery,
+        variables: { fullPath: fullPathWithId, iid, useWorkItemFeatures: true },
+        data: createWorkItemQueryResponseWithFeatures().data,
       });
       mockApolloClient = mockApollo.clients.defaultClient;
     });
@@ -240,6 +261,84 @@ describe('work items graphql resolvers', () => {
         sharedWidgetsAutosaveKey,
         JSON.stringify(widgets),
       );
+    });
+
+    describe('with useWorkItemFeatures enabled', () => {
+      const mutateWithFeatures = (input) => {
+        return mutate({ useWorkItemFeatures: true, ...input });
+      };
+
+      describe('with assignees input', () => {
+        it('updates assignees via features', async () => {
+          const assigneeNodes = [
+            {
+              __typename: 'UserCore',
+              id: 'gid://gitlab/User/1',
+              avatarUrl: 'https://example.com/avatar1',
+              name: 'Administrator',
+              username: 'root',
+              webUrl: 'http://gdk.local:3000/root',
+              webPath: '/root',
+            },
+          ];
+
+          await mutateWithFeatures({ assignees: assigneeNodes });
+
+          const result = await queryWithFeatures('assignees');
+          expect(result).toMatchObject({
+            assignees: { nodes: assigneeNodes },
+          });
+        });
+      });
+
+      describe('with hierarchy input', () => {
+        it('updates parent via features', async () => {
+          const parent = {
+            confidential: false,
+            id: 'gid://gitlab/WorkItem/1259',
+            iid: '56',
+            title: 'PARENT',
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'test-project-path',
+              __typename: 'Namespace',
+            },
+            webUrl: 'http://127.0.0.1:3000/groups/flightjs/-/epics/56',
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/8',
+              name: 'Epic',
+              iconName: 'work-item-epic',
+              __typename: 'WorkItemType',
+            },
+            __typename: 'WorkItem',
+          };
+
+          await mutateWithFeatures({ parent });
+
+          const result = await queryWithFeatures('hierarchy');
+          expect(result).toMatchObject({
+            parent: { id: 'gid://gitlab/WorkItem/1259' },
+          });
+        });
+      });
+
+      describe('with title input', () => {
+        it('updates title directly on workItem', async () => {
+          await mutateWithFeatures({ title: 'Features Title' });
+
+          const result = await queryWithFeatures();
+          expect(result).toMatchObject({ title: 'Features Title' });
+        });
+      });
+
+      describe('with confidential input', () => {
+        it('updates confidential directly on workItem', async () => {
+          await mutateWithFeatures({ confidential: true });
+
+          const result = await queryWithFeatures();
+          expect(result).toMatchObject({ confidential: true });
+        });
+      });
     });
   });
 });

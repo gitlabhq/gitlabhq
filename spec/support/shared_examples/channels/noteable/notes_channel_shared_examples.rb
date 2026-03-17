@@ -9,7 +9,7 @@ RSpec.shared_examples 'handle subscription based on user access' do
   end
 
   it 'rejects the subscription when the user does not have access' do
-    stub_action_cable_connection current_user: nil
+    stub_action_cable_connection(current_user: nil, current_organization: current_organization)
 
     subscribe(subscribe_params)
 

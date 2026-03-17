@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Project settings
 ---
 
@@ -20,7 +20,7 @@ title: Project settings
 
 To configure features and permissions for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. To allow users to request access to the project, select the **Users can request access** checkbox.
@@ -31,24 +31,18 @@ To configure features and permissions for a project:
 
 When you turn off a feature, the following additional features are also unavailable:
 
-- If you turn off the **Issues** feature, project users cannot use:
-
+- If you turn off the **Work items** feature, project users cannot use:
   - **Issue Boards**
   - **Service Desk**
   - Project users can still access **Milestones** from merge requests.
-
-- If you turn off **Issues** and **Merge Requests**, project users cannot use:
-
+- If you turn off **Work items** and **Merge Requests**, project users cannot use:
   - **Labels**
   - **Milestones**
-
 - If you turn off **Repository**, project users cannot access:
-
   - **Merge requests**
   - **CI/CD**
   - **Git Large File Storage**
   - **Packages**
-
 - The metrics dashboard requires read access to project environments and deployments.
   Users with access to the metrics dashboard can also access environments and deployments.
 
@@ -60,7 +54,7 @@ and accessible to project members, regardless of their role.
 
 To toggle the availability of individual features in a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. To change the availability of a feature, turn the toggle on or off.
@@ -74,7 +68,7 @@ To toggle the availability of individual features in a project:
 By default, project analytics are displayed under the **Analyze** item in the left sidebar.
 To turn this feature off and remove the **Analyze** item from the left sidebar:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn off the **Analytics** toggle.
@@ -99,10 +93,10 @@ In some environments, users can submit a [CVE identifier request](../../applicat
 
 To turn off the CVE identifier request option in issues in your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
-1. Under **Issues**, turn off the **CVE ID requests in the issue sidebar** toggle.
+1. Under **Work items**, turn off the **CVE ID requests in the issue sidebar** toggle.
 1. Select **Save changes**.
 
 ## Turn off project email notifications
@@ -111,7 +105,7 @@ Prerequisites:
 
 - You must have the Owner role for the project.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Clear the **Enable email notifications** checkbox.
@@ -137,7 +131,7 @@ Prerequisites:
 
 To turn off diff previews for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Clear **Include diff previews**.
@@ -155,6 +149,8 @@ Configure your project's merge request settings:
   - [Merge only if pipeline succeeds](../merge_requests/auto_merge.md).
   - [Merge only when all threads are resolved](../merge_requests/_index.md#prevent-merge-unless-all-threads-are-resolved).
   - [Required associated issue from Jira](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged).
+  - [Merge request title validation](../merge_requests/title_validation.md).
+  - [Automatic rebase before merge](../merge_requests/methods/_index.md#automatic-rebase-before-merge) for semi-linear and fast-forward merge methods.
   - [**Delete source branch when merge request is accepted** option by default](#delete-the-source-branch-on-merge-by-default).
 - Configure:
   - [Suggested changes commit messages](../merge_requests/reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
@@ -168,7 +164,7 @@ In merge requests, you can change the default behavior so that the
 
 To set this default:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. Select **Enable "Delete source branch" option by default**.
 1. Select **Save changes**.
@@ -188,7 +184,7 @@ before a project token expires. By default, these webhooks trigger 7 days before
 
 To configure these webhooks to also trigger 60 days and 30 days before a token expires:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section.
 1. Select the **Add additional webhook triggers for project access token expiration** checkbox.

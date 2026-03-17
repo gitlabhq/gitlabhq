@@ -1,16 +1,25 @@
 #import "../fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
-query groupUsersSearch($search: String!, $fullPath: ID!, $after: String, $first: Int, $ids: [ID!]) {
+query groupUsersSearch(
+  $search: String!
+  $fullPath: ID!
+  $after: String
+  $first: Int
+  $ids: [ID!]
+  $accessLevels: [AccessLevelEnum!]
+  $relations: [GroupMemberRelation!] = [DIRECT, DESCENDANTS, INHERITED]
+) {
   namespace: group(fullPath: $fullPath) {
     id
     users: groupMembers(
       search: $search
-      relations: [DIRECT, DESCENDANTS, INHERITED]
+      relations: $relations
       first: $first
       after: $after
       sort: USER_FULL_NAME_ASC
       ids: $ids
+      accessLevels: $accessLevels
     ) {
       pageInfo {
         hasNextPage

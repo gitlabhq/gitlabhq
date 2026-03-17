@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use merge request reviews to discuss and improve code before it merges into your project.
 title: Merge request reviews
 ---
@@ -21,7 +21,7 @@ Reviewers can use any of these tools to review a merge request:
 
 - The GitLab interface.
 - Visual Studio Code, with the
-  [GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/_index.md).
+  [GitLab for VS Code extension](../../../../editor_extensions/visual_studio_code/_index.md).
 - A terminal window, with the [GitLab CLI](../../../../editor_extensions/gitlab_cli/_index.md).
 
 Approvals are one of several merge checks that ensure your merge request merges only when it's truly
@@ -46,7 +46,7 @@ The right sidebar shows the list of reviewers, and (if they follow the review fl
   This block [can be bypassed](#prevent-merge-when-you-request-changes).
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
+For an overview, see the [merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183) video.
 <!-- Video published on 2023-04-29 -->
 
 ## Find merge requests to review
@@ -56,14 +56,14 @@ awaiting review from you. The merge requests you need to review are in the **Rev
 To see all merge requests that need your attention, use one of these methods:
 
 - Press the <kbd>Shift</kbd>+<kbd>m</kbd> [keyboard shortcut](../../../shortcuts.md).
-- On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}).
-- On the top bar, select **Search or go to**, then, from the dropdown list, select **Merge requests I'm working on**.
+- In the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}).
+- In the top bar, select **Search or go to**, then, from the dropdown list, select **Merge requests I'm working on**.
 
 ## View the review status of a merge request
 
 To do this:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. Scroll to the [merge request widget](../widgets.md) to see the mergeability and
@@ -130,7 +130,7 @@ After a reviewer completes their [merge request reviews](../../../discussions/_i
 the author of the merge request can request a new review from the reviewer.
 To do this, either use the `/request_review @user` quick action in any text field on the merge request, or:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. If you have collapsed the right sidebar in the merge request, select the
@@ -164,7 +164,7 @@ To start your review of a merge request:
 1. Find your merge request, and select the title of the merge request to view it.
 1. Read the merge request description and comments to learn about the merge request.
 1. Select **Changes** to view the diff of the proposed changes. To learn more about
-   the **Changes** page, see [Changes in merge requests](../changes.md).
+   the **Changes** page, see [changes in merge requests](../changes.md).
 1. [Suggest multi-line or single-line changes](suggestions.md) as needed. When ready to save your
    first review comment, select **Start a review** to:
 
@@ -282,7 +282,7 @@ if both of the following are true:
 
 To remove your change request without submitting a new review:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. On the merge request **Overview**, scroll to the merge request reports area.
@@ -295,7 +295,7 @@ To remove your change request without submitting a new review:
 If the user who requested changes is unavailable to re-review or approve,
 another user with permission to merge the merge request can override this check:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. On the merge request **Overview**, scroll to the merge request reports area.
@@ -312,9 +312,8 @@ another user with permission to merge the merge request can override this check:
 
 ## Download merge request changes
 
-You can download the changes from a merge request as a diff or patch file.
-For more information and examples, see
-[Download merge request changes](../changes.md#download-merge-request-changes).
+You can [download the changes from a merge request](../changes.md#download-merge-request-changes)
+as a diff or patch file.
 
 ## Associated features
 
@@ -336,7 +335,7 @@ Merge requests are related to these features:
   Revert changes from any commit from a merge request.
 - [Keyboard shortcuts](../../../shortcuts.md#merge-requests):
   Access and change specific parts of a merge request with keyboard commands.
-- [Value stream analytics](../../../group/value_stream_analytics/_index.md): Track key merge request steps (such as `reviewed` and `approved`) to identify where your team spends the most time in the software development lifecycle. This information helps uncover actionable insights to optimize merge request workflows for groups and projects, and improve developer productivity. Read more about [How we reduced MR review time with value stream analytics](https://about.gitlab.com/blog/how-we-reduced-mr-review-time-with-value-stream-management/).
+- [Value stream analytics](../../../group/value_stream_analytics/_index.md): Track key merge request steps (such as `reviewed` and `approved`) to identify where your team spends the most time in the software development lifecycle. This information helps uncover actionable insights to optimize merge request workflows for groups and projects, and improve developer productivity. Read more about [how we reduced MR review time with value stream analytics](https://about.gitlab.com/blog/how-we-reduced-mr-review-time-with-value-stream-management/) in the blog post.
 
 ## Related topics
 

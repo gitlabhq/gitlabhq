@@ -14,7 +14,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import BranchRules from '~/projects/settings/repository/branch_rules/app.vue';
-import BranchRule from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
+import BranchRule from 'ee_else_ce/projects/settings/repository/branch_rules/components/branch_rule.vue';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import createBranchRuleMutation from '~/projects/settings/repository/branch_rules/graphql/mutations/create_branch_rule.mutation.graphql';
 import BranchRuleModal from '~/projects/settings/components/branch_rule_modal.vue';

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';

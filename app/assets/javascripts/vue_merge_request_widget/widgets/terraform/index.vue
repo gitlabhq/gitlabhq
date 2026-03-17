@@ -204,10 +204,10 @@ export default {
     :loading-text="$options.i18n.loading"
     :widget-name="$options.name"
     :is-collapsible="Boolean(terraformData.collapsed)"
+    :expand-button-label="s__('Terraform|Expand Terraform report details')"
+    :collapse-button-label="s__('Terraform|Collapse Terraform report details')"
     :summary="summary"
     :content="terraformData.expanded"
     :fetch-collapsed-data="fetchCollapsedData"
-    :label="__('Terraform')"
-    path="terraform"
   />
 </template>

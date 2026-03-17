@@ -33,15 +33,13 @@ RSpec.describe 'Group or Project invitations', :with_current_organization, :aggr
           expect(page).to have_content('To accept this invitation, create an account or sign in')
         end
 
-        with_and_without_sign_in_form_vue do
-          it 'pre-fills the "Username or primary email" field on the sign in box with the ' \
-          'invite_email from the invite' do
-            visit invite_path(group_invite.raw_invite_token)
+        it 'pre-fills the "Username or primary email" field on the sign in box with the ' \
+        'invite_email from the invite', :js do
+          visit invite_path(group_invite.raw_invite_token)
 
-            click_link 'Sign in'
+          click_link 'Sign in'
 
-            expect(find_field('Username or primary email').value).to eq(group_invite.invite_email)
-          end
+          expect(find_field('Username or primary email').value).to eq(group_invite.invite_email)
         end
 
         it 'shows the Email to be the invite_email from the invite' do
@@ -54,19 +52,17 @@ RSpec.describe 'Group or Project invitations', :with_current_organization, :aggr
       context 'when invite is sent before account is created;ldap or service sign in for manual acceptance edge case' do
         let(:user) { create(:user, email: 'user@example.com') }
 
-        with_and_without_sign_in_form_vue do
-          context 'when invite clicked and not signed in' do
-            before do
-              visit invite_path(group_invite.raw_invite_token, invite_type: ::Members::InviteMailer::INITIAL_INVITE)
-            end
+        context 'when invite clicked and not signed in', :js do
+          before do
+            visit invite_path(group_invite.raw_invite_token, invite_type: ::Members::InviteMailer::INITIAL_INVITE)
+          end
 
-            it 'sign in, grants access and redirects to group page' do
-              click_link 'Sign in'
+          it 'sign in, grants access and redirects to group page' do
+            click_link 'Sign in'
 
-              gitlab_sign_in(user, remember: true, visit: false)
+            gitlab_sign_in(user, remember: true, visit: false)
 
-              expect_to_be_on_group_page(group)
-            end
+            expect_to_be_on_group_page(group)
           end
         end
 
@@ -253,28 +249,26 @@ RSpec.describe 'Group or Project invitations', :with_current_organization, :aggr
       end
     end
 
-    with_and_without_sign_in_form_vue do
-      context 'when inviting a registered user by a secondary email address' do
-        let(:user) { create(:user) }
-        let(:secondary_email) { create(:email, user: user) }
+    context 'when inviting a registered user by a secondary email address' do
+      let(:user) { create(:user) }
+      let(:secondary_email) { create(:email, user: user) }
 
-        before do
-          create(:group_member, :invited, group: group, invite_email: secondary_email.email, created_by: owner)
-          gitlab_sign_in(user)
-        end
+      before do
+        create(:group_member, :invited, group: group, invite_email: secondary_email.email, created_by: owner)
+        gitlab_sign_in(user)
+      end
 
-        it 'does not accept the pending invitation and does not redirect to the group path' do
-          expect(page).not_to have_current_path(group_path(group), ignore_query: true)
-          expect(group.reload).not_to have_user(user)
-        end
+      it 'does not accept the pending invitation and does not redirect to the group path' do
+        expect(page).not_to have_current_path(group_path(group), ignore_query: true)
+        expect(group.reload).not_to have_user(user)
+      end
 
-        context 'when the secondary email address is confirmed' do
-          let(:secondary_email) { create(:email, :confirmed, user: user) }
+      context 'when the secondary email address is confirmed' do
+        let(:secondary_email) { create(:email, :confirmed, user: user) }
 
-          it 'accepts the pending invitation and redirects to the group path' do
-            expect(page).to have_current_path(group_path(group), ignore_query: true)
-            expect(group.reload).to have_user(user)
-          end
+        it 'accepts the pending invitation and redirects to the group path' do
+          expect(page).to have_current_path(group_path(group), ignore_query: true)
+          expect(group.reload).to have_user(user)
         end
       end
     end

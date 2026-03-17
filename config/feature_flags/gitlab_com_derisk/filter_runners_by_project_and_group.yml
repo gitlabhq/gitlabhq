@@ -1,0 +1,10 @@
+---
+name: filter_runners_by_project_and_group
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378558
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222473
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/563405
+milestone: '18.10'
+group: group::runner core
+type: gitlab_com_derisk
+default_enabled: false

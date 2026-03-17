@@ -1,9 +1,14 @@
-import $ from 'jquery';
 import GLForm from '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/lib/utils/common_utils';
 
 describe('GLForm', () => {
+  const createFormElement = (html) => {
+    const container = document.createElement('div');
+    container.innerHTML = html;
+    return container.firstElementChild;
+  };
+
   const testContext = {};
   const mockGl = {
     GfmAutoComplete: {
@@ -20,8 +25,10 @@ describe('GLForm', () => {
       beforeEach(() => {
         setupFormSpy = jest.spyOn(GLForm.prototype, 'setupForm');
 
-        testContext.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');
-        testContext.textarea = testContext.form.find('textarea');
+        testContext.form = createFormElement(
+          '<form class="gfm-form"><textarea class="js-gfm-input"></textarea></form>',
+        );
+        testContext.textarea = testContext.form.querySelector('textarea');
       });
 
       it('should be called with the global data source `windows.gl`', () => {
@@ -51,32 +58,31 @@ describe('GLForm', () => {
     beforeEach(() => {
       window.gl = window.gl || {};
 
-      testContext.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');
-      testContext.textarea = testContext.form.find('textarea');
-      jest.spyOn($.prototype, 'off').mockReturnValue(testContext.textarea);
-      jest.spyOn($.prototype, 'on').mockReturnValue(testContext.textarea);
-      jest.spyOn($.prototype, 'css').mockImplementation(() => {});
+      testContext.form = createFormElement(
+        '<form class="gfm-form"><textarea class="js-gfm-input"></textarea></form>',
+      );
+      testContext.textarea = testContext.form.querySelector('textarea');
 
       testContext.glForm = new GLForm(testContext.form, false);
     });
 
     describe('autofocus', () => {
       it('focus the textarea when autofocus is true', () => {
-        testContext.textarea.data('autofocus', true);
-        jest.spyOn($.prototype, 'focus');
+        testContext.textarea.dataset.autofocus = 'true';
+        const focusSpy = jest.spyOn(testContext.textarea, 'focus');
 
         testContext.glForm = new GLForm(testContext.form, false);
 
-        expect($.prototype.focus).toHaveBeenCalled();
+        expect(focusSpy).toHaveBeenCalled();
       });
 
       it("doesn't focus the textarea when autofocus is false", () => {
-        testContext.textarea.data('autofocus', false);
-        jest.spyOn($.prototype, 'focus');
+        testContext.textarea.dataset.autofocus = 'false';
+        const focusSpy = jest.spyOn(testContext.textarea, 'focus');
 
         testContext.glForm = new GLForm(testContext.form, false);
 
-        expect($.prototype.focus).not.toHaveBeenCalled();
+        expect(focusSpy).not.toHaveBeenCalled();
       });
     });
 
@@ -88,7 +94,7 @@ describe('GLForm', () => {
       });
 
       it('should return true if textarea supports quick actions', () => {
-        testContext.textarea.attr('data-supports-quick-actions', true);
+        testContext.textarea.dataset.supportsQuickActions = 'true';
 
         const glForm = new GLForm(testContext.form, false);
 

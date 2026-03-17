@@ -176,6 +176,22 @@ RSpec.describe 'Query.project(fullPath).issue(iid)', feature_category: :team_pla
     end
   end
 
+  describe '.workItemType' do
+    let(:issue_fields) { 'workItemType { id name iconName }' }
+
+    it 'returns the work item type for the issue' do
+      post_query
+
+      work_item_type_data = graphql_data.dig('project', 'issue', 'workItemType')
+
+      expect(work_item_type_data).to include(
+        'id' => issue.work_item_type.to_global_id.to_s,
+        'name' => issue.work_item_type.name,
+        'iconName' => issue.work_item_type.icon_name
+      )
+    end
+  end
+
   def id_hash(object)
     a_graphql_entity_for(object)
   end

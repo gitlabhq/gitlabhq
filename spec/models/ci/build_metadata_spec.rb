@@ -152,7 +152,9 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
 
   context 'jsonb fields serialization' do
     it 'changing other fields does not change config_options' do
+      # rubocop:disable Lint/SelfAssignment -- testing that self-assignment doesn't mark record as changed
       expect { metadata.id = metadata.id }.not_to change(metadata, :changes)
+      # rubocop:enable Lint/SelfAssignment
     end
 
     it 'accessing config_options does not change it' do

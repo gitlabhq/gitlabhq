@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_project_id_from_disable_inbound_job_token_scope_weekly
 description: Weekly count of unique projects that disabled job token scope
 product_group: pipeline_security
+product_categories:
+- secrets_management
 performance_indicator_type: []
 value_type: number
 status: active

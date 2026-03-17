@@ -11,5 +11,5 @@ gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
   organization_id: organizations
-organization_transfer_support: supported
+organization_transfer_support: todo
 table_size: small

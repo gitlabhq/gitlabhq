@@ -22,11 +22,11 @@ module Gitlab
             private
 
             def assign_pipeline_variables
-              @pipeline.variables_attributes = variables_attributes
-
-              if Feature.enabled?(:ci_write_pipeline_variables_artifact, project)
-                Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder.new(@pipeline, variables_attributes).run
+              if Feature.disabled?(:ci_stop_writing_to_pipeline_variables, project)
+                @pipeline.variables_attributes = variables_attributes
               end
+
+              Gitlab::Ci::Pipeline::Build::PipelineVariablesArtifactBuilder.new(@pipeline, variables_attributes).run
             rescue ActiveModel::ValidationError => e
               error("Failed to build pipeline variables: #{e}", failure_reason: :config_error)
             end

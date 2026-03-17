@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Global Search
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Zoekt
 ---
 
@@ -36,6 +36,13 @@ With this integration, you can use [exact code search](../../user/search/exact_c
 instead of [advanced search](../../user/search/advanced_search.md) to search for code in GitLab.
 You can use exact match and regular expression modes to search for code in a group or repository.
 
+> [!note]
+> Zoekt handles only code search and does not replace
+> [Elasticsearch or OpenSearch](../advanced_search/elasticsearch.md).
+> For all other search scopes, including comments, commits, epics,
+> issues, merge requests, milestones, projects, users, and wikis,
+> Elasticsearch or OpenSearch is still required.
+
 ## Install Zoekt
 
 Prerequisites:
@@ -57,18 +64,82 @@ The following installation methods are available for testing, not for production
 
 ## Enable exact code search
 
+### From the GitLab UI
+
 Prerequisites:
 
 - Be an administrator of the instance.
 - Zoekt is [installed](#install-zoekt).
 
-To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
+To enable [exact code search](../../user/search/exact_code_search.md) from the GitLab UI:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Exact code search**.
 1. Select the **Enable indexing** and **Enable searching** checkboxes.
 1. Select **Save changes**.
+
+### With Rake tasks
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/580121) in GitLab 18.10.
+
+{{< /history >}}
+
+Prerequisites:
+
+- Be an administrator of the instance.
+- Zoekt is [installed](#install-zoekt).
+
+You can manage [exact code search](../../user/search/exact_code_search.md) with Rake tasks.
+
+#### Enable indexing and search
+
+To enable indexing and search, run this task:
+
+```shell
+gitlab-rake gitlab:zoekt:index
+```
+
+This task enables `zoekt_indexing_enabled`, `zoekt_search_enabled`,
+and `zoekt_auto_index_root_namespace`.
+`RolloutWorker` indexes all root namespaces automatically, and
+search becomes available when indices are ready.
+
+#### Disable indexing and search
+
+To disable indexing and search, run this task:
+
+```shell
+gitlab-rake gitlab:zoekt:disable
+```
+
+This task disables both `zoekt_indexing_enabled` and `zoekt_search_enabled`.
+
+#### Pause and resume indexing
+
+To pause indexing (for example, during maintenance), run this task:
+
+```shell
+gitlab-rake gitlab:zoekt:pause_indexing
+```
+
+To resume indexing, run this task:
+
+```shell
+gitlab-rake gitlab:zoekt:resume_indexing
+```
+
+#### Estimate storage requirements
+
+To estimate the storage required for your Zoekt nodes, run this task:
+
+```shell
+sudo gitlab-rake gitlab:zoekt:estimate_storage
+```
+
+For more information, see [estimate storage](#estimate-storage).
 
 ## Check indexing status
 
@@ -338,7 +409,6 @@ To set the number of concurrent indexing tasks:
 
    For example, if a Zoekt node has `4` CPU cores and the multiplier is `1.5`,
    the number of concurrent tasks for the node is `6`.
-
 1. Select **Save changes**.
 
 ## Define the probability of random force reindexing
@@ -647,8 +717,12 @@ due to how resources are allocated and managed.
 
 #### Kubernetes deployments
 
-The following table shows recommended resources for Kubernetes deployments
-based on index storage requirements:
+The following table shows recommended resources per node (per StatefulSet pod)
+for Kubernetes deployments based on index storage requirements.
+Each pod in the StatefulSet runs its own webserver and indexer containers
+with independent resource allocations and its own persistent volume for index storage.
+If you run multiple nodes, multiply these resources by the number of nodes
+to calculate total cluster resources.
 
 | Disk   | Webserver CPU | Webserver memory  | Indexer CPU | Indexer memory |
 |--------|---------------|-------------------|-------------|----------------|
@@ -676,8 +750,10 @@ For Kubernetes deployments:
 
 #### VM and bare metal deployments
 
-The following table shows recommended resources for VM and bare metal deployments
-based on index storage requirements:
+The following table shows recommended resources per node for VM and bare metal deployments
+based on index storage requirements.
+If you run multiple nodes, multiply these resources by the number of nodes
+to calculate total cluster resources.
 
 | Disk   | VM size  | Total CPU | Total memory | AWS          | GCP             | Azure |
 |--------|----------|-----------|--------------|--------------|-----------------|-------|
@@ -698,14 +774,51 @@ For VM and bare metal deployments:
 
 ### Storage
 
-Storage requirements for Zoekt vary significantly based on repository characteristics,
-including the number of large and binary files.
+Zoekt storage requirements depend on the size of your Git repositories and your replica configuration.
+Zoekt indexes only Git object data (source code and commit history).
+It does not index LFS files, CI/CD artifacts, packages, wikis, or other storage components.
 
-As a starting point, you can estimate your Zoekt storage to be half your Gitaly storage.
-For example, if your Gitaly storage is 1 TB, you might need approximately 500 GB of Zoekt storage.
+#### Estimate storage
 
-To monitor the use of Zoekt nodes, see [check indexing status](#check-indexing-status).
-If namespaces are not being indexed due to low disk space, consider adding or scaling up nodes.
+To estimate storage requirements, run the Rake task:
+
+```shell
+sudo gitlab-rake gitlab:zoekt:estimate_storage
+```
+
+This task queries your GitLab database and outputs a storage estimate based on
+your current repository sizes and replica configuration.
+
+If you prefer to calculate manually, use:
+
+```plaintext
+storage_per_replica = sum(repository_git_size) × 3
+total_cluster_storage = storage_per_replica × number_of_replicas
+```
+
+Where `repository_git_size` is the Git object size for each repository.
+This value does not include LFS objects, wiki, artifacts, or packages.
+
+To view `repository_git_size`:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Overview** > **Projects**.
+1. In the **Repository** column, view the Git object size.
+
+For the initial provisioning target, start with three times
+your total `repository_git_size` multiplied by replica count.
+For example:
+
+- 100 GB of Git repository data and one replica: 300 GB of Zoekt storage.
+- 100 GB of Git repository data and two replicas: 600 GB of Zoekt storage.
+
+GitLab reserves this buffer internally to ensure Zoekt has headroom during indexing.
+After initial indexing is complete, actual disk usage is typically closer to
+half the `repository_git_size` based on observed GitLab.com data.
+Scale vertically or horizontally only when needed.
+
+To monitor Zoekt node storage, see [check indexing status](#check-indexing-status).
+If namespaces are not indexed due to low disk space, add nodes or increase disk capacity.
 
 ## Security and authentication
 
@@ -752,13 +865,3 @@ and expire in five minutes to limit exposure.
 
 Endpoints include `/webserver/api/search` and `/webserver/api/v2/search`.
 JWT claims are the issuer (`gitlab`) and the audience (`gitlab-zoekt`).
-
-#### Basic authentication
-
-GitLab authenticates to the Zoekt webserver with HTTP basic authentication
-through NGINX to execute search queries.
-Basic authentication is used primarily in GitLab Helm chart and Kubernetes deployments.
-
-This method uses the username and password configured in Kubernetes secrets.
-Endpoints include `/webserver/api/search` and `/webserver/api/v2/search`
-on the Zoekt webserver.

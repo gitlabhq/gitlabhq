@@ -1,5 +1,3 @@
 ---
 name: read_project_relation_import
 description: Grants the ability to read project relation import status
-boundaries:
-  - project

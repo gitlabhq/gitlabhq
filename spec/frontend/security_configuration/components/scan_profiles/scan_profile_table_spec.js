@@ -1,4 +1,4 @@
-import { GlTableLite, GlButton } from '@gitlab/ui';
+import { GlTable, GlButton, GlSkeletonLoader } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ScanProfileTable from '~/security_configuration/components/scan_profiles/scan_profile_table.vue';
 import { SCAN_PROFILE_PROMO_ITEMS } from '~/security_configuration/constants';
@@ -9,6 +9,7 @@ describe('ScanProfileTable', () => {
   const createComponent = ({ props } = {}) => {
     wrapper = mountExtended(ScanProfileTable, {
       propsData: {
+        loading: false,
         tableItems: SCAN_PROFILE_PROMO_ITEMS,
         ...props,
       },
@@ -17,10 +18,22 @@ describe('ScanProfileTable', () => {
     return wrapper;
   };
 
-  const findTable = () => wrapper.findComponent(GlTableLite);
+  const findTable = () => wrapper.findComponent(GlTable);
   const findAllButtons = () => wrapper.findAllComponents(GlButton);
   const findApplyButton = () => findAllButtons().at(0);
   const findPreviewButton = () => findAllButtons().at(1);
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+
+  it('shows a skeleton loader when loading', () => {
+    wrapper = mountExtended(ScanProfileTable, {
+      propsData: {
+        loading: true,
+        tableItems: [],
+      },
+    });
+
+    expect(findSkeletonLoader().exists()).toBe(true);
+  });
 
   describe('table rendering', () => {
     beforeEach(() => {
@@ -71,6 +84,7 @@ describe('ScanProfileTable', () => {
     it('renders custom status slot content when provided', () => {
       wrapper = mountExtended(ScanProfileTable, {
         propsData: {
+          loading: false,
           tableItems: SCAN_PROFILE_PROMO_ITEMS,
         },
         scopedSlots: {

@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: SAML SSO for GitLab Self-Managed
 description: Configure enterprise authentication with SAML integration for single sign-on access.
 ---
@@ -57,7 +57,6 @@ For more information on:
 
    Alternatively, a user can manually link their SAML identity to an existing GitLab
    account by [enabling OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
-
 1. Configure the following attributes so your SAML users cannot change them:
 
    - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
@@ -66,7 +65,6 @@ For more information on:
    If users can change these attributes, they can sign in as other authorized users.
    See your SAML IdP documentation for information on how to make these attributes
    unchangeable.
-
 1. Edit `/etc/gitlab/gitlab.rb` and add the provider configuration:
 
    ```ruby
@@ -94,7 +92,6 @@ For more information on:
    | `name_identifier_format`         | Your IdP value. |
 
    For more information on these values, see the [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml). For more information on other configuration settings, see [configuring SAML on your IdP](#configure-saml-on-your-idp).
-
 1. Save the file and reconfigure GitLab:
 
    ```shell
@@ -139,7 +136,6 @@ For more information on:
 
    Alternatively, a user can manually link their SAML identity to an existing GitLab
    account by [enabling OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
-
 1. Configure the following attributes so your SAML users cannot change them:
 
    - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
@@ -148,7 +144,6 @@ For more information on:
    If users can change these attributes, they can sign in as other authorized users.
    See your SAML IdP documentation for information on how to make these attributes
    unchangeable.
-
 1. Put the following content in a file named `saml.yaml` to be used as a
    [Kubernetes Secret](https://docs.gitlab.com/charts/charts/globals/#providers):
 
@@ -172,7 +167,6 @@ For more information on:
    | `name_identifier_format`         | Your IdP value. |
 
    For more information on these values, see the [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml). For more information on other configuration settings, see [configuring SAML on your IdP](#configure-saml-on-your-idp).
-
 1. Create the Kubernetes Secret:
 
    ```shell
@@ -230,7 +224,6 @@ For more information on:
 
    Alternatively, a user can manually link their SAML identity to an existing GitLab
    account by [enabling OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
-
 1. Configure the following attributes so your SAML users cannot change them:
 
    - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
@@ -239,7 +232,6 @@ For more information on:
    If users can change these attributes, they can sign in as other authorized users.
    See your SAML IdP documentation for information on how to make these attributes
    unchangeable.
-
 1. Edit `docker-compose.yml` and add the provider configuration:
 
    ```yaml
@@ -272,7 +264,6 @@ For more information on:
    | `name_identifier_format`         | Your IdP value. |
 
    For more information on these values, see the [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml). For more information on other configuration settings, see [configuring SAML on your IdP](#configure-saml-on-your-idp).
-
 1. Save the file and restart GitLab:
 
    ```shell
@@ -309,7 +300,6 @@ For more information on:
 
    Alternatively, a user can manually link their SAML identity to an existing GitLab
    account by [enabling OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
-
 1. Configure the following attributes so your SAML users cannot change them:
 
    - [`NameID`](../user/group/saml_sso/_index.md#manage-user-saml-identity).
@@ -318,7 +308,6 @@ For more information on:
    If users can change these attributes, they can sign in as other authorized users.
    See your SAML IdP documentation for information on how to make these attributes
    unchangeable.
-
 1. Edit `/home/git/gitlab/config/gitlab.yml` and add the provider configuration:
 
    ```yaml
@@ -346,7 +335,6 @@ For more information on:
    | `name_identifier_format`         | Your IdP value. |
 
    For more information on these values, see the [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml). For more information on other configuration settings, see [configuring SAML on your IdP](#configure-saml-on-your-idp).
-
 1. Save the file and restart GitLab:
 
    ```shell
@@ -364,7 +352,6 @@ For more information on:
 ### Register GitLab in your SAML IdP
 
 1. Register the GitLab SP in your SAML IdP, using the application name specified in `issuer`.
-
 1. To provide configuration information to the IdP, build a metadata URL for the
    application. To build the metadata URL for GitLab, append `users/auth/saml/metadata`
    to the HTTPS URL of your GitLab installation. For example:
@@ -376,7 +363,6 @@ For more information on:
    At a minimum the IdP **must** provide a claim containing the user's email address
    using `email` or `mail`. For more information on other available claims, see
    [configuring assertions](#configure-assertions).
-
 1. On the sign in page there should now be a SAML icon below the regular sign in form.
    Select the icon to begin the authentication process. If authentication is successful,
    you are returned to GitLab and signed in.

@@ -82,6 +82,11 @@ export default {
       required: false,
       default: false,
     },
+    initialDuoSecretDetectionFpEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     initialDuoSastVrWorkflowEnabled: {
       type: Boolean,
       required: false,
@@ -92,7 +97,7 @@ export default {
       required: false,
       default: false,
     },
-    paidDuoTier: {
+    ultimateFeaturesAvailable: {
       type: Boolean,
       required: false,
       default: false,
@@ -106,6 +111,7 @@ export default {
       duoRemoteFlowsAvailability: this.initialDuoRemoteFlowsAvailability,
       duoFoundationalFlowsAvailability: this.initialDuoFoundationalFlowsAvailability,
       duoSastFpDetectionEnabled: this.initialDuoSastFpDetectionEnabled,
+      duoSecretDetectionFpEnabled: this.initialDuoSecretDetectionFpEnabled,
       duoSastVrWorkflowEnabled: this.initialDuoSastVrWorkflowEnabled,
     };
   },
@@ -129,12 +135,7 @@ export default {
       return null;
     },
     shouldShowExclusionSettings() {
-      return (
-        this.licensedAiFeaturesAvailable &&
-        this.showDuoContextExclusion &&
-        this.experimentFeaturesEnabled &&
-        this.paidDuoTier
-      );
+      return this.experimentFeaturesEnabled;
     },
     showAvailabilityCascadingButton() {
       return (
@@ -155,9 +156,11 @@ export default {
         this.duoFoundationalFlowsCascadingSettings?.lockedByApplicationSetting
       );
     },
-
-    showDuoContextExclusion() {
-      return this.glFeatures.useDuoContextExclusion;
+    showSastFpDetection() {
+      return this.glFeatures.aiExperimentSastFpDetection && this.ultimateFeaturesAvailable;
+    },
+    showSastVrWorkflow() {
+      return this.glFeatures.enableVulnerabilityResolution && this.ultimateFeaturesAvailable;
     },
   },
   watch: {
@@ -180,6 +183,7 @@ export default {
   duoFlowHelpPath,
   i18n: {
     saveChanges: __('Save changes'),
+    saveChangesAriaLabel: __('Save changes for GitLab Duo'),
   },
 };
 </script>
@@ -313,7 +317,7 @@ export default {
           />
         </project-setting-row>
         <project-setting-row
-          v-if="glFeatures.aiExperimentSastFpDetection"
+          v-if="showSastFpDetection"
           :label="s__('DuoSAST|Turn on SAST false positive detection')"
           class="gl-mt-5"
           :help-text="
@@ -331,7 +335,27 @@ export default {
           />
         </project-setting-row>
         <project-setting-row
-          v-if="glFeatures.enableVulnerabilityResolution"
+          v-if="glFeatures.duoSecretDetectionFalsePositive"
+          :label="s__('DuoSecretDetection|Turn on Secret Detection false positive detection')"
+          class="gl-mt-5"
+          :help-text="
+            s__(
+              'DuoSecretDetection|Use false positive detection for Secret Detection vulnerabilities on the default branch',
+            )
+          "
+        >
+          <gl-toggle
+            v-model="duoSecretDetectionFpEnabled"
+            class="gl-mt-2"
+            :disabled="duoFeaturesLocked || !duoEnabled"
+            :label="s__('DuoSecretDetection|Turn on Secret Detection false positive detection')"
+            label-position="hidden"
+            name="project[project_setting_attributes][duo_secret_detection_fp_enabled]"
+            data-testid="duo-secret-detection-fp-enabled"
+          />
+        </project-setting-row>
+        <project-setting-row
+          v-if="showSastVrWorkflow"
           :label="s__('DuoSAST|Turn on SAST vulnerability resolution workflow')"
           class="gl-mt-5"
           :help-text="
@@ -385,6 +409,7 @@ export default {
       variant="confirm"
       type="submit"
       class="gl-mt-6"
+      :aria-label="$options.i18n.saveChangesAriaLabel"
       data-testid="gitlab-duo-save-button"
       :disabled="duoFeaturesLocked"
     >

@@ -309,15 +309,7 @@ RSpec.describe Note, feature_category: :team_planning do
     describe '#keep_around_commit' do
       let!(:noteable) { create(:issue) }
 
-      it "calls #keep_around_commit normally" do
-        note = build(:note, project: noteable.project, noteable: noteable)
-
-        expect(note).to receive(:keep_around_commit)
-
-        note.save!
-      end
-
-      it "skips #keep_around_commit if 'skip_keep_around_commits' is true" do
+      it "skips keep_around_commit if 'skip_keep_around_commits' is true" do
         note = build(:note, project: noteable.project, noteable: noteable, skip_keep_around_commits: true)
 
         expect(note).not_to receive(:keep_around_commit)
@@ -325,12 +317,63 @@ RSpec.describe Note, feature_category: :team_planning do
         note.save!
       end
 
-      it "skips #keep_around_commit if 'importing' is true" do
+      it "skips keep_around_commit if 'importing' is true" do
         note = build(:note, project: noteable.project, noteable: noteable, importing: true)
 
         expect(note).not_to receive(:keep_around_commit)
 
         note.save!
+      end
+
+      context 'when async_keep_around_refs_for_merge_request_diffs is enabled' do
+        before do
+          stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: true)
+        end
+
+        it 'does not call keep_around synchronously in after_save' do
+          note = build(:note, project: noteable.project, noteable: noteable)
+
+          expect(note.project.repository).not_to receive(:keep_around)
+
+          note.save!
+        end
+
+        it 'enqueues KeepAroundRefsWorker via after_commit' do
+          note = create(:note, project: noteable.project, noteable: noteable, commit_id: 'abc123')
+
+          expect(MergeRequests::KeepAroundRefsWorker).to receive(:perform_async).with(
+            [note.project.id],
+            ['abc123'],
+            "#{note.noteable_type}/#{note.class.name}"
+          )
+
+          note.update!(note: 'updated')
+        end
+      end
+
+      context 'when async_keep_around_refs_for_merge_request_diffs is disabled' do
+        before do
+          stub_feature_flags(async_keep_around_refs_for_merge_request_diffs: false)
+        end
+
+        it 'calls keep_around synchronously in after_save' do
+          note = create(:note, project: noteable.project, noteable: noteable, commit_id: 'abc123')
+
+          expect(note.project.repository).to receive(:keep_around).with(
+            'abc123',
+            source: "#{note.noteable_type}/#{note.class.name}"
+          )
+
+          note.update!(note: 'updated')
+        end
+
+        it 'does not enqueue KeepAroundRefsWorker' do
+          note = create(:note, project: noteable.project, noteable: noteable, commit_id: 'abc123')
+
+          expect(MergeRequests::KeepAroundRefsWorker).not_to receive(:perform_async)
+
+          note.update!(note: 'updated')
+        end
       end
     end
 
@@ -487,7 +530,7 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
-  describe "Commit notes" do
+  describe "Commit notes", :sidekiq_inline do
     before do
       allow(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
     end

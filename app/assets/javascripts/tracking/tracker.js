@@ -193,20 +193,12 @@ export const Tracker = {
     const customUrl = `${pageUrl}${appendHash ? window.location.hash : ''}`;
     window.snowplow('setCustomUrl', customUrl);
 
-    // If Browser SDK is enabled set Custom url and Referrer url
-    if (window.glClient) {
-      window.glClient?.setCustomUrl(customUrl);
-    }
     if (document.referrer) {
       const node = referrers.find((links) => links.originalUrl === document.referrer);
 
       if (node) {
         pageLinks.referrer = node.url;
         window.snowplow('setReferrerUrl', pageLinks.referrer);
-
-        if (window.glClient) {
-          window.glClient?.setReferrerUrl(pageLinks.referrer);
-        }
       } else {
         window.snowplow('setReferrerUrl', window.gl?.maskedDefaultReferrerUrl);
       }

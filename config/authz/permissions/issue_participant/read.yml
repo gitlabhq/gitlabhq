@@ -1,5 +1,3 @@
 ---
 name: read_issue_participant
 description: Grants the ability to read issue participants
-boundaries:
-  - project

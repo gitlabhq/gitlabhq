@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: End-to-end testing Best Practices
 ---
 
@@ -100,7 +100,7 @@ We recommend creating four associated test cases, two for each shared example.
 
 ## Test naming
 
-Test names should form a readable sentence defining the purpose of the test. Our [testing guide](_index.md) extends the [Thoughtbot testing style guide](https://github.com/thoughtbot/guides/tree/master/testing-rspec). This page clarifies the guidelines, along with input from [https://www.betterspecs.org/](https://www.betterspecs.org/) and [the RSpec naming guide](https://rspec.rubystyle.guide/#naming.)
+Test names should form a readable sentence defining the purpose of the test. Our [testing guide](_index.md) extends the [Thoughtbot testing style guide](https://github.com/thoughtbot/guides/tree/master/testing-rspec). This page clarifies the guidelines, along with input from <https://www.betterspecs.org/> and [the RSpec naming guide](https://rspec.rubystyle.guide/#naming).
 
 ### Recommended approach
 

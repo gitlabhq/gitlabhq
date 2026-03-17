@@ -80,10 +80,9 @@ module SortingPreference
   # Update old values to the actual ones.
   def update_cookie_value(value)
     case value
-    when 'id_asc'             then sort_value_oldest_created
-    when 'id_desc'            then sort_value_recently_created
-    when 'downvotes_asc'      then sort_value_popularity
-    when 'downvotes_desc'     then sort_value_popularity
+    when 'id_asc' then sort_value_oldest_created
+    when 'id_desc' then sort_value_recently_created
+    when 'downvotes_asc', 'downvotes_desc' then sort_value_popularity
     else value
     end
   end

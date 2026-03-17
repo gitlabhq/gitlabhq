@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Custom Models
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Developing AI Features for GitLab Duo Self-Hosted
 ---
 
@@ -38,7 +38,7 @@ Our Fireworks AI account is managed by [Code Creation Group](https://handbook.gi
 
 To gain access to models in AWS Bedrock, create an [access request using the `aws_services_account_iam_update` template](https://gitlab.com/gitlab-com/gl-security/corp/issue-tracker/-/issues/new?description_template=aws_services_account_iam_update). See [this example access request](https://gitlab.com/gitlab-com/gl-security/corp/issue-tracker/-/issues/949) if you aren't sure what information to fill in.
 
-Once your access request is approved, you can gain access to AWS credentials by visiting [https://gitlabsandbox.cloud/login](https://gitlabsandbox.cloud/login).
+Once your access request is approved, you can gain access to AWS credentials by visiting <https://gitlabsandbox.cloud/login>.
 
 After logging into `gitlabsandbox.cloud`, perform the following steps:
 
@@ -121,7 +121,7 @@ To enable the use of self-hosted models in the GitLab instance, follow these ste
 
 1. Go to **Admin page -> GitLab Duo**
 1. Click the **Configure models for GitLab Duo** button
-1. In the Model Configuration page, click the **Add self-hosted model** button
+1. In the Model Selection page, click the **Add self-hosted model** button
 1. Fill in the model details
 1. Click **Add self-hosted model** to save your changes
 
@@ -129,7 +129,7 @@ To enable the use of self-hosted models in the GitLab instance, follow these ste
 
 To use the created self-hosted model to power AI-native features:
 
-1. On your GDK instance, go to `/admin/gitlab_duo/self_hosted`.
+1. On your GDK instance, go to `/admin/gitlab_duo/model_selection`.
 1. For each AI feature you want to use with your self-hosted model (for example, Code Generation, Code Completion, General Chat, Explain Code, and so on), select your newly created self-hosted model (for example, **Claude 3.5 Sonnet on Bedrock**) from the corresponding dropdown list.
 1. Optional. To copy the configuration to all features under a specific category, select the copy icon next to it.
 1. After making your selections, the changes are usually saved automatically.

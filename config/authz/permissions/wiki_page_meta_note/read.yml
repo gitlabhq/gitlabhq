@@ -1,6 +1,3 @@
 ---
 name: read_wiki_page_meta_note
 description: Grants the ability to read wiki page meta notes
-boundaries:
-  - project
-  - group

@@ -11,6 +11,23 @@ RSpec.describe WorkItems::UserPreference, type: :model, feature_category: :team_
 
   describe 'validations' do
     let_it_be(:namespace) { build_stubbed(:group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:work_item_type) { create(:work_item_type, :issue) }
+
+    describe 'validate work_item_type_id' do
+      subject(:user_preference) do
+        build(:work_item_user_preference, user: user, namespace: namespace, work_item_type_id: work_item_type.id)
+      end
+
+      it_behaves_like 'validates work item type ID'
+
+      context 'when work_item_type_id is nil' do
+        it 'is valid' do
+          user_preference.work_item_type_id = nil
+          expect(user_preference).to be_valid
+        end
+      end
+    end
 
     describe 'validate sort' do
       let_it_be(:sorting_value) { 'due_date_asc' }

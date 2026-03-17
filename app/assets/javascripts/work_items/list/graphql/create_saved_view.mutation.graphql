@@ -1,0 +1,12 @@
+# @feature_category: portfolio_management
+
+#import "./saved_view.fragment.graphql"
+
+mutation workItemSavedViewCreate($input: WorkItemSavedViewCreateInput!) {
+  workItemSavedViewCreate(input: $input) {
+    savedView {
+      ...SavedView
+    }
+    errors
+  }
+}

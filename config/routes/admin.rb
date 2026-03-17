@@ -244,6 +244,8 @@ namespace :admin do
 
   get '/dashboard/stats', to: 'dashboard#stats'
 
+  get 'organization', to: 'organizations/dashboard#index', as: :organization_dashboard
+
   root to: 'dashboard#index'
 
   get :version_check, to: 'version_check#version_check'

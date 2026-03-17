@@ -11,6 +11,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
 
 var (
@@ -39,7 +40,11 @@ func handleUploadPack(w *HTTPResponseWriter, r *http.Request, a *api.Response) (
 
 	limited := newContextReader(readerCtx, r.Body)
 	cr, cw := newWriteAfterReader(limited, w)
-	defer cw.Flush()
+	defer func() {
+		if err := cw.Flush(); err != nil {
+			log.WithError(err).Error("Could not flush upload-pack response")
+		}
+	}()
 
 	action := getService(r)
 	writePostRPCHeader(w, action)

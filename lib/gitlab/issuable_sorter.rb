@@ -22,7 +22,7 @@ module Gitlab
       private
 
       def natural_sort_issuables(issuables, project)
-        VersionSorter.sort(issuables || []) do |issuable|
+        VersionSorter.sort(issuables || []) do |issuable| # rubocop:disable Lint/UnexpectedBlockArity -- false positive (detected as Array.sort)
           issuable.to_reference(project)
         end
       end

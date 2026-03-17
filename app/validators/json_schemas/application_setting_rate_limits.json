@@ -197,6 +197,11 @@
       "type": "integer",
       "minimum": 0,
       "description": "Number of pipelines allowed to be created per user"
+    },
+    "raw_blob_request_limit_unauthenticated": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum number of unauthenticated requests per minute across all raw paths in a project (default is 800). Set to 0 to disable throttling."
     }
   }
 }

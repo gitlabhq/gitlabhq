@@ -133,3 +133,86 @@ export const generateLinksData = (links, containerID, modifier = '') => {
     };
   });
 };
+
+export const generateQuadraticLinksData = (links, containerID, modifier = '') => {
+  const containerEl = document.getElementById(containerID);
+
+  return links.map((link) => {
+    const path = d3.path();
+
+    const sourceId = link.source;
+    const targetId = link.target;
+
+    const modifiedSourceId = `${sourceId}-${modifier}`;
+    const modifiedTargetId = `${targetId}-${modifier}`;
+
+    const sourceNodeEl = document.getElementById(modifiedSourceId);
+    const targetNodeEl = document.getElementById(modifiedTargetId);
+
+    const sourceNodeCoordinates = sourceNodeEl.getBoundingClientRect();
+    const targetNodeCoordinates = targetNodeEl.getBoundingClientRect();
+    const containerCoordinates = containerEl.getBoundingClientRect();
+
+    // Because we add the svg dynamically and calculate the coordinates
+    // with plain JS and not D3, we need to account for the fact that
+    // the coordinates we are getting are absolutes, but we want to draw
+    // relative to the svg container, which starts at `containerCoordinates(x,y)`
+    // so we substract these from the total. We also need to remove the padding
+    // from the total to make sure it's aligned properly. We then make the line
+    // positioned in the center of the job node by adding half the height
+    // of the job pill.
+    const paddingLeft = parseFloat(
+      window.getComputedStyle(containerEl, null).getPropertyValue('padding-left') || 0,
+    );
+    const paddingTop = parseFloat(
+      window.getComputedStyle(containerEl, null).getPropertyValue('padding-top') || 0,
+    );
+
+    const sourceNodeX = sourceNodeCoordinates.right - containerCoordinates.x - paddingLeft;
+    const sourceNodeY =
+      sourceNodeCoordinates.top -
+      containerCoordinates.y -
+      paddingTop +
+      sourceNodeCoordinates.height / 2;
+    const targetNodeX = targetNodeCoordinates.x - containerCoordinates.x - paddingLeft;
+    const targetNodeY =
+      targetNodeCoordinates.y -
+      containerCoordinates.y -
+      paddingTop +
+      sourceNodeCoordinates.height / 2;
+
+    const sourceNodeLeftX = sourceNodeCoordinates.left - containerCoordinates.x - paddingLeft;
+
+    // If the source and target X values are the same,
+    // it means the nodes are in the same column so we
+    // want to start the line on the left of the pill
+    // instead of the right to have a nice curve.
+    const firstPointCoordinateX = sourceNodeLeftX === targetNodeX ? sourceNodeLeftX : sourceNodeX;
+
+    const mx = (sourceNodeX + targetNodeX) / 2; // Slope of the line
+    const sy = Math.sign(targetNodeY - sourceNodeY) || 1; // Direction of the line
+    const r = 6; // Radius of the curve
+
+    // Move to the first point
+    path.moveTo(firstPointCoordinateX, sourceNodeY);
+
+    // If the heights of the target and source nodes are different, create some quadratic curves to get those rounded corners
+    if (targetNodeY !== sourceNodeY) {
+      path.lineTo(mx - r, sourceNodeY);
+      path.quadraticCurveTo(mx, sourceNodeY, mx, sourceNodeY + sy * r);
+      path.lineTo(mx, targetNodeY - sy * r);
+      path.quadraticCurveTo(mx, targetNodeY, mx + r, targetNodeY);
+    }
+
+    // If the heights are the same, just add the straight line, if not this will add the missing bit between the source and target
+    path.lineTo(targetNodeX, targetNodeY);
+
+    return {
+      ...link,
+      source: sourceId,
+      target: targetId,
+      ref: createUniqueLinkId(sourceId, targetId),
+      path: path.toString(),
+    };
+  });
+};

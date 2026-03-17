@@ -35,7 +35,7 @@ workflow:
   stage: test
   extends:
     - .e2e-test-base
-    - .cng-qa-cache # cng-cache includes additional cached helm chart
+    - .cng-qa-cache  # cng-cache includes additional cached helm chart
   needs:
     - job: build-cng-env
     - job: build-cng
@@ -173,7 +173,7 @@ cng-qa-min-redis-version:
       export EXTRA_DEPLOY_VALUES="--set redis.image.tag=${redis_version%.*}"
     - !reference [.cng-test, before_script]
   rules:
-    - !reference [.rules:test:mr-code-patterns, rules] # run validation for minimal supported redis version only on application code changes
+    - !reference [.rules:test:mr-code-patterns, rules]  # run validation for minimal supported redis version only on application code changes
     - *default-branch
 
 cng-relative-url:

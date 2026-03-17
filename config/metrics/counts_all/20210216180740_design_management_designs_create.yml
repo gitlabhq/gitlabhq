@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.design_management_designs_create
 description: Number of designs that were created
 product_group: product_planning
+product_categories:
+- design_management
 value_type: number
 status: active
 time_frame: all

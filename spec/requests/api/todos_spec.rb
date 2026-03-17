@@ -162,6 +162,14 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
         )
       end
 
+      it_behaves_like 'authorizing granular token permissions', :read_todo do
+        let(:boundary_object) { :user }
+        let(:user) { john_doe }
+        let(:request) do
+          get api('/todos', personal_access_token: pat)
+        end
+      end
+
       context "when current user does not have access to one of the TODO's target" do
         it 'filters out unauthorized todos' do
           no_access_project = create(:project, :repository, group: group)
@@ -379,6 +387,14 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
         expect(pending_1.reload).to be_done
       end
 
+      it_behaves_like 'authorizing granular token permissions', :update_todo do
+        let(:boundary_object) { :user }
+        let(:user) { john_doe }
+        let(:request) do
+          post api("/todos/#{pending_1.id}/mark_as_done", personal_access_token: pat)
+        end
+      end
+
       it 'updates todos cache' do
         expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
 
@@ -412,6 +428,14 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
         expect(pending_3.reload).to be_done
       end
 
+      it_behaves_like 'authorizing granular token permissions', :update_todo do
+        let(:boundary_object) { :user }
+        let(:user) { john_doe }
+        let(:request) do
+          post api("/todos/mark_as_done", personal_access_token: pat)
+        end
+      end
+
       it 'updates todos cache' do
         expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
 
@@ -424,6 +448,14 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
     let(:issuable_type) { param }
     def create_todo_for_issuable(user, iid = issuable.iid)
       post api("/projects/#{project_1.id}/#{issuable_type}/#{iid}/todo", user)
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_todo do
+      let(:boundary_object) { project_1 }
+      let(:user) { john_doe }
+      let(:request) do
+        post api("/projects/#{project_1.id}/#{issuable_type}/#{issuable.iid}/todo", personal_access_token: pat)
+      end
     end
 
     it 'creates a todo on an issuable' do
@@ -501,6 +533,35 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
+    end
+  end
+
+  context 'when authenticated with a token that has the ai_workflows scope' do
+    let(:oauth_token) { create(:oauth_access_token, user: john_doe, scopes: [:ai_workflows]) }
+
+    it 'returns the list of todos' do
+      get api('/todos', oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_an(Array)
+    end
+
+    it 'allows HEAD requests' do
+      head api('/todos', oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'does not allow marking a todo as done' do
+      post api("/todos/#{pending_1.id}/mark_as_done", oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    it 'does not allow marking all todos as done' do
+      post api('/todos/mark_as_done', oauth_access_token: oauth_token)
+
+      expect(response).to have_gitlab_http_status(:forbidden)
     end
   end
 end

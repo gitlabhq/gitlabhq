@@ -12,9 +12,9 @@ RSpec.describe Projects::TriggeredHooks, feature_category: :webhooks do
   let(:wh_service) { instance_double(::WebHookService, async_execute: true) }
   let(:data) { { some: 'data', as: 'json' } }
 
-  def run_hooks(scope, data)
+  def run_hooks(scope, data, relation: ProjectHook.all)
     hooks = described_class.new(scope, data)
-    hooks.add_hooks(ProjectHook.all)
+    hooks.add_hooks(relation)
     hooks.execute
   end
 
@@ -41,6 +41,79 @@ RSpec.describe Projects::TriggeredHooks, feature_category: :webhooks do
     run_hooks(:push_hooks, data)
   end
 
+  context 'with hook filters' do
+    let_it_be(:filtered_push_hook) do
+      create(
+        :project_hook,
+        project: project,
+        push_events: true,
+        filter: {
+          'push_hooks' => {
+            'rules' => [
+              { 'field' => 'object_attributes.status', 'operator' => 'eq', 'value' => 'failed' }
+            ]
+          }
+        }
+      )
+    end
+
+    it 'executes hook when filter matches' do
+      data = { object_attributes: { status: 'failed' } }
+
+      expect_hook_execution(filtered_push_hook, data, 'push_hooks')
+
+      run_hooks(:push_hooks, data, relation: ProjectHook.where(id: filtered_push_hook.id))
+    end
+
+    it 'skips hook when filter does not match' do
+      data = { object_attributes: { status: 'success' } }
+
+      expect(WebHookService).not_to receive(:new)
+
+      run_hooks(:push_hooks, data, relation: ProjectHook.where(id: filtered_push_hook.id))
+    end
+
+    it 'ignores filters for other scopes' do
+      hook = create(
+        :project_hook,
+        project: project,
+        push_events: true,
+        filter: {
+          'issue_hooks' => {
+            'rules' => [
+              { 'field' => 'object_attributes.status', 'operator' => 'eq', 'value' => 'failed' }
+            ]
+          }
+        }
+      )
+      data = { object_attributes: { status: 'success' } }
+
+      expect_hook_execution(hook, data, 'push_hooks')
+
+      run_hooks(:push_hooks, data, relation: ProjectHook.where(id: hook.id))
+    end
+
+    it 'skips hook when filter field is missing' do
+      hook = create(
+        :project_hook,
+        project: project,
+        push_events: true,
+        filter: {
+          'push_hooks' => {
+            'rules' => [
+              { 'field' => 'object_attributes.missing', 'operator' => 'eq', 'value' => 'nope' }
+            ]
+          }
+        }
+      )
+      data = { object_attributes: { status: 'success' } }
+
+      expect(WebHookService).not_to receive(:new)
+
+      run_hooks(:push_hooks, data, relation: ProjectHook.where(id: hook.id))
+    end
+  end
+
   context 'with access token hooks' do
     let_it_be(:resource_access_token_hook) { create(:project_hook, project: project, resource_access_token_events: true) }
 
@@ -48,6 +121,16 @@ RSpec.describe Projects::TriggeredHooks, feature_category: :webhooks do
       expect_hook_execution(resource_access_token_hook, data, 'resource_access_token_hooks')
 
       run_hooks(:resource_access_token_hooks, data)
+    end
+  end
+
+  context 'with deploy token hooks' do
+    let_it_be(:resource_deploy_token_hook) { create(:project_hook, project: project, resource_deploy_token_events: true) }
+
+    it 'executes hook' do
+      expect_hook_execution(resource_deploy_token_hook, data, 'resource_deploy_token_hooks')
+
+      run_hooks(:resource_deploy_token_hooks, data)
     end
   end
 

@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: Protected packages
 ---
@@ -32,7 +32,7 @@ title: Protected packages
 
 {{< /history >}}
 
-By default, any user with at least the Developer role can create,
+By default, any user with the Developer, Maintainer, or Owner role can create,
 edit, and delete packages. Add a package protection rule to restrict
 which users can make changes to your packages.
 
@@ -42,7 +42,7 @@ When a package is protected, the default behavior enforces these restrictions on
 
 | Action                                 | Minimum role or token                                                                     |
 |:---------------------------------------|:----------------------------------------------------------------------------------|
-| Protect a package                      | At least the Maintainer role.                                                     |
+| Protect a package                      | The Maintainer or Owner role.                                                     |
 | Push a new package                     | At least the role set in [**Minimum access level for push**](#protect-a-package). |
 | Push a new package with a deploy token | Any valid deploy token, only if the pushed package is not matched by a protection rule. Protected packages cannot be pushed with a deploy token. |
 | Delete a package                       | At least the role set in [**Minimum access level for delete**](#protect-a-package). |
@@ -57,11 +57,11 @@ When a package is protected, the default behavior enforces these restrictions on
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To protect a package:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Protected packages**, select **Add protection rule**.
@@ -100,11 +100,11 @@ If at least one protection rule applies to the package, the package is protected
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To unprotect a package:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Protected packages**, next to the protection rule you want to delete, select **Delete** ({{< icon name="remove" >}}).

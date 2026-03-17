@@ -6,7 +6,7 @@ module JiraConnect
 
     data_consistency :delayed
     queue_namespace :jira_connect
-    feature_category :integrations
+    feature_category :team_planning
     urgency :low
 
     worker_has_external_dependencies!

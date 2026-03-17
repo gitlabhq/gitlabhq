@@ -213,27 +213,6 @@ $focus-mode-z-index: 9000;
   }
 }
 
-// Legacy View Focus Mode
-.issue-boards-content.is-focused {
-  background: var(--white, $white);
-
-  @include gl-container-width-down(md, panel) {
-    padding-top: 10px;
-  }
-
-  // Use !important for these as top and z-index are set on style attribute
-  // in gitlab-ui; https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2737
-  ~#js-right-sidebar-portal .boards-sidebar {
-    top: 0 !important;
-    z-index: calc(#{$focus-mode-z-index} + 1) !important;
-  }
-
-  .boards-app {
-    height: 100vh;
-  }
-}
-
-// Paneled View (i.e. Project Studio) Focus Mode
 .content-panels.is-focused {
   background: var(--super-sidebar-bg);
 

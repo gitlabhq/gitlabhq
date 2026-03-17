@@ -35,38 +35,4 @@ RSpec.describe API::ProjectRepositoryStorageMoves, feature_category: :gitaly do
       it_behaves_like 'post single container repository storage move'
     end
   end
-
-  describe "GET /projects/:id/repository_storage_moves" do
-    it_behaves_like 'authorizing granular token permissions', :read_repository_storage_move do
-      let(:boundary_object) { container }
-      let(:request) do
-        get api("/projects/#{container.id}/repository_storage_moves",
-          personal_access_token: pat)
-      end
-    end
-  end
-
-  describe "GET /projects/:id/repository_storage_moves/:repository_storage_move_id" do
-    it_behaves_like 'authorizing granular token permissions', :read_repository_storage_move do
-      let(:boundary_object) { container }
-      let(:request) do
-        get api("/projects/#{container.id}/repository_storage_moves/#{storage_move.id}",
-          personal_access_token: pat)
-      end
-    end
-  end
-
-  describe "POST /projects/:id/repository_storage_moves" do
-    before do
-      stub_storage_settings('test_second_storage' => {})
-    end
-
-    it_behaves_like 'authorizing granular token permissions', :create_repository_storage_move do
-      let(:boundary_object) { container }
-      let(:request) do
-        post api("/projects/#{container.id}/repository_storage_moves", personal_access_token: pat),
-          params: { destination_storage_name: 'test_second_storage' }
-      end
-    end
-  end
 end

@@ -11,7 +11,10 @@ class Projects::RawController < Projects::ApplicationController
   before_action :assign_ref_vars
   before_action :require_non_empty_project
   before_action :authorize_read_code!
-  before_action :check_show_rate_limit!, only: [:show], unless: :external_storage_request?
+  with_options only: [:show], unless: :external_storage_request? do
+    before_action :check_show_blob_path_rate_limit!
+    before_action :check_show_unauthenticated_rate_limit!
+  end
   before_action :redirect_to_external_storage, only: :show, if: :static_objects_external_storage_enabled?
 
   feature_category :source_code_management
@@ -29,9 +32,18 @@ class Projects::RawController < Projects::ApplicationController
     @fully_qualified_ref || @ref
   end
 
-  def check_show_rate_limit!
+  def check_show_blob_path_rate_limit!
     check_rate_limit!(:raw_blob, scope: [@project, @path]) do
       render plain: _('You cannot access the raw file. Please wait a minute.'), status: :too_many_requests
+    end
+  end
+
+  def check_show_unauthenticated_rate_limit!
+    return if current_user
+
+    check_rate_limit!(:raw_blob_unauthenticated, scope: @project) do
+      message = _('You cannot access the raw file. Please wait a minute or authenticate and try again.')
+      render plain: message, status: :too_many_requests
     end
   end
 end

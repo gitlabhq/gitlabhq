@@ -26,5 +26,5 @@ sharding_key:
   namespace_id: namespaces
   project_id: projects
   organization_id: organizations
-organization_transfer_support: todo
+organization_transfer_support: supported
 table_size: over_limit

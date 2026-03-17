@@ -25,6 +25,9 @@ module Gitlab
         desc: "Adds an extra `traversal_path` column to the table which will be automatically " \
           "populated based on the configured sharding keys"
 
+      class_option :use_null_engine, type: :boolean, required: false, default: false,
+        desc: "Creates a table using the Null engnie which is used for passthrough tables"
+
       # Data types table
       # Postgresql OID reference - https://jdbc.postgresql.org/documentation/publicapi/org/postgresql/core/Oid.html
       PG_TYPE_MAP = {
@@ -34,12 +37,22 @@ module Gitlab
         21 => 'Int16',
         23 => 'Int64',
         25 => 'String',
+        700 => 'Float32',
+        701 => 'Float64',
         869 => 'String', # ip address type
+        1000 => 'Array(Bool)',
+        1005 => 'Array(Int16)',
+        1007 => 'Array(Int64)',
+        1009 => 'Array(String)',
+        1015 => 'Array(String)',
         1016 => 'Array(Int64)',
+        1021 => 'Array(Float32)',
+        1022 => 'Array(Float64)',
         1043 => 'String',
         1082 => 'Date32',
-        1184 => "DateTime64(6, 'UTC')",
         1114 => "DateTime64(6, 'UTC')",
+        1184 => "DateTime64(6, 'UTC')",
+        2950 => 'UUID',
         3802 => "String" # JSONB
       }.freeze
 
@@ -112,13 +125,21 @@ module Gitlab
 
         settings_str = table_settings.any? ? "\n      SETTINGS #{table_settings.join(', ')}" : ""
 
+        engine = 'ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)'
+        primary_key = "PRIMARY KEY (#{primary_keys.join(', ')})#{settings_str}"
+
+        if null_engine?
+          engine = 'ENGINE = Null'
+          primary_key = ''
+        end
+
         <<-TEXT.chomp
 CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
       (
         #{definitions}
       )
-      ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
-      PRIMARY KEY (#{primary_keys.join(', ')})#{settings_str}
+      #{engine}
+      #{primary_key}
         TEXT
       end
 
@@ -161,6 +182,7 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
 
       def table_projection
         return unless hierarchy_denormalization?
+        return if null_engine?
 
         [primary_key_projection]
       end
@@ -239,6 +261,10 @@ CREATE TABLE IF NOT EXISTS #{clickhouse_table_name}
 
       def hierarchy_denormalization?
         options['with_traversal_path']
+      end
+
+      def null_engine?
+        options['use_null_engine']
       end
 
       def primary_key_projection

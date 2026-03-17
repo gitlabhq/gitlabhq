@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Understand merge conflicts, and learn how to fix them in Git projects.
 title: Merge conflicts
 ---
@@ -64,7 +64,8 @@ in the user interface, and you can also resolve conflicts using the following me
 
 - Interactive mode: Best for conflicts where you only need to select which version of a line to keep.
 - Inline editor: Suitable for complex conflicts requiring manual edits to blend changes.
-- Command line: Provides complete control over complex conflicts. For more information, see [Resolve conflicts from the command line](../../../topics/git/git_rebase.md#resolve-conflicts-from-the-command-line).
+- Command line: Provides complete control over complex conflicts.
+  For more information, see [resolve conflicts from the command line](../../../topics/git/git_rebase.md#resolve-conflicts-from-the-command-line).
 
 ### Interactive mode
 
@@ -72,7 +73,7 @@ Interactive mode merges the target branch into the source branch with your chose
 
 To resolve merge conflicts with interactive mode:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find the merge request.
 1. Select **Overview**, and scroll to the merge request reports section.
 1. Find the merge conflicts message, and select **Resolve conflicts**.
@@ -92,7 +93,7 @@ resolve them.
 
 The merge conflict resolution editor helps you resolve these conflicts in GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find the merge request.
 1. Select **Overview**, and scroll to the merge request reports section.
 1. Find the merge conflicts message, and select **Resolve conflicts**.
@@ -115,7 +116,11 @@ message, you can:
 - In the merge widget, select **Rebase source branch**.
 - [Rebase with Git](../../../topics/git/git_rebase.md#rebase).
 
-To troubleshoot CI/CD pipeline issues, see [Debugging CI/CD pipelines](../../../ci/debugging.md).
+To troubleshoot CI/CD pipeline issues, see [debugging CI/CD pipelines](../../../ci/debugging.md).
+
+For projects that use the semi-linear or fast-forward merge method, you can also
+turn on [automatic rebase before merge](methods/_index.md#automatic-rebase-before-merge)
+to skip the manual rebase step.
 
 ### Rebase in the GitLab UI
 
@@ -131,7 +136,7 @@ Prerequisites:
 
 To rebase a merge request's branch from the GitLab UI:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find the merge request.
 1. Either:
    - On the **Overview** tab, scroll to the merge request widget and select **Rebase source branch**.

@@ -1,0 +1,72 @@
+---
+name: developer
+description: Push code to non-protected branches, create merge requests, and run CI/CD
+  pipelines. Cannot manage project settings.
+inherits_from:
+- reporter
+project:
+  permissions: []
+  raw_permissions:
+  - access_security_and_compliance
+  - admin_feature_flag
+  - admin_feature_flags_user_lists
+  - admin_issue_board
+  - admin_merge_request
+  - cancel_build
+  - cancel_pipeline
+  - create_build
+  - create_commit_status
+  - create_container_image
+  - create_deployment
+  - create_environment
+  - create_feature_flag
+  - create_merge_request_from
+  - create_package
+  - create_pipeline
+  - create_pipeline_schedule
+  - create_release
+  - create_wiki
+  - destroy_container_image
+  - destroy_container_image_tag
+  - destroy_container_registry_protection_tag_rule
+  - destroy_environment
+  - destroy_feature_flag
+  - destroy_release
+  - publish_catalog_version
+  - push_code
+  - read_alert_management_alert
+  - read_cluster
+  - read_cluster_agent
+  - read_feature_flag
+  - read_pod_logs
+  - read_resource_group
+  - read_secure_files
+  - read_security_configuration
+  - read_terraform_state
+  - reopen_merge_request
+  - resolve_note
+  - update_alert_management_alert
+  - update_container_image
+  - update_deployment
+  - update_environment
+  - update_escalation_status
+  - update_feature_flag
+  - update_merge_request
+  - update_pipeline
+  - update_release
+  - update_resource_group
+  - update_sentry_issue
+group:
+  permissions: []
+  raw_permissions:
+  - admin_crm_contact
+  - admin_crm_organization
+  - create_custom_emoji
+  - create_observability_access_request
+  - create_package
+  - delete_o11y_settings
+  - read_cluster
+  - read_cluster_agent
+  - read_group_all_available_runners
+  - read_observability_portal
+  - update_o11y_settings

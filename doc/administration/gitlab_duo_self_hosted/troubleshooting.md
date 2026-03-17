@@ -1,15 +1,14 @@
 ---
 stage: AI-powered
 group: Custom Models
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Troubleshooting tips for deploying GitLab Duo Self-Hosted
-title: Troubleshooting GitLab Duo Self-Hosted
+title: Troubleshooting self-hosted models
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
@@ -25,8 +24,6 @@ title: Troubleshooting GitLab Duo Self-Hosted
 
 {{< /history >}}
 
-When working with GitLab Duo Self-Hosted, you might encounter issues.
-
 Before you begin troubleshooting, you should:
 
 - Be able to access the [`gitlab-rails` console](../operations/rails_console.md).
@@ -34,7 +31,7 @@ Before you begin troubleshooting, you should:
 - Know the endpoint where your:
   - AI Gateway is hosted.
   - Model is hosted.
-- [Enable logging](logging.md#enable-logging) to make sure that requests and responses from GitLab to the AI Gateway are being logged to [`llm.log`](../logs/_index.md#llmlog).
+- [Enable logging](logging.md#turn-on-logging-for-gitlab-duo-usage-data) to make sure that requests and responses from GitLab to the AI Gateway are being logged to [`llm.log`](../logs/_index.md#llmlog).
 
 For more information on troubleshooting GitLab Duo, see:
 
@@ -47,7 +44,7 @@ For more information on troubleshooting GitLab Duo, see:
 We provide two debugging scripts to help administrators verify their self-hosted model configuration.
 
 1. Debug the GitLab to AI Gateway connection. From your GitLab instance, run the
-   [Rake task](../../administration/raketasks/_index.md):
+   [Rake task](../raketasks/_index.md):
 
    ```shell
    gitlab-rake "gitlab:duo:verify_self_hosted_setup[<username>]"
@@ -115,7 +112,7 @@ raise an issue on the issue tracker.
 
 ## GitLab Duo health check is not working
 
-When you [run a health check for GitLab Duo](../../administration/gitlab_duo/configure/gitlab_self_managed.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI Gateway`.
+When you [run a health check for GitLab Duo](../gitlab_duo/configure/_index.md#run-a-health-check-for-gitlab-duo), you might get an error like a `401 response from the AI Gateway`.
 
 To resolve, first check if GitLab Duo features are functioning correctly. For example, send a message to GitLab Duo Chat.
 
@@ -409,7 +406,7 @@ gitlab-rake gitlab:duo:verify_self_hosted_setup
 
 If no logs are generated in the AI Gateway server, follow these steps to troubleshoot:
 
-1. Ensure that [AI logs are enabled](logging.md#enable-logging).
+1. Ensure that [AI logs are enabled](logging.md#turn-on-logging-for-gitlab-duo-usage-data).
 1. Run the following commands to view the GitLab Rails logs for any errors:
 
    ```shell
@@ -477,7 +474,7 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 
 ## Error: An error occurred while fetching an authentication token for this workflow
 
-This error can occur when you try to use Agentic Chat in GitLab or your IDE.
+This error can occur when you try to use agentic Chat in GitLab or your local environment.
 
 You might also see the following in the logs of your IDE's [GitLab Language Server](../../editor_extensions/language_server/_index.md):
 
@@ -490,15 +487,11 @@ You might also see the following in the logs of your IDE's [GitLab Language Serv
 ```
 
 This means that the language server could not communicate with the `direct_access` endpoint
-to generate a JWT token due to the certificate issue. 
+to generate a JWT token due to the certificate issue.
 
-If you are using a self-hosted model without TLS, to resolve this issue, ensure that you set 
-`DUO_AGENT_PLATFORM_SERVICE_SECURE` to `false`, see [Install the AI gateway](../../install/install_ai_gateway.md#start-a-container-from-the-image).
-
-## Troubleshooting GitLab Duo Chat
-
-To troubleshoot GitLab Duo Chat when using GitLab Duo Self-Hosted,
-see [GitLab Duo Chat troubleshooting](../../user/gitlab_duo_chat/troubleshooting.md).
+If you do not use TLS to connect your self-hosted model with the Agent Platform, to resolve this issue,
+[turn off](configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform)
+TLS connection to the GitLab Duo Agent Platform service.
 
 ## Related topics
 

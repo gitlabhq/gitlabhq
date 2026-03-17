@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab 16 upgrade notes
 ---
 
@@ -48,7 +48,6 @@ For additional information for Helm chart installations, see
   - For Linux package installations, a timeout occurs and a
     [manual workaround to complete the migrations](../package/package_troubleshooting.md#error-command-timed-out-after-3600s)
     is necessary.
-
 - GitLab 16.0 introduced changes around enforcing limits on project sizes. On self-managed, if you use
   these limits, projects that have reached their limit causes error messages when pushing to unaffected Git
   repositories in the same group. The errors often refer to exceeding a limit of zero bytes (`limit of 0 B`).
@@ -56,10 +55,9 @@ For additional information for Helm chart installations, see
   The pushes succeed, but the errors imply otherwise and might cause issues with automation.
   [Read more in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416646).
   The [bug is fixed in GitLab 16.5 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131122).
-
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-    **Affected releases**:
+  **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
@@ -82,7 +80,6 @@ For additional information for Helm chart installations, see
 
   - [Praefect configuration structure change](#praefect-configuration-structure-change).
   - [Gitaly configuration structure change](#gitaly-configuration-structure-change).
-
 - If you reconfigure Gitaly to store Git data in a location other than `/var/opt/gitlab/git-data/repositories`,
   packaged GitLab 16.0 and later does not automatically create the directory structure.
   [Read the issue for more details and the workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8320).
@@ -318,7 +315,6 @@ planned for release in 16.9.1.
     - If all existing sites are running PostgreSQL 13, install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database/#pin-the-packaged-postgresql-version-fresh-installs-only).
     - If all existing sites are running PostgreSQL 14: No special action is required.
     - Upgrade all existing sites to GitLab 16.8.2 or later and PostgreSQL 14 before you add the new Geo secondary site to the deployment.
-
 - Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
   See details of the problem and workaround in [issue 439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
 
@@ -365,10 +361,9 @@ planned for release in 16.9.1.
   - If you skip 16.6 in your upgrade path, you might experience performance issues after upgrading to 16.7
     when your instance processes a background database migration from the GitLab 16.6 release.
     Read more about the `ci_builds` migration in the [16.6.0 upgrade notes](#1660).
-
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-    **Affected releases**:
+  **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
@@ -405,7 +400,6 @@ Specific information applies to Linux package installations:
     - If all existing sites are running PostgreSQL 13: Install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database/#pin-the-packaged-postgresql-version-fresh-installs-only).
     - If all existing sites are running PostgreSQL 14: No special action is required.
     - Upgrade all existing sites to GitLab 16.8.2 or later and PostgreSQL 14 before you add the new Geo secondary site to the deployment.
-
 - You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds at this time. We are actively working on a fix.
 
   **Affected releases**:
@@ -696,7 +690,6 @@ Specific information applies to installations using Geo:
 - Updating a group path [received a bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/419289) that uses a database index introduced in 16.3.
 
   If you upgrade to 16.4 from a version lower than 16.3, you must execute `ANALYZE packages_packages;` in the database before you use it.
-
 - You might encounter the following error while upgrading to GitLab 16.4 or later:
 
   ```plaintext
@@ -861,9 +854,7 @@ Specific information applies to installations using Geo:
 ## 16.3.0
 
 - **Update to GitLab 16.3.5 or later**. This avoids [issue 425971](https://gitlab.com/gitlab-org/gitlab/-/issues/425971) that causes an excessive use of database disk space for GitLab 16.3.3 and 16.3.4.
-
 - A unique index was added to ensure that there's no duplicate NPM packages in the database. If you have duplicate NPM packages, you need to upgrade to 16.1 first, or you are likely to run into the following error: `PG::UniqueViolation: ERROR:  could not create unique index "idx_packages_on_project_id_name_version_unique_when_npm"`.
-
 - For Go applications, [`crypto/tls`: verifying certificate chains containing large RSA keys is slow (CVE-2023-29409)](https://github.com/golang/go/issues/61460)
   introduced a hard limit of 8192 bits for RSA keys. In the context of Go applications at GitLab, RSA keys can be configured for:
 
@@ -963,7 +954,6 @@ Specific information applies to installations using Geo:
   For more information, see [issue 429617](https://gitlab.com/gitlab-org/gitlab/-/issues/429617).
 
 - An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/419370) with sync states getting stuck in pending state results in replication being stuck indefinitely for impacted items leading to risk of data loss in the event of a failover. This mostly impact repository syncs but can also can also affect container registry syncs. You are advised to upgrade to a fixed version to avoid risk of data loss.
-
 - You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in [issue 427493](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds, you should upgrade to a version that contains the fix.
 
   **Affected releases**:
@@ -1011,7 +1001,6 @@ Specific information applies to installations using Geo:
   ```
 
   See [the details and workaround](#undefined-column-error-upgrading-to-162-or-later).
-
 - You might encounter the following error while upgrading to GitLab 16.2 or later:
 
   ```plaintext
@@ -1023,7 +1012,6 @@ Specific information applies to installations using Geo:
   ```
 
   For more information, see [issue 421629](https://gitlab.com/gitlab-org/gitlab/-/issues/421629).
-
 - You might encounter the following error after upgrading to GitLab 16.2 or later:
 
   ```plaintext
@@ -1031,10 +1019,9 @@ Specific information applies to installations using Geo:
   ```
 
   Sidekiq and Puma processes must be restarted to resolve this issue.
-
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-    **Affected releases**:
+  **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
@@ -1063,7 +1050,6 @@ Specific information applies to Linux package installations:
 
   PostgreSQL 14 isn't supported on Geo deployments and is [planned](https://gitlab.com/groups/gitlab-org/-/epics/9065)
   for future releases.
-
 - In 16.2, we are upgrading Redis from 6.2.11 to 7.0.12. This upgrade is expected to be fully backwards compatible.
 
   Redis is not automatically restarted as part of `gitlab-ctl reconfigure`.
@@ -1134,10 +1120,9 @@ Workaround: A possible workaround is to [disable proxying](../../administration/
 - You must remove any settings related to Puma worker killer from the `puma.rb` configuration file, because those have been
   [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118645). For more information, see the
   [`puma.rb.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/16-0-stable-ee/config/puma.rb.example) file.
-
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-    **Affected releases**:
+  **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
@@ -1206,10 +1191,9 @@ by this issue.
 - Docker 20.10.10 or later is required to run the GitLab Docker image. Older versions
   [throw errors on startup](../../install/docker/troubleshooting.md#threaderror-cant-create-thread-operation-not-permitted).
 - Container registry using Azure storage might be empty with zero tags. You can fix this by following the [breaking change instructions](../deprecations.md#azure-storage-driver-defaults-to-the-correct-root-prefix).
-
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-    **Affected releases**:
+  **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
@@ -1232,7 +1216,6 @@ Specific information applies to Linux package installations:
 
   Prior to upgrading, administrators of Linux package installations must ensure the installation is using
   [PostgreSQL 13](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
-
 - Grafana that was bundled with GitLab is deprecated and is no longer supported.
   It is removed in GitLab 16.3.
 - This upgrades `openssh-server` to `1:8.9p1-3`.
@@ -1241,10 +1224,8 @@ Specific information applies to Linux package installations:
   the deprecations listed in [OpenSSH 8.7 Release Notes](https://www.openssh.com/txt/release-8.7).
 
   Workaround is to make use of a different key type, or upgrade the client OpenSSH to a version >= 8.7.
-
 - [Migrate your Praefect configuration to the new structure](#praefect-configuration-structure-change)
   to ensure all your `praefect['..']` settings continue to work in GitLab 16.0 and later.
-
 - [Migrate your Gitaly configuration to the new structure](#gitaly-configuration-structure-change)
   to ensure all your `gitaly['..']` settings continue to work in GitLab 16.0 and later.
 

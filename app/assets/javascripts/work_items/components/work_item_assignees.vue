@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { unionBy } from 'lodash';
+import { unionBy } from 'lodash-es';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { sortNameAlphabetically, newWorkItemId } from '~/work_items/utils';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
@@ -12,8 +12,9 @@ import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_i
 import { s__, sprintf, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
+import { i18n, TRACKING_CATEGORY_SHOW, VIEW_CONTEXT } from '../constants';
 
 export default {
   components: {
@@ -23,7 +24,10 @@ export default {
     GlButton,
     UncollapsedAssigneeList,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [glFeatureFlagsMixin(), Tracking.mixin()],
+  inject: {
+    viewContext: { default: VIEW_CONTEXT.fullScreen },
+  },
   props: {
     fullPath: {
       type: String,
@@ -192,6 +196,7 @@ export default {
         category: TRACKING_CATEGORY_SHOW,
         label: 'item_assignees',
         property: `type_${this.workItemType}`,
+        extra: { viewContext: this.viewContext },
       };
     },
     isLoadingUsers() {
@@ -292,6 +297,7 @@ export default {
                 assigneeIds: localAssigneeIds,
               },
             },
+            useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
           },
         });
         if (errors.length > 0) {

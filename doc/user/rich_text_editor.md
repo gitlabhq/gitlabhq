@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Rich text editor
 ---
 
@@ -126,7 +126,7 @@ preview them live as you type the diagram code.
 
 To insert a diagram:
 
-1. On the top bar of a text box, select {{< icon name="plus" >}} **More options** and then **Mermaid diagram** or **PlantUML diagram**.
+1. In the top bar of a text box, select {{< icon name="plus" >}} **More options** and then **Mermaid diagram** or **PlantUML diagram**.
 1. Enter the code for your diagram. The diagram preview appears in the text box.
 
 ![A mermaid diagram preview in rich text editor with LR syntax creating a left to right flowchart](img/rich_text_editor_04_v16_2.png)

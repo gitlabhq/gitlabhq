@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use snippets to store and share code, text, and files from your browser. Snippets support version control, commenting, and embedding.
 title: Snippets
 ---
@@ -23,7 +23,7 @@ and you can maintain your snippets with the [snippets API](../api/snippets.md).
 You can create and manage your snippets with:
 
 - The GitLab user interface.
-- The [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/_index.md#create-a-snippet).
+- The [GitLab for VS Code extension](../editor_extensions/visual_studio_code/projects.md#create-a-snippet).
 - The [`glab` CLI](../editor_extensions/gitlab_cli/_index.md).
 
 ![A code snippet showing sample content in GitLab.](img/snippet_sample_v16_6.png)
@@ -39,11 +39,27 @@ On GitLab.com, group Owners can
 [restrict personal snippet creation](group/manage.md#restrict-personal-snippets-for-enterprise-users)
 for [enterprise users](enterprise_user/_index.md).
 
+## Snippet visibility
+
+For project snippets, the project's visibility always takes precedence over the snippet's
+visibility setting. A snippet marked as public is not accessible to anyone who cannot already
+access the project.
+
+| Project visibility | Who can access public snippets | Who can access private snippets |
+|--------------------|-------------------------------|--------------------------------|
+| Private            | Project members only          | Project members only           |
+| Internal           | Authenticated users (except external users) | Project members only |
+| Public             | Everyone                      | Project members only           |
+
 > [!note]
-> From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
-> and snippets on GitLab.com. Existing snippets using the `Internal`
-> visibility setting keep this setting. You can read more about the change in the
-> [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+> On GitLab.com, the `Internal` visibility setting is disabled for new projects, groups,
+> and snippets. Existing snippets using the `Internal` visibility setting keep this setting.
+> You can read more about the change in the [relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+
+For personal snippets, the snippet's visibility setting controls access directly:
+
+- **Public**: Anyone can access the snippet without authentication.
+- **Private**: Only you can access the snippet.
 
 ## Create snippets
 
@@ -52,12 +68,12 @@ You can create snippets in multiple ways, depending on whether you want to creat
 1. Select the kind of snippet you want to create:
    - To create a personal snippet, do one of the following:
      - On the [Snippets dashboard](https://gitlab.com/dashboard/snippets), select **New snippet**.
-     - From a project: On the left sidebar, select **Create new** ({{< icon name="plus" >}}). Below **In GitLab**, select **New snippet**.
+     - From a project: In the left sidebar, select **Create new** ({{< icon name="plus" >}}). Below **In GitLab**, select **New snippet**.
      - From any other page: In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and then **New snippet**.
      - From the `glab` CLI, using the
        [`glab snippet create`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/snippet/create.md) command.
        For full instructions, see the command's documentation.
-     - If you installed the [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/_index.md),
+     - If you installed the [GitLab for VS Code extension](../editor_extensions/visual_studio_code/_index.md),
        use the [`Gitlab: Create snippet` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet).
    - To create a project snippet: Go to your project's page. Select
      **Create new** ({{< icon name="plus" >}}). Below **In this project**, select **New snippet**.
@@ -71,6 +87,9 @@ You can create snippets in multiple ways, depending on whether you want to creat
 1. Optional. Add [multiple files](#add-or-remove-multiple-files) to your snippet.
 1. Select a visibility level, and select **Create snippet**.
 
+For project snippets, the project's visibility acts as the outer boundary.
+For more information, see [snippet visibility](#snippet-visibility).
+
 After you create a snippet, you can still [add more files to it](#add-or-remove-multiple-files).
 Snippets are [versioned by default](#versioned-snippets).
 
@@ -79,17 +98,17 @@ Snippets are [versioned by default](#versioned-snippets).
 To discover all snippets visible to you in GitLab, you can:
 
 - View a project's snippets:
-  1. On the top bar, select **Search or go to** and find your project.
+  1. In the top bar, select **Search or go to** and find your project.
   1. In the left sidebar, select **Code** > **Snippets**.
 - View all the snippets you created:
-  1. On the top bar, select **Search or go to**.
+  1. In the top bar, select **Search or go to**.
   1. Select **Your work**.
   1. Select **Snippets**.
 
   On GitLab.com, you can also visit your [snippets directly](https://gitlab.com/dashboard/snippets).
 
 - Explore all public snippets:
-  1. On the top bar, select **Search or go to**.
+  1. In the top bar, select **Search or go to**.
   1. Select **Explore**.
   1. Select **Snippets**.
 
@@ -191,10 +210,16 @@ is reflected in the embedded snippets. When embedded, users can download it, or 
 To embed a snippet:
 
 1. Confirm your snippet is publicly visible:
-   - If it's a project snippet, the project must be public.
-   - The snippet is publicly visible.
-   - In your project, go to **Settings** > **General**. Expand the **Visibility, project features, permissions**
-     section, and scroll to **Snippets**. Set the snippet permission to **Everyone with access**.
+   - For project snippets:
+     1. Both the project and the snippet must be public. A public snippet in a
+        private or internal project cannot be embedded.
+     1. In your project, go to **Settings** > **General**. Expand the
+        **Visibility, project features, permissions** section, and scroll to
+        **Snippets**. Set the snippet permission to **Everyone with access**.
+   - For personal snippets:
+     1. Go to your snippet.
+     1. Select **Edit**.
+     1. Set the visibility to **Public**, and select **Save changes**.
 1. In your snippet's **Embed** section, select **Copy** to copy a one-line script
    you can add to any website or blog post. For example:
 
@@ -245,7 +270,7 @@ Prerequisites:
 
 To do this task:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Snippets**.
 1. Select the snippet you want to report as spam.
 1. Select **Submit as spam**.

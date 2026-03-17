@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
 import { useFakeDate } from 'helpers/fake_date';
 import testAction from 'helpers/vuex_action_helper';

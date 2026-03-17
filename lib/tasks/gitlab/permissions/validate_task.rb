@@ -7,19 +7,8 @@ module Tasks
         PERMISSION_DIR = ::Authz::Permission::BASE_PATH
         PERMISSION_TODO_FILE = "#{PERMISSION_DIR}/definitions_todo.txt".freeze
         JSON_SCHEMA_FILE = 'config/authz/permissions/type_schema.json'
-        PERMISSION_NAME_REGEX = /\A[a-z]+_[a-z_]+[a-z]\z/
-
-        DISALLOWED_ACTIONS = {
-          admin: 'a granular action',
-          change: 'update',
-          destroy: 'delete',
-          edit: 'update',
-          list: 'read',
-          manage: 'a granular action',
-          modify: 'update',
-          set: 'update',
-          view: 'read'
-        }.freeze
+        PERMISSION_NAME_REGEX = ::Authz::Validation::PERMISSION_NAME_REGEX
+        DISALLOWED_ACTIONS = ::Authz::Validation::DISALLOWED_ACTIONS
 
         attr_reader :declarative_policy_permissions
 
@@ -199,22 +188,31 @@ module Tasks
         def error_messages
           {
             definition: "The following permissions are missing a definition file." \
-              "\nRun bundle exec rails generate authz:permission <NAME> to generate definition files.",
+              "\nRun bin/permission <NAME> to generate definition files." \
+              "\n#{permission_definitions_link(anchor: 'permission-definition-file')}",
             excluded: "The following permissions have a definition file." \
               "\nRemove them from config/authz/permissions/definitions_todo.txt.",
-            schema: "The following permissions failed schema validation.",
-            action: "The following permissions contain a disallowed action.",
+            schema: "The following permissions failed schema validation." \
+              "\n#{permission_definitions_link(anchor: 'permission-definition-fields')}",
+            action: "The following permissions contain a disallowed action." \
+              "\n#{conventions_link(anchor: 'disallowed-actions')}",
             name: "The following permissions have invalid names." \
-              "\nPermission name must be in the format action_resource[_subresource].",
-            file: "The following permission definitions do not exist at the expected path.",
+              "\nPermission name must be in the format action_resource[_subresource]." \
+              "\n#{conventions_link(anchor: 'naming-permissions')}",
+            file: "The following permission definitions do not exist at the expected path." \
+              "\n#{permission_definitions_link(anchor: 'permission-naming-and-validation')}",
             unknown_permission: "The following permissions have a definition file but are not found in " \
-              "declarative policy.\nRemove the definition files for the unknown permissions.",
+              "declarative policy.\nRemove the definition files for the unknown permissions." \
+              "\n#{permission_definitions_link(anchor: 'permission-definition-file')}",
             missing_resource_metadata:
-              "The following permission resource directories are missing a _metadata.yml file.",
-            resource_metadata_schema: "The following resource metadata files failed schema validation.",
+              "The following permission resource directories are missing a _metadata.yml file." \
+              "\n#{permission_definitions_link(anchor: 'resource-metadata-fields')}",
+            resource_metadata_schema: "The following resource metadata files failed schema validation." \
+              "\n#{permission_definitions_link(anchor: 'resource-metadata-fields')}",
             empty_resource_directory:
               "The following resource directories contain only a _metadata.yml file with no permission definitions." \
-              "\nEither add permission definitions or remove the directory."
+              "\nEither add permission definitions or remove the directory." \
+              "\n#{permission_definitions_link(anchor: 'permission-naming-and-validation')}"
           }
         end
 

@@ -633,4 +633,32 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :pipeline_co
 
     it { is_expected.to eq("[\"VAR\", \"VAR2\"], @errors='circular variable reference detected'") }
   end
+
+  describe 'string keys detection' do
+    it 'logs when initializing collection with string-keyed hashes' do
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        hash_including(message: "CI variables Item: string keys detected in hash")
+      )
+
+      described_class.new([{ 'key' => 'VAR', 'value' => 'test' }])
+    end
+
+    it 'does not log when initializing collection with symbol-keyed hashes' do
+      expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+      described_class.new([{ key: 'VAR', value: 'test' }])
+    end
+
+    context 'when ci_optimize_variables_collection_and_item is disabled' do
+      before do
+        stub_feature_flags(ci_optimize_variables_collection_and_item: false)
+      end
+
+      it 'does not log for string-keyed hashes' do
+        expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+        described_class.new([{ 'key' => 'VAR', 'value' => 'test' }])
+      end
+    end
+  end
 end

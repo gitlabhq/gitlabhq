@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Advanced SAST CWE coverage
 ---
 
@@ -29,7 +29,7 @@ To learn more about the rules used in GitLab Advanced SAST, see [SAST rules](rul
 
 GitLab Advanced SAST finds the following types of weaknesses in each programming language:
 
-<!-- Table contents are automatically produced by a job in https://gitlab.com/gitlab-org/security-products/oxeye/product/oxeye-rulez. -->
+<!-- Table contents are automatically produced by a job in <https://gitlab.com/gitlab-org/security-products/oxeye/product/oxeye-rulez>. -->
 
 | CWE                                                          | CWE Description                                                                                                        | C                                    | C++                                  | C#                                   | Go                                   | Java                                 | JavaScript, TypeScript               | PHP                                  | Python                               | Ruby                                 |
 |:-------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------|:-------------------------------------|:-------------------------------------|:-------------------------------------|:-------------------------------------|:-------------------------------------|:-------------------------------------|:-------------------------------------|:-------------------------------------|:-------------------------------------|

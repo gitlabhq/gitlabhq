@@ -72,7 +72,8 @@ export default {
   },
   methods: {
     onRefChange(selectedRef) {
-      const { path, query } = generateRouterParams(selectedRef, this.$route);
+      const { path, query, ref } = generateRouterParams(selectedRef, this.$route);
+      this.$emit('ref-change', ref);
       this.$router.push({ path, query });
     },
   },

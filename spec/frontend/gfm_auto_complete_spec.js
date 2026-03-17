@@ -20,12 +20,18 @@ import waitForPromises from 'helpers/wait_for_promises';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { linkedItems, currentAssignees } from '~/graphql_shared/issuable_client';
+import {
+  linkedItems,
+  currentAssignees,
+  currentReviewers,
+  appliedLabels,
+} from '~/graphql_shared/issuable_client';
 import {
   eventlistenersMockDefaultMap,
   crmContactsMock,
   mockIssues,
   mockAssignees,
+  mockLabels,
 } from 'ee_else_ce_jest/gfm_auto_complete/mock_data';
 import { InternalEvents } from '~/tracking';
 
@@ -34,6 +40,8 @@ const mockSpriteIcons = '/icons.svg';
 jest.mock('~/graphql_shared/issuable_client', () => ({
   linkedItems: jest.fn(),
   currentAssignees: jest.fn(),
+  currentReviewers: jest.fn().mockReturnValue([]),
+  appliedLabels: jest.fn(),
 }));
 
 jest.mock('fuzzaldrin-plus', () => ({
@@ -1493,6 +1501,14 @@ describe('GfmAutoComplete', () => {
           expect(getDropdownItems()).toEqual([mockAssignees[1]].map(assigneeMatcher));
           expect(currentAssignees).toHaveBeenCalled();
         });
+
+        it('using "/assign @" excludes current assignees', () => {
+          triggerDropdown($textarea, '/assign @');
+
+          expect(getDropdownItems()).toHaveLength(mockAssignees.length - 1);
+          expect(getDropdownItems()).not.toContainEqual(assigneeMatcher(mockAssignees[1]));
+          expect(currentAssignees).toHaveBeenCalled();
+        });
       });
 
       describe('with disabled members', () => {
@@ -1536,6 +1552,118 @@ describe('GfmAutoComplete', () => {
           triggerDropdown($textarea, '/assign @');
 
           expect(getDropdownItems()).toHaveLength(enabledMembers.length);
+        });
+      });
+    });
+
+    describe('assign_reviewer / unassign_reviewer', () => {
+      const getDropdownItems = () => getAutocompleteDropdownItems('at-view-users');
+      const reviewerMatcher = (user) =>
+        `${user.username.charAt(0).toUpperCase()} ${user.username} ${user.name}`;
+
+      beforeEach(() => {
+        currentReviewers.mockReturnValue([]);
+
+        autocomplete.setup($textarea, { members: true });
+        autocomplete.cachedData['@'] = {
+          '': [...mockAssignees],
+        };
+      });
+
+      describe('without any reviewers present', () => {
+        it('using "/assign_reviewer @" shows all members', () => {
+          triggerDropdown($textarea, '/assign_reviewer @');
+
+          expect(getDropdownItems()).toHaveLength(mockAssignees.length);
+          expect(getDropdownItems()).toEqual(mockAssignees.map(reviewerMatcher));
+        });
+
+        it('using "/unassign_reviewer @" shows no users', () => {
+          triggerDropdown($textarea, '/unassign_reviewer @');
+
+          expect(getDropdownItems()).toHaveLength(0);
+          expect(currentReviewers).toHaveBeenCalled();
+        });
+      });
+
+      describe('with reviewers present', () => {
+        beforeEach(() => {
+          currentReviewers.mockReturnValue([mockAssignees[1]]);
+        });
+
+        it('using "@" shows all the members', () => {
+          triggerDropdown($textarea, '@');
+
+          expect(getDropdownItems()).toHaveLength(mockAssignees.length);
+          expect(getDropdownItems()).toEqual(mockAssignees.map(reviewerMatcher));
+        });
+
+        it('using "/assign_reviewer @" excludes current reviewers', () => {
+          triggerDropdown($textarea, '/assign_reviewer @');
+
+          expect(getDropdownItems()).toHaveLength(mockAssignees.length - 1);
+          expect(getDropdownItems()).not.toContain(reviewerMatcher(mockAssignees[1]));
+        });
+
+        it('using "/unassign_reviewer @" shows only current reviewers', () => {
+          triggerDropdown($textarea, '/unassign_reviewer @');
+
+          expect(getDropdownItems()).toHaveLength(1);
+          expect(getDropdownItems()).toEqual([mockAssignees[1]].map(reviewerMatcher));
+          expect(currentReviewers).toHaveBeenCalled();
+        });
+      });
+    });
+
+    describe('unlabel', () => {
+      const getDropdownItems = () => getAutocompleteDropdownItems('at-view-labels');
+      const labelMatcher = (label) => label.title;
+
+      beforeEach(() => {
+        appliedLabels.mockImplementation(() => ({
+          [`${mockWorkItemId}`]: [],
+        }));
+
+        autocomplete.setup($textarea, { labels: true });
+        autocomplete.cachedData['~'] = [...mockLabels];
+      });
+
+      describe('without any labels applied', () => {
+        it('using "~" shows all the labels', () => {
+          triggerDropdown($textarea, '~');
+
+          expect(getDropdownItems()).toHaveLength(mockLabels.length);
+          expect(getDropdownItems()).toEqual(mockLabels.map(labelMatcher));
+        });
+
+        it('using "/unlabel ~" shows no labels', () => {
+          triggerDropdown($textarea, '/unlabel ~');
+
+          expect(getDropdownItems()).toHaveLength(0);
+          expect(appliedLabels).toHaveBeenCalled();
+        });
+      });
+
+      describe('with labels applied', () => {
+        beforeEach(() => {
+          appliedLabels.mockImplementation(() => ({
+            [`${mockWorkItemId}`]: [mockLabels[0]],
+          }));
+        });
+
+        it('using "~" shows all the labels', () => {
+          triggerDropdown($textarea, '~');
+
+          expect(getDropdownItems()).toHaveLength(mockLabels.length);
+          expect(getDropdownItems()).toEqual(mockLabels.map(labelMatcher));
+        });
+
+        it('using "/unlabel ~" shows only applied labels', () => {
+          triggerDropdown($textarea, '/unlabel ~');
+
+          expect(getDropdownItems()).toHaveLength(1);
+          expect(getDropdownItems()).toEqual([mockLabels[0]].map(labelMatcher));
+          expect(appliedLabels).toHaveBeenCalled();
         });
       });
     });
@@ -1657,6 +1785,98 @@ describe('GfmAutoComplete', () => {
       expect(items[2]).toContain('/beta');
 
       defaultSorterSpy.mockRestore();
+    });
+
+    it('prioritizes commands with alias prefix matches over substring matches', async () => {
+      // Override mockValue to include commands with aliases
+      ajaxSpy.mockReturnValue(
+        Promise.resolve([
+          { name: 'unassign_reviewer', aliases: [], params: [], description: '' },
+          {
+            name: 'request_review',
+            aliases: ['assign_reviewer', 'reviewer'],
+            params: [],
+            description: '',
+          },
+        ]),
+      );
+
+      const defaultSorterSpy = jest
+        .spyOn($.fn.atwho.default.callbacks, 'sorter')
+        .mockImplementation((q, items) => items);
+
+      // Type a query that matches an alias (assign_reviewer) as a prefix
+      triggerDropdown($textarea, '/assign_re');
+      await waitForPromises();
+
+      const items = getCommandsItems();
+      expect(items).toHaveLength(2);
+      // /request_review should be first (has alias /assign_reviewer which matches the query as prefix)
+      expect(items[0]).toContain('/request_review');
+      // /unassign_reviewer follows (substring match, but not an alias prefix match)
+      expect(items[1]).toContain('/unassign_reviewer');
+
+      defaultSorterSpy.mockRestore();
+    });
+
+    it('does not apply custom sorting when no alias prefix matches exist', async () => {
+      // Override mockValue to include commands with NO matching aliases
+      ajaxSpy.mockReturnValue(
+        Promise.resolve([
+          { name: 'label', aliases: ['labels'], params: [], description: '' },
+          { name: 'unlabel', aliases: ['remove_label'], params: [], description: '' },
+          { name: 'relabel', aliases: [], params: [], description: '' },
+        ]),
+      );
+
+      const defaultSorterSpy = jest
+        .spyOn($.fn.atwho.default.callbacks, 'sorter')
+        .mockImplementation((q, items) => items);
+
+      // Type a query that does NOT match any alias as a prefix
+      // 'lab' matches as substring in 'label', 'unlabel', 'relabel' but NOT as alias prefix
+      triggerDropdown($textarea, '/lab');
+      await waitForPromises();
+
+      const items = getCommandsItems();
+      expect(items).toHaveLength(3);
+      // Should preserve source order since hasAliasMatch === false
+      expect(items[0]).toContain('/label');
+      expect(items[1]).toContain('/unlabel');
+      expect(items[2]).toContain('/relabel');
+
+      defaultSorterSpy.mockRestore();
+    });
+
+    it('uses 3-tier scoring: name prefix > alias prefix > substring match', async () => {
+      // Ensures that when typing /assign_rev, /request_review appears before /unassign_reviewer
+      ajaxSpy.mockReturnValue(
+        Promise.resolve([
+          { name: 'reassign', aliases: [], params: [], description: '' },
+          { name: 'unassign_reviewer', aliases: [], params: [], description: '' },
+          {
+            name: 'request_review',
+            aliases: ['assign_reviewer', 'reviewer'],
+            params: [],
+            description: '',
+          },
+          { name: 'assign', aliases: [], params: [], description: '' },
+        ]),
+      );
+
+      // Type a query that tests all three scoring tiers
+      triggerDropdown($textarea, '/assign');
+      await waitForPromises();
+
+      const items = getCommandsItems();
+      expect(items).toHaveLength(4);
+      // Tier 1: Name prefix match should be first
+      expect(items[0]).toContain('/assign');
+      // Tier 2: Alias prefix match should be second (assign_reviewer alias)
+      expect(items[1]).toContain('/request_review');
+      // Tier 3: Substring matches follow (preserving source order)
+      expect(items[2]).toContain('/reassign');
+      expect(items[3]).toContain('/unassign_reviewer');
     });
   });
 

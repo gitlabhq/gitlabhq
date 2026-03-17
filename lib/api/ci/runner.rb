@@ -141,7 +141,8 @@ module API
         post '/reset_authentication_token', urgency: :low, feature_category: :runner_core do
           authenticate_runner!
 
-          ::Ci::Runners::ResetAuthenticationTokenService.new(runner: current_runner, source: :runner_api).execute!
+          result = ::Ci::Runners::ResetAuthenticationTokenService.new(runner: current_runner, source: :runner_api).execute!
+          error!(result.message, :forbidden) if result.error?
 
           present current_runner.token_with_expiration, with: Entities::Ci::ResetTokenResult
         end

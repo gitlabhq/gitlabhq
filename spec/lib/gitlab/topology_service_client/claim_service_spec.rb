@@ -26,23 +26,46 @@ RSpec.describe Gitlab::TopologyServiceClient::ClaimService, feature_category: :c
     end
   end
 
-  describe 'method delegation' do
-    let(:args) { { foo: 'bar' } }
+  describe '#service_class' do
+    it 'returns the correct gRPC stub class' do
+      result = service.send(:service_class)
+      expect(result).to eq(Gitlab::Cells::TopologyService::Claims::V1::ClaimService::Stub)
+    end
+  end
+
+  describe '#begin_update' do
+    let(:request) do
+      Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateRequest.new(
+        create_records: [],
+        destroy_records: [],
+        cell_id: cell_id
+      )
+    end
+
+    let(:mock_response) { Gitlab::Cells::TopologyService::Claims::V1::BeginUpdateResponse.new }
 
     before do
       allow(service).to receive(:client).and_return(client_double)
     end
 
-    it 'delegates #begin_update to the client' do
-      expect(client_double).to receive(:begin_update).with(args)
-      service.begin_update(args)
-    end
-  end
+    it 'calls client.begin_update with the correct parameters' do
+      expect(client_double).to receive(:begin_update).with(request, deadline: nil).and_return(mock_response)
 
-  describe '#service_class' do
-    it 'returns the correct gRPC stub class' do
-      result = service.send(:service_class)
-      expect(result).to eq(Gitlab::Cells::TopologyService::Claims::V1::ClaimService::Stub)
+      result = service.begin_update(create_records: [], destroy_records: [])
+
+      expect(result).to eq(mock_response)
+    end
+
+    context 'with deadline' do
+      let(:deadline) { GRPC::Core::TimeConsts.from_relative_time(5.0) }
+
+      it 'calls client.begin_update with valid parameters' do
+        expect(client_double).to receive(:begin_update).with(request, deadline: deadline).and_return(mock_response)
+
+        result = service.begin_update(create_records: [], destroy_records: [], deadline: deadline)
+
+        expect(result).to eq(mock_response)
+      end
     end
   end
 
@@ -178,6 +201,97 @@ RSpec.describe Gitlab::TopologyServiceClient::ClaimService, feature_category: :c
           .and_return(mock_response)
 
         result = service.list_leases(**args)
+
+        expect(result).to eq(mock_response)
+      end
+    end
+  end
+
+  describe '#list_records' do
+    let(:mock_response) { Gitlab::Cells::TopologyService::Claims::V1::ListRecordsResponse.new }
+
+    before do
+      allow(service).to receive(:client).and_return(client_double)
+    end
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:title, :args, :expected_request, :expected_deadline) do
+      source_type       = Cells::Claimable::CLAIMS_SOURCE_TYPE::UNSPECIFIED
+      bucket_types      = [Cells::Claimable::CLAIMS_SUBJECT_TYPE::UNSPECIFIED]
+      source_id_gt = [100].pack("Q>")
+      source_id_lte = [200].pack("Q>")
+      deadline = GRPC::Core::TimeConsts.from_relative_time(5.0)
+
+      req = ->(**opts) do
+        Gitlab::Cells::TopologyService::Claims::V1::ListRecordsRequest.new({ cell_id: 1 }.merge(opts))
+      end
+
+      [
+        [
+          "no params",
+          {},
+          req.call,
+          nil
+        ],
+        [
+          "with source_type",
+          { source_type: source_type },
+          req.call(source_type: source_type),
+          nil
+        ],
+        [
+          "with bucket_types",
+          { bucket_types: bucket_types },
+          req.call(bucket_types: bucket_types),
+          nil
+        ],
+        [
+          "with source_id_gt",
+          { source_id_gt: source_id_gt },
+          req.call(source_id_gt: source_id_gt),
+          nil
+        ],
+        [
+          "with source_id_lte",
+          { source_id_lte: source_id_lte },
+          req.call(source_id_lte: source_id_lte),
+          nil
+        ],
+        [
+          "with deadline",
+          { deadline: deadline },
+          req.call,
+          deadline
+        ],
+        [
+          "with all params",
+          {
+            source_type: source_type,
+            bucket_types: bucket_types,
+            source_id_gt: source_id_gt,
+            source_id_lte: source_id_lte,
+            deadline: deadline
+          },
+          req.call(
+            source_type: source_type,
+            bucket_types: bucket_types,
+            source_id_gt: source_id_gt,
+            source_id_lte: source_id_lte
+          ),
+          deadline
+        ]
+      ]
+    end
+
+    with_them do
+      it 'delegates call to client.list_records with correct params' do
+        expect(client_double)
+          .to receive(:list_records)
+          .with(expected_request, deadline: expected_deadline)
+          .and_return(mock_response)
+
+        result = service.list_records(**args)
 
         expect(result).to eq(mock_response)
       end

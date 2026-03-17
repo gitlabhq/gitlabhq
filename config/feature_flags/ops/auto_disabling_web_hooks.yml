@@ -1,8 +1,8 @@
 ---
 name: auto_disabling_web_hooks
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113479
-rollout_issue_url:
-milestone: '15.10'
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/590416
+milestone: '18.10'
 type: ops
 group: group::import
 default_enabled: false # Keep this value as false, as feature should be disabled by default for self-managed

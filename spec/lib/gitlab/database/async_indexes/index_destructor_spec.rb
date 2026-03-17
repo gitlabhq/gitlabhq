@@ -30,6 +30,36 @@ RSpec.describe Gitlab::Database::AsyncIndexes::IndexDestructor, feature_category
       end
     end
 
+    context 'when the table does not exist' do
+      before do
+        allow(connection).to receive(:table_exists?).and_call_original
+        allow(connection).to receive(:table_exists?).with(async_index.table_name).and_return(false)
+      end
+
+      it 'removes the index preparation record from postgres_async_indexes' do
+        expect { subject.perform }.to change { index_model.count }.by(-1)
+      end
+
+      it 'does not attempt to drop the index' do
+        expect(connection).not_to receive(:execute).with(/DROP INDEX/)
+
+        subject.perform
+      end
+
+      it 'logs an appropriate message' do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+
+        subject.perform
+
+        expect(Gitlab::AppLogger)
+          .to have_received(:info)
+          .with(a_hash_including(
+            message: 'Skipping async index removal since the table does not exist. The queuing entry will be deleted',
+            connection_name: connection_name.to_s
+          ))
+      end
+    end
+
     context 'when the index does not exist' do
       before do
         connection.execute(async_index.definition)

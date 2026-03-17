@@ -1,7 +1,7 @@
 ---
 stage: Platforms
 group: Scalability
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Observability for stage groups
 ---
 
@@ -81,7 +81,6 @@ component can have two indicators:
   **10 seconds** for high-urgency jobs and **5 minutes** for other jobs.
 
   Some stage groups might have more services. The thresholds for them are also in the metrics catalog.
-
 - Error rate: The rate of operations that had errors.
 
 The calculation of the ratio happens as follows:

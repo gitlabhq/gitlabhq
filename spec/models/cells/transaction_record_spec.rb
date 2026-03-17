@@ -62,6 +62,27 @@ RSpec.describe Cells::TransactionRecord, feature_category: :cell do
     end
   end
 
+  describe ".sanitize_records_for_grpc" do
+    it "removes the :record key from each metadata hash" do
+      records = [
+        { bucket: { value: 'foo' }, subject: { id: 1 }, record: build(:organization) },
+        { bucket: { value: 'bar' }, subject: { id: 2 }, record: build(:organization) }
+      ]
+
+      result = described_class.sanitize_records_for_grpc(records)
+
+      expect(result).to all(not_include(:record))
+      expect(result).to match([
+        { bucket: { value: 'foo' }, subject: { id: 1 } },
+        { bucket: { value: 'bar' }, subject: { id: 2 } }
+      ])
+    end
+
+    it "returns an empty array when given an empty array" do
+      expect(described_class.sanitize_records_for_grpc([])).to eq([])
+    end
+  end
+
   describe "#create_record and #destroy_record" do
     let(:record) { described_class.new(connection, transaction) }
 

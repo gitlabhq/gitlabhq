@@ -1,5 +1,3 @@
 ---
 name: archive_project
 description: Grants the ability to archive projects
-boundaries:
-  - project

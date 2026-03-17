@@ -7,11 +7,15 @@
 # like `pip install` or `twine upload`.
 module API
   class PypiPackages < ::API::Base
+    include ::API::Helpers::Packages::BasicAuthHelpers::Constants
+
+    PEP_691_JSON_CONTENT_TYPE = 'application/vnd.pypi.simple.v1+json'
+    PEP_691_LATEST_JSON_CONTENT_TYPE = 'application/vnd.pypi.simple.latest+json'
+
     helpers ::API::Helpers::PackagesManagerClientsHelpers
     helpers ::API::Helpers::RelatedResourcesHelpers
     helpers ::API::Helpers::Packages::BasicAuthHelpers
     helpers ::API::Helpers::Packages::DependencyProxyHelpers
-    include ::API::Helpers::Packages::BasicAuthHelpers::Constants
 
     feature_category :package_registry
     urgency :low
@@ -40,13 +44,58 @@ module API
         requires :package_name, type: String, file_path: true, desc: 'The PyPi package name', documentation: { example: 'my.pypi.package' }
       end
 
+      def pep_691_json_enabled?(group_or_project)
+        Feature.enabled?(:pypi_pep_691_json, group_or_project)
+      end
+
+      def json_format_requested?
+        accept = request.headers['Accept'].to_s
+        accept.split(',').any? do |type|
+          type.strip.start_with?(PEP_691_JSON_CONTENT_TYPE, PEP_691_LATEST_JSON_CONTENT_TYPE)
+        end
+      end
+
+      # content is a pre-serialized JSON string
+      def present_simple_json(content)
+        header 'Vary', 'Accept'
+        content_type "#{PEP_691_JSON_CONTENT_TYPE}; charset=utf-8"
+
+        env['api.format'] = :binary
+        body content
+      end
+
+      def present_pypi_html_with_vary(content)
+        header 'Vary', 'Accept'
+        content_type 'text/html; charset=utf-8'
+
+        env['api.format'] = :binary
+        body content
+      end
+
+      def present_html(content)
+        content_type 'text/html; charset=utf-8'
+
+        env['api.format'] = :binary
+        body content
+      end
+
       def present_simple_index(group_or_project)
         authorize_read_package!(group_or_project)
 
         packages = Packages::Pypi::PackagesFinder.new(current_user, group_or_project).execute
-        presenter = ::Packages::Pypi::SimpleIndexPresenter.new(packages, group_or_project)
 
-        present_html(presenter.body)
+        if pep_691_json_enabled?(group_or_project)
+          if json_format_requested?
+            presenter = ::Packages::Pypi::SimpleIndexJsonPresenter.new(packages, group_or_project)
+            present_simple_json(presenter.body)
+          else
+            presenter = ::Packages::Pypi::SimpleIndexPresenter.new(packages, group_or_project)
+            present_pypi_html_with_vary(presenter.body)
+          end
+        else
+          presenter = ::Packages::Pypi::SimpleIndexPresenter.new(packages, group_or_project)
+          present_html(presenter.body)
+        end
       end
 
       def present_simple_package(group_or_project)
@@ -63,9 +112,21 @@ module API
           package_name: params[:package_name]
         ) do
           not_found!('Package') if empty_packages
-          presenter = ::Packages::Pypi::SimplePackageVersionsPresenter.new(packages, group_or_project)
 
-          present_html(presenter.body)
+          if pep_691_json_enabled?(group_or_project)
+            if json_format_requested?
+              presenter = ::Packages::Pypi::SimplePackageVersionsJsonPresenter.new(
+                packages, group_or_project, package_name: params[:package_name]
+              )
+              present_simple_json(presenter.body)
+            else
+              presenter = ::Packages::Pypi::SimplePackageVersionsPresenter.new(packages, group_or_project)
+              present_pypi_html_with_vary(presenter.body)
+            end
+          else
+            presenter = ::Packages::Pypi::SimplePackageVersionsPresenter.new(packages, group_or_project)
+            present_html(presenter.body)
+          end
         end
       end
 
@@ -79,15 +140,6 @@ module API
         end
 
         track_package_event(event_name, :pypi, project: project, namespace: namespace)
-      end
-
-      def present_html(content)
-        # Adjusts grape output format
-        # to be HTML
-        content_type 'text/html; charset=utf-8'
-        env['api.format'] = :binary
-
-        body content
       end
 
       def ensure_group!
@@ -124,7 +176,7 @@ module API
             { code: 403, message: 'Forbidden' },
             { code: 404, message: 'Not Found' }
           ]
-          tags %w[packages]
+          tags %w[pypi_packages]
         end
         params do
           use :package_download
@@ -274,6 +326,7 @@ module API
         route_setting :authorization, permissions: :read_pypi_package, boundary_type: :project,
           job_token_policies: :read_packages,
           allow_public_access_for_enabled_project_features: :package_registry
+
         get 'simple/*package_name', format: :txt do
           project = project!
           authorize_job_token_policies!(project)

@@ -37,10 +37,10 @@ RSpec.describe EnvironmentStatus do
     it { is_expected.to eq(deployment) }
 
     context 'multiple deployments' do
-      it {
+      it do
         new_deployment = create(:deployment, :succeed, environment: deployment.environment, sha: deployment.sha)
         is_expected.to eq(new_deployment)
-      }
+      end
     end
   end
 

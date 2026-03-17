@@ -17,8 +17,6 @@ const MOCK_PARSE_OUTPUT = {
     before: { value: null, type: 'String' },
   },
   fields: MOCK_FIELDS,
-  aggregate: [],
-  groupBy: [],
 };
 
 describe('GlqlFacade', () => {
@@ -55,8 +53,6 @@ describe('GlqlFacade', () => {
       query: MOCK_PARSE_OUTPUT.query,
       config: MOCK_PARSE_OUTPUT.config,
       data: { count: 2, ...MOCK_ISSUES },
-      aggregate: MOCK_PARSE_OUTPUT.aggregate,
-      groupBy: MOCK_PARSE_OUTPUT.groupBy,
       error: null,
       ...data,
     });
@@ -288,20 +284,6 @@ describe('GlqlFacade', () => {
 
       expect(oldResolver.exists()).toBe(false);
       expect(findResolver().exists()).toBe(true);
-    });
-  });
-
-  describe('when the query is aggregated', () => {
-    beforeEach(async () => {
-      await createComponent();
-      await triggerIntersectionObserver();
-      await emitResolverChange({ groupBy: [{}], aggregate: [{}] });
-    });
-
-    it('does not show the count on the crudComponent', () => {
-      const crudComponent = wrapper.findComponent(CrudComponent);
-
-      expect(crudComponent.props('count')).toBe(null);
     });
   });
 });

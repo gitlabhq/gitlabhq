@@ -12,7 +12,8 @@
 
 - if repository_file_tree_browser_enabled
   .gl-flex.navigation-root
-    #js-file-browser
+    -# Pre-reserve width to prevent CLS; must match TREE_WIDTH in file_tree_browser.vue
+    #js-file-browser{ style: 'width:320px' }
     .gl-w-full.gl-min-w-0
       #tree-holder.tree-holder.gl-clearfix.js-per-page.gl-mt-4{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
         = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, is_project_overview: is_project_overview, tree: @tree, ref_type: @ref_type

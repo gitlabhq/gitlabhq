@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Coding
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Customize instructions for AI to use in merge request reviews.
 title: Customize review instructions for GitLab Duo
 ---
@@ -31,7 +31,7 @@ conventions on Go files.
 GitLab Duo appends your custom review instructions to its standard review criteria,
 instead of replacing them.
 
-GitLab Duo Code Review (Classic) supports custom review instructions.
+GitLab Duo Code Review supports custom review instructions.
 
 ## Configure custom review instructions
 
@@ -198,7 +198,7 @@ apply to Ruby files anywhere in the project structure, not just the root directo
 ## Use case examples
 
 <!-- 2025-11-12 Use case examples are maintained by DevRel, @dnsmichi
-Inspired by the reference in https://gitlab.com/gitlab-da/use-cases/ai/gitlab-duo-agent-platform/demo-environments/tanuki-iot-platform/-/blob/main/.gitlab/duo/mr-review-instructions.yaml?ref_type=heads
+Inspired by the reference in <https://gitlab.com/gitlab-da/use-cases/ai/gitlab-duo-agent-platform/demo-environments/tanuki-iot-platform/-/blob/main/.gitlab/duo/mr-review-instructions.yaml?ref_type=heads>
 -->
 
 {{< tabs >}}
@@ -702,4 +702,4 @@ For more custom review instructions use cases, see the following production exam
 ## Related topics
 
 - [GitLab Duo in merge requests](../../project/merge_requests/duo_in_merge_requests.md)
-- [GitLab Duo Code Review (Classic)](../../gitlab_duo/code_review_classic.md)
+- [GitLab Duo Code Review](../code_review_classic.md)

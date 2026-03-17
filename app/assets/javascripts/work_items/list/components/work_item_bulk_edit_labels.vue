@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-import { debounce, intersectionBy, unionBy, uniqueId } from 'lodash';
+import { debounce, intersectionBy, unionBy, uniqueId } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, createListFormat, s__, sprintf } from '~/locale';

@@ -1,7 +1,7 @@
 - return unless can?(current_user, :change_namespace, @project)
 - form_id = "transfer-project-form"
 - hidden_input_id = "new_namespace_id"
-- initial_data = { button_text: s_('ProjectSettings|Transfer project'), confirm_danger_message: transfer_project_message(@project), confirm_button_text: transfer_project_confirm_button, phrase: @project.name, target_form_id: form_id, target_hidden_input_id: hidden_input_id, project_id: @project.id }
+- initial_data = { button_text: s_('ProjectSettings|Transfer project'), confirm_danger_message: transfer_project_message(@project), confirm_button_text: transfer_project_confirm_button, phrase: @project.full_path, target_form_id: form_id, target_hidden_input_id: hidden_input_id, project_id: @project.id }
 
 = render Pajamas::CardComponent.new(card_options: { data: { testid: 'transfer-project-content' } }) do |c|
   - c.with_header do

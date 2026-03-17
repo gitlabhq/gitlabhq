@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlBadge, GlLink, GlIcon, GlIntersectionObserver } from '@gitlab/ui';
+import { GlBadge, GlLink, GlIcon } from '@gitlab/ui';
 import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import refQuery from '~/repository/queries/ref.query.graphql';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -10,6 +10,7 @@ import TableRow from '~/repository/components/table/row.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { FILE_SYMLINK_MODE } from '~/vue_shared/constants';
 import { ROW_APPEAR_DELAY } from '~/repository/constants';
+import SkeletonLoader from '~/repository/components/table/skeleton_loader.vue';
 
 const COMMIT_MOCK = { lockLabel: 'Locked by Root', committedDate: '2019-01-01' };
 
@@ -24,7 +25,11 @@ const createMockApolloProvider = (mockData) => {
   return apolloProver;
 };
 
-function factory({ mockData = { ref: 'main', escapedRef: 'main' }, propsData = {} } = {}) {
+function factory({
+  mockData = { ref: 'main', escapedRef: 'main' },
+  propsData = {},
+  attrs = {},
+} = {}) {
   $router = {
     push: jest.fn(),
   };
@@ -45,6 +50,7 @@ function factory({ mockData = { ref: 'main', escapedRef: 'main' }, propsData = {
       type: 'tree',
       ...propsData,
     },
+    attrs,
     provide: {
       refType: 'heads',
     },
@@ -65,9 +71,23 @@ describe('Repository table row component', () => {
   const findFileIcon = () => wrapper.findComponent(FileIcon);
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findRouterLink = () => wrapper.findComponent(RouterLinkStub);
-  const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
+  const findSkeletonLoaders = () => wrapper.findAllComponents(SkeletonLoader);
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+  describe('skeleton loader', () => {
+    it('renders skeleton loaders when commitInfo is not provided', () => {
+      factory({ propsData: { commitInfo: null } });
+
+      expect(findSkeletonLoaders()).toHaveLength(2);
+    });
+
+    it('does not render skeleton loaders when commitInfo is provided', () => {
+      factory(); // commitInfo is provided by default in factory
+
+      expect(findSkeletonLoaders()).toHaveLength(0);
+    });
+  });
 
   it('renders table row', () => {
     factory({
@@ -338,7 +358,9 @@ describe('Repository table row component', () => {
   });
 
   describe('row visibility', () => {
-    beforeEach(() => {
+    afterAll(() => jest.useRealTimers());
+
+    it('emits row-appear on mount when commitInfo is null', () => {
       factory({
         propsData: {
           id: '1',
@@ -349,19 +371,33 @@ describe('Repository table row component', () => {
           commitInfo: null,
         },
       });
+
+      jest.advanceTimersByTime(ROW_APPEAR_DELAY);
+
+      expect(wrapper.emitted('row-appear')).toEqual([[123]]);
     });
 
-    afterAll(() => jest.useRealTimers());
-
-    it('emits a `row-appear` event', () => {
-      const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
-      findIntersectionObserver().vm.$emit('appear');
+    it('does not emit row-appear when commitInfo is provided', () => {
+      factory({
+        propsData: {
+          id: '1',
+          sha: '1',
+          path: 'test',
+          type: 'tree',
+          currentPath: '/',
+        },
+      });
 
       jest.runAllTimers();
 
-      expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
-      expect(setTimeoutSpy).toHaveBeenLastCalledWith(expect.any(Function), ROW_APPEAR_DELAY);
-      expect(wrapper.emitted('row-appear')).toEqual([[123]]);
+      expect(wrapper.emitted('row-appear')).toBeUndefined();
     });
+  });
+
+  it('passes data-item-id from attrs to the root tr element', () => {
+    jest.useFakeTimers();
+    factory({ attrs: { 'data-item-id': 'blob-123-0' } });
+
+    expect(wrapper.find('tr').attributes('data-item-id')).toBe('blob-123-0');
   });
 });

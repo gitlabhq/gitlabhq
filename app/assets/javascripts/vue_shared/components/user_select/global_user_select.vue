@@ -1,6 +1,6 @@
 <script>
 import { GlTokenSelector, GlAvatar, GlAvatarLabeled } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { getUsers } from '~/rest_api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 

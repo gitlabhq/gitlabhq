@@ -11,21 +11,11 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
     visit edit_project_path(project)
   end
 
-  def change_path(project, path)
+  def change_path(path)
     within_testid('advanced-settings-content') do
       fill_in('Path', with: path)
       click_button('Change path')
     end
-    project.reload
-    wait_for_edit_project_page_reload
-  end
-
-  def change_name(project, name)
-    within_testid('general-settings-content') do
-      fill_in('Project name', with: name)
-      click_button('Save changes')
-    end
-    project.reload
     wait_for_edit_project_page_reload
   end
 
@@ -33,36 +23,40 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
     expect(find_by_testid('advanced-settings-content')).to have_content('Change path')
   end
 
+  def change_name(name)
+    within_testid('general-settings-content') do
+      fill_in('Project name', with: name)
+      click_button('Save changes')
+    end
+    wait_for_edit_project_page_reload
+  end
+
+  def expect_current_path(path)
+    expect(page).to have_current_path(path, ignore_query: true)
+  end
+
+  def expect_name_in_breadcrumb(name)
+    expect(find_by_testid('breadcrumb-links')).to have_content(name)
+  end
+
   context 'with invalid characters' do
     it 'shows errors for invalid project path' do
-      change_path(project, 'foo&bar')
+      change_path('foo&bar')
 
       expect(page).to have_field 'Path', with: project.path
       expect(page).to have_content "Path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'"
     end
   end
 
-  it 'shows a successful notice when the project is updated' do
-    fill_in 'project_name_edit', with: 'hello world'
-    within_testid('general-settings-content') do
-      click_button 'Save changes'
-    end
-
-    expect(page).to have_content "Project 'hello world' was successfully updated."
-  end
-
   context 'when changing project name', :js do
     it 'renames the repository' do
-      change_name(project, 'bar')
-      expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
-    end
+      new_name = '🧮 foo bar ☁️'
 
-    context 'with emojis' do
-      it 'shows error for invalid project name' do
-        change_name(project, '🧮 foo bar ☁️')
-        expect(page).to have_field 'Project name', with: '🧮 foo bar ☁️'
-        expect(page).not_to have_content "Name can contain only letters, digits, emoji '_', '.', dash and space. It must start with letter, digit, emoji or '_'."
-      end
+      change_name(new_name)
+
+      expect(page).to have_field 'Project name', with: new_name
+      expect(page).to have_content "Project '#{new_name}' was successfully updated."
+      expect_name_in_breadcrumb(new_name)
     end
   end
 
@@ -78,33 +72,37 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
     end
 
     it 'the project is accessible via the new path' do
-      change_path(project, 'bar')
-      new_path = namespace_project_path(project.namespace, 'bar')
-      visit new_path
+      new_path = 'bar'
+      change_path(new_path)
+      new_full_path = namespace_project_path(project.namespace, new_path)
+      visit new_full_path
 
-      expect(page).to have_current_path(new_path, ignore_query: true)
+      expect_current_path(new_full_path)
       expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
     end
 
     it 'the project is accessible via a redirect from the old path' do
       old_path = project_path(project)
-      change_path(project, 'bar')
-      new_path = namespace_project_path(project.namespace, 'bar')
+      new_path = 'bar'
+      change_path('bar')
+
       visit old_path
 
-      expect(page).to have_current_path(new_path, ignore_query: true)
-      expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
+      expect_current_path(namespace_project_path(project.namespace, new_path))
+      expect_name_in_breadcrumb(project.name)
     end
 
     context 'and a new project is added with the same path' do
       it 'overrides the redirect' do
         old_path = project_path(project)
-        change_path(project, 'bar')
+        change_path('bar')
+
         new_project = create(:project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
+
         visit old_path
 
-        expect(page).to have_current_path(old_path, ignore_query: true)
-        expect(find_by_testid('breadcrumb-links')).to have_content(new_project.name)
+        expect_current_path(old_path)
+        expect_name_in_breadcrumb(new_project.name)
       end
     end
   end

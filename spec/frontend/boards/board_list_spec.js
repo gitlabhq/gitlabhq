@@ -16,6 +16,7 @@ import BoardCutLine from '~/boards/components/board_cut_line.vue';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import listIssuesQuery from '~/boards/graphql/lists_issues.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
+import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
@@ -27,6 +28,8 @@ jest.mock('~/lib/utils/url_utility');
 describe('Board list component', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
+  let resolveQuery;
+  let resolveMutation;
 
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
   const findDraggable = () => wrapper.findComponent(Draggable);
@@ -64,13 +67,15 @@ describe('Board list component', () => {
 
   describe('When Expanded', () => {
     beforeEach(async () => {
-      wrapper = createComponent({
+      ({ wrapper, resolveQuery, resolveMutation } = createComponent({
         apolloQueryHandlers: [
-          [listIssuesQuery, jest.fn().mockResolvedValue(mockGroupIssuesResponse())],
+          [listIssuesQuery, () => mockGroupIssuesResponse()],
           [namespaceWorkItemTypesQuery, namespaceWorkItemTypesQueryHandler],
         ],
-      });
-      await waitForPromises();
+      }));
+      await resolveQuery(listQuery);
+      await resolveQuery(listIssuesQuery);
+      await resolveQuery(namespaceWorkItemTypesQuery);
     });
 
     it('renders component', () => {
@@ -78,9 +83,9 @@ describe('Board list component', () => {
     });
 
     it('renders loading icon', () => {
-      wrapper = createComponent({
+      ({ wrapper, resolveQuery, resolveMutation } = createComponent({
         state: { listsFlags: { 'gid://gitlab/List/1': { isLoading: true } } },
-      });
+      }));
 
       expect(findByTestId('board_list_loading').exists()).toBe(true);
     });
@@ -94,22 +99,22 @@ describe('Board list component', () => {
     });
 
     it('shows new issue form when showNewForm prop is true', async () => {
-      wrapper = createComponent({
+      ({ wrapper, resolveQuery, resolveMutation } = createComponent({
         componentProps: { showNewForm: true },
-      });
+      }));
 
       await nextTick();
       expect(wrapper.find('.board-new-issue-form').exists()).toBe(true);
     });
 
     it('does not show new issue form for closed list', async () => {
-      wrapper = createComponent({
+      ({ wrapper, resolveQuery, resolveMutation } = createComponent({
         listProps: {
           listType: ListType.closed,
         },
         componentProps: { showNewForm: true },
-      });
-      await waitForPromises();
+      }));
+      await resolveQuery(listQuery);
 
       expect(wrapper.find('.board-new-issue-form').exists()).toBe(false);
     });
@@ -121,11 +126,11 @@ describe('Board list component', () => {
 
   describe('when ListType is Closed', () => {
     beforeEach(() => {
-      wrapper = createComponent({
+      ({ wrapper, resolveQuery, resolveMutation } = createComponent({
         listProps: {
           listType: ListType.closed,
         },
-      });
+      }));
     });
 
     it('Board card move to position is not visible', () => {
@@ -136,7 +141,7 @@ describe('Board list component', () => {
   describe('load more issues', () => {
     describe('when loading is not in progress', () => {
       beforeEach(async () => {
-        wrapper = createComponent({
+        ({ wrapper, resolveQuery, resolveMutation } = createComponent({
           apolloQueryHandlers: [
             [
               listIssuesQuery,
@@ -151,8 +156,9 @@ describe('Board list component', () => {
               template: '<div><slot /><slot name="footer"></slot></div>',
             },
           },
-        });
-        await waitForPromises();
+        }));
+        await resolveQuery(listQuery);
+        await resolveQuery(listIssuesQuery);
       });
 
       it('has intersection observer when the number of board list items are more than 5', () => {
@@ -171,8 +177,10 @@ describe('Board list component', () => {
   describe('max issue count warning', () => {
     describe('when issue count exceeds max issue count', () => {
       beforeEach(async () => {
-        wrapper = createComponent({ listProps: { issuesCount: 4, maxIssueCount: 2 } });
-        await waitForPromises();
+        ({ wrapper, resolveQuery, resolveMutation } = createComponent({
+          listProps: { issuesCount: 4, maxIssueCount: 2 },
+        }));
+        await resolveQuery(listQuery);
       });
       it('sets background to warning color', () => {
         const block = wrapper.find(maxIssueWeightOrCountWarningClass);
@@ -191,8 +199,10 @@ describe('Board list component', () => {
 
     describe('when list issue count does NOT exceed list max issue count', () => {
       beforeEach(async () => {
-        wrapper = createComponent({ list: { issuesCount: 2, maxIssueCount: 3 } });
-        await waitForPromises();
+        ({ wrapper, resolveQuery, resolveMutation } = createComponent({
+          list: { issuesCount: 2, maxIssueCount: 3 },
+        }));
+        await resolveQuery(listQuery);
       });
       it('does not sets background to warning color', () => {
         expect(wrapper.find(maxIssueWeightOrCountWarningClass).exists()).toBe(false);
@@ -204,8 +214,10 @@ describe('Board list component', () => {
 
     describe('when list max issue count is 0', () => {
       beforeEach(async () => {
-        wrapper = createComponent({ list: { maxIssueCount: 0 } });
-        await waitForPromises();
+        ({ wrapper, resolveQuery, resolveMutation } = createComponent({
+          list: { maxIssueCount: 0 },
+        }));
+        await resolveQuery(listQuery);
       });
       it('does not sets background to warning color', () => {
         expect(wrapper.find(maxIssueWeightOrCountWarningClass).exists()).toBe(false);
@@ -218,15 +230,14 @@ describe('Board list component', () => {
   describe('drag & drop issue', () => {
     describe('when dragging is allowed', () => {
       beforeEach(async () => {
-        wrapper = createComponent({
-          apolloQueryHandlers: [
-            [listIssuesQuery, jest.fn().mockResolvedValue(mockGroupIssuesResponse())],
-          ],
+        ({ wrapper, resolveQuery, resolveMutation } = createComponent({
+          apolloQueryHandlers: [[listIssuesQuery, () => mockGroupIssuesResponse()]],
           componentProps: {
             disabled: false,
           },
-        });
-        await waitForPromises();
+        }));
+        await resolveQuery(listQuery);
+        await resolveQuery(listIssuesQuery);
       });
 
       it('Draggable is used', () => {
@@ -339,11 +350,11 @@ describe('Board list component', () => {
 
     describe('when dragging is not allowed', () => {
       beforeEach(() => {
-        wrapper = createComponent({
+        ({ wrapper, resolveQuery, resolveMutation } = createComponent({
           provide: {
             disabled: true,
           },
-        });
+        }));
       });
 
       it('Draggable is not used', () => {
@@ -358,13 +369,13 @@ describe('Board list component', () => {
     // it should not affect ce lists because there should not be any status lists
     describe('when dragging between lists', () => {
       beforeEach(async () => {
-        wrapper = createComponent({
+        ({ wrapper, resolveQuery, resolveMutation } = createComponent({
           componentProps: {
             draggedType: 'ISSUE',
           },
-        });
+        }));
 
-        await waitForPromises();
+        await resolveQuery(listQuery);
 
         startDrag();
       });
@@ -382,7 +393,7 @@ describe('Board list component', () => {
 
   describe('when using keyboard', () => {
     beforeEach(async () => {
-      wrapper = createComponent({
+      ({ wrapper, resolveQuery, resolveMutation } = createComponent({
         apolloQueryHandlers: [
           [
             listIssuesQuery,
@@ -392,8 +403,9 @@ describe('Board list component', () => {
           ],
         ],
         mountOptions: { attachTo: document.body },
-      });
-      await waitForPromises();
+      }));
+      await resolveQuery(listQuery);
+      await resolveQuery(listIssuesQuery);
     });
 
     it('traverses up and down cards in list', async () => {
@@ -409,7 +421,7 @@ describe('Board list component', () => {
     const listResolver = jest.fn().mockResolvedValue(mockGroupIssuesResponse());
     const mutationHandler = jest.fn();
     cacheUpdates.setError = jest.fn();
-    wrapper = createComponent({
+    ({ wrapper, resolveQuery, resolveMutation } = createComponent({
       componentProps: { showNewForm: true },
       provide: {
         boardType: NAMESPACE_PROJECT,
@@ -430,12 +442,12 @@ describe('Board list component', () => {
       stubs: {
         BoardNewIssue,
       },
-    });
+    }));
 
     expect(wrapper.findComponent(BoardNewIssue).exists()).toBe(true);
     wrapper.findComponent(BoardNewIssue).vm.$emit('addNewIssue', { title: 'Foo' });
 
-    await waitForPromises();
+    await resolveMutation(issueCreateMutation);
 
     expect(cacheUpdates.setError).toHaveBeenCalled();
     expect(mutationHandler).not.toHaveBeenCalled();
@@ -453,15 +465,16 @@ describe('Board list component', () => {
 
       getParameterByName.mockReturnValue(show);
 
-      wrapper = createComponent({
+      ({ wrapper, resolveQuery, resolveMutation } = createComponent({
         apolloQueryHandlers: [[listIssuesQuery, listResolver]],
         apolloResolvers: {
           Mutation: {
             setActiveBoardItem: mutationHandler,
           },
         },
-      });
-      await waitForPromises();
+      }));
+      await resolveQuery(listQuery);
+      await resolveQuery(listIssuesQuery);
     };
 
     it('calls `getParameterByName` to get the `show` parameter', async () => {
@@ -514,25 +527,25 @@ describe('Board list component', () => {
   });
   describe('when handling Weight vs Items in the wipLimitText', () => {
     it('displays weight-based WIP limit when limitMetric is WIP_WEIGHT', () => {
-      wrapper = createComponent({
+      ({ wrapper, resolveQuery, resolveMutation } = createComponent({
         listProps: {
           maxIssueWeight: 5,
           maxIssueCount: 0,
           limitMetric: WIP_WEIGHT,
         },
-      });
+      }));
 
       expect(wrapper.vm.wipLimitText).toBe('Work in progress limit: 5 weight');
     });
 
     it('displays item-based WIP limit when limitMetric is WIP_ITEMS', () => {
-      wrapper = createComponent({
+      ({ wrapper, resolveQuery, resolveMutation } = createComponent({
         listProps: {
           maxIssueWeight: 0,
           maxIssueCount: 3,
           limitMetric: WIP_ITEMS,
         },
-      });
+      }));
 
       expect(wrapper.vm.wipLimitText).toBe('Work in progress limit: 3 items');
     });

@@ -19,9 +19,13 @@ module Backup
         _('repositories (Gitaly server-side)')
       end
 
-      def destination_path = 'repositories'
+      def destination_path
+        'repositories'
+      end
 
-      def destination_optional = true
+      def destination_optional
+        true
+      end
 
       private
 

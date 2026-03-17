@@ -30,6 +30,15 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups, f
         expect(Group.find_by_path('group').description).to eq('Group Description')
       end
 
+      it 'imports group email notification setting', :aggregate_failures do
+        group = Group.find_by_path('group')
+
+        expect(group.emails_enabled?).to be(false)
+
+        # Top-level group email settings applies to descendants even when their export files have emails_enabled: true
+        expect(group.descendants.none?(&:emails_enabled?)).to be(true)
+      end
+
       it 'has group labels' do
         expect(@group.labels.count).to eq(10)
       end

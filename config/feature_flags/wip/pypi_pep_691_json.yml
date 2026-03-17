@@ -1,0 +1,8 @@
+---
+name: pypi_pep_691_json
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222111"
+rollout_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/592164"
+milestone: '18.10'
+type: wip
+group: group::package registry
+default_enabled: false

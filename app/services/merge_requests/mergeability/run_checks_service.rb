@@ -10,7 +10,8 @@ module MergeRequests
         @params = params
       end
 
-      def execute(checks, execute_all: false)
+      def execute(checks, execute_all: false, use_cache: true)
+        @use_cache = use_cache
         @results = checks.each_with_object([]) do |check_class, result_hash|
           check = check_class.new(merge_request: merge_request, params: params)
 
@@ -40,10 +41,10 @@ module MergeRequests
 
       private
 
-      attr_reader :merge_request, :params, :results
+      attr_reader :merge_request, :params, :results, :use_cache
 
       def run_check(check)
-        return check.execute unless check.cacheable?
+        return check.execute unless use_cache && check.cacheable?
 
         cached_result = cached_results.read(merge_check: check)
         return cached_result if cached_result.respond_to?(:status)

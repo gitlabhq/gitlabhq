@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { __, s__ } from '~/locale';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import namespaceGroupsForLinksWidgetQuery from '../../graphql/namespace_groups_for_links_widget.query.graphql';

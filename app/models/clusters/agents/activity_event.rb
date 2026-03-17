@@ -8,6 +8,8 @@ module Clusters
 
       self.table_name = 'agent_activity_events'
 
+      ignore_column :sha, remove_with: '18.11', remove_after: '2026-04-22'
+
       belongs_to :agent, class_name: 'Clusters::Agent', optional: false
       belongs_to :user
       belongs_to :agent_token, class_name: 'Clusters::AgentToken'

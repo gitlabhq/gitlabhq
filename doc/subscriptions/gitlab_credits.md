@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Utilization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Understand how GitLab Credits work and view your credit usage.
 title: GitLab Credits and usage billing
 ---
@@ -24,10 +24,14 @@ GitLab Credits are the standardized consumption currency for usage-based billing
 Credits are used for [GitLab Duo Agent Platform](../user/duo_agent_platform/_index.md),
 where each usage action consumes a number of credits.
 
-[GitLab Duo Pro and Enterprise](subscription-add-ons.md#gitlab-duo-pro-and-enterprise) and their associated [GitLab Duo (Classic) features](../user/gitlab_duo/feature_summary.md) are not billed based on usage and do not consume GitLab Credits.
+[GitLab Duo Pro and Enterprise](subscription-add-ons.md#gitlab-duo-pro-and-enterprise) and their associated [GitLab Duo features](../user/gitlab_duo/feature_summary.md) are not billed based on usage and do not consume GitLab Credits.
 
 Credits are calculated based on the features and models you use, as listed in the credit multiplier tables.
 You are billed for features that are [generally available](../policy/development_stages_support.md#generally-available).
+
+Billing occurs at the root namespace or top-level group level, not at the project level.
+Credit usage is attributed to the user who performs the action, regardless of which project they are using the features in.
+All usage in a root namespace or top-level group is consolidated for billing purposes.
 
 GitLab provides three ways to obtain credits:
 
@@ -72,6 +76,7 @@ Unused credits do not roll over to the next month.
 
 > [!note]
 > When purchasing a monthly commitment pool, you accept the usage billing terms, including On-Demand credit usage.
+> After you accept the terms, On-Demand billing stays active for the rest of your subscription and subsequent self-serve renewals, and you cannot opt out.
 
 ## On-Demand credits
 
@@ -87,7 +92,7 @@ or directly in the GitLab Credits dashboard.
 By accepting usage billing terms, you agree to pay for all On-Demand charges already accrued
 in the current monthly billing period, and any On-Demand charges incurred going forward.
 
-If you haven’t accepted usage billing terms, you can’t use GitLab Duo Agent Platform and consume On-Demand credits.
+If you haven't accepted usage billing terms, you can't use GitLab Duo Agent Platform and consume On-Demand credits.
 You can regain access to GitLab Duo Agent Platform by either purchasing
 a monthly commitment or accepting the usage billing terms.
 
@@ -117,6 +122,40 @@ To request credits, [contact the Sales team](https://about.gitlab.com/sales/).
 
 If you're on the Free tier and want to try credits, you can start an [Ultimate trial](free_trials.md).
 
+## For the Free tier on GitLab.com
+
+{{< details >}}
+
+- Tier: Free
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20165) in GitLab 18.10.
+
+{{< /history >}}
+
+Users on the Free tier on GitLab.com can purchase a Monthly Commitment Pool of GitLab Credits for their group namespace. This provides access to a set of GitLab Duo Agent Platform features, without needing a Premium or Ultimate subscription.
+
+You can use the following features after you purchase credits:
+
+- [GitLab Duo Chat (agentic)](../user/gitlab_duo_chat/agentic_chat.md)
+- [AI Catalog](../user/duo_agent_platform/ai_catalog.md)
+- [Custom Agents](../user/duo_agent_platform/agents/custom.md)
+- [Planner Agent](../user/duo_agent_platform/agents/foundational_agents/planner.md)
+- [Custom Flows](../user/duo_agent_platform/flows/custom.md)
+- [Software Development Flow](../user/duo_agent_platform/flows/foundational_flows/software_development.md)
+- [Developer Flow](../user/duo_agent_platform/flows/foundational_flows/developer.md)
+- [Fix CI/CD Pipeline Flow](../user/duo_agent_platform/flows/foundational_flows/fix_pipeline.md)
+- [Convert to GitLab CI/CD Flow](../user/duo_agent_platform/flows/foundational_flows/convert_to_gitlab_ci.md)
+- [Code Review Flow](../user/duo_agent_platform/flows/foundational_flows/code_review.md)
+- [GitLab MCP clients](../user/gitlab_duo/model_context_protocol/mcp_clients.md)
+- [Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md)
+
+On-demand usage for Free namespaces is capped at $25,000 for each calendar month. Upon reaching this limit, on-demand usage is automatically turned off and resets at the beginning of the following month.
+
 ## Buy GitLab Credits
 
 You can buy GitLab Credits for your Monthly Commitment Pool in Customers Portal.
@@ -144,9 +183,22 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
+On the Premium and Ultimate tier:
+
 1. In the top bar, select **Search or go to** and find your top-level group.
 1. Select **Settings** > **GitLab Credits**.
 1. Select **Purchase monthly commitment** or **Increase monthly commitment**.
+1. In the Customers Portal form, enter the number of credits you want to buy.
+1. Select **Review order**. Verify that the number of credits, customer information, and payment method are correct.
+1. Select **Confirm purchase**.
+
+On the Free tier:
+
+1. In the top bar, select **Search or go to** and find your top-level group.
+1. Select **Settings** > **Billing**.
+1. If you:
+   - Are not on a trial: On the GitLab Credits card, select **Purchase credits** or **Increase credits**.
+   - Are on an active trial: On the GitLab Credits card, select **Purchase monthly commitment** or **Increase credits**.
 1. In the Customers Portal form, enter the number of credits you want to buy.
 1. Select **Review order**. Verify that the number of credits, customer information, and payment method are correct.
 1. Select **Confirm purchase**.
@@ -180,8 +232,9 @@ Some features have multiple model options to choose from, while other features u
 
 ### Models
 
-The following table lists the number of requests you can make with one GitLab Credit for different models.
+The following table lists the number of requests you can make with one GitLab Credit for different [models](../user/duo_agent_platform/model_selection.md).
 Newer, more complex models have a higher multiplier and require more credits.
+A request is made anytime a model is called.
 
 For self-hosted models, you can make eight requests for one credit for any [supported](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#supported-models) or [compatible](../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md#compatible-models) model.
 
@@ -191,7 +244,6 @@ For subsidized models with basic integration:
 |-------|------------------------|
 | `claude-3-haiku` | 8.0 |
 | `codestral-2501` | 8.0 |
-| `gemini-2.0-flash-lite` | 8.0 |
 | `gemini-2.5-flash` | 8.0 |
 | `gpt-5-mini` | 8.0 |
 
@@ -199,18 +251,20 @@ For premium models with optimized integration:
 
 | Model | Requests with one credit |
 |-------|------------------------|
-| `claude-4.5-haiku` (default Agentic Chat model) | 6.7 |
+| `claude-4.5-haiku` | 6.7 |
 | `gpt-5-codex` | 3.3|
 | `gpt-5` | 3.3 |
 | `gpt-5.2` | 2.5 |
 | `claude-3.5-sonnet` | 2.0 |
 | `claude-3.7-sonnet` | 2.0 |
-| `claude-sonnet-4` <sup>1</sup> (default model) | 2.0 |
+| `claude-sonnet-4` <sup>1</sup> | 2.0 |
 | `claude-sonnet-4.5` <sup>1</sup> | 2.0 |
+| `claude-sonnet-4.6` <sup>1</sup> | 2.0 |
 | `claude-opus-4.5` | 1.2 |
 | `claude-opus-4.6` <sup>1</sup> | 1.2 |
 | `claude-sonnet-4` <sup>2</sup> | 1.1 |
 | `claude-sonnet-4.5` <sup>2</sup> | 1.1 |
+| `claude-sonnet-4.6` <sup>2</sup> | 1.1 |
 | `gpt-5.2-codex` | 0.8 |
 | `claude-opus-4.6` <sup>2</sup> | 0.7 |
 | `gpt-5.1-codex` | 0.6 |
@@ -228,9 +282,12 @@ The following table lists the number of requests you can make with one GitLab Cr
 |---------|---------------------------|
 | [GitLab Duo Code Suggestions](../user/duo_agent_platform/code_suggestions/_index.md) | 50 |
 
-[GitLab Duo Chat (Agentic)](../user/gitlab_duo_chat/agentic_chat.md) doesn't use a fixed model,
+[GitLab Duo Chat (agentic)](../user/gitlab_duo_chat/agentic_chat.md) doesn't use a fixed model,
 so credit cost varies based on the model selected for the request.
-With the default model (`claude-4.5-haiku`) you can make 6.7 requests with one credit.
+With the [default model](../user/duo_agent_platform/model_selection.md#default-models) you can make 6.7 requests with one credit.
+
+Each message sent to GitLab Duo Chat (agentic) counts as one billable request.
+One conversation window can include multiple messages, and so multiple billable requests.
 
 ## GitLab Credits dashboard
 
@@ -244,6 +301,7 @@ With the default model (`claude-4.5-haiku`) you can make 6.7 requests with one c
 {{< history >}}
 
 - Introduced in GitLab 18.7.
+- Sorting results [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/21008) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -303,6 +361,7 @@ Prerequisites:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/).
 1. On the subscription card, select **GitLab Credits dashboard**.
+1. Optional. To sort the results by **User** or **Total credits used**, select the respective column.
 
 {{< /tab >}}
 
@@ -314,6 +373,7 @@ Prerequisites:
 
 1. In the top bar, select **Search or go to** and find your top-level group.
 1. Select **Settings** > **GitLab Credits**.
+1. Optional. To sort the results by **User** or **Total credits used**, select the respective column.
 
 {{< /tab >}}
 
@@ -326,6 +386,7 @@ Prerequisites:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **GitLab Credits**.
+1. Optional. To sort the results by **User** or **Total credits used**, select the respective column.
 
 {{< /tab >}}
 
@@ -333,3 +394,22 @@ Prerequisites:
 
 By default, individual user data is not displayed in the GitLab Credits dashboard.
 To display it, you must enable this setting for your [group](../user/group/manage.md#display-gitlab-credits-user-data) or [instance](../administration/settings/visibility_and_access_controls.md#display-gitlab-credits-user-data).
+
+### Export usage data
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/work_items/14504) in GitLab 18.10.
+
+{{< /history >}}
+
+You can export the credit usage data for a subscription as a CSV file in Customers Portal.
+The CSV file lists the usage events and credits used on each day of the current month.
+
+Prerequisites:
+
+- You must be a billing account manager.
+
+1. Sign in to [Customers Portal](https://customers.gitlab.com/).
+1. On the subscription card, select **GitLab Credits dashboard**.
+1. Select **Export usage data**.

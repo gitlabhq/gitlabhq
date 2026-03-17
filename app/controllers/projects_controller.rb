@@ -28,7 +28,8 @@ class ProjectsController < Projects::ApplicationController
 
   # Authorize
   before_action :authorize_view_edit_page!, only: :edit
-  before_action :authorize_admin_project!, only: [:update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
+  before_action :authorize_admin_project!,
+    only: [:update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
   before_action :authorize_archive_project!, only: [:archive, :unarchive]
   before_action :event_filter, only: [:show, :activity]
 
@@ -50,7 +51,6 @@ class ProjectsController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:inline_blame, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
-    push_frontend_feature_flag(:issue_email_participants, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
@@ -111,7 +111,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def create
-    @project = ::Projects::CreateService.new(current_user, project_params(attributes: project_params_create_attributes)).execute
+    @project = ::Projects::CreateService.new(current_user,
+      project_params(attributes: project_params_create_attributes)).execute
 
     if @project.saved?
       redirect_to(
@@ -511,8 +512,6 @@ class ProjectsController < Projects::ApplicationController
       mr_default_target_self
       warn_about_potentially_unwanted_characters
       enforce_auth_checks_on_uploads
-      merge_request_title_regex
-      merge_request_title_regex_description
       emails_enabled
     ]
 
@@ -561,8 +560,6 @@ class ProjectsController < Projects::ApplicationController
       :service_desk_enabled,
       :merge_commit_template_or_default,
       :squash_commit_template_or_default,
-      :merge_request_title_regex,
-      :merge_request_title_regex_description,
       { project_setting_attributes: project_setting_attributes,
         project_feature_attributes: project_feature_attributes }
     ]
@@ -661,7 +658,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def push_work_item_planning_view_feature_flag
-    push_force_frontend_feature_flag(:work_item_planning_view, !!@project.work_items_consolidated_list_enabled?(current_user))
+    push_force_frontend_feature_flag(:work_item_planning_view,
+      !!@project.work_items_consolidated_list_enabled?(current_user))
   end
 end
 

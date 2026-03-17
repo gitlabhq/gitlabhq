@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: Environment Automation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure OpenID Connect single sign-on (SSO) authentication for GitLab Dedicated.
 title: OpenID Connect SSO for GitLab Dedicated
 ---
@@ -110,7 +110,7 @@ To configure users based on OIDC group membership:
 ## Configuration parameters
 
 The following parameters are available to configure OIDC for GitLab Dedicated instances.
-For more information, see [use OpenID Connect as an authentication provider](../../../../administration/auth/oidc.md).
+For more information, see [use OpenID Connect as an authentication provider](../../../auth/oidc.md).
 
 ### Required parameters
 

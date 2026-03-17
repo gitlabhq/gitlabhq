@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Time tracking
 description: Estimates, time spent, and reporting.
 ---
@@ -19,6 +19,7 @@ description: Estimates, time spent, and reporting.
 - Time tracking for epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12396) in GitLab 17.5. [The new look for epics](../group/epics/_index.md#epics-as-work-items) must be enabled.
 - Minimum role to add, edit, and remove estimate [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 - Time tracking for epics [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468310) in GitLab 18.1.
+- The supported total amount of time spent was raised from 1 year to 4 years in GitLab 18.10.
 
 {{< /history >}}
 
@@ -43,9 +44,9 @@ If you use any quick action more than once in a single comment, only its last oc
 
 Different time tracking features are available based on your role:
 
-- To add, edit, and remove estimates, you need at least the Planner role for issues and tasks, or the Developer role for merge requests.
-- To add and edit time spent, you need at least the Planner role for the project.
-- To delete a time entry, you must be the author or have at least the Maintainer role.
+- To add, edit, and remove estimates, you need the Planner, Reporter, Developer, Maintainer, or Owner role for issues and tasks, or the Developer role for merge requests.
+- To add and edit time spent, you need the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
+- To delete a time entry, you must be the author or have the Maintainer or Owner role.
 
 ## Estimates
 
@@ -59,9 +60,9 @@ You can see the estimated time remaining when you hover over the time tracking i
 
 Prerequisites:
 
-- In issues, you must have at least the Planner role for the project.
-- In tasks, you must have at least the Planner role for the project.
-- In merge requests, you must have at least the Developer role for the project.
+- In issues, you must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
+- In tasks, you must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
+- In merge requests, you must have the Developer, Maintainer, or Owner role for the project.
 
 To enter an estimate, use the [`/estimate` quick action](quick_actions.md#estimate), followed by the time.
 
@@ -76,9 +77,9 @@ Every time you enter a new time estimate, it overwrites the previous value.
 
 Prerequisites:
 
-- In issues, you must have at least the Planner role for the project.
-- In tasks, you must have at least the Planner role for the project.
-- In merge requests, you must have at least the Developer role for the project.
+- In issues, you must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
+- In tasks, you must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
+- In merge requests, you must have the Developer, Maintainer, or Owner role for the project.
 
 To remove an estimate entirely, use the [`/remove_estimate` quick action](quick_actions.md#remove_estimate).
 
@@ -89,13 +90,13 @@ As you work, you can log the time you've spent.
 Every new time spent entry is added to the current total time spent for the
 issue, task, or the merge request.
 
-The total amount of time spent on an issue, task, or merge request cannot exceed a year.
+The total amount of time spent on an issue, task, or merge request cannot exceed 4 years.
 
 ### Add time spent
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 #### Using the user interface
 
@@ -183,7 +184,7 @@ When you push a commit with time tracking information:
 
 Time is added to an issue from a commit message only if the commit author has permission to update the issue:
 
-- The commit author must have at least the Planner role for the project where the issue exists.
+- The commit author must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project where the issue exists.
 - If the author doesn't have sufficient permissions, the time tracking information in their commit is ignored.
 - Permission checks use the same rules as regular time tracking.
 
@@ -223,7 +224,7 @@ When you merge a merge request containing commits with time tracking information
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To subtract time, enter a negative value. For example, `/spend -3d` removes three
 days from the total time spent. You can't go below 0 minutes of time spent,
@@ -241,7 +242,7 @@ A timelog is a single entry of time spent, either positive or negative.
 
 Prerequisites:
 
-- You must be the author of the timelog or have at least the Maintainer role for the project.
+- You must be the author of the timelog or have the Maintainer or Owner role for the project.
 
 To delete a timelog, either:
 
@@ -252,7 +253,7 @@ To delete a timelog, either:
 
 Prerequisites:
 
-- You must have at least the Planner role for the project.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for the project.
 
 To delete all the time spent at once, use the [`/remove_time_spent` quick action](quick_actions.md#remove_time_spent).
 
@@ -323,10 +324,10 @@ The following time units are available:
 
 {{< /details >}}
 
-On GitLab Self-Managed, you can limit the display of time units to hours.
+GitLab administrators can limit the display of time units to hours.
 To do so:
 
-1. On the top bar, select **Search or go to**.
+1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Preferences**.
 1. Expand **Localization**.
 1. Under **Time tracking**, select the **Limit display of time tracking units to hours** checkbox.

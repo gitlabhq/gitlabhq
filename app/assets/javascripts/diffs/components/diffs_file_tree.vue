@@ -1,5 +1,5 @@
 <script>
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';

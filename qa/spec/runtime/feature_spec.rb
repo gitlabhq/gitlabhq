@@ -258,6 +258,51 @@ RSpec.describe QA::Runtime::Feature do
         end
       end
 
+      context 'when a gitaly feature flag is not found via the API' do
+        before do
+          allow(QA::Runtime::API::Request)
+            .to receive(:new)
+            .with(api_client, "/features")
+            .and_return(request)
+          allow(described_class)
+            .to receive(:get)
+            .and_return(Struct.new(:code, :body).new(200, '[]'))
+        end
+
+        context 'when there is no YAML definition file' do
+          before do
+            allow(Dir).to receive(:glob).and_return([])
+          end
+
+          it 'returns false without raising an error' do
+            expect(described_class.enabled?(:gitaly_some_flag)).to be false
+          end
+        end
+
+        context 'when a YAML definition file exists' do
+          before do
+            allow(Dir).to receive(:glob).and_return(['file_path'])
+            allow(File).to receive(:read).and_return(definition)
+          end
+
+          context 'with a default enabled definition' do
+            let(:definition) { 'default_enabled: true' }
+
+            it 'returns the default value from the file' do
+              expect(described_class.enabled?(:gitaly_some_flag)).to be true
+            end
+          end
+
+          context 'with a default disabled definition' do
+            let(:definition) { 'default_enabled: false' }
+
+            it 'returns the default value from the file' do
+              expect(described_class.enabled?(:gitaly_some_flag)).to be false
+            end
+          end
+        end
+      end
+
       context 'with definition files' do
         context 'when no features are found via the API' do
           before do

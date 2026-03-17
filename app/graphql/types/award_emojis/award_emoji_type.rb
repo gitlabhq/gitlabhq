@@ -27,7 +27,7 @@ module Types
 
       field :emoji,
         GraphQL::Types::String,
-        null: false,
+        null: true,
         description: 'Emoji as an icon.'
 
       field :unicode_version,

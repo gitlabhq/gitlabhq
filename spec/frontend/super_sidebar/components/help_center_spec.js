@@ -24,6 +24,7 @@ describe('HelpCenter component', () => {
   const findButton = (name) => withinComponent().getByRole('button', { name });
   const findWhatsNew = () => wrapper.findByTestId('sidebar-whatsnew-button');
   const findNotificationCount = () => wrapper.findByTestId('notification-count');
+  const findNotificationDot = () => wrapper.findByTestId('notification-dot');
 
   const createWrapper = (sidebarDataOverride = sidebarData, provide = {}) => {
     wrapper = mountExtended(HelpCenter, {
@@ -118,6 +119,20 @@ describe('HelpCenter component', () => {
         ...getDefaultHelpItems(),
         PRIVACY_HELP_ITEM,
       ]);
+    });
+
+    describe('when there are no unread articles', () => {
+      beforeEach(() => {
+        createWrapper({
+          ...sidebarData,
+          whats_new_most_recent_release_items_count: 0,
+          whats_new_read_articles: [],
+        });
+      });
+
+      it('does not show whats new button at top level', () => {
+        expect(findWhatsNew().exists()).toBe(false);
+      });
     });
 
     describe('compare plans URL', () => {
@@ -361,6 +376,51 @@ describe('HelpCenter component', () => {
           property: 'nav_help_menu',
         });
       });
+    });
+  });
+
+  describe('when display_upgrade_subscription is true', () => {
+    beforeEach(() => {
+      createWrapper({ ...sidebarData, display_upgrade_subscription: true });
+    });
+
+    it('renders menu items', () => {
+      expect(findWhatsNew().exists()).toBe(false);
+      expect(findDropdownGroup(0).props('group').items).toEqual(getDefaultHelpItems());
+
+      expect(findDropdownGroup(1).props('group').items).toEqual([
+        expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
+        expect.objectContaining({ text: HelpCenter.i18n.whatsnew }),
+      ]);
+    });
+
+    it('shows notification dot on help button', () => {
+      expect(findNotificationDot().exists()).toBe(true);
+    });
+
+    describe('when there are no unread articles', () => {
+      beforeEach(() => {
+        createWrapper({
+          ...sidebarData,
+          display_upgrade_subscription: true,
+          whats_new_most_recent_release_items_count: 0,
+          whats_new_read_articles: [],
+        });
+      });
+
+      it('does not show notification dot on help button', () => {
+        expect(findNotificationDot().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('when display_upgrade_subscription is undefined', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it('shows whats new button at top level (defaults to false)', () => {
+      expect(findWhatsNew().exists()).toBe(true);
     });
   });
 });

@@ -146,6 +146,28 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
     end
   end
 
+  describe '#single_origin_fallback_enabled?' do
+    [true, false].each do |setting_value|
+      context "when vscode_extension_marketplace_single_origin_fallback_enable is #{setting_value}" do
+        subject(:single_origin_fallback_enabled) { described_class.single_origin_fallback_enabled? }
+
+        before do
+          Gitlab::CurrentSettings.update!(
+            vscode_extension_marketplace: {
+              enabled: true,
+              extension_host_domain: 'cdn.web-ide.gitlab-static.net',
+              single_origin_fallback_enabled: setting_value
+            }
+          )
+        end
+
+        it 'returns vscode_extension_marketplace_single_origin_fallback_enable application setting' do
+          expect(described_class.single_origin_fallback_enabled?).to be(setting_value)
+        end
+      end
+    end
+  end
+
   describe '#origin_matches_extension_host_regexp' do
     subject(:regexp) { described_class.origin_matches_extension_host_regexp }
 

@@ -9,7 +9,7 @@ module DependencyProxy
     end
 
     def execute
-      JSONWebToken::HMACToken.decode(token, ::Auth::DependencyProxyAuthenticationService.secret).first
+      JSONWebToken::HMACToken.decode(token, ::Auth::ContainerProxyAuthenticationService.secret).first
     end
 
     # TODO: Rename to make it obvious how it's used in Gitlab::Auth::RequestAuthenticator
@@ -29,18 +29,25 @@ module DependencyProxy
     end
 
     def self.user_or_token_from_jwt(raw_jwt)
-      token_payload = self.new(raw_jwt).execute
+      result = token_result_from_jwt(raw_jwt)
+      result&.dig(:user_or_token)
+    end
 
-      if token_payload['personal_access_token']
-        get_personal_access_token(token_payload['personal_access_token'])
-      elsif token_payload['group_access_token']
-        # a group access token is a personal access token in disguise
-        get_personal_access_token(token_payload['group_access_token'])
-      elsif token_payload['user_id']
-        get_user(token_payload['user_id'])
-      elsif token_payload['deploy_token']
-        get_deploy_token(token_payload['deploy_token'])
-      end
+    def self.token_result_from_jwt(raw_jwt)
+      token_payload = new(raw_jwt).execute
+
+      user_or_token = if token_payload['personal_access_token']
+                        get_personal_access_token(token_payload['personal_access_token'])
+                      elsif token_payload['group_access_token']
+                        # a group access token is a personal access token in disguise
+                        get_personal_access_token(token_payload['group_access_token'])
+                      elsif token_payload['user_id']
+                        get_user(token_payload['user_id'])
+                      elsif token_payload['deploy_token']
+                        get_deploy_token(token_payload['deploy_token'])
+                      end
+
+      { user_or_token: user_or_token, service_type: token_payload['service_type'] }
     rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature
       nil
     end

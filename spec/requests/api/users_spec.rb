@@ -595,7 +595,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
 
     context "when admin" do
       context 'exclude_internal param' do
-        let_it_be(:internal_user) { Users::Internal.alert_bot }
+        let_it_be(:internal_user) { Users::Internal.in_organization(organization).alert_bot }
 
         it 'returns all users when it is not set' do
           get api("/users?exclude_internal=false", admin)
@@ -1961,7 +1961,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to eq({ 'user_detail.organization' => ['is too long (maximum is 500 characters)'] })
-          expect(user.reload.user_detail_organization).to eq(expected_organization)
+          expect(user.reload.company).to eq(expected_organization)
         end
       end
 
@@ -4414,7 +4414,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
         end
 
         context 'for an internal user' do
-          let(:user) { Users::Internal.alert_bot }
+          let(:user) { Users::Internal.in_organization(organization).alert_bot }
 
           it 'returns 403' do
             deactivate
@@ -5498,7 +5498,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
       expect(json_response['error']).to eq('name is missing, scopes is missing')
     end
 
-    it_behaves_like 'authorizing granular token permissions', :create_user_personal_access_token do
+    it_behaves_like 'authorizing granular token permissions', :create_personal_access_token do
       let(:boundary_object) { :user }
       let(:request) do
         post api(path, personal_access_token: pat), params: { name: 'test', scopes: ['k8s_proxy'] }

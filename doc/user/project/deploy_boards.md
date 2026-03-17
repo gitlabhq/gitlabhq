@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Deploy boards (deprecated)
 ---
 
@@ -83,7 +83,6 @@ specific environment, so there are a lot of use cases. To name a few:
 To display the deploy boards for a specific [environment](../../ci/environments/_index.md) you should:
 
 1. Have [defined an environment](../../ci/environments/_index.md) with a deploy stage.
-
 1. Have a Kubernetes cluster up and running.
 
    > [!note]

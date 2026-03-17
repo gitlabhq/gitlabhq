@@ -1241,12 +1241,14 @@ RSpec.describe Event, feature_category: :user_profile do
 
     context 'when a project was updated less than 1 hour ago' do
       it 'does not update the project' do
-        project.update!(last_activity_at: Time.current)
-
-        expect(project).not_to receive(:update_column)
-          .with(:last_activity_at, a_kind_of(Time))
+        recent_time = 45.minutes.ago
+        project.update!(last_activity_at: recent_time)
 
         create_push_event(project, project.first_owner)
+
+        project.reload
+
+        expect(project.last_activity_at).to be_like_time(recent_time)
       end
     end
 
@@ -1498,6 +1500,30 @@ RSpec.describe Event, feature_category: :user_profile do
         event = build(:event, group: nil)
 
         expect(event.has_no_project_and_group?).to be true
+      end
+    end
+  end
+
+  describe '#target_deleted?' do
+    it 'returns false when event does not have a target_id' do
+      event = build(:event, :destroyed, target_type: 'Milestone')
+
+      expect(event.target_deleted?).to be false
+    end
+
+    context 'when target_id is set' do
+      let_it_be(:issue) { create(:issue, project: project) }
+
+      let(:event) { build(:event, target_type: issue.class.name, target_id: issue.id) }
+
+      it 'returns false when target is present' do
+        expect(event.target_deleted?).to be false
+      end
+
+      it 'returns true when target is no longer present' do
+        event.target_id = non_existing_record_id
+
+        expect(event.target_deleted?).to be true
       end
     end
   end

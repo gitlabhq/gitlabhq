@@ -1,7 +1,3 @@
 ---
 name: delete_webhook_url_variable
 description: Grants the ability to delete webhook URL variables
-boundaries:
-  - group
-  - project
-  - instance

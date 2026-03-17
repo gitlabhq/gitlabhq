@@ -26,7 +26,7 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfoli
   describe '#execute' do
     context 'when saved views are not enabled for the namespace' do
       before do
-        stub_feature_flags(work_items_saved_views: false)
+        stub_feature_flags(work_item_planning_view: false)
       end
 
       it 'returns an error' do
@@ -98,6 +98,19 @@ RSpec.describe WorkItems::SavedViews::UpdateService, feature_category: :portfoli
 
           expect(result).to be_error
           expect(result.message).to eq('Only the author can change visibility settings')
+        end
+
+        it 'allows non-author to update when visibility is unchanged' do
+          service = described_class.new(
+            current_user: current_user,
+            saved_view: other_saved_view,
+            params: { name: 'New Name', private: other_saved_view.private? }
+          )
+
+          result = service.execute
+
+          expect(result).to be_success
+          expect(other_saved_view.reload.name).to eq('New Name')
         end
       end
 

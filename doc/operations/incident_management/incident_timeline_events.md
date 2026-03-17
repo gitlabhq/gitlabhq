@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: View, create, edit, and resolve incidents, and change incident severity, status, and escalation policy.
 title: Timeline events
 ---
@@ -34,7 +34,7 @@ They are grouped with dates and are listed in ascending order of the time when t
 
 To view the event timeline of an incident:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Incidents**.
 1. Select an incident.
 1. Select the **Timeline** tab.
@@ -53,7 +53,7 @@ Prerequisites:
 
 To create a timeline event:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Incidents**.
 1. Select an incident.
 1. Select the **Timeline** tab.
@@ -89,7 +89,7 @@ Prerequisites:
 
 To create a timeline event from a comment on the incident:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Incidents**.
 1. Select an incident.
 1. Create a comment or choose an existing comment.
@@ -147,7 +147,7 @@ Prerequisites:
 
 To delete a timeline event:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Monitor** > **Incidents**.
 1. Select an incident.
 1. Select the **Timeline** tab.

@@ -36,6 +36,8 @@ module RuboCop
         end
       end
 
+      alias_method :on_numblock, :on_block
+
       private
 
       def container_block_for(current_node)

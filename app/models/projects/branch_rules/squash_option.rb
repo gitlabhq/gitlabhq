@@ -10,7 +10,6 @@ module Projects
 
       validates :protected_branch, uniqueness: true
 
-      validate :validate_protected_branch_not_wildcard
       validate :validate_protected_branch_belongs_to_project, if: -> { protected_branch_changed? || project_changed? }
 
       def branch_rule
@@ -18,12 +17,6 @@ module Projects
       end
 
       private
-
-      def validate_protected_branch_not_wildcard
-        return unless protected_branch&.wildcard?
-
-        errors.add(:protected_branch, _('cannot be used with wildcard branch rules. Use an exact branch name.'))
-      end
 
       def validate_protected_branch_belongs_to_project
         return unless protected_branch && project

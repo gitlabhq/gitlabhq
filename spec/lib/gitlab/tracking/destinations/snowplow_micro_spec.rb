@@ -21,8 +21,6 @@ RSpec.describe Gitlab::Tracking::Destinations::SnowplowMicro, feature_category: 
   it { is_expected.to delegate_method(:flush).to(:tracker) }
 
   describe '#snowplow_options' do
-    let_it_be(:group) { create :group }
-
     before do
       stub_config(snowplow_micro: snowplow_micro_settings)
     end
@@ -38,10 +36,10 @@ RSpec.describe Gitlab::Tracking::Destinations::SnowplowMicro, feature_category: 
       }
 
       allow_next_instance_of(Gitlab::Tracking::Destinations::Snowplow) do |snowplow_instance|
-        allow(snowplow_instance).to receive(:snowplow_options).with(group).and_return(base_options)
+        allow(snowplow_instance).to receive(:snowplow_options).and_return(base_options)
       end
 
-      options = subject.snowplow_options(group)
+      options = subject.snowplow_options
 
       expect(options).to include(
         protocol: 'http',

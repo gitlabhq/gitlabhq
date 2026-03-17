@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Group-level Kubernetes clusters (certificate-based) (deprecated)
 ---
 
@@ -23,7 +23,7 @@ your group, enabling you to use the same cluster across multiple projects.
 
 To view your group-level Kubernetes clusters:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Operate** > **Kubernetes**.
 
 ## Cluster management project
@@ -81,7 +81,7 @@ your cluster, which can cause deployment jobs to fail.
 
 To clear the cache:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Operate** > **Kubernetes**.
 1. Select your cluster.
 1. Expand **Advanced settings**.

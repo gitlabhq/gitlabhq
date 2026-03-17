@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Get help from a suite of AI-native features while you work in GitLab.
 title: GitLab Duo
 ---
@@ -15,7 +15,7 @@ Some features are also available as part of [GitLab Duo Chat](../gitlab_duo_chat
 {{< walkthrough data="duo-walkthrough" >}}
 
 - [GitLab Duo Agent Platform](../duo_agent_platform/_index.md)
-- [GitLab Duo (Classic)](feature_summary.md)
+- [GitLab Duo](feature_summary.md)
 - [Configure GitLab Duo](../../administration/gitlab_duo/configure/_index.md)
 - [Use your own models with GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
 

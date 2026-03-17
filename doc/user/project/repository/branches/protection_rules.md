@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: How protection rules work with protected branches in GitLab, especially in complex scenarios.
 title: Protection rules and permissions
 ---
@@ -28,7 +28,7 @@ repository branches. These rules cover:
 When a branch matches multiple protection rules, these behaviors apply:
 
 - Group rules apply to all projects in a group and cannot be modified from project settings.
-  For more information, see [Rules across groups and projects](#rules-across-groups-and-projects).
+  For more information, see [rules across groups and projects](#rules-across-groups-and-projects).
 - When a branch matches multiple rules, the most permissive rule applies. However,
   [code owner approval](#code-owner-approval) uses the most restrictive rule.
 - Exact branch names like `main` do not override wildcard patterns like `m*`.

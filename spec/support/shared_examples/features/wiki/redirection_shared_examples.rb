@@ -126,4 +126,37 @@ RSpec.shared_examples 'Wiki redirection' do
       end
     end
   end
+
+  context 'when pages and directories are renamed into a subpage with the same base name' do
+    before do
+      # rubocop:disable Rails/SaveBang -- Not an ActiveRecord object
+      wiki.find_page('parent/child').update(title: 'parent/child/new-grandchild')
+      wiki.find_page('parent').update(title: 'parent/new-child')
+      # rubocop:enable Rails/SaveBang
+    end
+
+    it 'updates the .gitlab/redirects.yml file with all redirects' do
+      expect(wiki.repository.blob_at(wiki.default_branch, '.gitlab/redirects.yml').data).to eq(
+        <<~YML
+          ---
+          parent/child: parent/child/new-grandchild
+          parent: parent/new-child
+        YML
+      )
+    end
+
+    where(:old_path, :new_path) do
+      'parent'                          | 'parent/new-child'
+      'parent/child'                    | 'parent/new-child/child/new-grandchild'
+      'parent/child/grandchild'         | 'parent/new-child/child/new-grandchild/grandchild'
+    end
+
+    with_them do
+      it 'redirects old path to new path' do
+        visit wiki_page_path(wiki, old_path)
+
+        expect(page).to have_content("The page at #{old_path} has been moved to #{new_path}.")
+      end
+    end
+  end
 end

@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Work items and work item types
 ---
 
@@ -37,7 +37,6 @@ Here are some problems with current issues usage and why we are looking into wor
   - There is not a coherent interaction model across different types of issues because we use
     labels for this.
   - The various implementations of issue types lack flexibility and extensibility.
-
 - Epics, issues, requirements, and others all have similar but just subtle enough
   differences in common interactions that the user needs to hold a complicated mental
   model of how they each behave.
@@ -522,7 +521,6 @@ To add a new work item event:
 1. **Define your event and metrics** using the internal events CLI. Follow the
    [quick start guide](internal_analytics/internal_event_instrumentation/quick_start.md#defining-event-and-metrics)
    to generate the necessary YAML definitions.
-
 1. **Add the event constant** in `lib/gitlab/work_items/instrumentation/event_actions.rb`:
 
    ```ruby
@@ -559,7 +557,6 @@ To add a new work item event:
    ```
 
 1. **Call the tracking service** from the relevant service class.
-
 1. **Add specs** using the shared examples:
 
    ```ruby

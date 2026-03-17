@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :pipeline_composition do
   subject { described_class.new(YAML.safe_load(config), ctx) }
@@ -101,6 +101,23 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :p
       expect(subject.interpolated).to be_nil
       expect(subject.errors.count).to eq 1
       expect(subject.errors.first).to eq 'too many interpolation blocks'
+    end
+  end
+
+  context 'when template uses array indexing' do
+    let(:config) do
+      <<~CFG
+      test:
+        script: $[[ inputs.some_array[0] ]]
+      CFG
+    end
+
+    let(:ctx) do
+      { inputs: { some_array: ['echo hello', 'echo world'] } }
+    end
+
+    it 'interpolates the array element' do
+      expect(subject.interpolated).to eq({ 'test' => { 'script' => 'echo hello' } })
     end
   end
 end

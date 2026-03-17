@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: irker (IRC gateway)
 description: "Configure the irker integration to send GitLab push notifications to IRC channels."
 ---
@@ -46,7 +46,7 @@ need to follow the first steps of the next section.
 
 ## Complete these steps in GitLab
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **irker (IRC gateway)**.
 1. Ensure that the **Active** toggle is enabled.

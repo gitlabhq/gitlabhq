@@ -2,6 +2,8 @@
 key_path: counts.count_total_expand_description_on_workitem_monthly
 description: Monthly count of work item descriptions being expanded
 product_group: project_management
+product_categories:
+- team_planning
 performance_indicator_type: []
 value_type: number
 status: active

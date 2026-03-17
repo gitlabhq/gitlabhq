@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: An introduction to reference parsers and reference filters, and a guide to their implementation.
 title: Reference processing
 ---
@@ -58,7 +58,6 @@ a minimum implementation of `AbstractReferenceFilter` should define:
   This is usually a keyword, and is used to set the `data-reference-type` attribute
   on the generated link, and is an important part of the interaction with the
   corresponding `ReferenceParser` (see below).
-
 - `.object_class`: a reference to the class of the objects a filter refers to.
 
   This is used to:
@@ -70,7 +69,6 @@ a minimum implementation of `AbstractReferenceFilter` should define:
     named the value of `ReferenceFilter.object_sym`.
   - Compute the `.object_name`.
   - Compute the `.object_sym` (the group name in the reference patterns).
-
 - `.parse_symbol(string)`: parse the text value to an object identifier (`#to_i` by default).
 - `#record_identifier(record)`: the inverse of `.parse_symbol`, that is, transform a domain object to an identifier (`#id` by default).
 - `#url_for_object(object, parent_object)`: generate the URL for a domain object.

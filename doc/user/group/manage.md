@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Manage groups
 ---
 
@@ -28,7 +28,7 @@ Prerequisites:
 
 To add a group README:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. In the **Group README** section, select **Add README**. This action creates a new project `gitlab-profile` that contains the `README.md` file.
 1. On the prompt for creating a README, select **Create and add README**. You're redirected to the Web IDE, where a README file is created.
@@ -40,12 +40,12 @@ You can change the Owner of a group. Each group must always have at least one
 human member with the Owner role. Internal users ("bots") and service accounts cannot be the only Owner of a group.
 
 - As an administrator:
-  1. On the top bar, select **Search or go to** and find your group.
+  1. In the top bar, select **Search or go to** and find your group.
   1. Select **Manage** > **Members**.
   1. Give a different member the Owner role.
   1. Refresh the page. You can now remove the Owner role from the original Owner.
 - As the current group's Owner:
-  1. On the top bar, select **Search or go to** and find your group.
+  1. In the top bar, select **Search or go to** and find your group.
   1. Select **Manage** > **Members**.
   1. Give a different member the Owner role.
   1. Have the new Owner sign in and remove the Owner role from you.
@@ -66,7 +66,7 @@ create a new group and transfer projects to it instead.
 
 To change your group path (group URL):
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter a new name.
@@ -124,7 +124,7 @@ Prerequisites:
 
 To archive a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Archive group** section, select **Archive**.
@@ -134,7 +134,7 @@ To archive a group:
 
 To archive a group from the **Your work** list view directly:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **View all my groups**.
 1. In the **Member** tab, find the group you want to archive and select ({{< icon name="ellipsis_v" >}}).
 1. Select **Archive**.
@@ -155,16 +155,16 @@ Prerequisites:
 To unarchive a group:
 
 1. Find the archived group.
-   1. On the top bar, select **Search or go to**.
+   1. In the top bar, select **Search or go to**.
    1. Select **View all my groups**.
    1. In the **Inactive** tab, select your group.
-1. On the left sidebar, select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Under **Advanced**, select **Expand**.
 1. In the **Unarchive group** section, select **Unarchive**.
 
 To unarchive a group from the **Your work** list view directly:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **View all my groups**.
 1. In the **Inactive** tab, find the group you want to unarchive and select ({{< icon name="ellipsis_v" >}}).
 1. Select **Unarchive**.
@@ -189,7 +189,7 @@ Prerequisites:
 
 To transfer a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. Select **Transfer group**.
@@ -223,12 +223,12 @@ Membership restrictions:
 
 - Inherited memberships are lost. Only direct group members are transferred.
 - If a group Owner has an inherited membership, the user that transfers the group
-becomes the new Owner.
+  becomes the new Owner.
 
 Visibility and access restrictions:
 
 - If a target parent group has lower visibility, the visibility settings of all subgroups and projects
-are adjusted to match the visibility of the target parent group.
+  are adjusted to match the visibility of the target parent group.
 - Repository URLs change. You must update your local repositories to point to the new location. For more information, see [Repository page changes](../project/repository/_index.md#repository-path-changes).
 
 Package and container registry restrictions:
@@ -247,7 +247,7 @@ You can disable all email notifications related to the group, which includes its
 
 To disable email notifications:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Enable email notifications** checkbox.
@@ -273,7 +273,7 @@ Prerequisites:
 
 To disable diff previews for all projects in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Clear **Include diff previews**.
@@ -295,12 +295,12 @@ The following group and project members receive notification emails about access
   - Members with the Owner role.
   - In GitLab 17.7 and later, members who inherit the Owner role for the group, if that group or its parent group has the appropriate setting configured.
 - For project access tokens:
-  - Members of the project with at least the Maintainer role.
+  - Members of the project with the Maintainer or Owner role.
   - In GitLab 17.7 and later, project members who have inherited the Owner or Maintainer role due to the project belonging to a group, if that group or its parent group has the appropriate setting configured.
 
 You can enable notifications to inherited members of a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Expiry notification emails about group and project access tokens within this group should be sent to:**, select **All direct and inherited members of the group or project**.
@@ -327,7 +327,7 @@ before a group token expires. By default, these webhooks trigger 7 days before a
 
 To configure these webhooks to also trigger 60 days and 30 days before a token expires:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select the **Add additional webhook triggers for group access token expiration** checkbox.
@@ -345,7 +345,7 @@ These visual cues are particularly helpful for groups with many users.
 
 To disable group mentions:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Group mentions are disabled**.
@@ -369,7 +369,7 @@ To disable group mentions:
 
 You can prevent [enterprise users](../enterprise_user/_index.md) in your group from creating
 [snippets](../snippets.md) in their personal namespace. When disabled, enterprise users
-can still create project snippets.
+can still create project snippets, and view and edit their existing personal snippets.
 
 Prerequisites:
 
@@ -377,7 +377,7 @@ Prerequisites:
 
 To restrict personal snippets for enterprise users:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Clear the **Allow personal snippets** checkbox.
@@ -407,7 +407,7 @@ Prerequisites:
 
 To prevent invitations to a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Disable Group/Project members invitation**.
@@ -424,7 +424,7 @@ To prevent invitations to a group:
 
 You can export a list of members in a group or subgroup as a CSV.
 
-1. On the top bar, select **Search or go to** and find your group or subgroup.
+1. In the top bar, select **Search or go to** and find your group or subgroup.
 1. Select **Manage** > **Members**.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
@@ -469,7 +469,7 @@ Prerequisites:
 
 To turn on restricted access:
 
-1. On the left sidebar, select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Seat control**, select **Restricted access**.
 
@@ -484,17 +484,14 @@ You can still independently configure [project sharing for the group and its sub
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 When restricted access is enabled and no subscription seats are available, users provisioned through SAML, SCIM, or LDAP are assigned the Minimal Access role instead of their configured access level.
 This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and Self-Managed Ultimate.
 
-Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../../user/permissions.md#users-with-minimal-access).
+Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../permissions.md#users-with-minimal-access).
 When seats become available, they can be promoted to their intended access level.
 Existing users with billable roles are not affected by this behavior.
 
@@ -552,7 +549,7 @@ Prerequisites:
 
 To set a user cap:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
    You can set a cap on the top-level group only.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
@@ -574,7 +571,7 @@ Prerequisites:
 
 To remove the user cap:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. From **Seat control**, select **Open access**.
@@ -595,7 +592,7 @@ Prerequisites:
 
 To approve members that are pending because they've exceeded the user cap:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Usage quotas**.
 1. On the **Seats** tab, under the alert, select **View pending approvals**.
 1. For each member you want to approve, select **Approve**.
@@ -607,7 +604,7 @@ or project is shared externally, it is shared outside of the namespace hierarchy
 in the hierarchy.
 
 To ensure that the user cap applies when groups, subgroups, or projects are shared externally,
-[restrict group sharing only in the top-level namespace](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy).
+[restrict group sharing only in the top-level namespace](../project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy).
 A top-level namespace restriction allows invitations in the same namespace and prevents new user (seat) additions from external shares.
 
 GitLab.com Ultimate has a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add guest users to a group when billable users exceed the user cap. For example, suppose you have a user cap of 5, with 3 developers, and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
@@ -657,7 +654,7 @@ For more information, see [group-level project templates](custom_project_templat
 
 To enable group file templates:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Templates** section.
 1. Choose a project to act as the template repository.
@@ -697,7 +694,7 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**, select **Pipelines must succeed**.
@@ -716,7 +713,7 @@ Prerequisites:
 
 To change this behavior:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**:
@@ -734,7 +731,7 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Merge requests**.
 1. Under **Merge checks**, select **All threads must be resolved**.
@@ -755,7 +752,7 @@ that belong to the group.
 
 To view the merge request approval settings for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Merge request approvals** section.
 1. Select the settings you want.
@@ -782,7 +779,7 @@ Changes to [group wikis](../project/wiki/group.md) do not appear in group activi
 
 You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Manage** > **Activity**.
 
 To view the activity feed in Atom format, select the
@@ -802,6 +799,7 @@ To view the activity feed in Atom format, select the
 - Namespace setting to allow the display of user data
   [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215371) in GitLab 18.7
   [with a flag](../../administration/feature_flags/_index.md) named `usage_billing_dev`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215714).
+- Feature flag `usage_billing_dev` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/566581) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -812,7 +810,7 @@ Prerequisites:
 
 To display user data on the [GitLab Credits dashboard](../../subscriptions/gitlab_credits.md#gitlab-credits-dashboard):
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. For the **GitLab Credits dashboard**, select the **Display user data** checkbox.

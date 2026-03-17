@@ -8,6 +8,7 @@ import {
   useCachedUserCounts,
 } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
+import { WORK_ITEMS_ICON, WORK_ITEM_ISSUE_ICON } from '~/homepage/constants';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
   TRACKING_LABEL_MERGE_REQUESTS,
@@ -39,7 +40,7 @@ export default {
     BaseWidget,
   },
   mixins: [InternalEvents.mixin()],
-  inject: ['duoCodeReviewBotUsername'],
+  inject: ['duoCodeReviewBotUsername', 'workItemPlanningViewEnabled'],
   props: {
     reviewRequestedPath: {
       type: String,
@@ -134,6 +135,23 @@ export default {
     authoredWorkItemsData() {
       return this.workItemsMetadata?.authored;
     },
+    workItemsCardTitle() {
+      return this.workItemPlanningViewEnabled
+        ? s__('HomePageWorkItemsWidget|Work items')
+        : s__('HomePageWorkItemsWidget|Issues');
+    },
+    workItemsCardIcon() {
+      return this.workItemPlanningViewEnabled ? WORK_ITEMS_ICON : WORK_ITEM_ISSUE_ICON;
+    },
+    workItemsErrorText() {
+      return this.workItemPlanningViewEnabled
+        ? s__(
+            'HomePageWorkItemsWidget|The number of work items is not available. Please refresh the page to try again, or visit the work items list.',
+          )
+        : s__(
+            'HomePageWorkItemsWidget|The number of issues is not available. Please refresh the page to try again, or visit the issue list.',
+          );
+    },
   },
   created() {
     createUserCountsManager();
@@ -182,9 +200,6 @@ export default {
     mergeRequestsErrorText: s__(
       'HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard.',
     ),
-    workItemsErrorText: s__(
-      'HomePageWorkItemsWidget|The number of issues is not available. Please refresh the page to try again, or visit the issue list.',
-    ),
   },
 };
 </script>
@@ -224,23 +239,23 @@ export default {
           <user-items-count-widget
             data-testid="assigned-work-items-widget"
             :has-error="workItemsHaveError"
-            :error-text="$options.i18n.workItemsErrorText"
-            :card-text="s__('HomePageWorkItemsWidget|Issues')"
+            :error-text="workItemsErrorText"
+            :card-text="workItemsCardTitle"
             :link-text="s__('HomePageWorkItemsWidget|Assigned to you')"
             :path="assignedWorkItemsPath"
             :user-items="assignedWorkItemsData"
-            :icon-name="'work-item-issue'"
+            :icon-name="workItemsCardIcon"
             @click-link="handleAssignedWorkItemsClick"
           />
           <user-items-count-widget
             data-testid="authored-work-items-widget"
             :has-error="workItemsHaveError"
-            :error-text="$options.i18n.workItemsErrorText"
-            :card-text="s__('HomePageWorkItemsWidget|Issues')"
+            :error-text="workItemsErrorText"
+            :card-text="workItemsCardTitle"
             :link-text="s__('HomePageWorkItemsWidget|Authored by you')"
             :path="authoredWorkItemsPath"
             :user-items="authoredWorkItemsData"
-            :icon-name="'work-item-issue'"
+            :icon-name="workItemsCardIcon"
             @click-link="handleAuthoredWorkItemsClick"
           />
         </base-widget>

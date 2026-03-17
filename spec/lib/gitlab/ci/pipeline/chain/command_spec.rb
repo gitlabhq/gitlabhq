@@ -65,120 +65,153 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
     end
   end
 
-  context 'handling of origin_ref' do
+  describe '#ref_exists?' do
     let(:command) { described_class.new(project: project, origin_ref: origin_ref) }
 
-    describe '#branch_exists?' do
-      subject { command.branch_exists? }
+    subject { command.ref_exists? }
 
-      context 'for existing branch' do
-        let(:origin_ref) { 'master' }
+    context 'when ref can be resolved' do
+      let(:origin_ref) { 'master' }
 
-        it { is_expected.to eq(true) }
-      end
-
-      context 'for fully described tag ref' do
-        let(:origin_ref) { 'refs/tags/master' }
-
-        it { is_expected.to eq(false) }
-      end
-
-      context 'for fully described branch ref' do
-        let(:origin_ref) { 'refs/heads/master' }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'for invalid branch' do
-        let(:origin_ref) { 'something' }
-
-        it { is_expected.to eq(false) }
-      end
+      it { is_expected.to eq(true) }
     end
 
-    describe '#tag_exists?' do
-      subject { command.tag_exists? }
+    context 'when ref cannot be resolved' do
+      let(:origin_ref) { 'nonexistent' }
 
-      context 'for existing ref' do
-        let(:origin_ref) { 'v1.0.0' }
+      it { is_expected.to eq(false) }
+    end
+  end
 
-        it { is_expected.to eq(true) }
-      end
+  describe '#branch?' do
+    let(:command) { described_class.new(project: project, origin_ref: origin_ref) }
 
-      context 'for fully described tag ref' do
-        let(:origin_ref) { 'refs/tags/v1.0.0' }
+    subject { command.branch? }
 
-        it { is_expected.to eq(true) }
-      end
+    context 'for existing branch' do
+      let(:origin_ref) { 'master' }
 
-      context 'for fully described branch ref' do
-        let(:origin_ref) { 'refs/heads/v1.0.0' }
-
-        it { is_expected.to eq(false) }
-      end
-
-      context 'for invalid ref' do
-        let(:origin_ref) { 'something' }
-
-        it { is_expected.to eq(false) }
-      end
+      it { is_expected.to eq(true) }
     end
 
-    describe '#merge_request_ref_exists?' do
-      subject { command.merge_request_ref_exists? }
+    context 'for fully described tag ref' do
+      let(:origin_ref) { 'refs/tags/master' }
 
-      let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-      let(:origin_ref) { merge_request.source_branch }
-
-      context 'for existing merge request ref' do
-        let(:origin_ref) { merge_request.ref_path }
-
-        it { is_expected.to eq(true) }
-      end
-
-      context 'for branch ref' do
-        it { is_expected.to eq(false) }
-      end
-
-      it 'does not memoize the result' do
-        expect(command).to receive(:check_merge_request_ref).twice
-
-        2.times { command.merge_request_ref_exists? }
-      end
+      it { is_expected.to eq(false) }
     end
 
-    describe '#ref' do
-      subject { command.ref }
+    context 'for fully described branch ref' do
+      let(:origin_ref) { 'refs/heads/master' }
 
-      context 'for regular ref' do
-        let(:origin_ref) { 'master' }
+      it { is_expected.to eq(true) }
+    end
 
-        it { is_expected.to eq('master') }
-      end
+    context 'for invalid branch' do
+      let(:origin_ref) { 'something' }
 
-      context 'for branch ref' do
-        let(:origin_ref) { 'refs/heads/master' }
+      it { is_expected.to eq(false) }
+    end
+  end
 
-        it { is_expected.to eq('master') }
-      end
+  describe '#tag?' do
+    let(:command) { described_class.new(project: project, origin_ref: origin_ref) }
 
-      context 'for tag ref' do
-        let(:origin_ref) { 'refs/tags/1.0.0' }
+    subject { command.tag? }
 
-        it { is_expected.to eq('1.0.0') }
-      end
+    context 'for existing ref' do
+      let(:origin_ref) { 'v1.0.0' }
 
-      context 'for workload ref' do
-        let(:origin_ref) { 'refs/workloads/abc123' }
+      it { is_expected.to eq(true) }
+    end
 
-        it { is_expected.to eq('refs/workloads/abc123') }
-      end
+    context 'for fully described tag ref' do
+      let(:origin_ref) { 'refs/tags/v1.0.0' }
 
-      context 'for other refs' do
-        let(:origin_ref) { 'refs/merge-requests/11/head' }
+      it { is_expected.to eq(true) }
+    end
 
-        it { is_expected.to eq('refs/merge-requests/11/head') }
-      end
+    context 'for fully described branch ref' do
+      let(:origin_ref) { 'refs/heads/v1.0.0' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'for invalid ref' do
+      let(:origin_ref) { 'something' }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#merge_request_ref?' do
+    let(:command) { described_class.new(project: project, origin_ref: origin_ref) }
+
+    subject { command.merge_request_ref? }
+
+    context 'for a merge request ref' do
+      let(:origin_ref) { 'refs/merge-requests/1234/merge' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'for branch ref' do
+      let(:origin_ref) { 'refs/heads/some_branch' }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#workload?' do
+    let(:command) { described_class.new(project: project, origin_ref: origin_ref) }
+
+    subject { command.workload? }
+
+    context 'for a workload ref' do
+      let(:origin_ref) { 'refs/workloads/prod/deployments/123' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'for branch ref' do
+      let(:origin_ref) { 'refs/heads/some_branch' }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '#ref' do
+    let(:command) { described_class.new(project: project, origin_ref: origin_ref) }
+
+    subject { command.ref }
+
+    context 'for regular ref' do
+      let(:origin_ref) { 'master' }
+
+      it { is_expected.to eq('master') }
+    end
+
+    context 'for branch ref' do
+      let(:origin_ref) { 'refs/heads/master' }
+
+      it { is_expected.to eq('master') }
+    end
+
+    context 'for tag ref' do
+      let(:origin_ref) { 'refs/tags/1.0.0' }
+
+      it { is_expected.to eq('1.0.0') }
+    end
+
+    context 'for workload ref' do
+      let(:origin_ref) { 'refs/workloads/abc123' }
+
+      it { is_expected.to eq('refs/workloads/abc123') }
+    end
+
+    context 'for other refs' do
+      let(:origin_ref) { 'refs/merge-requests/11/head' }
+
+      it { is_expected.to eq('refs/merge-requests/11/head') }
     end
   end
 
@@ -212,7 +245,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
     context 'when a valid origin_ref is specified' do
       let(:command) { described_class.new(project: project, origin_ref: 'HEAD') }
 
-      it 'returns SHA for given ref' do
+      it 'returns SHA for given ref using resolved_ref' do
         is_expected.to eq(project.commit.id)
       end
     end
@@ -311,13 +344,13 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
   end
 
   describe '#protected_ref?' do
-    let(:command) { described_class.new(project: project, origin_ref: 'my-branch') }
+    let(:command) { described_class.new(project: project, origin_ref: 'master') }
 
     subject { command.protected_ref? }
 
     context 'when a ref is protected' do
       before do
-        expect_any_instance_of(Project).to receive(:protected_for?).with('my-branch').and_return(true)
+        expect_any_instance_of(Project).to receive(:protected_for?).with('refs/heads/master').and_return(true)
       end
 
       it { is_expected.to eq(true) }
@@ -325,15 +358,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
 
     context 'when a ref is unprotected' do
       before do
-        expect_any_instance_of(Project).to receive(:protected_for?).with('my-branch').and_return(false)
+        expect_any_instance_of(Project).to receive(:protected_for?).with('refs/heads/master').and_return(false)
       end
 
       it { is_expected.to eq(false) }
     end
   end
 
-  describe '#ambiguous_ref' do
-    let(:project) { create(:project, :repository) }
+  describe '#ambiguous_ref?' do
     let(:command) { described_class.new(project: project, origin_ref: 'ref') }
 
     subject { command.ambiguous_ref? }

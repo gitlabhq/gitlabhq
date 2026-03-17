@@ -237,7 +237,7 @@ module Clusters
 
         Gitlab::ErrorTracking.track_exception(FailedVersionCheckError.new) unless response.success?
 
-        json_response = Gitlab::Json.parse(response.body)
+        json_response = Gitlab::Json.safe_parse(response.body) || {}
         json_response["minor"].to_i
       end
 

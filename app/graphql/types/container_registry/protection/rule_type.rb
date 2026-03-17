@@ -25,11 +25,13 @@ module Types
 
         field :minimum_access_level_for_delete,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
+          experiment: { milestone: '17.11' },
           null: true,
           description:
             'Minimum GitLab access level required to delete container images from the container repository. ' \
             'Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. ' \
-            'If the value is `nil`, the default minimum access level is `DEVELOPER`.'
+            'If the value is `nil`, the default minimum access level is `DEVELOPER`. ' \
+            'Valid only when feature flag `container_registry_protected_containers_delete` is enabled.'
 
         field :minimum_access_level_for_push,
           Types::ContainerRegistry::Protection::RuleAccessLevelEnum,

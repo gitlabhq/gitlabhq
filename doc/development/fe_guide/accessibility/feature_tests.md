@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Accessibility feature tests
 ---
 
@@ -125,7 +125,6 @@ However, there are a few things that can help you contribute to accessibility te
 In most cases you do not want to test accessibility of a whole page. There are a couple of reasons:
 
 1. We have elements that appear on every application view, such as breadcrumbs or main navigation. Including them in every feature spec takes up quite a lot of resources and multiplies something that can be done just once. These elements have their own feature specs and that's where we want to test them.
-
 1. If a feature spec covers a whole view, the best practice would be to scope it to `<main id="content-body">` element. Here's an example of such test case:
 
    ```ruby
@@ -150,11 +149,8 @@ advantage of a fact that axe_core rules is used both for Ruby tests and Deque br
 provide the same output.
 
 1. Make sure you have axe DevTools extension installed in a browser of your choice. See [axe DevTools official website for more information](https://www.deque.com/axe/browser-extensions/).
-
 1. Navigate to the view you're testing with a feature test.
-
 1. Open axe DevTools extension and run a scan of the page.
-
 1. Expand found issues and use Highlight option to see the elements on the page for each violation.
 
 ### Known accessibility violations

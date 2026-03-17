@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty } from 'lodash';
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __ } from '~/locale';

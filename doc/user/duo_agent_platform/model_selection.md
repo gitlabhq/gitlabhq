@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Custom Models
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure large language models for GitLab Duo features.
 title: Agent Platform AI models
 ---
@@ -21,7 +21,7 @@ This table lists the default model for each feature in the Agent Platform.
 
 | Feature | Model |
 |-------|--------------|
-| GitLab Duo Chat (Agentic) | Claude Haiku 4.5 |
+| GitLab Duo Chat (agentic) | Claude Haiku 4.5 |
 | All other agents | Claude Sonnet 4.5 Vertex |
 
 ## Supported models
@@ -30,20 +30,23 @@ This table lists the models you can select for features
 in the Agent Platform.
 
 > [!note]
-> The OpenAI models used in GitLab Duo Chat (Agentic) have experimental support, specifically for GPT-5, GPT-5 mini, and GPT-5-Codex.
-> Share your feedback about OpenAI models in GitLab Duo Chat (Agentic) in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/572864).
+> The OpenAI models used in GitLab Duo Chat (agentic) have experimental support, specifically for GPT-5, GPT-5 mini, and GPT-5-Codex.
+> Share your feedback about OpenAI models in GitLab Duo Chat (agentic) in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/572864).
 
-| Model | Agentic Chat | All other agents |
+| Model | GitLab Duo Chat (agentic) | All other agents |
 |-------|--------------|------------------|
 | Claude Sonnet 4 | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 Vertex | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4.6 | {{< yes >}} | {{< yes >}} |
 | Claude Haiku 4.5 | {{< yes >}} | {{< yes >}} |
 | Claude Opus 4.5 | {{< yes >}} | {{< yes >}} |
 | Claude Opus 4.6 | {{< yes >}} | {{< yes >}} |
 | GPT-5 | {{< yes >}} | {{< yes >}} |
 | GPT-5 Codex | {{< yes >}} | {{< yes >}} |
+| GPT-5.2 Codex | {{< yes >}} | {{< yes >}} |
+| GPT-5.3 Codex | {{< yes >}} | {{< yes >}} |
 | GPT-5 Mini | {{< yes >}} | {{< yes >}} |
 | GPT-5.2 | {{< yes >}} | {{< yes >}} |
 
@@ -75,18 +78,18 @@ Prerequisites:
 
 - You have the Owner role for the group.
 - The group that you select models for is a top-level group.
-- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 To select a model for a feature:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Configure features**.
 1. Go to the **GitLab Duo Agent Platform** section.
 1. Select a model from the dropdown list.
 1. Optional. To apply the model to all features in the section, select **Apply to all**.
 
-In the IDE, model selection for GitLab Duo Chat (Agentic) is applied only when the connection type is set to WebSocket.
+In the IDE, model selection for GitLab Duo Chat (agentic) is applied only when the connection type is set to WebSocket.
 
 ## Troubleshooting
 
@@ -107,4 +110,4 @@ When using a GitLab Duo feature with a selected model, you might get an error th
 
 This issue occurs when you belong to multiple GitLab Duo namespaces, but have not chosen one as your default namespace.
 
-To resolve this, [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+To resolve this, [set a default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).

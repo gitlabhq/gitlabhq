@@ -1,6 +1,3 @@
 ---
 name: transfer_group
 description: Grants the ability to transfer a group
-boundaries:
-  - group
-  - instance

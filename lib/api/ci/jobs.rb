@@ -177,10 +177,6 @@ module API
 
           inputs = params[:inputs] || {}
 
-          if inputs.present? && !Feature.enabled?(:ci_job_inputs, @project)
-            forbidden!('The inputs parameter is not available')
-          end
-
           response = ::Ci::RetryJobService.new(@project, current_user).execute(job, inputs: inputs)
 
           if response.success?

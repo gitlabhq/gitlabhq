@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
   let(:request) { instance_double(ActionDispatch::Request, session: session) }
   let(:session) { {} }
 
-  let(:user) { build_stubbed(:user, otp_grace_period_started_at: Time.zone.now) }
+  let_it_be_with_reload(:user) { create(:user, otp_grace_period_started_at: Time.zone.now) }
 
   subject(:verifier) { described_class.new(user, request) }
 
@@ -42,6 +42,36 @@ RSpec.describe Gitlab::Auth::TwoFactorAuthVerifier, feature_category: :system_ac
       end
 
       it { is_expected.to eq(should_be_enforced) }
+    end
+
+    # Ensuring the valid state of `email_otp_required_after`, by
+    # `set_email_otp_required_after_based_on_restrictions` method, is
+    # tested in depth in spec/models/concerns/users/email_otp_enrollment_spec.rb
+    context 'for ensuring the valid state of `email_otp_required_after`' do
+      before do
+        stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+      end
+
+      context 'when treat_email_otp_as_2fa is set to true' do
+        let(:treat_email_otp_as_2fa) { true }
+
+        it 'calls set_email_otp_required_after_based_on_restrictions' do
+          expect(user).to receive(:set_email_otp_required_after_based_on_restrictions)
+            .with(save: true).and_call_original
+
+          expect(subject).to be(true)
+        end
+      end
+
+      context 'when treat_email_otp_as_2fa is set to false' do
+        let(:treat_email_otp_as_2fa) { false }
+
+        it 'does not call set_email_otp_required_after_based_on_restrictions' do
+          expect(user).not_to receive(:set_email_otp_required_after_based_on_restrictions)
+
+          expect(subject).to be(false)
+        end
+      end
     end
   end
 

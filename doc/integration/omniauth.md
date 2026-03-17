@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: OmniAuth
 description: Configure external authentication with third-party identity providers.
 
@@ -112,7 +112,6 @@ To change the OmniAuth settings:
 
      For more details, see the
      [globals documentation](https://docs.gitlab.com/charts/charts/globals/#omniauth).
-
   1. Save the file and apply the new values:
 
      ```shell
@@ -270,7 +269,7 @@ provider like Google.
 1. Sign in to GitLab with your GitLab credentials, LDAP, or another OmniAuth provider.
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. In the **Connected Accounts** section, select the OmniAuth provider, such as Google.
 1. You are redirected to the provider. After you authorize GitLab,
    you are redirected back to GitLab.
@@ -587,7 +586,6 @@ then override the icon in one of two ways:
   1. Depending on your method of installing GitLab, add a custom `icon` parameter
      to your GitLab configuration file. Read [OpenID Connect OmniAuth provider](../administration/auth/oidc.md)
      for an example for the OpenID Connect provider.
-
 - **Embed an image directly in a configuration file**: This example creates a Base64-encoded
   version of your image you can serve through a
   [Data URL](https://developer.mozilla.org/en-US/docs/Web/URI/Schemes/data):

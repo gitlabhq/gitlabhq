@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Infrastructure as Code scanning
 description: Vulnerability detection, configuration analysis, and pipeline integration.
 ---
@@ -32,34 +32,48 @@ If you are new to IaC scanning, follow these steps to enable it for your project
 
 Prerequisites:
 
-- IaC scanning requires the AMD64 architecture. Microsoft Windows is not supported.
+- The Maintainer or Owner role for the project.
 - Minimum of 4 GB RAM to ensure consistent performance.
-- The `test` stage is required in the `.gitlab-ci.yml` file. If your project defines its own
-  `stages` list, make sure the `test` stage is included.
-- On GitLab Self-Managed you need GitLab Runner with the
-  [`docker`](https://docs.gitlab.com/runner/executors/docker/) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes/) executor.
-- If you're using SaaS runners on GitLab.com, this is enabled by default.
+- Linux-based GitLab Runner with either the Docker or Kubernetes executor. If you're using hosted
+  runners for GitLab.com, the Docker or Kubernetes executor is enabled by default.
+  - GitLab Runner on Windows is not supported.
+  - CPU architectures other than AMD64 are not supported.
+- GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage. The `test` stage is included by
+  default, but if you redefine stages, you must explicitly add it.
 
 To enable IaC scanning:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. If your project does not already have one, create a `.gitlab-ci.yml` file in the root directory.
-1. At the top of the `.gitlab-ci.yml` file, add one of the following:
+1. In the top bar, select **Search or go to** and find your project.
+1. Go to **Build** > **Pipeline** editor.
+1. Add either the IaC scanning CI/CD template or component.
 
-   Using a template:
+   To use the template, add the following lines:
 
-     ```yaml
-     include:
-       - template: Jobs/SAST-IaC.gitlab-ci.yml
-     ```
+   ```yaml
+   include:
+     - template: Jobs/SAST-IaC.gitlab-ci.yml
+   ```
 
-   Or using a CI/CD component:
+   To use the CI/CD component, add the following lines:
 
-     ```yaml
-     include:
-       - component: gitlab.com/components/sast/iac-sast@main
-     ```
+   ```yaml
+   include:
+     - component: gitlab.com/components/sast/iac-sast@main
+   ```
+
+1. Select the **Validate** tab, then select **Validate pipeline**.
+
+   The message **Simulation completed successfully** confirms the file is valid.
+1. Select the **Edit** tab.
+1. Complete the fields:
+   - Commit message.
+   - Branch. For example, `add-iac`.
+1. Select the **Start a new merge request with these changes** checkbox, then select
+   **Commit changes**.
+
+   The merge request page opens.
+1. Complete the fields according to your standard workflow, then select **Create merge request**.
+1. Review and edit the merge request according to your standard workflow, then select **Merge**.
 
 At this point, IaC scanning is enabled in your pipeline:
 
@@ -68,23 +82,29 @@ At this point, IaC scanning is enabled in your pipeline:
 - If supported files are found, the analyzer scans for vulnerabilities.
 - If no supported files are found, the job completes with no findings.
 
-The corresponding job appears under the test stage in your pipeline.
+The corresponding job appears under the `test` stage in your pipeline.
 
 You can see a working example in
 [IaC scanning example project](https://gitlab.com/gitlab-org/security-products/demos/analyzer-configurations/kics/iac-getting-started).
 
-After completing these steps, you can:
+### Next steps
+
+After you enable IaC scanning, you can:
 
 - Learn more about how to [understand the results](#understanding-the-results)
-- Review [optimization tips](#optimization)
+- Review [optimization tips](#optimize-iac-scanning)
 - Plan a [rollout to more projects](#roll-out)
 
 ## Understanding the results
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
 You can review vulnerabilities in a pipeline:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build** > **Pipelines**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. Select a vulnerability to view its details, including:
@@ -96,14 +116,23 @@ You can review vulnerabilities in a pipeline:
    - Scanner: Identifies which analyzer detected the vulnerability.
    - Identifiers: A list of references used to classify the vulnerability, such as CWE identifiers and the IDs of the rules that detected it.
 
-You can also download the security scan results:
+In Ultimate, you can also download the security scan results:
 
-- In the pipeline's **Security** tab, select **Download results**.
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Build** > **Pipelines**.
+1. Select the pipeline.
+1. Select the **Security** tab.
+1. In the pipeline's **Security** tab, select **Download results**.
 
 For more details, see [Pipeline security report](../detect/security_scanning_results.md).
 
 > [!note]
-> Findings are generated on feature branches. When they are merged into the default branch, they become vulnerabilities. This distinction is important when evaluating your security posture.
+> Findings are generated on feature branches. When they are merged into the default branch, they
+> become vulnerabilities. This distinction is important when evaluating your security posture.
 
 Additional ways to see IaC scanning results:
 
@@ -139,7 +168,7 @@ Supported configuration formats:
   > Terraform modules in a custom registry are not scanned for vulnerabilities.
   > For more information about the proposed feature, see [issue 357004](https://gitlab.com/gitlab-org/gitlab/-/issues/357004).
 
-## Optimization
+## Optimize IaC scanning
 
 {{< details >}}
 
@@ -154,15 +183,15 @@ You can optimize IaC scanning to reduce noise and focus on relevant findings:
 - Override rule attributes (like severity) by using a `sast-ruleset.toml` file.
 - Disable scanning of specific files by using KICS annotations in those files.
 
-Use a `sast-ruleset.toml` file to disable rules or override rule attributes. This approach provides:
+Use a `sast-ruleset.toml` file to disable rules or override rule attributes. This approach provides the following:
 
 - Integration with GitLab vulnerability management to automatically resolve existing findings when rules are disabled.
 - Version-controlled documentation of your security policy decisions.
-- Ability to share rulesets across multiple projects when you roll out IaC scanning.
+- The option to share rulesets across multiple projects when you roll out IaC scanning.
 
 ### Ruleset definition
 
-Every IaC scanning rule is contained in a `ruleset` section, which contains:
+Every IaC scanning rule is contained in a `ruleset` section, which contains the following:
 
 - A `type` field for the rule. For IaC scanning, the identifier type is `kics_id`.
 - A `value` field for the rule identifier. KICS rule identifiers are alphanumeric strings.
@@ -178,6 +207,10 @@ Every IaC scanning rule is contained in a `ruleset` section, which contains:
 
 You can disable specific IaC scanning rules. Findings previously detected by disabled rules are
 [automatically resolved](#automatic-vulnerability-resolution).
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
 
 To disable analyzer rules:
 
@@ -221,6 +254,10 @@ This feature is only available for some types of IaC files. See the [KICS docume
 
 You can override specific IaC scanning rules to customize them. For example, assign a
 rule a lower severity, or link to your own documentation about how to fix a finding.
+
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
 
 To override rules:
 
@@ -282,9 +319,12 @@ registry instead of the GitLab container registry.
 
 Prerequisites:
 
+- The Maintainer or Owner role for the project.
 - Importing Docker images into a local offline Docker registry depends on your
   network security policy. Consult your IT staff to find an accepted and approved process
   to import or temporarily access external resources.
+
+To use a local IaC analyzer image:
 
 1. Import the default IaC analyzer image from `registry.gitlab.com` into your
    [local Docker container registry](../../packages/container_registry/_index.md):
@@ -315,9 +355,13 @@ The GitLab-managed CI/CD template specifies a major version and automatically pu
 analyzer release in that major version. In some cases, you may need to use a specific version.
 For example, you might need to avoid a regression in a later release.
 
+Prerequisites:
+
+- The Maintainer or Owner role for the project.
+
 To use a specific analyzer version:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline editor**.
 1. Add the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable, after the line that includes the
    `SAST-IaC.gitlab-ci.yml` template.

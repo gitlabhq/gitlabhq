@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlLoadingIcon, GlTable } from '@gitlab/ui';
-import { reduce } from 'lodash';
+import { reduce } from 'lodash-es';
 import {
   capitalizeFirstCharacter,
   convertToSentenceCase,

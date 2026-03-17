@@ -1,6 +1,6 @@
 <script>
 import { GlResizeObserverDirective, GlLoadingIcon, GlIcon, GlAlert } from '@gitlab/ui';
-import { throttle, isEmpty } from 'lodash';
+import { throttle, isEmpty } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
@@ -120,6 +120,10 @@ export default {
       return this.shouldRenderCalloutMessage && !this.hasUnmetPrerequisitesFailure;
     },
 
+    shouldRenderAttestationWarning() {
+      return this.job.supply_chain_attestation_status === 'error';
+    },
+
     isJobRetryable() {
       return Boolean(this.job.retry_path);
     },
@@ -222,10 +226,7 @@ export default {
 };
 </script>
 <template>
-  <div
-    v-gl-resize-observer="updateScroll"
-    :class="{ 'with-job-sidebar-expanded': isSidebarOpen && !showJobForm }"
-  >
+  <div v-gl-resize-observer="updateScroll" :class="{ 'with-job-sidebar-expanded': isSidebarOpen }">
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-6" />
 
     <template v-else-if="shouldRenderContent">
@@ -240,6 +241,21 @@ export default {
             :dismissible="false"
           >
             <div v-safe-html="job.callout_message"></div>
+          </gl-alert>
+          <gl-alert
+            v-if="shouldRenderAttestationWarning"
+            :title="s__('Job|Attestation Generation Error')"
+            variant="warning"
+            class="mb-2 gl-mt-3"
+            :dismissible="false"
+          >
+            <div>
+              {{
+                s__(
+                  'Job|An error occurred while generating an attestation for build artifacts in this job. Please check the configuration, and try again.',
+                )
+              }}
+            </div>
           </gl-alert>
         </header>
         <!-- EO Header Section -->
@@ -359,7 +375,6 @@ export default {
         <!-- EO Body Section -->
 
         <sidebar
-          v-if="!showJobForm"
           :class="{
             'right-sidebar-expanded': isSidebarOpen,
             'right-sidebar-collapsed': !isSidebarOpen,

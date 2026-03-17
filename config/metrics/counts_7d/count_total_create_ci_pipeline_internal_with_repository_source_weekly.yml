@@ -2,6 +2,8 @@
 key_path: counts.count_total_create_ci_pipeline_internal_with_repository_source_weekly
 description: Weekly count of internal pipelines created that were defined by a gitlab-ci file in the repository
 product_group: pipeline_execution
+product_categories:
+- continuous_integration
 performance_indicator_type: []
 value_type: number
 status: active

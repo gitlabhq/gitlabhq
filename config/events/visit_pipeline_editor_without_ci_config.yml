@@ -1,0 +1,17 @@
+---
+description: User visits Pipeline Editor in a project without a CI config file
+internal_events: true
+action: visit_pipeline_editor_without_ci_config
+identifiers:
+  - project
+  - user
+  - namespace
+product_group: pipeline_authoring
+product_categories:
+  - pipeline_composition
+milestone: '18.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226253
+tiers:
+  - free
+  - premium
+  - ultimate

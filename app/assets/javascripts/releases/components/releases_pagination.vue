@@ -1,6 +1,6 @@
 <script>
 import { GlKeysetPagination } from '@gitlab/ui';
-import { isBoolean } from 'lodash';
+import { isBoolean } from 'lodash-es';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 
 export default {

@@ -100,8 +100,6 @@ export default {
 
       <gl-button
         v-if="showTestButton"
-        category="secondary"
-        variant="confirm"
         :loading="isTesting"
         :disabled="disableButtons"
         data-testid="test-button"
@@ -121,7 +119,6 @@ export default {
     <template v-if="showResetButton">
       <gl-button
         v-gl-modal.confirmResetIntegration
-        category="secondary"
         variant="danger"
         :loading="isResetting"
         :disabled="disableButtons"

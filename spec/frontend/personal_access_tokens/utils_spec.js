@@ -236,6 +236,11 @@ describe('personal_access_tokens/utils', () => {
               key: 'project',
               name: 'Project',
             },
+            {
+              description: 'Contributed project resource description',
+              key: 'contributed_project',
+              name: 'Contributed project',
+            },
           ],
         },
         {

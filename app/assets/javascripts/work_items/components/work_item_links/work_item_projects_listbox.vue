@@ -1,7 +1,7 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import { __, s__ } from '~/locale';
 import { STORAGE_KEY } from '~/super_sidebar/constants';

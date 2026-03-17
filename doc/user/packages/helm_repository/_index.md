@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Helm charts in the package registry
 ---
 
@@ -9,14 +9,8 @@ title: Helm charts in the package registry
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
-
-> [!warning]
-> The Helm chart registry for GitLab is under development and isn't ready for production use due to
-> limited functionality. This [epic](https://gitlab.com/groups/gitlab-org/-/epics/6366) details the remaining
-> work and timelines to make it production ready.
 
 Publish Helm packages in your project's package registry. Then install the
 packages whenever you need to use them as a dependency.
@@ -61,7 +55,6 @@ Once built, a chart can be uploaded to the desired channel with `curl` or `helm 
   - `<project_id>`: the project ID (like `42`) or the
     [URL-encoded](../../../api/rest/_index.md#namespaced-paths) path of the project (like `group%2Fproject`).
   - `<channel>`: the name of the channel (like `stable`).
-
 - With the [`helm cm-push`](https://github.com/chartmuseum/helm-push/#readme) plugin:
 
   ```shell
@@ -132,7 +125,7 @@ See [Using Helm](https://helm.sh/docs/intro/using_helm/) for more information.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 Before you delete a package, make sure you understand
 the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).

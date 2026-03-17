@@ -510,36 +510,6 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
 
       subject { track_event }
 
-      context 'with retries', retry: 2 do
-        context "with independent failure after the event" do
-          subject do
-            track_event
-
-            raise 'Fail first attempt, causing a retry' if RSpec.current_example.attempts == 0
-          end
-
-          it_behaves_like "works correctly"
-        end
-
-        context "with independent failure before the event" do
-          subject do
-            raise 'Fail first attempt, causing a retry' if RSpec.current_example.attempts == 0
-
-            track_event
-          end
-
-          it_behaves_like "works correctly"
-        end
-
-        context "with criteria met only on retry" do
-          subject do
-            track_event if RSpec.current_example.attempts > 0
-          end
-
-          it_behaves_like "works correctly"
-        end
-      end
-
       context 'without clearing Redis state between examples', clean_gitlab_redis_shared_state: false do
         it_behaves_like "works correctly"
       end

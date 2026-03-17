@@ -45,13 +45,8 @@ export default {
       required: false,
       default: false,
     },
-    scrollToCommitForm: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
-  emits: ['submit', 'resetContent', 'scrolled-to-commit-form'],
+  emits: ['submit', 'resetContent'],
   data() {
     return {
       message: this.defaultMessage,
@@ -70,13 +65,6 @@ export default {
       return !this.isCommitFormFilledOut || (!this.hasUnsavedChanges && !this.isNewCiConfigFile);
     },
   },
-  watch: {
-    scrollToCommitForm(flag) {
-      if (flag) {
-        this.scrollIntoView();
-      }
-    },
-  },
   methods: {
     onSubmit() {
       this.$emit('submit', {
@@ -90,10 +78,6 @@ export default {
     },
     resetCommitMessage() {
       this.message = this.defaultMessage;
-    },
-    scrollIntoView() {
-      this.$el.scrollIntoView({ behavior: 'smooth' });
-      this.$emit('scrolled-to-commit-form');
     },
   },
   i18n: {

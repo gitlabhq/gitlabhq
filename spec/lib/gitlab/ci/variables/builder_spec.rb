@@ -184,6 +184,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
             value: pipeline.git_commit_timestamp },
           { key: 'CI_COMMIT_AUTHOR',
             value: pipeline.git_author_full_text },
+          { key: 'CI_COMMIT_USER_LOGIN',
+            value: pipeline.git_author_login.to_s },
           { key: 'YAML_VARIABLE',
             value: 'value' }
         ] + predefined_user_vars
@@ -507,6 +509,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
             value: pipeline.git_commit_timestamp },
           { key: 'CI_COMMIT_AUTHOR',
             value: pipeline.git_author_full_text },
+          { key: 'CI_COMMIT_USER_LOGIN',
+            value: pipeline.git_author_login.to_s },
           { key: 'YAML_VARIABLE',
             value: 'value' }
         ] + predefined_user_vars

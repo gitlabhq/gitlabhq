@@ -23,7 +23,8 @@ module Resolvers
           upstream: [:triggered_by_pipeline],
           downstream: [:triggered_pipelines],
           has_manual_actions: [:manual_actions],
-          has_scheduled_actions: [:scheduled_actions]
+          has_scheduled_actions: [:scheduled_actions],
+          pipeline_schedule: []
         }
       end
     end

@@ -16,11 +16,18 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
     let(:main_host_list) { double(:host_list, hosts: [main_replica_host]) }
     let(:main_replica_host) { double(:host, pool: main_replica_pool, host: 'main-replica-host', port: 2345) }
     let(:main_replica_pool) do
-      double(:main_replica_pool, db_config: double(:main_replica_db_config, name: 'main_replica'), stat: stats)
+      double(:main_replica_pool, db_config: double(:main_replica_db_config, name: 'main_replica'), extended_stat: stats)
     end
 
     let(:stats) do
-      { size: 123, connections: 100, busy: 10, dead: 5, idle: 85, waiting: 1 }
+      {
+        size: 123,
+        connections: 100,
+        busy_by_thread_name: { "unnamed" => 5, "puma-1" => 5 },
+        dead_by_thread_name: {},
+        idle: 85,
+        waiting: 1
+      }
     end
 
     let(:ci_load_balancer) do
@@ -31,7 +38,7 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
     let(:ci_host_list) { double(:host_list, hosts: [ci_replica_host]) }
     let(:ci_replica_host) { double(:host, pool: ci_replica_pool, host: 'ci-replica-host', port: 3456) }
     let(:ci_replica_pool) do
-      double(:ci_replica_pool, db_config: double(:ci_replica_db_config, name: 'ci_replica'), stat: stats)
+      double(:ci_replica_pool, db_config: double(:ci_replica_db_config, name: 'ci_replica'), extended_stat: stats)
     end
 
     let(:main_labels) do
@@ -67,6 +74,12 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
         host: 'ci-replica-host',
         port: 3456,
         db_config_name: 'ci_replica'
+      }
+    end
+
+    let(:thread_labels) do
+      {
+        thread_name: a_value
       }
     end
 
@@ -142,8 +155,8 @@ RSpec.describe Gitlab::Metrics::Samplers::DatabaseSampler do
     def expect_metrics_with_labels(labels)
       expect(subject.metrics[:size]).to receive(:set).with(labels, a_value >= 1)
       expect(subject.metrics[:connections]).to receive(:set).with(labels, a_value >= 1)
-      expect(subject.metrics[:busy]).to receive(:set).with(labels, a_value >= 1)
-      expect(subject.metrics[:dead]).to receive(:set).with(labels, a_value >= 0)
+      expect(subject.metrics[:busy]).to receive(:set).with(labels.merge(thread_labels), a_value >= 1)
+      expect(subject.metrics[:dead]).to receive(:set).with(labels.merge(thread_labels), a_value >= 0)
       expect(subject.metrics[:waiting]).to receive(:set).with(labels, a_value >= 0)
     end
 

@@ -118,6 +118,36 @@ RSpec.describe ActiveContext::Concerns::Queue do
     end
   end
 
+  describe '.preprocess_options' do
+    it 'returns an empty hash by default' do
+      expect(mock_queue_class.preprocess_options).to eq({})
+    end
+
+    context 'when a queue overrides preprocess_options' do
+      let(:custom_queue_class) do
+        Class.new do
+          def self.name
+            'CustomModule::CustomQueue'
+          end
+
+          def self.number_of_shards
+            1
+          end
+
+          def self.preprocess_options
+            { next_model_only: true }
+          end
+
+          include ActiveContext::Concerns::Queue
+        end
+      end
+
+      it 'returns the custom options' do
+        expect(custom_queue_class.preprocess_options).to eq({ next_model_only: true })
+      end
+    end
+  end
+
   describe '.redis_key' do
     it 'returns the correct Redis key' do
       expect(mock_queue_class.redis_key).to eq('mockmodule:{test_queue}')

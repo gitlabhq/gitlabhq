@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Geo
 description: Geographically distribute GitLab.
 ---
@@ -85,6 +85,8 @@ Benefits:
 #### Migration to GitLab Dedicated
 
 You can also use Geo to migrate GitLab Self-Managed to [GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md). A migration to GitLab Dedicated is similar to an infrastructure migration.
+
+For more information, see [migrate to GitLab Dedicated with Geo](../dedicated/geo_migration.md).
 
 Benefits:
 
@@ -207,6 +209,11 @@ The following are required to run Geo:
 Additionally, check the GitLab [minimum requirements](../../install/requirements.md),
 and use the latest version of GitLab for a better experience.
 
+Because Geo adds a tracking database and replication metadata on top of the base
+GitLab installation, plan for at least 40 GB of disk space per site for a minimal
+Geo deployment with no repository data. See the [storage requirements](../../install/requirements.md#storage)
+for more details.
+
 ### Firewall rules
 
 The following table lists basic ports that must be open between the **primary** and **secondary** sites for Geo. To simplify failovers, you should open ports in both directions.
@@ -299,7 +306,9 @@ This new architecture allows GitLab to be resilient to connectivity issues betwe
 - With a [unified URL](secondary_proxy/_index.md#set-up-a-unified-url-for-geo-sites), Let's Encrypt can't generate certificates unless it can reach both IPs through the same domain. To use TLS certificates with Let's Encrypt, you can manually point the domain to one of the Geo sites, generate the certificate, then copy it to all other sites.
 - When a [secondary site uses a separate URL](secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site) from the primary site, [signing in the secondary site using SAML](replication/single_sign_on.md#saml-with-separate-url-with-proxying-enabled) is only supported if the SAML Identity Provider (IdP) allows an application to be configured with multiple callback URLs.
 - Git clone and fetch requests with option `--depth` over SSH against a secondary site does not work and hangs indefinitely if the secondary site is not up to date at the time the request is initiated. This is due to problems related to translating Git SSH to Git https during proxying. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980). A new workflow that does not involve the aforementioned translation step is now available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
-- Do not use [relative URLs](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-relative-url-for-gitlab) with [GitLab Geo](../../administration/geo/_index.md) because they will break the proxy between sites. For more information, see [issue 456427](https://gitlab.com/gitlab-org/gitlab/-/issues/456427).
+- Do not use [relative URLs](https://docs.gitlab.com/omnibus/settings/configuration/#configure-a-relative-url-for-gitlab)
+  with GitLab Geo because they will break the proxy between sites. For more information, see
+  [issue 456427](https://gitlab.com/gitlab-org/gitlab/-/issues/456427).
 
 ### Replicated data types
 
@@ -390,5 +399,4 @@ For answers to common questions, see the [Geo FAQ](replication/faq.md).
 ## Troubleshooting
 
 - For Geo troubleshooting steps, see [Geo Troubleshooting](replication/troubleshooting/_index.md).
-
 - For Disaster Recovery troubleshooting steps, see [Troubleshooting Geo failover](disaster_recovery/failover_troubleshooting.md).

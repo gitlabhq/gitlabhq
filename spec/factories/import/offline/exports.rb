@@ -22,5 +22,9 @@ FactoryBot.define do
     trait :failed do
       status { -1 }
     end
+
+    trait :with_configuration do
+      configuration { association(:import_offline_configuration, offline_export: instance) }
+    end
   end
 end

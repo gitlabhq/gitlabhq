@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 description: Guidelines for deprecations and page removals
 title: Deprecations and removals
 ---
@@ -54,7 +54,6 @@ To deprecate a page or topic:
 
    If you're not sure when the feature will be removed or no
    replacement feature exists, you don't need to add this information.
-
 1. If the deprecation is a [breaking change](../../../update/terminology.md#breaking-change), add this text:
 
    ```markdown
@@ -62,7 +61,6 @@ To deprecate a page or topic:
    ```
 
    You can add any additional context-specific details that might help users.
-
 1. Add the following HTML comments above and below the content. For `remove_date`,
    set a date three months after the [release where it will be removed](https://about.gitlab.com/releases/).
 
@@ -107,7 +105,7 @@ To remove a page:
    ---
    stage: AI-powered
    group: Global Search
-   info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+   info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
    remove_date: '2022-08-02'
    redirect_to: '../newpath/to/file/_index.md'
    title: Title (removed)

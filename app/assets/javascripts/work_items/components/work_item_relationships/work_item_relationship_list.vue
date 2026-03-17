@@ -56,10 +56,10 @@ export default {
       required: false,
       default: false,
     },
-    showLabels: {
-      type: Boolean,
+    hiddenMetadataKeys: {
+      type: Array,
       required: false,
-      default: true,
+      default: () => [],
     },
     workItemFullPath: {
       type: String,
@@ -248,7 +248,7 @@ export default {
     <h3
       v-if="heading"
       data-testid="work-items-list-heading"
-      class="gl-mb-0 gl-mt-0 gl-block gl-rounded-base gl-bg-strong gl-px-3 gl-py-2 gl-text-sm gl-font-semibold gl-text-subtle"
+      class="gl-mb-0 gl-mt-0 gl-block gl-rounded-base gl-bg-strong gl-px-3 gl-py-2 gl-text-sm gl-font-semibold gl-text-heading"
     >
       {{ heading }}
     </h3>
@@ -277,7 +277,7 @@ export default {
           :child-item="linkedItem.workItem"
           :can-update="canUpdate"
           :is-group="isGroup"
-          :show-labels="showLabels"
+          :hidden-metadata-keys="hiddenMetadataKeys"
           :work-item-full-path="workItemFullPath"
           :class="{
             'gl-border-default gl-bg-blue-50 hover:gl-bg-blue-50':

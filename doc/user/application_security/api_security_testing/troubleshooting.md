@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting API security testing jobs
 ---
 
@@ -53,11 +53,8 @@ The API security testing engine outputs an error message when it cannot establis
 Before proceeding with a solution, it is important to confirm that the error message was produced because the port was already taken. To confirm this was the cause:
 
 1. Go to the job console.
-
 1. Look for the artifact `gl-api-security-scanner.log`. You can either download all artifacts by selecting **Download** and then search for the file, or directly start searching by selecting **Browse**.
-
 1. Open the file `gl-api-security-scanner.log` in a text editor.
-
 1. If the error message was produced because the port was already taken, you should see in the file a message like the following:
 
    ```log
@@ -119,7 +116,7 @@ variables:
 
 In a dynamic environment your target API changes for each different deployment. In this case, there is more than one possible solution: use the `environment_url.txt` file when dealing with dynamic environments.
 
-**Use environment_url.txt**
+**Use `environment_url.txt`**
 
 To support dynamic environments in which the target API URL changes during each pipeline, API security testing engine supports the use of an `environment_url.txt` file that contains the URL to use. This file is not checked into the repository, instead it's created during the pipeline by the job that deploys the test target and collected as an artifact that can be used by later jobs in the pipeline. The job that creates the `environment_url.txt` file must run before the API security testing engine job.
 

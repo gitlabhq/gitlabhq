@@ -214,22 +214,36 @@ export default {
       }
     },
     async fetchAutocompleteUsers(search = '') {
+      if (this.fetchController) this.fetchController.abort();
+
+      this.fetchController = new AbortController();
+
       this.search = search;
       this.searching = true;
 
-      const {
-        data: {
-          namespace: { users = [] },
-        },
-      } = await this.$apollo.query({
-        query: userAutocompleteWithMRPermissionsQuery,
-        variables: {
-          search,
-          fullPath: this.projectPath,
-          mergeRequestId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.issuableId),
-          ...ASSIGN_REVIEWER_USERS_QUERY_VARIABLES,
-        },
-      });
+      let users = [];
+      try {
+        const result = await this.$apollo.query({
+          query: userAutocompleteWithMRPermissionsQuery,
+          variables: {
+            search,
+            fullPath: this.projectPath,
+            mergeRequestId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.issuableId),
+            ...ASSIGN_REVIEWER_USERS_QUERY_VARIABLES,
+          },
+          context: {
+            fetchOptions: { signal: this.fetchController.signal },
+            queryDeduplication: false,
+          },
+        });
+        users = result.data?.namespace?.users ?? [];
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          return;
+        }
+
+        throw error;
+      }
 
       if (!search) {
         const eligibleReviewers = toUsernames(users).filter(

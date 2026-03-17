@@ -34,6 +34,7 @@ describe('Batch comments store actions', () => {
         createCustomGetters(() => ({
           legacyDiffs: {},
           fileBrowser: {},
+          discussions: {},
           legacyNotes: legacyNotesGetters,
           batchComments: batchCommentsGetters,
         })),

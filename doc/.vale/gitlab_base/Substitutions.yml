@@ -69,4 +69,6 @@ swap:
   to signin: to sign in
   to sign-in: to sign in
   x509: X.509
+  on the left sidebar: in the left sidebar # https://docs.gitlab.com/development/documentation/styleguide/word_list/#in-on
+  on the sidebar: in the sidebar # https://docs.gitlab.com/development/documentation/styleguide/word_list/#in-on
   yml: YAML

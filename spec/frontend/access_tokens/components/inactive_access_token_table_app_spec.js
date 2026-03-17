@@ -85,7 +85,9 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
     expect(findTable().attributes('aria-busy')).toBe('true');
 
     await axios.waitForAll();
-    expect(cells.at(0).text()).toBe(noInactiveTokensMessage);
+    await nextTick();
+    const updatedCells = findCells();
+    expect(updatedCells.at(0).text()).toBe(noInactiveTokensMessage);
     expect(findTable().attributes('aria-busy')).toBe('false');
   });
 

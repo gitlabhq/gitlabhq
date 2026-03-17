@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Setting up Geo
 ---
 
@@ -66,6 +66,7 @@ Depending on how you use GitLab, the following configuration might be required:
 - If you use LDAP, [configure a secondary LDAP server](../../auth/ldap/_index.md) for the **secondary** sites.
   For more information, see [LDAP with Geo](../replication/single_sign_on.md#ldap).
 - If you use the container registry, [configure the container registry for replication](../replication/container_registry.md) on the **primary** and **secondary** sites.
+- To speed up troubleshooting, [configure correlation ID propagation](../replication/troubleshooting/common.md#tracing-requests-across-geo-sites).
 
 You should [configure unified URLs](../secondary_proxy/_index.md#set-up-a-unified-url-for-geo-sites) to use a single, unified URL for all Geo sites.
 

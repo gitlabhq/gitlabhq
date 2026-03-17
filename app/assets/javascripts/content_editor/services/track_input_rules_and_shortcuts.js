@@ -1,4 +1,4 @@
-import { mapValues } from 'lodash';
+import { mapValues } from 'lodash-es';
 import { InputRule } from '@tiptap/core';
 import { ENTER_KEY, BACKSPACE_KEY } from '~/lib/utils/keys';
 import Tracking from '~/tracking';

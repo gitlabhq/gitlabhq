@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Documentation for the REST API for issues in GitLab.
 title: Issues API
 ---
@@ -1189,7 +1189,7 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 ### Rate limits
 
 To help avoid abuse, users can be limited to a specific number of `Create` requests per minute.
-See [Issues rate limits](../administration/settings/rate_limit_on_issues_creation.md).
+For more information, see [rate limits on issue and epic creation](../administration/settings/rate_limit_on_issues_creation.md).
 
 ## Update an issue
 
@@ -1368,7 +1368,13 @@ Issues created by users on GitLab Ultimate include the `health_status` property:
 
 ## Delete an issue
 
-Only for administrators and project owners.
+{{< history >}}
+
+- Users can delete the issues they authored [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371104) in GitLab 18.10.
+
+{{< /history >}}
+
+Users who have the Planner or Owner role can delete any issue. Other project members can delete the issues they authored.
 
 Deletes a specified issue from a project.
 
@@ -2043,10 +2049,11 @@ Example response:
 
 {{< /details >}}
 
-Promotes a specified issue to an epic by adding a comment with the [`/promote_to` quick action](../user/project/quick_actions.md#promote_to).
+Promotes a specified issue to an epic by adding a comment with the
+[`/promote_to`](../user/project/quick_actions.md#promote_to) quick action.
 
-For more information about promoting issues to epics, see
-[Promote an issue to an epic](../user/project/issues/managing_issues.md#promote-an-issue-to-an-epic).
+For more information, see
+[promote an issue to an epic](../user/project/issues/managing_issues.md#promote-an-issue-to-an-epic).
 
 ```plaintext
 POST /projects/:id/issues/:issue_iid/notes
@@ -2581,7 +2588,7 @@ Example response:
 
 ## Comments on issues
 
-Interact with comments using the [Notes API](notes.md).
+Interact with comments using the [notes API](notes.md).
 
 ## Retrieve user agent details for an issue
 
@@ -2619,8 +2626,8 @@ Example response:
 
 ## List issue state events
 
-To track which state was set, who did it, and when it happened, use
-[Resource state events API](resource_state_events.md#issues).
+To track which state was set, who did it, and when it happened, use the
+[resource state events API](resource_state_events.md#issues).
 
 ## Incidents
 

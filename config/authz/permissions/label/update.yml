@@ -1,6 +1,3 @@
 ---
 name: update_label
 description: Grants the ability to update labels
-boundaries:
-  - group
-  - project

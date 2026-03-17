@@ -139,7 +139,19 @@
    * @returns {Promise<"success"|"error">} the result of the original fetch call
    */
   async function interceptedFetch(url, opts, ...args) {
-    const method = opts && opts.method ? opts.method : 'GET';
+    let requestUrl = url;
+    if (url instanceof Request) {
+      requestUrl = url.url;
+    } else if (url instanceof URL) {
+      requestUrl = url.href;
+    }
+
+    let method = 'GET';
+    if (url instanceof Request) {
+      method = url.method || 'GET';
+    } else if (opts && opts.method) {
+      method = opts.method;
+    }
     window.Interceptor.activeFetchRequests += 1;
     try {
       const response = await pureFetch(url, opts, ...args);
@@ -151,7 +163,7 @@
           cache.errors ||= [];
           cache.errors.push({
             status: clone.status,
-            url,
+            url: requestUrl,
             method,
             headers: { 'x-request-id': clone.headers.get('x-request-id') },
           });
@@ -159,7 +171,7 @@
         });
       }
 
-      await checkForGraphQLErrors(url, method, clone);
+      await checkForGraphQLErrors(requestUrl, method, clone);
 
       return response;
     } catch (error) {
@@ -168,7 +180,7 @@
         cache.errors ||= [];
         cache.errors.push({
           status: -1,
-          url,
+          url: requestUrl,
           method,
         });
         return cache;

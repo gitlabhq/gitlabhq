@@ -9,9 +9,11 @@ class AlterCiFinishedBuildsEngineWithVersion < ClickHouse::Migration
   end
 
   def down
+    needs_rollback = engine_full.include?('version, deleted')
+
     drop_tmp_table
 
-    return unless engine_full.include?('version, deleted')
+    return unless needs_rollback
 
     create_tmp_table("ReplacingMergeTree")
     attach_partitions
@@ -22,6 +24,9 @@ class AlterCiFinishedBuildsEngineWithVersion < ClickHouse::Migration
   private
 
   def create_tmp_table(engine)
+    settings = "index_granularity = 8192, use_async_block_ids_cache = true"
+    settings += ", deduplicate_merge_projection_mode = 'rebuild'" if supports_deduplicate_merge_projection_mode?
+
     execute <<~SQL
         CREATE TABLE IF NOT EXISTS ci_finished_builds_tmp(
           `id` UInt64 DEFAULT 0,
@@ -75,12 +80,12 @@ class AlterCiFinishedBuildsEngineWithVersion < ClickHouse::Migration
           ENGINE = #{engine}
               PARTITION BY toYear(finished_at)
               ORDER BY (status, runner_type, project_id, finished_at, id)
-              SETTINGS index_granularity = 8192, use_async_block_ids_cache = true, deduplicate_merge_projection_mode = 'rebuild';
+              SETTINGS #{settings};
     SQL
   end
 
   def exchange_tables
-    execute 'EXCHANGE TABLES ci_finished_builds AND ci_finished_builds_tmp'
+    safe_table_swap('ci_finished_builds', 'ci_finished_builds_tmp', '_old')
   end
 
   def drop_tmp_table
@@ -108,5 +113,20 @@ class AlterCiFinishedBuildsEngineWithVersion < ClickHouse::Migration
       SELECT engine_full FROM system.tables WHERE name = 'ci_finished_builds';
     SQL
     connection.select(engine_query).pick('engine_full')
+  end
+
+  def supports_deduplicate_merge_projection_mode?
+    version_query = <<~SQL
+      SELECT version() AS version;
+    SQL
+    version_string = connection.select(version_query).pick('version')
+
+    return false unless version_string
+
+    version_parts = version_string.split('.').first(3).map(&:to_i)
+    major = version_parts[0]
+    minor = version_parts[1]
+
+    (major == 24 && minor >= 1) || major >= 25
   end
 end

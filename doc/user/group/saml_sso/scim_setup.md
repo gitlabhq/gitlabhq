@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Seat Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Configure SCIM for GitLab.com groups
 description: Manage the user lifecycle with automated account provisioning.
 ---
@@ -36,7 +36,7 @@ Prerequisites:
 
 To configure GitLab SAML SSO SCIM:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Select **Generate a SCIM token**.
 1. For configuration of your identity provider, save the:
@@ -224,17 +224,14 @@ During the synchronization process, all new users:
 - Are welcomed to their groups with an invitation email.
   You can [bypass email confirmation with a verified domain](_index.md#bypass-user-email-confirmation-with-verified-domains).
 
-### Provisioning behavior with Restricted Access
+### Provisioning behavior with restricted access
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 When [restricted access](../manage.md#restricted-access) is enabled and no subscription seats are available, users provisioned through SCIM are assigned the Minimal Access role.
 

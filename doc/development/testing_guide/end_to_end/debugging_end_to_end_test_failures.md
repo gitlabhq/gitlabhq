@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: Guidelines for investigating end-to-end test pipeline failures
 title: Debugging Failing Tests and Test Pipelines
 ---
@@ -85,7 +85,7 @@ run this in the #chat-ops-test Slack channel:
 
 ![ChatOps auto deploy status output.](img/ChatopsAutoDeployStatus_v18_0.png)
 
-You will [need access to the https://ops.gitlab.net/gitlab-com/chatops](../../chatops_on_gitlabcom.md#requesting-access) project to run `/chatops` commands.
+You will [need access to the `https://ops.gitlab.net/gitlab-com/chatops`](../../chatops_on_gitlabcom.md#requesting-access) project to run `/chatops` commands.
 Ask to be added to this project in the #development Slack channel.
 
 ### Determine if a change has been deployed to an environment using revision SHA
@@ -126,7 +126,7 @@ gitlab/gitlab-ee:nightly
 ```
 
 The commit SHA can be determined by visiting the <http://localhost/help> page after sign-in
-or by calling the [`/api/v4/version` API](../../../api/version.md) where it is displayed as a value of the `revision` attribute.
+or by calling the [`/api/v4/version` API](../../../api/metadata.md) where it is displayed as a value of the `revision` attribute.
 
 #### By inspecting the pipeline that created the nightly image
 

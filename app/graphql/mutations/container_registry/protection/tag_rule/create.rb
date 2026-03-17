@@ -46,7 +46,6 @@ module Mutations
           field :container_protection_tag_rule,
             Types::ContainerRegistry::Protection::TagRuleType,
             null: true,
-            experiment: { milestone: '17.8' },
             description: 'Protection rule for container image tags after creation.'
 
           def resolve(project_path:, **kwargs)

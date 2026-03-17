@@ -28,6 +28,7 @@ module Mutations
           argument :minimum_access_level_for_delete,
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
             required: false,
+            experiment: { milestone: '17.11' },
             description: copy_field_description(
               Types::ContainerRegistry::Protection::RuleType,
               :minimum_access_level_for_delete

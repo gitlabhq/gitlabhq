@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: Switchboard
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Manage access to application logs for your GitLab Dedicated instance.
 title: Access application logs for GitLab Dedicated
 ---
@@ -22,7 +22,7 @@ The S3 bucket contains logs that are:
 - Organized by date in `YYYY/MM/DD/HH` format.
 - Streamed in real-time using [Amazon Kinesis Data Firehose](https://aws.amazon.com/firehose/).
 
-If you use [BYOK](encryption.md#bring-your-own-key-byok), application logs use GitLab-managed keys, not your provided key.
+If you use [your own encryption keys](encryption.md#customer-managed-encryption), application logs use GitLab-managed keys, not your provided key.
 
 ## Manage access to application logs
 

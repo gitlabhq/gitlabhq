@@ -1,8 +1,8 @@
 ---
 stage: Tenant Scale
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Gitaly timeouts
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: Gitaly timeouts and retries
 ---
 
 {{< details >}}
@@ -97,3 +97,82 @@ For the values, use the format of [`ParseDuration`](https://pkg.go.dev/time#Pars
 
 These timeouts affect only the [negotiation phase](https://git-scm.com/docs/pack-protocol/2.2.3#_packfile_negotiation) of
 remote Git operations, not the entire transfer.
+
+## Gitaly client retries
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/work_items/811) in GitLab 18.10.
+
+{{< /history >}}
+
+Gitaly can sometimes be briefly unavailable. For example, during GitLab upgrades. Especially with Gitaly on Kubernetes,
+where a Pod starts and restarts take a couple of seconds.
+
+To prevent GitLab from returning errors to clients when briefly unavailable, configure Gitaly client retries. When
+Gitaly client retries are configured and Gitaly is unavailable, Gitaly client such as Rails (GitLab application),
+Workhorse, and GitLab Shell retry request in an exponential backoff fashion.
+
+Two parameters can be configured:
+
+- `max_attempts`: Maximum number of retry attempts between 1 and 5.
+- `max_backoff`: Maximum amount of time before the client stops retrying. Value must be a duration string, such as
+  `1.4s` or `10s`.
+
+The backoff multiplier is set to `2` and the initial backoff is derived from the two parameters.
+
+### Configuration guidelines
+
+The right configuration depends on your GitLab instance setup and how long Gitaly remains unavailable when such an event
+occurs:
+
+- On Kubernetes, a Gitaly Pod can take approximately 10 to 12 seconds to start, depending on the Cloud provider. The
+  time includes how long it takes for the volume to be attached and mounted on the Pod.
+- For Linux package instances, Gitaly might restart much faster because restarting Gitaly is a process restart.
+
+Also keep in mind is that Gitaly can be configured with a graceful shutdown timeout. When Gitaly is shutting down, new
+requests are rejected but the gRPC server keeps processing in-flight requests until either:
+
+- They are all served.
+- The shutdown timeout lapses.
+
+This graceful shutdown timeout can play a role in how long Gitaly remains unavailable for new requests.
+
+You should configure client retry with a `max_backoff` that is equal to or greater than sum of the graceful shutdown +
+the (re)start time.
+
+### Configure client retries
+
+The following configuration applies to Rails (GitLab application), Workhorse, and GitLab Shell and the same
+configuration applies to all clients.
+
+Provided values are examples and should not be treated as guidelines.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+Update your `gitlab.rb` file with these configurations:
+
+```ruby
+gitlab_rails['gitaly_client_max_attempts'] = 5
+gitlab_rails['gitaly_client_max_backoff'] = '1.4s'
+```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+Update your `values.yml` file with these configurations:
+
+```yaml
+global:
+  gitaly:
+    client:
+      maxAttempts: 5
+      maxBackoff: '1.4s'
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}

@@ -13,7 +13,6 @@ import {
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ServiceDeskTemplateDropdown from './service_desk_template_dropdown.vue';
 
@@ -69,7 +68,6 @@ export default {
     GlAlert,
     ServiceDeskTemplateDropdown,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     isEnabled: {
       type: Boolean,
@@ -162,9 +160,6 @@ export default {
     };
   },
   computed: {
-    showAddExternalParticipantsFromCC() {
-      return this.glFeatures.issueEmailParticipants;
-    },
     hasProjectKeySupport() {
       return Boolean(this.serviceDeskEmailEnabled);
     },
@@ -410,7 +405,6 @@ export default {
         </gl-form-checkbox>
 
         <gl-form-checkbox
-          v-if="showAddExternalParticipantsFromCC"
           v-model="addExternalParticipantsFromCc"
           :disabled="!isIssueTrackerEnabled"
           data-testid="add-external-participants-from-cc"
@@ -434,6 +428,7 @@ export default {
         <gl-button
           variant="confirm"
           class="gl-mt-5"
+          :aria-label="__('Save changes for Service Desk')"
           data-testid="save_service_desk_settings_button"
           :disabled="isTemplateSaving || !isIssueTrackerEnabled"
           @click="onSaveTemplate"

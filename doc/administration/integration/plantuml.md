@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 description: Configure PlantUML integration with GitLab Self-Managed.
 title: PlantUML
@@ -135,16 +135,15 @@ The **PlantUML URL** is the hostname of the server running the container.
 When running GitLab in Docker, it must have access to the PlantUML container.
 To achieve that, use [Docker Compose](https://docs.docker.com/compose/).
 In this basic `docker-compose.yml` file, PlantUML is accessible to GitLab at the URL
-`http://plantuml:8005/`:
+`http://plantuml:8080/`:
 
 ```yaml
-version: "3"
 services:
   gitlab:
-    image: 'gitlab/gitlab-ee:17.9.1-ee.0'
+    image: 'gitlab/gitlab-ee:18.9.1-ee.0'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n    proxy_pass  http://plantuml:8005/; \n}\n"
+        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    rewrite ^/-/plantuml/(.*) /$1 break;\n proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
 
   plantuml:
     image: 'plantuml/plantuml-server:tomcat'
@@ -173,7 +172,7 @@ Prerequisites:
 
 PlantUML recommends to install Tomcat 10.1 or later. The scope of this page only
 includes setting up a basic Tomcat server. For more production-ready configurations,
-see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.html).
+see the [Tomcat documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.html).
 
 1. Install JDK/JRE 11:
 
@@ -306,8 +305,7 @@ following:
 
 If you're running [GitLab with TLS](https://docs.gitlab.com/omnibus/settings/ssl/)
 you must configure this redirection, because PlantUML uses the insecure HTTP protocol.
-Newer browsers, such as [Google Chrome 86+](https://www.chromestatus.com/feature/4926989725073408),
-don't load insecure HTTP resources on pages served over HTTPS.
+Newer browsers don't load insecure HTTP resources on pages served over HTTPS.
 
 #### Use bundled GitLab NGINX
 
@@ -363,7 +361,6 @@ SSL termination.
    ```
 
 1. Add the `plantuml.crt` and `plantuml.key` files to an `ssl` directory.
-
 1. Configure the `docker-compose.yml` file:
 
    ```yaml
@@ -464,10 +461,13 @@ After configuring your local PlantUML server, you're ready to enable the PlantUM
 
 1. Sign in to GitLab as an [Administrator](../../user/permissions.md) user.
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, go to **Settings** > **General** and expand the **PlantUML** section.
+1. In the left sidebar, go to **Settings** > **General** and expand the **PlantUML** section.
 1. Select the **Enable PlantUML** checkbox.
 1. Set the PlantUML instance as `https://gitlab.example.com/-/plantuml/`,
    and select **Save changes**.
+
+To prevent browsers from sending diagram content to the external PlantUML service,
+use the [diagram proxy](diagram_proxy.md).
 
 Depending on your PlantUML and GitLab version numbers, you may also need to take
 these steps:

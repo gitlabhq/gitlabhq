@@ -18,6 +18,7 @@ class AbuseReport < ApplicationRecord
   ignore_column :assignee_id, remove_with: '16.9', remove_after: '2024-01-19'
 
   MAX_CHAR_LIMIT_URL = 512
+  MAX_MESSAGE_SIZE = 2_048
   MAX_FILE_SIZE = 1.megabyte
 
   cache_markdown_field :message, pipeline: :single_line
@@ -35,7 +36,7 @@ class AbuseReport < ApplicationRecord
 
   validates :reporter, presence: true
   validates :user, presence: true, on: :create
-  validates :message, presence: true
+  validates :message, presence: true, length: { maximum: MAX_MESSAGE_SIZE }
   validates :category, presence: true
   validates :user_id,
     uniqueness: {

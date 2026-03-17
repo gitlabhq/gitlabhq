@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { nextTick } from 'vue';

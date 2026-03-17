@@ -34,9 +34,9 @@ RSpec.describe Gitlab::Database::DeleteRelationWithReturning, feature_category: 
     end
 
     it 'removes the records matching the given relation' do
-      expect { delete_relation }.to change { users.first.deleted_from_database? }.from(false).to(true)
-                                .and change { users.second.deleted_from_database? }.from(false).to(true)
-                                .and not_change { users.third.deleted_from_database? }.from(false)
+      expect { delete_relation }.to change { User.exists?(users.first.id) }.from(true).to(false)
+                                .and change { User.exists?(users.second.id) }.from(true).to(false)
+                                .and not_change { User.exists?(users.third.id) }.from(true)
     end
   end
 end

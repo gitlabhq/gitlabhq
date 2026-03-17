@@ -9,6 +9,7 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import SecurityConfigurationApp from '~/security_configuration/components/app.vue';
 import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_alert.vue';
 import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
+import MergeRequestsDisabledAlert from '~/security_configuration/components/merge_requests_disabled_alert.vue';
 import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from '~/security_configuration/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
 import PipelineSecretDetectionFeatureCard from '~/security_configuration/components/pipeline_secret_detection_feature_card.vue';
@@ -38,6 +39,7 @@ describe('~/security_configuration/components/app', () => {
     shouldShowCallout = true,
     vulnerabilitiesAcrossContexts = true,
     glFeatures = {},
+    mergeRequestsEnabled = true,
     ...propsData
   } = {}) => {
     userCalloutDismissSpy = jest.fn();
@@ -59,6 +61,7 @@ describe('~/security_configuration/components/app', () => {
         ...stubChildren(SecurityConfigurationApp),
         GlLink: false,
         GlSprintf: false,
+        GlAlert: false,
         LocalStorageSync: false,
         SectionLayout: false,
         UserCalloutDismisser: makeMockUserCalloutDismisser({
@@ -66,6 +69,12 @@ describe('~/security_configuration/components/app', () => {
           shouldShowCallout,
         }),
         PageHeading,
+        MergeRequestsDisabledAlert: false,
+      },
+      data() {
+        return {
+          mergeRequestsEnabled,
+        };
       },
     });
   };
@@ -85,6 +94,7 @@ describe('~/security_configuration/components/app', () => {
   const findSecurityViewHistoryLink = () => wrapper.findByTestId('security-view-history-link');
   const findAutoDevopsAlert = () => wrapper.findComponent(AutoDevopsAlert);
   const findAutoDevopsEnabledAlert = () => wrapper.findComponent(AutoDevopsEnabledAlert);
+  const findMergeRequestsDisabledAlert = () => wrapper.findComponent(MergeRequestsDisabledAlert);
   const findVulnerabilityManagementTab = () => wrapper.findByTestId('vulnerability-management-tab');
 
   describe('basic structure', () => {
@@ -406,6 +416,39 @@ describe('~/security_configuration/components/app', () => {
 
     it('does not render refs tracking section', () => {
       expect(findRefsTrackingSection().exists()).toBe(false);
+    });
+  });
+
+  describe('Merge requests disabled alert', () => {
+    describe('when merge requests are enabled', () => {
+      beforeEach(() => {
+        createComponent({
+          mergeRequestsEnabled: true,
+        });
+      });
+
+      it('should not show MergeRequestsDisabledAlert', () => {
+        expect(findMergeRequestsDisabledAlert().exists()).toBe(false);
+      });
+    });
+
+    describe('when merge requests are disabled', () => {
+      beforeEach(() => {
+        createComponent({
+          mergeRequestsEnabled: false,
+        });
+      });
+
+      it('should show MergeRequestsDisabledAlert', () => {
+        expect(findMergeRequestsDisabledAlert().exists()).toBe(true);
+      });
+
+      it('should display the alert with correct title', () => {
+        const alert = findMergeRequestsDisabledAlert();
+        expect(alert.exists()).toBe(true);
+        expect(alert.text()).toContain(MergeRequestsDisabledAlert.i18n.title);
+        expect(alert.text()).toContain(MergeRequestsDisabledAlert.i18n.body);
+      });
     });
   });
 });

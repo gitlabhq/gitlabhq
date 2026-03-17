@@ -12,8 +12,13 @@ export const copyToClipboard = (text, container = document.body) => {
 
   // eslint-disable-next-line no-restricted-properties -- navigator.clipboard intentionally used here
   if (navigator.clipboard && window.isSecureContext) {
+    if (text === undefined || text === null) {
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      return Promise.reject(new Error('Clipboard write failed'));
+    }
+
     // eslint-disable-next-line no-restricted-properties -- navigator.clipboard intentionally used here
-    return navigator.clipboard.writeText(text);
+    return navigator.clipboard.writeText(String(text));
   }
 
   // Second, try execCommand to copy from a dynamically created invisible textarea (for http and older browsers)

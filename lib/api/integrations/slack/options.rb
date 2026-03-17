@@ -11,6 +11,10 @@ module API
         feature_category :integrations
 
         namespace 'integrations/slack' do
+          desc 'Get Slack interactive component options' do
+            detail 'Retrieves options for Slack interactive components'
+            tags %w[integrations internal_operations]
+          end
           post :options, urgency: :low do
             service_params = Gitlab::Json.safe_parse(params[:payload]).deep_symbolize_keys!
             response = ::Integrations::SlackOptionService.new(service_params).execute

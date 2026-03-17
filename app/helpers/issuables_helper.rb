@@ -293,7 +293,8 @@ module IssuablesHelper
       authorWebUrl: url_for(user_path(issuable.author)),
       createdAt: issuable.created_at.to_time.iso8601,
       isFirstContribution: issuable.first_contribution?,
-      serviceDeskReplyTo: issuable.present(current_user: current_user).service_desk_reply_to
+      serviceDeskReplyTo: issuable.present(current_user: current_user).service_desk_reply_to,
+      workItemTypeIconName: issuable.work_item_type&.icon_name.to_s
     }
 
     data.tap do |d|

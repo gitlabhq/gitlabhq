@@ -6,9 +6,21 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import getNamespaceSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
-import subscribeToViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
+import { subscribeWithLimitEnforce } from 'ee_else_ce/work_items/list/utils';
 import WorkItemsExistingSavedViewsModal from '~/work_items/list/components/work_items_existing_saved_views_modal.vue';
 import { CREATED_DESC } from '~/work_items/list/constants';
+import { helpPagePath } from '~/helpers/help_page_helper';
+
+jest.mock('ee_else_ce/work_items/list/utils', () => ({
+  ...jest.requireActual('ee_else_ce/work_items/list/utils'),
+  subscribeWithLimitEnforce: jest.fn().mockResolvedValue({
+    data: {
+      workItemSavedViewSubscribe: {
+        errors: [],
+      },
+    },
+  }),
+}));
 
 describe('WorkItemsExistingSavedViewsModal', () => {
   let wrapper;
@@ -18,7 +30,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
   const mockPush = jest.fn();
   const mockSavedViewsData = [
     {
-      __typename: 'SavedView',
+      __typename: 'WorkItemSavedViewType',
       id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
       name: 'My Private View',
       description: 'Only I can see this',
@@ -30,10 +42,12 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
+        updateSavedViewVisibility: true,
+        __typename: 'SavedViewPermissions',
       },
     },
     {
-      __typename: 'SavedView',
+      __typename: 'WorkItemSavedViewType',
       id: 'gid://gitlab/WorkItems::SavedViews::SavedView/2',
       name: 'Team View',
       description: 'Shared with the team',
@@ -45,22 +59,11 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
+        updateSavedViewVisibility: true,
+        __typename: 'SavedViewPermissions',
       },
     },
   ];
-
-  const mockSubscribeResponse = {
-    data: {
-      workItemSavedViewSubscribe: {
-        __typename: 'WorkItemSavedViewSubscribePayload',
-        errors: [],
-        savedView: {
-          __typename: 'WorkItemSavedViewType',
-          id: 'gid://gitlab/WorkItems::SavedViews::SavedView/2',
-        },
-      },
-    },
-  };
 
   const savedViewsHandler = jest.fn().mockResolvedValue({
     data: {
@@ -85,19 +88,14 @@ describe('WorkItemsExistingSavedViewsModal', () => {
     },
   });
 
-  const successSubscribeMutationHandler = jest.fn().mockResolvedValue(mockSubscribeResponse);
-
   const simulatedErrorHandler = jest.fn().mockRejectedValue(new Error('this is fine'));
 
   const createComponent = async ({
     props,
+    provide = {},
     mockSavedViewsHandler = savedViewsHandler,
-    subscribeMutationHandler = successSubscribeMutationHandler,
   } = {}) => {
-    const apolloProvider = createMockApollo([
-      [getNamespaceSavedViewsQuery, mockSavedViewsHandler],
-      [subscribeToViewMutation, subscribeMutationHandler],
-    ]);
+    const apolloProvider = createMockApollo([[getNamespaceSavedViewsQuery, mockSavedViewsHandler]]);
 
     wrapper = shallowMountExtended(WorkItemsExistingSavedViewsModal, {
       apolloProvider,
@@ -105,6 +103,11 @@ describe('WorkItemsExistingSavedViewsModal', () => {
         show: true,
         fullPath: 'test-project-path',
         ...props,
+      },
+      provide: {
+        canCreateSavedView: true,
+        subscribedSavedViewLimit: 10,
+        ...provide,
       },
       mocks: {
         $router: {
@@ -184,7 +187,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       await firstView.trigger('click');
       await nextTick();
 
-      expect(successSubscribeMutationHandler).not.toHaveBeenCalled();
+      expect(subscribeWithLimitEnforce).not.toHaveBeenCalled();
 
       expect(mockPush).toHaveBeenCalledWith({
         name: 'savedView',
@@ -198,7 +201,7 @@ describe('WorkItemsExistingSavedViewsModal', () => {
       await secondView.trigger('click');
       await nextTick();
 
-      expect(successSubscribeMutationHandler).toHaveBeenCalled();
+      expect(subscribeWithLimitEnforce).toHaveBeenCalled();
       await waitForPromises();
 
       expect(mockPush).toHaveBeenCalledWith({
@@ -293,6 +296,9 @@ describe('WorkItemsExistingSavedViewsModal', () => {
         expect(findWarningMessage().exists()).toBe(true);
         expect(findWarningIcon().props('name')).toBe('warning');
         expect(findLearnMoreLink().exists()).toBe(true);
+        expect(findLearnMoreLink().attributes('href')).toBe(
+          helpPagePath('user/work_items/saved_views.md', { anchor: 'saved-view-limits' }),
+        );
       });
 
       it('contains the correct warning text', () => {
@@ -303,6 +309,17 @@ describe('WorkItemsExistingSavedViewsModal', () => {
           'If you add a view, the last view in your list will be removed.',
         );
       });
+    });
+  });
+
+  describe('permissions', () => {
+    it('hides empty state button when user cannot create saved view', async () => {
+      await createComponent({
+        provide: { canCreateSavedView: false },
+        mockSavedViewsHandler: emptySavedViewsHandler,
+      });
+
+      expect(findNewViewButton().exists()).toBe(false);
     });
   });
 });

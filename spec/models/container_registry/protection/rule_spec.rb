@@ -12,7 +12,7 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
   end
 
   describe 'enums' do
-    it {
+    it do
       is_expected.to(
         define_enum_for(:minimum_access_level_for_push)
           .with_values(
@@ -22,9 +22,9 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
           )
           .with_prefix(:minimum_access_level_for_push)
       )
-    }
+    end
 
-    it {
+    it do
       is_expected.to(
         define_enum_for(:minimum_access_level_for_delete)
         .with_values(
@@ -34,7 +34,7 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
         )
         .with_prefix(:minimum_access_level_for_delete)
       )
-    }
+    end
   end
 
   describe 'validations' do
@@ -99,10 +99,10 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
       end
 
       with_them do
-        subject(:container_registry_protection_rule) {
+        subject(:container_registry_protection_rule) do
           build(:container_registry_protection_rule, minimum_access_level_for_delete: minimum_access_level_for_delete,
             minimum_access_level_for_push: minimum_access_level_for_push)
-        }
+        end
 
         if params[:valid]
           it { is_expected.to be_valid }
@@ -233,10 +233,10 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
         create(:container_registry_protection_rule, project: project, repository_path_pattern: "#{repository_path}*")
       end
 
-      it {
+      it do
         is_expected.to contain_exactly(container_registry_protection_rule_second_match,
           container_registry_protection_rule)
-      }
+      end
     end
   end
 

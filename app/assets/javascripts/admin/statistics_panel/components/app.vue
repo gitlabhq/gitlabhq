@@ -30,7 +30,8 @@ export default {
   <crud-component
     :is-loading="isLoading"
     :title="__('Statistics')"
-    :body-class="{ '!gl-mt-0': !isLoading }"
+    class="gl-flex gl-flex-col"
+    :body-class="['gl-grow', { '!gl-mt-0': !isLoading }]"
   >
     <p
       v-for="statistic in getStatistics(statisticsLabels)"

@@ -19,29 +19,25 @@ describe('Work Item type component', () => {
   const findButton = () => wrapper.findByTestId('work-item-type-icon');
 
   describe.each`
-    workItemType           | iconName                   | text             | showTooltipOnHover | iconVariant
-    ${'TASK'}              | ${'work-item-task'}        | ${'Task'}        | ${false}           | ${'default'}
-    ${'ISSUE'}             | ${'work-item-issue'}       | ${'Issue'}       | ${true}            | ${'default'}
-    ${'REQUIREMENT'}       | ${'work-item-requirement'} | ${'Requirement'} | ${true}            | ${'default'}
-    ${'INCIDENT'}          | ${'work-item-incident'}    | ${'Incident'}    | ${false}           | ${'default'}
-    ${'TEST_CASE'}         | ${'work-item-test-case'}   | ${'Test case'}   | ${true}            | ${'default'}
-    ${'random-issue-type'} | ${'work-item-issue'}       | ${''}            | ${true}            | ${'default'}
-    ${'Task'}              | ${'work-item-task'}        | ${'Task'}        | ${false}           | ${'default'}
-    ${'Issue'}             | ${'work-item-issue'}       | ${'Issue'}       | ${true}            | ${'default'}
-    ${'Requirement'}       | ${'work-item-requirement'} | ${'Requirement'} | ${true}            | ${'default'}
-    ${'Incident'}          | ${'work-item-incident'}    | ${'Incident'}    | ${false}           | ${'default'}
-    ${'Test_case'}         | ${'work-item-test-case'}   | ${'Test case'}   | ${true}            | ${'default'}
-    ${'Objective'}         | ${'work-item-objective'}   | ${'Objective'}   | ${true}            | ${'default'}
-    ${'Key Result'}        | ${'work-item-keyresult'}   | ${'Key result'}  | ${true}            | ${'subtle'}
+    workItemType           | typeIconName               | text                   | showTooltipOnHover | iconVariant
+    ${'Task'}              | ${'work-item-task'}        | ${'Task'}              | ${false}           | ${'default'}
+    ${'Issue'}             | ${'work-item-issue'}       | ${'Issue'}             | ${true}            | ${'default'}
+    ${'Requirement'}       | ${'work-item-requirement'} | ${'Requirement'}       | ${true}            | ${'default'}
+    ${'Incident'}          | ${'work-item-incident'}    | ${'Incident'}          | ${false}           | ${'default'}
+    ${'Test Case'}         | ${'work-item-test-case'}   | ${'Test Case'}         | ${true}            | ${'default'}
+    ${'random-issue-type'} | ${''}                      | ${'random-issue-type'} | ${true}            | ${'default'}
+    ${'Objective'}         | ${'work-item-objective'}   | ${'Objective'}         | ${true}            | ${'default'}
+    ${'Key Result'}        | ${'work-item-keyresult'}   | ${'Key Result'}        | ${true}            | ${'subtle'}
+    ${'Bug'}               | ${'work-item-bug'}         | ${'Bug'}               | ${false}           | ${'default'}
   `(
     'with workItemType set to "$workItemType"',
-    ({ workItemType, iconName, text, showTooltipOnHover, iconVariant }) => {
+    ({ workItemType, typeIconName, text, showTooltipOnHover, iconVariant }) => {
       beforeEach(() => {
-        createComponent({ workItemType, showTooltipOnHover, iconVariant });
+        createComponent({ workItemType, typeIconName, showTooltipOnHover, iconVariant });
       });
 
-      it(`renders icon with name '${iconName}'`, () => {
-        expect(findIcon().props('name')).toBe(iconName);
+      it(`renders icon with name '${typeIconName || 'work-item-issue'}'`, () => {
+        expect(findIcon().props('name')).toBe(typeIconName || 'work-item-issue');
       });
 
       it(`renders correct text`, () => {

@@ -18,6 +18,7 @@ RSpec.describe ActiveContext::BulkProcessQueue do
     allow(ActiveContext::DeadQueue).to receive(:push)
     allow(bulk_processor).to receive(:process)
     allow(bulk_processor).to receive(:flush).and_return([])
+    allow(queue).to receive(:preprocess_options).and_return({})
   end
 
   describe '#process' do

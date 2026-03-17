@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Compliance violations report
 ---
 
@@ -57,7 +57,7 @@ Prerequisites:
 
 To view the compliance violations report:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Compliance center**.
 
 The compliance violations report displays:
@@ -182,7 +182,7 @@ Prerequisites:
 
 To export a compliance violations report:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. In the upper-right corner, select **Export**.
 1. Select **Export violations report**.
@@ -222,7 +222,7 @@ Prerequisites:
 
 To view the static compliance violations report:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Compliance center**.
 
 You can sort the compliance report on:
@@ -293,7 +293,7 @@ Prerequisites:
 
 To export a report of merge request compliance violations for projects in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. In the upper-right corner, select **Export**.
 1. Select **Export violations report**.

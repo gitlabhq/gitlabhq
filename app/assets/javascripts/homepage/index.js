@@ -25,6 +25,7 @@ export default () => {
     mergeRequestsYourMergeRequestsTitle,
     lastPushEvent,
     showFeedbackWidget,
+    workItemPlanningViewEnabled,
   } = el.dataset;
 
   // Parse lastPushEvent - it's already JSON string from backend
@@ -38,6 +39,7 @@ export default () => {
       duoCodeReviewBotUsername,
       mergeRequestsReviewRequestedTitle,
       mergeRequestsYourMergeRequestsTitle,
+      workItemPlanningViewEnabled: parseBoolean(workItemPlanningViewEnabled),
     },
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),

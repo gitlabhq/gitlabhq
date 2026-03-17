@@ -11,9 +11,10 @@ import {
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { ROUTES } from '~/work_items/constants';
-import { subscribeToSavedView } from 'ee_else_ce/work_items/list/utils';
+import { subscribeWithLimitEnforce } from 'ee_else_ce/work_items/list/utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import getNamespaceSavedViewsQuery from '../graphql/work_item_saved_views_namespace.query.graphql';
 
 export default {
@@ -45,6 +46,10 @@ export default {
     ),
     learnMoreAboutViewLimits: s__('WorkItem|Learn more about view limits.'),
   },
+  savedViewLimitsHelpPath: helpPagePath('user/work_items/saved_views.md', {
+    anchor: 'saved-view-limits',
+  }),
+  inject: ['canCreateSavedView', 'subscribedSavedViewLimit'],
   model: {
     prop: 'show',
     event: 'hide',
@@ -66,7 +71,7 @@ export default {
   },
   // TODO: Add 'view-subscribed' emit once subscribe functionality is implemented
   // See: https://gitlab.com/gitlab-org/gitlab/-/work_items/588295
-  emits: ['hide', 'show-new-view-modal'],
+  emits: ['hide', 'show-new-view-modal', 'subscribe-from-modal'],
   data() {
     return {
       searchInput: '',
@@ -129,12 +134,14 @@ export default {
       const viewId = getIdFromGraphQLId(view.id).toString();
 
       if (!view.subscribed) {
+        this.$emit('subscribe-from-modal');
         const mutationKey = 'workItemSavedViewSubscribe';
         try {
-          const { data } = await subscribeToSavedView({
+          const { data } = await subscribeWithLimitEnforce({
             view,
-            cache: this.$apollo,
-            fullPath: this.fullPath,
+            apolloClient: this.$apollo,
+            namespacePath: this.fullPath,
+            subscribedSavedViewLimit: this.subscribedSavedViewLimit,
           });
 
           if (data[mutationKey].errors?.length) {
@@ -143,15 +150,26 @@ export default {
             );
             return;
           }
+
+          this.$router.push({
+            name: ROUTES.savedView,
+            params: { view_id: viewId },
+            query: undefined,
+          });
         } catch (e) {
           this.error = s__(
             'WorkItem|An error occurred while subscribing to the view. Please try again.',
           );
           return;
         }
+      } else {
+        this.$router.push({
+          name: ROUTES.savedView,
+          params: { view_id: viewId },
+          query: undefined,
+        });
       }
 
-      this.$router.push({ name: ROUTES.savedView, params: { view_id: viewId }, query: undefined });
       this.hideModal();
     },
   },
@@ -178,7 +196,7 @@ export default {
       <gl-icon name="warning" :size="16" class="gl-mt-1 gl-shrink-0 gl-text-orange-500" />
       <span class="gl-text-sm">
         {{ $options.i18n.subscriptionLimitWarningMessage }}
-        <gl-link href="#" target="_blank">
+        <gl-link :href="$options.savedViewLimitsHelpPath" target="_blank">
           {{ $options.i18n.learnMoreAboutViewLimits }}
         </gl-link>
       </span>
@@ -198,6 +216,7 @@ export default {
         </h3>
         <span>{{ $options.i18n.emptyViewsDescription }}</span>
         <gl-button
+          v-if="canCreateSavedView"
           variant="confirm"
           class="gl-mt-5"
           data-testid="new-view-button"
@@ -223,7 +242,7 @@ export default {
           {{ error }}
         </gl-alert>
       </div>
-      <ul class="gl-mb-3 gl-mt-[6px] gl-max-h-[25rem] gl-overflow-scroll gl-p-0 gl-px-1">
+      <ul class="gl-mb-3 gl-mt-[6px] gl-max-h-[25rem] gl-overflow-auto gl-p-0 gl-px-1">
         <li v-for="view in filteredViews" :key="view.id" class="gl-my-1">
           <button
             class="saved-view-item gl-flex gl-min-h-[36px] gl-w-full gl-cursor-pointer gl-rounded-base gl-border-none gl-px-4 gl-py-3 hover:gl-bg-gray-50 focus:gl-bg-gray-50"

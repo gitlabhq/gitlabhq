@@ -389,11 +389,11 @@ RSpec.describe UserDetail, feature_category: :system_access do
     end
 
     shared_examples 'prevents `nil` value' do |attr|
-      it 'converts `nil` to the empty string' do
+      it 'converts `nil` to the empty string', :unlimited_max_formatted_output_length do
         user_detail[attr] = nil
         expect { user_detail.save! }
           .to change { user_detail[attr] }.to('')
-          .and not_change { user_detail.attributes.except(attr.to_s) }
+          .and not_change { user_detail.attributes.except('company', attr.to_s) }
       end
     end
 

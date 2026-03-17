@@ -101,6 +101,9 @@ module API
         destroy_conditionally!(package_file) do |package_file|
           package_file.pending_destruction!
 
+          track_package_event('delete_package', package.package_type, project: user_project,
+            namespace: user_project.namespace, user: current_user)
+
           enqueue_sync_npm_metadata_cache_worker(user_project, package.name) if package.npm?
 
           if package.helm? && package_file.helm_channel

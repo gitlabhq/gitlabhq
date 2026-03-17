@@ -65,6 +65,11 @@ export default {
       required: false,
       default: '',
     },
+    workItemTypeIconName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     closedStatusLink() {
@@ -115,6 +120,7 @@ export default {
     :service-desk-reply-to="serviceDeskReplyTo"
     show-work-item-type-icon
     :status-icon="statusIcon"
+    :type-icon-name="workItemTypeIconName"
     :workspace-type="$options.NAMESPACE_PROJECT"
   >
     <template #status-badge>

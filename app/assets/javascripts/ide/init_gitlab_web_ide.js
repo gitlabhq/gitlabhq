@@ -37,11 +37,13 @@ export const initGitlabWebIDE = async (el) => {
     extensionHostDomain,
     extensionHostDomainChanged,
     workbenchSecret,
+    isSingleOriginFallbackEnabled,
   } = el.dataset;
 
   try {
     const webIdeWorkbenchConfig = await getWebIDEWorkbenchConfig({
       extensionHostDomain,
+      isSingleOriginFallbackEnabled: parseBoolean(isSingleOriginFallbackEnabled),
       extensionHostDomainChanged: parseBoolean(extensionHostDomainChanged),
       workbenchSecret,
     });

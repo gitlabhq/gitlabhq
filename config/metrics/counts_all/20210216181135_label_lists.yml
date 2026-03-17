@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage.plan.label_lists
 description: Count of users creating label lists on Boards
 product_group: project_management
+product_categories:
+- portfolio_management
 value_type: number
 status: active
 time_frame: all

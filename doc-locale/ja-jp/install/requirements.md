@@ -1,8 +1,8 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: インストールに必要な前提要件。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: インストールに必要な前提条件。
 title: GitLabのインストール要件
 ---
 
@@ -19,38 +19,38 @@ GitLabには、固有のインストール要件があります。
 
 必要とされるストレージ容量は、主にGitLabに格納するリポジトリのサイズによって異なります。ガイドラインとして、最低でも、すべてのリポジトリの合計と同じくらいの空き容量が必要です。
 
-Linuxパッケージのインストールには、約2.5 GBのストレージ容量が必要です。ストレージの柔軟性を高めるには、論理ボリューム管理を通じてハードドライブをマウントすることを検討してください。応答時間を短縮するために、7,200 RPM以上のハードドライブ、またはソリッドステートドライブが必要です。
+Linuxパッケージのインストールには、約2.5 GBのストレージ容量が必要です。PostgreSQL、ログ、一時ファイル、およびオペレーティングシステムのオーバーヘッドと組み合わせると、リポジトリデータのない基本的なGitLabのインストールには、最低40 GBのディスク容量を見積もってください。ストレージの柔軟性を高めるには、論理ボリューム管理を通じてハードドライブをマウントすることを検討してください。応答時間を短縮するために、7,200 RPM以上のハードドライブ、またはソリッドステートドライブが必要です。
 
 ファイルシステムのパフォーマンスはGitLabの全体的なパフォーマンスに影響を与える可能性があるため、[ストレージにクラウドベースのファイルシステムを使用することは避けて](../administration/nfs.md#avoid-using-cloud-based-file-systems)ください。
 
 ## CPU {#cpu}
 
-CPU要件は、ユーザー数と予想されるワークロードによって異なります。ワークロードには、ユーザーのアクティビティー、自動化とミラーリングの使用、リポジトリのサイズが含まれます。
+CPU要件は、ユーザー数と予想されるワークロードによって異なります。ワークロードには、ユーザーのアクティビティ、自動化とミラーリングの使用、リポジトリのサイズが含まれます。
 
 最大で1秒あたり20リクエストまたは1,000ユーザーの場合、8 vCPUが必要です。それ以上のユーザー数またはワークロードについては、[リファレンスアーキテクチャ](../administration/reference_architectures/_index.md)を参照してください。
 
 ## メモリ {#memory}
 
-メモリ要件は、ユーザー数と予想されるワークロードによって異なります。ワークロードには、ユーザーのアクティビティー、自動化とミラーリングの使用、リポジトリのサイズが含まれます。
+メモリ要件は、ユーザー数と予想されるワークロードによって異なります。ワークロードには、ユーザーのアクティビティ、自動化とミラーリングの使用、リポジトリのサイズが含まれます。
 
 最大で1秒あたり20リクエストまたは1,000ユーザーの場合、16 GBのメモリが必要です。それ以上のユーザー数またはワークロードについては、[リファレンスアーキテクチャ](../administration/reference_architectures/_index.md)を参照してください。
 
-場合によっては、GitLabは最低8 GBのメモリで実行できます。詳細については、[メモリ制約のある環境でGitLabを実行する](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs.html)を参照してください。
+場合によっては、GitLabは最低8 GBのメモリで実行できます。詳細については、[メモリ制約のある環境でGitLabを実行する](https://docs.gitlab.com/omnibus/settings/memory_constrained_envs/)を参照してください。
 
 ## PostgreSQL {#postgresql}
 
-[PostgreSQL](https://www.postgresql.org/)は、サポートされている唯一のデータベースであり、Linuxパッケージにバンドルされています。[外部のPostgreSQLデータベース](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server)も使用できますが、その場合は[正しく設定する必要があります](#postgresql-settings)。
+[PostgreSQL](https://www.postgresql.org/)は、サポートされている唯一のデータベースであり、Linuxパッケージにバンドルされています。[外部のPostgreSQLデータベース](https://docs.gitlab.com/omnibus/settings/database/#using-a-non-packaged-postgresql-database-management-server)も使用できますが、その場合は[正しく設定する必要があります](#postgresql-settings)。
 
-[ユーザー数](../administration/reference_architectures/_index.md)に応じて、PostgreSQLサーバーには以下が必要です:
+[ユーザー数](../administration/reference_architectures/_index.md)に応じて、PostgreSQLサーバーには以下が必要です。
 
 - ほとんどのGitLabインスタンスでは、最低5～10 GBのストレージ
 - GitLab Ultimateの場合、最低12 GBのストレージ（1 GBの脆弱性データをインポートする必要があります）
 
-次のバージョンのGitLabでは、対応するPostgreSQLバージョンを使用してください:
+次のバージョンのGitLabでは、対応するPostgreSQLバージョンを使用してください。
 
 | GitLabバージョン | Helmチャートバージョン | PostgreSQLの最小バージョン | PostgreSQLの最大バージョン |
 | -------------- | ------------------ | -------------------------- | -------------------------- |
-| 18.x           | 9.x                | [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 17.x（[GitLab 17.10以降に対してテスト済み](https://gitlab.com/gitlab-org/gitlab/-/issues/521159)）          |
+| 18.x           | 9.x                | [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 17.x（[GitLab 17.10以降でテスト済み](https://gitlab.com/gitlab-org/gitlab/-/issues/521159)）          |
 | 17.x           | 8.x                | [14.14](https://gitlab.com/gitlab-org/gitlab/-/issues/508672) | 16.x（[GitLab 16.10以降に対してテスト済み](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145298)） |
 | 16.x           | 7.x                | 13.6                       | 15.x（[GitLab 16.1以降に対してテスト済み](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344)） |
 | 15.x           | 6.x                | 12.10                      | 14.x（[GitLab 15.11に対してのみテスト済み](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114624)）、13.x |
@@ -69,7 +69,7 @@ PostgreSQLのマイナーリリースには、[バグとセキュリティの修
 
 ### ロケールの互換性 {#locale-compatibility}
 
-`glibc`でロケールデータを変更すると、PostgreSQLデータベースファイルは、異なるオペレーティングシステム間では完全な互換性がなくなります。インデックスの破損を回避するには、以下の場合に[ロケールの互換性を確認](../administration/geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility)してください:
+`glibc`でロケールデータを変更すると、PostgreSQLデータベースファイルは、異なるオペレーティングシステム間では完全な互換性がなくなります。インデックスの破損を回避するには、以下の場合に[ロケールの互換性を確認](../administration/geo/replication/troubleshooting/common.md#check-os-locale-data-compatibility)してください。
 
 - サーバー間でバイナリPostgreSQLデータを移動する。
 - Linuxディストリビューションをアップグレードする。
@@ -79,12 +79,12 @@ PostgreSQLのマイナーリリースには、[バグとセキュリティの修
 
 ### GitLabスキーマ {#gitlab-schemas}
 
-GitLab、[Geo](../administration/geo/_index.md) 、[Gitaly Cluster (Praefect)](../administration/gitaly/praefect/_index.md)、またはその他のコンポーネント専用のデータベースを作成または使用する必要があります。以下に従う場合を除き、データベース、スキーマ、ユーザー、またはその他のプロパティを作成または変更しないでください:
+GitLab、[Geo](../administration/geo/_index.md) 、[Gitaly Cluster (Praefect)](../administration/gitaly/praefect/_index.md)、またはその他のコンポーネント専用のデータベースを作成または使用する必要があります。以下に従う場合を除き、データベース、スキーマ、ユーザー、またはその他のプロパティを作成または変更しないでください。
 
 - GitLabドキュメントの手順
 - GitLabサポートまたはエンジニアの指示
 
-主なGitLabアプリケーションは、3つのスキーマを使用します:
+主なGitLabアプリケーションは、3つのスキーマを使用します。
 
 - デフォルトの`public`スキーマ
 - `gitlab_partitions_static`（自動作成）
@@ -102,8 +102,8 @@ Railsデータベースの移行中に、GitLabはスキーマまたはテーブ
 | `maintenance_work_mem` | 最小`64 MB` | [大規模なデータベースサーバーの場合は、より多くの容量](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8377#note_1728173087)が必要です。 |
 | `max_connections`      | 最小`400`   | お使いのGitLabコンポーネントに基づいて計算します。詳細なガイダンスについては、[Tune PostgreSQL](../administration/postgresql/tune.md)ページを参照してください。 |
 | `shared_buffers`       | 最小`2 GB`  | 大規模なデータベースサーバーの場合は、より多くの容量が必要です。Linuxパッケージのデフォルトは、サーバーRAMの25%に設定されています。 |
-| `statement_timeout`    | 15000～60000 | ステートメントのタイムアウトにより、ロックによる制御不能イシューや、データベースが新しいクライアントを拒否するのを回避できます。15～60秒（15000～60000ミリ秒）の範囲の値を使用してください。1分はPumaラックのタイムアウト設定と一致します。 |
-| `hot_standby_feedback` | `on` | 複数のノードで[データベースロードバランシング](../administration/postgresql/database_load_balancing.md#configuring-database-load-balancing)が構成されている構成では、すべてのレプリカノードで`hot_standby_feedback`を有効にして、ラグの発生を防ぐようにしてください。 |
+| `statement_timeout`    | 15000～60000 | ステートメントのタイムアウトにより、ロックによる制御不能イシューや、データベースが新しいクライアントを拒否するのを回避できます。15秒から60秒（15000ミリ秒から60000ミリ秒）の値を使用してください。1分はPumaのラックタイムアウト設定と一致します。 |
+| `hot_standby_feedback` | `on` | 設定で複数のノードと[データベースロードバランシング](../administration/postgresql/database_load_balancing.md#configuring-database-load-balancing)が構成されている場合、すべてのレプリカノードで`hot_standby_feedback`が有効になっていることを確認し、ラグの蓄積を防ぐ必要があります。 |
 
 サーバー上のすべてのデータベースではなく、特定のデータベースに対して一部のPostgreSQL設定を設定できます。
 
@@ -124,7 +124,7 @@ Pumaの設定を調整するには:
 
 推奨されるPumaワーカーの数は、主にCPUとメモリの容量によって異なります。デフォルトでは、Linuxパッケージは推奨される数のワーカーを使用します。この数の計算方法について詳しくは、[`puma.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/files/gitlab-cookbooks/gitlab/libraries/puma.rb?ref_type=heads#L46-69)を参照してください。
 
-ノードのPumaワーカー数は2つ以上でなければなりません。たとえば、ノードには以下が必要です:
+ノードのPumaワーカー数は2つ以上でなければなりません。たとえば、ノードには以下が必要です。
 
 - 2 CPUコアと8 GBのメモリに対して2個のワーカー
 - 4 CPUコアと4 GBのメモリに対して2個のワーカー
@@ -132,13 +132,13 @@ Pumaの設定を調整するには:
 - 8 CPUコアと8 GBのメモリに対して6個のワーカー
 - 8 CPUコアと16 GBのメモリに対して8個のワーカー
 
-デフォルトでは、各Pumaワーカーは1.2 GBのメモリに制限されています。`/etc/gitlab/gitlab.rb`で[この設定を調整](../administration/operations/puma.md#reducing-memory-use)できます。
+デフォルトでは、各Pumaワーカーは1.2 GBのメモリに制限されています。`/etc/gitlab/gitlab.rb`で[この設定を調整](../administration/operations/puma.md#tuning-memory-use)できます。
 
 十分なCPUおよびメモリ容量がある場合は、Pumaワーカーの数を増やすこともできます。ワーカー数を増やすと、応答時間が短縮され、並列リクエストを処理する能力が向上します。テストを実行して、[インストール](install_methods.md)に最適なワーカーの数を確認します。
 
 ### スレッド {#threads}
 
-推奨されるPumaスレッド数は、システムメモリの合計によって異なります。ノードは以下を使用する必要があります:
+推奨されるPumaスレッド数は、システムメモリの合計によって異なります。ノードは以下を使用する必要があります。
 
 - 最大2 GBのメモリを持つオペレーティングシステムの場合は1つのスレッド
 - 2 GBを超えるメモリを持つオペレーティングシステムの場合は4つのスレッド
@@ -170,7 +170,7 @@ Redisでは:
 
 ## サポートされているWebブラウザ {#supported-web-browsers}
 
-GitLabは、次のWebブラウザをサポートしています:
+GitLabは、次のWebブラウザをサポートしています。
 
 - [Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/)
 - [Google Chrome](https://www.google.com/chrome/)

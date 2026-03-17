@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Composer packages in the package registry
 ---
 
@@ -107,7 +107,7 @@ To view the published package, go to **Deploy** > **Package registry** and selec
 
 A more detailed Composer CI/CD file is also available as a `.gitlab-ci.yml` template:
 
-1. On the left sidebar, select **Project overview**.
+1. In the left sidebar, select **Project overview**.
 1. Above the file list, select **Set up CI/CD**. If this button is not available, select **CI/CD Configuration** and then **Edit**.
 1. From the **Apply a template** list, select **Composer**.
 
@@ -364,7 +364,7 @@ used to access them:
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 Before you delete a package, make sure you understand
 the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).

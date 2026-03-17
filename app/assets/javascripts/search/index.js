@@ -22,12 +22,14 @@ const sidebarInitState = () => {
     zoektAvailable,
     groupInitialJson,
     projectInitialJson,
+    workItemTypesJson,
     ref,
   } = el.dataset;
 
   const navigationJsonParsed = JSON.parse(navigationJson);
   const groupInitialJsonParsed = JSON.parse(groupInitialJson);
   const projectInitialJsonParsed = JSON.parse(projectInitialJson);
+  const workItemTypesParsed = JSON.parse(workItemTypesJson || '[]');
 
   return {
     navigationJsonParsed,
@@ -37,6 +39,7 @@ const sidebarInitState = () => {
     zoektAvailable: parseBoolean(zoektAvailable),
     groupInitialJsonParsed,
     projectInitialJsonParsed,
+    workItemTypesParsed,
     ref,
   };
 };
@@ -63,6 +66,7 @@ export const initSearchApp = () => {
     zoektAvailable,
     groupInitialJsonParsed: groupInitialJson,
     projectInitialJsonParsed: projectInitialJson,
+    workItemTypesParsed: workItemTypes,
     ref,
   } = sidebarInitState() || {};
 
@@ -77,6 +81,7 @@ export const initSearchApp = () => {
     zoektAvailable,
     groupInitialJson,
     projectInitialJson,
+    workItemTypes,
     defaultBranchName,
     repositoryRef: ref,
   });

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: System hooks
 description: "Use system hooks to trigger HTTP POST requests from GitLab events. Includes JSON payload examples."
@@ -100,7 +100,7 @@ System hooks are subject to the same push event limits as project webhooks. By d
 
 This limit is controlled by the `push_event_hooks_limit` setting
 (default: `3`). For GitLab Self-Managed instances, administrators can modify this limit using the
-[Application Settings API](../api/settings.md#available-settings).
+[Application settings API](../api/settings.md#available-settings).
 
 ## Hooks request example
 

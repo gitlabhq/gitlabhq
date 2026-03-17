@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use push rules to control the content and format of Git commits your repository accepts. Set standards for commit messages, and block secrets or credentials from being added accidentally.
 title: Push rules
 ---
@@ -62,7 +62,7 @@ for each project individually.
 ## Enable global push rules
 
 You can create push rules that serve as a template for all new projects.
-You can override these rules in individual projects or [groups](../../group/access_and_permissions.md#group-push-rules).
+You can override these rules in individual projects or [groups](#group-push-rules).
 
 When you configure global push rules:
 
@@ -83,6 +83,34 @@ To create global push rules:
 1. Set the rule you want.
 1. Select **Save push rules**.
 
+## Group push rules
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+Group push rules allow group maintainers to set push rules for newly created projects in the specific group.
+
+To configure push rules for a group:
+
+1. In the top bar, select **Search or go to** and find your group.
+1. Select **Settings** > **Repository**.
+1. Expand the **Pre-defined push rules** section.
+1. Select the settings you want.
+1. Select **Save push rules**.
+
+New projects inherit push rules from:
+
+- The closest parent group with push rules defined.
+- Push rules set for the entire instance, if no parent groups have push rules defined.
+
+Only projects inherit push rules. Subgroups don't inherit push
+rules from parent groups. To verify which push rules apply to new projects,
+create a project in the subgroup and check the project's push rules.
+
 ## Override global push rules per project
 
 Project push rules are independent of global push rules.
@@ -90,7 +118,7 @@ When you set push rules for a project, those rules replace any previously config
 
 To set push rules for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Set the rule you want.
@@ -119,7 +147,7 @@ Use these rules to validate users who make commits.
 - **Commit author's email**: Both the author and committer email addresses must match the regular expression.
   To allow any email address, leave empty.
 
-When using [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects)
+When using [bot users for projects](../settings/project_access_tokens.md#bot-users-for-projects)
 or [bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups),
 you must add the generated email suffix so that bot tokens can commit and push changes.
 
@@ -208,67 +236,52 @@ system. In GitLab, you can use a predefined list of filename patterns to prevent
 being pushed to a repository. Merge requests that contain a matching file are blocked.
 This push rule does not restrict files already committed to the repository.
 You must update the configuration of existing projects to use the rule, using the
-process described in [Override global push rules per project](#override-global-push-rules-per-project).
+process described in [override global push rules per project](#override-global-push-rules-per-project).
 
 Files blocked by this rule are listed below. For a complete list of criteria, refer to
 [`files_denylist.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml).
 
 - AWS CLI credential blobs:
-
   - `.aws/credentials`
   - `aws/credentials`
   - `homefolder/aws/credentials`
-
 - Private RSA SSH keys:
-
   - `/ssh/id_rsa`
   - `/.ssh/personal_rsa`
   - `/config/server_rsa`
   - `id_rsa`
   - `.id_rsa`
-
 - Private DSA SSH keys:
-
   - `/ssh/id_dsa`
   - `/.ssh/personal_dsa`
   - `/config/server_dsa`
   - `id_dsa`
   - `.id_dsa`
-
 - Private ED25519 SSH keys:
-
   - `/ssh/id_ed25519`
   - `/.ssh/personal_ed25519`
   - `/config/server_ed25519`
   - `id_ed25519`
   - `.id_ed25519`
-
 - Private ECDSA SSH keys:
-
   - `/ssh/id_ecdsa`
   - `/.ssh/personal_ecdsa`
   - `/config/server_ecdsa`
   - `id_ecdsa`
   - `.id_ecdsa`
-
 - Private ECDSA_SK SSH keys:
-
   - `/ssh/id_ecdsa_sk`
   - `/.ssh/personal_ecdsa_sk`
   - `/config/server_ecdsa_sk`
   - `id_ecdsa_sk`
   - `.id_ecdsa_sk`
-
 - Private ED25519_SK SSH keys:
-
   - `/ssh/id_ed25519_sk`
   - `/.ssh/personal_ed25519_sk`
   - `/config/server_ed25519_sk`
   - `id_ed25519_sk`
   - `.id_ed25519_sk`
-
 - Any files ending with these suffixes:
-
   - `*.pem`
   - `*.key`
   - `*.history`
@@ -371,7 +384,7 @@ Commits with invalid or corrupt signatures are rejected.
 
 To enable the **Reject unsigned commits** push rule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Select **Reject unsigned commits**.

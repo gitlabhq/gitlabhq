@@ -43,8 +43,25 @@ RSpec.describe MergeRequests::Mergeability::CheckRebaseStatusService, feature_ca
             stub_feature_flags(rebase_on_merge_automatic: true)
           end
 
-          it 'returns a check result with inactive status' do
-            expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::INACTIVE_STATUS
+          context 'when automatic_rebase_enabled is true' do
+            before do
+              allow(project.project_setting).to receive(:automatic_rebase_enabled).and_return(true)
+            end
+
+            it 'returns a check result with inactive status' do
+              expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::INACTIVE_STATUS
+            end
+          end
+
+          context 'when automatic_rebase_enabled is false' do
+            before do
+              allow(project.project_setting).to receive(:automatic_rebase_enabled).and_return(false)
+            end
+
+            it 'returns a check result with status failed' do
+              expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+              expect(result.payload[:identifier]).to eq(:need_rebase)
+            end
           end
         end
       end

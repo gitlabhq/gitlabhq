@@ -7,7 +7,7 @@ const modalID = 'fake-id';
 const path = 'topic/path/1';
 const name = 'Topic 1';
 
-jest.mock('lodash/uniqueId', () => () => 'fake-id');
+jest.mock('lodash', () => ({ ...jest.requireActual('lodash'), uniqueId: () => 'fake-id' }));
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 describe('RemoveAvatar', () => {

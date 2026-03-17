@@ -1,3 +1,8 @@
+commit-msg:
+  scripts:
+    'lint_commit_message':
+      runner: bash
+
 pre-push:
   parallel: true
   skip:
@@ -72,7 +77,7 @@ pre-push:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{doc/api/openapi/openapi_v2.yaml,doc/api/openapi/openapi_v3.yaml,*.rb}'
-      run: bundle exec rake gitlab:openapi:v3:check_docs gitlab:openapi:v2:check_docs
+      run: GITLAB_SIMULATE_SAAS=false bundle exec rake gitlab:openapi:v3:check_docs gitlab:openapi:v2:check_docs
     vale: # Requires Vale: https://docs.gitlab.com/development/documentation/testing/vale/
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
@@ -153,17 +158,26 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{tests.yml,*.rb,scripts/verify-tff-mapping}'
       run: scripts/verify-tff-mapping
+    commit-message-linting:
+      tags: style
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      run: echo {files} >/dev/null && bundle exec ruby scripts/lint/commit_linter.rb
     secrets-detection:
       tags: secrets
       run: .lefthook/gitleaks.sh pre-push
     permissions_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{config/authz/permissions/**/*.yml,config/authz/permission_groups/**/*.yml,{,ee/}app/policies/**/*.rb,{,ee/}lib/api/**/*.rb}'
+      glob: '{config/authz/permissions/**/*.yml,config/authz/permission_groups/**/*.yml,lib/tasks/gitlab/permissions/**/*.rb,{,ee/}app/policies/**/*.rb,{,ee/}lib/api/**/*.rb}'
       run: bundle exec rake gitlab:permissions:validate
     check-deprecated-files:
       tags: backend frontend view haml
       run: scripts/lint/check_deprecated_files.rb
+    unused-methods-linter:
+      tags: backend
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: '*.{haml,rb,erb}'
+      run: scripts/lint/unused_methods.rb
     validate-fast-spec-helper:
       tags: backend test
       files: git diff --name-only --diff-filter=A $(git merge-base origin/master HEAD)..HEAD
@@ -251,10 +265,19 @@ pre-commit:
       root: ee/frontend_islands
       glob: 'ee/frontend_islands/apps/**/*.{ts,vue}'
       run: 'yarn run lint:types'
+    role-permissions-ordering:
+      tags: backend style
+      files: git diff --name-only --diff-filter=d --staged
+      glob: 'config/authz/roles/*.yml'
+      run: ruby scripts/lint/sort_role_permissions.rb
     secrets-detection-clickhouse:
       tags: backend database
       glob: 'db/click_house/main.sql'
       run: scripts/lint-clickhouse-migrations.sh
+    gitaly-version-check:
+      tags: gitaly
+      glob: "{Gemfile.lock,VERSION}"
+      run: 'scripts/lint/gitaly_version.rb'
 
 auto-fix:
   parallel: true
@@ -289,6 +312,11 @@ auto-fix:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
       glob: '{,ee/}app/graphql/*.rb'
       run: bundle exec rake gitlab:graphql:compile_docs
+    role-permissions-ordering:
+      tags: backend style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
+      glob: 'config/authz/roles/*.yml'
+      run: ruby scripts/lint/sort_role_permissions.rb --fix
     markdownlint:
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached

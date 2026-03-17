@@ -66,6 +66,7 @@ describe('WorkItemChildrenWrapper', () => {
     disableContent = false,
     canUpdate = false,
     showClosed = true,
+    hiddenMetadataKeys = [],
     moveWorkItemMutationHandler = moveWorkItemMutationSuccessHandler,
     getWorkItemTypeConfigurationMock = getWorkItemTypeConfiguration,
   } = {}) => {
@@ -101,6 +102,7 @@ describe('WorkItemChildrenWrapper', () => {
         disableContent,
         canUpdate,
         showClosed,
+        hiddenMetadataKeys,
         parent: workItemByIidResponseFactory().data.namespace.workItem,
       },
       provide: {
@@ -120,6 +122,14 @@ describe('WorkItemChildrenWrapper', () => {
     expect(workItemLinkChildren.at(0).props().childItem.confidential).toBe(
       childrenWorkItems[0].confidential,
     );
+  });
+
+  it('passes hiddenMetadataKeys to child components', () => {
+    const hiddenKeys = ['weight', 'milestone', 'iteration'];
+    createComponent({ hiddenMetadataKeys: hiddenKeys });
+
+    const workItemLinkChildren = findWorkItemLinkChildItems();
+    expect(workItemLinkChildren.at(0).props('hiddenMetadataKeys')).toEqual(hiddenKeys);
   });
 
   it('does not render children when show closed toggle is off', async () => {
@@ -311,15 +321,17 @@ describe('WorkItemChildrenWrapper', () => {
       wrapper.findComponent(Draggable).vm.$emit('end', dragParams);
       await waitForPromises();
 
-      expect(moveWorkItemMutationSuccessHandler).toHaveBeenCalledWith({
-        input: {
-          id: 'gid://gitlab/WorkItem/6',
-          adjacentWorkItemId: 'gid://gitlab/WorkItem/5',
-          relativePosition: 'BEFORE',
-        },
-        endCursor: '',
-        pageSize: 2, // number of children
-      });
+      expect(moveWorkItemMutationSuccessHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            id: 'gid://gitlab/WorkItem/6',
+            adjacentWorkItemId: 'gid://gitlab/WorkItem/5',
+            relativePosition: 'BEFORE',
+          },
+          endCursor: '',
+          pageSize: 2, // number of children
+        }),
+      );
     });
 
     it('calls move mutation with hierarchy params when changing parent', async () => {
@@ -331,16 +343,18 @@ describe('WorkItemChildrenWrapper', () => {
       });
       await waitForPromises();
 
-      expect(moveWorkItemMutationSuccessHandler).toHaveBeenCalledWith({
-        input: {
-          id: 'gid://gitlab/WorkItem/6',
-          parentId: 'gid://gitlab/WorkItem/5',
-          adjacentWorkItemId: undefined,
-          relativePosition: undefined,
-        },
-        endCursor: '',
-        pageSize: 1, // number of children
-      });
+      expect(moveWorkItemMutationSuccessHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            id: 'gid://gitlab/WorkItem/6',
+            parentId: 'gid://gitlab/WorkItem/5',
+            adjacentWorkItemId: undefined,
+            relativePosition: undefined,
+          },
+          endCursor: '',
+          pageSize: 1, // number of children
+        }),
+      );
     });
 
     it('emits error and updates cache when change parent mutation fails', async () => {
@@ -461,6 +475,7 @@ describe('WorkItemChildrenWrapper', () => {
               parentId: null,
             },
           },
+          useWorkItemFeatures: false,
         });
       });
 

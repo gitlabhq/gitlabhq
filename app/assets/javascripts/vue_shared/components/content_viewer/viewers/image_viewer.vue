@@ -1,5 +1,5 @@
 <script>
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { encodeSaferUrl } from '~/lib/utils/url_utility';
 

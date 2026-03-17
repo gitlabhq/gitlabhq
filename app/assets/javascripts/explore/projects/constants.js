@@ -6,7 +6,7 @@ import ResourceListsEmptyState, {
 } from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { PAGINATION_TYPE_KEYSET } from '~/groups_projects/constants';
-import { SORT_OPTION_UPDATED, SORT_OPTIONS } from '~/projects/filtered_search_and_sort/constants';
+import { SORT_OPTIONS, SORT_OPTION_CREATED } from '~/projects/filtered_search_and_sort/constants';
 import projectsQuery from '~/explore/projects/graphql/queries/projects.query.graphql';
 
 const baseTab = {
@@ -25,7 +25,7 @@ const baseTab = {
   formatter: formatGraphQLProjects,
   queryErrorMessage: __('Projects could not be loaded. Refresh the page to try again.'),
   sortOptions: SORT_OPTIONS,
-  defaultSortOption: SORT_OPTION_UPDATED,
+  defaultSortOption: SORT_OPTION_CREATED,
   query: projectsQuery,
   queryPath: 'projects',
 };

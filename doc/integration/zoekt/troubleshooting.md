@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Global Search
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Zoekt
 ---
 
@@ -9,7 +9,7 @@ title: Troubleshooting Zoekt
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
+- Status: Limited availability
 
 {{< /details >}}
 

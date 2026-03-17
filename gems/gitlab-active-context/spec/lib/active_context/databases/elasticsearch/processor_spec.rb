@@ -3,11 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
-  let(:collection) { double('collection', current_search_embedding_version: search_embedding_version) }
+  let(:collection) do
+    klass = Class.new(Test::Collections::Mock) do
+      def self.collection_name
+        'items'
+      end
+    end
+
+    allow(klass).to receive(:collection_record).and_return(
+      double("CollectionRecord", search_embedding_model: { field: 'preset_field', model_ref: 'model_001' })
+    )
+
+    klass
+  end
+
   let(:user) { double('user') }
-  let(:search_embedding_version) { { field: 'preset_field', model: model, class: Test::Embeddings } }
   let(:generated_embedding) { [0.5, 0.6] }
-  let(:model) { 'some-model' }
 
   it_behaves_like 'a query processor'
 
@@ -23,12 +34,6 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
         vector: [0.1, 0.2],
         k: 5
       )
-    end
-
-    before do
-      allow(ActiveContext::Embeddings).to receive(:generate_embeddings)
-        .with(anything, version: search_embedding_version, user: user)
-        .and_return([generated_embedding])
     end
 
     context 'with filter queries' do
@@ -251,6 +256,9 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
       end
 
       it 'handles content-based KNN queries' do
+        allow_any_instance_of(::ActiveContext::EmbeddingModel).to receive(:generate_embeddings)
+          .with('Sample text for embedding', user: user).and_return([generated_embedding])
+
         content_knn = ActiveContext::Query.knn(
           content: 'Sample text for embedding',
           k: 5
@@ -260,7 +268,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
 
         expect(result).to eq(
           knn: {
-            field: 'preset_field',
+            field: :preset_field,
             query_vector: generated_embedding,
             k: 5,
             num_candidates: 50
@@ -482,6 +490,128 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
               bool: {
                 must: [
                   { bool: { must_not: { exists: { field: 'embedding' } } } }
+                ]
+              }
+            }
+          }
+        )
+      end
+    end
+
+    context 'with exists queries' do
+      it 'creates an exists query for a single field' do
+        query = ActiveContext::Query.exists('embedding')
+        result = processor.process(query)
+
+        expect(result).to eq(
+          query: {
+            bool: {
+              must: [
+                { exists: { field: 'embedding' } }
+              ]
+            }
+          }
+        )
+      end
+
+      it 'combines exists queries with OR logic' do
+        query = ActiveContext::Query.or(
+          ActiveContext::Query.exists('embedding_v1'),
+          ActiveContext::Query.exists('embedding_v2')
+        )
+        result = processor.process(query)
+
+        expect(result).to eq(
+          query: {
+            bool: {
+              should: [
+                { bool: { must: [{ exists: { field: 'embedding_v1' } }] } },
+                { bool: { must: [{ exists: { field: 'embedding_v2' } }] } }
+              ],
+              minimum_should_match: 1
+            }
+          }
+        )
+      end
+
+      it 'combines filter with exists query using AND' do
+        query = ActiveContext::Query.filter(project_id: 1).exists('embedding')
+        result = processor.process(query)
+
+        expect(result).to eq(
+          query: {
+            bool: {
+              must: [
+                { bool: { must: [{ term: { project_id: 1 } }] } },
+                { exists: { field: 'embedding' } }
+              ]
+            }
+          }
+        )
+      end
+
+      it 'combines multiple filter conditions with exists query' do
+        query = ActiveContext::Query.filter(status: 'active', project_id: [1, 2, 3]).exists('embedding')
+        result = processor.process(query)
+
+        expect(result).to eq(
+          query: {
+            bool: {
+              must: [
+                { bool: { must: [{ term: { status: 'active' } }, { terms: { project_id: [1, 2, 3] } }] } },
+                { exists: { field: 'embedding' } }
+              ]
+            }
+          }
+        )
+      end
+
+      it 'applies exists filter inside KNN query' do
+        query = ActiveContext::Query.exists('embedding').knn(
+          target: 'embedding',
+          vector: [0.1, 0.2],
+          k: 5
+        )
+
+        result = processor.process(query)
+
+        expect(result).to eq(
+          knn: {
+            field: 'embedding',
+            query_vector: [0.1, 0.2],
+            k: 5,
+            num_candidates: 50,
+            filter: {
+              bool: {
+                must: [
+                  { exists: { field: 'embedding' } }
+                ]
+              }
+            }
+          }
+        )
+      end
+
+      it 'combines filter with exists and applies inside KNN query' do
+        query = ActiveContext::Query.filter(status: 'active').exists('embedding').knn(
+          target: 'embedding',
+          vector: [0.1, 0.2],
+          k: 5
+        )
+
+        result = processor.process(query)
+
+        expect(result).to eq(
+          knn: {
+            field: 'embedding',
+            query_vector: [0.1, 0.2],
+            k: 5,
+            num_candidates: 50,
+            filter: {
+              bool: {
+                must: [
+                  { bool: { must: [{ term: { status: 'active' } }] } },
+                  { exists: { field: 'embedding' } }
                 ]
               }
             }

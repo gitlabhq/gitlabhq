@@ -572,26 +572,11 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
 
     let(:integration_with_fields) { integration_with_fields_class.new }
 
-    context 'when pipeline_status_change_notifications feature flag is enabled' do
-      it 'includes the notify_only_when_pipeline_status_changes field' do
-        field_names = integration_with_fields.fields.map(&:name)
+    it 'includes the notify_only_when_pipeline_status_changes field' do
+      field_names = integration_with_fields.fields.map(&:name)
 
-        expect(field_names).to include('notify_only_when_pipeline_status_changes')
-        expect(field_names).to include('other_field')
-      end
-    end
-
-    context 'when pipeline_status_change_notifications feature flag is disabled' do
-      before do
-        stub_feature_flags(pipeline_status_change_notifications: false)
-      end
-
-      it 'excludes the notify_only_when_pipeline_status_changes field' do
-        field_names = integration_with_fields.fields.map(&:name)
-
-        expect(field_names).not_to include('notify_only_when_pipeline_status_changes')
-        expect(field_names).to include('other_field')
-      end
+      expect(field_names).to include('notify_only_when_pipeline_status_changes')
+      expect(field_names).to include('other_field')
     end
   end
 end

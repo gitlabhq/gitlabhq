@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: How to create, clone, and use GitLab repositories.
 title: Repository
 ---
@@ -42,9 +42,9 @@ You can add files to a repository:
 To add or upload a file from the GitLab UI:
 
 <!-- Original source for this list: doc/user/project/repository/web_editor.md#upload-a-file -->
-<!-- For why we duplicated the info, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478 -->
+<!-- For why we duplicated the info, see <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111072#note_1267429478> -->
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to the directory you want to upload the file to.
 1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **Upload file**.
 1. Drop or upload your file.
@@ -77,7 +77,7 @@ You can clone a repository using the:
 
 To download a repository's source code as a compressed file:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Above the file list, select **Code**.
 1. From the options, select the files you want to download:
 
@@ -103,7 +103,7 @@ change. For example, this occurs if Git or a third-party library that GitLab use
 To view all repository files and folders at a specific Git revision, such as a commit SHA,
 branch name, or tag:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. At the top, select to open the **Select Git revision** dropdown list.
 1. Select or search for a Git revision.
 
@@ -135,13 +135,13 @@ To change this behavior and include additional file types in the default setting
    ```
 
 This feature can use excessive CPU. If you experience an issue, see the
-[Repository Languages: excessive CPU use](files/_index.md#repository-languages-excessive-cpu-use) troubleshooting section.
+[excessive CPU use](files/_index.md#repository-languages-excessive-cpu-use) troubleshooting section.
 
 ## Repository contributor analytics
 
 You can view a line chart with the number of commits to the selected project branch over time,
 and line charts with the number of commits by each project member.
-For more information, see [Contributor analytics](../../analytics/contributor_analytics.md).
+For more information, see [contributor analytics](../../analytics/contributor_analytics.md).
 
 ## Repository history graph
 
@@ -179,11 +179,11 @@ After you change a path, you must update the existing URL in the following resou
   instead of the numeric namespace and project IDs.
 - [Docker image references](../../../ci/yaml/_index.md#image).
 - Variables that specify a project or namespace.
-- [CODEOWNERS file](../codeowners/_index.md#codeowners-file).
+- [`CODEOWNERS` file](../codeowners/_index.md#codeowners-file).
 
 ## Related topics
 
-- [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md)
+- [GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/_index.md)
 - [Lock files and prevent change conflicts](../file_lock.md)
 - [Repository API](../../../api/repositories.md)
 - [Files](files/_index.md)
@@ -197,7 +197,7 @@ After you change a path, you must update the existing URL in the following resou
 ### Search sequence of pushes to a repository
 
 If it seems that a commit has gone "missing", search the sequence of pushes to a repository.
-[This StackOverflow article](https://stackoverflow.com/questions/13468027/the-mystery-of-the-missing-commit-across-merges)
+This [Stack Overflow thread](https://stackoverflow.com/questions/13468027/the-mystery-of-the-missing-commit-across-merges)
 describes how you can end up in this state without a force push. Another cause can be a misconfigured
 [server hook](../../../administration/server_hooks.md) that changes a HEAD ref in a `git reset` operation.
 

@@ -6,7 +6,7 @@ module Mutations
       class Update < BaseUpdate
         graphql_name 'UpdateBoardList'
 
-        argument :list_id, Types::GlobalIDType[List],
+        argument :list_id, Types::GlobalIDType[List], # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
           required: true,
           loads: Types::BoardListType,
           description: 'Global ID of the list.'

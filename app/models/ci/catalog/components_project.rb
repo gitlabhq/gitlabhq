@@ -56,17 +56,6 @@ module Ci
         ComponentData.new(content: content, path: path)
       end
 
-      # TODO: This may retrieve the wrong component object if a simple and a complex component
-      # have the same name for the given catalog resource version. We should complete
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/450737 to ensure unique component names.
-      def find_catalog_component(component_name)
-        # Multiple versions of a project can have the same sha, so we return the latest one.
-        version = project.catalog_resource_versions.by_sha(sha).latest
-        return unless version
-
-        version.components.template.find_by_name(component_name)
-      end
-
       def find_catalog_components(component_names)
         return [] if component_names.empty?
 

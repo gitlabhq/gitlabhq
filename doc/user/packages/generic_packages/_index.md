@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab generic packages repository
 ---
 
@@ -26,7 +26,7 @@ The generic packages repository provides:
 To interact with the package registry, you must authenticate with one of the following methods:
 
 - A [personal access token](../../profile/personal_access_tokens.md) with the scope set to `api`.
-- A [project access token](../../project/settings/project_access_tokens.md) with the scope set to `api` and at least the Developer role.
+- A [project access token](../../project/settings/project_access_tokens.md) with the scope set to `api` and the Developer, Maintainer, or Owner role.
 - A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
 - A [deploy token](../../project/deploy_tokens/_index.md) with the scope set to `read_package_registry`, `write_package_registry`, or both.
 
@@ -545,11 +545,9 @@ Prerequisites:
 To get checksums in response headers, you must either:
 
 - Disable object storage so files are stored locally.
-- Enable object storage, but disable direct download
-(files are served through GitLab Workhorse). When object
-storage direct download is enabled, files are redirected
-to the object storage provider, and custom headers like
-`X-Checksum-SHA256` cannot be included in the redirect response.
+- Enable object storage, but disable direct download (files are served through GitLab Workhorse).
+  When object storage direct download is enabled, files are redirected to the object storage provider,
+  and custom headers like `X-Checksum-SHA256` cannot be included in the redirect response.
 
 ```shell
 # Download a file and get the checksum from the response header
@@ -597,11 +595,9 @@ Prerequisites:
 To verify checksums in CI/CD pipelines, you must either:
 
 - Disable object storage so files are stored locally.
-- Enable object storage, but disable direct download
-(files are served through GitLab Workhorse). When object
-storage direct download is enabled, files are redirected
-to the object storage provider, and custom headers like
-`X-Checksum-SHA256` cannot be included in the redirect response.
+- Enable object storage, but disable direct download (files are served through GitLab Workhorse).
+  When object storage direct download is enabled, files are redirected to the object storage provider,
+  and custom headers like `X-Checksum-SHA256` cannot be included in the redirect response.
 
 ```yaml
 verify_download:
@@ -647,7 +643,7 @@ Prerequisites:
 
 To disable publishing duplicate file names:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Packages and registries**.
 1. In the **Generic** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.

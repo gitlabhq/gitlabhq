@@ -12,7 +12,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
   end
 
   describe 'enums' do
-    it {
+    it do
       is_expected.to define_enum_for(:package_type).with_values(
         conan: Packages::Package.package_types[:conan],
         generic: Packages::Package.package_types[:generic],
@@ -22,9 +22,9 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
         nuget: Packages::Package.package_types[:nuget],
         pypi: Packages::Package.package_types[:pypi]
       )
-    }
+    end
 
-    it {
+    it do
       is_expected.to(
         define_enum_for(:minimum_access_level_for_push)
           .with_values(
@@ -34,23 +34,23 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
           )
           .with_prefix(:minimum_access_level_for_push)
       )
-    }
+    end
 
-    it {
+    it do
       is_expected.to(
         define_enum_for(:minimum_access_level_for_delete)
           .with_values(owner: Gitlab::Access::OWNER, admin: Gitlab::Access::ADMIN)
           .with_prefix(:minimum_access_level_for_delete)
       )
-    }
+    end
 
-    it {
+    it do
       is_expected.to define_enum_for(:pattern_type).with_values(wildcard: 0).with_prefix(:pattern_type)
-    }
+    end
 
-    it {
+    it do
       is_expected.to define_enum_for(:target_field).with_values(package_name: 0).with_prefix(:target_field)
-    }
+    end
   end
 
   describe 'validations' do
@@ -100,13 +100,13 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
           if params[:allowed]
             it { is_expected.to allow_value(value).for(column_name) }
           else
-            it {
+            it do
               is_expected.not_to(
                 allow_value(value)
                 .for(column_name)
                 .with_message(/should be a valid #{package_type} package name with optional wildcard characters./i)
               )
-            }
+            end
           end
         end
       end
@@ -468,7 +468,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     end
 
     let_it_be(:project2) { create(:project) }
-    let_it_be(:project2_ppr) do create(:package_protection_rule, project: project2) end
+    let_it_be(:project2_ppr) { create(:package_protection_rule, project: project2) }
 
     let_it_be(:unprotected_project) { create(:project) }
 

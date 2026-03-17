@@ -33,7 +33,7 @@ module AntiAbuse
       end
 
       def error(message)
-        ServiceResponse.error(message: message)
+        ServiceResponse.error(message: message, payload: abuse_report)
       end
     end
   end

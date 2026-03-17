@@ -1,4 +1,4 @@
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
 
 export const clamp = (n, min, max) => Math.max(Math.min(n, max), min);

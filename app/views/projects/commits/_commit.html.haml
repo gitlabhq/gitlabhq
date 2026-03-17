@@ -86,7 +86,7 @@
         .btn-group.gl-hidden{ class: '@sm/panel:gl-flex' }
           = render Pajamas::ButtonComponent.new(label: true, button_text_classes: 'gl-font-monospace', button_options: { class: 'dark:!gl-bg-neutral-800' }) do
             = commit.short_id
-          = clipboard_button(text: commit.id, category: :primary, size: :medium, title: _("Copy commit SHA"))
+          = clipboard_button(text: commit.id, category: :primary, size: :medium, title: _("Copy commit SHA"), aria_label: _("Copy commit SHA %{sha}") % { sha: commit.short_id })
           = link_to_browse_code(project, commit)
 
       - if is_blob_page

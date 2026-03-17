@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Operations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Standalone PostgreSQL for Linux package installations
 ---
 
@@ -55,8 +55,7 @@ together with the Linux package. This is recommended as part of our
    # Replace POSTGRESQL_PASSWORD_HASH with a generated md5 value
    postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
 
-   # Replace XXX.XXX.XXX.XXX/YY with Network Address
-   # ????
+   # Replace APPLICATION_SERVER_IP_BLOCKS with with Network Address (XXX.XXX.XXX.XXX/YY)
    postgresql['trust_auth_cidr_addresses'] = %w(APPLICATION_SERVER_IP_BLOCKS)
 
    # Disable automatic database migrations

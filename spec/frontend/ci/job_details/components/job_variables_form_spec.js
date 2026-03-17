@@ -30,7 +30,6 @@ const defaultProvide = {
 };
 const defaultProps = {
   jobId: mockId,
-  isExpanded: false,
 };
 
 describe('Job Variables Form', () => {
@@ -119,7 +118,7 @@ describe('Job Variables Form', () => {
       await createComponent();
     });
 
-    it('renders collapsed by default when isExpanded is false', () => {
+    it('renders collapsed by default', () => {
       expect(findCollapse().props('visible')).toBe(false);
     });
 

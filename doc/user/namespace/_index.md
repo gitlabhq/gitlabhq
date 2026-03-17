@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Namespaces
 description: Learn more about different types of namespaces.
 ---
@@ -52,5 +52,5 @@ projects.
 
 You can find the group and project ID in the UI:
 
-- [Find the group ID](../../user/group/_index.md#find-the-group-id).
-- [Find the project ID](../../user/project/working_with_projects.md#find-the-project-id).
+- [Find the group ID](../group/_index.md#find-the-group-id).
+- [Find the project ID](../project/working_with_projects.md#find-the-project-id).

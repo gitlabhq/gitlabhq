@@ -75,17 +75,17 @@ export const integrationTriggerEvents = {
 export const integrationTriggerEventTitles = {
   [integrationTriggerEvents.PUSH]: s__('IntegrationEvents|A push is made to the repository'),
   [integrationTriggerEvents.ISSUE]: s__(
-    'IntegrationEvents|An issue is created, closed, or reopened',
+    'IntegrationEvents|A work item is created, closed, or reopened',
   ),
   [integrationTriggerEvents.CONFIDENTIAL_ISSUE]: s__(
-    'IntegrationEvents|A confidential issue is created, closed, or reopened',
+    'IntegrationEvents|A confidential work item is created, closed, or reopened',
   ),
   [integrationTriggerEvents.MERGE_REQUEST]: s__(
     'IntegrationEvents|A merge request is created, merged, closed, or reopened',
   ),
   [integrationTriggerEvents.NOTE]: s__('IntegrationEvents|A comment is added'),
   [integrationTriggerEvents.CONFIDENTIAL_NOTE]: s__(
-    'IntegrationEvents|An internal note or comment on a confidential issue is added',
+    'IntegrationEvents|An internal note or comment on a confidential work item is added',
   ),
   [integrationTriggerEvents.TAG_PUSH]: s__(
     'IntegrationEvents|A tag is pushed to the repository or removed',

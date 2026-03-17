@@ -110,6 +110,21 @@ const restrictedImportsPatterns = {
     message:
       'Avoid importing from `@gitlab/ui/dist`. Our build uses aliases to force importing gitlab-ui from source, using `/dist` may have no effect.',
   },
+  react: {
+    group: ['react', 'react-dom/*'],
+    message: 'We do not allow usage of React in our codebase except for the graphql_explorer',
+  },
+};
+
+const restrictedImportsAll = {
+  paths: Object.values(restrictedImportsPaths),
+  patterns: Object.values(restrictedImportsPatterns),
+};
+
+const restrictedImportPatternsFromCE = {
+  group: ['ee/**/*'],
+  message:
+    'The `ee` import alias is only allowed in the `ee` directory. See https://docs.gitlab.com/development/ee_features/#separation-of-ee-code-in-the-frontend.',
 };
 
 const baseNoRestrictedSyntax = [
@@ -411,21 +426,8 @@ export default [
       'no-restricted-imports': [
         'error',
         {
-          paths: [
-            restrictedImportsPaths.axios,
-            restrictedImportsPaths.mousetrap,
-            restrictedImportsPaths.sentry,
-            restrictedImportsPaths.vuex,
-          ],
-
-          patterns: [
-            {
-              group: ['react', 'react-dom/*'],
-              message:
-                'We do not allow usage of React in our codebase except for the graphql_explorer',
-            },
-            restrictedImportsPatterns.gitlabUiDist,
-          ],
+          ...restrictedImportsAll,
+          patterns: [...restrictedImportsAll.patterns, restrictedImportPatternsFromCE],
         },
       ],
 
@@ -453,6 +455,13 @@ export default [
       'local-rules/vue-require-valid-help-page-link-component': 'error',
       'local-rules/vue-require-vue-constructor-name': 'error',
       'local-rules/no-orphaned-feature-flag-references': 'error',
+    },
+  },
+  /** Overrides for EE files to be allowed to import from EE */
+  {
+    files: ['ee/**/*.{js,vue}'],
+    rules: {
+      'no-restricted-imports': ['error', restrictedImportsAll],
     },
   },
   {

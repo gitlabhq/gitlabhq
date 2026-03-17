@@ -1,5 +1,5 @@
 import { GlSearchBoxByType, GlInfiniteScroll } from '@gitlab/ui';
-import { head } from 'lodash';
+import { head } from 'lodash-es';
 import { nextTick } from 'vue';
 import mockProjects from 'test_fixtures_static/projects.json';
 import { trimText } from 'helpers/text_helper';

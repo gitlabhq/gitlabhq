@@ -1,14 +1,13 @@
 ---
 stage: Application Security Testing
 group: Composition Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Vulnerability risk assessment data
 ---
 
 Use vulnerability risk data to help assess the potential impact to your environment.
 
 - Severity: Each vulnerability is assigned a standardized GitLab severity value.
-
 - For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/) catalog,
   the following data can be retrieved through the [vulnerability details](_index.md) page or by using a GraphQL query:
   - Likelihood of exploitation: [Exploit Prediction Scoring System (EPSS)](https://www.first.org/epss) score.

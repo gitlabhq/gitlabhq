@@ -126,20 +126,6 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
       end
     end
 
-    context 'when running with EE features', if: Gitlab.ee? do
-      it 'validates that fields parameter is available' do
-        post_list_tools
-
-        tools = json_response['result']['tools']
-        search_tool = tools.find { |tool| tool['name'] == 'search' }
-
-        fields_property = search_tool['inputSchema']['properties']['fields']
-
-        expect(fields_property).to be_present
-        expect(fields_property['type']).to eq('array')
-      end
-    end
-
     it 'validates read-only tools have readOnlyHint annotation' do
       post_list_tools
 

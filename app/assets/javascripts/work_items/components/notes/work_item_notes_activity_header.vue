@@ -1,4 +1,7 @@
 <script>
+import { DUO_CHAT_AGENT_PLANNER, DUO_CHAT_QUICK_ACTION_SUMMARIZE } from '~/ai/constants';
+import { s__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemActivitySortFilter from '~/work_items/components/notes/work_item_activity_sort_filter.vue';
 import { ASC } from '~/notes/constants';
 import {
@@ -11,10 +14,12 @@ import {
 
 export default {
   components: {
+    DuoChatQuickAction: () => import('ee_component/ai/shared/widgets/duo_chat_quick_action.vue'),
     AiSummarizeNotes: () =>
       import('ee_component/notes/components/note_actions/ai_summarize_notes.vue'),
     WorkItemActivitySortFilter,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     canSummarizeComments: {
       type: Boolean,
@@ -55,9 +60,21 @@ export default {
     },
   },
   computed: {
+    summarizeTracking() {
+      return { label: 'work_item_view_summary', property: this.workItemType };
+    },
     headerClasses() {
       return this.smallHeaderStyle ? 'gl-text-base gl-m-0' : 'gl-text-size-h1 gl-m-0';
     },
+    useDuoQuickAction() {
+      return this.glFeatures.duoQuickAction;
+    },
+  },
+  buttonOptions: { size: 'small' },
+  classicQuickAction: DUO_CHAT_QUICK_ACTION_SUMMARIZE,
+  summarizeCommand: {
+    agent: { name: DUO_CHAT_AGENT_PLANNER },
+    agenticPrompt: s__('AI|Summarize the comments on this issue.'),
   },
   WORK_ITEM_ACTIVITY_FILTER_OPTIONS,
   WORK_ITEM_NOTES_FILTER_KEY,
@@ -74,12 +91,23 @@ export default {
       <component :is="useH2 ? 'h2' : 'h3'" :class="headerClasses">
         {{ s__('WorkItem|Activity') }}
       </component>
-      <ai-summarize-notes
-        v-if="canSummarizeComments"
-        :resource-global-id="workItemId"
-        :work-item-type="workItemType"
-        size="small"
-      />
+      <template v-if="canSummarizeComments">
+        <duo-chat-quick-action
+          v-if="useDuoQuickAction"
+          :button-text="s__('AISummary|View summary')"
+          :resource-id="workItemId"
+          :tracking-info="summarizeTracking"
+          :classic-quick-action="$options.classicQuickAction"
+          :command="$options.summarizeCommand"
+          :button-options="$options.buttonOptions"
+        />
+        <ai-summarize-notes
+          v-else
+          size="small"
+          :resource-global-id="workItemId"
+          :work-item-type="workItemType"
+        />
+      </template>
     </div>
     <div class="gl-flex gl-gap-3">
       <work-item-activity-sort-filter

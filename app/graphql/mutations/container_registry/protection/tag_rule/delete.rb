@@ -19,7 +19,6 @@ module Mutations
           field :container_protection_tag_rule,
             Types::ContainerRegistry::Protection::TagRuleType,
             null: true,
-            experiment: { milestone: '17.8' },
             description: 'Deleted protection rule for container image tags.'
 
           def resolve(id:, **_kwargs)

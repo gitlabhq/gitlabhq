@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Value stream analytics
 ---
 
@@ -286,12 +286,12 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 - You must create a custom value stream. Value stream analytics only shows custom value streams created for your group or project.
 
 To view value stream analytics for your group or project:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Value stream analytics**.
 1. To view metrics for a particular stage, select a stage below the **Filter results** text box.
 1. Optional. Filter the results:
@@ -383,7 +383,7 @@ Prerequisites:
 
 To view lifecycle metrics:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Value stream analytics**.
    Lifecycle metrics display below the **Filter results** text box.
 1. Optional. Filter the results:
@@ -397,7 +397,7 @@ To view lifecycle metrics:
 
 To view the [Value Streams Dashboard](../../analytics/value_streams_dashboard.md) and [DORA metrics](../../analytics/dora_metrics.md):
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Value stream analytics**.
 1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
 1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL
@@ -409,7 +409,7 @@ Value stream analytics shows the median time spent by issues or merge requests i
 
 To view the median time spent in each stage by a group:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Value stream analytics**.
 1. Optional. Filter the results:
    1. Select the **Filter results** text box.
@@ -439,7 +439,7 @@ The chart uses the global page filters to display data based on the selected gro
 
 To view tasks by type:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **Value stream analytics**.
 1. Below the **Filter results** text box, select **Overview**. The **Tasks by type** chart displays below the **Total time** chart.
 1. Optional. To filter the tasks by type, select **Settings** ({{< icon name="settings" >}}), then **Issues** or **Merge Requests**.
@@ -465,7 +465,7 @@ To view tasks by type:
 
 To create a value stream with default stages:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Value Stream analytics**.
 1. Select **New Value Stream**.
 1. Enter a name for the value stream.
@@ -485,7 +485,7 @@ To create a value stream with default stages:
 
 To create a value stream with custom stages:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Value Stream analytics**.
 1. Select **New value stream**.
 1. For each stage:
@@ -542,7 +542,7 @@ The first value stream uses standard timestamp-based events for defining the sta
 
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Value stream analytics**.
 1. From the value stream dropdown list, select the value stream you want to edit.
 1. Next to the value stream dropdown list, select **Edit**.
@@ -566,7 +566,7 @@ After you create a value stream, you can customize it to suit your purposes. To 
 
 To delete a custom value stream:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Value stream analytics**.
 1. From the value stream dropdown list, select the value stream you want to delete, then **Delete (name of value stream)**.
 1. To confirm, select **Delete**.
@@ -583,7 +583,7 @@ To delete a custom value stream:
 The **Total time chart** shows the average number of days it takes for development cycles to complete.
 The chart shows data for the last 500 workflow items.
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Value stream analytics**.
 1. Above the **Filter results** box, select a stage:
    - To view a summary of the cycle time for all stages, select **Overview**.
@@ -604,7 +604,7 @@ Access permissions for value stream analytics depend on the project type.
 |--------------|---------------------------------------------------|
 | Public       | Anyone can access.                                |
 | Internal     | Any authenticated user can access.                |
-| Private      | Any user with at least the Guest role can access. |
+| Private      | Any user with the Guest, Planner, Reporter, Developer, Maintainer, or Owner role can access. |
 
 ## Value Stream Analytics GraphQL API
 
@@ -633,7 +633,7 @@ The following metrics are available:
 
 Prerequisites:
 
-- You must have at least the Reporter role.
+- You must have the Reporter, Developer, Maintainer, or Owner role.
 
 First, you must determine which value stream you want to use in the reporting.
 

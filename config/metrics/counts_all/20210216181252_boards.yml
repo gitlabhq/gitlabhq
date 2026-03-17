@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.boards
 description: Count of Boards created
 product_group: project_management
+product_categories:
+- portfolio_management
 value_type: number
 status: active
 time_frame: all

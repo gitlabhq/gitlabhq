@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Compliance
-info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: 'Tutorial: Create a compliance pipeline (deprecated)'
 ---
 
@@ -61,7 +61,7 @@ projects with the compliance framework applied.
 
 To create the compliance pipeline project:
 
-1. On the top bar, select **Search or go to** and find the `Tutorial group` group.
+1. In the top bar, select **Search or go to** and find the `Tutorial group` group.
 1. Select **New project**.
 1. Select **Create blank project**.
 1. In the **Project name** field, enter `Tutorial compliance project`.
@@ -69,7 +69,7 @@ To create the compliance pipeline project:
 
 To add compliance pipeline configuration to `Tutorial compliance project`:
 
-1. On the top bar, select **Search or go to** and find the `Tutorial compliance project` project.
+1. In the top bar, select **Search or go to** and find the `Tutorial compliance project` project.
 1. Select **Build** > **Pipeline editor**.
 1. Select **Configure pipeline**.
 1. In the pipeline editor, replace the default configuration with:
@@ -89,7 +89,7 @@ The compliance framework is configured in the [new group](#create-a-new-group).
 
 To configure the compliance framework:
 
-1. On the top bar, select **Search or go to** and find the `Tutorial group` group.
+1. In the top bar, select **Search or go to** and find the `Tutorial group` group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework**.
@@ -102,7 +102,7 @@ To configure the compliance framework:
 
 For convenience, make the new compliance framework the default for all new projects in the group:
 
-1. On the top bar, select **Search or go to** and find the `Tutorial group` group.
+1. In the top bar, select **Search or go to** and find the `Tutorial group` group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select `Tutorial compliance framework` then, select **Edit framework**.
@@ -116,7 +116,7 @@ compliance pipeline configuration in their pipelines.
 
 To create a new project for running the compliance pipeline configuration:
 
-1. On the top bar, select **Search or go to** and find the `Tutorial group` group.
+1. In the top bar, select **Search or go to** and find the `Tutorial group` group.
 1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. In the **Project name** field, enter `Tutorial project`.
@@ -130,7 +130,7 @@ pipeline configuration in `Tutorial compliance project`.
 
 To run the compliance pipeline configuration in `Tutorial project`:
 
-1. On the top bar, select **Search or go to** and find the `Tutorial project` project.
+1. In the top bar, select **Search or go to** and find the `Tutorial project` project.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. On the **New pipeline** page, select **Run pipeline**.
@@ -148,7 +148,7 @@ compliance pipeline configuration to refer to it.
 
 To create the regular pipeline configuration:
 
-1. On the top bar, select **Search or go to** and find the `Tutorial project` project.
+1. In the top bar, select **Search or go to** and find the `Tutorial project` project.
 1. Select **Build** > **Pipeline editor**.
 1. Select **Configure pipeline**.
 1. In the pipeline editor, replace the default configuration with:
@@ -164,7 +164,7 @@ To create the regular pipeline configuration:
 
 To combine the new project pipeline configuration with the compliance pipeline configuration:
 
-1. On the top bar, select **Search or go to** and find the `Tutorial compliance project` project.
+1. In the top bar, select **Search or go to** and find the `Tutorial compliance project` project.
 1. Select **Build** > **Pipeline editor**.
 1. In the existing configuration, add:
 
@@ -178,7 +178,7 @@ To combine the new project pipeline configuration with the compliance pipeline c
 
 To confirm the regular pipeline configuration is combined with the compliance pipeline configuration:
 
-1. On the top bar, select **Search or go to** and find the `Tutorial project` project.
+1. In the top bar, select **Search or go to** and find the `Tutorial project` project.
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. On the **New pipeline** page, select **Run pipeline**.

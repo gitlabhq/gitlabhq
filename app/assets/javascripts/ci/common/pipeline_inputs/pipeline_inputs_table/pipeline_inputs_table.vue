@@ -87,7 +87,7 @@ export default {
       </template>
       <template #cell(type)="{ item }">
         <span
-          >{{ item.type }}
+          >{{ item.type.toLowerCase() }}
           <help-icon
             v-if="isArrayType(item.type)"
             v-gl-tooltip.hover

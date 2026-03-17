@@ -399,7 +399,7 @@ export default class LabelsSelect {
     // see: http://2ality.com/2016/05/template-literal-whitespace.html#joining-arrays
 
     const linkOpenTag =
-      '<a href="<%- issueUpdateURL.slice(0, issueUpdateURL.lastIndexOf("/")) %>?label_name[]=<%- encodeURIComponent(label.title) %>" class="gl-link gl-label-link has-tooltip" <%= linkAttrs %> title="<%= tooltipTitleTemplate({ label, isScopedLabel, enableScopedLabels, escapeStr }) %>">';
+      '<a href="<%- issueUpdateURL.slice(0, issueUpdateURL.lastIndexOf("/")) %>?label_name[]=<%- encodeURIComponent(label.title) %>" class="gl-link gl-label-link has-tooltip" <%= linkAttrs %> title="<%= tooltipTitleTemplate({ label, isScopedLabel, enableScopedLabels, escapeStr }) %>" aria-label="<%- label.title %>">';
     const labelTemplate = template(
       [
         '<span class="gl-label">',

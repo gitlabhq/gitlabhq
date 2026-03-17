@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Passkeys
 description: Passwordless authentication and 2FA using passkeys
 ---
@@ -54,7 +54,7 @@ and usage details:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Select **Manage authentication**.
 1. In the **Passkey sign-in** section, view your passkeys.
 
@@ -74,7 +74,7 @@ To add a passkey:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Select **Manage authentication**.
 1. In the **Passkey sign-in** section, select **Add passkey**.
 1. Follow the prompts on your device or browser.
@@ -122,7 +122,7 @@ To delete a passkey:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Select **Manage authentication**.
 1. In the **Passkey sign-in** section, find the passkey you want to delete.
 1. Next to the passkey, select **Delete** ({{< icon name="remove" >}}).

@@ -6,5 +6,10 @@ ActiveContext.configure do |config|
   config.logger = ::Gitlab::ActiveContext::Logger.build
 
   config.queue_classes = []
-  config.queue_classes.concat([::Ai::ActiveContext::Queues::Code]) if Gitlab.ee?
+  if Gitlab.ee?
+    config.queue_classes.concat([
+      ::Ai::ActiveContext::Queues::Code,
+      ::Ai::ActiveContext::Queues::CodeBackfill
+    ])
+  end
 end

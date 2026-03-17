@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Reduce package registry storage
 ---
 
@@ -24,7 +24,7 @@ You should implement a regular cleanup strategy to reduce package registry bloat
 
 To review the storage **Usage breakdown**:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Usage quotas**.
 1. From the **Usage quotas** page, review the **Usage breakdown** for packages.
 
@@ -35,16 +35,15 @@ must delete the package and republish it.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- The Maintainer or Owner role for the project.
 
 To delete a package:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Deploy** > **Package registry**.
 1. From the **Package registry** page, select the package you want to delete.
-   - Or, from the **Package registry** page,
-   select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
-   and select **Delete package**.
+   - Or, from the **Package registry** page, select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
+     and select **Delete package**.
 1. On the **Delete package version** confirmation dialog, select **Permanently delete**.
 
 The package is permanently deleted.
@@ -62,11 +61,11 @@ Delete assets associated with a package to reduce storage.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- The Maintainer or Owner role for the project.
 
 To delete package assets:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Deploy** > **Package registry**.
 1. From the **Package registry** page, select a package to view additional details.
 1. From the **Assets** table, find the name of the assets you want to delete.
@@ -95,11 +94,11 @@ have to delete them manually.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 By default, the packages cleanup policy is disabled. To enable it:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Manage storage used by package assets**, set the rules appropriately.

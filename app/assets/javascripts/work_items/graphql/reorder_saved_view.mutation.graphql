@@ -1,0 +1,10 @@
+# @feature_category: portfolio_management
+
+mutation workItemSavedViewReorder($input: WorkItemSavedViewReorderInput!) {
+  workItemSavedViewReorder(input: $input) {
+    savedView {
+      id
+    }
+    errors
+  }
+}

@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Provision
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Activate GitLab Enterprise Edition (EE) to unlock Premium and Ultimate features. Learn activation steps, license options, and troubleshooting tips.
 title: Activate GitLab Enterprise Edition (EE)
 ---
@@ -137,11 +137,10 @@ This can be caused by:
 
     Contact your network administrator to make changes to an existing proxy or firewall.
   - If an SSL inspection appliance is used, you must add the appliance's root CA certificate to `/etc/gitlab/trusted-certs` on your instance, then run `gitlab-ctl reconfigure`.
-
 - **Customers Portal is not operational**:
   - Check for any active disruptions to the Customers Portal on [status](https://status.gitlab.com/).
-
 - **An offline environment**:
-  - If you are unable to configure your setup to allow connection to GitLab servers, contact your Sales Representative to request an [Offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license).
-
-    For assistance, you can contact [GitLab support](https://about.gitlab.com/support/#contact-support) with reference to [troubleshooting network connectivity](https://handbook.gitlab.com/handbook/support/license-and-renewals/workflows/self-managed/troubleshoot_cloud_licensing/#troubleshooting-network-connectivity).
+  - Check [DNS settings](https://docs.gitlab.com/omnibus/settings/dns/).
+  - Contact either:
+    - Your GitLab sales representative to request an [offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license).
+    - [GitLab Support](https://about.gitlab.com/support/#contact-support) to request assistance with [troubleshooting network connectivity](https://handbook.gitlab.com/handbook/support/license-and-renewals/workflows/self-managed/troubleshoot_cloud_licensing/#troubleshooting-network-connectivity).

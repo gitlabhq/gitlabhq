@@ -12,7 +12,9 @@ import getAccessTokenPermissions from '~/personal_access_tokens/graphql/get_acce
 import {
   mockAccessTokenPermissionsQueryResponse,
   mockGroupPermissions,
+  mockGroupPermissionsByResource,
   mockUserPermissions,
+  mockUserPermissionsByResource,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -110,9 +112,13 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
     });
 
     it('filters permissions by target boundaries', () => {
+      expect(findResourcesList().props('scope')).toBe('namespace');
       expect(findResourcesList().props('permissions')).toStrictEqual(mockGroupPermissions);
-      expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
-      expect(findPermissionsList().props('targetBoundaries')).toEqual(['GROUP', 'PROJECT']);
+
+      expect(findPermissionsList().props('permissionsByResource')).toEqual(
+        mockGroupPermissionsByResource,
+      );
+      expect(findPermissionsList().props('scope')).toEqual('namespace');
     });
 
     it('filters user permissions correctly', async () => {
@@ -120,16 +126,23 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
 
       await waitForPromises();
 
+      expect(findResourcesList().props('scope')).toBe('user');
       expect(findResourcesList().props('permissions')).toStrictEqual(mockUserPermissions);
-      expect(findPermissionsList().props('permissions')).toStrictEqual(mockUserPermissions);
-      expect(findPermissionsList().props('targetBoundaries')).toEqual(['USER']);
+
+      expect(findPermissionsList().props('permissionsByResource')).toEqual(
+        mockUserPermissionsByResource,
+      );
+      expect(findPermissionsList().props('scope')).toEqual('user');
     });
 
     it('searches by permission description', async () => {
       await findSearchBox().vm.$emit('input', 'Repository');
 
       expect(findResourcesList().props('permissions')).toStrictEqual([mockGroupPermissions[2]]);
-      expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
+
+      expect(findPermissionsList().props('permissionsByResource')).toEqual(
+        mockGroupPermissionsByResource,
+      );
     });
 
     it('searches by permission category', async () => {
@@ -138,9 +151,12 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
       expect(findResourcesList().props('permissions')).toStrictEqual([
         mockGroupPermissions[0],
         mockGroupPermissions[1],
+        mockGroupPermissions[3],
       ]);
 
-      expect(findPermissionsList().props('permissions')).toStrictEqual(mockGroupPermissions);
+      expect(findPermissionsList().props('permissionsByResource')).toEqual(
+        mockGroupPermissionsByResource,
+      );
     });
 
     it('shows message when no matches are found', async () => {
@@ -189,18 +205,26 @@ describe('PersonalAccessTokenPermissionsSelector', () => {
     });
 
     it('handles `remove-resource` event', async () => {
-      await findResourcesList().vm.$emit('input', ['project', 'repository']);
+      await findResourcesList().vm.$emit('input', ['project', 'repository', 'contributed_project']);
 
-      await findPermissionsList().vm.$emit('input', ['read_project', 'read_repository']);
+      await findPermissionsList().vm.$emit('input', [
+        'read_project',
+        'read_repository',
+        'read_contributed_project',
+      ]);
 
-      expect(wrapper.emitted('input')[0]).toEqual([['read_project', 'read_repository']]);
+      expect(wrapper.emitted('input')[0]).toEqual([
+        ['read_project', 'read_repository', 'read_contributed_project'],
+      ]);
 
       // simulate unchecking `project` resource
       await findPermissionsList().vm.$emit('remove-resource', 'project');
 
       await nextTick();
 
-      expect(wrapper.emitted('input')[1]).toEqual([['read_repository']]);
+      expect(wrapper.emitted('input')[1]).toEqual([
+        ['read_repository', 'read_contributed_project'],
+      ]);
     });
   });
 });

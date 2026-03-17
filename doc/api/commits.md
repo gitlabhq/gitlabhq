@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Documentation for the REST API for Git commits in GitLab.
 title: Commits API
 ---
@@ -36,6 +36,12 @@ For more information, see [issue 389582](https://gitlab.com/gitlab-org/gitlab/-/
 
 ## List repository commits
 
+{{< history >}}
+
+- `follow` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225733) in GitLab 18.10.
+
+{{< /history >}}
+
 Get a list of repository commits in a project.
 
 ```plaintext
@@ -48,6 +54,7 @@ GET /projects/:id/repository/commits
 | `all`          | boolean        | No       | Retrieve every commit from the repository. If `true`, the `ref_name` parameter is ignored. |
 | `author`       | string         | No       | Search commits by commit author. |
 | `first_parent` | boolean        | No       | If `true`, follows only the first parent commit upon seeing a merge commit. |
+| `follow`       | boolean        | No       | If `true`, follows file renames when filtering commits by `path`, and returns commits for the file even if it was renamed. If `false`, returns only commits where the file existed at its current path. Used only when `path` specifies a single file. Defaults to `true`. |
 | `order`        | string         | No       | List commits in order. Possible values: `default`, [`topo`](https://git-scm.com/docs/git-log#Documentation/git-log.txt---topo-order). Defaults to `default`, the commits are shown in reverse chronological order. |
 | `path`         | string         | No       | The file path. |
 | `ref_name`     | string         | No       | The name of a repository branch, tag or revision range, or if not given the default branch. |
@@ -173,7 +180,7 @@ POST /projects/:id/repository/commits
    In that case, `force` has no effect because the result is the same as a regular commit.
 
 > [!note]
-> Large requests with many actions may be subject to size limits. For more information, see [Commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).
+> Large requests with many actions may be subject to size limits. For more information, see [commits API limits](../administration/instance_limits.md#commits-and-files-api-limits).
 
 | `actions[]` Attribute | Type    | Required | Description |
 |-----------------------|---------|----------|-------------|
@@ -788,9 +795,9 @@ In any of the previous cases, the response of `line`, `line_type` and `path` is
 set to `null`.
 
 For other approaches to commenting on a merge request, see
-[Create a merge request note](notes.md#create-a-merge-request-note) in the Notes API,
-and [Create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
-in the Discussions API.
+[create a merge request note](notes.md#create-a-merge-request-note) in the notes API,
+and [create a new thread in the merge request diff](discussions.md#create-a-new-thread-in-the-merge-request-diff)
+in the discussions API.
 
 ```plaintext
 POST /projects/:id/repository/commits/:sha/comments

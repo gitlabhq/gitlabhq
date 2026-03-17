@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Types of pipelines
 ---
 
@@ -19,6 +19,7 @@ Multiple types of pipelines can run in a project, including:
 - Merge request pipelines
 - Merged results pipelines
 - Merge trains
+- Workload pipelines (for the GitLab Duo Agent Platform only)
 
 These types of pipelines all appear on the **Pipelines** tab of a merge request.
 
@@ -103,3 +104,15 @@ to run as a merge request pipeline, enable merged results pipelines, and enable 
 These pipelines display a `merge train` label in pipeline lists.
 
 For more information, see [merge trains](merge_trains.md).
+
+## Workload pipeline
+
+Workload pipelines are the execution environment for GitLab Duo Agent Platform workloads.
+
+Workload pipelines:
+
+- Run on ephemeral Git references which follow this naming convention: `refs/workloads/<identifier>`.
+- Have the source `duo_workflow` in pipeline lists.
+- Workload refs are automatically removed when the pipeline job finishes or fails.
+
+A link to the workload pipeline is available from the agent or platform session.

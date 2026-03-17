@@ -10,7 +10,6 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/issues/constants';
-import { timeFor } from '~/lib/utils/datetime_utility';
 import SidebarDropdown from '~/sidebar/components/sidebar_dropdown.vue';
 import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.vue';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
@@ -113,7 +112,12 @@ describe('SidebarDropdownWidget', () => {
     await waitForApollo();
   };
 
-  const createComponent = ({ data = {}, mutationPromise = mutationSuccess, queries = {} } = {}) => {
+  const createComponent = ({
+    data = {},
+    mutationPromise = mutationSuccess,
+    queries = {},
+    issuableAttribute = IssuableAttributeType.Milestone,
+  } = {}) => {
     wrapper = shallowMountExtended(SidebarDropdownWidget, {
       provide: { canUpdate: true },
       data() {
@@ -124,7 +128,7 @@ describe('SidebarDropdownWidget', () => {
         attrWorkspacePath: '',
         iid: '',
         issuableType: TYPE_ISSUE,
-        issuableAttribute: IssuableAttributeType.Milestone,
+        issuableAttribute,
       },
       mocks: {
         $apollo: {
@@ -154,7 +158,12 @@ describe('SidebarDropdownWidget', () => {
       createComponent({
         data: {
           issuable: {
-            attribute: { id: 'id', title: 'title', webUrl: 'webUrl', dueDate: '2021-09-09' },
+            attribute: {
+              id: 'gid://gitlab/Milestone/1',
+              title: 'title',
+              webUrl: 'webUrl',
+              dueDate: '2021-09-09',
+            },
           },
         },
         stubs: {
@@ -200,8 +209,41 @@ describe('SidebarDropdownWidget', () => {
       expect(findSelectedAttribute().text()).toBe('Some milestone title');
     });
 
-    it('displays time for milestone due date in tooltip', () => {
-      expect(findDateTooltip().value).toBe(timeFor('2021-09-09'));
+    it('does not display tooltip for milestone when popover is supported', () => {
+      expect(findDateTooltip().value).toBeNull();
+    });
+
+    it('applies popover attributes to the milestone link', () => {
+      expect(findGlLink().attributes()).toMatchObject({
+        'data-reference-type': 'milestone',
+        'data-placement': 'left',
+        'data-milestone': '1',
+      });
+      expect(findGlLink().classes()).toContain('has-popover');
+    });
+
+    describe('when popover is not supported', () => {
+      beforeEach(() => {
+        createComponent({
+          issuableAttribute: 'labels',
+          data: {
+            issuable: {
+              attribute: {
+                id: 'gid://gitlab/Label/1',
+              },
+            },
+          },
+        });
+      });
+
+      it('displays tooltip', () => {
+        expect(findDateTooltip().value).not.toBeNull();
+      });
+
+      it('does not apply popover attributes to the link', () => {
+        expect(findGlLink().classes()).not.toContain('has-popover');
+        expect(findGlLink().attributes('data-reference-type')).toBeUndefined();
+      });
     });
 
     describe('when current attribute does not exist', () => {

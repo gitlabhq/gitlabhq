@@ -35,7 +35,7 @@
   "last_ci_minutes_notification_at": null,
   "last_ci_minutes_usage_notification_level": null,
   "subgroup_creation_level": 1,
-  "emails_disabled": null,
+  "emails_enabled": true,
   "max_pages_size": null,
   "max_artifacts_size": null
 }

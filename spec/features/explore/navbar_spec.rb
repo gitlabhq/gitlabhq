@@ -13,4 +13,21 @@ RSpec.describe '"Explore" navbar', :js, :with_current_organization, feature_cate
       visit explore_projects_path
     end
   end
+
+  context 'when explore_analytics_dashboards feature is disabled' do
+    before do
+      stub_feature_flags(explore_analytics_dashboards: false)
+
+      sign_in(user)
+      visit explore_projects_path
+    end
+
+    it 'renders the correct nav items' do
+      within_testid('nav-container') do
+        items = all('[data-testid="nav-item-link-label"]').collect(&:text)
+
+        expect(items).not_to include("Analytics dashboards")
+      end
+    end
+  end
 end

@@ -2,6 +2,8 @@
 
 RSpec.shared_examples 'a valid Direct Transfer GraphQL query' do |variables|
   let(:graphql_log) do
+    RequestStore.store[:graphql_logs] = []
+
     GitlabSchema.execute(
       query.to_s,
       variables: variables || query.variables

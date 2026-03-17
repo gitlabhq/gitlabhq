@@ -4,17 +4,12 @@ class IssuablePolicy < BasePolicy
   delegate { subject_container }
 
   condition(:locked, scope: :subject, score: 0) { @subject.discussion_locked? }
-  condition(:is_project_member) { subject_container.member?(@user) }
+  condition(:is_container_member) { subject_container.member?(@user) }
   condition(:can_read_issuable) { can?(:"read_#{@subject.to_ability_name}") }
 
   desc "User is the assignee or author"
   condition(:assignee_or_author) do
     @user && @subject.assignee_or_author?(@user)
-  end
-
-  desc "User has planner or reporter access"
-  condition(:planner_or_reporter_access) do
-    can?(:reporter_access) || can?(:planner_access)
   end
 
   condition(:is_author) { @subject&.author == @user }
@@ -35,7 +30,7 @@ class IssuablePolicy < BasePolicy
     enable :reopen_merge_request
   end
 
-  rule { locked & ~is_project_member }.policy do
+  rule { locked & ~is_container_member }.policy do
     prevent :create_note
     prevent :admin_note
     prevent :award_emoji
@@ -49,7 +44,11 @@ class IssuablePolicy < BasePolicy
     enable :admin_incident_management_timeline_event
   end
 
-  rule { planner_or_reporter_access }.policy do
+  rule { can?(:reporter_access) }.policy do
+    enable :create_timelog
+  end
+
+  rule { can?(:planner_access) }.policy do
     enable :create_timelog
   end
 

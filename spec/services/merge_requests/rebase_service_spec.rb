@@ -220,7 +220,7 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
 
       it 'clears rebase_jid' do
         expect { service.execute(merge_request) }
-          .to change(merge_request, :rebase_jid)
+          .to change { merge_request.rebase_jid }
           .from(rebase_jid)
           .to(nil)
       end

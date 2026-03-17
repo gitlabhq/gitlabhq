@@ -2,7 +2,7 @@
 
 module JiraConnect
   class OauthApplicationIdsController < ApplicationController
-    feature_category :integrations
+    feature_category :team_planning
 
     skip_before_action :verify_atlassian_jwt!
 

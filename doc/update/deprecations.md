@@ -1,7 +1,7 @@
 ---
 stage: none
 group: none
-info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>"
 toc: false
 title: Deprecations and removals by version
 ---
@@ -28,30 +28,121 @@ DO NOT EDIT THIS PAGE DIRECTLY
 
 This page is automatically generated from the template located at
 `data/deprecations/templates/_deprecation_template.md.erb`, using
-the YAML files in `/data/deprecations` by the rake task
+the YAML files in `/data/deprecations` by the Rake task
 located at `lib/tasks/gitlab/docs/compile_deprecations.rake`,
 
 For deprecation authors (usually Product Managers and Engineering Managers):
 
 - To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template.
 - For more information about authoring deprecations, check the the deprecation item guidance:
-  https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
+  <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 
 For deprecation reviewers (Technical Writers only):
 
 - To update the deprecation doc, run: `bin/rake gitlab:docs:compile_deprecations`
 - To verify the deprecations doc is up to date, run: `bin/rake gitlab:docs:check_deprecations`
 - For more information about updating the deprecation doc, see the deprecation doc update guidance:
-  https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
+  <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 -->
 
 ## GitLab 20.0
+
+### Compliance pipelines
+
+- Announced in GitLab 17.3
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/11275).
+
+Currently, there are two ways to ensure that compliance- or security-related jobs are run in a project pipeline:
+
+- [Compliance pipelines](https://docs.gitlab.com/user/compliance/compliance_pipelines/).
+- [Security policies](https://docs.gitlab.com/user/application_security/policies/).
+
+To provide a single place for ensuring required jobs are run in all pipelines for a project, we have deprecated
+compliance pipelines in GitLab 17.3 and will remove the feature in GitLab 20.0.
+
+Customers should migrate from compliance pipelines to the new
+[pipeline execution policy type](https://docs.gitlab.com/user/application_security/policies/pipeline_execution_policies/)
+as soon as possible.
+
+For more information, see the relevant:
+
+- [Migration guide](https://docs.gitlab.com/user/compliance/compliance_pipelines/#pipeline-execution-policies-migration).
+- [Blog post](https://about.gitlab.com/blog/why-gitlab-is-deprecating-compliance-pipelines-in-favor-of-security-policies/).
+
+### Legacy group-level audit event streaming destination GraphQL APIs
+
+- Announced in GitLab 18.10
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/work_items/12339).
+
+The following group-level GraphQL APIs for audit event streaming destinations are deprecated and will be removed in GitLab 20.0.
+
+Deprecated mutations:
+
+- `externalAuditEventDestinationCreate` — use `groupAuditEventStreamingDestinationsCreate` instead.
+- `externalAuditEventDestinationDestroy` — use `groupAuditEventStreamingDestinationsDelete` instead.
+- `externalAuditEventDestinationUpdate` — use `groupAuditEventStreamingDestinationsUpdate` instead.
+- `googleCloudLoggingConfigurationCreate` — use `groupAuditEventStreamingDestinationsCreate` with `gcpLogging` category instead.
+- `googleCloudLoggingConfigurationDestroy` — use `groupAuditEventStreamingDestinationsDelete` instead.
+- `googleCloudLoggingConfigurationUpdate` — use `groupAuditEventStreamingDestinationsUpdate` instead.
+- `auditEventsAmazonS3ConfigurationCreate` — use `groupAuditEventStreamingDestinationsCreate` with `amazonS3` category instead.
+- `auditEventsAmazonS3ConfigurationDelete` — use `groupAuditEventStreamingDestinationsDelete` instead.
+- `auditEventsAmazonS3ConfigurationUpdate` — use `groupAuditEventStreamingDestinationsUpdate` instead.
+- `auditEventsStreamingHeadersCreate` — configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingHeadersDestroy` — configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingHeadersUpdate` — configure headers by using the streaming destination configuration using `groupAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingDestinationEventsAdd` — use `auditEventsGroupDestinationEventsAdd` instead.
+- `auditEventsStreamingDestinationEventsRemove` — use `auditEventsGroupDestinationEventsRemove` instead.
+- `auditEventsStreamingHttpNamespaceFiltersAdd` — use `auditEventsGroupDestinationNamespaceFilterCreate` instead.
+- `auditEventsStreamingHttpNamespaceFiltersDelete` — use `auditEventsGroupDestinationNamespaceFilterDelete` instead.
+
+Deprecated group fields:
+
+- `Group.externalAuditEventDestinations` — use `Group.externalAuditEventStreamingDestinations` instead.
+- `Group.googleCloudLoggingConfigurations` — use `Group.externalAuditEventStreamingDestinations` with `gcpLogging` category instead.
+- `Group.amazonS3Configurations` — use `Group.externalAuditEventStreamingDestinations` with `amazonS3` category instead.
+
+The new unified streaming destination APIs support all destination categories (HTTP, Google Cloud Logging, Amazon S3) through a single set of endpoints with a `category` parameter.
+
+### Legacy instance-level audit event streaming destination GraphQL APIs
+
+- Announced in GitLab 18.10
+- Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/work_items/12339).
+
+The following instance-level GraphQL APIs for audit event streaming destinations are deprecated and will be removed in GitLab 20.0.
+
+Deprecated mutations:
+
+- `instanceExternalAuditEventDestinationCreate` — use `instanceAuditEventStreamingDestinationsCreate` instead.
+- `instanceExternalAuditEventDestinationDestroy` — use `instanceAuditEventStreamingDestinationsDelete` instead.
+- `instanceExternalAuditEventDestinationUpdate` — use `instanceAuditEventStreamingDestinationsUpdate` instead.
+- `instanceGoogleCloudLoggingConfigurationCreate` — use `instanceAuditEventStreamingDestinationsCreate` with `gcpLogging` category instead.
+- `instanceGoogleCloudLoggingConfigurationDestroy` — use `instanceAuditEventStreamingDestinationsDelete` instead.
+- `instanceGoogleCloudLoggingConfigurationUpdate` — use `instanceAuditEventStreamingDestinationsUpdate` instead.
+- `auditEventsInstanceAmazonS3ConfigurationCreate` — use `instanceAuditEventStreamingDestinationsCreate` with `amazonS3` category instead.
+- `auditEventsInstanceAmazonS3ConfigurationDelete` — use `instanceAuditEventStreamingDestinationsDelete` instead.
+- `auditEventsInstanceAmazonS3ConfigurationUpdate` — use `instanceAuditEventStreamingDestinationsUpdate` instead.
+- `auditEventsStreamingInstanceHeadersCreate` — configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingInstanceHeadersDestroy` — configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingInstanceHeadersUpdate` — configure headers by using the streaming destination configuration using `instanceAuditEventStreamingDestinationsUpdate`.
+- `auditEventsStreamingDestinationInstanceEventsAdd` — use `auditEventsInstanceDestinationEventsAdd` instead.
+- `auditEventsStreamingDestinationInstanceEventsRemove` — use `auditEventsInstanceDestinationEventsRemove` instead.
+
+Deprecated query fields:
+
+- `instanceExternalAuditEventDestinations` — use `auditEventsInstanceStreamingDestinations` instead.
+- `instanceGoogleCloudLoggingConfigurations` — use `auditEventsInstanceStreamingDestinations` with `gcpLogging` category instead.
+- `auditEventsInstanceAmazonS3Configurations` — use `auditEventsInstanceStreamingDestinations` with `amazonS3` category instead.
+
+The new unified streaming destination APIs support all destination categories (HTTP, Google Cloud Logging, Amazon S3) through a single set of endpoints with a `category` parameter.
 
 ### Support for NGINX Ingress, HAProxy, and Traefik charts
 
 - Announced in GitLab 18.9
 - Removal in GitLab 20.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6226).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590799).
 
 The GitLab Helm chart bundles several Ingress controllers as an alternative to
 the default Envoy Gateway which uses the Kubernetes Gateway API.
@@ -67,11 +158,20 @@ Alternatively, you can deploy and configure an
 
 ## GitLab 19.1
 
+### Elasticsearch 7.x no longer supported for advanced search
+
+- Announced in GitLab 18.10
+- Removal in GitLab 19.1 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/583544).
+
+The [maintenance term for Elasticsearch 7.x](https://www.elastic.co/support/eol) ended on 2026-01-15.
+For GitLab Self-Managed, administrators must upgrade their Elasticsearch instance to use advanced search.
+
 ### Linux package support for Amazon Linux 2
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.1 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/work_items/14395).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590802).
 
 In GitLab 19.1, we are removing Amazon Linux 2 (AL2) package builds for the Linux package.
 
@@ -106,25 +206,6 @@ To migrate to the `azure_v2` driver:
 
 For more information about updating your storage driver configuration, see [use object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage).
 
-### Compliance pipelines
-
-- Announced in GitLab 17.3
-- Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/11275).
-
-Currently, there are two ways to ensure compliance- or security-related jobs are run in a project pipeline:
-
-- [Compliance pipelines](https://docs.gitlab.com/user/group/compliance_pipelines/).
-- [Security policies](https://docs.gitlab.com/user/application_security/policies/).
-
-To provide a single place for ensuring required jobs are run in all pipelines for a project, we have deprecated
-compliance pipelines in GitLab 17.3 and will remove the feature in GitLab 19.0.
-
-Customers should migrate from compliance pipelines to the new
-[pipeline execution policy type](https://docs.gitlab.com/user/application_security/policies/pipeline_execution_policies/)
-as soon as possible.
-For details, see the [migration guide](https://docs.gitlab.com/user/group/compliance_pipelines/#pipeline-execution-policies-migration) and [blog post](https://about.gitlab.com/blog/why-gitlab-is-deprecating-compliance-pipelines-in-favor-of-security-policies/).
-
 ### Container Registry AWS S3 Signature Version 2 support
 
 - Announced in GitLab 17.8
@@ -151,7 +232,7 @@ If you encounter any issues after making these changes, try regenerating your AW
 
 - Announced in GitLab 18.6
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/issues/14413).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/work_items/20375).
 
 In GitLab 19.0, GitLab will begin deprecation of Design Management. Design Management allows users to upload design assets such as wireframes and mockups to GitLab issues for collaboration. We've made this decision after careful consideration of existing usage and estimated customer impact. The ongoing maintenance required for Design Management outweighed the current usage, and we're focusing our efforts on solutions that better align with modern designer workflows. In GitLab 19.0 and later, users will no longer be able to upload new designs. Existing designs will remain available in read-only mode until GitLab 20.0, giving users time to save their designs as needed. GitLab is exploring alternatives that better integrate with the tools designers already use.
 
@@ -186,7 +267,7 @@ This limit ensures consistent service quality and performance across GitLab.com 
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/work_items/14411).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590801).
 
 We are ending support for SUSE distributions in GitLab 19.0. This affects:
 
@@ -226,7 +307,7 @@ to help you migrate.
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/work_items/14319).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590798).
 
 In GitLab 19.0, we plan to remove bundled Mattermost from the Linux package.
 
@@ -295,7 +376,7 @@ If you're on GitLab Self-Managed or GitLab Dedicated, to find out if you're impa
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-com/Product/-/work_items/14404).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590796).
 
 In GitLab 19.0, we are removing [Spamcheck](https://docs.gitlab.com/administration/reporting/spamcheck/) from the
 Linux package and GitLab Helm chart.
@@ -316,7 +397,7 @@ No data migration is required. Configuration guidance is available in the linked
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6226).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590800).
 
 The GitLab Helm chart currently bundles NGINX Ingress as the default networking component. With
 NGINX Ingress reaching end-of-life in March 2026, we are transitioning to Gateway API with Envoy
@@ -352,11 +433,41 @@ be attempted with 18.11. Make sure you have enough disk space to accommodate the
 
 For more information, see [Upgrade packaged PostgreSQL server](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server).
 
+### Support for Redis 6
+
+- Announced in GitLab 18.10
+- Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/585839).
+
+In GitLab 19.0, we plan to remove support for Redis 6 as part of our commitment to maintaining a secure and
+supportable infrastructure stack.
+
+Before upgrading to GitLab 19.0, you must be running either:
+
+- Redis 7.2.
+- Valkey 7.2, which is available in beta from GitLab 18.9 with general availability planned for GitLab 19.0.
+
+The bundled Redis included with the Linux package has used Redis 7 since GitLab 16.2 and is not affected.
+Only GitLab Self-Managed instances using an external Redis 6 deployment must migrate.
+
+See the following resources for migrating an external Redis 6 deployment:
+
+- **AWS ElastiCache**: Upgrade your Redis 6 instance to Redis 7.2 or Valkey 7.2. For available upgrade paths, see
+  [AWS ElastiCache documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/supported-engine-versions.html).
+- **GCP Memorystore**: Upgrade your Redis 6 instance to Redis 7.2 or Valkey 7.2. For available upgrade paths, see
+  [GCP Memorystore documentation](https://cloud.google.com/memorystore/docs/redis/supported-versions).
+- **Azure Cache for Redis**: A managed Redis 7.2 or Valkey 7.2 option is not currently available on Azure. You can
+  self-host Redis 7.2 or Valkey 7.2 on Azure VMs or AKS. You can also use the GitLab Linux package installation method,
+  which will support Valkey 7.2 with general availability planned for GitLab 19.0.
+- **Self-hosted**: Upgrade your Redis 6 instance to Redis 7.2 or Valkey 7.2.
+
+For more information, see the [requirements documentation](https://docs.gitlab.com/install/requirements/).
+
 ### Support for bundled PostgreSQL, Redis, and MinIO in GitLab Helm chart
 
 - Announced in GitLab 18.9
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6271).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/work_items/590797).
 
 The GitLab Helm chart bundles a Bitnami PostgreSQL, Bitnami Redis, and
 a fork of the official MinIO chart to make setting up GitLab easier. Because of several
@@ -405,7 +516,7 @@ To continue to use `heroku/builder:22` after GitLab 19.0, set `AUTO_DEVOPS_BUILD
 
 - Announced in GitLab 18.8
 - Removal in GitLab 19.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/583607).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/work_items/18493).
 
 The **Trending** tab in **Explore** > **Projects** and its associated GraphQL arguments are deprecated in GitLab 18.8 and will be removed in GitLab 19.0.
 In the month before the GitLab 19.0 release, the ***Trending** tab redirects to the **Active** tab sorted by stars in descending order on GitLab.com.
@@ -1885,15 +1996,15 @@ Users are advised to upgrade to 3.8.8 or greater.
 - Removal in GitLab 17.0 ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/439687).
 
-- For Linux package (Omnibus) installations, the [`sidekiq['min_concurrency']` and `sidekiq['max_concurrency']`](https://docs.gitlab.com/administration/sidekiq/extra_sidekiq_processes/#manage-thread-counts-explicitly) settings are deprecated in GitLab 16.9 and will be removed in GitLab 17.0.
+For Linux package (Omnibus) installations, the [`sidekiq['min_concurrency']` and `sidekiq['max_concurrency']`](https://docs.gitlab.com/administration/sidekiq/extra_sidekiq_processes/#manage-thread-counts-explicitly) settings are deprecated in GitLab 16.9 and will be removed in GitLab 17.0.
 
-  You can use `sidekiq['concurrency']` in GitLab 16.9 and later to set thread counts explicitly in each process.
+You can use `sidekiq['concurrency']` in GitLab 16.9 and later to set thread counts explicitly in each process.
 
-  The above change only applies to Linux package (Omnibus) installations.
+The above change only applies to Linux package (Omnibus) installations.
 
-- For GitLab Helm chart installations, passing `SIDEKIQ_CONCURRENCY_MIN` and/or `SIDEKIQ_CONCURRENCY_MAX` as `extraEnv` to the `sidekiq` sub-chart is deprecated in GitLab 16.10 and will be removed in GitLab 17.0.
+For GitLab Helm chart installations, passing `SIDEKIQ_CONCURRENCY_MIN` and/or `SIDEKIQ_CONCURRENCY_MAX` as `extraEnv` to the `sidekiq` sub-chart is deprecated in GitLab 16.10 and will be removed in GitLab 17.0.
 
-  You can use the `concurrency` option to set thread counts explicitly in each process.
+You can use the `concurrency` option to set thread counts explicitly in each process.
 
 ### Offset pagination for `/users` REST API endpoint is deprecated
 
@@ -2137,12 +2248,12 @@ If your self-hosted Sentry version is 21.4.1 or earlier, you may not be able to 
 To continue sending errors from your GitLab instance to your Sentry instance, upgrade Sentry to version 21.5.0 or later. For more information,
 see [Sentry documentation](https://develop.sentry.dev/self-hosted/releases/).
 
-NOTE:
-The deprecated support is for
-[GitLab instance error tracking features](https://docs.gitlab.com/omnibus/settings/configuration/#error-reporting-and-logging-with-sentry)
-for administrators. The deprecated support does not relate to
-[GitLab error tracking](https://docs.gitlab.com/operations/error_tracking/#sentry-error-tracking) for
-developers' own deployed applications.
+> [!note]
+> The deprecated support is for
+> [GitLab instance error tracking features](https://docs.gitlab.com/omnibus/settings/configuration/#error-reporting-and-logging-with-sentry)
+> for administrators. The deprecated support does not relate to
+> [GitLab error tracking](https://docs.gitlab.com/operations/error_tracking/#sentry-error-tracking) for
+> developers' own deployed applications.
 
 ### Support for setting custom schema for backup is deprecated
 
@@ -3596,8 +3707,8 @@ In GitLab 15.4, GitLab SAST will no longer use the following analyzers:
 - [Gosec](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Go)
 - [Bandit](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Python)
 
-NOTE:
-This change was originally planned for GitLab 15.0 and was postponed to GitLab 15.4.
+> [!note]
+> This change was originally planned for GitLab 15.0 and was postponed to GitLab 15.4.
 
 These analyzers will be removed from the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) and replaced with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 Effective immediately, they will receive only security updates; other routine improvements or updates are not guaranteed.

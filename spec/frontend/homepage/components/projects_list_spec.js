@@ -4,11 +4,17 @@ import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import ProjectsList from '~/homepage/components/projects_list.vue';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import userProjectsQuery from '~/homepage/graphql/queries/user_projects.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_PROJECTS,
+  TRACKING_PROPERTY_QUICK_ACCESS_PROJECT_LINK,
+} from '~/homepage/tracking_constants';
 
 Vue.use(VueApollo);
 
@@ -50,6 +56,20 @@ describe('ProjectsList', () => {
             },
           ],
         },
+        namespace: {
+          id: 'gid://gitlab/Namespace/1',
+          projects: {
+            nodes: [
+              {
+                id: 'gid://gitlab/Project/4',
+                name: 'MyProject',
+                namespace: 'john / MyProject',
+                webPath: '/john/myproject',
+                avatarUrl: null,
+              },
+            ],
+          },
+        },
       },
     },
   };
@@ -77,11 +97,13 @@ describe('ProjectsList', () => {
   const findEmptyState = () =>
     wrapper.findByText('No projects match your selected display options.');
   const findProjectsList = () => wrapper.find('ul');
-  const findProjectLinks = () => wrapper.findAll('a[href^="/"]');
+  const findProjectLinks = () => wrapper.findAllByTestId('quick-access-project-link');
   const findProjectAvatars = () => wrapper.findAllComponents(ProjectAvatar);
   const findTooltipComponents = () => wrapper.findAllComponents(TooltipOnTruncate);
-  const findFrequentlyVisitedMessage = () =>
-    wrapper.findByText('Displaying frequently visited projects');
+  const getFooterMessageText = () => {
+    const footer = wrapper.findByTestId('projects-footer');
+    return footer.exists() ? footer.text() : null;
+  };
 
   describe('loading state', () => {
     it('shows skeleton loaders while fetching data', () => {
@@ -133,6 +155,12 @@ describe('ProjectsList', () => {
             starredProjects: {
               nodes: [],
             },
+            namespace: {
+              id: 'gid://gitlab/Namespace/1',
+              projects: {
+                nodes: [],
+              },
+            },
           },
         },
       };
@@ -143,14 +171,57 @@ describe('ProjectsList', () => {
 
       expect(findEmptyState().exists()).toBe(true);
       expect(findProjectsList().exists()).toBe(false);
-      expect(findFrequentlyVisitedMessage().exists()).toBe(false);
     });
 
     it('does not show footer message during error state', async () => {
       createComponent({ userProjectsHandler: userProjectsQueryErrorHandler });
       await waitForPromises();
 
-      expect(findFrequentlyVisitedMessage().exists()).toBe(false);
+      expect(getFooterMessageText()).toBeNull();
+    });
+
+    it('shows correct footer message for frecent projects', async () => {
+      createComponent({ selectedSources: ['FRECENT'] });
+      await waitForPromises();
+
+      expect(getFooterMessageText()).toBe('Displaying frequently visited projects.');
+    });
+
+    it('shows correct footer message for starred projects', async () => {
+      createComponent({ selectedSources: ['STARRED'] });
+      await waitForPromises();
+
+      expect(getFooterMessageText()).toBe('Displaying starred projects.');
+    });
+
+    it('shows correct footer message for personal projects', async () => {
+      createComponent({ selectedSources: ['PERSONAL'] });
+      await waitForPromises();
+
+      expect(getFooterMessageText()).toBe('Displaying personal projects.');
+    });
+
+    it('shows correct footer message for frecent and starred projects', async () => {
+      createComponent({ selectedSources: ['FRECENT', 'STARRED'] });
+      await waitForPromises();
+
+      expect(getFooterMessageText()).toBe('Displaying frequently visited and starred projects.');
+    });
+
+    it('shows correct footer message for all three sources', async () => {
+      createComponent({ selectedSources: ['FRECENT', 'STARRED', 'PERSONAL'] });
+      await waitForPromises();
+
+      expect(getFooterMessageText()).toBe(
+        'Displaying frequently visited, starred, and personal projects.',
+      );
+    });
+
+    it('shows correct footer message for frecent and personal projects', async () => {
+      createComponent({ selectedSources: ['FRECENT', 'PERSONAL'] });
+      await waitForPromises();
+
+      expect(getFooterMessageText()).toBe('Displaying frequently visited and personal projects.');
     });
   });
 
@@ -172,6 +243,31 @@ describe('ProjectsList', () => {
       const links = findProjectLinks();
       expect(links).toHaveLength(1);
       expect(links.at(0).attributes('href')).toBe('/gitlab-org/gitaly');
+    });
+
+    it('shows only personal projects when selectedSources is PERSONAL', async () => {
+      createComponent({ selectedSources: ['PERSONAL'] });
+      await waitForPromises();
+
+      const links = findProjectLinks();
+      expect(links).toHaveLength(1);
+      expect(links.at(0).attributes('href')).toBe('/john/myproject');
+      expect(userProjectsQuerySuccessHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          includePersonal: true,
+          includeFrecent: false,
+          includeStarred: false,
+          includeCurrentUser: true,
+        }),
+      );
+    });
+
+    it('shows frecent, starred, and personal projects when all are selected', async () => {
+      createComponent({ selectedSources: ['FRECENT', 'STARRED', 'PERSONAL'] });
+      await waitForPromises();
+
+      const links = findProjectLinks();
+      expect(links).toHaveLength(4);
     });
 
     it('shows both frecent and starred projects when both are selected', async () => {
@@ -240,6 +336,43 @@ describe('ProjectsList', () => {
 
       expect(findProjectLinks()).toHaveLength(3);
     });
+
+    it('removes duplicate projects when same project appears across all sources', async () => {
+      const deduplicateHandler = jest.fn().mockResolvedValue({
+        data: {
+          frecentProjects: [
+            mockUserProjectsResponse.data.frecentProjects[0],
+            mockUserProjectsResponse.data.frecentProjects[1],
+          ],
+          currentUser: {
+            id: 'gid://gitlab/User/1',
+            starredProjects: {
+              nodes: [
+                mockUserProjectsResponse.data.frecentProjects[0], // Duplicate
+                mockUserProjectsResponse.data.currentUser.starredProjects.nodes[0],
+              ],
+            },
+            namespace: {
+              id: 'gid://gitlab/Namespace/1',
+              projects: {
+                nodes: [
+                  mockUserProjectsResponse.data.frecentProjects[0], // Duplicate
+                  mockUserProjectsResponse.data.currentUser.namespace.projects.nodes[0],
+                ],
+              },
+            },
+          },
+        },
+      });
+
+      createComponent({
+        userProjectsHandler: deduplicateHandler,
+        selectedSources: ['FRECENT', 'STARRED', 'PERSONAL'],
+      });
+      await waitForPromises();
+
+      expect(findProjectLinks()).toHaveLength(4);
+    });
   });
 
   describe('refresh functionality', () => {
@@ -254,6 +387,32 @@ describe('ProjectsList', () => {
       await wrapper.trigger('visible');
 
       expect(refetchSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('tracks clicks on project links', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      const link = findProjectLinks().at(0);
+      link.element.addEventListener('click', (e) => e.preventDefault());
+      link.trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+        {
+          label: TRACKING_LABEL_PROJECTS,
+          property: TRACKING_PROPERTY_QUICK_ACCESS_PROJECT_LINK,
+        },
+        undefined,
+      );
     });
   });
 });

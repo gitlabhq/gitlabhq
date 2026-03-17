@@ -91,9 +91,9 @@ RSpec.describe Ci::SafeDisablePipelineVariablesService, feature_category: :pipel
 
   it_behaves_like '#execute'
 
-  context 'when FF `query_projects_with_variables_from_ci_pipeline_artifacts` is disabled' do
+  context 'when FF `ci_stop_writing_to_pipeline_variables` is disabled' do
     before do
-      stub_feature_flags(query_projects_with_variables_from_ci_pipeline_artifacts: false)
+      stub_feature_flags(ci_stop_writing_to_pipeline_variables: false)
     end
 
     it_behaves_like '#execute'

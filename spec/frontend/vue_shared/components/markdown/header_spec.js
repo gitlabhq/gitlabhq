@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { nextTick } from 'vue';
 import { GlToggle, GlButton } from '@gitlab/ui';
 import { createWrapper as createVueTestWrapper } from '@vue/test-utils';
+import { MARKDOWN_EVENT_SHOW } from '~/behaviors/preview_markdown';
 import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
 import HeaderDividerComponent from '~/vue_shared/components/markdown/header_divider.vue';
 import CommentTemplatesModal from '~/vue_shared/components/markdown/comment_templates_modal.vue';
@@ -162,11 +163,11 @@ describe('Markdown field header component', () => {
   });
 
   it('does not emit toggle markdown event when triggered from another form', () => {
-    $(document).triggerHandler('markdown-preview:show', [
-      $(
-        '<form><div class="js-vue-markdown-field"><textarea class="markdown-area"></textarea></div></form>',
-      ),
-    ]);
+    const form = document.createElement('form');
+    form.innerHTML =
+      '<div class="js-vue-markdown-field"><textarea class="markdown-area"></textarea></div>';
+
+    document.dispatchEvent(new CustomEvent(MARKDOWN_EVENT_SHOW, { detail: { form } }));
 
     expect(wrapper.emitted('showPreview')).toBeUndefined();
     expect(wrapper.emitted('hidePreview')).toBeUndefined();
@@ -475,7 +476,7 @@ describe('Markdown field header component', () => {
       await findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
       await nextTick();
 
-      expect(findAndReplaceMatchCount()).toBe('No records');
+      expect(findAndReplaceMatchCount()).toBe('No results');
 
       // Text that matches
       findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
@@ -631,7 +632,7 @@ describe('Markdown field header component', () => {
       await nextTick();
 
       expect(findTextarea().value).toBe('LOREM ipsum dolor sit amet LOREM <img src="prompt">');
-      expect(findAndReplaceMatchCount()).toBe('No records');
+      expect(findAndReplaceMatchCount()).toBe('No results');
     });
   });
 });

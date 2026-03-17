@@ -98,6 +98,10 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
       let(:conn) { instance_double(Net::LDAP::Connection, search: search) }
       let(:search) { double(:search, result_code: 200) } # rubocop: disable RSpec/VerifiedDoubles
 
+      before do
+        stub_feature_flags(ldap_raise_on_search_error: false)
+      end
+
       it 'adds LDAP data' do
         allow_next_instance_of(Net::LDAP) do |net_ldap|
           allow(net_ldap).to receive(:use_connection).and_yield(conn)

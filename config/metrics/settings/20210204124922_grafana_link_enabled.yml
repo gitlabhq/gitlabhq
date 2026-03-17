@@ -3,6 +3,8 @@ data_category: optional
 key_path: grafana_link_enabled
 description: Whether Grafana is enabled
 product_group: platform_insights
+product_categories:
+- observability
 value_type: boolean
 status: active
 time_frame: none

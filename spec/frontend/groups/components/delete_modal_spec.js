@@ -1,15 +1,16 @@
-import { GlModal, GlAlert } from '@gitlab/ui';
+import { GlAlert, GlModal } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import DeleteModal from '~/groups/components/delete_modal.vue';
 import GroupsProjectsDeleteModal from '~/groups_projects/components/delete_modal.vue';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
-
-jest.mock('lodash/uniqueId', () => () => 'fake-id');
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 describe('DeleteModal', () => {
   let wrapper;
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const defaultPropsData = {
     visible: false,
@@ -24,6 +25,7 @@ describe('DeleteModal', () => {
 
   const createComponent = (propsData) => {
     wrapper = mountExtended(DeleteModal, {
+      provide: { triggerDeleteLocation: 'list' },
       propsData: {
         ...defaultPropsData,
         ...propsData,
@@ -71,12 +73,54 @@ describe('DeleteModal', () => {
     });
   });
 
-  it('emits `primary` event', () => {
-    createComponent();
+  describe('when modal emits primary event', () => {
+    it('emits `primary` event', () => {
+      createComponent();
 
-    findGroupsProjectsDeleteModal().vm.$emit('primary');
+      findGroupsProjectsDeleteModal().vm.$emit('primary');
 
-    expect(wrapper.emitted('primary')).toEqual([[]]);
+      expect(wrapper.emitted('primary')).toEqual([[]]);
+    });
+
+    describe('when not marked for deletion', () => {
+      it('tracks event to schedule for deletion', () => {
+        createComponent({ markedForDeletion: false });
+
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        findGroupsProjectsDeleteModal().vm.$emit('primary');
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'trigger_delete_on_group',
+          {
+            label: 'list',
+            property: 'false',
+            actor: 'user',
+          },
+          undefined,
+        );
+      });
+    });
+
+    describe('when marked for deletion', () => {
+      it('tracks event to permanently delete', () => {
+        createComponent({ markedForDeletion: true });
+
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        findGroupsProjectsDeleteModal().vm.$emit('primary');
+
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'trigger_delete_on_group',
+          {
+            label: 'list',
+            property: 'true',
+            actor: 'user',
+          },
+          undefined,
+        );
+      });
+    });
   });
 
   it('emits `change` event', () => {

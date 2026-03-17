@@ -55,6 +55,14 @@ describe('stripWhitespaceFromQuery', () => {
     const paramsWithoutQuery = `${defaultPath}&variables=${encodedVariables}`;
     expect(stripWhitespaceFromQuery(paramsWithoutQuery, defaultPath)).toEqual(paramsWithoutQuery);
   });
+
+  it('preserves + in variables (e.g. branch names like release/4.5+5)', () => {
+    const variablesWithPlus = '{"ref":"release/4.5+5"}';
+    const url = `${defaultPath}?query=${encodeURIComponent('query { x }')}&variables=${encodeURIComponent(variablesWithPlus)}`;
+    const processed = stripWhitespaceFromQuery(url, defaultPath);
+    const varsParam = processed.match(/variables=([^&]+)/)?.[1];
+    expect(decodeURIComponent(varsParam)).toBe(variablesWithPlus);
+  });
 });
 
 describe('typePolicies', () => {

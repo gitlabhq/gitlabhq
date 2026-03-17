@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Pipelines::StagesController do
+RSpec.describe Projects::Pipelines::StagesController, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:downstream_project) { create(:project, :repository) }
@@ -48,12 +48,12 @@ RSpec.describe Projects::Pipelines::StagesController do
       end
 
       context 'when the stage exists' do
-        it 'starts all manual jobs' do
+        it 'starts all manual jobs', :sidekiq_inline do
           expect(pipeline.processables.manual.count).to eq(3)
 
           play_manual_stage!
 
-          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:no_content)
           expect(pipeline.processables.manual.count).to eq(0)
         end
       end

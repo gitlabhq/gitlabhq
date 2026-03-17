@@ -12,19 +12,25 @@ describe('QuickAccessWidget', () => {
     wrapper = shallowMountExtended(QuickAccessWidget);
   };
 
-  const findRecentlyViewedItemsTab = () =>
+  const findTabButtonGroup = () =>
     wrapper
-      .findComponent(GlButtonGroup)
+      .findAllComponents(GlButtonGroup)
+      .wrappers.find((w) => w.attributes('role') === 'tablist');
+  const findRecentlyViewedItemsTab = () =>
+    findTabButtonGroup()
       .findAllComponents(GlButton)
       .wrappers.find((w) => w.text() === 'Recently viewed');
   const findProjectsTab = () =>
-    wrapper
-      .findComponent(GlButtonGroup)
+    findTabButtonGroup()
       .findAllComponents(GlButton)
       .wrappers.find((w) => w.text() === 'Projects');
   const findRecentlyViewedItems = () => wrapper.findComponent(RecentlyViewedItems);
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
   const findProjectSourceListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findProjectLimitButtons = () =>
+    wrapper.findComponent(GlCollapsibleListbox).findAllComponents(GlButton);
+  const findProjectLimitButton = (limit) =>
+    findProjectLimitButtons().wrappers.find((w) => w.text() === String(limit));
 
   const clickProjectsTab = async () => {
     findProjectsTab().vm.$emit('click');
@@ -33,6 +39,11 @@ describe('QuickAccessWidget', () => {
 
   const clickRecentlyViewedTab = async () => {
     findRecentlyViewedItemsTab().vm.$emit('click');
+    await nextTick();
+  };
+
+  const clickProjectLimitButton = async (limit) => {
+    findProjectLimitButton(limit).vm.$emit('click');
     await nextTick();
   };
 
@@ -158,6 +169,32 @@ describe('QuickAccessWidget', () => {
       await nextTick();
 
       expect(findProjectsList().props('selectedSources')).toEqual(['FRECENT']);
+    });
+  });
+
+  describe('project limit', () => {
+    beforeEach(() => {
+      localStorage.clear();
+      createComponent();
+    });
+
+    it('updates project limit when button clicked', async () => {
+      await clickProjectsTab();
+
+      await clickProjectLimitButton(15);
+
+      expect(findProjectsList().props('projectLimit')).toBe(15);
+    });
+
+    it('persists and restores project limit', async () => {
+      await clickProjectsTab();
+      await clickProjectLimitButton(20);
+
+      wrapper.destroy();
+      createComponent();
+      await clickProjectsTab();
+
+      expect(findProjectsList().props('projectLimit')).toBe(20);
     });
   });
 });

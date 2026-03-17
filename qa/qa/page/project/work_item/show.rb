@@ -149,6 +149,9 @@ module QA
             open_actions_dropdown
             has_element?('state-toggle-action', text: 'Reopen issue')
           end
+
+          # No-op in CE; overridden by EE::Page::Component::DapEmptyState when prepended
+          def close_dap_panel_if_exists; end
         end
       end
     end

@@ -27,7 +27,6 @@ const plugins = [
   '@babel/plugin-transform-nullish-coalescing-operator',
   // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
   '@babel/plugin-transform-logical-assignment-operators',
-  'lodash',
   '@babel/plugin-transform-class-static-block',
   '@babel/plugin-transform-export-namespace-from',
 ];

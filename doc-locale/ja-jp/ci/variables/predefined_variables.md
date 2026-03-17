@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 定義済みCI/CD変数のリファレンス
 ---
 
@@ -18,14 +18,14 @@ title: 定義済みCI/CD変数のリファレンス
 
 ## 変数の可用性 {#variable-availability}
 
-定義済み変数は、次の3つのパイプライン実行フェーズで使用可能になります:
+定義済み変数は、次の3つのパイプライン実行フェーズで使用可能になります。
 
 - プリパイプライン: プリパイプライン変数は、パイプラインが作成される前に使用できます。これらの変数は、パイプラインの作成時に使用する設定ファイルを制御するため使用されます。[`include:rules`](../yaml/_index.md#includerules)では、これらの変数のみが使用できます。
 - パイプライン: パイプライン変数は、GitLabがパイプラインを作成するときに使用可能になります。パイプライン変数はプリパイプライン変数と併せて使用できます。ジョブで定義された[`rules`](../yaml/_index.md#rules)の設定に使用でき、どのジョブをパイプラインに追加するかを決定する際に役立ちます。
-- ジョブ専用: これらの変数は、Runnerがジョブを取得して実行するときにのみ、各ジョブで使用可能になります。次の特徴があります:
+- ジョブ専用: これらの変数は、Runnerがジョブを取得して実行するときにのみ、各ジョブで使用可能になります。次の特徴があります。
   - ジョブスクリプトで使用できます。
   - [トリガージョブ](../pipelines/downstream_pipelines.md#trigger-a-downstream-pipeline-from-a-job-in-the-gitlab-ciyml-file)では使用できません。
-  - [`workflow`](../yaml/_index.md#workflow) 、[`include`](../yaml/_index.md#include) 、または[`rules`](../yaml/_index.md#rules)では使用できません。
+  - [`workflow`](../yaml/_index.md#workflow)、[`include`](../yaml/_index.md#include)、または[`rules`](../yaml/_index.md#rules)では使用できません。
 
 ## 定義済み変数 {#predefined-variables}
 
@@ -43,7 +43,7 @@ title: 定義済みCI/CD変数のリファレンス
 | `CI_COMMIT_BRANCH`                              | プリパイプライン | コミットブランチ名。デフォルトブランチのパイプラインを含む、ブランチパイプラインで使用できます。マージリクエストパイプラインまたはタグパイプラインでは使用できません。 |
 | `CI_COMMIT_DESCRIPTION`                         | プリパイプライン | コミットの説明。タイトルが100文字より短い場合は、最初の行を除いたメッセージが表示されます。 |
 | `CI_COMMIT_MESSAGE`                             | プリパイプライン | コミットメッセージ全文。 |
-| `CI_COMMIT_MESSAGE_IS_TRUNCATED`                | プリパイプライン | メッセージが長すぎるため、コミットメッセージが`GITLAB_CI_MAX_COMMIT_MESSAGE_SIZE_IN_BYTES`システム環境変数（デフォルト100 KB）で指定されたサイズに`CI_COMMIT_MESSAGE`が切り詰められた場合、`true`になります。それ以外の場合は`false`。GitLab 18.6で導入されました。 |
+| `CI_COMMIT_MESSAGE_IS_TRUNCATED`                | プリパイプライン | コミットメッセージが長すぎるため、`CI_COMMIT_MESSAGE`が`GITLAB_CI_MAX_COMMIT_MESSAGE_SIZE_IN_BYTES`システム環境変数で指定されたサイズ（デフォルト100 KB）に切り詰められた場合、`true`となります。それ以外の場合は`false`。GitLab 18.6で導入されました。 |
 | `CI_COMMIT_REF_NAME`                            | プリパイプライン | プロジェクトがビルドされるブランチまたはタグ名。 |
 | `CI_COMMIT_REF_PROTECTED`                       | プリパイプライン | ジョブが保護された参照に対して実行されている場合は`true`、それ以外の場合は`false`になります。 |
 | `CI_COMMIT_REF_SLUG`                            | プリパイプライン | `CI_COMMIT_REF_NAME`を小文字にし、63バイトに短縮し、`0-9`および`a-z`以外のすべての文字を`-`に置き換えます。先頭と末尾に`-`はありません。URL、ホスト名、ドメイン名で使用します。 |
@@ -77,9 +77,9 @@ title: 定義済みCI/CD変数のリファレンス
 | `CI_ENVIRONMENT_TIER`                           | パイプライン     | このジョブの[環境のデプロイ階層](../environments/_index.md#deployment-tier-of-environments)。 |
 | `CI_GITLAB_FIPS_MODE`                           | プリパイプライン | GitLabインスタンスで[FIPSモード](../../development/fips_gitlab.md)が有効になっている場合にのみ使用できます。利用可能な場合は`true`になります。 |
 | `CI_HAS_OPEN_REQUIREMENTS`                      | パイプライン     | パイプラインのプロジェクトにオープンな[要件](../../user/project/requirements/_index.md)がある場合にのみ使用できます。利用可能な場合は`true`になります。 |
-| `CI_JOB_GROUP_NAME`                             | パイプライン     | [`parallel`](../yaml/_index.md#parallel) （並列）または[手動でグループ化されたジョブ](../jobs/_index.md#group-similar-jobs-together-in-pipeline-views)を使用する場合の、ジョブのグループの共有名。たとえば、ジョブ名が`rspec:test: [ruby, ubuntu]`の場合、`CI_JOB_GROUP_NAME`は`rspec:test`です。それ以外の場合は、`CI_JOB_NAME`と同じです。GitLab 17.10で導入されました。 |
+| `CI_JOB_GROUP_NAME`                             | パイプライン     | [`parallel`](../yaml/_index.md#parallel)（並列）または[手動でグループ化されたジョブ](../jobs/_index.md#group-similar-jobs-together-in-pipeline-views)を使用する場合の、ジョブのグループの共有名。たとえば、ジョブ名が`rspec:test: [ruby, ubuntu]`の場合、`CI_JOB_GROUP_NAME`は`rspec:test`です。それ以外の場合は、`CI_JOB_NAME`と同じです。GitLab 17.10で導入されました。 |
 | `CI_JOB_ID`                                     | ジョブ専用     | GitLabインスタンス内のすべてのジョブで一意なジョブの内部ID。 |
-| `CI_JOB_IMAGE`                                  | ジョブ専用     | ジョブを実行しているDockerイメージの名前。ジョブがDockerイメージを明示的に指定する場合にのみ使用できます。 |
+| `CI_JOB_IMAGE`                                  | ジョブ専用     | ジョブを実行しているDockerイメージの名前。ジョブが明示的にDockerイメージを指定した場合にのみ利用可能です。 |
 | `CI_JOB_MANUAL`                                 | パイプライン     | ジョブが手動で開始された場合にのみ使用できます。利用可能な場合は`true`になります。 |
 | `CI_JOB_NAME`                                   | パイプライン     | ジョブの名前。 |
 | `CI_JOB_NAME_SLUG`                              | パイプライン     | `CI_JOB_NAME`を小文字にし、63バイトに短縮し、`0-9`および`a-z`以外のすべての文字を`-`に置き換えます。先頭と末尾に`-`はありません。パスで使用します。GitLab 15.4で導入されました。 |
@@ -89,6 +89,7 @@ title: 定義済みCI/CD変数のリファレンス
 | `CI_JOB_TOKEN`                                  | ジョブ専用     | [特定のAPIエンドポイント](../jobs/ci_job_token.md)で認証するためのトークン。トークンはジョブの実行中のみ有効です。 |
 | `CI_JOB_URL`                                    | ジョブ専用     | ジョブの詳細URL。 |
 | `CI_JOB_STARTED_AT`                             | ジョブ専用     | ジョブが開始された日時（[ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A)形式）。例: `2022-01-31T16:47:55Z`。[デフォルトではUTC](../../administration/timezone.md)です。 |
+| `CI_JOB_STARTED_AT_SLUG`                        | ジョブ専用     | `CI_JOB_STARTED_AT`を小文字にし、63バイトに短縮し、`0-9`および`a-z`以外のすべての文字を`-`に置き換えます。先頭と末尾に`-`はありません。Dockerイメージタグやその他の識別子での使用に適しています。GitLab 18.7で導入されました。 |
 | `CI_KUBERNETES_ACTIVE`                          | プリパイプライン | パイプラインがデプロイ用のKubernetesクラスターを利用できる場合にのみ使用できます。利用可能な場合は`true`になります。 |
 | `CI_NODE_INDEX`                                 | パイプライン     | ジョブセット内のジョブのインデックス。ジョブで[`parallel`](../yaml/_index.md#parallel)を使用する場合にのみ使用できます。 |
 | `CI_NODE_TOTAL`                                 | パイプライン     | 並列実行されている該当ジョブのインスタンスの合計数。ジョブで[`parallel`](../yaml/_index.md#parallel)を使用しない場合は、`1`に設定します。 |
@@ -99,12 +100,12 @@ title: 定義済みCI/CD変数のリファレンス
 | `CI_PIPELINE_ID`                                | ジョブ専用     | 現在のパイプラインのインスタンスレベルID。このIDは、GitLabインスタンス上のすべてのプロジェクトで一意です。 |
 | `CI_PIPELINE_IID`                               | パイプライン     | 現在のパイプラインのプロジェクトレベルIID（内部ID）。このIDは、現在のプロジェクトでのみ一意です。 |
 | `CI_PIPELINE_SOURCE`                            | プリパイプライン | パイプラインがトリガーされた方法。値は、[パイプラインソース](../jobs/job_rules.md#ci_pipeline_source-predefined-variable)のいずれかになります。 |
-| `CI_PIPELINE_TRIGGERED`                         | パイプライン     | ジョブが[トリガー](../triggers/_index.md)された場合は`true`になります。 |
+| `CI_PIPELINE_TRIGGERED`                         | パイプライン     | `true`は、パイプラインが[トリガートークンによってトリガーされる](../triggers/_index.md)場合。[`trigger`](../yaml/_index.md#trigger)キーワードによってトリガーされるパイプラインの場合は、代わりに[`CI_PIPELINE_SOURCE`](../jobs/job_rules.md#ci_pipeline_source-predefined-variable)を使用してください。 |
 | `CI_PIPELINE_URL`                               | ジョブ専用     | パイプラインの詳細のURL。 |
 | `CI_PIPELINE_CREATED_AT`                        | ジョブ専用     | パイプラインが作成された日時（[ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A)形式）。例: `2022-01-31T16:47:55Z`。[デフォルトではUTC](../../administration/timezone.md)です。 |
 | `CI_PIPELINE_NAME`                              | プリパイプライン | [`workflow:name`](../yaml/_index.md#workflowname)で定義されたパイプライン名。GitLab 16.3で導入されました。 |
 | `CI_PIPELINE_SCHEDULE_DESCRIPTION`              | プリパイプライン | パイプラインスケジュールの説明。スケジュールされたパイプラインでのみ使用できます。GitLab 17.8で導入されました。 |
-| `CI_PROJECT_DIR`                                | ジョブ専用     | リポジトリのクローン先であり、ジョブの実行起点となる場所のフルパス。GitLab Runnerの`builds_dir`パラメータが設定されている場合、この変数は`builds_dir`の値を基準に設定されます。詳細については、[GitLab Runnerの高度な設定](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)を参照してください。 |
+| `CI_PROJECT_DIR`                                | ジョブ専用     | リポジトリのクローン先であり、ジョブの実行起点となる場所のフルパス。GitLab Runnerの`builds_dir`パラメータが設定されている場合、この変数は`builds_dir`の値を基準に設定されます。詳細については、[GitLab Runnerの高度な設定](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section)を参照してください。 |
 | `CI_PROJECT_ID`                                 | プリパイプライン | 現在のプロジェクトID。このIDは、GitLabインスタンス上のすべてのプロジェクトで一意です。 |
 | `CI_PROJECT_NAME`                               | プリパイプライン | プロジェクトのディレクトリ名。たとえば、プロジェクトのURLが`gitlab.example.com/group-name/project-1`の場合、`CI_PROJECT_NAME`は`project-1`になります。 |
 | `CI_PROJECT_NAMESPACE`                          | プリパイプライン | ジョブのプロジェクトネームスペース（ユーザー名またはグループ名）。 |
@@ -141,9 +142,9 @@ title: 定義済みCI/CD変数のリファレンス
 | `CI_SERVER_SHELL_SSH_HOST`                      | プリパイプライン | SSH経由でGitリポジトリにアクセスするために使用されるGitLabインスタンスのSSHホスト。例: `gitlab.com`。GitLab 15.11で導入されました。 |
 | `CI_SERVER_SHELL_SSH_PORT`                      | プリパイプライン | SSH経由でGitリポジトリにアクセスするために使用されるGitLabインスタンスのSSHポート。例: `22`。GitLab 15.11で導入されました。 |
 | `CI_SERVER_REVISION`                            | プリパイプライン | ジョブをスケジュールするGitLabリビジョン。 |
-| `CI_SERVER_TLS_CA_FILE`                         | パイプライン     | [Runnerの設定](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)で`tls-ca-file`が設定されている場合に、GitLabサーバーを検証するためのTLS CA証明書を含むファイル。 |
-| `CI_SERVER_TLS_CERT_FILE`                       | パイプライン     | [Runnerの設定](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)で`tls-cert-file`が設定されている場合に、GitLabサーバーを検証するためのTLS証明書を含むファイル。 |
-| `CI_SERVER_TLS_KEY_FILE`                        | パイプライン     | [Runnerの設定](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)で`tls-key-file`が設定されている場合に、GitLabサーバーを検証するためのTLSキーを含むファイル。 |
+| `CI_SERVER_TLS_CA_FILE`                         | パイプライン     | [Runnerの設定](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section)で`tls-ca-file`が設定されている場合に、GitLabサーバーを検証するためのTLS CA証明書を含むファイル。 |
+| `CI_SERVER_TLS_CERT_FILE`                       | パイプライン     | [Runnerの設定](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section)で`tls-cert-file`が設定されている場合に、GitLabサーバーを検証するためのTLS証明書を含むファイル。 |
+| `CI_SERVER_TLS_KEY_FILE`                        | パイプライン     | [Runnerの設定](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-runners-section)で`tls-key-file`が設定されている場合に、GitLabサーバーを検証するためのTLSキーを含むファイル。 |
 | `CI_SERVER_URL`                                 | プリパイプライン | プロトコルとポートを含む、GitLabインスタンスのベースURL。例: `https://gitlab.example.com:8080`。 |
 | `CI_SERVER_VERSION_MAJOR`                       | プリパイプライン | GitLabインスタンスのメジャーバージョン。たとえば、GitLabバージョンが`17.2.1`の場合、`CI_SERVER_VERSION_MAJOR`は`17`になります。 |
 | `CI_SERVER_VERSION_MINOR`                       | プリパイプライン | GitLabインスタンスのマイナーバージョン。たとえば、GitLabバージョンが`17.2.1`の場合、`CI_SERVER_VERSION_MINOR`は`2`になります。 |
@@ -153,6 +154,9 @@ title: 定義済みCI/CD変数のリファレンス
 | `CI_SHARED_ENVIRONMENT`                         | パイプライン     | ジョブが共有環境（`shell`または`ssh` executorのように、CI/CDの呼び出しをまたいで永続化されるもの）で実行される場合にのみ使用できます。利用可能な場合は`true`になります。 |
 | `CI_TEMPLATE_REGISTRY_HOST`                     | プリパイプライン | CI/CDテンプレートで使用されるレジストリのホスト。デフォルトは`registry.gitlab.com`です。GitLab 15.3で導入されました。 |
 | `CI_TRIGGER_SHORT_TOKEN`                        | ジョブ専用     | 現在のジョブの[トリガートークン](../triggers/_index.md#create-a-pipeline-trigger-token)の最初の4文字。パイプラインが[トリガートークンでトリガーされた](../triggers/_index.md)場合にのみ使用できます。たとえば、トリガートークンが`glptt-1234567890abcdefghij`の場合、`CI_TRIGGER_SHORT_TOKEN`は`1234`になります。GitLab 17.0で導入されました。 |
+| `CI_UPSTREAM_JOB_ID`                            | プリパイプライン | マルチプロジェクトまたは親子パイプラインにおいて、現在のパイプラインをトリガーしたアップストリームのトリガージョブのID。GitLab 18.9で導入されました。 |
+| `CI_UPSTREAM_PIPELINE_ID`                       | プリパイプライン | マルチプロジェクトまたは親子パイプラインにおいて、現在のパイプラインをトリガーしたアップストリームパイプラインのID。GitLab 18.9で導入されました。 |
+| `CI_UPSTREAM_PROJECT_ID`                        | プリパイプライン | マルチプロジェクトまたは親子パイプラインにおいて、現在のパイプラインをトリガーしたアップストリームプロジェクトのID。GitLab 18.9で導入されました。 |
 | `GITLAB_CI`                                     | プリパイプライン | CI/CDで実行されるすべてのジョブで使用できます。利用可能な場合は`true`になります。 |
 | `GITLAB_FEATURES`                               | プリパイプライン | GitLabインスタンスおよびライセンスで使用可能なライセンス機能のカンマ区切りリスト。 |
 | `GITLAB_USER_EMAIL`                             | パイプライン     | パイプラインを開始したユーザーのメール（ジョブが手動ジョブの場合を除く）。手動ジョブの場合、この値はジョブを開始したユーザーのメールになります。 |
@@ -200,7 +204,7 @@ title: 定義済みCI/CD変数のリファレンス
 
 ## 外部プルリクエストパイプラインの定義済み変数 {#predefined-variables-for-external-pull-request-pipelines}
 
-これらの変数は、以下の場合にのみ使用できます:
+これらの変数は、以下の場合にのみ使用できます。
 
 - パイプラインが[外部プルリクエストパイプライン](../ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests)である。
 - プルリクエストがオープンである。
@@ -225,7 +229,7 @@ title: 定義済みCI/CD変数のリファレンス
 
 ## Auto DevOps変数 {#auto-devops-variables}
 
-[Auto DevOps](../../topics/autodevops/_index.md)が有効になっている場合、追加の[プリパイプライン](#variable-availability)変数が利用可能になります:
+[Auto DevOps](../../topics/autodevops/_index.md)が有効になっている場合、追加の[プリパイプライン](#variable-availability)変数が利用可能になります。
 
 - `AUTO_DEVOPS_EXPLICITLY_ENABLED`: 値`1`は、Auto DevOpsが有効であることを示します。
 - `STAGING_ENABLED`: [Auto DevOpsのデプロイ戦略](../../topics/autodevops/requirements.md#auto-devops-deployment-strategy)を参照してください。
@@ -234,7 +238,7 @@ title: 定義済みCI/CD変数のリファレンス
 
 ## インテグレーション変数 {#integration-variables}
 
-一部のインテグレーションでは、ジョブで変数を使用できます。これらの変数は、[ジョブ専用の定義済み変数](#variable-availability)として使用できます:
+一部のインテグレーションでは、ジョブで変数を使用できます。これらの変数は、[ジョブ専用の定義済み変数](#variable-availability)として使用できます。
 
 - [Harbor](../../user/project/integrations/harbor.md):
   - `HARBOR_URL`

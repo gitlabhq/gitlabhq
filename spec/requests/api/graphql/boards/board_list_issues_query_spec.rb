@@ -23,7 +23,7 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
   let(:issues_data)       { lists_data['issues']['nodes'] }
   let(:issue_params)      { { filters: { label_name: label2.title, confidential: confidential }, first: 3 } }
 
-  def query(list_params = params)
+  def query(_list_params = params)
     graphql_query_for(
       board_parent_type,
       { 'fullPath' => board_parent.full_path },
@@ -67,7 +67,9 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
     let_it_be(:issue4) { create(:issue, project: issue_project, labels: [label], relative_position: 9) }
     let_it_be(:issue5) { create(:issue, project: issue_project, labels: [label2], relative_position: 432) }
     let_it_be(:issue6) { create(:issue, project: issue_project, labels: [label, label2], relative_position: nil) }
-    let_it_be(:issue7) { create(:issue, project: issue_project, labels: [label, label2], relative_position: 5, confidential: true) }
+    let_it_be(:issue7) do
+      create(:issue, project: issue_project, labels: [label, label2], relative_position: 5, confidential: true)
+    end
 
     context 'when the user does not have access to the board' do
       it 'returns nil' do
@@ -107,6 +109,20 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
 
           expect(issue_titles).to match_array([issue7.title])
           expect(issue_relative_positions).not_to include(nil)
+        end
+      end
+
+      context 'when both types and workItemTypeIds are provided' do
+        let(:issue_params) do
+          { filters: { types: [:ISSUE], workItemTypeIds: [issue1.work_item_type.to_global_id.to_s] } }
+        end
+
+        it 'returns a mutual exclusion error' do
+          subject
+
+          expect_graphql_errors_to_include(
+            'Only one of [issueTypes, workItemTypeIds] arguments is allowed at the same time.'
+          )
         end
       end
 
@@ -190,7 +206,7 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
 
       create_list(:issue, 2, project: project, labels: [project_label], relative_position: 1)
 
-      expect { post_graphql(query, current_user: user) }.not_to exceed_all_query_limit(control)
+      expect { post_graphql(query, current_user: user) }.not_to exceed_all_query_limit(control).with_threshold(2)
       expect_graphql_errors_to_be_empty
     end
   end

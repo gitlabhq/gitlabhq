@@ -29,7 +29,6 @@ require_relative '../config/environment'
 
 require 'rspec/mocks'
 require 'rspec/rails'
-require 'rspec/retry'
 require 'rspec-parameterized'
 require 'shoulda/matchers'
 require 'test_prof/recipes/rspec/let_it_be'
@@ -73,9 +72,6 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures = false
   config.fixture_paths = [Rails.root]
-
-  config.verbose_retry = true
-  config.display_try_failure_messages = true
 
   config.infer_spec_type_from_file_location!
 
@@ -204,18 +200,6 @@ RSpec.configure do |config|
   include StubSnowplow
   include StubMember
   include VersionCheckHelpers
-
-  if ENV['CI'] || ENV['RETRIES']
-    # Gradually stop using rspec-retry
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/438388
-    config.default_retry_count = 1
-    config.prepend_before(:each, type: :feature) do |example|
-      # This includes the first try, i.e. tests will be run 2 times before failing.
-      example.metadata[:retry] = ENV.fetch('RETRIES', 1).to_i + 1
-    end
-
-    config.exceptions_to_hard_fail = [DeprecationToolkitEnv::DeprecationBehaviors::SelectiveRaise::RaiseDisallowedDeprecation]
-  end
 
   if Gitlab::RspecFlaky::Config.generate_report?
     config.reporter.register_listener(
@@ -356,15 +340,13 @@ RSpec.configure do |config|
       # out `work_items_consolidated_list_user` is an easy work around.
       stub_feature_flags(work_items_consolidated_list_user: false)
 
-      # Short lived feature flag to enable user-based rollout to internal users before main feature flag
-      # `work_items_saved_views` is rolled out. `work_items_saved_views` is disabled for specific specs, so stubbing
-      # out `work_items_saved_views_user` is an easy work around.
-      stub_feature_flags(work_items_saved_views_user: false)
-
       stub_feature_flags(merge_widget_stop_polling: false)
 
       # This feature has global impact and most tests aren't ready for it yet
       stub_feature_flags(cells_unique_claims: false)
+
+      # Org migration target cell mode is only enabled in Cells on GitLab.com
+      stub_feature_flags(org_migration_target_cell: false)
 
       # This feature flag will be removed in %19.0
       stub_feature_flags(work_item_legacy_url: false)
@@ -625,6 +607,15 @@ end
 Support::PermissionsCheck.inject(Ability.singleton_class)
 
 ActiveRecord::Migration.maintain_test_schema!
+
+# maintain_test_schema! may rebuild the test DB from structure.sql via
+# clear_all_connections! + db:test:prepare. This clears connection-level
+# schema caches but NOT class-level column caches on AR models. If an
+# initializer (e.g. session_store.rb) queried ApplicationSetting before
+# the rebuild, stale column names persist - causing PG::UndefinedColumn
+# errors for models using explicit column selection (those with
+# ignored_columns).
+ApplicationSetting.reset_column_information
 
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|

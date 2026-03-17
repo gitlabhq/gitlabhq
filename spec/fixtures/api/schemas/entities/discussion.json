@@ -12,6 +12,12 @@
     "individual_note": {
       "type": "boolean"
     },
+    "resolvable": {
+      "type": "boolean"
+    },
+    "resolved": {
+      "type": "boolean"
+    },
     "notes": {
       "type": "array",
       "items": {
@@ -126,6 +132,9 @@
             "type": "string"
           },
           "note_html": {
+            "type": "string"
+          },
+          "body_first_line_html": {
             "type": "string"
           },
           "current_user": {

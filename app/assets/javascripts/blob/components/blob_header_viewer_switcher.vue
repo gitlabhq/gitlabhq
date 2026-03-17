@@ -39,6 +39,7 @@ export default {
       default: false,
     },
   },
+  emits: ['blame-loading-started', 'blame', 'input', 'preload-blame'],
   computed: {
     isSimpleViewer() {
       return this.value === SIMPLE_BLOB_VIEWER;

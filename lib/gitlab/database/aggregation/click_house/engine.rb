@@ -25,7 +25,8 @@ module Gitlab
                 count: Count,
                 mean: Mean,
                 rate: Rate,
-                quantile: Quantile
+                quantile: Quantile,
+                sum: Sum
               }
             end
 

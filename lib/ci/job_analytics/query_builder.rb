@@ -33,7 +33,11 @@ module Ci
         return unless ::Gitlab::ClickHouse.enabled_for_analytics? && Ability.allowed?(current_user, :read_build,
           project)
 
-        build_finder.query_builder
+        finder = build_finder
+
+        return finder.final_query if finder.is_a?(::ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder)
+
+        finder.query_builder
       end
 
       private
@@ -48,12 +52,13 @@ module Ci
 
         finder = finder.filter_by_job_name(name_search) if name_search
 
-        finder.filter_by_pipeline_attrs(project: project,
+        finder = finder.filter_by_pipeline_attrs(project: project,
           from_time: from_time,
           to_time: to_time,
           source: source,
           ref: ref
         )
+        finder.apply_finished_at_lower_bound(from_time)
       end
 
       def base_finder
@@ -67,7 +72,7 @@ module Ci
       end
 
       def extract_sort_info(value)
-        value.match(/(?<field>.*)_(?<dir>.*)/) => {field:, dir:}
+        value.match(/(?<field>.*)_(?<dir>.*)/) => { field:, dir: }
 
         [field.to_sym, dir.to_sym]
       end

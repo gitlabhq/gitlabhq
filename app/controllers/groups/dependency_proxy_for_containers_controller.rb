@@ -10,7 +10,14 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
   before_action :ensure_group
   before_action :ensure_feature_enabled!
   before_action :ensure_token_granted!, only: [:blob, :manifest]
-
+  skip_before_action(
+    :authenticate_user_from_jwt_token!,
+    :verify_dependency_proxy_available!,
+    :authorize_read_dependency_proxy!,
+    :ensure_group,
+    :ensure_feature_enabled!,
+    only: [:referrers_not_found]
+  )
   before_action :verify_workhorse_api!,
     only: [:authorize_upload_blob, :upload_blob, :authorize_upload_manifest, :upload_manifest]
   skip_before_action :verify_authenticity_token,
@@ -110,6 +117,11 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
     track_package_event(event_name, :dependency_proxy, namespace: group, user: tracking_user)
 
     head :ok
+  end
+
+  def referrers_not_found
+    response.headers['Docker-Distribution-Api-Version'] = DependencyProxy::DISTRIBUTION_API_VERSION
+    render status: :not_found, json: { errors: [{ code: 'NAME_UNKNOWN', message: 'Not Found' }] }
   end
 
   private

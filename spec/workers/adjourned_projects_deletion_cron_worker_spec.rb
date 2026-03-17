@@ -26,6 +26,22 @@ RSpec.describe AdjournedProjectsDeletionCronWorker, feature_category: :complianc
       worker.perform
     end
 
+    it 'tracks internal event for project deletion' do
+      expect { worker.perform }
+        .to trigger_internal_events('trigger_delete_on_project')
+        .with(
+          project: project_marked_for_deletion,
+          namespace: project_marked_for_deletion.namespace,
+          user: user,
+          additional_properties: {
+            label: 'worker',
+            property: 'true',
+            actor: 'system'
+          }
+        )
+        .and increment_usage_metrics('counts.count_total_permanent_project_deletion_on_worker')
+    end
+
     context 'when two projects are scheduled for deletion' do
       let_it_be(:project_marked_for_deletion_two) do
         create(:project, marked_for_deletion_at: marked_for_deletion_at, deleting_user: user)

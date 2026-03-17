@@ -22,6 +22,7 @@ export function initDiscussionCounter() {
           props: {
             blocksMerge: parseBoolean(blocksMerge),
             canResolveDiscussion: parseBoolean(canResolveDiscussion),
+            compact: true,
           },
         });
       },

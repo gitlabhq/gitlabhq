@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { __ } from '~/locale';
 import { copyToClipboard } from '~/lib/utils/copy_to_clipboard';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';

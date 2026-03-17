@@ -1,84 +1,130 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: 公式のGitLab MCPサーバーを使用して、AIツールをGitLabインスタンスに接続します。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: AIツールをGitLab Model Context Protocol（MCP）サーバーと接続します。
 title: GitLab MCPサーバー
 ---
 
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- 提供形態: GitLab.com、GitLab Self-Managed
-- ステータス: 実験的機能
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- ステータス: ベータ版
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 18.3で[導入](../../../administration/feature_flags/_index.md)されました（フラグ名は`mcp_server`と`oauth_dynamic_client_registration`）。デフォルトでは無効になっています。
+- GitLab 18.3で[実験](../../../policy/development_stages_support.md#experiment)として[フラグ](../../../administration/feature_flags/_index.md)`mcp_server`および`oauth_dynamic_client_registration`として導入されました。デフォルトでは無効になっています。
+- GitLab 18.6で実験から[ベータ](../../../policy/development_stages_support.md#beta)に変更されました。機能フラグ[`mcp_server`](https://gitlab.com/gitlab-org/gitlab/-/issues/556448)および[`oauth_dynamic_client_registration`](https://gitlab.com/gitlab-org/gitlab/-/issues/555942)は削除されました。
+- GitLab 18.7で`2025-03-26`および`2025-06-18`のMCPプロトコル仕様への[サポートが追加されました](https://gitlab.com/gitlab-org/gitlab/-/issues/581459)。
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+> [!warning]
+> この機能に関するフィードバックを提供するには、[イシュー561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564)にコメントしてください。
 
-この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
+GitLab [Model Context Protocol](https://modelcontextprotocol.io/)（MCP）サーバーを使用すると、AIツールとアプリケーションをGitLabインスタンスに安全に接続できます。Claude Desktop、Claude Code、CursorなどのAIアシスタントやその他のMCP互換ツールは、GitLabデータにアクセスし、ユーザーに代わってアクションを実行できます。
 
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-この機能に関するフィードバックを提供するには、[イシュー561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564)にコメントを残してください。
-
-{{< /alert >}}
-
-GitLab [Model Context Protocol](https://modelcontextprotocol.io/)（MCP）サーバーを使用すると、AIツールとアプリケーションをGitLabインスタンスに安全に接続できます。Claude Desktop、Cursor、その他のMCP互換ツールのようなAIアシスタントは、GitLabデータにアクセスし、ユーザーに代わってアクションを実行できます。
-
-MCPサーバーは、AIツールが以下を実行するための標準化された方法を提供します。
+GitLab MCPサーバーは、AIツールが次のことを標準化する方法を提供します:
 
 - GitLabプロジェクト情報にアクセスします。
-- イシューとマージリクエストのデータを取得する。
+- イシューとマージリクエストのデータを取得します。
 - GitLab APIと安全にやり取りします。
 - AIアシスタントを介してGitLab固有の操作を実行します。
 
-GitLab MCPサーバーは、[OAuth 2.0 Dynamic Client Registration](https://tools.ietf.org/html/rfc7591)をサポートしており、AIツールはGitLabインスタンスに自身を登録できます。AIツールが初めてGitLab MCPサーバーに接続すると、次のようになります:
+GitLab MCPサーバーは、[OAuth 2.0 Dynamic Client Registration](https://tools.ietf.org/html/rfc7591)をサポートしており、AIツールはGitLabインスタンスに自身を登録できます。AIツールが初めてGitLab MCPサーバーに接続すると、次を実行します:
 
 1. OAuthアプリケーションとして自身を登録します。
 1. GitLabデータへのアクセス認可をリクエストします。
 1. 安全なAPIアクセス用のアクセストークンを受信します。
 
-クリックスルーデモについては、[Duo Agent Platform - MCP server](https://gitlab.navattic.com/gitlab-mcp-server)を参照してください。
+クリックスルーデモについては、[GitLab Duo Agent Platform - GitLab MCPサーバー](https://gitlab.navattic.com/gitlab-mcp-server)を参照してください。
 <!-- Demo published on 2025-09-11 -->
 
-## CursorをGitLab MCPサーバーに接続する {#connect-cursor-to-a-gitlab-mcp-server}
+## 前提条件 {#prerequisites}
 
-前提要件: 
+- [GitLab Duo](../../duo_agent_platform/turn_on_off.md#turn-gitlab-duo-on-or-off)および[ベータ版と実験的機能](../../duo_agent_platform/turn_on_off.md#turn-on-beta-and-experimental-features)が有効になっていることを確認します。
+
+## クライアントをGitLab MCPサーバーに接続する {#connect-a-client-to-the-gitlab-mcp-server}
+
+GitLab MCPサーバーは2つのトランスポートタイプをサポートしています:
+
+- **HTTPトランスポート（推奨）**: 追加の依存関係なしに直接接続します。
+- **`mcp-remote`を使用したstdioトランスポート**: プロキシ経由の接続（Node.jsが必要）。
+
+一般的なAIツールは、`mcpServers`キーのJSON設定形式をサポートしており、GitLab MCPサーバーの設定を設定するためのさまざまな方法を提供します。
+
+### HTTPトランスポート（推奨） {#http-transport-recommended}
+
+{{< history >}}
+
+- GitLab 18.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/577575)されました。
+
+{{< /history >}}
+
+HTTPトランスポートを使用してGitLab MCPサーバーを設定するには、この形式を使用します:
+
+- `<gitlab.example.com>`を以下に置き換えます:
+  - GitLab Self-Managedでは、GitLabインスタンスのURL。
+  - GitLab.comでは、`gitlab.com`。
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "type": "http",
+      "url": "https://<gitlab.example.com>/api/v4/mcp"
+    }
+  }
+}
+```
+
+### stdioトランスポートと`mcp-remote` {#stdio-transport-with-mcp-remote}
+
+前提条件: 
 
 - Node.jsバージョン20以降をインストールします。
 
-CursorでGitLab MCPサーバーを設定するには:
+stdioトランスポートを使用してGitLab MCPサーバーを設定するには、この形式を使用します:
 
-1. Cursorを開きます。
-1. Cursorで、**設定** > **Cursor Settings**（Cursor Settings） > **Tools & Integrations**（Tools & Integrations）に移動します。
-1. **MCP Tools**（MCP Tools）で、`New MCP Server`を選択します。
-1. この定義を開いている`mcp.json`ファイルの`mcpServers`キーに追加し、必要に応じて編集します:
-   - `"command":`パラメータの場合、`npx`がグローバルではなくローカルにインストールされている場合は、`npx`へのフルパスを指定してください。
+- `"command":`パラメータの場合、`npx`がグローバルではなくローカルにインストールされている場合は、`npx`へのフルパスを指定してください。
+- `<gitlab.example.com>`を以下に置き換えます:
+  - GitLab Self-Managedでは、GitLabインスタンスのURL。
+  - GitLab.comでは、`gitlab.com`。
+
+```json
+{
+  "mcpServers": {
+    "GitLab": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://<gitlab.example.com>/api/v4/mcp"
+      ]
+    }
+  }
+}
+```
+
+## CursorをGitLab MCPサーバーに接続する {#connect-cursor-to-the-gitlab-mcp-server}
+
+Cursorは、追加の依存関係なしに直接接続するためにHTTPトランスポートを使用します。CursorでGitLab MCPサーバーを設定するには:
+
+1. Cursorで、**設定** > **Cursor Settings** > **Tools & MCP**に移動します。
+1. **Installed MCP Servers**の下で、**New MCP Server**を選択します。
+1. 開いている`mcp.json`ファイル内の`mcpServers`キーにこの定義を追加します:
    - `<gitlab.example.com>`を以下に置き換えます:
      - GitLab Self-Managedでは、GitLabインスタンスのURL。
-     - GitLab.comでは、`GitLab.com`。
-   - `--static-oauth-client-metadata`パラメータは、GitLabサーバーで予期されるようにOAuthスコープを`mcp`に設定するために、`mcp-remote`モジュールに必須です。
+     - GitLab.comでは、`gitlab.com`。
 
    ```json
    {
      "mcpServers": {
        "GitLab": {
-         "command": "npx",
-         "args": [
-           "mcp-remote",
-           "https://<gitlab.example.com>/api/v4/mcp",
-           "--static-oauth-client-metadata",
-           "{\"scope\": \"mcp\"}"
-         ]
+          "type": "http",
+          "url": "https://<gitlab.example.com>/api/v4/mcp"
        }
      }
    }
@@ -86,36 +132,63 @@ CursorでGitLab MCPサーバーを設定するには:
 
 1. ファイルを保存し、ブラウザでOAuth認可ページが開くのを待ちます。
 
-   これが発生しない場合は、Cursorを閉じて再起動します。
+   ページが開かない場合は、Cursorを閉じて再起動します。
 1. ブラウザで、認可リクエストを確認して承認します。
 
-新しいチャットを開始し、利用可能なツールに応じて質問をすることができます。
+これで、[利用可能なツール](mcp_server_tools.md)に応じて新しいチャットを開始し、質問することができます。
 
-{{< alert type="warning" >}}
+> [!warning]
+> これらのツールを使用する際は、プロンプトインジェクションに対する防御に責任を負います。最大限の注意を払うか、信頼できるGitLabオブジェクトでのみMCPツールを使用してください。
 
-これらのツールを使用する際は、プロンプトインジェクションから保護する責任があります。最大限の注意を払うか、信頼できるGitLabオブジェクトでのみMCPツールを使用してください。
+## Claude CodeをGitLab MCPサーバーに接続する {#connect-claude-code-to-the-gitlab-mcp-server}
 
-{{< /alert >}}
+Claude Codeは、追加の依存関係なしに直接接続するためにHTTPトランスポートを使用します。Claude CodeでGitLab MCPサーバーを設定するには:
 
-## Claude DesktopをGitLab MCPサーバーに接続する {#connect-claude-desktop-to-a-gitlab-mcp-server}
+1. ターミナルで、CLIを使用してGitLab MCPサーバーを追加します:
+   - `<gitlab.example.com>`を以下に置き換えます:
+     - GitLab Self-Managedでは、GitLabインスタンスのURL。
+     - GitLab.comでは、`gitlab.com`。
 
-前提要件: 
+   ```shell
+   claude mcp add --transport http GitLab https://<gitlab.example.com>/api/v4/mcp
+   ```
+
+1. Claude Codeを開始します:
+
+   ```shell
+   claude
+   ```
+
+1. GitLab MCPサーバーで認証するします:
+   - チャットで、`/mcp`と入力します。
+   - リストからGitLabサーバーを選択します。
+   - ブラウザで、認可リクエストを確認して承認します。
+
+1. オプション。接続を確認するには、再度`/mcp`と入力します。GitLabサーバーが接続済みとして表示されるはずです。
+
+これで、[利用可能なツール](mcp_server_tools.md)に応じて新しいチャットを開始し、質問することができます。
+
+> [!warning]
+> これらのツールを使用する際は、プロンプトインジェクションに対する防御に責任を負います。最大限の注意を払うか、信頼できるGitLabオブジェクトでのみMCPツールを使用してください。
+
+## Claude DesktopをGitLab MCPサーバーに接続する {#connect-claude-desktop-to-the-gitlab-mcp-server}
+
+前提条件: 
 
 - Node.jsバージョン20以降をインストールします。
-- Node.jsが`PATH`環境変数（`which -a node`）でグローバルに使用できることを確認します。
+- `PATH`環境変数（`which -a node`）にNode.jsがグローバルで利用可能であることを確認します。
 
 Claude DesktopでGitLab MCPサーバーを設定するには:
 
 1. Claude Desktopを開きます。
-1. 設定ファイルを編集します。次のいずれかを実行できます:
-   - Claude Desktopで、**設定** > **デベロッパー** > **Edit Config**（Edit Config）に移動します。
+1. 設定ファイルを編集します。次のいずれかを実行します:
+   - Claude Desktopで、**Setting** > **Developer** > **Edit Config**に移動します。
    - macOSで、`~/Library/Application Support/Claude/claude_desktop_config.json`ファイルを開きます。
-1. 必要に応じて編集して、`GitLab` MCPサーバーにこのエントリを追加します:
+1. 必要に応じて編集し、GitLab MCPサーバーにこのエントリを追加します:
    - `"command":`パラメータの場合、`npx`がグローバルではなくローカルにインストールされている場合は、`npx`へのフルパスを指定してください。
    - `<gitlab.example.com>`を以下に置き換えます:
      - GitLab Self-Managedでは、GitLabインスタンスのURL。
      - GitLab.comでは、`GitLab.com`。
-   - `--static-oauth-client-metadata`パラメータは、GitLabサーバーで予期されるようにOAuthスコープを`mcp`に設定するために、`mcp-remote`モジュールに必須です。
 
    ```json
    {
@@ -125,9 +198,7 @@ Claude DesktopでGitLab MCPサーバーを設定するには:
          "args": [
            "-y",
            "mcp-remote",
-           "https://<gitlab.example.com>/api/v4/mcp",
-           "--static-oauth-client-metadata",
-           "{\"scope\": \"mcp\"}"
+           "https://<gitlab.example.com>/api/v4/mcp"
          ]
        }
      }
@@ -136,226 +207,186 @@ Claude DesktopでGitLab MCPサーバーを設定するには:
 
 1. 設定を保存して、Claude Desktopを再起動します。
 1. 最初の接続時に、Claude DesktopはOAuthのブラウザウィンドウを開きます。リクエストを確認して承認します。
-1. **設定** > **デベロッパー**に移動し、新しいGitLab MCP設定を確認します。
-1. **設定** > **Connectors**（Connectors）に移動し、接続されているGitLab MCPサーバーを検査します。
+1. **Settings** > **Developer**に移動し、新しいGitLab MCP設定を確認します。
+1. **設定** > **Connectors**に移動し、接続されているGitLab MCPサーバーを検査します。
 
-新しいチャットを開始し、利用可能なツールに応じて質問をすることができます。
+これで、[利用可能なツール](mcp_server_tools.md)に応じて新しいチャットを開始し、質問することができます。
 
-{{< alert type="warning" >}}
+> [!warning]
+> これらのツールを使用する際は、プロンプトインジェクションに対する防御に責任を負います。最大限の注意を払うか、信頼できるGitLabオブジェクトでのみMCPツールを使用してください。
 
-これらのツールを使用する際は、プロンプトインジェクションから保護する責任があります。最大限の注意を払うか、信頼できるGitLabオブジェクトでのみMCPツールを使用してください。
+## Gemini codeアシストとGemini CLIをGitLab MCPサーバーに接続する {#connect-gemini-code-assist-and-gemini-cli-to-the-gitlab-mcp-server}
 
-{{< /alert >}}
+Gemini codeアシストとGemini CLIは、追加の依存関係なしに直接接続するためにHTTPトランスポートを使用します。Gemini codeアシストまたはGemini CLIでGitLab MCPサーバーを設定するには:
 
-## 利用可能なツール {#available-tools}
+1. `~/.gemini/settings.json`を編集し、GitLab MCPサーバーを追加します。
+   - `<gitlab.example.com>`を以下に置き換えます:
+     - GitLab Self-Managedでは、GitLabインスタンスのURL。
+     - GitLab.comでは、`gitlab.com`。
 
-GitLab MCPサーバーは、次のツールを提供します。
+   ```json
+   {
+     "mcpServers": {
+       "GitLab": {
+         "httpUrl": "https://<gitlab.example.com>/api/v4/mcp"
+       }
+     }
+   }
+   ```
 
-### `get_mcp_server_version` {#get_mcp_server_version}
+1. Gemini Code AssistまたはGemini CLIで、`/mcp auth GitLab`コマンドを実行します。
 
-GitLab MCPサーバーの現在のバージョンを返します。
+   OAuthの認可ページが表示されるはずです。そうでない場合は、Gemini Code AssistまたはGemini CLIを再起動してください。
 
-例: 
+1. ブラウザで、認可リクエストを確認して承認します。
 
-```plaintext
-What version of the GitLab MCP server am I connected to?
-```
+これで、[利用可能なツール](mcp_server_tools.md)に応じて新しいチャットを開始し、質問することができます。
 
-### `create_issue` {#create_issue}
+> [!warning]
+> これらのツールを使用する際は、プロンプトインジェクションに対する防御に責任を負います。最大限の注意を払うか、信頼できるGitLabオブジェクトでのみMCPツールを使用してください。
 
-GitLabプロジェクトに新しいイシューを作成します。
+## VS CodeでGitHub CopilotをGitLab MCPサーバーに接続する {#connect-github-copilot-in-vs-code-to-the-gitlab-mcp-server}
 
-| パラメータ      | 型    | 必須 | 説明 |
-|----------------|---------|----------|-------------|
-| `id`           | 文字列  | はい      | プロジェクトのIDまたはURLエンコードされたパス。 |
-| `title`        | 文字列  | はい      | イシューのタイトル。 |
-| `description`  | 文字列  | いいえ       | イシューの説明。 |
-| `assignee_ids` | 配列   | いいえ       | 割り当てられたユーザーのID。 |
-| `milestone_id` | 整数 | いいえ       | マイルストーンのID。 |
-| `labels`       | 文字列  | いいえ       | ラベル名のコンマ区切りリスト。 |
-| `confidential` | ブール値 | いいえ       | イシューを機密に設定します。デフォルトは`false`です。 |
-| `epic_id`      | 整数 | いいえ       | リンクされたエピックのID。 |
+GitHub Copilotは、追加の依存関係なしに直接接続するためにHTTPトランスポートを使用します。VS CodeのGitHub CopilotでGitLab MCPサーバーを設定するには:
 
-例: 
+1. VS Codeでコマンドパレットを開きます。
+   - macOSでは、<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します。
+   - WindowsまたはLinuxでは、<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します。
+1. `MCP: Add Server`と入力して<kbd>Enter</kbd>キーを押します。
+1. サーバータイプとして**HTTP**を選択します。
+1. サーバーURLには、`https://<gitlab.example.com>/api/v4/mcp`を入力します。
+   - `<gitlab.example.com>`を以下に置き換えます:
+     - GitLab Self-Managedでは、GitLabインスタンスのURL。
+     - GitLab.comでは、`gitlab.com`。
+1. サーバーIDには、`GitLab`を入力します。
+1. 設定をグローバルに、または`vscode/mcp.json`ワークスペースに保存します。
 
-```plaintext
-Create a new issue titled "Fix login bug" in project 123 with description
-"Users cannot log in with special characters in password"
-```
+   OAuthの認可ページが表示されるはずです。そうでない場合は、コマンドパレットを開き、**MCP: List Servers**のステータスを確認するか、サーバーを再起動します。
 
-### `get_issue` {#get_issue}
+1. ブラウザで、認可リクエストを確認して承認します。
 
-特定のGitLabイシューに関する詳細情報を取得する。
+これで、[利用可能なツール](mcp_server_tools.md)に応じて新しいチャットを開始し、質問することができます。
 
-| パラメータ   | 型    | 必須 | 説明 |
-|-------------|---------|----------|-------------|
-| `id`        | 文字列  | はい      | プロジェクトのIDまたはURLエンコードされたパス。 |
-| `issue_iid` | 整数 | はい      | イシューの内部ID。 |
+> [!warning]
+> これらのツールを使用する際は、プロンプトインジェクションに対する防御に責任を負います。最大限の注意を払うか、信頼できるGitLabオブジェクトでのみMCPツールを使用してください。
 
-例: 
+## VS CodeでContinueをGitLab MCPサーバーに接続する {#connect-continue-in-vs-code-to-the-gitlab-mcp-server}
 
-```plaintext
-Get details for issue 42 in project 123
-```
+前提条件: 
 
-### `create_merge_request` {#create_merge_request}
+- Node.jsバージョン20以降をインストールします。
+- `PATH`環境変数（`which -a node`）にNode.jsがグローバルで利用可能であることを確認します。
 
-{{< history >}}
+VS CodeのContinueでGitLab MCPサーバーを設定するには:
 
-- GitLab 18.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/571243)されました。
+1. VS Codeのアクティビティバーで、Continue拡張機能を選択します。
+1. 設定を開き、**ツール**を選択します。
+1. **MCP Servers**の横に、新しいサーバーを追加します。
+1. 設定ファイル`.continue/mcpServers/new-mcp-server.yaml`を編集します:
+   - `<gitlab.example.com>`を以下に置き換えます:
+     - GitLab Self-Managedでは、GitLabインスタンスのURL。
+     - GitLab.comでは、`gitlab.com`。
 
-{{< /history >}}
+   ```yaml
+   name: GitLab MCP server
+   version: 0.0.1
+   schema: v1
+   mcpServers:
+     - name: GitLab MCP server
+       type: stdio
+       command: npx
+       args:
+         - mcp-remote
+         - https://<gitlab.example.com>/api/v4/mcp
+   ```
 
-プロジェクトにマージリクエストを作成します。
+1. 設定を保存します。
 
-| パラメータ           | 型    | 必須 | 説明 |
-|---------------------|---------|----------|-------------|
-| `id`                | 文字列  | はい      | プロジェクトのIDまたはURLエンコードされたパス。 |
-| `title`             | 文字列  | はい      | マージリクエストのタイトル。 |
-| `source_branch`     | 文字列  | はい      | ソースブランチの名前。 |
-| `target_branch`     | 文字列  | はい      | ターゲットブランチの名前。 |
-| `target_project_id` | 整数 | いいえ       | ターゲットプロジェクトのID（数値）。 |
+   OAuthの認可ページが表示されるはずです。
 
-例: 
+1. ブラウザで、認可リクエストを確認して承認します。
 
-```plaintext
-Create a merge request in project gitlab-org/gitlab titled "Bug fix broken specs"
-from branch "fix/specs-broken" into "master" and enable squash
-```
+これで、[利用可能なツール](mcp_server_tools.md)に応じて新しいチャットを開始し、質問することができます。
 
-### `get_merge_request` {#get_merge_request}
+> [!warning]
+> これらのツールを使用する際は、プロンプトインジェクションに対する防御に責任を負います。最大限の注意を払うか、信頼できるGitLabオブジェクトでのみMCPツールを使用してください。
 
-特定のGitLabマージリクエストに関する詳細情報を取得する。
+## OpenAI CodexをGitLab MCPサーバーに接続する {#connect-openai-codex-to-the-gitlab-mcp-server}
 
-| パラメータ           | 型    | 必須 | 説明 |
-|---------------------|---------|----------|-------------|
-| `id`                | 文字列  | はい      | プロジェクトのIDまたはURLエンコードされたパス。 |
-| `merge_request_iid` | 整数 | はい      | マージリクエストの内部ID。 |
+OpenAI Codexは、追加の依存関係なしに直接接続するためにHTTPトランスポートを使用します。OpenAI CodexでGitLab MCPサーバーを設定するには:
 
-例: 
+1. ターミナルで、CLIを使用してGitLab MCPサーバーを追加します:
+   - `<gitlab.example.com>`を以下に置き換えます:
+     - GitLab Self-Managedでは、GitLabインスタンスのURL。
+     - GitLab.comでは、`gitlab.com`。
 
-```plaintext
-Get details for merge request 15 in project gitlab-org/gitlab
-```
+   ```shell
+   codex mcp add --url "https://<gitlab.example.com>/api/v4/mcp" GitLab
+   ```
 
-### `get_merge_request_commits` {#get_merge_request_commits}
+1. `~/.codex/config.toml`を編集し、`[features]`セクションで`rmcp_client`機能フラグを有効にします。
 
-特定のマージリクエスト内のコミットのリストを取得する。
+   ```toml
+   [features]
+   "rmcp_client" = true
 
-| パラメータ           | 型    | 必須 | 説明 |
-|---------------------|---------|----------|-------------|
-| `id`                | 文字列  | はい      | プロジェクトのIDまたはURLエンコードされたパス。 |
-| `merge_request_iid` | 整数 | はい      | マージリクエストの内部ID。 |
-| `per_page`          | 整数 | いいえ       | ページあたりのコミット数。 |
-| `page`              | 整数 | いいえ       | 現在のページ番号。 |
+   [mcp_servers.GitLab]
+   url = "https://<gitlab.example.com>/api/v4/mcp"
+   ```
 
-例: 
+1. ログインフローを実行し、GitLabインスタンスで認証するします。
 
-```plaintext
-Show me all commits in merge request 42 from project 123
-```
+   ```shell
+   codex mcp login GitLab
+   ```
 
-### `get_merge_request_diffs` {#get_merge_request_diffs}
+1. ブラウザで、認可リクエストを確認して承認します。
 
-特定のマージリクエストの差分を取得する。
+これで、[利用可能なツール](mcp_server_tools.md)に応じて新しいチャットを開始し、質問することができます。
 
-| パラメータ           | 型    | 必須 | 説明 |
-|---------------------|---------|----------|-------------|
-| `id`                | 文字列  | はい      | プロジェクトのIDまたはURLエンコードされたパス。 |
-| `merge_request_iid` | 整数 | はい      | マージリクエストの内部ID。 |
-| `per_page`          | 整数 | いいえ       | ページあたりの差分の数。 |
-| `page`              | 整数 | いいえ       | 現在のページ番号。 |
+> [!warning]
+> これらのツールを使用する際は、プロンプトインジェクションに対する防御に責任を負います。最大限の注意を払うか、信頼できるGitLabオブジェクトでのみMCPツールを使用してください。
 
-例: 
+## ZedをGitLab MCPサーバーに接続する {#connect-zed-to-the-gitlab-mcp-server}
 
-```plaintext
-What files were changed in merge request 25 in the gitlab project?
-```
+前提条件: 
 
-### `get_merge_request_pipelines` {#get_merge_request_pipelines}
+- Node.jsバージョン20以降をインストールします。
+- `PATH`環境変数（`which -a node`）にNode.jsがグローバルで利用可能であることを確認します。
 
-特定のマージリクエストのパイプラインを取得する。
+ZedでGitLab MCPサーバーを設定するには:
 
-| パラメータ           | 型    | 必須 | 説明 |
-|---------------------|---------|----------|-------------|
-| `id`                | 文字列  | はい      | プロジェクトのIDまたはURLエンコードされたパス。 |
-| `merge_request_iid` | 整数 | はい      | マージリクエストの内部ID。 |
+1. Zedで、コマンドパレットを開きます:
+   - macOSでは、<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します。
+   - WindowsまたはLinuxでは、<kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>を押します。
+1. `agent: open settings`と入力して<kbd>Enter</kbd>キーを押します。
+1. **Model Context Protocol (MCP) Servers**セクションで、**Add Server**を選択します。
+1. `args`のサーバーURLには、`https://<gitlab.example.com>/api/v4/mcp`を使用します。
+   - `<gitlab.example.com>`を以下に置き換えます:
+     - GitLab Self-Managedでは、GitLabインスタンスのURL。
+     - GitLab.comでは、`gitlab.com`。
 
-例: 
+   ```json
+   {
+     /// The name of your MCP server
+     "GitLab": {
+       /// The command which runs the MCP server
+       "command": "npx",
+       /// The arguments to pass to the MCP server
+       "args": ["-y","mcp-remote@latest","https://<gitlab.example.com>/api/v4/mcp"],
+       /// The environment variables to set
+       "env": {}
+     }
+   }
+   ```
 
-```plaintext
-Show me all pipelines for merge request 42 in project gitlab-org/gitlab
-```
+1. 設定を保存します。
 
-### `get_pipeline_jobs` {#get_pipeline_jobs}
+   OAuthの認可ページが表示されるはずです。そうでない場合は、**GitLab**切替をオフにしてから再度オンにします。
 
-特定のCI/CDパイプラインのジョブを取得する。
+1. ブラウザで、認可リクエストを確認して承認します。
 
-| パラメータ     | 型    | 必須 | 説明 |
-|---------------|---------|----------|-------------|
-| `id`          | 文字列  | はい      | プロジェクトのIDまたはURLエンコードされたパス。 |
-| `pipeline_id` | 整数 | はい      | パイプラインのID。 |
-| `per_page`    | 整数 | いいえ       | ページあたりのジョブ数。 |
-| `page`        | 整数 | いいえ       | 現在のページ番号。 |
+これで、[利用可能なツール](mcp_server_tools.md)に応じて新しいチャットを開始し、質問することができます。
 
-例: 
-
-```plaintext
-Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
-```
-
-### `gitlab_search` {#gitlab_search}
-
-{{< history >}}
-
-- GitLab 18.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/566143)されました。
-
-{{< /history >}}
-
-検索APIを使用して、GitLabインスタンス全体で用語を検索します。このツールは、グローバル検索でのみ使用できます。
-
-| パラメータ      | 型    | 必須 | 説明 |
-|----------------|---------|----------|-------------|
-| `scope`        | 文字列  | はい      | 検索スコープ（`issues`、`merge_requests`、または`projects`など）。 |
-| `search`       | 文字列  | はい      | 検索語句。 |
-| `state`        | 文字列  | いいえ       | 検索結果の状態。 |
-| `confidential` | ブール値 | いいえ       | 機密性で結果をフィルタリングします。デフォルトは`false`です。 |
-| `per_page`     | 整数 | いいえ       | ページあたりの結果数。 |
-| `page`         | 整数 | いいえ       | 現在のページ番号。 |
-| `fields`       | 文字列  | いいえ       | 検索するフィールドのコンマ区切りリスト。 |
-
-例: 
-
-```plaintext
-Search issues for "flaky test" across GitLab
-```
-
-### `get_code_context` {#get_code_context}
-
-{{< history >}}
-
-- GitLab 18.5で`code_snippet_search_graphqlapi`という名前の[フラグ](../../../administration/feature_flags/_index.md)により[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/569624)されました。デフォルトでは無効になっています。
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
-
-{{< /alert >}}
-
-プロジェクト内の関連するコードスニペットを検索します。
-
-| パラメータ        | 型    | 必須 | 説明 |
-|------------------|---------|----------|-------------|
-| `search_term`    | 文字列  | はい      | 検索語句。 |
-| `project_id`     | 整数 | はい      | プロジェクトのID。 |
-| `directory_path` | 文字列  | いいえ       | ディレクトリのパス（`app/services/`など）。 |
-| `knn`            | 整数 | いいえ       | 類似のコードスニペットを検出するために使用される最近傍の数。デフォルトは`64`です。 |
-| `limit`          | 整数 | いいえ       | 返す結果の最大数。デフォルトは`20`です。 |
-
-例: 
-
-```plaintext
-Search for relevant code snippets that show how authorizations are managed in GitLab
-```
+> [!warning]
+> これらのツールを使用する際は、プロンプトインジェクションに対する防御に責任を負います。最大限の注意を払うか、信頼できるGitLabオブジェクトでのみMCPツールを使用してください。

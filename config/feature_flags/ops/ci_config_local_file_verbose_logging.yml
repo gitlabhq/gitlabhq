@@ -1,0 +1,9 @@
+---
+name: ci_config_local_file_verbose_logging
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223581
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/336789
+rollout_issue_url:
+milestone: '18.10'
+type: ops
+group: group::pipeline authoring
+default_enabled: false

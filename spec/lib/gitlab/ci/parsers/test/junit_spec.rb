@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
+RSpec.describe Gitlab::Ci::Parsers::Test::Junit, feature_category: :code_testing do
   describe '#parse!' do
     subject { described_class.new.parse!(junit, test_report, job: job) }
 
@@ -41,6 +41,23 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
           expect { subject }.not_to raise_error
 
           expect(test_cases.count).to eq(0)
+        end
+      end
+
+      context 'when <testsuites> is empty' do
+        let(:junit) do
+          <<-EOF.strip_heredoc
+            <?xml version="1.0" encoding="utf-8"?>
+            <testsuites>
+            </testsuites>
+          EOF
+        end
+
+        it 'parses without error and returns no test cases' do
+          expect { subject }.not_to raise_error
+
+          expect(test_cases.count).to eq(0)
+          expect(test_suite.suite_error).to be_nil
         end
       end
 
@@ -618,6 +635,14 @@ RSpec.describe Gitlab::Ci::Parsers::Test::Junit do
         expect { subject }.not_to raise_error
 
         expect(test_suite.total_time).to eq(13.68)
+      end
+    end
+
+    describe '#dig_into_testsuites' do
+      let(:parser) { described_class.new }
+
+      it 'returns nil when root is nil' do
+        expect(parser.send(:dig_into_testsuites, nil, 'time')).to be_nil
       end
     end
 

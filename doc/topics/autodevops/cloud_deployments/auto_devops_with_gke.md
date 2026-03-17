@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Use Auto DevOps to deploy an application to Google Kubernetes Engine
 ---
 
@@ -128,9 +128,8 @@ Follow these steps to configure the base domain and other settings required for 
    Replace `gitlab-managed-apps` if you have overwritten your namespace.
 
    Copy this IP address, as you need it in the next step.
-
 1. Go back to the application project.
-1. On the left sidebar, select **Settings** > **CI/CD** and expand **Variables**.
+1. In the left sidebar, select **Settings** > **CI/CD** and expand **Variables**.
    - Add a key called `KUBE_INGRESS_BASE_DOMAIN` with the application deployment domain as the value. For this example, use the domain `<IP address>.nip.io`.
    - Add a key called `KUBE_NAMESPACE` with a value of the Kubernetes namespace for your deployments to target. You can use different namespaces per environment. Configure the environment, use the environment scope.
    - Add a key called `KUBE_CONTEXT` with the value `<path/to/agent/project>:<agent-name>`. Select the environment scope of your choice.
@@ -142,7 +141,7 @@ While Auto DevOps is enabled by default, Auto DevOps can be disabled for both
 the instance (for GitLab Self-Managed instances) and the group. Complete
 these steps to enable Auto DevOps if it's disabled:
 
-1. On the top bar, select **Search or go to** and find the application project.
+1. In the top bar, select **Search or go to** and find the application project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select **Default to Auto DevOps pipeline** to display more options.
@@ -188,16 +187,12 @@ The jobs are separated into stages:
   - Jobs suffixed with `-sast` run static analysis on the current code to check for potential
     security issues, and are allowed to fail ([Auto SAST](../stages.md#auto-sast))
   - The `secret-detection` job checks for leaked secrets and is allowed to fail ([auto secret detection](../stages.md#auto-secret-detection))
-
 - **Review** - Pipelines on the default branch include this stage with a `dast_environment_deploy` job.
   For more information, see [dynamic application security testing (DAST)](../../../user/application_security/dast/_index.md).
-
 - **Production** - After the tests and checks finish, the application deploys in
   Kubernetes ([Auto Deploy](../stages.md#auto-deploy)).
-
 - **Performance** - Performance tests are run on the deployed application
   ([Auto Browser Performance Testing](../stages.md#auto-browser-performance-testing)).
-
 - **Cleanup** - Pipelines on the default branch include this stage with a `stop_dast_environment` job.
 
 After running a pipeline, you should view your deployed website and learn how
@@ -279,7 +274,7 @@ To fix the broken test:
 1. In the left-hand directory of files, find the `test/controllers/welcome_controller_test.rb`
    file, and select it to open it.
 1. Change line 7 to say `You're on Rails! Powered by GitLab Auto DevOps.`
-1. On the left sidebar, select **Source Control** ({{< icon name="merge" >}}).
+1. In the left sidebar, select **Source Control** ({{< icon name="merge" >}}).
 1. Write a commit message, and select **Commit**.
 
 Return to the **Overview** page of your merge request, and you should not only

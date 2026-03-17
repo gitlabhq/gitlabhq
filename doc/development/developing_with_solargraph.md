@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Using Solargraph
 ---
 
@@ -13,15 +13,11 @@ Refer to particular IDE plugin documentation on how to integrate it with Solargr
 
 - Visual Studio Code
   - GitHub: [`vscode-solargraph`](https://github.com/castwide/vscode-solargraph)
-
 - Atom
   - GitHub: [`atom-solargraph`](https://github.com/castwide/atom-solargraph)
-
 - Vim
   - GitHub: [`LanguageClient-neovim`](https://github.com/autozimu/LanguageClient-neovim)
-
 - Emacs
   - GitHub: [`emacs-solargraph`](https://github.com/guskovd/emacs-solargraph)
-
 - Eclipse
   - GitHub: [`eclipse-solargraph`](https://github.com/PyvesB/eclipse-solargraph)

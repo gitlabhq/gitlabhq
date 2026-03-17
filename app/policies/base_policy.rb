@@ -1,27 +1,6 @@
 # frozen_string_literal: true
 
 class BasePolicy < DeclarativePolicy::Base
-  # rubocop:disable Gitlab/AvoidCurrentOrganization -- Needed for prevent_all policy
-  desc "Subject belongs to current organization"
-  condition(:in_current_organization) do
-    next true unless Feature.enabled?(:current_organization_policy, Feature.current_request)
-    next true if user_is_user? && @user.admin?
-    next true unless Current.organization_assigned && Current.organization
-    next true if @subject.is_a? Organizations::Organization
-
-    sharding_attribute = @subject.class.try(:sharding_keys)&.key("organizations")
-    next true unless sharding_attribute
-    next true unless @subject.respond_to?(sharding_attribute)
-
-    # rubocop:disable GitlabSecurity/PublicSend -- Sharding attribute can have different names
-    organization_id = @subject.public_send(sharding_attribute)
-    # rubocop:enable GitlabSecurity/PublicSend
-    next true if organization_id.nil?
-
-    organization_id == Current.organization.id
-  end
-  # rubocop:enable Gitlab/AvoidCurrentOrganization
-
   desc "User is an instance admin"
   with_options scope: :user, score: 0
   condition(:admin) do
@@ -109,26 +88,34 @@ class BasePolicy < DeclarativePolicy::Base
     ::Gitlab::ExternalAuthorization.perform_check?
   end
 
-  rule { ~in_current_organization }.prevent_all
-
   rule { external_authorization_enabled & ~can?(:read_all_resources) }.policy do
     prevent :read_cross_project
   end
 
   rule { admin }.policy do
     # Only for actual administrator accounts, behavior affected by admin mode application setting
+    # rubocop:disable Gitlab/Authz/EnableInBasePolicy -- As of Feb 2026, we do not allow enable in base policy
     enable :admin_all_resources
+    # rubocop:enable Gitlab/Authz/EnableInBasePolicy
+
     # Policy extended in EE to also enable auditors
+    # rubocop:disable Gitlab/Authz/EnableInBasePolicy -- As of Feb 2026, we do not allow enable in base policy
     enable :read_all_resources
+    # rubocop:enable Gitlab/Authz/EnableInBasePolicy
+    # rubocop:disable Gitlab/Authz/EnableInBasePolicy -- As of Feb 2026, we do not allow enable in base policy
     enable :change_repository_storage
+    # rubocop:enable Gitlab/Authz/EnableInBasePolicy
   end
 
   rule { gitlab_dedicated & admin }.policy do
+    # rubocop:disable Gitlab/Authz/EnableInBasePolicy -- As of Feb 2026, we do not allow enable in base policy
     enable :read_dedicated_hosted_runner_usage
+    # rubocop:enable Gitlab/Authz/EnableInBasePolicy
   end
 
+  # rubocop:disable Gitlab/Authz/EnableInBasePolicy -- As of Feb 2026, we do not allow enable in base policy
   rule { default }.enable :read_cross_project
-
+  # rubocop:enable Gitlab/Authz/EnableInBasePolicy
   condition(:is_gitlab_com, score: 0, scope: :global) { ::Gitlab.com? }
 
   rule { placeholder_user }.prevent_all

@@ -1,4 +1,4 @@
-import { update, cloneDeep } from 'lodash';
+import { update, cloneDeep } from 'lodash-es';
 import { GlAvatar, GlBadge, GlSprintf, GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createRouter } from '~/ci/catalog/router/index';

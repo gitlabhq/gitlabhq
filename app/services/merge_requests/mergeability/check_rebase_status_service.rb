@@ -8,7 +8,9 @@ module MergeRequests
 
       def execute
         return inactive unless merge_request.project.ff_merge_must_be_possible?
-        return inactive if Feature.enabled?(:rebase_on_merge_automatic, merge_request.project)
+
+        return inactive if Feature.enabled?(:rebase_on_merge_automatic, merge_request.project) &&
+          merge_request.project.project_setting.automatic_rebase_enabled
 
         if merge_request.should_be_rebased?
           failure

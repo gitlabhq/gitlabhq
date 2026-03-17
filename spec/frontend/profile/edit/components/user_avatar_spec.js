@@ -1,6 +1,6 @@
 import { nextTick } from 'vue';
 import jQuery from 'jquery';
-import { GlAvatar, GlAvatarLink, GlSprintf } from '@gitlab/ui';
+import { GlAvatar, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { avatarI18n } from '~/profile/edit/constants';
 import { loadCSSFile } from '~/lib/utils/css_utils';
@@ -54,7 +54,7 @@ describe('Edit User Avatar', () => {
   };
 
   const findAvatar = () => wrapper.findComponent(GlAvatar);
-  const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
+
   const findHelpText = () => wrapper.findComponent(GlSprintf).attributes('message');
   const findRemoveAvatarButton = () => wrapper.findByTestId('remove-avatar-button');
 
@@ -78,8 +78,6 @@ describe('Edit User Avatar', () => {
 
       expect(avatar.exists()).toBe(true);
       expect(avatar.attributes('src')).toBe(defaultProvides.avatarUrl);
-      expect(findAvatarLink().attributes('href')).toBe(defaultProvides.avatarUrl);
-
       const removeAvatarButton = findRemoveAvatarButton();
       expect(removeAvatarButton.exists()).toBe(true);
       expect(removeAvatarButton.attributes('href')).toBe(defaultProvides.profileAvatarPath);

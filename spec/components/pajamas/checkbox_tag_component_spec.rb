@@ -56,4 +56,25 @@ RSpec.describe Pajamas::CheckboxTagComponent, :aggregate_failures, type: :compon
     include_examples 'it renders unchecked checkbox with value of `1`'
     include_examples 'it renders help text'
   end
+
+  context 'with `checkbox_wrapper_options`' do
+    let_it_be(:checkbox_wrapper_options) { { data: { testid: 'custom-wrapper' }, class: 'custom-wrapper-class' } }
+
+    before do
+      render_inline(
+        described_class.new(
+          name: name,
+          checkbox_wrapper_options: checkbox_wrapper_options
+        )
+      ) do |c|
+        c.with_label { label }
+      end
+    end
+
+    it 'applies custom attributes to wrapper element' do
+      expect(page).to have_selector(
+        '.gl-form-checkbox.custom-control.custom-checkbox.custom-wrapper-class[data-testid="custom-wrapper"]'
+      )
+    end
+  end
 end

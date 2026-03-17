@@ -69,7 +69,11 @@ module Integrations::Actions
   private
 
   def integration
-    @integration ||= find_or_initialize_non_project_specific_integration(params[:id])
+    @integration ||= find_or_initialize_non_project_specific_integration(permitted_params[:id])
+  end
+
+  def permitted_params
+    params.permit(:id, :event)
   end
 
   def ensure_integration_enabled
@@ -93,10 +97,8 @@ module Integrations::Actions
   def integration_test_response
     integration.assign_attributes(integration_params[:integration])
 
-    result = if integration.project_level?
-               ::Integrations::Test::ProjectService.new(integration, current_user, params[:event]).execute
-             elsif integration.group_level?
-               ::Integrations::Test::GroupService.new(integration, current_user, params[:event]).execute
+    result = if integration.group_level?
+               ::Integrations::Test::GroupService.new(integration, current_user, permitted_params[:event]).execute
              else
                {}
              end

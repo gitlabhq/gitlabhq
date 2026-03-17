@@ -1,4 +1,4 @@
-import { invert } from 'lodash';
+import { invert } from 'lodash-es';
 import { s__, __, sprintf } from '~/locale';
 
 export const defaultEpicSort = 'TITLE_ASC';

@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Gitaly Cluster (Praefect)
 ---
 
@@ -529,6 +529,9 @@ To migrate to Gitaly Cluster (Praefect):
 
 Even if you don't use the `default` repository storage, you must ensure it is configured.
 [Read more about this limitation](../configure_gitaly.md#gitlab-requires-a-default-repository-storage).
+
+To migrate from the Gitaly chart on Kubernetes, follow the
+[specific migration instructions](https://docs.gitlab.com/charts/advanced/external-gitaly/#migrate-from-gitaly-chart-to-external-gitaly).
 
 ## Migrate off Gitaly Cluster (Praefect)
 

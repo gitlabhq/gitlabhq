@@ -150,7 +150,7 @@ module Banzai
           true
         end
 
-        def data_attributes_for(original, parent, object, link_content: false, link_reference: false)
+        def data_attributes_for(original, parent, object, **_attrs)
           object_parent = object.resource_parent
 
           return super unless object_parent.is_a?(Group)

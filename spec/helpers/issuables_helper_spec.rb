@@ -244,7 +244,8 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           authorWebUrl: url_for(user_path(issue.author)),
           createdAt: issue.created_at.to_time.iso8601,
           isFirstContribution: issue.first_contribution?,
-          serviceDeskReplyTo: nil
+          serviceDeskReplyTo: nil,
+          workItemTypeIconName: issue.work_item_type.icon_name
         }
 
         work_items_data = {

@@ -4,7 +4,7 @@ key_path: counts.create_ci_build
 description: This is a metric created to test using time_frame as an array
 product_group: project_management
 value_type: number
-status: active
+status: removed
 time_frame: [7d, all]
 data_source: internal_events
 events:
@@ -16,3 +16,5 @@ tiers:
 performance_indicator_type: []
 milestone: "17.6"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167201
+milestone_removed: "18.10"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226526

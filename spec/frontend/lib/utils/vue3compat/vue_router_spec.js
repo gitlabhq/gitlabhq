@@ -5,6 +5,10 @@ import { shallowMount } from '@vue/test-utils';
 Vue.use(VueRouter);
 
 describe('VueRouterCompat', () => {
+  const ParentComponent = {
+    template: '<div><router-view /></div>',
+  };
+
   describe('$route.params normalization', () => {
     it('returns catch-all path params as a string via $route', async () => {
       const TestComponent = {
@@ -127,7 +131,6 @@ describe('VueRouterCompat', () => {
     });
 
     it('handles nested routes with children', async () => {
-      const ParentComponent = { template: '<div><router-view /></div>' };
       const ChildComponent = { template: '<div>child</div>' };
 
       const router = new VueRouter({
@@ -148,7 +151,6 @@ describe('VueRouterCompat', () => {
     });
 
     it('handles nested catch-all in children', async () => {
-      const ParentComponent = { template: '<div><router-view /></div>' };
       const CatchAllComponent = { template: '<div>catch all</div>' };
 
       const router = new VueRouter({
@@ -309,7 +311,6 @@ describe('VueRouterCompat', () => {
 
   describe('redirect following', () => {
     it('follows child catch-all redirect on navigation', async () => {
-      const ParentComponent = { template: '<div><router-view /></div>' };
       const DashboardComponent = { template: '<div>dashboard</div>' };
 
       const router = new VueRouter({
@@ -369,15 +370,31 @@ describe('VueRouterCompat', () => {
 
   describe('initial route and redirect', () => {
     let originalPathname;
-
-    const ParentComponent = { template: '<div><router-view /></div>' };
+    let originalHash;
 
     beforeEach(() => {
       originalPathname = window.location.pathname;
+      originalHash = window.location.hash;
     });
 
     afterEach(() => {
-      window.history.replaceState({}, '', originalPathname);
+      window.history.replaceState({}, '', originalPathname + originalHash);
+    });
+
+    it('resolves initial route from hash fragment in hash mode', async () => {
+      window.history.replaceState({}, '', '/some/page#/my-tab');
+
+      const TabComponent = { template: '<div>tab</div>' };
+
+      const router = new VueRouter({
+        mode: 'hash',
+        routes: [{ path: '/:tabId', name: 'tab', component: TabComponent }],
+      });
+
+      shallowMount(TabComponent, { router });
+      await nextTick();
+
+      expect(router.currentRoute.params.tabId).toBe('my-tab');
     });
 
     describe('executes afterEach hook', () => {
@@ -397,8 +414,8 @@ describe('VueRouterCompat', () => {
             { path: '/list', name: 'list' },
           ],
         });
-        router.afterEach((route) => {
-          mockAfterEach(route.name);
+        router.afterEach(({ name }) => {
+          mockAfterEach(name);
         });
 
         shallowMount(ParentComponent, { router });
@@ -504,6 +521,35 @@ describe('VueRouterCompat', () => {
       expect(window.location.pathname).toBe(`${base}/new`);
     });
 
+    it('executes beforeEnter guard that redirects on initial route', () => {
+      const base = '/group/-/cadences';
+      window.history.replaceState({}, '', `${base}/new`);
+
+      const IndexComponent = { template: '<div>index</div>' };
+      const NewComponent = { template: '<div>new</div>' };
+
+      const router = new VueRouter({
+        mode: 'history',
+        base,
+        routes: [
+          { path: '/', name: 'index', component: IndexComponent },
+          {
+            path: '/new',
+            name: 'new',
+            component: NewComponent,
+            beforeEnter: (to, from, next) => {
+              next({ name: 'index' });
+            },
+          },
+        ],
+      });
+
+      shallowMount(ParentComponent, { router });
+
+      expect(router.currentRoute.name).toBe('index');
+      expect(router.currentRoute.path).toBe('/');
+    });
+
     it('updates the browser URL when following a function redirect', async () => {
       const base = '/app';
       window.history.replaceState({}, '', `${base}/dynamic`);
@@ -528,6 +574,38 @@ describe('VueRouterCompat', () => {
     });
   });
 
+  describe('beforeEnter guard', () => {
+    it('executes beforeEnter guard that redirects via next() on push', async () => {
+      const IndexComponent = { template: '<div>index</div>' };
+      const NewComponent = { template: '<div>new</div>' };
+
+      const router = new VueRouter({
+        mode: 'abstract',
+        routes: [
+          { path: '/', name: 'index', component: IndexComponent },
+          {
+            path: '/new',
+            name: 'new',
+            component: NewComponent,
+            beforeEnter: (to, from, next) => {
+              next({ name: 'index' });
+            },
+          },
+        ],
+      });
+
+      try {
+        await router.push('/new');
+      } catch {
+        // Vue Router 3 may throw/reject on redirect
+      }
+      await nextTick();
+
+      expect(router.currentRoute.name).toBe('index');
+      expect(router.currentRoute.path).toBe('/');
+    });
+  });
+
   describe('route matching', () => {
     it('matched array contains route records', async () => {
       const HomeComponent = { template: '<div>home</div>' };
@@ -544,7 +622,6 @@ describe('VueRouterCompat', () => {
     });
 
     it('matched array contains multiple records for nested routes', async () => {
-      const ParentComponent = { template: '<div><router-view /></div>' };
       const ChildComponent = { template: '<div>child</div>' };
 
       const router = new VueRouter({

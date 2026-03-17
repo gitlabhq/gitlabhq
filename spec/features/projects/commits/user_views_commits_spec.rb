@@ -76,7 +76,7 @@ RSpec.describe 'Commit > User views commits', feature_category: :source_code_man
 
       wait_for_requests
 
-      expect(page).to be_axe_clean.within('#content-body').skipping :'color-contrast', :'link-in-text-block',
+      expect(page).to be_axe_clean.within('#content-body').skipping :'link-in-text-block',
         :'link-name', :'valid-lang'
     end
 

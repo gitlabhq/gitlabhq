@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Platform Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Security attributes
 description: Security attributes allows security teams to apply custom metadata labels to projects and groups, enabling them to filter and prioritize security risks based on business context.
 ---
@@ -43,22 +43,22 @@ Track the development of the security inventory in [epic 16939](https://gitlab.c
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role in the group to manage security attributes.
+- You must have the Maintainer or Owner role in the top-level group (namespace) to manage security attributes.
 
 To manage security attributes for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Security configuration**.
 
 ## Manage security attributes for projects
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role in the project to manage security attributes.
+- You must have the Maintainer or Owner role in the top-level group (namespace) to manage security attributes.
 
 To manage security attributes for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. Select the **Security attributes** tab.
 
@@ -74,6 +74,8 @@ When working with the security attributes, you might encounter the following iss
 
 ### Security configuration menu item missing
 
-Some users do not have the required permissions to access the **Security configuration** menu item. The menu item only displays for groups when the authenticated user has the Maintainer or Owner role.
+Users might not have the required permissions to access the **Security configuration** menu item even if they are a Maintainer or Owner in that group.
 
-To manage security attributes, ask a maintainer to complete the configuration changes or request the Maintainer role from your administrator, if necessary.
+The menu item only displays for groups when the authenticated user has the Maintainer or Owner role in the top-level group (namespace) that contains the subgroup.
+
+To manage security attributes, ask a maintainer to complete the configuration changes or request the Maintainer role from your administrator.

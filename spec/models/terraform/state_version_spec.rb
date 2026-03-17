@@ -123,16 +123,6 @@ RSpec.describe Terraform::StateVersion, feature_category: :infrastructure_as_cod
       it 'returns false' do
         expect(state_version.encryption_enabled?).to be false
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(skip_encrypting_terraform_state_file: false)
-        end
-
-        it 'returns true' do
-          expect(state_version.encryption_enabled?).to be true
-        end
-      end
     end
 
     context 'when encryption is enabled in settings' do
@@ -140,16 +130,6 @@ RSpec.describe Terraform::StateVersion, feature_category: :infrastructure_as_cod
 
       it 'returns true' do
         expect(state_version.encryption_enabled?).to be true
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(skip_encrypting_terraform_state_file: false)
-        end
-
-        it 'returns true' do
-          expect(state_version.encryption_enabled?).to be true
-        end
       end
     end
 

@@ -52,17 +52,21 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
   subject(:authenticate_service) { described_class.new(user, device_response, challenge).execute }
 
   describe '#execute' do
-    shared_examples 'returns authentication failure' do
-      it 'returns a Service.error' do
+    shared_examples 'returns authentication failure' do |message:|
+      it 'returns a ServiceResponse.error with message' do
         expect(authenticate_service).to be_a(ServiceResponse)
         expect(authenticate_service).to be_error
+        expect(authenticate_service.message).to be_present
+        expect(authenticate_service.message).to match(message)
       end
     end
 
     shared_examples 'returns authentication success' do
-      it 'returns a Service.success' do
+      it 'returns a ServiceResponse.success with message' do
         expect(authenticate_service).to be_a(ServiceResponse)
         expect(authenticate_service).to be_success
+        expect(authenticate_service.message).to be_present
+        expect(authenticate_service.message).to match('WebAuthn device successfully authenticated.')
       end
     end
 
@@ -83,15 +87,50 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
       end
 
       context 'with a U2F migrated credential' do
+        let!(:u2f_migrated_registration) do
+          u2f_migrated_credential = WebAuthn::Credential.from_create(
+            client.create(
+              challenge: challenge,
+              rp_id: WebAuthn.configuration.legacy_u2f_appid,
+              extensions: {}
+            )
+          )
+
+          WebauthnRegistration.create!(
+            credential_xid: Base64.strict_encode64(u2f_migrated_credential.raw_id),
+            public_key: u2f_migrated_credential.public_key,
+            counter: 1,
+            name: 'My U2F migrated Authenticator',
+            user: user
+          )
+        end
+
+        let!(:webauthn_registration) { u2f_migrated_registration }
+
         let(:webauthn_authenticate_result) do
           client.get(
             challenge: challenge,
+            rp_id: WebAuthn.configuration.legacy_u2f_appid,
             sign_count: webauthn_registration.counter + 1,
-            extensions: { "app_id" => "http://localhost.ca" }
+            extensions: { 'appid' => true }
           )
         end
 
         it_behaves_like 'returns authentication success'
+
+        context 'when appid is false for the credential' do
+          let(:webauthn_authenticate_result) do
+            client.get(
+              challenge: challenge,
+              rp_id: WebAuthn.configuration.legacy_u2f_appid,
+              sign_count: webauthn_registration.counter + 1,
+              extensions: { 'appid' => false }
+            )
+          end
+
+          it_behaves_like 'returns authentication failure',
+            message: 'Failed to authenticate due to a configuration issue. Try again later or contact support.'
+        end
       end
 
       context 'with passkeys' do
@@ -139,11 +178,7 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
             allow(user).to receive(:allow_passkey_authentication?).and_return(false)
           end
 
-          it_behaves_like 'returns authentication failure'
-
-          it 'returns generic error message' do
-            expect(authenticate_service.message).to eq(_('Failed to connect to your device. Try again.'))
-          end
+          it_behaves_like 'returns authentication failure', message: 'Failed to connect to your device. Try again.'
         end
       end
     end
@@ -158,13 +193,14 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
           )
         end
 
-        it_behaves_like 'returns authentication failure'
+        it_behaves_like 'returns authentication failure', message: 'Failed to verify WebAuthn challenge. Try again.'
       end
 
       context 'with invalid JSON response' do
         let(:device_response) { 'bad response' }
 
-        it_behaves_like 'returns authentication failure'
+        it_behaves_like 'returns authentication failure',
+          message: 'Your WebAuthn device did not send a valid JSON response.'
       end
 
       context 'with a cloned authenticator' do
@@ -175,7 +211,8 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
           )
         end
 
-        it_behaves_like 'returns authentication failure'
+        it_behaves_like 'returns authentication failure',
+          message: 'Authenticator may have been cloned. Contact your administrator.'
       end
 
       context 'with a user trying to sign-in with a second-factor webauthn device, without having registered one' do
@@ -185,14 +222,14 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
 
           webauthn_authenticate_result = client.get(
             challenge: challenge,
-            sign_count: webauthn_registration.counter + 1,
+            sign_count: 1,
             allow_credentials: [credential_id]
           )
 
           webauthn_authenticate_result.to_json
         end
 
-        it_behaves_like 'returns authentication failure'
+        it_behaves_like 'returns authentication failure', message: 'Authentication via WebAuthn device failed.'
 
         it 'returns an error message with a hyperlink to the recovery page' do
           expect(authenticate_service.message).to be_html_safe
@@ -202,14 +239,14 @@ RSpec.describe Webauthn::AuthenticateService, feature_category: :system_access d
         end
       end
 
-      context 'when webauthn verification returns false' do
+      context 'when webauthn credential verification fails' do
         before do
-          allow_next_instance_of(WebAuthn::AuthenticatorAssertionResponse) do |instance|
-            allow(instance).to receive(:verify).and_return(false)
+          allow_next_instance_of(WebAuthn::PublicKeyCredentialWithAssertion) do |instance|
+            allow(instance).to receive(:verify).and_raise(WebAuthn::VerificationError)
           end
         end
 
-        it_behaves_like 'returns authentication failure'
+        it_behaves_like 'returns authentication failure', message: 'Failed to add authentication method. Try again.'
       end
     end
   end

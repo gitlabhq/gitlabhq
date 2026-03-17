@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: no
 title: Mailgun
 ---
@@ -54,7 +54,7 @@ you're ready to enable the Mailgun integration:
 
 1. Sign in to GitLab as an [Administrator](../../user/permissions.md) user.
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, go to **Settings** > **General** and expand the **Mailgun** section.
+1. In the left sidebar, go to **Settings** > **General** and expand the **Mailgun** section.
 1. Select the **Enable Mailgun** checkbox.
 1. Enter the Mailgun HTTP webhook signing key as described in
    [the Mailgun documentation](https://documentation.mailgun.com/docs/mailgun/user-manual/get-started/) and

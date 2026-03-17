@@ -1,6 +1,3 @@
 ---
 name: delete_debian_distribution
 description: Grants the ability to delete Debian distributions
-boundaries:
-  - project
-  - group

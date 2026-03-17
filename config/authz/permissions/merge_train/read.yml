@@ -1,5 +1,3 @@
 ---
 name: read_merge_train
 description: Grants the ability to read merge trains
-boundaries:
-  - project

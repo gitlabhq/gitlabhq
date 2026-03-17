@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Self-compiled installation
 ---
 
@@ -1242,7 +1242,6 @@ error Command failed with exit code 137.
 This can occur when Yarn kills a container that runs out of memory. To fix this:
 
 1. Increase your system's memory to at least 8 GB.
-
 1. Run this command to clean the assets:
 
    ```shell

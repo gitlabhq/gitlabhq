@@ -1,0 +1,7 @@
+---
+name: read_zoekt_namespace
+description: Grants the ability to read zoekt namespaces
+boundaries:
+  - instance
+permissions:
+  - read_zoekt_namespace

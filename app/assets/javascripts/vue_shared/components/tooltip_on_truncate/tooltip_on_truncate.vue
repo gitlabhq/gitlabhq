@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlResizeObserverDirective } from '@gitlab/ui';
-import { isFunction, debounce } from 'lodash';
+import { isFunction, debounce } from 'lodash-es';
 import { hasHorizontalOverflow } from '~/lib/utils/dom_utils';
 
 const UPDATE_TOOLTIP_DEBOUNCED_WAIT_MS = 300;

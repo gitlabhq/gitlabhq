@@ -1,4 +1,4 @@
-import { uniqueId } from 'lodash';
+import { uniqueId, debounce } from 'lodash';
 import { __ } from '~/locale';
 import { spriteIcon } from '~/lib/utils/common_utils';
 import { setAttributes } from '~/lib/utils/dom_utils';
@@ -64,7 +64,7 @@ export const initCopyCodeButton = (selector = '#content-body') => {
 
   if (!el || exclude) return () => {};
 
-  const observer = new MutationObserver(() => addCodeButton());
+  const observer = new MutationObserver(debounce(() => addCodeButton(), 100));
 
   observer.observe(document.querySelector(selector), {
     childList: true,

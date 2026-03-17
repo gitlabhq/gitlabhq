@@ -13,6 +13,7 @@ import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import diffsEventHub from '~/diffs/event_hub';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 import { useBatchComments } from '~/batch_comments/store';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
@@ -97,6 +98,7 @@ describe('ReviewDrawer', () => {
     useNotes().noteableData.id = 1;
     useNotes().noteableData.preview_note_path = '/preview';
     useNotes().noteableData.noteableType = 'merge_request';
+    useNotes().noteableData.diff_head_sha = 'abc123def456';
     useNotes().notesData.markdownDocsPath = '/markdown/docs';
     useNotes().notesData.quickActionsDocsPath = '/quickactions/docs';
     useBatchComments();
@@ -192,6 +194,7 @@ describe('ReviewDrawer', () => {
         note: 'Hello world',
         approve: false,
         reviewer_state: 'reviewed',
+        merge_request_diff_head_sha: 'abc123def456',
       }),
     );
   });
@@ -249,7 +252,7 @@ describe('ReviewDrawer', () => {
   });
 
   it('switches to the overview tab after submit', async () => {
-    useNotes().discussions = [
+    useDiscussions().discussions = [
       { id: 1, notes: [{ id: 1, userData: {}, author: { id: useNotes().userData.id } }] },
     ];
     window.mrTabs = { tabShown: jest.fn() };
@@ -262,7 +265,7 @@ describe('ReviewDrawer', () => {
 
     await waitForPromises();
 
-    useNotes().discussions[0].notes[0].id = 2;
+    useDiscussions().discussions[0].notes[0].id = 2;
 
     await nextTick();
 

@@ -306,6 +306,7 @@ describe('Description component', () => {
               title: 'item 2',
               workItemTypeId: workItemTypeIdForTask,
             },
+            useWorkItemFeatures: false,
           });
         });
 

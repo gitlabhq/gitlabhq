@@ -2,6 +2,8 @@ import {
   getAccessLevels,
   generateRefDestinationPath,
   getAccessLevelInputFromEdges,
+  getAccessLevelsRolesText,
+  getAccessLevelsDeployKeysText,
 } from '~/projects/settings/utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { accessLevelsMockResponse, accessLevelsMockResult } from './mock_data';
@@ -50,44 +52,62 @@ describe('Utils', () => {
       expect(result).toEqual([{ accessLevel: 30 }]);
     });
 
-    it('returns an array with groupId when node has group.id', () => {
-      const edges = [{ node: { group: { id: 1 } } }];
+    it('returns an array with deployKeys when node has deployKeys', () => {
+      const edges = [{ node: { deployKey: { id: 14 } } }];
       const result = getAccessLevelInputFromEdges(edges);
 
-      expect(result).toEqual([{ groupId: 1 }]);
-    });
-
-    it('returns an array with userId when node has user.id', () => {
-      const edges = [{ node: { user: { id: 2 } } }];
-      const result = getAccessLevelInputFromEdges(edges);
-
-      expect(result).toEqual([{ userId: 2 }]);
-    });
-
-    it('returns an array with groupId, and userId when node has all properties', () => {
-      const edges = [
-        {
-          node: {
-            accessLevel: 30,
-            group: { id: 1 },
-            user: { id: 2 },
-          },
-        },
-      ];
-      const result = getAccessLevelInputFromEdges(edges);
-
-      expect(result).toEqual([{ groupId: 1, userId: 2 }]);
+      expect(result).toEqual([{ deployKeyId: 14 }]);
     });
 
     it('returns an array with multiple objects when given multiple edges', () => {
-      const edges = [
-        { node: { accessLevel: 30, group: { id: 1 } } },
-        { node: { user: { id: 2 } } },
-        { node: { accessLevel: 40 } },
-      ];
+      const edges = [{ node: { deployKey: { id: 14 } } }, { node: { accessLevel: 40 } }];
       const result = getAccessLevelInputFromEdges(edges);
 
-      expect(result).toEqual([{ groupId: 1 }, { userId: 2 }, { accessLevel: 40 }]);
+      expect(result).toEqual([{ deployKeyId: 14 }, { accessLevel: 40 }]);
+    });
+  });
+
+  describe('getAccessLevelsRolesText', () => {
+    it('returns an empty array when no roles', () => {
+      const result = getAccessLevelsRolesText({ roles: [] });
+      expect(result).toEqual([]);
+    });
+
+    it('returns an empty array when roles is undefined', () => {
+      const result = getAccessLevelsRolesText({});
+      expect(result).toEqual([]);
+    });
+
+    it('returns roles text for a single role', () => {
+      const result = getAccessLevelsRolesText({ roles: [40] });
+      expect(result).toEqual(['Maintainers']);
+    });
+
+    it('returns roles text for multiple roles', () => {
+      const result = getAccessLevelsRolesText({ roles: [30, 40] });
+      expect(result).toEqual(['Developers and Maintainers, Maintainers']);
+    });
+  });
+
+  describe('getAccessLevelsDeployKeysText', () => {
+    it('returns an empty array when no deploy keys', () => {
+      const result = getAccessLevelsDeployKeysText({ deployKeys: [] });
+      expect(result).toEqual([]);
+    });
+
+    it('returns an empty array when deployKeys is undefined', () => {
+      const result = getAccessLevelsDeployKeysText({});
+      expect(result).toEqual([]);
+    });
+
+    it('returns deploy keys text for a single deploy key', () => {
+      const result = getAccessLevelsDeployKeysText({ deployKeys: [{ id: '1' }] });
+      expect(result).toEqual(['1 deploy key']);
+    });
+
+    it('returns deploy keys text for multiple deploy keys', () => {
+      const result = getAccessLevelsDeployKeysText({ deployKeys: [{ id: '1' }, { id: '2' }] });
+      expect(result).toEqual(['2 deploy keys']);
     });
   });
 });

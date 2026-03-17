@@ -37,13 +37,10 @@ module Import
           return insufficient_permissions_error unless user_can_export_all_portables?
 
           validate_object_storage!
+          offline_export.save!
+          create_self_relation_exports!
 
-          offline_export = Import::Offline::Export.create!(
-            user: current_user,
-            organization_id: organization_id,
-            source_hostname: source_hostname,
-            configuration: configuration
-          )
+          Import::Offline::ExportWorker.perform_async(offline_export.id)
 
           ServiceResponse.success(payload: offline_export)
         rescue ActiveRecord::RecordInvalid => e
@@ -62,11 +59,11 @@ module Import
         attr_reader :current_user, :portable_params, :storage_config, :invalid_paths, :organization_id
 
         def user_can_export_all_portables?
-          found_full_paths = groups.map(&:full_path) + projects.map(&:full_path)
+          found_portable_full_paths = portables.map(&:full_path)
 
-          @invalid_paths = portable_full_paths - found_full_paths
+          @invalid_paths = portable_full_paths - found_portable_full_paths
 
-          @invalid_paths += [groups, projects].flatten.filter_map do |portable|
+          @invalid_paths += portables.filter_map do |portable|
             portable.full_path unless user_can_admin_portable?(portable)
           end
 
@@ -81,22 +78,51 @@ module Import
         end
 
         def validate_object_storage!
-          configuration.validate! # Validate before attempting to connect using this configuration
+          offline_export.configuration.validate! # Validate before attempting to connect using this configuration
 
           client.test_connection!
         end
 
-        def configuration
-          Import::Offline::Configuration.new(
-            provider: storage_config[:provider],
-            bucket: storage_config[:bucket],
-            object_storage_credentials: storage_config[:credentials],
-            organization_id: organization_id
+        def create_self_relation_exports!
+          portable_self_relations = []
+          self_relation_params = {
+            offline_export_id: offline_export.id,
+            user_id: offline_export.user_id,
+            relation: ::BulkImports::FileTransfer::BaseConfig::SELF_RELATION,
+            status: ::BulkImports::Export::PENDING
+          }
+
+          # portables may have many descendant groups and projects so these records are created asynchronously later
+          portables.each do |portable|
+            portable_attributes = {
+              group_id: portable.is_a?(Group) ? portable.id : nil,
+              project_id: portable.is_a?(Project) ? portable.id : nil
+            }
+
+            portable_self_relations << self_relation_params.merge(portable_attributes)
+          end
+
+          ::BulkImports::Export.insert_all(portable_self_relations)
+        end
+
+        def offline_export
+          Import::Offline::Export.new(
+            user: current_user,
+            organization_id: organization_id,
+            source_hostname: source_hostname,
+            configuration: Import::Offline::Configuration.new(
+              provider: storage_config[:provider],
+              bucket: storage_config[:bucket],
+              object_storage_credentials: storage_config[:credentials],
+              organization_id: organization_id
+            )
           )
         end
-        strong_memoize_attr :configuration
+        strong_memoize_attr :offline_export
 
         def client
+          configuration = offline_export.configuration
+
           Import::Clients::ObjectStorage.new(
             provider: configuration.provider,
             bucket: configuration.bucket,
@@ -120,6 +146,11 @@ module Import
           Project.where_full_path_in(portable_full_paths)
         end
         strong_memoize_attr :projects
+
+        def portables
+          groups + projects
+        end
+        strong_memoize_attr :portables
 
         def portable_full_paths
           portable_params.map { |params| params[:full_path] }.uniq # rubocop:disable Rails/Pluck -- Not an ActiveRecord object

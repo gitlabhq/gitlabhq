@@ -67,6 +67,10 @@
     background-color: inherit;
   }
 
+  img.md-img-checkerboard {
+    @include checkerboard-bg;
+  }
+
   details {
     @apply gl-mb-5;
 
@@ -262,10 +266,6 @@
     width: auto;
     display: block;
     overflow-x: auto;
-
-    tbody {
-      @apply gl-bg-default;
-    }
 
     td,
     th {

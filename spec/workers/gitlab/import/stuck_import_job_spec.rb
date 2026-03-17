@@ -33,4 +33,24 @@ RSpec.describe Gitlab::Import::StuckImportJob, feature_category: :importers do
     expect(project.import_failures.last.exception_class).to eq('Gitlab::Import::StuckImportJob::StuckImportJobError')
     expect(project.import_failures.last.exception_message).to eq('Import timed out. Import took longer than 86400 seconds')
   end
+
+  describe 'failure tracking' do
+    it 'calls ImportFailureService with the correct arguments' do
+      create(:project, :import_started, import_source: 'foo/bar').tap do |p|
+        p.import_state.update!(jid: 'abc123')
+      end
+
+      allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return(['abc123'])
+      allow(Gitlab::Import::ImportFailureService).to receive(:track).and_call_original
+
+      expect(Gitlab::Import::ImportFailureService).to receive(:track).with(
+        hash_including(
+          message: 'Marking stuck import job as failed',
+          extra_attributes: { jid: 'abc123' }
+        )
+      )
+
+      worker.perform
+    end
+  end
 end

@@ -70,11 +70,11 @@ module Gitlab
       end
 
       def protected_path?
-        matches?(protected_paths_regex)
+        matches_protected_path?(protected_paths)
       end
 
       def get_request_protected_path?
-        matches?(protected_paths_for_get_request_regex)
+        matches_protected_path?(protected_paths_for_get_request)
       end
 
       def throttle?(throttle, authenticated:)
@@ -246,16 +246,24 @@ module Gitlab
         Gitlab::CurrentSettings.current_application_settings.protected_paths
       end
 
-      def protected_paths_regex
-        Regexp.union(protected_paths.map { |path| /\A#{Regexp.escape(path)}/ })
-      end
-
       def protected_paths_for_get_request
         Gitlab::CurrentSettings.current_application_settings.protected_paths_for_get_request
       end
 
-      def protected_paths_for_get_request_regex
-        Regexp.union(protected_paths_for_get_request.map { |path| /\A#{Regexp.escape(path)}/ })
+      def matches_protected_path?(paths)
+        if logical_path.start_with?('/o/')
+          matches?(org_scoped_paths_regex(paths))
+        else
+          matches?(paths_regex(paths))
+        end
+      end
+
+      def paths_regex(paths)
+        Regexp.union(paths.map { |path| /\A#{Regexp.escape(path)}/ })
+      end
+
+      def org_scoped_paths_regex(paths)
+        Regexp.union(paths.map { |path| %r{\A/o/[^/]+#{Regexp.escape(path)}} })
       end
 
       def packages_api_path?

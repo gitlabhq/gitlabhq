@@ -49,6 +49,10 @@ module Import
         state_machine.states.map(&:human_name)
       end
 
+      def completed?
+        finished? || failed?
+      end
+
       def validate_source_hostname
         uri = Gitlab::Utils.parse_url(source_hostname)
 
@@ -65,6 +69,35 @@ module Import
         return unless configuration
 
         ::Import::Offline::ConfigurationPurgeWorker.perform_in(PURGE_CONFIGURATION_DELAY, configuration.id)
+      end
+
+      def update_has_failures!
+        return if has_failures?
+
+        update!(has_failures: true)
+      end
+
+      def included_group_routes
+        included_routes_for_portable_type(Group)
+      end
+
+      def included_project_routes
+        included_routes_for_portable_type(Project)
+      end
+
+      private
+
+      # Only finished relation exports are considered included in the export
+      def included_routes_for_portable_type(portable_class)
+        finished_relation_exports = bulk_import_exports.for_status(::BulkImports::Export::FINISHED)
+
+        portable_ids_query = if portable_class == Group
+                               finished_relation_exports.group_exports.select(:group_id)
+                             else
+                               finished_relation_exports.project_exports.select(:project_id)
+                             end
+
+        Route.for_routable_type(portable_class.base_class.name).where(source_id: portable_ids_query)
       end
     end
   end

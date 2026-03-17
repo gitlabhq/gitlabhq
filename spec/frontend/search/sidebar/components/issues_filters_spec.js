@@ -8,6 +8,7 @@ import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_f
 import StatusFilter from '~/search/sidebar/components/status_filter/index.vue';
 import LabelFilter from '~/search/sidebar/components/label_filter/index.vue';
 import ArchivedFilter from '~/search/sidebar/components/archived_filter/index.vue';
+import TypeFilter from '~/search/sidebar/components/type_filter/index.vue';
 
 Vue.use(Vuex);
 
@@ -17,16 +18,17 @@ describe('GlobalSearch IssuesFilters', () => {
   const defaultGetters = {
     currentScope: () => 'issues',
     hasMissingProjectContext: () => true,
+    workItemTypes: () => [],
   };
 
-  const createComponent = ({ initialState = {} } = {}) => {
+  const createComponent = ({ initialState = {}, getters = {} } = {}) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
         searchType: 'advanced',
         ...initialState,
       },
-      getters: defaultGetters,
+      getters: { ...defaultGetters, ...getters },
     });
 
     wrapper = shallowMount(IssuesFilters, {
@@ -38,6 +40,7 @@ describe('GlobalSearch IssuesFilters', () => {
   const findConfidentialityFilter = () => wrapper.findComponent(ConfidentialityFilter);
   const findLabelFilter = () => wrapper.findComponent(LabelFilter);
   const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
+  const findTypeFilter = () => wrapper.findComponent(TypeFilter);
 
   describe('Renders filters correctly with advanced search', () => {
     beforeEach(() => {
@@ -90,6 +93,59 @@ describe('GlobalSearch IssuesFilters', () => {
 
     it('hides archived filter', () => {
       expect(findArchivedFilter().exists()).toBe(false);
+    });
+  });
+
+  describe('TypeFilter', () => {
+    describe('when scope is work_items and workItemTypes has items', () => {
+      beforeEach(() => {
+        createComponent({
+          getters: {
+            currentScope: () => 'work_items',
+            workItemTypes: () => [
+              { name: 'issue', label: 'Issue' },
+              { name: 'task', label: 'Task' },
+            ],
+          },
+        });
+      });
+
+      it('renders TypeFilter', () => {
+        expect(findTypeFilter().exists()).toBe(true);
+      });
+    });
+
+    describe('when scope is work_items but workItemTypes is empty (global search)', () => {
+      beforeEach(() => {
+        createComponent({
+          getters: {
+            currentScope: () => 'work_items',
+            workItemTypes: () => [],
+          },
+        });
+      });
+
+      it('does not render TypeFilter', () => {
+        expect(findTypeFilter().exists()).toBe(false);
+      });
+    });
+
+    describe('when scope is not work_items', () => {
+      beforeEach(() => {
+        createComponent({
+          getters: {
+            currentScope: () => 'issues',
+            workItemTypes: () => [
+              { name: 'issue', label: 'Issue' },
+              { name: 'task', label: 'Task' },
+            ],
+          },
+        });
+      });
+
+      it('does not render TypeFilter', () => {
+        expect(findTypeFilter().exists()).toBe(false);
+      });
     });
   });
 });

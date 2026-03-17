@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Incidents
 ---
 
@@ -25,17 +25,14 @@ When you [view the incidents list](manage_incidents.md#view-a-list-of-incidents)
 - **Search**: Search for incident titles and descriptions or [filter the list](#filter-the-incidents-list).
 - **Severity**: Severity of a particular incident, which can be one of the following
   values:
-
   - {{< icon name="severity-critical" >}} Critical - S1
   - {{< icon name="severity-high" >}} High - S2
   - {{< icon name="severity-medium" >}} Medium - S3
   - {{< icon name="severity-low" >}} Low - S4
   - {{< icon name="severity-unknown" >}} Unknown
-
 - **Incident**: The title of the incident, which attempts to capture the
   most meaningful information.
 - **Status**: The status of the incident, which can be one of the following values:
-
   - Triggered
   - Acknowledged
   - Resolved
@@ -171,7 +168,7 @@ Prerequisites:
 
 To configure the timer:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Monitor**.
 1. Expand the **Incidents** section, then select the **Incident settings** tab.
 1. Select **Activate "time to SLA" countdown timer**.

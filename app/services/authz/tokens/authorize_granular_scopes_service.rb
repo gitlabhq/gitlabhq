@@ -61,10 +61,7 @@ module Authz
       end
 
       def boundaries_by_priority
-        boundaries.sort_by do |b|
-          boundary_type = b.is_a?(::Authz::Boundary::NilBoundary) ? b.boundary : b.boundary.class.name.downcase.to_sym
-          BOUNDARY_TYPE_ORDER[boundary_type]
-        end
+        boundaries.sort_by { |b| BOUNDARY_TYPE_ORDER.fetch(b.type_label.to_sym, BOUNDARY_TYPE_ORDER.size) }
       end
       strong_memoize_attr :boundaries_by_priority
 
@@ -99,11 +96,11 @@ module Authz
       strong_memoize_attr :missing_permissions_by_boundary
 
       def disabled_error
-        error 'Granular tokens are not yet supported'
+        error "Access denied: Fine-grained #{token_type.pluralize} are not yet supported."
       end
 
       def missing_inputs_error
-        error "Unable to determine #{missing_inputs.to_sentence} for authorization"
+        error "Access denied: This operation doesn't support fine-grained #{token_type.pluralize}."
       end
 
       def success
@@ -111,19 +108,17 @@ module Authz
       end
 
       def access_denied_error
-        token_type = token.class.name.titleize
-        error "Access denied: Your #{token_type} lacks the required permissions: #{missing_permissions_error}."
+        boundary, missing_perms = missing_permissions_by_boundary.find { |_, m| m.any? }
+        perms = missing_perms.map do |permission|
+          assignable = Authz::PermissionGroups::Assignable.for_permission(permission).first
+          "#{assignable.resource_name}: #{assignable.action.titleize}"
+        end.uniq.sort.join(', ')
+        error "Access denied: This operation requires a fine-grained #{token_type} " \
+          "with the following #{boundary.type_label} permissions: [#{perms}]."
       end
 
-      def missing_permissions_error
-        missing_permissions_by_boundary.filter_map do |boundary, missing_permissions|
-          next if missing_permissions.empty?
-
-          format("[%{permissions}]%{path}",
-            permissions: missing_permissions.join(', '),
-            path: (" for \"#{boundary.path}\"" if boundary.path)
-          )
-        end.join(', ')
+      def token_type
+        token.class.model_name.human.downcase
       end
 
       def error(message)

@@ -180,7 +180,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:type) { "[String, Integer]" }
 
         it 'sets schema as oneOf with resolved types' do
-          expect(parameter.schema).to eq({ oneOf: [{ type: 'string' }, { type: 'integer' }] })
+          expect(parameter.schema).to eq({ nullable: true, oneOf: [{ type: 'string' }, { type: 'integer' }] })
         end
       end
 
@@ -188,7 +188,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:type) { "[String, Grape::API::Boolean]" }
 
         it 'resolves Boolean type correctly' do
-          expect(parameter.schema).to eq({ oneOf: [{ type: 'string' }, { type: 'boolean' }] })
+          expect(parameter.schema).to eq({ nullable: true, oneOf: [{ type: 'string' }, { type: 'boolean' }] })
         end
       end
 
@@ -196,7 +196,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { required: required, desc: "Filter by status", type: type, values: %w[foo bar baz] } }
 
         it 'defines enum in output' do
-          expect(parameter.schema).to eq({ type: 'string', enum: %w[foo bar baz] })
+          expect(parameter.schema).to eq({ minLength: 1, type: 'string', enum: %w[foo bar baz] })
         end
       end
 
@@ -213,7 +213,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { required: required, desc: "Filter by active users", type: type, default: 'foo' } }
 
         it 'returns the default value within the schema' do
-          expect(parameter.schema).to eq({ type: 'string', default: 'foo' })
+          expect(parameter.schema).to eq({ nullable: true, type: 'string', default: 'foo' })
         end
       end
 
@@ -222,7 +222,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { required: required, desc: "Active flag", type: type, default: true } }
 
         it 'includes boolean default when true' do
-          expect(parameter.schema).to eq({ type: 'boolean', default: true })
+          expect(parameter.schema).to eq({ nullable: true, type: 'boolean', default: true })
         end
       end
 
@@ -231,7 +231,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { required: required, desc: "Page number", type: type, default: 1 } }
 
         it 'includes integer default' do
-          expect(parameter.schema).to eq({ type: 'integer', default: 1 })
+          expect(parameter.schema).to eq({ nullable: true, type: 'integer', default: 1 })
         end
       end
 
@@ -271,7 +271,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
           expect(parameter.schema).to eq({
             type: 'string',
             format: 'date-time',
-            default: '2023-01-01T00:00:00Z'
+            default: '2023-01-01T00:00:00Z',
+            nullable: true
           })
         end
       end
@@ -380,19 +381,19 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
     let(:converter) { described_class.new(name, options: options, validations: validations, route: route) }
 
     describe 'array types' do
-      context 'when type is [String] (single type in brackets)' do
-        let(:options) { { type: '[String]' } }
-
-        it 'generates oneOf schema with single string type' do
-          expect(converter.schema).to eq({ oneOf: [{ type: 'string' }] })
-        end
-      end
-
       context 'when type is [Integer] (single type in brackets)' do
         let(:options) { { type: '[Integer]' } }
 
-        it 'generates oneOf schema with single integer type' do
-          expect(converter.schema).to eq({ oneOf: [{ type: 'integer' }] })
+        it 'generates array schema with integer items' do
+          expect(converter.schema).to eq({ nullable: true, type: 'array', items: { type: 'integer' } })
+        end
+      end
+
+      context 'when type is [Grape::API::Boolean] (single type in brackets)' do
+        let(:options) { { type: '[Grape::API::Boolean]' } }
+
+        it 'generates array schema with boolean items' do
+          expect(converter.schema).to eq({ nullable: true, type: 'array', items: { type: 'boolean' } })
         end
       end
     end
@@ -406,7 +407,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
             oneOf: [
               { type: 'string' },
               { type: 'integer' }
-            ]
+            ],
+            nullable: true
           })
         end
       end
@@ -420,7 +422,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
               { type: 'string' },
               { type: 'integer' },
               { type: 'object' }
-            ]
+            ],
+            nullable: true
           })
         end
       end
@@ -433,7 +436,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
             oneOf: [
               { type: 'string' },
               { type: 'boolean' }
-            ]
+            ],
+            nullable: true
           })
         end
       end
@@ -446,7 +450,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         it 'generates enum schema' do
           expect(converter.schema).to eq({
             type: 'string',
-            enum: %w[active inactive pending]
+            enum: %w[active inactive pending],
+            nullable: true
           })
         end
       end
@@ -457,7 +462,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         it 'generates enum schema with integer type' do
           expect(converter.schema).to eq({
             type: 'integer',
-            enum: [1, 2, 3, 5, 8]
+            enum: [1, 2, 3, 5, 8],
+            nullable: true
           })
         end
       end
@@ -468,7 +474,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         it 'generates enum schema with string type' do
           expect(converter.schema).to eq({
             type: 'string',
-            enum: [:low, :medium, :high]
+            enum: [:low, :medium, :high],
+            nullable: true
           })
         end
       end
@@ -479,7 +486,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         it 'generates enum schema with empty array' do
           expect(converter.schema).to eq({
             type: 'string',
-            enum: []
+            enum: [],
+            nullable: true
           })
         end
       end
@@ -493,7 +501,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
           expect(converter.schema).to eq({
             type: 'integer',
             minimum: 1,
-            maximum: 20
+            maximum: 20,
+            nullable: true
           })
         end
       end
@@ -506,7 +515,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         it 'includes default in schema' do
           expect(converter.schema).to eq({
             type: 'string',
-            default: 'test'
+            default: 'test',
+            nullable: true
           })
         end
       end
@@ -517,7 +527,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         it 'includes default in schema' do
           expect(converter.schema).to eq({
             type: 'boolean',
-            default: true
+            default: true,
+            nullable: true
           })
         end
       end
@@ -527,7 +538,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
 
         it 'does not include false default due to falsey check' do
           expect(converter.schema).to eq({
-            type: 'boolean'
+            type: 'boolean',
+            nullable: true
           })
         end
       end
@@ -538,7 +550,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         it 'includes default in schema' do
           expect(converter.schema).to eq({
             type: 'integer',
-            default: 42
+            default: 42,
+            nullable: true
           })
         end
       end
@@ -549,7 +562,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         it 'includes zero as default' do
           expect(converter.schema).to eq({
             type: 'integer',
-            default: 0
+            default: 0,
+            nullable: true
           })
         end
       end
@@ -558,7 +572,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'String', default: nil } }
 
         it 'does not include nil default' do
-          expect(converter.schema).to eq({ type: 'string' })
+          expect(converter.schema).to eq({ nullable: true, type: 'string' })
         end
       end
 
@@ -566,7 +580,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'String', default: -> { 'dynamic' } } }
 
         it 'does not include Proc default (not serializable)' do
-          expect(converter.schema).to eq({ type: 'string' })
+          expect(converter.schema).to eq({ nullable: true, type: 'string' })
         end
       end
 
@@ -574,7 +588,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'Integer', default: -> { Time.current.to_i } } }
 
         it 'does not include lambda default (not serializable)' do
-          expect(converter.schema).to eq({ type: 'integer' })
+          expect(converter.schema).to eq({ nullable: true, type: 'integer' })
         end
       end
 
@@ -582,7 +596,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'String', values: -> { %w[foo bar] } } }
 
         it 'does not include Proc enum (not serializable)' do
-          expect(converter.schema).to eq({ type: 'string' })
+          expect(converter.schema).to eq({ nullable: true, type: 'string' })
         end
       end
 
@@ -590,7 +604,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'Integer', values: -> { [1, 2, 3] } } }
 
         it 'does not include lambda enum (not serializable)' do
-          expect(converter.schema).to eq({ type: 'integer' })
+          expect(converter.schema).to eq({ nullable: true, type: 'integer' })
         end
       end
 
@@ -598,7 +612,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'String', default: Time.current } }
 
         it 'does not include Time object default (not serializable)' do
-          expect(converter.schema).to eq({ type: 'string' })
+          expect(converter.schema).to eq({ nullable: true, type: 'string' })
         end
       end
 
@@ -611,7 +625,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
           expect(converter.schema).to eq({
             type: 'string',
             format: 'date-time',
-            default: '2025-08-01T00:00:00.000Z'
+            default: '2025-08-01T00:00:00.000Z',
+            nullable: true
           })
         end
       end
@@ -627,7 +642,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
           expect(converter.schema).to eq({
             type: 'string',
             format: 'date-time',
-            default: '2024-08-14T17:26:19.883Z'
+            default: '2024-08-14T17:26:19.883Z',
+            nullable: true
           })
         end
       end
@@ -638,7 +654,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'Date' } }
 
         it 'converts to string with date format' do
-          expect(converter.schema).to eq({ type: 'string', format: 'date' })
+          expect(converter.schema).to eq({ nullable: true, type: 'string', format: 'date' })
         end
       end
 
@@ -646,7 +662,13 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'Date', default: '2023-01-01' } }
 
         it 'includes default with proper format' do
-          expect(converter.schema).to eq({ type: 'string', format: 'date', default: '2023-01-01' })
+          expect(converter.schema).to eq(
+            {
+              nullable: true,
+              type: 'string',
+              format: 'date',
+              default: '2023-01-01'
+            })
         end
       end
 
@@ -654,7 +676,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'Date', documentation: { example: '2024-06-15' } } }
 
         it 'includes format in schema' do
-          expect(converter.schema).to eq({ type: 'string', format: 'date' })
+          expect(converter.schema).to eq({ nullable: true, type: 'string', format: 'date' })
           expect(converter.example).to eq('2024-06-15')
         end
       end
@@ -667,7 +689,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         it 'converts to string with date-time format' do
           expect(converter.schema).to eq({
             type: 'string',
-            format: 'date-time'
+            format: 'date-time',
+            nullable: true
           })
         end
       end
@@ -679,7 +702,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
           expect(converter.schema).to eq({
             type: 'string',
             format: 'date-time',
-            default: '2023-01-01T00:00:00Z'
+            default: '2023-01-01T00:00:00Z',
+            nullable: true
           })
         end
       end
@@ -690,7 +714,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         it 'includes format in schema' do
           expect(converter.schema).to eq({
             type: 'string',
-            format: 'date-time'
+            format: 'date-time',
+            nullable: true
           })
           expect(converter.example).to eq('2024-01-01T12:00:00Z')
         end
@@ -701,11 +726,12 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
       context 'with enum and default' do
         let(:options) { { type: 'String', values: %w[low medium high], default: 'medium' } }
 
-        it 'includes enum but not default (enums take precedence)' do
-          # Current implementation: build_enum_schema doesn't include default
+        it 'includes both enum and default' do
           expect(converter.schema).to eq({
             type: 'string',
-            enum: %w[low medium high]
+            enum: %w[low medium high],
+            default: 'medium',
+            nullable: true
           })
         end
       end
@@ -713,10 +739,51 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
       context 'with enum of integers and default' do
         let(:options) { { type: 'Integer', values: [10, 20, 30], default: 20 } }
 
-        it 'includes enum but not default' do
+        it 'includes both enum and default' do
           expect(converter.schema).to eq({
             type: 'integer',
-            enum: [10, 20, 30]
+            enum: [10, 20, 30],
+            default: 20,
+            nullable: true
+          })
+        end
+      end
+
+      context 'with range and default' do
+        let(:options) { { type: 'Integer', values: 1..100, default: 20 } }
+
+        it 'includes both range and default' do
+          expect(converter.schema).to eq({
+            type: 'integer',
+            minimum: 1,
+            maximum: 100,
+            default: 20,
+            nullable: true
+          })
+        end
+      end
+
+      context 'with enum and Proc default' do
+        let(:options) { { type: 'String', values: %w[low medium high], default: -> { 'medium' } } }
+
+        it 'includes enum but not Proc default (not serializable)' do
+          expect(converter.schema).to eq({
+            type: 'string',
+            enum: %w[low medium high],
+            nullable: true
+          })
+        end
+      end
+
+      context 'with range and Proc default' do
+        let(:options) { { type: 'Integer', values: 1..100, default: -> { 20 } } }
+
+        it 'includes range but not Proc default (not serializable)' do
+          expect(converter.schema).to eq({
+            type: 'integer',
+            minimum: 1,
+            maximum: 100,
+            nullable: true
           })
         end
       end
@@ -726,18 +793,19 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
 
         it 'generates clean oneOf schema' do
           expect(converter.schema).to eq({
-            oneOf: [{ type: 'string' }, { type: 'integer' }]
+            oneOf: [{ type: 'string' }, { type: 'integer' }],
+            nullable: true
           })
         end
       end
     end
 
-    describe 'type resolution' do
+    describe 'type resolution via schema output' do
       context 'with String type' do
         let(:options) { { type: 'String' } }
 
         it 'resolves to string' do
-          expect(converter.resolve_object_type).to eq('string')
+          expect(converter.schema).to eq({ nullable: true, type: 'string' })
         end
       end
 
@@ -745,7 +813,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'Integer' } }
 
         it 'resolves to integer' do
-          expect(converter.resolve_object_type).to eq('integer')
+          expect(converter.schema).to eq({ nullable: true, type: 'integer' })
         end
       end
 
@@ -753,7 +821,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'Grape::API::Boolean' } }
 
         it 'resolves to boolean' do
-          expect(converter.resolve_object_type).to eq('boolean')
+          expect(converter.schema).to eq({ nullable: true, type: 'boolean' })
         end
       end
 
@@ -761,15 +829,15 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { { type: 'Hash' } }
 
         it 'resolves to object' do
-          expect(converter.resolve_object_type).to eq('object')
+          expect(converter.schema).to eq({ nullable: true, type: 'object' })
         end
       end
 
       context 'with DateTime type' do
         let(:options) { { type: 'DateTime' } }
 
-        it 'resolves to string' do
-          expect(converter.resolve_object_type).to eq('string')
+        it 'resolves to string with date-time format' do
+          expect(converter.schema).to eq({ nullable: true, type: 'string', format: 'date-time' })
         end
       end
 
@@ -777,41 +845,83 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         let(:options) { {} }
 
         it 'defaults to string' do
-          expect(converter.resolve_object_type).to eq('string')
+          expect(converter.schema).to eq({ nullable: true, type: 'string' })
+        end
+      end
+
+      context 'with Symbol type' do
+        let(:options) { { type: 'Symbol' } }
+
+        it 'resolves to string' do
+          expect(converter.schema).to eq({ nullable: true, type: 'string' })
+        end
+      end
+
+      context 'with Float type' do
+        let(:options) { { type: 'Float' } }
+
+        it 'resolves to number' do
+          expect(converter.schema).to eq({ nullable: true, type: 'number' })
+        end
+      end
+
+      context 'with Time type' do
+        let(:options) { { type: 'Time' } }
+
+        it 'resolves to string with date-time format' do
+          expect(converter.schema).to eq({ nullable: true, type: 'string', format: 'date-time' })
         end
       end
     end
 
-    describe 'format resolution' do
-      context 'with Date type' do
-        let(:options) { { type: 'Date' } }
-
-        it 'resolves format to date' do
-          expect(converter.resolve_object_format).to eq('date')
-        end
-      end
-
-      context 'with DateTime type' do
-        let(:options) { { type: 'DateTime' } }
-
-        it 'resolves format to date-time' do
-          expect(converter.resolve_object_format).to eq('date-time')
-        end
-      end
-
-      context 'with String type' do
+    describe 'allow_blank behaviour' do
+      context 'when allow_blank is not set' do
         let(:options) { { type: 'String' } }
 
-        it 'has no format' do
-          expect(converter.resolve_object_format).to be_nil
+        it 'adds nullable: true' do
+          expect(converter.schema[:nullable]).to be true
         end
       end
 
-      context 'with Integer type' do
-        let(:options) { { type: 'Integer' } }
+      context 'when allow_blank: true' do
+        let(:options) { { type: 'String', allow_blank: true } }
 
-        it 'has no format' do
-          expect(converter.resolve_object_format).to be_nil
+        it 'adds nullable: true' do
+          expect(converter.schema[:nullable]).to be true
+        end
+      end
+
+      context 'when allow_blank: false with a string type' do
+        let(:options) { { type: 'String', allow_blank: false } }
+
+        it 'adds minLength: 1 and omits nullable' do
+          expect(converter.schema[:minLength]).to eq(1)
+          expect(converter.schema[:nullable]).to be_nil
+        end
+      end
+
+      context 'when allow_blank: false with a non-string type' do
+        let(:options) { { type: 'Integer', allow_blank: false } }
+
+        it 'omits both nullable and minLength' do
+          expect(converter.schema[:nullable]).to be_nil
+          expect(converter.schema[:minLength]).to be_nil
+        end
+      end
+
+      context 'when param is required with a values constraint' do
+        let(:options) { { type: 'String', required: true, values: %w[foo bar] } }
+
+        it 'omits nullable' do
+          expect(converter.schema[:nullable]).to be_nil
+        end
+      end
+
+      context 'when param is optional with a values constraint' do
+        let(:options) { { type: 'String', required: false, values: %w[foo bar] } }
+
+        it 'adds nullable: true' do
+          expect(converter.schema[:nullable]).to be true
         end
       end
     end
@@ -831,7 +941,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
       end
 
       it 'returns the correct schema with pattern' do
-        expect(converter.schema).to eq({ type: 'string', pattern: '^[\d+.]+' })
+        expect(converter.schema).to eq({ nullable: true, type: 'string', pattern: '^[\d+.]+' })
       end
     end
 
@@ -869,7 +979,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
       end
 
       it 'only includes the regex pattern' do
-        expect(converter.schema).to eq({ type: 'string', pattern: '^[\d+.]+' })
+        expect(converter.schema).to eq({ nullable: true, type: 'string', pattern: '^[\d+.]+' })
       end
     end
 
@@ -884,7 +994,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
       end
 
       it 'does not include pattern' do
-        expect(converter.schema).to eq({ type: 'string' })
+        expect(converter.schema).to eq({ nullable: true, type: 'string' })
       end
     end
 
@@ -892,7 +1002,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
       let(:validations) { [] }
 
       it 'does not include pattern' do
-        expect(converter.schema).to eq({ type: 'string' })
+        expect(converter.schema).to eq({ nullable: true, type: 'string' })
       end
     end
 
@@ -900,7 +1010,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
       let(:validations) { nil }
 
       it 'does not include pattern' do
-        expect(converter.schema).to eq({ type: 'string' })
+        expect(converter.schema).to eq({ nullable: true, type: 'string' })
       end
     end
 
@@ -919,7 +1029,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         expect(converter.schema).to eq({
           type: 'string',
           default: 'v1.0',
-          pattern: '^v[\d+.]+'
+          pattern: '^v[\d+.]+',
+          nullable: true
         })
       end
     end
@@ -939,7 +1050,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         # Enum schema is returned before regex validations are added
         expect(converter.schema).to eq({
           type: 'string',
-          enum: %w[v1.0 v2.0 v3.0]
+          enum: %w[v1.0 v2.0 v3.0],
+          nullable: true
         })
       end
     end
@@ -959,7 +1071,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         expect(converter.schema).to eq({
           type: 'string',
           format: 'date-time',
-          pattern: '^\d{4}-\d{2}-\d{2}'
+          pattern: '^\d{4}-\d{2}-\d{2}',
+          nullable: true
         })
       end
     end
@@ -976,7 +1089,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
         end
 
         it 'returns the correct schema values' do
-          expect(parameter.schema).to eq({ type: 'string', pattern: '^[\d+.]+' })
+          expect(parameter.schema).to eq({ nullable: true, type: 'string', pattern: '^[\d+.]+' })
         end
       end
 
@@ -1069,6 +1182,273 @@ RSpec.describe Gitlab::GrapeOpenapi::Converters::ParameterConverter do
 
       it 'returns empty string' do
         expect(converter.example).to eq('')
+      end
+    end
+  end
+
+  describe "coercer mappings" do
+    let(:converter) { described_class.new(name, options: options, validations: validations, route: route) }
+
+    before do
+      Gitlab::GrapeOpenapi.configuration.coercer_mappings = {
+        "CommaSeparatedToArray" => {
+          type: "array",
+          items_type: "string",
+          style: "form",
+          explode: false
+        },
+        "CommaSeparatedToIntegerArray" => {
+          type: "array",
+          items_type: "integer",
+          style: "form",
+          explode: false
+        },
+        "HashOfIntegerValues" => {
+          type: "object",
+          additional_properties: { type: "integer" }
+        },
+        "HashWithDirectAdditionalProperties" => {
+          type: "object",
+          additional_properties: { type: "string", format: "date-time" }
+        },
+        "urlsafe_decode64" => {
+          type: "string",
+          format: "byte"
+        }
+      }
+    end
+
+    after do
+      Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+    end
+
+    context "when coerce_with matches CommaSeparatedToArray" do
+      let(:options) { { type: "[String]", desc: "Comma-separated labels" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:labels],
+            options: {
+              type: Array,
+              method: TestValidations::Types::CommaSeparatedToArray.coerce
+            },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "generates array schema with string items" do
+        expect(converter.schema).to eq({ type: "array", items: { type: "string" }, nullable: true })
+      end
+
+      it "sets style on converted parameter" do
+        expect(converter.convert.style).to eq("form")
+      end
+
+      it "sets explode to false on converted parameter" do
+        expect(converter.convert.explode).to be(false)
+      end
+
+      it "includes style and explode in to_h output" do
+        hash = converter.convert.to_h
+        expect(hash[:style]).to eq("form")
+        expect(hash[:explode]).to be(false)
+      end
+    end
+
+    context "when coerce_with matches CommaSeparatedToIntegerArray" do
+      let(:options) { { type: "[Integer]", desc: "Comma-separated IDs" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:ids],
+            options: {
+              type: Array,
+              method: TestValidations::Types::CommaSeparatedToIntegerArray.coerce
+            },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "generates array schema with integer items" do
+        expect(converter.schema).to eq({ type: "array", items: { type: "integer" }, nullable: true })
+      end
+
+      it "sets style on converted parameter" do
+        expect(converter.convert.style).to eq("form")
+      end
+
+      it "sets explode to false on converted parameter" do
+        expect(converter.convert.explode).to be(false)
+      end
+
+      it "includes style and explode in to_h output" do
+        hash = converter.convert.to_h
+        expect(hash[:style]).to eq("form")
+        expect(hash[:explode]).to be(false)
+      end
+    end
+
+    context "when coerce_with matches HashOfIntegerValues" do
+      let(:options) { { type: "Hash", desc: "Counts by category" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:counts],
+            options: {
+              type: Hash,
+              method: TestValidations::Types::HashOfIntegerValues.coerce
+            },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "generates object schema with additional_properties" do
+        expect(converter.schema).to eq({ type: "object", additional_properties: { type: "integer" }, nullable: true })
+      end
+    end
+
+    context "when coerce_with matches urlsafe_decode64" do
+      let(:options) { { type: "String", desc: "Base64-encoded data" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:encoded_data],
+            options: { type: String, method: Struct.new(:name).new(:urlsafe_decode64) },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "generates string schema with byte format" do
+        expect(converter.schema).to eq({ type: "string", format: "byte", nullable: true })
+      end
+
+      it "does not set style (not applicable for simple strings)" do
+        expect(converter.convert.style).to be_nil
+      end
+    end
+
+    context "when no coercer mapping matches a named coercer" do
+      let(:options) { { type: "String", desc: "Some data" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:data],
+            options: {
+              type: String,
+              method: TestValidations::Types::SomeUnknownCoercer.coerce
+            },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "raises an error" do
+        expect do
+          converter.schema
+        end.to raise_error(Gitlab::GrapeOpenapi::GenerationError, /No OpenAPI schema mapping found for coercer/)
+      end
+    end
+
+    context "when no coercer mapping matches an inline lambda" do
+      let(:options) { { type: "String", desc: "Some data" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:data],
+            options: { type: String, method: ->(v) { v.downcase } },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "falls back to default schema generation" do
+        expect(converter.schema).to eq({ type: "string", nullable: true })
+      end
+    end
+
+    context "when no coerce validation exists" do
+      let(:options) { { type: "String", desc: "A name" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:name],
+            options: /^[a-z]+$/,
+            validator_class: Grape::Validations::Validators::RegexpValidator
+          }
+        ]
+      end
+
+      it "falls back to default schema generation with pattern" do
+        expect(converter.schema).to eq({ type: "string", pattern: "^[a-z]+$", nullable: true })
+      end
+    end
+
+    context "when validations is nil" do
+      let(:validations) { nil }
+      let(:options) { { type: "String" } }
+
+      it "falls back to default schema generation" do
+        expect(converter.schema).to eq({ type: "string", nullable: true })
+      end
+    end
+
+    context "when coercer_mappings is empty with a named coercer" do
+      before do
+        Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+      end
+
+      let(:options) { { type: "[String]", desc: "Labels" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:labels],
+            options: {
+              type: Array,
+              method: TestValidations::Types::CommaSeparatedToArray.coerce
+            },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "raises an error" do
+        expect do
+          converter.schema
+        end.to raise_error(Gitlab::GrapeOpenapi::GenerationError, /No OpenAPI schema mapping found for coercer/)
+      end
+    end
+
+    context "when coercer_mappings is empty with an inline lambda" do
+      before do
+        Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+      end
+
+      let(:options) { { type: "[String]", desc: "Labels" } }
+
+      let(:validations) do
+        [
+          {
+            attributes: [:labels],
+            options: { type: Array, method: ->(v) { v } },
+            validator_class: Grape::Validations::Validators::CoerceValidator
+          }
+        ]
+      end
+
+      it "falls back to default schema generation (array schema for bracket notation)" do
+        expect(converter.schema).to eq({ type: "array", items: { type: "string" }, nullable: true })
       end
     end
   end

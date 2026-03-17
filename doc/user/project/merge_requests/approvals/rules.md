@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use approval rules to define the users or groups who should approve merge requests. Approvers can be optional or required.
 title: Merge request approval rules
 ---
@@ -102,7 +102,7 @@ Prerequisites:
 
 To delete a merge request approval rule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, next to the rule you want to delete, select the trash can ({{< icon name="remove" >}}).
 1. Select **Remove approvers**.
@@ -117,7 +117,7 @@ reduces the number of approvals left (the **Approvals** column) for all rules th
 ![Merge request approvals widget](img/mr_approvals_widget_v16_0.png)
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Multiple Approvers](https://www.youtube.com/watch?v=8JQJ5821FrA).
+For an overview, see the [multiple approvers](https://www.youtube.com/watch?v=8JQJ5821FrA) video.
 
 ## Get notified about all merge requests you can approve
 
@@ -135,7 +135,7 @@ You can override the merge request approval rules for a project by either:
 
 Prerequisites:
 
-- The project setting [Prevent editing approval rules](settings.md#prevent-editing-approval-rules-in-merge-requests)
+- The project setting [**Prevent editing approval rules in merge requests**](settings.md#prevent-editing-approval-rules-in-merge-requests)
   is disabled.
 - One of the following must be true:
   - You have administrator access.
@@ -147,7 +147,7 @@ To override approvers of a merge request:
 1. When [creating a new merge request](../creating_merge_requests.md), scroll to the **Approval Rules** section,
    and add or remove your desired approval rules before selecting **Create merge request**.
 1. When viewing an existing merge request:
-   1. On the top bar, select **Search or go to** and find your project.
+   1. In the top bar, select **Search or go to** and find your project.
    1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
    1. Select **Edit**.
    1. Scroll to the **Approval Rules** section.
@@ -164,7 +164,7 @@ To create an approval rule which requires more than one approval:
 - When you [create](#add-an-approval-rule) or [edit](#edit-an-approval-rule) a rule, set **Approvals required** to `2` or more.
 
 To require multiple approvals for a rule, you can also
-[use the API](../../../../api/merge_request_approvals.md#update-an-approval-rule-for-a-project)
+use the [Merge request approvals API](../../../../api/merge_request_approvals.md#update-an-approval-rule-for-a-project)
 to set the `approvals_required` attribute to `2` or more.
 
 ## Configure optional approval rules
@@ -191,7 +191,7 @@ approval rule for certain branches:
    - To apply the rule to all protected branches, select **All protected branches**.
    - To apply the rule to a specific branch, select it from the list.
 1. To enable this configuration, follow
-   [Require Code Owner approval on a protected branch](../../repository/branches/protected.md#require-code-owner-approval).
+   [Require code owner approval on a protected branch](../../repository/branches/protected.md#require-code-owner-approval).
 
 ## Enable approval permissions for additional users
 
@@ -202,7 +202,7 @@ oversight on proposed work.
 
 Users with the Planner or Reporter role can approve merge requests only through regular approval rules.
 Code owner approval rules require users to have the Developer, Maintainer, or Owner role. For more information,
-see [Eligible approvers](#eligible-approvers).
+see [eligible approvers](#eligible-approvers).
 
 Prerequisites:
 
@@ -218,7 +218,7 @@ To enable approval permissions for these users without granting them push access
    The users must have the Planner, Reporter, Developer, Maintainer, or Owner role.
 1. [Share the project with your group](../../members/sharing_projects_groups.md#invite-a-group-to-a-project),
    with the Reporter, Developer, Maintainer, or Owner role.
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section:
    - For a new rule, select **Add approval rule** and target the protected branch.
@@ -269,7 +269,7 @@ To be eligible as an approver for your project, a user must be a direct member o
 Users with the Developer role can approve merge requests if one of the following is true:
 
 - Users added as approvers at the project or merge request level.
-- Users who are [Code owners](#code-owners-as-approvers) of the files
+- Users who are [code owners](#code-owners-as-approvers) of the files
   changed in the merge request.
 
 Users with the Planner or Reporter role can approve only if all of the following are true:
@@ -293,7 +293,7 @@ users were not explicitly listed in the approval rules.
 If you add [code owners](../../codeowners/_index.md) to your repository, the owners of files
 become eligible approvers in the project. To enable this merge request approval rule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section, locate the **All eligible users** rule.
 1. In the **Approvals required** column, enter the number of approvals required.

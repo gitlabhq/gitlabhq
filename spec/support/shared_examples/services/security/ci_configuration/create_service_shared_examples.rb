@@ -97,6 +97,67 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
         expect { subject }.to raise_error(Gitlab::Git::PreReceiveError)
       end
 
+      context 'when branch name is rejected by push rules' do
+        let(:push_rule_error) do
+          "running pre-receive hooks: GitLab: Branch name '#{branch_name}' does not follow the pattern '(feature|hotfix)\\/.*'."
+        end
+
+        before do
+          allow(project.repository).to receive(:add_branch).and_raise(
+            Gitlab::Git::CommandError, push_rule_error
+          )
+        end
+
+        it 'returns a ServiceResponse error with a user-facing message' do
+          expect(result).to be_kind_of(ServiceResponse)
+          expect(result.status).to eq(:error)
+          expect(result.message).to start_with(Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX)
+          expect(result.message).to include('does not follow the pattern')
+          expect(result.message).not_to include('running pre-receive hooks')
+        end
+
+        context 'when error message contains GL-HOOK-ERR prefix' do
+          let(:push_rule_error) do
+            "running pre-receive hooks: GL-HOOK-ERR: Access denied."
+          end
+
+          it 'extracts the safe message after the prefix' do
+            expect(result).to be_kind_of(ServiceResponse)
+            expect(result.status).to eq(:error)
+            expect(result.message).to start_with(Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX)
+            expect(result.message).to include('Access denied')
+            expect(result.message).not_to include('running pre-receive hooks')
+          end
+        end
+
+        context 'when error message does not contain known prefixes' do
+          let(:push_rule_error) do
+            "Some generic error message"
+          end
+
+          it 'returns the original message' do
+            expect(result).to be_kind_of(ServiceResponse)
+            expect(result.status).to eq(:error)
+            expect(result.message).to start_with(Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX)
+            expect(result.message).to include('Some generic error message')
+          end
+        end
+
+        context 'when error message contains prefix with extra whitespace' do
+          let(:push_rule_error) do
+            "running pre-receive hooks: GitLab:   Extra spaces in message"
+          end
+
+          it 'extracts the safe message and trims whitespace' do
+            expect(result).to be_kind_of(ServiceResponse)
+            expect(result.status).to eq(:error)
+            expect(result.message).to start_with(Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX)
+            expect(result.message).to include('Extra spaces in message')
+            expect(result.message).not_to include('running pre-receive hooks')
+          end
+        end
+      end
+
       context 'when exception is raised' do
         let_it_be(:project) { create(:project, :repository) }
         let(:mock_sha) { '123456' }

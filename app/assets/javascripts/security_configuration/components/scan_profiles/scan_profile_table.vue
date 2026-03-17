@@ -1,11 +1,12 @@
 <script>
 import {
-  GlTableLite,
+  GlTable,
   GlButtonGroup,
   GlButton,
   GlIcon,
   GlPopover,
   GlLink,
+  GlSkeletonLoader,
   GlSprintf,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
@@ -16,17 +17,22 @@ import { SCAN_PROFILE_CATEGORIES, SCAN_PROFILE_I18N } from '~/security_configura
 export default {
   name: 'ScanProfileTable',
   components: {
-    GlTableLite,
+    GlTable,
     GlButtonGroup,
     GlButton,
     GlIcon,
     GlPopover,
     GlLink,
+    GlSkeletonLoader,
     GlSprintf,
   },
   props: {
     tableItems: {
       type: Array,
+      required: true,
+    },
+    loading: {
+      type: Boolean,
       required: true,
     },
   },
@@ -57,7 +63,23 @@ export default {
 </script>
 
 <template>
-  <gl-table-lite :items="tableItems" :fields="tableFields" stacked="sm">
+  <gl-table :items="tableItems" :fields="tableFields" stacked="sm" :busy="loading">
+    <template #table-busy>
+      <gl-skeleton-loader :width="490" :height="35">
+        <rect width="105" height="15" rx="4" />
+        <rect x="110" width="120" height="15" rx="4" />
+        <rect x="235" width="90" height="15" rx="4" />
+        <rect x="330" width="105" height="15" rx="4" />
+        <rect x="440" width="50" height="15" rx="4" />
+
+        <rect y="20" width="105" height="15" rx="4" />
+        <rect y="20" x="110" width="120" height="15" rx="4" />
+        <rect y="20" x="235" width="90" height="15" rx="4" />
+        <rect y="20" x="330" width="105" height="15" rx="4" />
+        <rect y="20" x="440" width="50" height="15" rx="4" />
+      </gl-skeleton-loader>
+    </template>
+
     <template #head(name)="data">
       <div class="gl-flex gl-items-center">
         <span>{{ data.label }}</span>
@@ -65,7 +87,7 @@ export default {
           id="profile-info-icon"
           name="information-o"
           variant="info"
-          class="gl-ml-2 gl-text-secondary"
+          class="gl-ml-2 gl-text-subtle"
         />
         <gl-popover
           target="profile-info-icon"
@@ -88,7 +110,7 @@ export default {
           :class="
             item.isConfigured
               ? 'gl-border-feedback-success gl-bg-feedback-success gl-text-feedback-success'
-              : 'gl-border-dashed gl-bg-white gl-text-feedback-neutral'
+              : 'gl-border-dashed gl-bg-default gl-text-feedback-neutral'
           "
           style="width: 32px; height: 32px"
         >
@@ -122,7 +144,7 @@ export default {
     <template #cell(name)="{ item }">
       <slot v-if="$scopedSlots['cell(name)']" name="cell(name)" v-bind="{ item }"></slot>
       <div v-else class="gl-flex gl-items-center">
-        <span class="gl-text-secondary">
+        <span class="gl-text-subtle">
           {{ $options.SCAN_PROFILE_I18N.noProfile }}
         </span>
       </div>
@@ -134,7 +156,7 @@ export default {
         <span class="gl-font-weight-bold">
           {{ __('Available with Ultimate') }}
         </span>
-        <span class="gl-mt-1 gl-text-sm gl-text-secondary">
+        <span class="gl-mt-1 gl-text-sm gl-text-subtle">
           <gl-link
             :href="$options.LEARN_MORE_LINK"
             target="_blank"
@@ -156,13 +178,13 @@ export default {
       <div v-else>
         <gl-button-group>
           <!-- Apply button -->
-          <gl-button variant="confirm" category="secondary" disabled>
+          <gl-button disabled>
             {{ $options.SCAN_PROFILE_I18N.applyDefault }}
           </gl-button>
           <!-- Preview button -->
-          <gl-button variant="confirm" category="secondary" icon="eye" disabled />
+          <gl-button icon="eye" disabled />
         </gl-button-group>
       </div>
     </template>
-  </gl-table-lite>
+  </gl-table>
 </template>

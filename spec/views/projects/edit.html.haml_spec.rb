@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/edit' do
+RSpec.describe 'projects/edit', feature_category: :groups_and_projects do
   include Devise::Test::ControllerHelpers
   include ProjectForksHelper
 
@@ -143,7 +143,7 @@ RSpec.describe 'projects/edit' do
 
         expect(rendered).to render_template('shared/groups_projects/settings/_restore')
         expect(rendered).to have_content('Restore project')
-        expect(rendered).to have_link('Restore')
+        expect(rendered).to have_button('Restore')
       end
     end
 
@@ -153,7 +153,7 @@ RSpec.describe 'projects/edit' do
 
         expect(rendered).to render_template('shared/groups_projects/settings/_restore')
         expect(rendered).not_to have_content('Restore project')
-        expect(rendered).not_to have_link('Restore')
+        expect(rendered).not_to have_button('Restore')
       end
     end
   end

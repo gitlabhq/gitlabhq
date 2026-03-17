@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Frontend testing standards and style guidelines
 ---
 
@@ -1049,13 +1049,13 @@ The `scripts/frontend/download_fixtures.sh` script is meant to download and extr
 # package registry by looking at the commits on a local branch.
 #
 # The package is downloaded and extracted if it exists
-$ scripts/frontend/download_fixtures.sh
+scripts/frontend/download_fixtures.sh
 
 # Same as above, but only looks at the last 10 commits of the currently checked-out branch
-$ scripts/frontend/download_fixtures.sh --max-commits=10
+scripts/frontend/download_fixtures.sh --max-commits=10
 
 # Looks at the commits on the local master branch instead of the currently checked-out branch
-$ scripts/frontend/download_fixtures.sh --branch master
+scripts/frontend/download_fixtures.sh --branch master
 ```
 
 #### Creating new fixtures
@@ -1391,7 +1391,7 @@ A snapshot is purely a stringified version of what you ask to be tested on the l
 
 Should the outcome of your spec be different from what is in the generated snapshot file, you'll be notified about it by a failing test in your test suite.
 
-Find all the details in Jests official documentation [https://jestjs.io/docs/snapshot-testing](https://jestjs.io/docs/snapshot-testing)
+Find all the details in Jests official documentation <https://jestjs.io/docs/snapshot-testing>
 
 ### Pros and Cons
 
@@ -1692,7 +1692,6 @@ To use Firefox, instead of Chrome, prefix the command with `WEBDRIVER=firefox`.
    ```
 
    This is in every `Ruby` file and makes all string literals unchangeable. There are also some performance benefits, but this is beyond the scope of this section.
-
 1. Import dependencies.
 
    You should import the modules you need. You will most likely always need to require `spec_helper`:
@@ -1702,7 +1701,6 @@ To use Firefox, instead of Chrome, prefix the command with `WEBDRIVER=firefox`.
    ```
 
    Import any other relevant module.
-
 1. Create a global scope for RSpec to define our tests, just like what we do in jest with the initial describe block.
 
 Then, you need to create the very first `RSpec` scope.

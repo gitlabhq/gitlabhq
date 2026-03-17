@@ -27,7 +27,7 @@ module Gitlab
 
           def stub_build
             ::Ci::Build.fabricate(
-              pipeline_attributes.merge(
+              **pipeline_attributes.merge(
                 yaml_variables: @yaml_variables
               )
             )

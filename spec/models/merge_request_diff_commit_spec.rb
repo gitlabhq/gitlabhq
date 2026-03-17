@@ -34,14 +34,15 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
 
   describe 'scopes' do
     describe '.for_merge_request_diff' do
-      let_it_be(:merge_request2) { create(:merge_request) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:merge_request2) { create(:merge_request, source_project: project, target_project: project) }
       let_it_be(:diff_1) { create(:merge_request_diff, merge_request: merge_request2) }
-      let_it_be(:commit_1) { create(:merge_request_diff_commit, merge_request_diff: diff_1, relative_order: 0) }
-      let_it_be(:commit_2) { create(:merge_request_diff_commit, merge_request_diff: diff_1, relative_order: 1) }
+      let_it_be(:commit_1) { create(:merge_request_diff_commit, merge_request_diff: diff_1, relative_order: 0, project_id: project.id) }
+      let_it_be(:commit_2) { create(:merge_request_diff_commit, merge_request_diff: diff_1, relative_order: 1, project_id: project.id) }
 
       before do
         merge_request_diff_2 = create(:merge_request_diff, merge_request: merge_request2)
-        create(:merge_request_diff_commit, merge_request_diff: merge_request_diff_2)
+        create(:merge_request_diff_commit, merge_request_diff: merge_request_diff_2, project_id: project.id)
       end
 
       it 'returns commits for the specified merge request diff' do
@@ -54,6 +55,145 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
 
       it 'returns empty collection when diff_id is nil' do
         expect(described_class.for_merge_request_diff(nil)).to be_empty
+      end
+
+      context 'when project_id is provided' do
+        it 'filters by both merge_request_diff_id and project_id' do
+          expect(described_class.for_merge_request_diff(diff_1.id, project.id)).to contain_exactly(commit_1, commit_2)
+        end
+
+        it 'returns empty collection when project_id does not match' do
+          expect(described_class.for_merge_request_diff(diff_1.id, non_existing_record_id)).to be_empty
+        end
+      end
+    end
+  end
+
+  describe '.oldest_merge_request_id_per_commit' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, :merged, source_project: project, target_project: project) }
+    let_it_be(:merge_request_diff) { merge_request.merge_request_diff }
+
+    let(:commit_sha) { merge_request_diff.merge_request_diff_commits.first.sha }
+
+    before_all do
+      merge_request_diff.merge_request_diff_commits.find_each do |commit|
+        commit.update_columns(project_id: project.id, sha: commit.merge_request_commits_metadata.sha)
+      end
+    end
+
+    before do
+      stub_feature_flags(merge_request_diff_commits_partition: false)
+    end
+
+    it 'returns the oldest merge request id for the given commit shas' do
+      result = described_class.oldest_merge_request_id_per_commit(project.id, [commit_sha])
+
+      expect(result.map(&:merge_request_id)).to contain_exactly(merge_request.id)
+    end
+
+    it 'returns empty result when shas do not exist' do
+      result = described_class.oldest_merge_request_id_per_commit(project.id, ['nonexistent'])
+
+      expect(result).to be_empty
+    end
+
+    context 'when merge_request_diff_commits_partition is enabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_partition: project)
+      end
+
+      it 'filters by project_id' do
+        result = described_class.oldest_merge_request_id_per_commit(project.id, [commit_sha])
+
+        expect(result.map(&:merge_request_id)).to contain_exactly(merge_request.id)
+      end
+
+      it 'returns empty result when project_id does not match' do
+        result = described_class.oldest_merge_request_id_per_commit(non_existing_record_id, [commit_sha])
+
+        expect(result).to be_empty
+      end
+    end
+
+    context 'when merge_request_diff_commits_partition is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_partition: false)
+      end
+
+      it 'does not filter by project_id' do
+        result = described_class.oldest_merge_request_id_per_commit(project.id, [commit_sha])
+
+        expect(result.map(&:merge_request_id)).to contain_exactly(merge_request.id)
+      end
+    end
+  end
+
+  describe '.commit_shas_from_metadata' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let_it_be(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+
+    let_it_be(:commits_metadata) do
+      create(:merge_request_commits_metadata, project: project, sha: 'abc123')
+    end
+
+    let_it_be(:diff_commit_with_metadata) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        merge_request_commits_metadata: commits_metadata,
+        relative_order: 0,
+        sha: nil,
+        project_id: project.id
+      )
+    end
+
+    let_it_be(:diff_commit_without_metadata) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        relative_order: 1,
+        sha: 'def456',
+        project_id: project.id
+      )
+    end
+
+    before do
+      stub_feature_flags(merge_request_diff_commits_partition: false)
+    end
+
+    it 'returns commit shas from both metadata and diff commits' do
+      result = described_class
+        .for_merge_request_diff(merge_request_diff.id, project.id)
+        .commit_shas_from_metadata(project_id: project.id, limit: nil)
+
+      expect(result).to contain_exactly('abc123', 'def456')
+    end
+
+    it 'respects the limit parameter' do
+      result = described_class
+        .for_merge_request_diff(merge_request_diff.id, project.id)
+        .commit_shas_from_metadata(project_id: project.id, limit: 1)
+
+      expect(result.size).to eq(1)
+    end
+
+    context 'when partition_enabled is true' do
+      it 'filters by project_id' do
+        result = described_class
+          .for_merge_request_diff(merge_request_diff.id, project.id)
+          .commit_shas_from_metadata(project_id: project.id, limit: nil, partition_enabled: true)
+
+        expect(result).to contain_exactly('abc123', 'def456')
+      end
+
+      it 'returns empty result when project_id does not match' do
+        result = described_class
+          .for_merge_request_diff(merge_request_diff.id, non_existing_record_id)
+          .commit_shas_from_metadata(project_id: non_existing_record_id, limit: nil, partition_enabled: true)
+
+        expect(result).to be_empty
       end
     end
   end

@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { sortNameAlphabetically, newWorkItemId, newWorkItemFullPath } from '~/work_items/utils';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
@@ -83,6 +83,7 @@ describe('WorkItemAssignees component', () => {
     allowsMultipleAssignees = false,
     canInviteMembers = false,
     canUpdate = true,
+    provide = {},
   } = {}) => {
     const apolloProvider = createMockApollo(
       [
@@ -120,6 +121,7 @@ describe('WorkItemAssignees component', () => {
         canInviteMembers,
         isGroup: false,
       },
+      provide,
       apolloProvider,
     });
   };
@@ -271,6 +273,7 @@ describe('WorkItemAssignees component', () => {
             assigneeIds: [currentUser.id],
           },
         },
+        useWorkItemFeatures: false,
       });
 
       expect(findAssigneeList().props('users')).toHaveLength(1);
@@ -357,6 +360,7 @@ describe('WorkItemAssignees component', () => {
         category: TRACKING_CATEGORY_SHOW,
         label: 'item_assignees',
         property: 'type_Task',
+        extra: { viewContext: 'full_screen' },
       });
     });
   });
@@ -453,6 +457,33 @@ describe('WorkItemAssignees component', () => {
 
       expect(findSidebarDropdownWidget().props('showFooter')).toBe(true);
       expect(findInviteMembersTrigger().exists()).toBe(true);
+    });
+  });
+
+  describe('when workItemFeaturesField feature flag is enabled', () => {
+    beforeEach(async () => {
+      createComponent({
+        assignees: [],
+        canUpdate: true,
+        provide: { glFeatures: { workItemFeaturesField: true } },
+      });
+      await waitForPromises();
+    });
+
+    it('passes useWorkItemFeatures as true to the mutation', async () => {
+      const { currentUser } = currentUserResponse.data;
+      findAssignSelfButton().vm.$emit('click', new MouseEvent('click'));
+      await nextTick();
+
+      expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          assigneesWidget: {
+            assigneeIds: [currentUser.id],
+          },
+        },
+        useWorkItemFeatures: true,
+      });
     });
   });
 });

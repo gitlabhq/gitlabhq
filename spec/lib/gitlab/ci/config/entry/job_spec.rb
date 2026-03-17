@@ -110,11 +110,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
   end
 
   describe 'validations' do
-    let(:ci_job_inputs_flag_enabled) { true }
-
     before do
-      stub_feature_flags(ci_job_inputs: ci_job_inputs_flag_enabled)
-
       Gitlab::Ci::Config::FeatureFlags.with_actor(nil) do
         entry.compose!
       end
@@ -901,26 +897,6 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
         it 'defaults the type to string' do
           expect(entry).to be_valid
           expect(entry.value[:inputs][:test_input]).to eq(default: 'hello', type: 'string')
-        end
-      end
-
-      context 'when the ci_job_inputs feature flag is disabled' do
-        let(:ci_job_inputs_flag_enabled) { false }
-
-        let(:config) do
-          {
-            script: 'echo',
-            inputs: {
-              test_string: {
-                default: 'hello'
-              }
-            }
-          }
-        end
-
-        it 'returns an error saying the inputs keyword is invalid' do
-          expect(entry).not_to be_valid
-          expect(entry.errors).to contain_exactly('job config contains unknown keys: inputs')
         end
       end
     end

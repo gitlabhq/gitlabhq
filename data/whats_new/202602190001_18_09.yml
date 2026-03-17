@@ -1,0 +1,94 @@
+- name: "GitLab Duo Agent Platform self-hosted models now available for cloud licenses"
+  description: |
+    GitLab Duo Agent Platform is now generally available for GitLab Self-Managed
+    customers with a cloud license. Administrators can configure compatible models
+    for use with GitLab Duo Agent Platform, including Anthropic Claude or OpenAI
+    GPT models through AWS Bedrock or Azure OpenAI.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: false
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/administration/gitlab_duo_self_hosted/#gitLab-duo-agent-platform
+  image_url: https://about.gitlab.com/images/18_9/ai-powered-selfhosted-duo-agent-platform.png
+  published_at: 2026-02-19
+  release: 18.9
+
+- name: "Vulnerability resolution with GitLab Duo Agent Platform (Beta)"
+  description: |
+    When you trigger resolution for a SAST vulnerability, GitLab Duo autonomously
+    analyzes the finding, reasons through the surrounding code context, generates
+    a context-aware fix, and creates a merge request without any manual intervention.
+    Each generated fix includes a quality assessment so reviewers can quickly gauge
+    confidence in the proposed remediation. Available as a free beta for Ultimate
+    customers. Share your feedback in
+    [issue 585626](https://gitlab.com/gitlab-org/gitlab/-/work_items/585626).
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/flows/foundational_flows/agentic_sast_vulnerability_resolution/
+  image_url: https://about.gitlab.com/images/18_9/sast_vulnerability_resolution_with_duo.png
+  published_at: 2026-02-19
+  release: 18.9
+
+- name: "Navigate repositories with collapsible file tree"
+  description: |
+    You can now browse repository files with a collapsible file tree. The tree
+    provides a comprehensive view of your project structure, so you can expand
+    and collapse directories inline, jump between files, and maintain context
+    while you work. The file tree appears as a resizable sidebar with keyboard
+    shortcuts and file filtering support.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/project/repository/files/file_tree_browser/
+  image_url: https://about.gitlab.com/images/18_9/create-repository-file-tree-navigation.png
+  published_at: 2026-02-19
+  release: 18.9
+
+- name: "Include CI/CD inputs from a file"
+  description: |
+    Pipeline input definitions can now be included from external files using the
+    familiar `include` keyword. Maintain centralized input configurations and
+    dynamically manage input values from external sources, making it easier to
+    reuse configuration across many projects or pipelines.
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ci/inputs/#use-inputs-from-external-files
+  image_url: https://about.gitlab.com/images/18_9/inputs_file.png
+  published_at: 2026-02-19
+  release: 18.9
+
+- name: "Web-based commit signing on GitLab.com"
+  description: |
+    GitLab.com now supports web-based commit signing. When enabled for a group or
+    project, commits created through the web interface are automatically signed
+    with GitLab's signing key and displayed with a Verified badge. All web-based
+    commits including Web IDE edits, merges, and API operations are automatically
+    signed when enabled.
+  stage: Create
+  self-managed: false
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/project/repository/signed_commits/web_commits/
+  image_url: https://about.gitlab.com/images/18_9/create-web-commit-signing-gitlab-com.png
+  published_at: 2026-02-19
+  release: 18.9
+
+- name: "Container virtual registry now available (Beta)"
+  description: |
+    The container virtual registry aggregates multiple upstream container
+    registries including DockerHub, Harbor, Quay, and private registries behind
+    a single endpoint. Platform engineers can configure multiple registries with
+    long-lived token authentication through one URL, with intelligent caching
+    and centralized access control.
+  stage: Package
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/packages/virtual_registry/container/
+  published_at: 2026-02-19
+  release: 18.9

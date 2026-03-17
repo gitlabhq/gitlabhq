@@ -13,7 +13,7 @@
    />
  */
 import { GlFormGroup, GlFormInput, GlFormInputGroup, GlLink, GlTooltipDirective } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { __, s__ } from '~/locale';
 import { BORDER_COLOR_ERROR, BORDER_COLOR_DEFAULT } from './constants';
 

@@ -151,8 +151,8 @@ module Ci
     # FastDestroyAll concerns
     # rubocop: disable CodeReuse/ServiceClass
     def self.begin_fast_destroy
-      service = ::Ci::JobArtifacts::DestroyAssociationsService.new(self)
-      service.destroy_records
+      service = ::Ci::JobArtifacts::DestroyAssociationsService.new
+      service.destroy_records(self)
       service
     end
     # rubocop: enable CodeReuse/ServiceClass
@@ -196,10 +196,6 @@ module Ci
 
     def expired?
       expire_at.present? && expire_at.past?
-    end
-
-    def expiring?
-      expire_at.present? && expire_at.future?
     end
 
     def expire_in

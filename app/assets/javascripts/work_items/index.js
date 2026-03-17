@@ -16,7 +16,7 @@ import { createRouter } from './router';
 
 Vue.use(VueApollo);
 
-export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}) => {
+export const initWorkItemsRoot = ({ workItemType, namespaceType, withTabs } = {}) => {
   const el = document.querySelector('#js-work-items');
 
   if (!el) {
@@ -32,7 +32,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     defaultBranch,
     isGroupIssuesList,
     workItemPlanningViewEnabled,
-    workItemsSavedViewsEnabled,
     // service desk list
     isServiceDeskEnabled,
     isServiceDeskSupported,
@@ -42,8 +41,8 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     serviceDeskSettingsPath,
   } = el.dataset;
 
-  const isGroup = workspaceType === NAMESPACE_GROUP;
-  const router = createRouter({ fullPath, workspaceType, defaultBranch, workItemType });
+  const isGroup = namespaceType === NAMESPACE_GROUP;
+  const router = createRouter({ fullPath, namespaceType, defaultBranch, workItemType });
 
   const breadcrumbParams = { workItemType };
 
@@ -78,7 +77,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       isGroupIssuesList: parseBoolean(isGroupIssuesList),
       workItemType,
       workItemPlanningViewEnabled: parseBoolean(workItemPlanningViewEnabled),
-      workItemsSavedViewsEnabled: parseBoolean(workItemsSavedViewsEnabled),
       // service desk list
       isServiceDeskEnabled: parseBoolean(isServiceDeskEnabled),
       isServiceDeskSupported: parseBoolean(isServiceDeskSupported),

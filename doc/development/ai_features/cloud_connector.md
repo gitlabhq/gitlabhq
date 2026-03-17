@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Fulfillment
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Cloud Connector
 ---
 
@@ -89,7 +89,6 @@ Implementation approaches:
 
 - **For experimental/free features**: If the feature has free access, this usually means that the experimental features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
   - For GitLab Duo features, the customer needs to enable [experimental toggle](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) in order to use experimental features for free.
-
 - **For paid features on GitLab.com and GitLab Self-Managed**: Check if the user is entitled to use the feature before making the backend request.
 
 ```ruby
@@ -139,5 +138,5 @@ For more information and examples on the **AI Gateway** authorization process, c
 
 ## Testing
 
-Follow the instructions to [set up GitLab Duo in your local environment](_index.md#set-up-your-local-development-environment) 
+Follow the instructions to [set up GitLab Duo in your local environment](_index.md#set-up-your-local-development-environment)
 to run E2E integration tests with **AI Gateway** as the backend service.

@@ -31,6 +31,9 @@ module Ci
         should_mark_hosted = params.delete(:hosted_runner)
         runner = ::Ci::Runner.new(params)
 
+        error = validate_token_expiration_params(runner)
+        return ServiceResponse.error(message: error, reason: :validation_error) if error
+
         create_runner(runner, should_mark_hosted)
       end
 
@@ -40,11 +43,18 @@ module Ci
         params[:creator] = user
 
         strategy.normalize_params
+        normalize_token_expiration_params
       end
 
       private
 
       attr_reader :user, :scope, :params, :strategy
+
+      # Overridden in EE to normalize token expiration params (e.g. rename keys)
+      def normalize_token_expiration_params; end
+
+      # Overridden in EE to validate token expiration params
+      def validate_token_expiration_params(_runner); end
 
       def create_runner(runner, should_mark_hosted)
         ApplicationRecord.transaction do
@@ -62,6 +72,11 @@ module Ci
       # CE implementation - no-op
       def create_hosted_runner!(runner, should_mark_hosted); end
 
+      # Overridden in EE to add token expiration tracking properties
+      def extra_tracking_properties(_runner)
+        {}
+      end
+
       def track_runner_events(runner)
         kwargs = { user: user }
 
@@ -78,7 +93,7 @@ module Ci
           additional_properties: {
             label: runner.runner_type,
             property: 'authenticated_user'
-          }
+          }.merge(extra_tracking_properties(runner))
         )
 
         return if params[:maintenance_note].blank?

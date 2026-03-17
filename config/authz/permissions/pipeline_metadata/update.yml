@@ -1,5 +1,3 @@
 ---
 name: update_pipeline_metadata
 description: Grants the ability to update pipeline metadata
-boundaries:
-  - project

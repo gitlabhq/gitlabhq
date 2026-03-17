@@ -14,14 +14,33 @@ module Namespaces
       end
 
       def set_deletion_schedule_data(transition)
+        self.deletion_scheduled_at = Time.current
         state_metadata.merge!(
-          deletion_scheduled_at: Time.current.as_json,
           deletion_scheduled_by_user_id: transition_user(transition).id
         )
       end
 
       def clear_deletion_schedule_data(_transition)
+        self.deletion_scheduled_at = nil
         state_metadata.except!('deletion_scheduled_at', 'deletion_scheduled_by_user_id')
+      end
+
+      def set_transfer_data(transition)
+        state_metadata.merge!(
+          transfer_initiated_at: Time.current.as_json,
+          transfer_initiated_by_user_id: transition_user(transition).id,
+          transfer_attempt_count: 0
+        )
+      end
+
+      def clear_transfer_data(_transition)
+        state_metadata.except!(
+          'transfer_initiated_at',
+          'transfer_initiated_by_user_id',
+          'transfer_target_parent_id',
+          'transfer_attempt_count',
+          'transfer_last_error'
+        )
       end
 
       def update_state_metadata_on_failure(transition)

@@ -808,6 +808,15 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
 
       expect(formContent).toEqual('&lt;script&gt;alert(&quot;Boom!&quot;);&lt;/script&gt;');
     });
+
+    it('serializes form data correctly', () => {
+      $form.find('textarea.js-note-text').val('hello world&foo=bar');
+      $form.append('<input name="other" value="test" />');
+      const { formData } = notes.getFormData($form);
+
+      expect(formData).toContain('note%5Bnote%5D=hello+world%26foo%3Dbar');
+      expect(formData).toContain('other=test');
+    });
   });
 
   describe('hasQuickActions', () => {

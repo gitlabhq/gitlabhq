@@ -1,5 +1,3 @@
 ---
 name: create_github_import
 description: Grants the ability to import projects from GitHub
-boundaries:
-  - group

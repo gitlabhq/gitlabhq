@@ -77,5 +77,4 @@ export function initDefaultTrackers() {
 
   InternalEvents.bindInternalEventDocument();
   InternalEvents.trackInternalLoadEvents();
-  InternalEvents.initBrowserSDK();
 }

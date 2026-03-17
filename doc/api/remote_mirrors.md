@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Project remote mirrors API
 ---
 
@@ -222,11 +222,8 @@ project pull mirroring API.
 
 {{< /history >}}
 
-{{< alert type="note" >}}
-
-Each project can have a maximum of 10 enabled push mirrors. For more information, see [Maximum number of project push mirrors](../administration/instance_limits.md#maximum-number-of-project-push-mirrors).
-
-{{< /alert >}}
+> [!note]
+> Each project can have a maximum of 10 enabled push mirrors. For more information, see [maximum number of project push mirrors](../administration/instance_limits.md#maximum-number-of-project-push-mirrors).
 
 Create a push mirror for a project. Push mirroring is disabled by default. To enable it, include the optional parameter
 `enabled` when you create the mirror.

@@ -233,6 +233,11 @@ module Types
         resolver_method: :has_scheduled_actions?,
         description: 'Indicates if the pipeline has scheduled actions.'
 
+      field :pipeline_schedule, Types::Ci::PipelineScheduleType,
+        null: true,
+        authorize: :read_pipeline_schedule,
+        description: 'Pipeline schedule that triggered the pipeline.'
+
       def commit
         BatchLoader::GraphQL.wrap(object.commit)
       end

@@ -1,9 +1,6 @@
 ---
 Lint/NoReturnInBeginEndBlocks:
   Exclude:
-    - 'app/models/concerns/metric_image_uploading.rb'
-    - 'app/services/security/ci_configuration/sast_parser_service.rb'
-    - 'ee/app/services/gitlab_subscriptions/preview_billable_user_change_service.rb'
     - 'ee/app/services/security/token_revocation_service.rb'
     - 'ee/lib/api/vulnerability_findings.rb'
     - 'ee/lib/gitlab/scim/filter_parser.rb'

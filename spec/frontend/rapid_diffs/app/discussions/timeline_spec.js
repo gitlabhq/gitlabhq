@@ -10,7 +10,8 @@ import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import CommitTimeline from '~/rapid_diffs/app/discussions/timeline.vue';
 import DiffDiscussions from '~/rapid_diffs/app/discussions/diff_discussions.vue';
 import NoteForm from '~/rapid_diffs/app/discussions/note_form.vue';
-import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
+import { useCommitDiffDiscussions } from '~/rapid_diffs/stores/commit_discussions_store';
+import { useDiscussions } from '~/notes/store/discussions';
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/lib/utils/secret_detection');
@@ -29,6 +30,8 @@ describe('CommitTimeline', () => {
     ...overrides,
   });
 
+  let store;
+
   const defaultProvide = {
     userPermissions: { can_create_note: true },
     endpoints: { discussions: '/api/discussions' },
@@ -38,17 +41,18 @@ describe('CommitTimeline', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia({ stubActions: false });
+    store = useCommitDiffDiscussions(pinia);
     axiosMock = new AxiosMockAdapter(axios);
     isLoggedIn.mockReturnValue(true);
     detectAndConfirmSensitiveTokens.mockResolvedValue(true);
   });
 
   const createComponent = (discussions = [], provide = {}) => {
-    useDiffDiscussions(pinia).$patch({ discussions });
+    useDiscussions(pinia).discussions = discussions;
 
     wrapper = shallowMount(CommitTimeline, {
       pinia,
-      provide: { ...defaultProvide, ...provide },
+      provide: { store, ...defaultProvide, ...provide },
     });
   };
 
@@ -73,7 +77,7 @@ describe('CommitTimeline', () => {
 
       await wrapper.findComponent(NoteForm).props('saveNote')('test note');
 
-      expect(useDiffDiscussions(pinia).discussions).toContainEqual(
+      expect(useDiscussions(pinia).discussions).toContainEqual(
         expect.objectContaining({ id: 'new-1' }),
       );
     });

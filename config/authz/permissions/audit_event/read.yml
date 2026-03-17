@@ -1,0 +1,3 @@
+---
+name: read_audit_event
+description: Grants the ability to read audit events

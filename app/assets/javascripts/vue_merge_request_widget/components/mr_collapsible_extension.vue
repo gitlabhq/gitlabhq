@@ -62,6 +62,7 @@ export default {
           :loading="isLoading"
           :icon="arrowIconName"
           category="tertiary"
+          :disabled="isLoading"
           @click="toggleCollapsed"
         />
         <template v-if="isCollapsed">

@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Google Artifact Management
 description: Connect a Google Artifact Registry to your GitLab project to view, push, and pull Docker and OCI images.
 ---
@@ -38,7 +38,7 @@ Prerequisites:
 
 To connect a Google Artifact Registry repository to a GitLab project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Google Artifact Management**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -59,7 +59,7 @@ Prerequisites:
 
 To view the list of images in the connected Artifact Registry repository in the GitLab UI:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Google Artifact Registry**.
 1. To view the image details, select an image.
 1. To view the image in the Google Cloud console, select **Open in Google Cloud**. You must have the [required permissions](https://cloud.google.com/artifact-registry/docs/repositories/list-repos#required_roles) to view that Artifact Registry repository.

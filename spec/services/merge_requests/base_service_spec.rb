@@ -33,7 +33,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
       specify :aggregate_failures do
         expect(JiraConnect::SyncMergeRequestWorker).to receive(:perform_async).with(kind_of(Numeric), kind_of(Numeric)).and_call_original
         Sidekiq::Testing.fake! do
-          expect { subject }.to change(JiraConnect::SyncMergeRequestWorker.jobs, :size).by(1)
+          expect { subject }.to change { JiraConnect::SyncMergeRequestWorker.jobs.size }.by(1)
         end
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
     shared_examples 'does not enqueue Jira sync worker' do
       it do
         Sidekiq::Testing.fake! do
-          expect { subject }.not_to change(JiraConnect::SyncMergeRequestWorker.jobs, :size)
+          expect { subject }.not_to change { JiraConnect::SyncMergeRequestWorker.jobs.size }
         end
       end
     end
@@ -181,6 +181,14 @@ RSpec.describe MergeRequests::BaseService, feature_category: :code_review_workfl
 
       expect(hook_data[:object_attributes][:system]).to be false
       expect(hook_data[:object_attributes]).not_to have_key(:system_action)
+    end
+
+    it 'includes actioned_at with current time' do
+      freeze_time do
+        hook_data = service.send(:hook_data, merge_request, 'test_action')
+
+        expect(hook_data[:object_attributes][:actioned_at]).to eq(Time.current)
+      end
     end
   end
 

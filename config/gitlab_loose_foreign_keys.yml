@@ -493,6 +493,9 @@ group_wiki_repository_states:
   - table: namespaces
     column: group_id
     on_delete: async_delete
+  - table: group_wiki_repositories
+    column: group_wiki_repository_id
+    on_delete: async_delete
 groups_visits:
   - table: namespaces
     column: entity_id
@@ -570,8 +573,8 @@ notes:
   - table: vulnerabilities
     column: noteable_id
     conditions:
-    - column: noteable_type
-      value: Vulnerability
+      - column: noteable_type
+        value: Vulnerability
     on_delete: async_delete
 notification_settings:
   - table: users
@@ -665,6 +668,9 @@ p_ci_job_messages:
 p_ci_pipeline_artifact_states:
   - table: ci_pipeline_artifacts
     column: pipeline_artifact_id
+    on_delete: async_delete
+  - table: projects
+    column: project_id
     on_delete: async_delete
 p_ci_pipeline_iids:
   - table: projects
@@ -1156,6 +1162,9 @@ vulnerability_severity_overrides:
   - table: projects
     column: project_id
     on_delete: async_delete
+  - table: security_policies
+    column: security_policy_id
+    on_delete: async_nullify
   - table: users
     column: author_id
     on_delete: async_nullify
@@ -1194,4 +1203,20 @@ wiki_repository_states:
     on_delete: async_delete
   - table: projects
     column: project_id
+    on_delete: async_delete
+work_item_custom_status_mappings:
+  - table: work_item_custom_types
+    column: work_item_type_id
+    on_delete: async_delete
+work_item_type_custom_fields:
+  - table: work_item_custom_types
+    column: work_item_type_id
+    on_delete: async_delete
+work_item_type_custom_lifecycles:
+  - table: work_item_custom_types
+    column: work_item_type_id
+    on_delete: async_delete
+work_item_type_user_preferences:
+  - table: work_item_custom_types
+    column: work_item_type_id
     on_delete: async_delete

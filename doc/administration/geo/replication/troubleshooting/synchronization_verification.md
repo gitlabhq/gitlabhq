@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Geo synchronization and verification errors
 description: "Troubleshoot Geo synchronization and verification failures, covering manual retry procedures, bulk operations, error diagnosis, and data consistency restoration."
 ---
@@ -91,7 +91,6 @@ You can use the following script to output detailed information for each model t
 This procedure provides detailed status information for all Geo registry types and helps identify patterns in failures.
 
 1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **secondary** site.
-
 1. Run the following script to get a comprehensive overview:
 
    ```ruby
@@ -823,7 +822,7 @@ You might see this error for projects that do not sync successfully.
 
 Exit code 128 during repository creation means Git encountered a fatal error while cloning. This could be due to repository corruption, network issues, authentication problems, resource limits or because the project does not have an associated Git repository. More details about the specific cause for such failures can be found in the Gitaly logs.
 
-When unsure where to start, run an integrity check on the source repository on the Primary site by [executing the `git fsck` command manually on the command line](../../../../administration/repository_checks.md#run-a-check-using-the-command-line).
+When unsure where to start, run an integrity check on the source repository on the Primary site by [executing the `git fsck` command manually on the command line](../../../repository_checks.md#run-a-check-using-the-command-line).
 
 ### Error: `gitmodulesUrl: disallowed submodule url`
 
@@ -936,42 +935,44 @@ is [enabled on the secondary site](../../../packages/container_registry.md#enabl
 
 **Diagnosis:**
 
-Check for duplicate registries across different types on the secondary site:
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **secondary** site.
+1. Check for duplicate registries across different types:
 
-```ruby
-# Check for duplicate upload registries
-upload_ids = Geo::UploadRegistry.group(:file_id).having('COUNT(*) > 1').pluck(:file_id)
-puts "Duplicate upload IDs count: #{upload_ids.size}"
-puts 'Duplicate Upload IDs:', upload_ids
+   ```ruby
+   # Check for duplicate upload registries
+   upload_ids = Geo::UploadRegistry.group(:file_id).having('COUNT(*) > 1').pluck(:file_id)
+   puts "Duplicate upload IDs count: #{upload_ids.size}"
+   puts 'Duplicate Upload IDs:', upload_ids
 
-# Check for duplicate job artifact registries
-artifact_ids = Geo::JobArtifactRegistry.group(:artifact_id).having('COUNT(*) > 1').pluck(:artifact_id)
-puts "Duplicate artifact IDs count: #{artifact_ids.size}"
-puts 'Duplicate Artifact IDs:', artifact_ids
+   # Check for duplicate job artifact registries
+   artifact_ids = Geo::JobArtifactRegistry.group(:artifact_id).having('COUNT(*) > 1').pluck(:artifact_id)
+   puts "Duplicate artifact IDs count: #{artifact_ids.size}"
+   puts 'Duplicate Artifact IDs:', artifact_ids
 
-# Check for duplicate package file registries
-package_file_ids = Geo::PackageFileRegistry.group(:package_file_id).having('COUNT(*) > 1').pluck(:package_file_id)
-puts "Duplicate package file IDs count: #{package_file_ids.size}"
-puts 'Duplicate Package File IDs:', package_file_ids
+   # Check for duplicate package file registries
+   package_file_ids = Geo::PackageFileRegistry.group(:package_file_id).having('COUNT(*) > 1').pluck(:package_file_id)
+   puts "Duplicate package file IDs count: #{package_file_ids.size}"
+   puts 'Duplicate Package File IDs:', package_file_ids
 
-# Check for duplicate LFS object registries
-lfs_object_ids = Geo::LfsObjectRegistry.group(:lfs_object_id).having('COUNT(*) > 1').pluck(:lfs_object_id)
-puts "Duplicate LFS object IDs count: #{lfs_object_ids.size}"
-puts 'Duplicate LFS Object IDs:', lfs_object_ids
+   # Check for duplicate LFS object registries
+   lfs_object_ids = Geo::LfsObjectRegistry.group(:lfs_object_id).having('COUNT(*) > 1').pluck(:lfs_object_id)
+   puts "Duplicate LFS object IDs count: #{lfs_object_ids.size}"
+   puts 'Duplicate LFS Object IDs:', lfs_object_ids
 
-# Check for duplicate pages deployment registries
-pages_deployment_ids = Geo::PagesDeploymentRegistry.group(:pages_deployment_id).having('COUNT(*) > 1').pluck(:pages_deployment_id)
-puts "Duplicate pages deployment IDs count: #{pages_deployment_ids.size}"
-puts 'Duplicate Pages Deployment IDs:', pages_deployment_ids
+   # Check for duplicate pages deployment registries
+   pages_deployment_ids = Geo::PagesDeploymentRegistry.group(:pages_deployment_id).having('COUNT(*) > 1').pluck(:pages_deployment_id)
+   puts "Duplicate pages deployment IDs count: #{pages_deployment_ids.size}"
+   puts 'Duplicate Pages Deployment IDs:', pages_deployment_ids
 
-# Check for duplicate terraform state version registries
-terraform_state_ids = Geo::TerraformStateVersionRegistry.group(:terraform_state_version_id).having('COUNT(*) > 1').pluck(:terraform_state_version_id)
-puts "Duplicate terraform state version IDs count: #{terraform_state_ids.size}"
-puts 'Duplicate Terraform State Version IDs:', terraform_state_ids
-```
+   # Check for duplicate terraform state version registries
+   terraform_state_ids = Geo::TerraformStateVersionRegistry.group(:terraform_state_version_id).having('COUNT(*) > 1').pluck(:terraform_state_version_id)
+   puts "Duplicate terraform state version IDs count: #{terraform_state_ids.size}"
+   puts 'Duplicate Terraform State Version IDs:', terraform_state_ids
+   ```
 
 **Resolution:**
 
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **secondary** site.
 1. Remove duplicate registry entries for each affected type:
 
    ```ruby
@@ -1044,61 +1045,63 @@ puts 'Duplicate Terraform State Version IDs:', terraform_state_ids
 
 **Diagnosis:**
 
-Check failed repositories or container registries in secondary:
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **secondary** site.
+1. Check failed repositories or container registries:
 
-```ruby
-failed_repos = Geo::ProjectRepositoryRegistry.failed.limit(100)
-failed_repos.each do |repo|
-  puts "Project ID: #{repo.project_id}"
-  puts "Primary checksum: #{repo.verification_checksum_mismatched}"
-  puts "Secondary checksum: #{repo.verification_checksum}"
-  puts "Error: #{repo.last_sync_failure}"
-  puts "---"
-end
-```
+   ```ruby
+   failed_repos = Geo::ProjectRepositoryRegistry.failed.limit(100)
+   failed_repos.each do |repo|
+     puts "Project ID: #{repo.project_id}"
+     puts "Primary checksum: #{repo.verification_checksum_mismatched}"
+     puts "Secondary checksum: #{repo.verification_checksum}"
+     puts "Error: #{repo.last_sync_failure}"
+     puts "---"
+   end
+   ```
 
-```ruby
-failed_container_repos = Geo::ContainerRepositoryRegistry.failed.limit(100)
-failed_container_repos.each do |repo|
-  puts "Container Repo Id: #{repo.model_record_id}"
-  puts "Primary checksum: #{repo.verification_checksum_mismatched}"
-  puts "Secondary checksum: #{repo.verification_checksum}"
-  puts "Error: #{repo.last_sync_failure}"
-  puts "---"
-end
-```
+   ```ruby
+   failed_container_repos = Geo::ContainerRepositoryRegistry.failed.limit(100)
+   failed_container_repos.each do |repo|
+     puts "Container Repo Id: #{repo.model_record_id}"
+     puts "Primary checksum: #{repo.verification_checksum_mismatched}"
+     puts "Secondary checksum: #{repo.verification_checksum}"
+     puts "Error: #{repo.last_sync_failure}"
+     puts "---"
+   end
+   ```
 
 **Resolution:**
 
-Force re-verification on primary for specific projects or container registries:
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
+1. Force re-verification for specific projects or container registries:
 
-```ruby
-project_ids = [1, 2, 3] # Replace with actual failing project IDs
+   ```ruby
+   project_ids = [1, 2, 3] # Replace with actual failing project IDs
 
-project_ids.each do |project_id|
-  project = Project.find(project_id)
-  puts "Reverifying project: #{project.full_path}"
+   project_ids.each do |project_id|
+     project = Project.find(project_id)
+     puts "Reverifying project: #{project.full_path}"
 
-  project_state = project.project_state
-  project_state.update!(verification_state: 0)
+     project_state = project.project_state
+     project_state.update!(verification_state: 0)
 
-  puts "Project #{project_id} marked for reverification"
-end
-```
+     puts "Project #{project_id} marked for reverification"
+   end
+   ```
 
-```ruby
-container_repo_ids = [1, 2, 3]
+   ```ruby
+   container_repo_ids = [1, 2, 3]
 
-container_repo_ids.each do |repo_id|
-  container_repo = ContainerRepository.find(repo_id)
-  puts "Reverifying container repository: #{container_repo.path}"
+   container_repo_ids.each do |repo_id|
+     container_repo = ContainerRepository.find(repo_id)
+     puts "Reverifying container repository: #{container_repo.path}"
 
-  state = container_repo.container_repository_state
-  state.update!(verification_state: 0)
+     state = container_repo.container_repository_state
+     state.update!(verification_state: 0)
 
-  puts "Container Repo #{repo_id} marked for reverification"
-end
-```
+     puts "Container Repo #{repo_id} marked for reverification"
+   end
+   ```
 
 ### Object type-specific troubleshooting for `Error during verification: File is not checksummable`
 
@@ -1108,236 +1111,255 @@ Different Geo data types have unique characteristics and common failure patterns
 
 **Diagnosis:**
 
-Identify uploads with missing files:
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
+1. Identify uploads with missing files:
 
-```ruby
-checksummable_failures = Upload.verification_failed
-                                .where("verification_failure LIKE '%File is not checksummable%'")
+   ```ruby
+   checksummable_failures = Upload.verification_failed
+                                   .where("verification_failure LIKE '%File is not checksummable%'")
 
-puts "Found #{checksummable_failures.count} uploads with missing files"
+   puts "Found #{checksummable_failures.count} uploads with missing files"
 
-# Adjust 'limit' to count
-checksummable_failures.limit(5).each_with_index do |record, index|
-  puts "Record #{index + 1}:"
-  puts "  ID: #{record.id}"
-  puts "  Path: #{record.path}"
-  puts "  Model: #{record.model_type} (ID: #{record.model_id})"
-  puts "  Created: #{record.created_at}"
-  puts "---"
-end
-```
+   # Adjust 'limit' to count
+   checksummable_failures.limit(5).each_with_index do |record, index|
+     puts "Record #{index + 1}:"
+     puts "  ID: #{record.id}"
+     puts "  Path: #{record.path}"
+     puts "  Model: #{record.model_type} (ID: #{record.model_id})"
+     puts "  Created: #{record.created_at}"
+     puts "---"
+   end
+   ```
 
 **Resolution:**
 
 > [!warning]
 > Ensure you have a recent and working backup before deleting any upload records. Coordinate with your team to confirm these uploads are safe to remove.
 
-Remove problematic uploads after confirmation:
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
+1. Remove problematic uploads after confirmation:
 
-```ruby
-# Remove individual upload
-Upload.find(55).destroy
+   ```ruby
+   # Remove individual upload
+   Upload.find(55).destroy
 
-# Or remove all uploads with missing files (use with extreme caution)
-Upload.verification_failed.where("verification_failure LIKE '%File is not checksummable%'").destroy_all
-```
+   # Or remove all uploads with missing files (use with extreme caution)
+   Upload.verification_failed.where("verification_failure LIKE '%File is not checksummable%'").destroy_all
+   ```
 
 #### Pages deployments
 
 **Diagnosis:**
 
-Inspect problematic pages deployments:
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
+1. Inspect problematic pages deployments:
 
-```ruby
-checksummable_failures = PagesDeployment.verification_failed
-                                        .where("verification_failure LIKE '%File is not checksummable%'")
+   ```ruby
+   checksummable_failures = PagesDeployment.verification_failed
+                                           .where("verification_failure LIKE '%File is not checksummable%'")
 
-checksummable_failures.each_with_index do |record, index|
-  puts "Record #{index + 1}:"
-  puts "  ID: #{record.id}"
-  puts "  Project: #{record.project.full_path}"
-  puts "  Created: #{record.created_at}"
-  puts "  File exists: #{record.file.exists?}"
-  puts "---"
-end
-```
+   checksummable_failures.each_with_index do |record, index|
+     puts "Record #{index + 1}:"
+     puts "  ID: #{record.id}"
+     puts "  Project: #{record.project.full_path}"
+     puts "  Created: #{record.created_at}"
+     puts "  File exists: #{record.file.exists?}"
+     puts "---"
+   end
+   ```
 
 **Resolution:**
 
-After confirming with your team that the deployments are safe to remove:
+> [!warning]
+> Ensure you have a recent and working backup before deleting any pages deployment records. Coordinate with your team to confirm these deployments are safe to remove.
 
-```ruby
-failed_ids = [21875, 21907, 21992] # Replace with actual IDs
-PagesDeployment.where(id: failed_ids).destroy_all
-puts "Removed #{failed_ids.size} problematic pages deployments"
-```
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
+1. After confirming with your team that the deployments are safe to remove:
+
+   ```ruby
+   failed_ids = [21875, 21907, 21992] # Replace with actual IDs
+   PagesDeployment.where(id: failed_ids).destroy_all
+   puts "Removed #{failed_ids.size} problematic pages deployments"
+   ```
 
 #### LFS objects
 
 **Diagnosis:**
 
-Inspect problematic LFS objects:
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
+1. Inspect problematic LFS objects:
 
-```ruby
-checksummable_failures = LfsObject.verification_failed
-                                  .where("verification_failure LIKE '%File is not checksummable%'")
+   ```ruby
+   checksummable_failures = LfsObject.verification_failed
+                                     .where("verification_failure LIKE '%File is not checksummable%'")
 
-checksummable_failures.each_with_index do |record, index|
-  puts "Record #{index + 1}:"
-  puts "  OID: #{record.oid}"
-  puts "  Size: #{record.size} bytes"
-  puts "  File Store: #{record.file_store}"
-  puts "  Created: #{record.created_at}"
+   checksummable_failures.each_with_index do |record, index|
+     puts "Record #{index + 1}:"
+     puts "  OID: #{record.oid}"
+     puts "  Size: #{record.size} bytes"
+     puts "  File Store: #{record.file_store}"
+     puts "  Created: #{record.created_at}"
 
-  # Show associated projects
-  associations = record.lfs_objects_projects.includes(:project)
-  puts "  Associated projects (#{associations.count}):"
-  associations.each do |assoc|
-    project = assoc.project
-    if project
-      puts "    - #{project.full_path}"
-    else
-      puts "    - Project ID: #{assoc.project_id} (not found)"
-    end
-  end
-  puts "---"
-end
-```
+     # Show associated projects
+     associations = record.lfs_objects_projects.includes(:project)
+     puts "  Associated projects (#{associations.count}):"
+     associations.each do |assoc|
+       project = assoc.project
+       if project
+         puts "    - #{project.full_path}"
+       else
+         puts "    - Project ID: #{assoc.project_id} (not found)"
+       end
+     end
+     puts "---"
+   end
+   ```
 
 **Resolution:**
 
 > [!warning]
 > Removing LFS objects affects all projects that reference them. Ensure you have backups and coordinate with project maintainers before deletion.
 
-Remove LFS objects with missing files:
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
+1. Remove LFS objects with missing files:
 
-```ruby
-def destroy_lfs_not_checksummable(dry_run: true)
-  lfs_objects = LfsObject.verification_failed.where("verification_failure like '%File is not checksummable%'")
-  puts "Found #{lfs_objects.count} LFS objects that failed verification with 'File is not checksummable'."
+   ```ruby
+   def destroy_lfs_not_checksummable(dry_run: true)
+     lfs_objects = LfsObject.verification_failed.where("verification_failure like '%File is not checksummable%'")
+     puts "Found #{lfs_objects.count} LFS objects that failed verification with 'File is not checksummable'."
 
-  if dry_run
-    puts "DRY RUN - No changes made"
-    lfs_objects.each { |obj| puts "Would remove: OID #{obj.oid}, Size: #{obj.size}" }
-    return
-  end
+     if dry_run
+       puts "DRY RUN - No changes made"
+       lfs_objects.each { |obj| puts "Would remove: OID #{obj.oid}, Size: #{obj.size}" }
+       return
+     end
 
-  puts "Enter 'y' to continue with deletion: "
-  prompt = STDIN.gets.chomp
-  if prompt != 'y'
-    puts "Exiting without action..."
-    return
-  end
+     puts "Enter 'y' to continue with deletion: "
+     prompt = STDIN.gets.chomp
+     if prompt != 'y'
+       puts "Exiting without action..."
+       return
+     end
 
-  puts "Destroying all..."
-  lfs_objects.each do |lfs_object|
-    lfs_object.lfs_objects_projects.destroy_all
-    lfs_object.destroy!
-  end
-  puts "Done!"
-end
+     puts "Destroying all..."
+     lfs_objects.each do |lfs_object|
+       lfs_object.lfs_objects_projects.destroy_all
+       lfs_object.destroy!
+     end
+     puts "Done!"
+   end
 
-# Run in dry run mode first
-destroy_lfs_not_checksummable(dry_run: true)
-```
+   # Run in dry run mode first
+   destroy_lfs_not_checksummable(dry_run: true)
+   ```
 
 #### Job artifacts
 
 **Diagnosis:**
 
-Check for artifacts with missing files:
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
+1. Check for artifacts with missing files:
 
-```ruby
-failed_artifacts = Ci::JobArtifact.verification_failed.where("verification_failure LIKE '%File is not checksummable%'")
+   ```ruby
+   failed_artifacts = Ci::JobArtifact.verification_failed.where("verification_failure LIKE '%File is not checksummable%'")
 
-failed_artifacts.each do |registry|
-  artifact = Ci::JobArtifact.find_by(id: registry.id)
-  if artifact
-    puts "Artifact ID: #{artifact.id}"
-    puts "Job ID: #{artifact.job_id}"
-    puts "Project ID: #{artifact.project_id}"
-    puts "File exists: #{artifact.file.exists?}"
-    puts "File path: #{artifact.file.path}"
-  else
-    puts "Artifact ID #{artifact.id} not found in database"
-  end
-  puts "---"
-end
-```
+   failed_artifacts.each do |registry|
+     artifact = Ci::JobArtifact.find_by(id: registry.id)
+     if artifact
+       puts "Artifact ID: #{artifact.id}"
+       puts "Job ID: #{artifact.job_id}"
+       puts "Project ID: #{artifact.project_id}"
+       puts "File exists: #{artifact.file.exists?}"
+       puts "File path: #{artifact.file.path}"
+     else
+       puts "Artifact ID #{artifact.id} not found in database"
+     end
+     puts "---"
+   end
+   ```
 
 **Resolution:**
 
-Clean up artifacts with missing files:
+> [!warning]
+> Ensure you have a recent and working backup before deleting any job artifact records. Coordinate with your team to confirm these artifacts are safe to remove.
 
-```ruby
-def cleanup_missing_artifacts(dry_run: true)
-  missing_file_artifacts = []
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
+1. Clean up artifacts with missing files:
 
-  Ci::JobArtifact.find_each do |artifact|
-    unless artifact.file.exists?
-      missing_file_artifacts << artifact.id
-      puts "Missing file for artifact #{artifact.id}" if dry_run
-    end
-  end
+   ```ruby
+   def cleanup_missing_artifacts(dry_run: true)
+     missing_file_artifacts = []
 
-  puts "Found #{missing_file_artifacts.size} artifacts with missing files"
+     Ci::JobArtifact.find_each do |artifact|
+       unless artifact.file.exists?
+         missing_file_artifacts << artifact.id
+         puts "Missing file for artifact #{artifact.id}" if dry_run
+       end
+     end
 
-  unless dry_run
-    Ci::JobArtifact.where(id: missing_file_artifacts).destroy_all
-    puts "Removed #{missing_file_artifacts.size} artifacts with missing files"
-  end
-end
+     puts "Found #{missing_file_artifacts.size} artifacts with missing files"
 
-# Run in dry run mode first
-cleanup_missing_artifacts(dry_run: true)
-```
+     unless dry_run
+       Ci::JobArtifact.where(id: missing_file_artifacts).destroy_all
+       puts "Removed #{missing_file_artifacts.size} artifacts with missing files"
+     end
+   end
+
+   # Run in dry run mode first
+   cleanup_missing_artifacts(dry_run: true)
+   ```
 
 #### Pipeline artifacts
 
 **Diagnosis:**
 
-Check for artifacts with missing files:
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
+1. Check for artifacts with missing files:
 
-```ruby
-failed_pipeline_artifacts = Ci::PipelineArtifact.verification_failed.where("verification_failure LIKE '%checksummable%'")
+   ```ruby
+   failed_pipeline_artifacts = Ci::PipelineArtifact.verification_failed.where("verification_failure LIKE '%checksummable%'")
 
-failed_pipeline_artifacts.each do |registry|
-  artifact = Ci::PipelineArtifact.find_by(id: registry.id)
-  if artifact
-    puts "Artifact ID: #{artifact.id}"
-    puts "Pipeline ID: #{artifact.pipeline_id}"
-    puts "Project ID: #{artifact.project_id}"
-    puts "File exists: #{artifact.file.exists?}"
-    puts "File path: #{artifact.file.path}"
-  else
-    puts "Artifact ID #{artifact.id} not found in database"
-  end
-  puts "---"
-end
-```
+   failed_pipeline_artifacts.each do |registry|
+     artifact = Ci::PipelineArtifact.find_by(id: registry.id)
+     if artifact
+       puts "Artifact ID: #{artifact.id}"
+       puts "Pipeline ID: #{artifact.pipeline_id}"
+       puts "Project ID: #{artifact.project_id}"
+       puts "File exists: #{artifact.file.exists?}"
+       puts "File path: #{artifact.file.path}"
+     else
+       puts "Artifact ID #{artifact.id} not found in database"
+     end
+     puts "---"
+   end
+   ```
 
 **Resolution:**
 
-Remove pipeline artifacts with missing files:
+> [!warning]
+> Ensure you have a recent and working backup before deleting any pipeline artifact records. Coordinate with your team to confirm these artifacts are safe to remove.
 
-```ruby
-def destroy_pipeline_artifacts_not_checksummable
-  artifacts = Ci::PipelineArtifact.verification_failed.where("verification_failure like '%File is not checksummable%'")
-  puts "Found #{artifacts.count} pipeline artifacts that failed verification with 'File is not checksummable'."
-  puts "Enter 'y' to continue: "
-  prompt = STDIN.gets.chomp
-  if prompt != 'y'
-    puts "Exiting without action..."
-    return
-  end
+1. [Start a Rails console session](../../../operations/rails_console.md#starting-a-rails-console-session) on the **primary** site.
+1. Remove pipeline artifacts with missing files:
 
-  puts "Destroying all..."
-  artifacts.destroy_all
-  puts "Done!"
-end
+   ```ruby
+   def destroy_pipeline_artifacts_not_checksummable
+     artifacts = Ci::PipelineArtifact.verification_failed.where("verification_failure like '%File is not checksummable%'")
+     puts "Found #{artifacts.count} pipeline artifacts that failed verification with 'File is not checksummable'."
+     puts "Enter 'y' to continue: "
+     prompt = STDIN.gets.chomp
+     if prompt != 'y'
+       puts "Exiting without action..."
+       return
+     end
 
-destroy_pipeline_artifacts_not_checksummable
-```
+     puts "Destroying all..."
+     artifacts.destroy_all
+     puts "Done!"
+   end
+
+   destroy_pipeline_artifacts_not_checksummable
+   ```
 
 ### Error: `Projects - Error during verification: Repository does not exist`
 
@@ -1476,9 +1498,7 @@ of a repository on the secondary Geo site's file system:
 To solve this:
 
 1. Sign in on the web interface for the secondary Geo site.
-
 1. Back up [the `.git` folder](../../../repository_storage_paths.md#translate-hashed-storage-paths).
-
 1. Optional. [Spot-check](../../../logs/log_parsing.md#find-all-projects-affected-by-a-fatal-git-problem)
    a few of those IDs whether they indeed correspond
    to a project with known Geo replication failures.

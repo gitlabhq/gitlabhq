@@ -21,13 +21,13 @@ const ONBOARDING_STEPS = [
     ),
     title: __('Hone in on what’s important'),
   },
-  // {
-  //   component: Tabs,
-  //   body: __(
-  //     'The views that appear in your tabs at the top are specific to you. Add, reorder, and remove views to create the best setup for your needs.',
-  //   ),
-  //   title: __('Tailor your views list'),
-  // },
+  {
+    component: Tabs,
+    body: __(
+      'The views that appear in your tabs at the top are specific to you. Add, reorder, and remove views to create the best setup for your needs.',
+    ),
+    title: __('Tailor your views list'),
+  },
   {
     component: SaveView,
     body: __(
@@ -133,7 +133,7 @@ export default {
             v-for="(_, index) in steps"
             :key="index"
             class="gl-h-3 gl-w-3 gl-rounded-full"
-            :class="index === currentStep ? 'gl-bg-neutral-950' : 'gl-bg-neutral-200'"
+            :class="index === currentStep ? 'gl-bg-blue-500' : 'gl-bg-status-neutral'"
             data-testid="step-indicator"
           ></span>
         </div>

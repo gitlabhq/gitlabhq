@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Database required stops
 ---
 
@@ -32,7 +32,6 @@ You may need to introduce a required stop for mitigation when:
 
 - A background migration is not finalized, and
 - A migration is written that depends on that background migration.
-
 - **Cause**: The dependent migration may fail if the background migration is incomplete.
 - **Mitigation**: Ensure that all background migrations are finalized before authoring dependent migrations.
 
@@ -56,7 +55,6 @@ these scenarios may cause issues:
   than the prerequisite migration, and thus fail.
 - If the migration timestamp ID is before the last, it may be inadvertently squashed when the
   team squashes other migrations from the required stop.
-
 - **Cause**: The migration may fail if it depends on a migration with a later timestamp introduced
   in an earlier version. Or, the migration may be inadvertently squashed after a required stop.
 - **Mitigation**: Aim for migration timestamps to fall inside the release dates and be sure that

@@ -1,6 +1,6 @@
 import { GlButton, GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';

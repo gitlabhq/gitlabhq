@@ -11,7 +11,7 @@ module Mutations
 
       authorize :reposition_note
 
-      argument :id,
+      argument :id, # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
         Types::GlobalIDType[DiffNote],
         loads: Types::Notes::NoteType,
         as: :note,

@@ -41,19 +41,6 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
       expect(filter(act).to_html).to eq %q(<span>def</span>)
     end
 
-    it 'allows `data-table-*` attributes on `table` elements' do
-      html = <<-HTML
-        <table data-table-fields="foo" data-table-filter="true" data-table-markdown="true">
-        </table>
-      HTML
-
-      doc = filter(html)
-
-      expect(doc.at_css('table')['data-table-fields']).to eq 'foo'
-      expect(doc.at_css('table')['data-table-filter']).to eq 'true'
-      expect(doc.at_css('table')['data-table-markdown']).to eq 'true'
-    end
-
     it 'allows `text-align` property in `style` attribute on table elements' do
       html = <<~HTML
         <table>
@@ -316,6 +303,67 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
         act = filter(%q(<ul><li><input type="password" class="task-list-item-checkbox"></li></ul>))
 
         expect(act.to_html).to eq_html exp
+      end
+    end
+
+    describe 'JSON tables' do
+      it 'allows `data-table-*` attributes on `table` elements with valid fields' do
+        fields_json = '[{"key":"a","label":"A","sortable":true}]'
+        html = <<-HTML
+          <table data-table-fields='#{fields_json}' data-table-filter="true" data-table-markdown="true">
+          </table>
+        HTML
+
+        doc = filter(html)
+
+        expect(doc.at_css('table')['data-table-fields']).to eq fields_json
+        expect(doc.at_css('table')['data-table-filter']).to eq 'true'
+        expect(doc.at_css('table')['data-table-markdown']).to eq 'true'
+      end
+
+      it 'strips extra keys from data-table-fields entries' do
+        html = <<-HTML
+          <table data-table-fields='[{"key":"a","label":"A","class":"evil","thClass":"bad","variant":"danger"}]'>
+          </table>
+        HTML
+
+        doc = filter(html)
+        fields = Gitlab::Json.safe_parse(doc.at_css('table')['data-table-fields'])
+
+        expect(fields).to eq [{ 'key' => 'a', 'label' => 'A' }]
+      end
+
+      it 'removes data-table-fields when value is not valid JSON' do
+        html = <<-HTML
+          <table data-table-fields="not json">
+          </table>
+        HTML
+
+        doc = filter(html)
+
+        expect(doc.at_css('table')['data-table-fields']).to be_nil
+      end
+
+      it 'removes data-table-fields when value is a JSON object instead of array' do
+        html = <<-HTML
+          <table data-table-fields='{"key":"a"}'>
+          </table>
+        HTML
+
+        doc = filter(html)
+
+        expect(doc.at_css('table')['data-table-fields']).to be_nil
+      end
+
+      it 'removes data-table-fields when value is an array with non-hash elements' do
+        html = <<-HTML
+          <table data-table-fields='["string", 123]'>
+          </table>
+        HTML
+
+        doc = filter(html)
+
+        expect(doc.at_css('table')['data-table-fields']).to be_nil
       end
     end
   end

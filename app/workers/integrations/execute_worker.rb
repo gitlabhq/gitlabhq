@@ -22,6 +22,10 @@ module Integrations
       log_extra_metadata_on_done(:integration_class, integration.class.name)
 
       begin
+        scope = data['object_kind']
+        filter = integration.filter[scope] || integration.filter['global']
+        return if filter.present? && !::Gitlab::FilterEvaluator.evaluate(filter, data)
+
         integration.execute(data)
       rescue StandardError => e
         integration.log_exception(e)

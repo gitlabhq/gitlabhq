@@ -11,6 +11,7 @@ import { badgeState } from '~/merge_requests/badge_state';
 import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
+  name: 'MergeRequestHeader',
   TYPE_ISSUE,
   TYPE_MERGE_REQUEST,
   NAMESPACE_PROJECT,
@@ -44,21 +45,14 @@ export default {
       default: false,
     },
   },
-  data() {
-    if (!this.iid) {
-      return {
-        state: this.initialState,
-      };
-    }
-
-    if (!badgeState.state && this.initialState) {
-      badgeState.state = this.initialState;
-    }
-
-    return badgeState;
-  },
   computed: {
     ...mapState(useNotes, ['getNoteableData']),
+    state() {
+      if (!this.iid) {
+        return this.initialState;
+      }
+      return badgeState.state;
+    },
     isLocked() {
       return this.getNoteableData.discussion_locked;
     },
@@ -67,6 +61,9 @@ export default {
     },
   },
   created() {
+    if (!badgeState.state && this.initialState) {
+      badgeState.state = this.initialState;
+    }
     if (!badgeState.updateStatus) {
       badgeState.updateStatus = this.fetchState;
     }

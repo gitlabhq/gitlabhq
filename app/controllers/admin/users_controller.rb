@@ -16,16 +16,11 @@ class Admin::UsersController < Admin::ApplicationController
   def index
     return redirect_to admin_cohorts_path if safe_params[:tab] == 'cohorts'
 
-    @users = filter_users
-
-    if safe_params[:search_query].present?
-      # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- available only for self-managed instances
-      @users = @users.search(safe_params[:search_query], with_private_emails: true, partial_email_search: !Gitlab.com?)
-      # rubocop:enable Gitlab/AvoidGitlabInstanceChecks
-    end
-
-    @users = users_with_included_associations(@users)
     @sort = safe_params[:sort].presence || sort_value_name
+
+    @users = filter_users
+    @users = users_from_search_query(@users) if safe_params[:search_query].present?
+    @users = users_with_included_associations(@users)
     @users = @users.sort_by_attribute(@sort)
     @users = @users.page(safe_params[:page])
     @users = @users.without_count if paginate_without_count?
@@ -303,6 +298,15 @@ class Admin::UsersController < Admin::ApplicationController
 
   def users_with_included_associations(users)
     users.includes(:trusted_with_spam_attribute, :identities) # rubocop: disable CodeReuse/ActiveRecord
+  end
+
+  def users_from_search_query(users)
+    users.search(safe_params[:search_query], with_private_emails: true, partial_email_search: partial_email_search?)
+  end
+
+  # Overridden in EE
+  def partial_email_search?
+    true
   end
 
   def admin_making_changes_for_another_user?

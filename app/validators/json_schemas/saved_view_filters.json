@@ -53,6 +53,9 @@
         "type": "integer"
       }
     },
+    "label_wildcard_id": {
+      "type": "string"
+    },
     "milestone_ids": {
       "type": "array",
       "items": {

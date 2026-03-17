@@ -217,13 +217,11 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
 
         it_behaves_like 'creates a downstream pipeline with the inputs provided'
 
-        it 'tracks the usage of inputs' do
-          expect { subject }.to trigger_internal_events('create_pipeline_with_inputs').with(
-            category: 'Gitlab::Ci::Pipeline::Chain::Metrics',
-            additional_properties: { value: 2, label: 'pipeline', property: 'repository_source' },
-            project: downstream_project,
-            user: user
-          )
+        it 'enqueues PipelineCreationMetricsWorker with inputs count' do
+          expect(Ci::PipelineCreationMetricsWorker)
+            .to receive(:perform_async).with(kind_of(Integer), 2, [], kind_of(Hash))
+
+          subject
         end
       end
 

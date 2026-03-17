@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate from GitHub
 description: "Migrate from GitHub to GitLab."
 ---
@@ -29,12 +29,12 @@ The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
 
 Using the GitLab UI, the GitHub importer always imports from the
 `github.com` domain. If you are importing from a self-hosted GitHub Enterprise Server domain, use the
-[GitLab Import API](#use-the-api) GitHub endpoint with a GitLab access token with the `api` scope.
+[import API](#use-the-api) GitHub endpoint with a GitLab access token with the `api` scope.
 
 You can change the target namespace and target repository name before you import.
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview of the import process, see [How to migrate from GitHub to GitLab including Actions](https://www.youtube.com/watch?v=0Id5oMl1Kqs).
+For an overview of the import process, see [how to migrate from GitHub to GitLab including actions](https://www.youtube.com/watch?v=0Id5oMl1Kqs).
 
 ## Estimating import duration
 
@@ -96,7 +96,7 @@ on the GitLab instance you import to.
 - When importing from GitHub accounts with SAML single sign-on (SSO) enabled, Markdown attachments might fail to import. This issue is caused by a GitHub
   API limitation where assets cannot be downloaded using a personal access token when SSO is enforced. To workaround the issue, add the GitLab user performing
   the import as an
-  [Outside Collaborator](https://docs.github.com/en/organizations/managing-user-access-to-your-organizations-repositories/managing-outside-collaborators/adding-outside-collaborators-to-repositories-in-your-organization)
+  [outside collaborator](https://docs.github.com/en/organizations/managing-user-access-to-your-organizations-repositories/managing-outside-collaborators/adding-outside-collaborators-to-repositories-in-your-organization)
   to the GitHub repository. This permits access to private attachments during import.
 
 ## Import your GitHub repository into GitLab
@@ -147,7 +147,7 @@ older token in GitHub.
 
 ### Use the API
 
-The [GitLab REST API](../../../api/import.md#import-repository-from-github) can be used to import a GitHub repository. It has some advantages over using the GitLab UI:
+The [import API](../../../api/import.md#import-repository-from-github) can be used to import a GitHub repository. It has some advantages over using the GitLab UI:
 
 - Can be used to import GitHub repositories that you do not own if they are public.
 - It can be used to import from a GitHub Enterprise Server that is self-hosted.
@@ -163,7 +163,7 @@ To import your GitHub repository using the GitLab REST API:
    1. Select the `repo` scope.
    1. Optional. To [import collaborators](#select-additional-items-to-import), or if your project has [Git LFS files](../../../topics/git/lfs/_index.md), select the `read:org` scope.
    1. Select **Generate token**.
-1. Use the [GitLab REST API](../../../api/import.md#import-repository-from-github) to import your GitHub repository.
+1. Use the [import API](../../../api/import.md#import-repository-from-github) to import your GitHub repository.
 
 ### Filter repositories list
 
@@ -265,12 +265,12 @@ These backticks prevent linking to an incorrect user with the same username on t
 
 {{< history >}}
 
-- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [**user contribution and membership mapping**](../../import/mapping.md) in GitLab 17.8.
+- [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [**user contribution and membership mapping**](../../import/mapping/_index.md) in GitLab 17.8.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/176675) in GitLab 17.8.
 
 {{< /history >}}
 
-The GitHub importer uses a [post-migration method](../../import/mapping.md)
+The GitHub importer uses a [post-migration method](../../import/mapping/_index.md)
 of mapping user contributions for GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
 
 ### Alternative method of mapping
@@ -286,7 +286,7 @@ contribution mapping method for imports.
 > - Migrations to GitLab Self-Managed and GitLab Dedicated 18.8 and later.
 >
 > Problems that are found in this mapping method are unlikely to be fixed. Use the
-> [post-migration method](../../import/mapping.md) instead that doesn't have these limitations.
+> [post-migration method](../../import/mapping/_index.md) instead that doesn't have these limitations.
 >
 > For more information, see [issue 510963](https://gitlab.com/gitlab-org/gitlab/-/work_items/510963).
 

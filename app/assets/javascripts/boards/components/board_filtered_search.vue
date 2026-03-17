@@ -1,5 +1,5 @@
 <script>
-import { pickBy, isEmpty, mapValues } from 'lodash';
+import { pickBy, isEmpty, mapValues } from 'lodash-es';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';

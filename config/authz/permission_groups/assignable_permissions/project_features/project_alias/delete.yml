@@ -1,0 +1,7 @@
+---
+name: delete_project_alias
+description: Grants the ability to delete project aliases
+boundaries:
+  - instance
+permissions:
+  - delete_project_alias

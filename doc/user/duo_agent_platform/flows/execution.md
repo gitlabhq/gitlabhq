@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Configure flow execution
 ---
 
@@ -25,11 +25,13 @@ You can also choose to [use your own runners](#configure-runners), and
 When flows execute in GitLab CI/CD:
 
 - They use a [composite identity](../composite_identity.md) to limit access.
+- They create an ephemeral [workload pipieline](../../../ci/pipelines/pipeline_types.md#workload-pipeline),
+  which is removed when the flow is complete.
 - The tools at their disposal are specific to the purpose of the flow.
   These tools can include the creation of merge requests or the running of local shell commands in their execution environment.
 
-By default, the runner environment allows network access to the GitLab instance only,
-though [you can change this](#change-the-default-docker-image).
+By default, flows have network access to the GitLab instance only.
+For more information about network access rules, see [how to configure a network policy](../environment_sandbox.md#configure-a-network-policy).
 This separate environment protects from unintended consequences of running shell commands.
 
 To prevent flows from running autonomously in the GitLab UI, you can [turn off flow execution](foundational_flows/_index.md#turn-foundational-flows-on-or-off).
@@ -70,11 +72,21 @@ The configuration is applied when flows run in CI/CD for your project.
 By default, all flows executed with CI/CD use a standard Docker image provided by GitLab.
 This Docker image automatically includes network protection by using
 [Anthropic Sandbox Runtime (`srt`)](https://github.com/anthropic-experimental/sandbox-runtime).
-This image is configured to allow access to the GitLab instance only.
-However, you can change the Docker image and specify your own instead.
+You can change the Docker image and specify your own instead.
 Your own image can be useful for complex projects that require specific dependencies or tools.
-If you do this agents will be able to reach out to any domain
-that is reachable from the GitLab Runner associated with the session.
+If you do this, and you still want to use network protection, make sure to add `srt` to your
+Docker image with your preferred version:
+
+```Docker
+# Install srt sandboxing with cache clearing and verification
+ARG SANDBOX_RUNTIME_VERSION=0.0.20
+RUN npm cache clean --force && \
+    npm install -g @anthropic-ai/sandbox-runtime@${SANDBOX_RUNTIME_VERSION} && \
+    test -s "$(npm root -g)/@anthropic-ai/sandbox-runtime/package.json" && \
+    srt --version
+```
+
+For more information about SRT and how to install it on a custom image, see [remote execution environment sandbox](../environment_sandbox.md).
 
 To change the default Docker image, add the following to your `agent-config.yml` file:
 
@@ -106,7 +118,12 @@ might require you to install them explicitly. If needed, you can install missing
 [setup script configuration](#configure-setup-scripts).
 
 > [!note]
-> There is [an issue (587996)](https://gitlab.com/gitlab-org/gitlab/-/work_items/587996) with the latest version of `git` in custom images. Use Git version `2.43.7` or earlier in your custom image.
+> In GitLab 18.9 and earlier, there is [a known issue (587996)](https://gitlab.com/gitlab-org/gitlab/-/work_items/587996) where flows might fail with newer versions of `git` in custom images. This issue is resolved in `@gitlab/duo-cli` version 8.71.0.
+>
+> If you are on `@gitlab/duo-cli` version 8.71.0 or earlier, to avoid flows failing with newer Git versions, you can do either following:
+>
+> - Use Git version `2.43.7` or earlier in your custom image
+> - Use `@gitlab/duo-cli` version 8.71.0.
 
 Additionally, depending on the tool calls made by agents during flow execution, other common utilities may be required.
 
@@ -120,10 +137,12 @@ setup_script:
 
 > [!note]
 > When you use a custom Docker image, the
-> [environment sandbox](../environment_sandbox.md) is not applied. Your flow
+> [environment sandbox](../environment_sandbox.md) is only applied when Anthropic Sandbox Runtime (SRT)
+is included in your custom image. If SRT is not included, your flow
 > can access any domain reachable from the runner and the full filesystem.
-> If you require network isolation with custom images, configure network-level
-> controls on your runner (for example, firewall rules or network policies).
+> If you require network isolation with custom images, [install SRT on your image](../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image)
+> and [configure a network policy](../environment_sandbox.md#configure-a-network-policy), or configure network-level controls on your runner
+> (for example, firewall rules or network policies).
 > If you include the `@gitlab-org/duo-cli` npm package in your custom image,
 > the flow startup skips the npm download step and reduces job startup time
 > by approximately 15-20 seconds.
@@ -244,6 +263,14 @@ cache:
   paths:
     - .cache/pip
     - venv/
+
+# Network configuration
+network_policy:
+  include_recommended_allowed: true
+  allowed_domains:
+    - my-own-site.com
+  denied_domains:
+    - malicious.com
 ```
 
 This configuration:
@@ -265,13 +292,15 @@ Flows that use CI/CD are executed on runners. These runners must:
 
 In addition, runners on GitLab Self-Managed:
 
-- Must allow network traffic to the GitLab Duo Workflow Service configured for the GitLab instance.
-  If you aren't using custom models, this traffic goes to `duo-workflow-svc.runway.gitlab.net`, port `443`.
+- Must allow network traffic to the GitLab Duo Agent Platform Service configured for the GitLab instance.
+  - The GitLab Duo Agent Platform Service ships with the [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist). If you self-host the AI Gateway and don't set a local URL for the Agent Platform, agentic features route traffic to `duo-workflow-svc.runway.gitlab.net` on port `443`.
 - Must be able to download the default image from `registry.gitlab.com`
   or be able to access [the Docker image you specified](#change-the-default-docker-image).
 
+For GitLab instances with self-signed certificates in the certificate chain, the GitLab Duo CLI requires [additional configuration](../../gitlab_duo_cli/_index.md#custom-ssl-certificates).
+
 > [!note]
-> The runner's connection to the GitLab Duo Workflow Service is routed through the
+> The runner's connection to the GitLab Duo Agent Platform Service is routed through the
 > GitLab instance. Runners do not connect directly to
 > `duo-workflow-svc.runway.gitlab.net`. The firewall requirement for
 > `duo-workflow-svc.runway.gitlab.net` on port `443` applies to the GitLab
@@ -282,21 +311,30 @@ On GitLab.com, flows can use:
 
 - [Hosted runners](../../../ci/runners/hosted_runners/_index.md), which GitLab provides.
 
+> [!note]
+> If your top-level group has [IP address restrictions](../../group/access_and_permissions.md#restrict-group-access-by-ip-address)
+> enabled, hosted runners cannot be used for flows. Hosted runners use dynamic IP addresses
+> from cloud provider pools that cannot be added to your group's IP allowlist. Instead,
+> configure your own group runner with the `gitlab--duo` tag at the top-level group level,
+> and ensure its IP address is included in your group's allowlist.
+
 Flows executed on runners can be secured with runtime sandboxing offering network and file system isolation. To benefit
 from sandboxing you must:
 
 1. Enable [privileged](https://docs.gitlab.com/runner/security/#reduce-the-security-risk-of-using-privileged-containers)
    mode by setting `privileged = true` in your [runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration/).
-1. Use GitLab Duo Agent Platform default base [image](#change-the-default-docker-image).
+1. Use either:
+   - The default Docker base image for GitLab Duo Agent Platform
+   - A [custom image with SRT installed](../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image)
 
 ### Runner privileged mode
 
-Privileged mode is required only when you use the default GitLab-provided image
-with [environment sandbox](../environment_sandbox.md) protection. If you use a
-custom Docker image, privileged mode is not required because the sandbox is not
-applied.
+Privileged mode is required when you want to use the [environment sandbox](../environment_sandbox.md) protection.
+This applies when you use either the default GitLab-provided image or a custom image with SRT installed.
+If you use a custom Docker image without SRT, privileged mode is not required because the sandbox cannot be applied.
 
 | Configuration | Privileged mode required | Sandbox active |
 |---------------|------------------------|----------------|
 | Default image | Yes | Yes |
-| Custom image | No | No |
+| [Custom image with SRT](../environment_sandbox.md#install-anthropic-sandbox-runtime-srt-on-a-custom-image) | Yes | Yes |
+| Custom image without SRT | No | No |

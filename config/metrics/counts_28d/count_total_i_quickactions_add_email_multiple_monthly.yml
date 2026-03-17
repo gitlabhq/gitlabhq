@@ -2,6 +2,8 @@
 key_path: counts.count_total_i_quickactions_add_email_multiple_monthly
 description: Monthly count of external participants being added using the add_email quick action (multiple arguments)
 product_group: platform_insights
+product_categories:
+- service_desk
 performance_indicator_type: []
 value_type: number
 status: active

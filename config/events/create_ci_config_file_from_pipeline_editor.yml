@@ -1,0 +1,17 @@
+---
+description: User creates CI config file via Pipeline Editor
+internal_events: true
+action: create_ci_config_file_from_pipeline_editor
+identifiers:
+  - project
+  - user
+  - namespace
+product_group: pipeline_authoring
+product_categories:
+  - pipeline_composition
+milestone: '18.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225473
+tiers:
+  - free
+  - premium
+  - ultimate

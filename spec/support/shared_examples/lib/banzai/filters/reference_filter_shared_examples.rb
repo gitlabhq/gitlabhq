@@ -5,8 +5,10 @@
 # Requires a reference:
 #   let(:reference) { '#42' }
 RSpec.shared_examples 'a reference containing an element node' do
+  include ActionView::Helpers::TagHelper
+
   let(:inner_html) { 'element <code>node</code> inside' }
-  let(:reference_with_element) { %(<a href="#{reference}">#{inner_html}</a>) }
+  let(:reference_with_element) { content_tag(:a, inner_html.html_safe, href: reference) } # rubocop:disable Rails/OutputSafety -- this is the intent
 
   it 'does not escape inner html' do
     doc = reference_filter(reference_with_element, try(:context) || {})
@@ -20,6 +22,8 @@ end
 #   let(:reference) { subject.to_reference }
 #   let(:subject_name) { 'user' }
 RSpec.shared_examples 'user reference or project reference' do
+  include ActionView::Helpers::TagHelper
+
   shared_examples 'it contains a data- attribute' do
     it 'includes a data- attribute' do
       doc = reference_filter("Hey #{reference}")
@@ -72,7 +76,7 @@ RSpec.shared_examples 'user reference or project reference' do
   end
 
   describe 'referencing a resource in a link href' do
-    let(:reference) { %(<a href="#{get_reference(subject)}">Some text</a>) }
+    let(:reference) { content_tag(:a, 'Some text', href: get_reference(subject)) }
 
     it_behaves_like 'it contains a data- attribute'
 
@@ -84,6 +88,22 @@ RSpec.shared_examples 'user reference or project reference' do
     it 'links with adjacent text' do
       doc = reference_filter("Mention me (#{reference}.)")
       expect(doc.to_html).to match(%r{\(<a.+>Some text</a>\.\)})
+    end
+
+    it 'includes data-link and data-original-href for the redactor' do
+      doc = reference_filter("Hey #{reference}")
+      link = doc.css('a').first
+
+      expect(link.attr('data-link')).to eq('true')
+      expect(link.attr('data-original-href')).to eq(get_reference(subject))
+    end
+
+    it 'does not include data-link or data-original-href for plain text references' do
+      doc = reference_filter("Hey #{get_reference(subject)}")
+      link = doc.css('a').first
+
+      expect(link.attr('data-link')).to be_nil
+      expect(link.attr('data-original-href')).to be_nil
     end
   end
 end

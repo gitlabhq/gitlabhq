@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Delete container images from the container registry
 description: Automated and manual methods for deleting container images in GitLab.
 ---
@@ -46,7 +46,7 @@ The online garbage collector is an instance-wide feature, and applies to all nam
 
 To delete container images using the GitLab UI:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. For:
    - A group, select **Operate** > **Container Registry**.
    - A project, select **Deploy** > **Container Registry**.

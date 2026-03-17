@@ -1,6 +1,7 @@
 ---
 table_name: project_push_rules
 classes:
+- ProjectPushRule
 - PushRule
 feature_categories:
 - source_code_management

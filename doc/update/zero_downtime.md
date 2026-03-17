@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Upgrade a multi-node instance with zero downtime
 description: Upgrade a multi-node Linux package-based with zero downtime.
 ---
@@ -261,8 +261,8 @@ In addition to the previous, Rails is where the main database migrations need to
 1. On the **Rails deploy node**:
 
    1. Drain the node of traffic gracefully. You can do this in various ways, but one
-   approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
-   As an example, you can do this by using the following shell script:
+      approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
+      As an example, you can do this by using the following shell script:
 
       ```shell
       # Send QUIT to NGINX master process to drain and exit
@@ -301,8 +301,8 @@ In addition to the previous, Rails is where the main database migrations need to
 1. On every **other Rails node** sequentially:
 
    1. Drain the node of traffic gracefully. You can do this in various ways, but one
-   approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
-   As an example, you can do this by using the following shell script:
+      approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
+      As an example, you can do this by using the following shell script:
 
       ```shell
       # Send QUIT to NGINX master process to drain and exit
@@ -418,8 +418,8 @@ The upgrade process is the same for both primary and secondary sites. However, y
 1. On the **Rails deploy node**:
 
    1. Drain the node of traffic gracefully. You can do this in various ways, but one
-   approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
-   As an example, you can do this by using the following shell script:
+      approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
+      As an example, you can do this by using the following shell script:
 
       ```shell
       # Send QUIT to NGINX master process to drain and exit
@@ -465,8 +465,8 @@ The upgrade process is the same for both primary and secondary sites. However, y
 1. On every **other Rails node** sequentially:
 
    1. Drain the node of traffic gracefully. You can do this in various ways, but one
-   approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
-   As an example, you can do this by using the following shell script:
+      approach is to use NGINX by sending it a `QUIT` signal and then stopping the service.
+      As an example, you can do this by using the following shell script:
 
       ```shell
       # Send QUIT to NGINX master process to drain and exit

@@ -1,6 +1,3 @@
 ---
 name: create_deploy_key
 description: Grants the ability to create deploy keys
-boundaries:
-  - instance
-  - project

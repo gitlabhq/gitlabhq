@@ -1,7 +1,7 @@
 <script>
 import { GlDrawer, GlAccordion, GlButton } from '@gitlab/ui';
 import { stringify, parse } from 'yaml';
-import { get, omit, toPath } from 'lodash';
+import { get, omit, toPath } from 'lodash-es';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import eventHub, { SCROLL_EDITOR_TO_BOTTOM } from '~/ci/pipeline_editor/event_hub';

@@ -1,9 +1,9 @@
 ---
 stage: AI-powered
 group: AI Coding
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Troubleshooting tips for common problems in Code Suggestions (Classic).
-title: Troubleshooting Code Suggestions (Classic)
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Troubleshooting tips for common problems in Code Suggestions.
+title: Troubleshooting Code Suggestions
 ---
 
 {{< details >}}
@@ -21,7 +21,7 @@ title: Troubleshooting Code Suggestions (Classic)
 
 {{< /history >}}
 
-When working with GitLab Duo Code Suggestions (Classic), you might encounter the following issues.
+When working with GitLab Duo Code Suggestions, you might encounter the following issues.
 
 You can run a [health check](../../../gitlab_duo/turn_on_off.md) to test if your instance meets the requirements to run Code Suggestions.
 
@@ -76,13 +76,13 @@ specifically the token system. To resolve the issue:
 The following documentation is for Code Suggestions-specific troubleshooting for
 VS Code.
 
-For non-Code Suggestions troubleshooting for VS Code, see [Troubleshooting the GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/troubleshooting.md).
+For all other GitLab for VS Code troubleshooting, see [troubleshooting the GitLab for VS Code extension](../../../../editor_extensions/visual_studio_code/troubleshooting.md).
 
 ### Suggestions not displayed in VS Code or GitLab Web IDE
 
 If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab Web IDE](../../web_ide/_index.md) is enabled. The same settings apply to VS Code as local IDE.
 
-1. On the left sidebar, select **Extensions** > **GitLab Workflow**.
+1. In the left sidebar, select **Extensions** > **GitLab**.
 1. Select **Manage** ({{< icon name="settings" >}}), and then select **Settings**.
 1. In **GitLab** > **Duo Code Suggestions**, select the **GitLab Duo Code Suggestions**
    checkbox.
@@ -91,12 +91,12 @@ If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab 
 
 If Code Suggestions is enabled for the IDE, but suggestions are still not displayed:
 
-1. In your IDE, in the GitLab Workflow **Extension Settings**, enable **GitLab: Debug**.
+1. In your IDE, in the GitLab for VS Code **Extension Settings**, enable **GitLab: Debug**.
    - For Web IDE, you must have the [marketplace extensions](../../web_ide/_index.md#manage-extensions) enabled.
 1. On the top menu, select **View** > **Output** to open the bottom panel, then either:
    - In the command palette, select `GitLab: Show Extension Logs`.
-   - In the bottom panel, on the right, select the dropdown list to filter the logs. Select **GitLab Workflow**.
-1. In the GitLab Workflow **Extension Settings**, clear and re-select the **GitLab Duo Code Suggestions** checkbox.
+   - In the bottom panel, on the right, select the dropdown list to filter the logs. Select **GitLab**.
+1. In the GitLab for VS Code **Extension Settings**, clear and re-select the **GitLab Duo Code Suggestions** checkbox.
 
 ### Disable streaming of code generation results
 
@@ -108,7 +108,7 @@ If you prefer to see code generation results only when they are complete, you ca
 Disabling streaming means that code generation requests might be perceived
 as taking longer to resolve. To disable streaming:
 
-1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
+1. In VS Code, in the top bar, go to **Code** > **Settings** > **Settings**.
 1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file:
 
    ![The icons in the upper-right corner of VS Code, including 'Open Settings.'](img/open_settings_v17_5.png)
@@ -128,7 +128,7 @@ as taking longer to resolve. To disable streaming:
 
 {{< /history >}}
 
-To reduce latency, the GitLab Workflow extension tries to send suggestion completion requests directly to GitLab Cloud Connector,
+To reduce latency, the GitLab for VS Code extension tries to send suggestion completion requests directly to GitLab Cloud Connector,
 bypassing the GitLab instance. This network connection does not use the proxy and certificate settings of the VS Code extension.
 
 If your GitLab instance doesn't support direct connections, or your network prevents the extension from connecting to
@@ -175,8 +175,8 @@ You can [add a custom SSL certificate](set_up.md#add-a-custom-certificate-for-co
 This error occurs when the provided connection instance URL and authentication token passed through to the
 GitLab Language Server process are invalid. To re-enable Code Suggestions:
 
-1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
-1. On the left sidebar, select **Tools** > **GitLab Duo**.
+1. In your IDE, in the top bar, select your IDE name, then select **Settings**.
+1. In the left sidebar, select **Tools** > **GitLab Duo**.
 1. Under **Connection**, select **Verify setup**.
 1. Update your **Connection** details as needed.
 1. Select **Verify setup**, and confirm that authentication succeeds.

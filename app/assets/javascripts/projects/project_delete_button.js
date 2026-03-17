@@ -25,6 +25,7 @@ export default (selector = '#js-project-delete-button') => {
   new Vue({
     el,
     name: 'DeleteButtonRoot',
+    provide: { triggerDeleteLocation: 'setting' },
     render(createElement) {
       return createElement(DeleteButton, {
         props: {

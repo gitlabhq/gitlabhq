@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect and use GitLab Duo in JetBrains IDEs.
 title: Troubleshooting JetBrains
 ---
@@ -25,13 +25,13 @@ To troubleshoot GitLab Duo errors in your IDE:
    1. Find and select the checkbox to enable the missing feature.
    1. Select **OK** or **Save**.
    1. Restart your IDE, if prompted.
-1. If the diagnostics indicate that Agentic Chat is not supported for the current project, [set a default GitLab Duo namespace](setup.md#set-the-default-namespace) in the extension.
+1. If the diagnostics indicate that Agentic Chat is not supported for the current project,
+   [set a default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment).
 
 For additional support:
 
 - [Troubleshooting the GitLab Duo Agent Platform in your IDE](../../user/duo_agent_platform/troubleshooting_ide.md)
 - [Troubleshooting GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting)
-- [Troubleshooting GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/troubleshooting.md#jetbrains-ides-troubleshooting)
 
 ## Enable debug mode
 
@@ -53,8 +53,8 @@ You can also [enable proxy authentication](../language_server/_index.md#enable-p
 
 To enable GitLab Language Server debug logs:
 
-1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
-1. On the left sidebar, select **Tools** > **GitLab Duo**.
+1. In your IDE, in the top bar, select your IDE name, then select **Settings**.
+1. In the left sidebar, select **Tools** > **GitLab Duo**.
 1. Select **GitLab Language Server** to expand the section.
 1. In **Logging** > **Log Level**, enter `debug`.
 1. Select **Apply**.
@@ -115,7 +115,7 @@ To do this:
 
 1. Refer to JetBrains documentation on [SSL certificates](https://www.jetbrains.com/help/idea/ssl-certificates.html).
 1. Go to your IDE's top menu bar and select **Settings**.
-1. On the left sidebar, select **Tools** > **GitLab Duo**.
+1. In the left sidebar, select **Tools** > **GitLab Duo**.
 1. Confirm your default browser trusts the **URL to GitLab instance** you're using.
 1. Enable the **Ignore certificate errors** option.
 1. Select **Verify setup**.

@@ -109,6 +109,16 @@ describe('initNewDiscussionToggle', () => {
       expect(toggle.parentElement).toBe(cell);
     });
 
+    it('sets line range on hover', () => {
+      const cell = appElement.querySelector('[data-position="new"]');
+
+      cell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+
+      const { lineRange } = toggle;
+      expect(lineRange.start).toStrictEqual({ old_line: null, new_line: 5, type: null });
+      expect(lineRange.end).toStrictEqual({ old_line: null, new_line: 5, type: null });
+    });
+
     it('shows toggle on focus', () => {
       const cell = appElement.querySelector('[data-position]');
 
@@ -205,6 +215,23 @@ describe('initNewDiscussionToggle', () => {
       expect(toggle.hidden).toBe(true);
       expect(toggle.parentElement).not.toBe(cell);
     });
+
+    it('hides toggle when discussion row with gutter toggle follows', () => {
+      const row = appElement.querySelector('tr[data-hunk-lines]');
+      const discussionRow = document.createElement('tr');
+      discussionRow.dataset.discussionRow = 'true';
+      const td = document.createElement('td');
+      const gutterToggle = document.createElement('div');
+      gutterToggle.dataset.gutterToggle = '';
+      td.appendChild(gutterToggle);
+      discussionRow.appendChild(td);
+      row.after(discussionRow);
+
+      const cell = row.querySelector('[data-position]');
+      cell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+
+      expect(toggle.hidden).toBe(true);
+    });
   });
 
   describe('parallel view', () => {
@@ -221,6 +248,18 @@ describe('initNewDiscussionToggle', () => {
         expect(toggle.parentElement).toBe(cell);
       },
     );
+
+    it('sets line range on hover', () => {
+      createParallelDiff();
+      initNewDiscussionToggle(appElement);
+
+      const cell = appElement.querySelector('[data-position="old"]');
+      cell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+
+      const { lineRange } = toggle;
+      expect(lineRange.start).toStrictEqual({ old_line: 5, new_line: 5, type: null });
+      expect(lineRange.end).toStrictEqual({ old_line: 5, new_line: 5, type: null });
+    });
 
     it.each(['old', 'new'])(
       'hides toggle on hover for %s side when line number is not present',
@@ -361,6 +400,31 @@ describe('initNewDiscussionToggle', () => {
       newCell.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
       expect(toggle.hidden).toBe(true);
       expect(toggle.parentElement).not.toBe(newCell);
+    });
+
+    it('hides toggle on side with gutter toggle in discussion row', () => {
+      createParallelDiff();
+      initNewDiscussionToggle(appElement);
+
+      const row = appElement.querySelector('tr[data-hunk-lines]');
+      const discussionRow = document.createElement('tr');
+      discussionRow.dataset.discussionRow = 'true';
+      const oldTd = document.createElement('td');
+      const gutterToggle = document.createElement('div');
+      gutterToggle.dataset.gutterToggle = '';
+      oldTd.appendChild(gutterToggle);
+      const newTd = document.createElement('td');
+      discussionRow.append(oldTd, newTd);
+      row.after(discussionRow);
+
+      const oldCell = row.querySelector('[data-position="old"]');
+      oldCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(true);
+
+      const newCell = row.querySelector('[data-position="new"]');
+      newCell.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+      expect(toggle.hidden).toBe(false);
+      expect(toggle.parentElement).toBe(newCell);
     });
 
     it('does not show toggle on generated diff rows', () => {

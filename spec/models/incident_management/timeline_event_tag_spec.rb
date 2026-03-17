@@ -7,10 +7,10 @@ RSpec.describe IncidentManagement::TimelineEventTag do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:timeline_event_tag_links).class_name('IncidentManagement::TimelineEventTagLink') }
 
-    it {
+    it do
       is_expected.to have_many(:timeline_events)
       .class_name('IncidentManagement::TimelineEvent').through(:timeline_event_tag_links)
-    }
+    end
   end
 
   describe 'validations' do

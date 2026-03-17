@@ -169,7 +169,7 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
       user_pb = described_class.new.send(:build_user_protobuf, user)
       expect(user_pb.username).to eq user.username
       expect(user_pb.id).to eq user.id
-      expect(user_pb.org).to eq user.user_detail_organization
+      expect(user_pb.org).to eq user.company
       expect(user_pb.created_at).to eq timestamp_to_protobuf_timestamp(user.created_at)
       expect(user_pb.emails.count).to be 1
       expect(user_pb.emails.first.email).to eq user.email

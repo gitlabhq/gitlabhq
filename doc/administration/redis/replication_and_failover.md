@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Tenant Services
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Redis replication and failover with the Linux package
 ---
 
@@ -506,7 +506,6 @@ it needs to access at least one of the listed.
 If you enable Monitoring, it must be enabled on **all** Redis servers.
 
 1. Make sure to collect [`CONSUL_SERVER_NODES`](../postgresql/replication_and_failover.md#consul-information), which are the IP addresses or DNS records of the Consul server nodes, for the next step. Note they are presented as `Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z`
-
 1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
 
    ```ruby
@@ -903,6 +902,11 @@ All other Sentinel configuration options remain the same as documented in
 
 - Because of known [issue 589642](https://gitlab.com/gitlab-org/gitlab/-/issues/589642), the Admin Area reports the Valkey version incorrectly. This issue
   doesn't affect the version of Valkey installed or how it functions.
+
+## Secure Redis and Sentinel with TLS
+
+For comprehensive information on securing Redis and Sentinel
+communication using TLS, see [securing Redis and Sentinel with TLS](tls.md).
 
 ## Troubleshooting
 

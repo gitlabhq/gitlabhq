@@ -8,6 +8,9 @@ module QA
           include Page::Component::Wiki
           include Page::Component::WikiSidebar
           include Page::Component::LazyLoader
+
+          # No-op in CE; overridden by EE::Page::Component::DapEmptyState when prepended
+          def close_dap_panel_if_exists; end
         end
       end
     end

@@ -185,6 +185,42 @@ detect-tests:
       - ${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH}
       - ${GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH}
 
+detect-system-tests-duo-experiment:
+  extends:
+    - .with-ci-node-image
+  needs: []
+  stage: prepare
+  rules:
+    - if: '$CI_PROJECT_PATH != "gitlab-org/gitlab"'
+      when: never
+    - !reference [.prevent-tier-2-and-below, rules] # only needed in tier 3, as predictions are not yet used
+    - !reference [.rails:rules:detect-tests, rules]
+  before_script:
+    - npm install -g @gitlab/duo-cli
+  script:
+    - |
+      if [ -n "$CI_MERGE_REQUEST_IID" ] || [ -n "$FIND_CHANGES_MERGE_REQUEST_IID" ]; then
+        tooling/bin/predictive_tests \
+          --use-duo \
+          --ci \
+          --debug \
+          --duo-system-test-files-path $GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH \
+          --changed-files-path $GLCI_PREDICTIVE_CHANGED_FILES_PATH
+
+        echo "=== Duo Test Selection Results ==="
+        echo "System test specs: $(cat $GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH | wc -l)"
+      fi
+  artifacts:
+    access: developer
+    expire_in: 7d
+    paths:
+      - ${GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH}
+      - tmp/.duo_last_prompt.txt
+      - tmp/.duo_last_output.txt
+      - duo_feature_specs.json
+    when: always
+  allow_failure: true
+
 detect-previous-failed-tests:
   extends:
     - detect-tests

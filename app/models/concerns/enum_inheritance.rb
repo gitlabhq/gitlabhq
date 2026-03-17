@@ -43,7 +43,9 @@ module EnumInheritance
   class_methods do
     extend ::Gitlab::Utils::Override
 
-    def inheritance_column_to_class_map = {}.freeze
+    def inheritance_column_to_class_map
+      {}.freeze
+    end
 
     override :sti_class_for
     def sti_class_for(type_name)

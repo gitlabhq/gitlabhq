@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: SAML SSO for GitLab.com groups
 ---
 
@@ -45,7 +45,7 @@ If you are having issues setting up your identity provider, see the
 
 To set up SSO with Azure as your identity provider:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Go to Azure, [create a non-gallery application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/overview-application-gallery#create-your-own-application), and [configure SSO for an application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
@@ -78,7 +78,7 @@ For more information, see the [Azure configuration example](example_saml_config.
 
 To set up Google Workspace as your identity provider:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Follow the instructions for [setting up SSO with Google as your identity provider](https://support.google.com/a/answer/6087519?hl=en). The following GitLab settings correspond to the Google Workspace fields.
@@ -91,7 +91,6 @@ To set up Google Workspace as your identity provider:
    | **Identity provider single sign-on URL** | **SSO URL**            |
 
 1. Google Workspace displays a SHA256 fingerprint when you retrieve the certificate. If you need to generate the SHA256 fingerprint later, see [calculate the fingerprint](troubleshooting.md#calculate-the-fingerprint).
-
 1. Set these values:
    - For **Primary email**: `email`.
    - For **First name**: `first_name`.
@@ -115,7 +114,7 @@ View a demo of [how to configure SAML with Google Workspaces and set up Group Sy
 
 To set up SSO with Okta as your identity provider:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Follow the instructions for [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/).
@@ -130,7 +129,6 @@ To set up SSO with Okta as your identity provider:
    | **Identity provider single sign-on URL** | **Identity Provider Single Sign-On URL**                       |
 
 1. Under the Okta **Single sign-on URL** field, select the **Use this for Recipient URL and Destination URL** checkbox.
-
 1. Set these values:
    - For **Application username (NameID)**: **Custom** `user.getInternalProperty("id")`.
    - For **Name ID Format**: `Persistent`. For more information, see [manage user SAML identity](#manage-user-saml-identity).
@@ -154,7 +152,7 @@ OneLogin supports its own [GitLab (SaaS) application](https://onelogin.service-n
 
 To set up OneLogin as your identity provider:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. If you use the OneLogin generic
@@ -182,7 +180,7 @@ For more information, see the [OneLogin configuration example](example_saml_conf
 
 To set up Keycloak as your identity provider:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Follow the instructions to [create a SAML client in Keycloack](https://www.keycloak.org/docs/latest/server_admin/index.html#_client-saml-configuration).
@@ -246,7 +244,7 @@ For more information on available attributes, see [SAML SSO for GitLab Self-Mana
 To configure some identity providers, you need a GitLab metadata URL.
 To find this URL:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Copy the provided **GitLab metadata URL**.
 1. Follow your identity provider's documentation and paste the metadata URL when it's requested.
@@ -290,7 +288,7 @@ If the **NameID** is configured with the email address, [change the **NameID** f
 
 After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Complete the fields:
    - In the **Identity provider single sign-on URL** field, enter the SSO URL from your identity provider.
@@ -331,17 +329,14 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
   - Create a new account with another email address.
   - Sign-in to their existing account to link the SAML identity.
 
-### Provisioning behavior with Restricted Access
+### Provisioning behavior with restricted access
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../../../administration/feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 When [restricted access](../manage.md#restricted-access) is enabled with no available seats, users provisioned through SAML are assigned the Minimal Access role.
 
@@ -556,7 +551,7 @@ You can disable password authentication for all [enterprise users](../../enterpr
 
 To disable password and passkey authentication for enterprise users:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **SAML SSO**.
 1. Under **Configuration**, select **Disable password and passkey authentication for enterprise users**.
 1. Select **Save changes**.
@@ -593,7 +588,7 @@ For example, to unlink the `MyOrg` account:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. In the **Service sign-in** section, select **Disconnect** next to the connected account.
 
 ## SSO enforcement
@@ -665,7 +660,7 @@ When the **Enforce SSO-only authentication for web activity for this group** opt
   - SSO is not enforced when viewing merge requests where you are the
     assignee or reviewer. You can see merge requests even if
     your SSO session has expired.
-  - SSO is not enforced when viewing snippets for private projects where you have at least the Guest role.
+  - SSO is not enforced when viewing snippets for private projects where you have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
 
 SSO enforcement for web activity has the following effects when enabled:
 

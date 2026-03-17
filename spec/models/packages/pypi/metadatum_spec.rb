@@ -30,10 +30,10 @@ RSpec.describe Packages::Pypi::Metadatum, type: :model, feature_category: :packa
     it { is_expected.to allow_value('').for(:description_content_type) }
     it { is_expected.to allow_value(nil).for(:description_content_type) }
 
-    it {
+    it do
       is_expected.to validate_length_of(:description_content_type)
         .is_at_most(described_class::MAX_DESCRIPTION_CONTENT_TYPE_LENGTH)
-    }
+    end
 
     describe '#package_type', :aggregate_failures do
       subject(:pypi_metadatum) { build(:pypi_metadatum) }

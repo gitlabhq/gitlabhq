@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Diagram proxy settings",
+  "type": "object",
+  "properties": {
+    "kroki_diagram_proxy_enabled": {
+      "type": "boolean",
+      "description": "Whether to proxy requests to the Kroki server through GitLab."
+    },
+    "plantuml_diagram_proxy_enabled": {
+      "type": "boolean",
+      "description": "Whether to proxy requests to the PlantUML server through GitLab."
+    }
+  },
+  "additionalProperties": false
+}

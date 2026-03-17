@@ -28,13 +28,24 @@ module BulkImports
     end
 
     def self.perform_failure(job, exception)
-      user_id, portable_id, portable_type, relation, batched = job['args']
+      user_id, portable_id, portable_type, relation, batched, params = job['args']
       portable = portable(portable_id, portable_type)
       user = User.find(user_id)
 
-      export = portable.bulk_import_exports.for_user_and_relation(user, relation).for_offline_export(nil)
+      offline_export_id = params&.dig('offline_export_id')
 
-      Gitlab::ErrorTracking.track_exception(exception, portable_id: portable_id, portable_type: portable.class.name)
+      export = if offline_export_id.present?
+                 portable.bulk_import_exports.for_offline_export_and_relation(offline_export_id, relation)
+               else
+                 portable.bulk_import_exports.for_user_and_relation(user, relation).for_offline_export(nil)
+               end
+
+      Gitlab::ErrorTracking.track_exception(
+        exception,
+        portable_id: portable_id,
+        portable_type: portable.class.name,
+        offline_export_id: offline_export_id
+      )
 
       export.update!(status_event: 'fail_op', error: exception.message.truncate(255), batched: batched)
     end

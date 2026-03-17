@@ -31,7 +31,10 @@ export default {
       return findAssigneesWidget(this.workItem)?.assignees?.nodes || [];
     },
     workItemMilestone() {
-      return findMilestoneWidget(this.workItem)?.milestone;
+      return (
+        this.workItem?.features?.milestone?.milestone ||
+        findMilestoneWidget(this.workItem)?.milestone
+      );
     },
     fullReference() {
       return getDisplayReference(this.workItemFullPath, this.workItem.reference);

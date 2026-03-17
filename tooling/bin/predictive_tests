@@ -64,6 +64,14 @@ OptionParser.new do |opts|
     options[:matching_js_files_path] = value
   end
 
+  opts.on('--use-duo', 'Enable Duo AI-powered system spec prediction') do
+    options[:use_duo] = true
+  end
+
+  opts.on('--duo-system-test-files-path PATH', 'Path to save Duo system test predictions') do |value|
+    options[:duo_system_test_files_path] = value
+  end
+
   opts.on('-h', '--help', 'Show this help message') do
     puts opts
     exit

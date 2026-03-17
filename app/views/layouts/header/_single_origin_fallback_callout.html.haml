@@ -1,0 +1,13 @@
+- return unless show_single_origin_fallback_callout?
+
+= render Users::DismissibleAlertComponent.new(title: _('Web IDE single origin fallback is enabled'),
+  variant: :warning,
+  dismiss_options: { user: current_user, feature_id: 'single_origin_fallback_callout' },
+  close_button_options: { data: { testid: 'close-single-origin-fallback-callout' }}) do |c|
+  - c.with_body do
+    = _("Your GitLab instance serves VS Code static assets if the Web IDE extension host domain is unreachable. To prevent high-severity security risks, disable the single origin fallback and ensure that the extension host domain is accessible.")
+  - c.with_actions do
+    = render Pajamas::ButtonComponent.new(variant: :confirm, href: general_admin_application_settings_path(anchor: 'js-web-ide-settings')) do
+      = _('Review settings')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-close gl-ml-3'}) do
+      = _('Acknowledge')

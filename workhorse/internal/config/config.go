@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"net/http"
 	"net/url"
 	"os"
 	"os/exec"
@@ -214,6 +215,8 @@ type LoadSheddingConfig struct {
 	BacklogHysteresis float64 `toml:"backlog_hysteresis" json:"backlog_hysteresis"`
 	// RetryAfterSeconds is the Retry-After header value in seconds when shedding load
 	RetryAfterSeconds int `toml:"retry_after_seconds" json:"retry_after_seconds"`
+	// StatusCode is the HTTP status code to return when shedding load (default: 503)
+	StatusCode int `toml:"status_code" json:"status_code"`
 	// Strategy is the strategy to use for calculating effective backlog (max, sum; default: max)
 	Strategy string `toml:"strategy" json:"strategy"`
 	// CheckInterval is how often to sample the Puma backlog (independent of readiness checks)
@@ -393,8 +396,12 @@ func (c *Config) ApplyLoadSheddingDefaults() {
 	if c.LoadSheddingConfig.Timeout.Duration == 0 {
 		c.LoadSheddingConfig.Timeout = TomlDuration{Duration: 5 * time.Second}
 	}
+	// Validate hysteresis (must be between 0 and 1, where 1.0 means no hysteresis effect)
 	if c.LoadSheddingConfig.BacklogHysteresis <= 0 || c.LoadSheddingConfig.BacklogHysteresis > 1 {
 		c.LoadSheddingConfig.BacklogHysteresis = 0.8
+	}
+	if c.LoadSheddingConfig.StatusCode == 0 {
+		c.LoadSheddingConfig.StatusCode = http.StatusServiceUnavailable
 	}
 	if c.LoadSheddingConfig.Strategy == "" {
 		c.LoadSheddingConfig.Strategy = "max"

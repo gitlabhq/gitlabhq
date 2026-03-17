@@ -84,7 +84,11 @@ export default {
             <span
               class="board-card-number gl-mr-3 gl-mt-3 gl-gap-2 gl-overflow-hidden gl-text-sm gl-text-subtle"
             >
-              <work-item-type-icon :work-item-type="item.type.name" show-tooltip-on-hover />
+              <work-item-type-icon
+                :work-item-type="item.type.name"
+                :type-icon-name="item.type.iconName"
+                show-tooltip-on-hover
+              />
               <span
                 :title="itemReferencePath"
                 data-placement="bottom"

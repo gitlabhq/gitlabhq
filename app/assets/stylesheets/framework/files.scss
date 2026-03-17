@@ -397,7 +397,7 @@ span.idiff {
   width: $gl-spacing-scale-5;
   height: $gl-spacing-scale-5;
   background-color: $gray-400;
-  mask-image: url('icons-stacked.svg#doc-versions');
+  mask-image: url('@gitlab/svgs/dist/icons-stacked.svg#doc-versions');
   mask-repeat: no-repeat;
   mask-size: cover;
   mask-position: center;

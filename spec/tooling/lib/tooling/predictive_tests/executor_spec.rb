@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "tmpdir"
+require "fast_spec_helper"
 
 require_relative "../../../../../tooling/lib/tooling/predictive_tests/executor"
 
@@ -15,6 +16,7 @@ RSpec.describe Tooling::PredictiveTests::Executor, feature_category: :tooling do
   let(:js_changed_files) { ["additional_changed.js"] }
   let(:rspec_spec_list) { ["spec/a_spec.rb", "b_spec.rb", "ee/spec/b_spec.rb"] }
   let(:ci) { true }
+  let(:use_duo) { false }
   let(:logger) { Logger.new(StringIO.new) }
 
   let(:test_selector) do
@@ -40,6 +42,7 @@ RSpec.describe Tooling::PredictiveTests::Executor, feature_category: :tooling do
       with_crystalball_mappings: true,
       mapping_type: :described_class,
       with_frontend_fixture_mappings: true,
+      use_duo: use_duo,
       changed_files: changed_files_manual_input,
       changed_files_path: File.join(temp_dir, "changed_files.txt"),
       frontend_fixtures_mapping_path: File.join(temp_dir, "frontend_fixtures_mapping.json"),
@@ -68,6 +71,8 @@ RSpec.describe Tooling::PredictiveTests::Executor, feature_category: :tooling do
       .with(
         changed_files: all_changed_files,
         rspec_test_mapping_path: "test_mapping_file.json",
+        use_duo: use_duo,
+        git_diff_content: anything,
         logger: logger
       )
       .and_return(test_selector)
@@ -111,6 +116,12 @@ RSpec.describe Tooling::PredictiveTests::Executor, feature_category: :tooling do
       allow(Open3).to receive(:capture2e)
         .with("git status --porcelain")
         .and_return([local_directory_state, instance_double(Process::Status, success?: true)])
+      allow(Open3).to receive(:capture2e)
+        .with("git diff HEAD")
+        .and_return(["diff content", instance_double(Process::Status, success?: true)])
+      allow(Open3).to receive(:capture2e)
+        .with("git diff master...HEAD")
+        .and_return(["diff content", instance_double(Process::Status, success?: true)])
     end
 
     context "when local directory is clean" do
@@ -141,6 +152,164 @@ RSpec.describe Tooling::PredictiveTests::Executor, feature_category: :tooling do
       it "fetches local changes and outputs to stdout" do
         expect { predictive_tests.execute }.to output(rspec_spec_list.join(" ")).to_stdout
         expect(find_changes).not_to have_received(:execute)
+      end
+    end
+
+    context "when use_duo is enabled" do
+      let(:use_duo) { true }
+      let(:ci) { false }
+
+      before do
+        stub_env('CI', nil)
+        stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', nil)
+        allow(Open3).to receive(:capture2e)
+          .with("git rev-parse --abbrev-ref HEAD")
+          .and_return(["feature-branch", instance_double(Process::Status, success?: true)])
+        allow(Open3).to receive(:capture2e)
+          .with("git diff --name-only master...HEAD")
+          .and_return([changed_files.join("\n"), instance_double(Process::Status, success?: true)])
+      end
+
+      it "passes use_duo and git_diff_content to TestSelector" do
+        predictive_tests.execute
+
+        expect(Tooling::PredictiveTests::TestSelector).to have_received(:new).with(
+          changed_files: all_changed_files,
+          rspec_test_mapping_path: "test_mapping_file.json",
+          use_duo: true,
+          git_diff_content: "diff content",
+          logger: logger
+        )
+      end
+
+      context 'when duo_system_test_files_path is set and Duo is confident' do
+        let(:duo_output_path) { File.join(temp_dir, 'duo_system_test_files.txt') }
+        let(:duo_confident) { true }
+        let(:duo_spec_list) { ['spec/features/user_spec.rb'] }
+
+        let(:test_selector) do
+          instance_double(
+            Tooling::PredictiveTests::TestSelector,
+            rspec_spec_list: rspec_spec_list,
+            duo_confident?: duo_confident,
+            duo_spec_list: duo_spec_list
+          )
+        end
+
+        let(:options) do
+          super().merge(duo_system_test_files_path: duo_output_path)
+        end
+
+        before do
+          allow(Tooling::PredictiveTests::TestSelector).to receive(:new).and_return(test_selector)
+          allow(Open3).to receive(:capture2e)
+                            .with("git diff master...HEAD")
+                            .and_return(["diff content", instance_double(Process::Status, success?: true)])
+        end
+
+        it 'saves Duo predictions to disk' do
+          predictive_tests.execute
+          expect(File.read(duo_output_path)).to include('spec/features/user_spec.rb')
+        end
+      end
+
+      context 'when in CI with CI_MERGE_REQUEST_TARGET_BRANCH_NAME set' do
+        let(:ci) { true }
+
+        before do
+          stub_env('CI', 'true')
+          stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', 'master')
+          allow(Open3).to receive(:capture2e)
+                            .with("git fetch origin master --depth=20")
+                            .and_return(['', instance_double(Process::Status, success?: true)])
+          allow(Open3).to receive(:capture2e)
+                            .with("git diff origin/master...HEAD")
+                            .and_return(['ci diff content', instance_double(Process::Status, success?: true)])
+        end
+
+        it 'passes CI diff content to TestSelector' do
+          predictive_tests.execute
+          expect(Tooling::PredictiveTests::TestSelector).to have_received(:new).with(
+            hash_including(git_diff_content: 'ci diff content')
+          )
+        end
+      end
+
+      context 'when on master branch locally' do
+        let(:ci) { false }
+
+        before do
+          stub_env('CI', nil)
+          stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', nil)
+          allow(Open3).to receive(:capture2e)
+                            .with("git status --porcelain")
+                            .and_return(['', instance_double(Process::Status, success?: true)])
+          allow(Open3).to receive(:capture2e)
+                            .with("git rev-parse --abbrev-ref HEAD")
+                            .and_return(['master', instance_double(Process::Status, success?: true)])
+          allow(Tooling::PredictiveTests::ChangedFiles).to receive(:fetch).and_return([])
+          allow(Tooling::PredictiveTests::TestSelector).to receive(:new).and_return(test_selector)
+        end
+
+        it 'passes empty diff for master branch' do
+          predictive_tests.execute
+          expect(Tooling::PredictiveTests::TestSelector).to have_received(:new).with(
+            hash_including(git_diff_content: '', use_duo: true)
+          )
+        end
+      end
+
+      context 'when Duo is not confident' do
+        let(:duo_output_path) { File.join(temp_dir, 'duo_system_test_files.txt') }
+        let(:duo_confident) { false }
+
+        let(:test_selector) do
+          instance_double(
+            Tooling::PredictiveTests::TestSelector,
+            rspec_spec_list: rspec_spec_list,
+            duo_confident?: duo_confident,
+            duo_spec_list: []
+          )
+        end
+
+        let(:options) do
+          super().merge(duo_system_test_files_path: duo_output_path)
+        end
+
+        before do
+          allow(Tooling::PredictiveTests::TestSelector).to receive(:new).and_return(test_selector)
+        end
+
+        it 'does not write the Duo output file' do
+          predictive_tests.execute
+          expect(File).not_to exist(duo_output_path)
+        end
+      end
+
+      context 'when working directory is dirty' do
+        let(:ci) { false }
+
+        before do
+          stub_env('CI', nil)
+          stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', nil)
+          allow(Open3).to receive(:capture2e)
+                            .with("git status --porcelain")
+                            .and_return(['M some_file.rb', instance_double(Process::Status, success?: true)])
+          allow(Open3).to receive(:capture2e)
+                            .with("git diff --name-only HEAD")
+                            .and_return([changed_files.join("\n"), instance_double(Process::Status, success?: true)])
+          allow(Open3).to receive(:capture2e)
+                            .with("git diff HEAD")
+                            .and_return(['dirty diff', instance_double(Process::Status, success?: true)])
+          allow(Tooling::PredictiveTests::TestSelector).to receive(:new).and_return(test_selector)
+        end
+
+        it 'diffs against HEAD' do
+          predictive_tests.execute
+          expect(Tooling::PredictiveTests::TestSelector).to have_received(:new).with(
+            hash_including(git_diff_content: 'dirty diff', use_duo: true)
+          )
+        end
       end
     end
 

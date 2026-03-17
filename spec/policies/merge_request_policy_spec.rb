@@ -61,14 +61,14 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
   end
 
   mr_perms = %i[create_merge_request_in
-                create_merge_request_from
-                read_merge_request
-                update_merge_request
-                create_todo
-                approve_merge_request
-                create_note
-                update_subscription
-                mark_note_as_internal].freeze
+    create_merge_request_from
+    read_merge_request
+    update_merge_request
+    create_todo
+    approve_merge_request
+    create_note
+    update_subscription
+    mark_note_as_internal].freeze
 
   shared_examples_for 'a denied user' do
     let(:perms) { permissions(subject, merge_request) }

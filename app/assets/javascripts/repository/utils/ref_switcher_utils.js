@@ -33,8 +33,6 @@ const getNamespaceTargetRegex = (ref) => {
  * @returns {Object} Object containing path and query for router navigation.
  */
 export function generateRouterParams(selectedRef, currentRoute) {
-  const encodedHash = '%23';
-
   const matches = selectedRef.match(/^refs\/(heads|tags)\/(.+)/) || [];
   const [, refType = null, actualRef = selectedRef] = matches;
 
@@ -45,10 +43,10 @@ export function generateRouterParams(selectedRef, currentRoute) {
     delete query.ref_type;
   }
 
-  const encodedRef = encodeURI(actualRef).replace(/#/g, encodedHash);
+  const encodedRef = encodeRepositoryPath(actualRef);
   const path = `/${encodedRef}/${currentRoute.params.path || ''}`;
 
-  return { path, query };
+  return { path, query, ref: actualRef };
 }
 
 /**

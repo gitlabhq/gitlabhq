@@ -167,15 +167,33 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
         end
       end
 
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_job_inputs: false)
+      context 'when tracking play with new input values' do
+        it 'tracks the internal event' do
+          expect { execute_service }
+            .to trigger_internal_events('play_job_with_new_input_values')
+            .with(
+              category: 'Ci::PlayBuildService',
+              project: project,
+              user: user
+            )
         end
 
-        it 'does not assign inputs to the build' do
-          execute_service
+        context 'when all inputs match defaults' do
+          let(:job_inputs) { { version: '1.0' } }
 
-          expect(build.reload.inputs).to be_empty
+          it 'does not track the event' do
+            expect { execute_service }
+              .not_to trigger_internal_events('play_job_with_new_input_values')
+          end
+        end
+
+        context 'when no inputs are provided' do
+          let(:job_inputs) { {} }
+
+          it 'does not track the event' do
+            expect { execute_service }
+              .not_to trigger_internal_events('play_job_with_new_input_values')
+          end
         end
       end
     end

@@ -202,6 +202,24 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         expect(json_response).to eq({ 'errors' => [{ 'message' => 'Query too large' }] })
       end
 
+      it 'allows a higher query size for allowlisted operations' do
+        graphql_query = "{#{(['__typename'] * 1000).join(' ')}}"
+
+        post :execute, params: { query: graphql_query, operationName: 'workItemById' }
+
+        expect(response).not_to have_gitlab_http_status(:unprocessable_entity)
+      end
+
+      it 'rejects allowlisted operations that exceed the extended limit' do
+        stub_const('GraphqlController::EXTENDED_MAX_QUERY_SIZE', 11_000)
+        graphql_query = "{#{(['__typename'] * 1000).join(' ')}}"
+
+        post :execute, params: { query: graphql_query, operationName: 'workItemById' }
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response).to eq({ 'errors' => [{ 'message' => 'Query too large' }] })
+      end
+
       it 'returns forbidden when user cannot access API' do
         # User cannot access API in a couple of cases
         # * When user is internal(like ghost users)

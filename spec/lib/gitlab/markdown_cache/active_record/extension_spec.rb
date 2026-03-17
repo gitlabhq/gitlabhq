@@ -41,7 +41,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension, feature_category:
     let(:thing) { klass.new(project_id: project.id, namespace_id: project.project_namespace_id, title: markdown) }
 
     before do
-      thing.title = thing.title
+      thing.title = thing.title # rubocop:disable Lint/SelfAssignment -- testing unchanged field behavior
       thing.save!
     end
 

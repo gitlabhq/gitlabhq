@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Advanced SAST C/C++ configuration
 ---
 
@@ -19,46 +19,73 @@ title: Advanced SAST C/C++ configuration
 
 {{< /history >}}
 
-## Getting started
+## Turn on GitLab Advanced SAST C/C++ analysis
 
-To run the analyzer in your pipeline, include the SAST template and enable GitLab Advanced SAST:
+Prerequisites:
 
-```yaml
-include:
-  - template: Jobs/SAST.gitlab-ci.yml
+- [Turn on GitLab Advanced SAST](gitlab_advanced_sast.md#turn-on-gitlab-advanced-sast).
+- [Compilation database](#compilation-database)
 
-variables:
-  GITLAB_ADVANCED_SAST_CPP_ENABLED: "true"
-  SAST_COMPILATION_DATABASE: "compile_commands.json"
-```
+To turn on GitLab Advanced SAST C/C++ analysis in your project:
 
-Alternatively, with the [SAST component](https://gitlab.com/components/sast/-/blob/main/templates/sast.yml):
+1. In the top bar, select **Search or go to** and find your project.
+1. Go to **Build** > **Pipeline** editor.
+1. Add C/C++ analysis to your SAST job's configuration. The instructions here assume the
+   compilation database is named `compile_commands.json`.
 
-```yaml
-include:
-  - component: gitlab.com/components/sast/sast@main
-    inputs:
-      run_advanced_sast_cpp: "true"
+   - If you're using the CI/CD template, add to your configuration the following CI/CD variables
+     after the `include:` statement:
 
-variables:
-  SAST_COMPILATION_DATABASE: "compile_commands.json"
-```
+     ```yaml
+     include:
+       - template: Jobs/SAST.gitlab-ci.yml
 
-This minimal configuration assumes that your project can generate a compilation database (CDB).
-The next section explains how to create one.
+     variables:
+       GITLAB_ADVANCED_SAST_CPP_ENABLED: "true"
+       SAST_COMPILATION_DATABASE: "compile_commands.json"
+     ```
 
-## Prerequisites
+   - If you're using the CI/CD component, add to your configuration the following input parameter
+     and CI/CD variable:
+
+     ```yaml
+     include:
+     - component: gitlab.com/components/sast/sast@main
+         inputs:
+           run_advanced_sast_cpp: "true"
+
+     variables:
+       SAST_COMPILATION_DATABASE: "compile_commands.json"
+     ```
+
+1. Select the **Validate** tab, then select **Validate pipeline**.
+
+   The message **Simulation completed successfully** confirms the file is valid.
+1. Select the **Edit** tab.
+1. Complete the fields:
+   - Commit message.
+   - Branch. For example, `add-sast`.
+1. Select the **Start a new merge request with these changes** checkbox, then select
+   **Commit changes**.
+
+   The merge request page opens.
+1. Complete the fields according to your standard workflow, then select **Create merge request**.
+1. Review and edit the merge request according to your standard workflow, then select **Merge**.
+
+## Compilation database
 
 The GitLab Advanced SAST CPP analyzer requires a compilation database (CDB) to correctly parse and analyze source files.
 
 A CDB is a JSON file (`compile_commands.json`) that contains one entry for each translation unit.
-Each entry typically specifies:
+Each entry typically specifies the following:
 
 - The compiler command used to build the file
 - The compiler flags and include paths
 - The working directory where compilation is performed
 
 The CDB allows the analyzer to reproduce the exact build environment, ensuring accurate parsing and semantic analysis.
+
+To use GitLab Advanced SAST CPP, you must create a CDB and provide it to the analyzer.
 
 ### Create a CDB
 
@@ -139,10 +166,14 @@ variables:
 
 Alternatively, review [caching the CDB](#caching-a-cdb).
 
-### Optimization: Parallel execution for efficiency
+### Optimize analysis runtime
 
-You can run the analyzer in parallel by splitting the CDB into multiple fragments.
-The [`GitLab Advanced SAST CPP` repository](https://gitlab.com/gitlab-org/security-products/demos/sast/gitlab-advanced-sast-cpp-templates/-/blob/main/templates/scripts.yml) provides helper scripts for this.
+To optimize analysis runtime of C/C++ code, you can run the analysis in parallel by splitting
+the CDB into multiple fragments.
+
+The [`GitLab Advanced SAST CPP` repository](https://gitlab.com/gitlab-org/security-products/demos/sast/gitlab-advanced-sast-cpp-templates/-/blob/main/templates/scripts.yml) provides helper scripts to split the CDB and run parallel analysis.
+
+To run C/C++ code analysis in parallel:
 
 1. Include the scripts:
 
@@ -167,7 +198,7 @@ The [`GitLab Advanced SAST CPP` repository](https://gitlab.com/gitlab-org/securi
 
    > [!note]
    > `split_cdb` is hardcoded to read `${BUILD_DIR}/compile_commands.json`.
-   > Make sure your build generates the CDB at this exact location before calling `split_cdb`.
+   > Your build must generate the CDB at this exact location before calling `split_cdb`.
 
 1. Run parallel analyzer jobs:
 
@@ -190,18 +221,26 @@ The `split_cdb` script creates multiple partitions, and the analyzer jobs run in
 
 ## Ruleset configuration
 
-GitLab Advanced SAST CPP supports [custom rulesets](customize_rulesets.md) where a "rule" is a GitLab Advanced SAST CPP checker.
+GitLab Advanced SAST CPP supports [custom rulesets](customize_rulesets.md) where a "rule" is a
+GitLab Advanced SAST CPP checker.
 
-Custom rulesets can be created with [passthroughs](customize_rulesets.md#build-a-custom-configuration-using-a-passthrough-chain-for-semgrep) composed of [`CodeChecker` configuration files](https://github.com/Ericsson/codechecker/blob/master/docs/config_file.md).
+Custom rulesets can be created with
+[passthroughs](customize_rulesets.md#build-a-custom-configuration-using-a-passthrough-chain-for-semgrep)
+composed of
+[`CodeChecker` configuration files](https://github.com/Ericsson/codechecker/blob/master/docs/config_file.md).
 
 Passthrough configuration is handled as follows:
 
-- `targetDir` and `target` are ignored. After processing passthroughs, any resulting flags are passed directly to `CodeChecker`
-- `overwrite` mode replaces the entire configuration and `append` mode appends flags
-- Certain `CodeChecker` flags cannot be customized, including the analyzer flags `-o`, `--output` and the parse flags `-o, --output, -e, --export`
-- `server` and `store` configuration items are ignored
+- `targetDir` and `target` are ignored. After processing passthroughs, any resulting flags are
+  passed directly to `CodeChecker`.
+- `overwrite` mode replaces the entire configuration and `append` mode appends flags.
+- Specific `CodeChecker` flags cannot be customized, including the analyzer flags `-o`, `--output`
+  and the parse flags `-o, --output, -e, --export`.
+- `server` and `store` configuration items are ignored.
 
-For example, given the following `.gitlab/sastconfig.toml`:
+The following example shows how passthroughs from different sources combine:
+
+File `.gitlab/sastconfig.toml`:
 
 ```toml
 [gitlab-advanced-sast-cpp]
@@ -220,7 +259,7 @@ For example, given the following `.gitlab/sastconfig.toml`:
         value = "gitlab-advanced-sast-cpp.yml"
 ```
 
-with the following content at `https://example.com/gitlab-advanced-sast-cpp.yaml`:
+Remote configuration at `https://example.com/gitlab-advanced-sast-cpp.yaml`:
 
 ```yaml
 analyzer:
@@ -228,14 +267,14 @@ analyzer:
   - --enable=core.DivideZero
 ```
 
-and `gitlab-advanced-sast-cpp.yml` containing:
+Local configuration at `gitlab-advanced-sast-cpp.yml`:
 
 ```yaml
 analyzer:
   - --enable=core.CallAndMessage
 ```
 
-the effective resulting configuration will be:
+The resulting combined configuration is as follows:
 
 ```yaml
 analyzer:
@@ -372,7 +411,8 @@ bear -o compile_commands_abs.json -- make
 cdb-rebase -i compile_commands_abs.json -o compile_commands.json -s "$PWD" -d .
 ```
 
-Note: the `go install` command above installs `cdb-rebase` to the `GOBIN` path, which can be found with `go env GOBIN`.
+> [!note]
+> The `go install` command above installs `cdb-rebase` to the `GOBIN` path, which can be found with `go env GOBIN`.
 
 ### Partial scan coverage due to missing header files
 

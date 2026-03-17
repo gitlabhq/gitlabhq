@@ -7,7 +7,6 @@ feature_categories:
 description: Stores information about the available security training providers
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78195
 milestone: '14.7'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell_local
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553469
-notes: static and deprecated table, to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/584338
+notes: static and deprecated table, usage stopped in https://gitlab.com/gitlab-org/gitlab/-/work_items/519896.

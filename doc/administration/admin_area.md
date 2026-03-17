@@ -1,7 +1,7 @@
 ---
-stage: None - Facilitated functionality, see https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality
-group: Unassigned - Facilitated functionality, see https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+stage: None - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
+group: Unassigned - Facilitated functionality, see <https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality>
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Manage your GitLab instance and configure features in the UI.
 title: GitLab Admin area
 ---
@@ -130,7 +130,7 @@ To administer all users from the **Admin** area's Users page:
    - User **access level**.
    - Whether **two-factor authentication** is enabled or disabled.
    - User **state**.
-   - Whether the user **type** is [placeholder](../user/import/mapping.md#placeholder-users).
+   - Whether the user **type** is [placeholder](../user/import/mapping/_index.md#placeholder-users).
 
 1. Optional. In the user search field, enter text, then press <kbd>Enter</kbd>. This case-insensitive
    text search applies partial matching to name, username, and email.

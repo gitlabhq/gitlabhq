@@ -85,7 +85,7 @@ module Integrations
           title: s_('JiraCloudApp|Jira Service Management'),
           description: format(
             '%{description}<br><br>%{help}'.html_safe,
-            description: s_('Seamlessly create change requests when your team initiates deployments.'),
+            description: _('Seamlessly create change requests when your team initiates deployments.'),
             help: help
           )
         }

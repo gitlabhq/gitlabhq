@@ -1,0 +1,18 @@
+---
+description: npm package deprecated
+internal_events: true
+status: active
+action: deprecate_npm_package
+identifiers:
+- project
+- namespace
+- user
+product_group: package_registry
+product_categories:
+- package_registry
+milestone: '18.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226350
+tiers:
+- free
+- premium
+- ultimate

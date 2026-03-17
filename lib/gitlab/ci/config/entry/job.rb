@@ -63,10 +63,6 @@ module Gitlab
             end
 
             validate on: :composed do
-              if config.is_a?(Hash) && config.key?(:inputs) && !Gitlab::Ci::Config::FeatureFlags.enabled?(:ci_job_inputs)
-                errors.add(:config, "contains unknown keys: inputs")
-              end
-
               next unless inputs_defined?
 
               inputs_spec = inputs_value || {}

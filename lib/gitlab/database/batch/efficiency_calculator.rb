@@ -46,14 +46,22 @@ module Gitlab
         strong_memoize_attr :job_records
 
         def extract_valid_efficiencies(jobs)
-          jobs.map(&:time_efficiency).reject(&:nil?).each_with_index
+          jobs.map(&:time_efficiency).reject(&:nil?)
         end
 
+        # Calculates a weighted average where recent jobs count more than older ones (Exponential Moving Average).
+        #
+        # alpha: controls how fast older jobs lose importance (0.4 = recent jobs get 40% more weight)
+        # weight: how much a job counts shrinks for older jobs (e.g., 1.0, 0.6, 0.36, ...)
+        # dividend: running total of each job's efficiency multiplied by its weight
+        # divisor: running total of all weights, used to divide the dividend into an average
+        #
+        # Returns [sum of weighted efficiencies, sum of weights] used to compute the average.
         def calculate_weighted_sums(efficiencies, alpha)
-          efficiencies.each_with_object([0, 0]) do |(_job_eff, i), (_dividend, divisor)|
+          efficiencies.each_with_index.reduce([0.0, 0.0]) do |(dividend, divisor), (job_efficiency, i)|
             weight = (1 - alpha)**i
 
-            divisor + weight
+            [dividend + (job_efficiency * weight), divisor + weight]
           end
         end
       end

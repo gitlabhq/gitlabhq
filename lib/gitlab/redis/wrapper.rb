@@ -157,6 +157,10 @@ module Gitlab
         raw_config_hash[:sentinels]
       end
 
+      def sentinel_password
+        raw_config_hash[:sentinel_password]
+      end
+
       def secret_file
         return unless defined?(Settings)
 

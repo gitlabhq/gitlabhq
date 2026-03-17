@@ -15,6 +15,7 @@ module Gitlab
 
       # The interval to schedule new instances of this job at.
       INTERVAL = 5.minutes.to_i
+      RESCHEDULE_CUTOFF = 2.weeks
 
       def self.perform_in_the_future(*args)
         perform_in(INTERVAL, *args)
@@ -28,6 +29,19 @@ module Gitlab
 
         import_state_jid = ProjectImportState.jid_by(project_id: project_id, status: :started)&.jid
         return unless import_state_jid
+
+        project = Project.find_by_id(project_id)
+        return unless project
+
+        if project.created_at < RESCHEDULE_CUTOFF.ago
+          ::Import::Framework::Logger.info(
+            message: 'Project created_at exceeds reschedule cutoff, stopping JID refresh',
+            project_id: project_id,
+            created_at: project.created_at
+          )
+
+          return
+        end
 
         # As long as the worker is running we want to keep refreshing
         # the worker's JID as well as the import's JID.

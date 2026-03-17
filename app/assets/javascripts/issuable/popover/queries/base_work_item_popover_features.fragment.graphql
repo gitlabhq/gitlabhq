@@ -1,0 +1,23 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+fragment BaseWorkItemPopoverFeatures on WorkItemFeatures {
+  assignees {
+    assignees {
+      nodes {
+        ...User
+      }
+    }
+  }
+  milestone {
+    milestone {
+      id
+      dueDate
+      startDate
+      title
+    }
+  }
+  startAndDueDate {
+    dueDate
+    startDate
+  }
+}

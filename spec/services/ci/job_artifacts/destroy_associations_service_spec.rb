@@ -16,22 +16,26 @@ RSpec.describe Ci::JobArtifacts::DestroyAssociationsService, feature_category: :
 
   let(:artifact_ids_to_be_removed) { [artifact_1.id, artifact_2.id, artifact_3.id, artifact_4.id, artifact_5.id] }
   let(:artifacts) { Ci::JobArtifact.where(id: artifact_ids_to_be_removed) }
-  let(:service) { described_class.new(artifacts) }
+  let(:service) { described_class.new }
 
   describe '#destroy_records' do
     it 'removes all types of artifacts without updating statistics' do
-      expect_next_instance_of(Ci::JobArtifacts::DestroyBatchService) do |service|
-        expect(service).to receive(:execute).with(update_stats: false).and_call_original
+      expect_next_instance_of(Ci::JobArtifacts::DestroyBatchService) do |batch_service|
+        expect(batch_service).to receive(:execute).with(update_stats: false).and_call_original
       end
 
-      expect { service.destroy_records }.to change { Ci::JobArtifact.count }.by(-artifact_ids_to_be_removed.count)
+      expect { service.destroy_records(artifacts) }.to change {
+        Ci::JobArtifact.count
+      }.by(-artifact_ids_to_be_removed.count)
     end
 
     context 'with a locked artifact' do
       let(:artifact_ids_to_be_removed) { [artifact_1.id, locked_artifact.id] }
 
       it 'removes all artifacts' do
-        expect { service.destroy_records }.to change { Ci::JobArtifact.count }.by(-artifact_ids_to_be_removed.count)
+        expect { service.destroy_records(artifacts) }.to change {
+          Ci::JobArtifact.count
+        }.by(-artifact_ids_to_be_removed.count)
       end
     end
 
@@ -39,7 +43,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAssociationsService, feature_category: :
       let(:artifacts) { Ci::JobArtifact.none }
 
       it 'does not raise error' do
-        expect { service.destroy_records }.not_to raise_error
+        expect { service.destroy_records(artifacts) }.not_to raise_error
       end
     end
   end
@@ -47,7 +51,7 @@ RSpec.describe Ci::JobArtifacts::DestroyAssociationsService, feature_category: :
   describe '#update_statistics' do
     before do
       stub_const("#{described_class}::BATCH_SIZE", 2)
-      service.destroy_records
+      service.destroy_records(artifacts)
     end
 
     it 'updates project statistics' do

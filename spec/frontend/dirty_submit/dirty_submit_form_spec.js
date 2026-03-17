@@ -2,8 +2,13 @@ import { range as rge, throttle } from 'lodash';
 import DirtySubmitForm from '~/dirty_submit/dirty_submit_form';
 import { getInputValue, setInputValue, createForm } from './helper';
 
-jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
-const lodash = jest.requireActual('lodash');
+jest.mock('lodash', () => {
+  const lodash = jest.requireActual('lodash');
+  return {
+    ...lodash,
+    throttle: jest.fn((fn) => fn),
+  };
+});
 
 function expectToToggleDisableOnDirtyUpdate(submit, input) {
   const originalValue = getInputValue(input);
@@ -54,11 +59,7 @@ describe('DirtySubmitForm', () => {
 
   describe('throttling tests', () => {
     beforeEach(() => {
-      throttle.mockImplementation(lodash.throttle);
-    });
-
-    afterEach(() => {
-      throttle.mockReset();
+      throttle.mockImplementation(jest.requireActual('lodash').throttle);
     });
 
     it('throttles updates when rapid changes are made to a single form element', () => {

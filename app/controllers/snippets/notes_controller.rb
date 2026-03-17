@@ -30,6 +30,7 @@ class Snippets::NotesController < ApplicationController
 
   def finder_params
     params.merge(
+      organization_id: Current.organization.id,
       last_fetched_at: last_fetched_at,
       target_id: snippet.id,
       target_type: 'personal_snippet'

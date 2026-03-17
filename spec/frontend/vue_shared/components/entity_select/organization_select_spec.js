@@ -1,7 +1,7 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlCollapsibleListbox, GlAlert } from '@gitlab/ui';
-import { chunk } from 'lodash';
+import { chunk } from 'lodash-es';
 import currentUserOrganizationsGraphQlResponse from 'test_fixtures/graphql/organizations/current_user_organizations.query.graphql.json';
 import organizationsGraphQlResponse from 'test_fixtures/graphql/organizations/organizations.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';

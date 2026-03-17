@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Confluence Workspace
 ---
 
@@ -24,7 +24,7 @@ When you turn on the integration:
 - The **Plan** > **Wiki** menu item is hidden.
 
   To access the GitLab wiki for the project, use its URL:
-`<example_project_URL>/-/wikis/home`.
+  `<example_project_URL>/-/wikis/home`.
   To bring back the **Plan** > **Wiki** menu item, turn off this integration.
 
 Creating a more comprehensive integration with Confluence Cloud is tracked in
@@ -43,7 +43,7 @@ Prerequisites:
 
 To set up the integration for your project or group:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Integrations**.
 1. Next to **Confluence Workspace**, select **Configure**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -83,6 +83,6 @@ Prerequisites:
 
 To access your Confluence Workspace from a GitLab project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Confluence**.
 1. Select **Go to Confluence**.

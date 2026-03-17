@@ -77,17 +77,6 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :navigation do
       expect(page).to have_content(s_('Projects|Browse projects to learn from and contribute to.'))
     end
 
-    context 'when `explore_projects_vue` flag is disabled' do
-      it 'navigates to project page' do
-        stub_feature_flags(explore_projects_vue: false)
-
-        find('body').send_keys([:shift, 'P'])
-
-        find('.nothing-here-block')
-        expect(page).to have_content(s_('UserProfile|Explore public groups to find projects to contribute to'))
-      end
-    end
-
     context 'when `explore_groups_vue` flag is disabled' do
       before do
         stub_feature_flags(explore_groups_vue: false)

@@ -367,9 +367,7 @@ export default {
     <notes-activity-header
       :notes-filters="notesFilters"
       :notes-filter-value="notesFilterValue"
-      :ai-loading="aiLoading"
       :noteable-type="noteableType"
-      @set-ai-loading="setAiLoading"
     />
     <ai-summary v-if="aiLoading !== null" :ai-loading="aiLoading" @set-ai-loading="setAiLoading" />
     <ordered-layout :slot-keys="slotKeys">

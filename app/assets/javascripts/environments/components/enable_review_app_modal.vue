@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlModal, GlSprintf, GlIcon, GlPopover } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 import { REVIEW_APP_MODAL_I18N as i18n } from '../constants';

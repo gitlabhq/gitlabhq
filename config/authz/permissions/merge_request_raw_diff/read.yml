@@ -1,5 +1,3 @@
 ---
 name: read_merge_request_raw_diff
 description: Grants the ability to read merge request raw diffs
-boundaries:
-  - project

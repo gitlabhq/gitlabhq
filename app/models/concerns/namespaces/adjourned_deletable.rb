@@ -62,7 +62,12 @@ module Namespaces
       return unless try(:namespace_details)
 
       deletion_schedule = namespace_details.state_metadata['deletion_scheduled_at']
-      Time.zone.parse(deletion_schedule) if deletion_schedule.present?
+
+      if deletion_schedule.present?
+        Time.zone.parse(deletion_schedule)
+      else
+        deletion_scheduled_at
+      end
     end
 
     def self_deletion_scheduled_deletion_created_on_legacy

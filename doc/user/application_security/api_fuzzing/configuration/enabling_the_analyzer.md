@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Enabling the analyzer
 ---
 
@@ -43,7 +43,7 @@ a YAML snippet that you can paste in your GitLab CI/CD configuration.
 
 To generate an API fuzzing configuration snippet:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **API Fuzzing** row, select **Enable API Fuzzing**.
 1. Complete the fields. For details see [available CI/CD variables](variables.md).
@@ -96,11 +96,9 @@ The environment variables `FUZZAPI_OPENAPI_ALL_MEDIA_TYPES` and `FUZZAPI_OPENAPI
 To configure API fuzzing in GitLab with an OpenAPI specification:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
-
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
-
 1. Provide the profile by adding the `FUZZAPI_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
    The profile specifies how many tests are run. Substitute `Quick-10` for the profile you choose. For more details, see [API fuzzing profiles](customizing_analyzer_settings.md#api-fuzzing-profiles).
 
@@ -111,7 +109,6 @@ To configure API fuzzing in GitLab with an OpenAPI specification:
 
 1. Provide the location of the OpenAPI specification. You can provide the specification as a file
    or URL. Specify the location by adding the `FUZZAPI_OPENAPI` variable.
-
 1. Provide the target API instance's base URL. Use either the `FUZZAPI_TARGET_URL` variable or an
    `environment_url.txt` file.
 
@@ -162,11 +159,9 @@ For more details, including how to create a HAR file, see [HTTP archive format](
 To configure API fuzzing to use a HAR file:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
-
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
-
 1. Provide the profile by adding the `FUZZAPI_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
    The profile specifies how many tests are run. Substitute `Quick-10` for the profile you choose. For more details, see [API fuzzing profiles](customizing_analyzer_settings.md#api-fuzzing-profiles).
 
@@ -177,7 +172,6 @@ To configure API fuzzing to use a HAR file:
 
 1. Provide the location of the HAR specification. You can provide the specification as a file
    or URL. Specify the location by adding the `FUZZAPI_HAR` variable.
-
 1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
    variable or an `environment_url.txt` file.
 
@@ -240,9 +234,7 @@ To configure API fuzzing to use an GraphQL endpoint URL that provides informatio
 
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
-
 1. Provide the GraphQL endpoint path, for example `/api/graphql`. Specify the path by adding the `FUZZAPI_GRAPHQL` variable.
-
 1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
    variable or an `environment_url.txt` file.
 
@@ -272,18 +264,15 @@ This example is a minimal configuration for API fuzzing. From here you can:
 
 ### API fuzzing with a GraphQL schema file
 
-API fuzzing can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to a the introspection JSON format using an online 3rd party tool: [https://transform.tools/graphql-to-introspection-json](https://transform.tools/graphql-to-introspection-json).
+API fuzzing can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to a the introspection JSON format using an online 3rd party tool: <https://transform.tools/graphql-to-introspection-json>.
 
 To configure API fuzzing to use a GraphQl schema file that provides information about the target API to test:
 
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
-
 1. Provide the GraphQL endpoint path, for example `/api/graphql`. Specify the path by adding the `FUZZAPI_GRAPHQL` variable.
-
 1. Provide the location of the GraphQL schema file. You can provide the location as a file path
    or URL. Specify the location by adding the `FUZZAPI_GRAPHQL_SCHEMA` variable.
-
 1. The target API instance's base URL is also required. Provide it by using the `FUZZAPI_TARGET_URL`
    variable or an `environment_url.txt` file.
 
@@ -350,11 +339,9 @@ testing.
 To configure API fuzzing to use a Postman Collection file:
 
 1. Add the `fuzz` stage to your `.gitlab-ci.yml` file.
-
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml)
    in your `.gitlab-ci.yml` file.
-
 1. Provide the profile by adding the `FUZZAPI_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
    The profile specifies how many tests are run. Substitute `Quick-10` for the profile you choose. For more details, see [API fuzzing profiles](customizing_analyzer_settings.md#api-fuzzing-profiles).
 
@@ -366,7 +353,6 @@ To configure API fuzzing to use a Postman Collection file:
 1. Provide the location of the Postman Collection specification. You can provide the specification
    as a file or URL. Specify the location by adding the `FUZZAPI_POSTMAN_COLLECTION`
    variable.
-
 1. Provide the target API instance's base URL. Use either the `FUZZAPI_TARGET_URL` variable or an
    `environment_url.txt` file.
 

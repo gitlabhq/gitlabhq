@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Telegram
 description: "Configure the Telegram integration to receive notifications from GitLab in Telegram chats or channels."
 ---
@@ -64,7 +64,7 @@ After you invite the bot to a Telegram channel, you can configure GitLab to send
 
 1. To enable the integration:
    - **For your group or project**:
-     1. On the top bar, select **Search or go to** and find your project or group.
+     1. In the top bar, select **Search or go to** and find your project or group.
      1. Select **Settings** > **Integrations**.
    - **For your instance**:
      1. In the upper-right corner, select **Admin**.

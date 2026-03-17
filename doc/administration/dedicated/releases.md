@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: Environment Automation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Release schedules, versioning model, and patch processes for GitLab Dedicated instances.
 title: GitLab Dedicated releases and versioning
 ---
@@ -37,7 +37,7 @@ You can check your GitLab version through GitLab itself or through Switchboard.
 
 To check your GitLab version:
 
-- In GitLab: On the left sidebar, at the bottom, select **Help** ({{< icon name="question" >}}) > **Help**,
+- In GitLab: In the left sidebar, at the bottom, select **Help** ({{< icon name="question" >}}) > **Help**,
   or visit `https://your-instance-url/help` directly.
 - In Switchboard: See [tenant overview](tenant_overview.md).
 

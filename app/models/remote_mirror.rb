@@ -255,7 +255,7 @@ class RemoteMirror < ApplicationRecord
   def store_credentials
     # This is a necessary workaround for attr_encrypted, which doesn't otherwise
     # notice that the credentials have changed
-    self.credentials = self.credentials
+    self.credentials = self.credentials # rubocop:disable Lint/SelfAssignment -- intentional to trigger attr_encrypted
   end
 
   # The remote URL omits any password if SSH public-key authentication is in use

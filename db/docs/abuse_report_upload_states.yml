@@ -1,0 +1,14 @@
+---
+table_name: abuse_report_upload_states
+description: Separate table for Abuse Report Upload verification states
+introduced_by_url:
+milestone: '18.10'
+feature_categories:
+  - geo_replication
+classes:
+  - Geo::AbuseReportUploadState
+gitlab_schema: gitlab_main_org
+table_size: small
+sharding_key:
+  organization_id: organizations
+organization_transfer_support: todo

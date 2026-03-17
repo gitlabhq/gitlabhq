@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 import PipelineGraph from '~/ci/pipeline_editor/components/graph/pipeline_graph.vue';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import {
@@ -13,7 +13,6 @@ import {
   TAB_QUERY_PARAM,
   TABS_INDEX,
   VALIDATE_TAB,
-  VALIDATE_TAB_BADGE_DISMISSED_KEY,
   VISUALIZE_TAB,
 } from '../constants';
 import getAppStatus from '../graphql/queries/client/app_status.query.graphql';
@@ -22,11 +21,9 @@ import CiEditorHeader from './editor/ci_editor_header.vue';
 import CiValidate from './validate/ci_validate.vue';
 import TextEditor from './editor/text_editor.vue';
 import EditorTab from './ui/editor_tab.vue';
-import WalkthroughPopover from './popovers/walkthrough_popover.vue';
 
 export default {
   i18n: {
-    new: __('NEW'),
     tabEdit: s__('Pipelines|Edit'),
     tabGraph: s__('Pipelines|Visualize'),
     tabLint: s__('Pipelines|Lint'),
@@ -66,7 +63,6 @@ export default {
     GlTabs,
     PipelineGraph,
     TextEditor,
-    WalkthroughPopover,
   },
   props: {
     ciConfigData: {
@@ -82,19 +78,11 @@ export default {
       required: false,
       default: '',
     },
-    currentTab: {
-      type: String,
-      required: true,
-    },
     showHelpDrawer: {
       type: Boolean,
       required: true,
     },
     showJobAssistantDrawer: {
-      type: Boolean,
-      required: true,
-    },
-    isNewCiConfigFile: {
       type: Boolean,
       required: true,
     },
@@ -110,7 +98,6 @@ export default {
   },
   data() {
     return {
-      showValidateNewBadge: false,
       appStatus: null,
     };
   },
@@ -130,16 +117,6 @@ export default {
     isMergedYamlAvailable() {
       return this.ciConfigData?.mergedYaml;
     },
-    validateTabBadgeTitle() {
-      if (this.showValidateNewBadge) {
-        return this.$options.i18n.new;
-      }
-
-      return '';
-    },
-  },
-  mounted() {
-    this.showValidateNewBadge = !JSON.parse(localStorage.getItem(VALIDATE_TAB_BADGE_DISMISSED_KEY));
   },
   created() {
     const [tabQueryParam] = getParameterValues(TAB_QUERY_PARAM);
@@ -151,11 +128,6 @@ export default {
   },
   methods: {
     setCurrentTab(tabName) {
-      if (this.currentTab === VALIDATE_TAB) {
-        localStorage.setItem(VALIDATE_TAB_BADGE_DISMISSED_KEY, 'true');
-        this.showValidateNewBadge = false;
-      }
-
       this.$emit('set-current-tab', tabName);
     },
     setDefaultTab(tabName) {
@@ -182,13 +154,11 @@ export default {
   >
     <editor-tab
       class="gl-mb-3"
-      title-link-class="js-walkthrough-popover-target"
       :title="$options.i18n.tabEdit"
       lazy
       data-testid="editor-tab"
       @click="setCurrentTab($options.tabConstants.CREATE_TAB)"
     >
-      <walkthrough-popover v-if="isNewCiConfigFile" v-on="$listeners" />
       <ci-editor-header
         :show-help-drawer="showHelpDrawer"
         :show-job-assistant-drawer="showJobAssistantDrawer"
@@ -214,7 +184,6 @@ export default {
     <editor-tab
       class="gl-mb-3"
       data-testid="validate-tab"
-      :badge-title="validateTabBadgeTitle"
       :title="$options.i18n.tabValidate"
       @click="setCurrentTab($options.tabConstants.VALIDATE_TAB)"
     >

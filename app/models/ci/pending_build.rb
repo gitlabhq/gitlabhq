@@ -34,7 +34,11 @@ module Ci
 
     class << self
       def upsert_from_build!(build)
-        entry = self.new(args_from_build(build))
+        upsert_from_args!(args_from_build(build))
+      end
+
+      def upsert_from_args!(args)
+        entry = self.new(args)
 
         entry.validate!
 
@@ -47,8 +51,6 @@ module Ci
           namespace_id: namespace.id
         }
       end
-
-      private
 
       def args_from_build(build)
         project = build.project
@@ -66,6 +68,8 @@ module Ci
 
         args
       end
+
+      private
 
       def build_tags_ids(build)
         build.tag_list.then do |tag_list|

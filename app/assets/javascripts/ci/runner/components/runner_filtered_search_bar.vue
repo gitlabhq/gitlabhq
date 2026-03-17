@@ -1,5 +1,5 @@
 <script>
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { __ } from '~/locale';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { searchValidator } from '~/ci/runner/runner_search_utils';

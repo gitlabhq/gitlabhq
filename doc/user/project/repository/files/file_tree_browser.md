@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use the file tree browser to navigate repository files and directories.
 title: File tree browser
 ---
@@ -38,7 +38,7 @@ The file tree browser helps you:
 
 To show or hide the file tree browser:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to your repository files at `/<project>/-/tree/<branch>`.
 1. In the upper-left corner, select the file tree browser icon ({{< icon name="file-tree" >}}).
 

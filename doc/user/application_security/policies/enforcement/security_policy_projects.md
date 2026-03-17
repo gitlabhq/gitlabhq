@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to enforce security rules in GitLab using merge request approval policies to automate scans, approvals, and compliance across your projects.
 title: Security policy projects
 ---
@@ -152,7 +152,7 @@ Prerequisites:
 
 To link a group, subgroup, or project to a security policy project:
 
-1. On the top bar, select **Search or go to** and find your project, subgroup, or group.
+1. In the top bar, select **Search or go to** and find your project, subgroup, or group.
 1. Select **Secure** > **Policies**.
 1. Select **Edit Policy Project**, then search for and select the project you would like to link
    from the dropdown list.

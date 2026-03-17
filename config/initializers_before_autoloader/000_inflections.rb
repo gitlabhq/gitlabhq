@@ -48,6 +48,8 @@ ActiveSupport::Inflector.inflections do |inflect|
     WikiPage::Meta
     packages_nuget_symbol_registry
     packages_helm_metadata_cache_registry
+    abuse_report_upload_registry
+    project_upload_registry
   ]
   inflect.acronym 'CDN'
   inflect.acronym 'EE'

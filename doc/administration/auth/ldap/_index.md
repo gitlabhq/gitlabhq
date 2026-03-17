@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: no
 title: Integrate LDAP with GitLab
 description: Integrate directory services for centralized authentication.
@@ -106,13 +106,11 @@ To configure LDAP, you edit the settings in a configuration file:
   - `uid`
   - `base`
   - `encryption`
-
 - You can include the following optional settings in your configuration file:
   - [Optional basic configuration settings](#basic-configuration-settings).
   - [SSL settings](#ssl-configuration-settings).
   - [Attribute settings](#attribute-configuration-settings).
   - [LDAP sync settings](#ldap-sync-configuration-settings).
-
 - You can also configure LDAP to:
   - [Use multiple servers](#use-multiple-ldap-servers).
   - [Filter users](#set-up-ldap-user-filter).
@@ -1340,11 +1338,8 @@ For more information on synchronizing users and groups between LDAP and GitLab, 
    - [`values.yml` for Helm chart installations](../../../integration/saml.md).
 
 1. Optional. [Disable the LDAP auth from the sign-in page](#disable-ldap-web-sign-in).
-
 1. Optional. To fix issues with linking users, you can first [remove those users' LDAP identities](ldap-troubleshooting.md#remove-the-identity-records-that-relate-to-the-removed-ldap-server).
-
 1. Confirm that users are able to sign in to their accounts. If a user cannot sign in, check if that user's LDAP is still there and remove it if necessary. If this issue persists, check the logs to identify the problem.
-
 1. In the configuration file, change:
    - `omniauth_auto_link_user` to `saml` only.
    - `omniauth_auto_link_ldap_user` to false.

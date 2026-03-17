@@ -18,16 +18,10 @@ module Ci
     LOOP_TIMEOUT = 5.minutes
 
     def self.max_running_jobs_limit
-      if Feature.enabled?(:bulk_delete_job_artifacts_high_concurrency, :instance)
-        10
-      else
-        5
-      end
+      5
     end
 
     def perform_work
-      return unless Feature.enabled?(:bulk_delete_job_artifacts, :instance)
-
       @mod_bucket = Gitlab::Ci::Artifacts::BucketManager.claim_bucket
       log_extra_metadata_on_done(:mod_bucket, @mod_bucket)
       return unless @mod_bucket

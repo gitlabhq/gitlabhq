@@ -12,7 +12,7 @@ export default class ShortcutsFindFile {
   constructor(shortcuts, projectFindFile) {
     addStopCallback((e, element, combo) => {
       if (
-        element === projectFindFile.inputElement[0] &&
+        element === projectFindFile.inputElement &&
         (keysFor(PROJECT_FILES_MOVE_SELECTION_UP).includes(combo) ||
           keysFor(PROJECT_FILES_MOVE_SELECTION_DOWN).includes(combo) ||
           keysFor(PROJECT_FILES_GO_BACK).includes(combo) ||

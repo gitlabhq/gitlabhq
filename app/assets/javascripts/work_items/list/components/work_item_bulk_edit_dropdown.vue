@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { __ } from '~/locale';
 import { BULK_EDIT_NO_VALUE } from '~/work_items/constants';
 

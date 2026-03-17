@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Troubleshooting frontend development issues
 ---
 
@@ -176,15 +176,11 @@ query workItemTreeQuery($id: WorkItemID!, $pageSize: Int = 100, $endCursor: Stri
 
 1. `fetchPolicy` Settings:
    Apollo Client uses a fetchPolicy to control how queries interact with the cache. Depending on the policy, the query may bypass caching entirely if the fetchPolicy is `no-cache`. This policy ensures that no part of the query is written to the cache. Each query directly fetches data from the server and doesn't store any results in the cache and hence multiple queries are being fetched
-
 1. When the same query is fired from different Apollo Client instances. It may be that the clients firing the two queries are from different clients.
-
 1. Missing `id` or `__typename`:
    Apollo Client uses `id` and `__typename` to uniquely identify entities and cache them. If these fields are missing from your query response, Apollo may not be able to cache the result properly.
-
 1. Complex or Nested Queries:
    Some queries might be too complex or involve nested queries that Apollo Client might struggle to cache correctly. This can happen if the structure of the data returned doesn't map cleanly to the cache schema, requiring manual cache management.
-
 1. Pagination Queries:
    For queries involving pagination, like those using fetchMore, Apollo might not cache results properly unless the cache is explicitly updated.
 

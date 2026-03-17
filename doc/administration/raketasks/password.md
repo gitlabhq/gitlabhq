@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Password maintenance Rake tasks
 ---
 
@@ -36,6 +36,7 @@ sudo gitlab-rake gitlab:password:check_hashes:[true]
 bundle exec rake gitlab:password:check_hashes:[true] RAILS_ENV=production
 ```
 
-Note: Prior to GitLab 18.6, this task was available as `gitlab:password:fips_check_salts`
-and was limited to FIPS/PBKDF2 hash validation. The task has been renamed to `:check_hashes`
-and now checks for all password migrations, while the old name remains as an alias.
+> [!note]
+> Prior to GitLab 18.6, this task was available as `gitlab:password:fips_check_salts`
+> and was limited to FIPS/PBKDF2 hash validation. The task has been renamed to `:check_hashes`
+> and now checks for all password migrations, while the old name remains as an alias.

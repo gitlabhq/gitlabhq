@@ -63,6 +63,14 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
         expect(result).to contain_exactly(incident)
       end
 
+      it 'filters issues by work item type ids' do
+        incident = create(:incident, project: project, labels: [label], relative_position: 15)
+        incident_type_id = incident.work_item_type.to_global_id.model_id
+        result = resolve_board_list_issues(args: { filters: { work_item_type_ids: [incident_type_id] } })
+
+        expect(result).to contain_exactly(incident)
+      end
+
       it 'generates an error if both assignee_username and assignee_wildcard_id are present' do
         expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
           resolve_board_list_issues(args: { filters: { assignee_username: ['username'], assignee_wildcard_id: 'NONE' } })

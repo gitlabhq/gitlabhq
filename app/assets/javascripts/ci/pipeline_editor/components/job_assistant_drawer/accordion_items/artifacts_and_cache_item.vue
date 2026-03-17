@@ -1,6 +1,6 @@
 <script>
 import { GlAccordionItem, GlFormInput, GlFormGroup, GlButton, GlLink, GlSprintf } from '@gitlab/ui';
-import { get, toPath } from 'lodash';
+import { get, toPath } from 'lodash-es';
 import { i18n, HELP_PATHS } from '../constants';
 
 export default {

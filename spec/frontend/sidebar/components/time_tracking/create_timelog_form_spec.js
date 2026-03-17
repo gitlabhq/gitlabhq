@@ -348,6 +348,7 @@ describe('Create Timelog Form', () => {
             },
           },
         },
+        useWorkItemFeatures: false,
       });
     });
 
@@ -368,6 +369,7 @@ describe('Create Timelog Form', () => {
             },
           },
         },
+        useWorkItemFeatures: false,
       });
     });
   });

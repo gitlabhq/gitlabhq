@@ -190,6 +190,7 @@ constraints(Namespaces::GroupUrlConstraint.new) do
     resources :achievements, only: [:index, :new, :edit]
 
     resources :work_items, only: [:index, :show], param: :iid
+    get 'work_items/new', to: 'work_items#show', as: :work_item_new, format: false
 
     resource :import_history, only: [:show]
 
@@ -233,4 +234,8 @@ scope format: false do
     post 'v2/*group_id/dependency_proxy/containers/*image/manifests/*tag/upload/authorize' => 'groups/dependency_proxy_for_containers#authorize_upload_manifest' # rubocop:todo Cop/PutGroupRoutesUnderScope
     post 'v2/*group_id/dependency_proxy/containers/*image/manifests/*tag/upload' => 'groups/dependency_proxy_for_containers#upload_manifest' # rubocop:todo Cop/PutGroupRoutesUnderScope
   end
+
+  # Catch-all route for OCI spec endpoints (e.g., referrers) that are not yet implemented
+  # Returns 404 instead of redirecting to sign_in, allowing clients to handle the response correctly
+  match 'v2/*group_id/dependency_proxy/containers/*image/referrers/*tag', to: 'groups/dependency_proxy_for_containers#referrers_not_found', via: [:get, :head, :post, :put, :patch, :delete]
 end

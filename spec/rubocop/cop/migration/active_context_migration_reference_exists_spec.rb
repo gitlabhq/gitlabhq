@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Cop::Migration::ActiveContextMigrationReferenceExists, f
     it 'does not register an offense for the fixed code' do
       expect_no_offenses(<<~RUBY)
         def self.indexing?
-          ::ActiveContext.indexing? && current_indexing_embedding_versions.present?
+          ::ActiveContext.indexing? && indexing_embedding_models_present?
         end
       RUBY
     end

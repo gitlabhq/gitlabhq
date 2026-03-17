@@ -1,0 +1,111 @@
+---
+name: maintainer
+description: Manage branches, merge requests, CI/CD settings, and project members.
+  Cannot delete the project.
+inherits_from:
+- developer
+project:
+  permissions: []
+  raw_permissions:
+  - add_cluster
+  - admin_build
+  - admin_cicd_variables
+  - admin_cluster
+  - admin_container_image
+  - admin_deployment
+  - admin_environment
+  - admin_feature_flags_client
+  - admin_incident_management_timeline_event_tag
+  - admin_integrations
+  - admin_issue_board
+  - admin_member_access_request
+  - admin_note
+  - admin_operations
+  - admin_package
+  - admin_pages
+  - admin_pipeline
+  - admin_project
+  - admin_project_aws
+  - admin_project_google_cloud
+  - admin_project_member
+  - admin_protected_branch
+  - admin_protected_environments
+  - admin_push_rules
+  - admin_runners
+  - admin_secure_files
+  - admin_sentry
+  - admin_snippet
+  - admin_terraform_state
+  - admin_upload
+  - admin_web_hook
+  - admin_wiki
+  - change_restrict_user_defined_variables
+  - create_branch_rule
+  - create_cluster
+  - create_deploy_token
+  - create_environment_terminal
+  - create_freeze_period
+  - create_protected_branch
+  - create_resource_access_tokens
+  - create_runners
+  - delete_freeze_period
+  - delete_job_artifact
+  - destroy_deploy_token
+  - destroy_deployment
+  - destroy_package
+  - destroy_protected_branch
+  - destroy_release
+  - destroy_resource_access_tokens
+  - destroy_upload
+  - import_project_members_from_another_project
+  - invite_member
+  - invite_project_members
+  - manage_deploy_tokens
+  - manage_merge_request_settings
+  - manage_protected_tags
+  - manage_resource_access_tokens
+  - push_to_delete_protected_branch
+  - read_deploy_token
+  - read_freeze_period
+  - read_import_error
+  - read_member_access_request
+  - read_pages
+  - read_protected_branch
+  - read_resource_access_tokens
+  - read_runners
+  - read_runners_registration_token
+  - read_usage_quotas
+  - read_web_hook
+  - remove_pages
+  - rename_project
+  - stop_environment
+  - update_cluster
+  - update_freeze_period
+  - update_pages
+  - update_protected_branch
+  - update_runners_registration_token
+  - update_snippet
+  - view_edit_page
+group:
+  permissions: []
+  raw_permissions:
+  - add_cluster
+  - admin_achievement
+  - admin_build
+  - admin_cluster
+  - admin_pipeline
+  - admin_push_rules
+  - admin_upload
+  - award_achievement
+  - create_cluster
+  - create_jira_connect_subscription
+  - create_protected_branch
+  - destroy_package
+  - destroy_protected_branch
+  - destroy_upload
+  - import_projects
+  - read_deploy_token
+  - read_protected_branch
+  - read_runners
+  - update_cluster
+  - update_protected_branch

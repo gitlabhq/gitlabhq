@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Subscription Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Change billing account data and payment methods, pay for invoices, and link your GitLab account in the Customers Portal.
 title: Manage billing account
 ---
@@ -88,7 +88,7 @@ One user can have all three roles.
 To change the subscription contact:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. On the left sidebar, select **Billing account settings**.
+1. In the left sidebar, select **Billing account settings**.
 1. Scroll to the **Company information** section, then to **Subscription contact**.
 1. To select a different subscription contact, select from the **Billing account manager** dropdown list.
 1. Edit the contact details.
@@ -100,7 +100,7 @@ To add another billing account manager for your account:
 
 1. Ensure an account exists in [Customers Portal](https://customers.gitlab.com/customers/sign_in) for the user you want to add.
 1. Sign in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. On the left sidebar, select **Billing account settings**.
+1. In the left sidebar, select **Billing account settings**.
 1. Scroll to the **Billing account managers** section.
 1. Select **Invite billing account manager**.
 1. Enter the email address of the user you want to add.
@@ -119,7 +119,7 @@ After you remove a billing account manager, they no longer have access to view o
 To remove a billing account manager:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. On the left sidebar, select **Billing account settings**.
+1. In the left sidebar, select **Billing account settings**.
 1. Scroll to the **Billing account managers** section.
 1. In the list, next to the billing account manager you want to remove, select **Remove**.
 1. In the confirmation dialog, select **Remove** to confirm the action.
@@ -132,7 +132,7 @@ Users that have been invited but have not yet accepted the invitation display th
 To revoke an invitation:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. On the left sidebar, select **Billing account settings**.
+1. In the left sidebar, select **Billing account settings**.
 1. Scroll to the **Billing account managers** section.
 1. In the list, next to the invited user with the **Awaiting user registration** name, select **Remove**.
 1. In the confirmation dialog, select **Remove** to revoke the invitation.
@@ -144,7 +144,7 @@ The billing contact receives all invoices and subscription event notifications.
 To change the billing contact:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. On the left sidebar, select **Billing account settings**.
+1. In the left sidebar, select **Billing account settings**.
 1. Scroll to the **Company information** section, then to **Billing contact**.
 
    - To change your billing contact to your subscription contact:
@@ -178,7 +178,7 @@ If you would like to use an alternative method to pay,
 To change your payment method:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. On the left sidebar, select **Billing account settings**.
+1. In the left sidebar, select **Billing account settings**.
 1. **Edit** an existing payment method's information or **Add new payment method**.
 1. Select **Save Changes**.
 
@@ -188,7 +188,7 @@ Automatic renewal of a subscription is charged to your default payment method. T
 method as the default:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. On the left sidebar, select **Billing account settings**.
+1. In the left sidebar, select **Billing account settings**.
 1. **Edit** the selected payment method and select the **Make default payment method** checkbox.
 1. Select **Save Changes**.
 
@@ -203,7 +203,7 @@ You can pay for your invoices in Customers Portal with a credit card.
 To pay for an invoice:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. On the left sidebar, select **Invoices**.
+1. In the left sidebar, select **Invoices**.
 1. On the invoice you want to pay for, select **Pay for invoice**.
 1. Complete the payment form.
 

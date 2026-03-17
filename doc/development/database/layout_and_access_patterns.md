@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Best practices for data layout and access patterns
 ---
 
@@ -89,7 +89,7 @@ of this should be weighed against the benefits of the vertical table split.
 
 There is a very good episode on this topic on the [PostgresFM](https://postgres.fm) podcast,
 where @NikolayS of [PostgresAI](https://postgres.ai/) and @michristofides of [PgMustard](https://www.pgmustard.com/)
-discuss this topic in more depth - [https://postgres.fm/episodes/data-model-trade-offs](https://postgres.fm/episodes/data-model-trade-offs).
+discuss this topic in more depth - <https://postgres.fm/episodes/data-model-trade-offs>.
 
 ### Example
 

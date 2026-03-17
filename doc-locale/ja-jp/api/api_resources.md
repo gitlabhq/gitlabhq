@@ -1,7 +1,7 @@
 ---
 stage: Developer Experience
-group: API
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+group: API Platform
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: REST APIのリソース
 description: "GitLab REST APIリソースをコンテキスト（プロジェクト、グループ、スタンドアロン、およびテンプレート）別に整理し、エンドポイントパスを示します。"
 ---
@@ -43,8 +43,9 @@ REST APIリソースは次のように編成されています。
 | [コミット](commits.md)                                                          | `/projects/:id/repository/commits`、`/projects/:id/statuses` |
 | [コンテナレジストリ](container_registry.md)                                    | `/projects/:id/registry/repositories` |
 | [コンテナリポジトリ保護ルール](container_repository_protection_rules.md)  | `/projects/:id/registry/protection/repository/rules` |
+| [コンテナレジストリ保護タグルール](container_registry_protection_tag_rules.md) | `/projects/:id/registry/protection/tag/rules` |
 | [カスタム属性](custom_attributes.md)                                      | `/projects/:id/custom_attributes`（グループおよびユーザーでも利用可能） |
-| [[Composer](packages/composer.md)ディストリビューション](packages/composer.md)                                 | `/projects/:id/packages/composer`（グループでも利用可能） |
+| [Composerディストリビューション](packages/composer.md)                                 | `/projects/:id/packages/composer`（グループでも利用可能） |
 | [Conan v1ディストリビューション](packages/conan_v1.md)                                       | `/projects/:id/packages/conan`（スタンドアロンでも利用可能） |
 | [Conan v2ディストリビューション](packages/conan_v2.md)                                       | `/projects/:id/packages/conan`（スタンドアロンでも利用可能） |
 | [Debianディストリビューション](packages/debian_project_distributions.md)               | `/projects/:id/debian_distributions`（グループでも利用可能） |
@@ -77,7 +78,7 @@ REST APIリソースは次のように編成されています。
 | [ジョブアーティファクト](job_artifacts.md)                                             | `/projects/:id/jobs/:job_id/artifacts` |
 | [ラベル](labels.md)                                                            | `/projects/:id/labels` |
 | [Mavenリポジトリ](packages/maven.md)                                          | `/projects/:id/packages/maven`（グループおよびスタンドアロンでも利用可能） |
-| [メンバー](members.md)                                                          | `/projects/:id/members`（グループでも利用可能） |
+| [メンバー](project_members.md)                                                  | `/projects/:id/members`（グループでも利用可能） |
 | [マージリクエスト承認](merge_request_approvals.md)                          | `/projects/:id/approvals`、`/projects/:id/merge_requests/.../approvals` |
 | [マージリクエスト](merge_requests.md)                                            | `/projects/:id/merge_requests`（グループおよびスタンドアロンでも利用可能） |
 | [マージトレイン](merge_trains.md)                                                | `/projects/:id/merge_trains` |
@@ -156,7 +157,7 @@ REST APIリソースは次のように編成されています。
 | [イシュー統計](issues_statistics.md)                      | `/groups/:id/issues_statistics`（プロジェクトおよびスタンドアロンでも利用可能） |
 | [リンクされたエピック](linked_epics.md)                                | `/groups/:id/epics/.../related_epics` |
 | [メンバーロール](member_roles.md)                                | `/groups/:id/member_roles` |
-| [メンバー](members.md)                                          | `/groups/:id/members`（プロジェクトでも利用可能） |
+| [メンバー](group_members.md)                                    | `/groups/:id/members`（プロジェクトでも利用可能） |
 | [マージリクエスト](merge_requests.md)                            | `/groups/:id/merge_requests`（プロジェクトおよびスタンドアロンでも利用可能） |
 | [ノート](notes.md)（コメント）                                   | `/groups/:id/epics/.../notes`（プロジェクトでも利用可能） |
 | [通知設定](notification_settings.md)              | `/groups/:id/notification_settings`（プロジェクトおよびスタンドアロンでも利用可能） |
@@ -180,10 +181,12 @@ REST APIリソースは次のように編成されています。
 | [依存関係リストのエクスポート](dependency_list_export.md)                                         | `/pipelines/:id/dependency_list_exports`、`/projects/:id/dependency_list_exports`、`/groups/:id/dependency_list_exports`、`/security/dependency_list_exports/:id`、`/security/dependency_list_exports/:id/download` |
 | [デプロイキー](deploy_keys.md)                                                                | `/deploy_keys`（プロジェクトでも利用可能） |
 | [デプロイトークン](deploy_tokens.md)                                                            | `/deploy_tokens`（プロジェクトおよびグループでも利用可能） |
+| [GitLab Duo Agent Platformフロー](duo_agent_platform_flows.md)                                      | `/ai/duo_workflows` |
 | [イベント](events.md)                                                                          | `/events`、`/users/:id/events`（プロジェクトでも利用可能） |
 | [機能フラグ](features.md)                                                                 | `/features` |
 | [Geoノード](geo_nodes.md)                                                                    | `/geo_nodes` |
-| [グループアクティビティー分析](group_activity_analytics.md)                                      | `/analytics/group_activity/{issues_count}` |
+| [GLQL](glql.md)                                                                              | `/glql` |
+| [グループアクティビティ分析](group_activity_analytics.md)                                      | `/analytics/group_activity/{issues_count}` |
 | [ストレージ間グループリポジトリ移動](group_repository_storage_moves.md)                          | `/group_repository_storage_moves` |
 | [GitHubからリポジトリをインポート](import.md#import-repository-from-github)                     | `/import/github` |
 | [Bitbucket Serverからリポジトリをインポート](import.md#import-repository-from-bitbucket-server) | `/import/bitbucket_server` |

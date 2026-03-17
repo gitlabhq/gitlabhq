@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Issue analytics
 ---
 
@@ -32,7 +32,7 @@ A table displays the top 100 issues based on the global page filters, with the f
 
 To view issue analytics:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Issue analytics**. To view the total number of issues for a month, hover over a bar.
 1. Optional. To filter the results, in **Search or filter results** text box, enter your criteria:
 

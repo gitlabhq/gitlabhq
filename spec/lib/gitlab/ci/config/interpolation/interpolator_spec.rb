@@ -33,6 +33,28 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
     end
   end
 
+  context 'when input uses array index access' do
+    let(:header) do
+      { spec: { inputs: { versions: { type: 'array' } } } }
+    end
+
+    let(:content) do
+      { test: 'deploy $[[ inputs.versions[0] ]]' }
+    end
+
+    let(:arguments) do
+      { versions: %w[v1.0 v2.0] }
+    end
+
+    it 'correctly interpolates the array element' do
+      subject.interpolate!
+
+      expect(subject).to be_interpolated
+      expect(subject).to be_valid
+      expect(subject.to_hash).to eq({ test: 'deploy v1.0' })
+    end
+  end
+
   context 'when config has a syntax error' do
     let(:result) { ::Gitlab::Ci::Config::Yaml::Result.new(error: 'Invalid configuration format') }
 

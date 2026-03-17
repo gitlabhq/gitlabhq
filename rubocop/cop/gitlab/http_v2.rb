@@ -22,16 +22,16 @@ module RuboCop
         MSG
 
         # @!method http_v2_node?(node)
+        # @return [method_name, arg_nodes] if matched, nil otherwise
         def_node_matcher :http_v2_node?, <<~PATTERN
-          (send (const (const nil? :Gitlab) :HTTP_V2) {#{METHODS_PATTERN}} ...)
+          (send (const (const nil? :Gitlab) :HTTP_V2) ${#{METHODS_PATTERN}} $...)
         PATTERN
 
         def on_send(node)
-          return unless http_v2_node?(node)
+          method_name, arg_nodes = http_v2_node?(node)
+          return unless method_name
 
           add_offense(node, message: MSG_SEND) do |corrector|
-            _, method_name, *arg_nodes = *node
-
             replacement = "Gitlab::HTTP.#{method_name}(#{arg_nodes.map(&:source).join(', ')})"
 
             corrector.replace(node, replacement)

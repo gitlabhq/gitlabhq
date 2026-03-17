@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: External agents
 ---
 
@@ -23,6 +23,7 @@ title: External agents
 - Introduced in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `ai_flow_triggers`. Enabled by default.
 - Renamed from CLI agents in GitLab 18.6.
 - Enabling in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578318) in GitLab 18.7 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_agents`. Enabled on GitLab.com.
+- Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
 
 {{< /history >}}
 
@@ -100,20 +101,22 @@ without additional agent configuration necessary.
 Required steps to enable and use managed agents:
 
 1. Access the agent in the AI Catalog. Search for the agent name, or use the direct URL.
-1. [Enable the agent in a top-level group](#enable-the-agent-in-a-top-level-group).
-1. [Enable the agent in a project](#enable-in-a-project).
+
+   GitLab-managed external agents display a GitLab-maintained badge ({{< icon name="tanuki-verified" >}}).
+
+1. [Enable the agent](#enable-the-agent).
 1. [Use the external agent](#use-an-external-agent) in issues, epics or merge requests.
 
-### Claude Code Agent 
+### Claude Code Agent
 
-The [Claude Code Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2337/) 
-uses GitLab-managed credentials and does not require additional configuration. 
+The [Claude Code Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2337/)
+uses GitLab-managed credentials and does not require additional configuration.
 This agent is available only on GitLab.com.
 
-### Codex Agent 
+### Codex Agent
 
-The [Codex Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2334/) 
-uses GitLab-managed credentials and does not require additional configuration. 
+The [Codex Agent by GitLab](https://gitlab.com/explore/ai-catalog/agents/2334/)
+uses GitLab-managed credentials and does not require additional configuration.
 This agent is available only on GitLab.com.
 
 ### Amazon Q Developer Agent
@@ -218,11 +221,11 @@ Add variables to your project to determine how GitLab connects to the third-part
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To add or update a variable in the project settings:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and complete the fields:
@@ -257,27 +260,69 @@ The following CI/CD variables are available:
 | Google Gemini CLI          | `GOOGLE_CLOUD_PROJECT`       | Google Cloud project ID. |
 | Google Gemini CLI          | `GOOGLE_CLOUD_LOCATION`      | Google Cloud project location. |
 
-## Enable the agent in a top-level group
+## Enable the agent
+
+Enable an agent to trigger it from an issue, merge request, or discussion.
+
+When you enable an agent in a project, it is enabled in the top-level group for that project at the same time.
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Maintainer or Owner role for the project.
 
-To enable an external agent in a top-level group:
+{{< tabs >}}
 
-1. On the top bar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**, then select the **Agents** tab.
-1. Select the external agent you want to enable.
-1. In the upper-right corner, select **Enable in group**.
-1. From the dropdown list, select the group you want to enable the external agent in.
+{{< tab title="From the managing project" >}}
+
+To enable an external agent:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Automate** > **Agents**.
+1. Select the **Managed** tab, then select the agent you want to enable.
+1. In the upper-right corner, select **Enable**.
+1. Under **Project**, select the project you want to enable the agent in.
+1. For **Add triggers**, select which event types trigger the external agent:
+   - **Mention**: When the service account user is mentioned
+     in a comment on an issue or merge request.
+   - **Assign**: When the service account user is assigned
+     to an issue or merge request.
+   - **Assign reviewer**: When the service account user is assigned
+     as a reviewer to a merge request.
 1. Select **Enable**.
 
-The external agent appears in the group's **Automate** > **Agents** page.
+{{< /tab >}}
+
+{{< tab title="From the AI Catalog" >}}
+
+To enable an external agent:
+
+1. In the top bar, select **Search or go to** > **Explore**.
+1. Select **AI Catalog**, then select the **Agents** tab.
+1. Select the agent you want to enable.
+1. In the upper-right corner, select **Enable**.
+1. Under **Project**, select the project you want to enable the agent in.
+1. For **Add triggers**, select which event types trigger the external agent:
+   - **Mention**: When the service account user is mentioned
+     in a comment on an issue or merge request.
+   - **Assign**: When the service account user is assigned
+     to an issue or merge request.
+   - **Assign reviewer**: When the service account user is assigned
+     as a reviewer to a merge request.
+1. Select **Enable**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The external agent appears in the group and project **Automate** > **Agents** pages.
+Members of any project in the top-level group can now enable the agent in their project.
 
 A service account is created in the group. The name of the account
 follows this naming convention: `ai-<agent>-<group>`.
 
 ## Enable in a project
+
+If an external agent is already enabled in a top-level group, you can enable it in the group's projects.
 
 Prerequisites:
 
@@ -286,7 +331,7 @@ Prerequisites:
 
 To enable an external agent in a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Agents**.
 1. In the upper-right corner, select **Enable agent from group**.
 1. From the dropdown list, select the external agent you want to enable.
@@ -310,7 +355,7 @@ Prerequisites:
 
 - You must have the Developer, Maintainer, or Owner role for the project.
 - If you created an external agent from the AI Catalog, the agent must be enabled in your project.
-- To allow the agent to push to workload branches (`workloads/*`), you might have to create [branch rules](../../project/repository/branches/branch_rules.md).
+- To allow the agent to push to agent created branches `^duo/(fix|feature|refactor|docs/).*`, you might have to create [branch rules](../../project/repository/branches/branch_rules.md).
 - GitLab Self-Managed only. If you created an external agent from the AI Catalog, the agent must be enabled in your project.
 
 1. In your project, open an issue, merge request, or epic.
@@ -350,8 +395,7 @@ you can create an external agent with the AI Catalog and configure it to run in 
 The preferred workflow is:
 
 1. Create the agent in the AI Catalog.
-1. Enable the agent for the top-level group.
-1. Add the agent to your project and specify a trigger that determines how you call the agent.
+1. Enable the agent for your project and specify a trigger that determines how you call the agent.
 
 In this case, a service account is created for you.
 When the agent runs, it uses a combination of the user's memberships and the service account memberships.
@@ -359,17 +403,38 @@ This combination is called a [composite identity](../composite_identity.md).
 
 If you'd prefer, you can [create an external agent manually](#create-an-external-agent-manually).
 
+### Agent visibility
+
+{{< history >}}
+
+- Roles that can view private agents [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
+
+{{< /history >}}
+
+When you create a custom external agent, you select a project to manage it and choose
+whether the agent is public or private.
+
+Public agents:
+
+- Can be viewed by anyone and can be enabled in any project that meets the prerequisites.
+
+Private agents:
+
+- Can be viewed only by members of the managing project who have the Guest, Planner,
+  Reporter, Developer, Maintainer, or Owner role.
+- Cannot be enabled in projects other than the managing project.
+
 ### Create the agent in the AI Catalog
 
 Start by creating the external agent in the AI Catalog.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
 To create an external agent:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Agents**.
 1. Select **New agent**.
 1. Under **Basic information**:
@@ -411,7 +476,7 @@ To create a configuration file:
 
 #### Create a service account
 
-You must create [a service account](../../../user/profile/service_accounts.md) that has access to
+You must create [a service account](../../profile/service_accounts.md) that has access to
 the projects where you expect to use an external agent.
 
 When the agent runs, it uses a combination of the user's memberships and the service account memberships.
@@ -424,27 +489,30 @@ Prerequisites:
   - The Owner role for a top-level group and
     [permission to create service accounts](../../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
 
-Each project that mentions an external agent must have a unique [group service account](../../../user/profile/service_accounts.md).
+Each project that mentions an external agent must have a unique [group service account](../../profile/service_accounts.md).
 Mention the service account username when you assign tasks to the external agent.
 
 If you create an external agent from the AI Catalog and enable it in a top-level group, a service account is automatically created with the name `ai-<agent>-<group>`. For example, if you enable an agent named `Claude code agent` in the `GitLab Duo` group, the service account name is `ai-claude-code-agent-gitlab-duo`.
 
-{{< alert type="warning" >}}
-
-If you use the same service account across multiple projects, that gives the external agent attached to that service account access to all of those projects.
-
-{{< /alert >}}
+> [!warning]
+> If you use the same service account across multiple projects, that gives the external agent attached to that service account access to all of those projects.
 
 To set up the service account, take the following actions. If you do not have sufficient
 permissions, ask your instance administrator or top-level group Owner for help.
 
-1. For the top-level group, [create a service account](../../../user/profile/service_accounts.md#create-a-service-account).
+1. For the top-level group, [create a service account](../../profile/service_accounts.md#create-a-service-account).
    Service accounts created for the instance are not supported.
-1. [Create a personal access token for the service account](../../../user/profile/service_accounts.md#create-a-personal-access-token-for-a-service-account) with the following [scopes](../../../user/profile/personal_access_tokens.md#personal-access-token-scopes):
+
+   > [!note]
+   > When you configure an existing service account as an external agent,
+   > no personal access tokens can be associated with that account.
+   > This behavior is meant to keep service accounts secure.
+
+1. [Create a personal access token for the service account](../../profile/service_accounts.md#create-a-personal-access-token-for-a-service-account) with the following [scopes](../../profile/personal_access_tokens.md#personal-access-token-scopes):
    - `write_repository`
    - `api`
    - `ai_features`
-1. [Add the service account to your project](../../../user/project/members/_index.md#add-users-to-a-project)
+1. [Add the service account to your project](../../project/members/_index.md#add-users-to-a-project)
    with the Developer role. This ensures the service account has the minimum permissions necessary.
 
 When adding the service account to your project, you must enter the exact name

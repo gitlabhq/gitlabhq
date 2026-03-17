@@ -18,7 +18,12 @@ module MergeRequests
     end
 
     def hook_data(merge_request, action, old_rev: nil, old_associations: {}, system: false, system_action: nil)
-      hook_data = merge_request.to_hook_data(current_user, old_associations: old_associations, action: action)
+      # NOTE: actioned_at represents when the webhook action occurred.
+      #   Setting it to Time.current to capture when the webhook was fired for now, but we can consider allowing each service
+      #   to provide relevant timestamps to override this later if more precision is required (e.g., approved_at, merged_at, closed_at).
+      actioned_at = Time.current
+
+      hook_data = merge_request.to_hook_data(current_user, old_associations: old_associations, action: action, actioned_at: actioned_at)
 
       if old_rev && !Gitlab::Git.blank_ref?(old_rev)
         hook_data[:object_attributes][:oldrev] = old_rev
@@ -323,11 +328,6 @@ module MergeRequests
 
       todo_service.merge_request_became_unmergeable(merge_request)
     end
-
-    def duo_code_review_bot
-      ::Users::Internal.duo_code_review_bot
-    end
-    strong_memoize_attr :duo_code_review_bot
 
     def invalidate_all_users_cache_count(merge_request)
       invalidate_cache_counts(merge_request, users: [*merge_request.assignees, *merge_request.reviewers, merge_request.author].uniq)

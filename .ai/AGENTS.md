@@ -13,6 +13,7 @@ Load the following instruction files based on your current task:
 - When working with **database migrations or schema**: Read @.ai/database.md
 - When working with **tests (RSpec or Jest)**: Read @.ai/testing.md
 - When working with **code style or linting**: Read @.ai/code-style.md
+- When working with **CI/CD pipelines or `.gitlab-ci.yml`**: Read @.ai/ci-cd.md
 
 ## Project Notes
 

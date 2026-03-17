@@ -102,18 +102,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     it "returns the items with widget iteration enabled" do
       expect(with_enabled_widget_definition).not_to include(issue)
     end
-
-    context "when the FF for system defined types is disabled" do
-      before do
-        stub_feature_flags(work_item_system_defined_type: false)
-        # Ensure that the widget definition does not exists.
-        WorkItems::WidgetDefinition.where(widget_type: "iteration", work_item_type: issue.work_item_type).delete_all
-      end
-
-      it "returns the items with widget iteration enabled" do
-        expect(with_enabled_widget_definition).not_to include(issue)
-      end
-    end
   end
 
   describe '.with_parent_ids' do
@@ -449,22 +437,13 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
     end
 
-    context "when using the work_item_type model" do
+    context "when using the system defined work_item_type model" do
       before do
-        stub_feature_flags(work_item_system_defined_type: false)
+        allow(custom_type_without_widgets).to receive(:widget_definitions).and_return([])
       end
 
-      let_it_be(:custom_type_without_widgets) do
-        create(:work_item_type, :task) do |work_item_type|
-          work_item_type.widget_definitions
-            .where(widget_type: %w[assignees labels start_and_due_date current_user_todos development])
-            .delete_all
-
-          work_item_type
-        end
-      end
-
-      let_it_be(:custom_work_item_type) { create(:work_item_type, :issue) }
+      let_it_be(:custom_type_without_widgets) { build(:work_item_system_defined_type, :task) }
+      let_it_be(:custom_work_item_type) { build(:work_item_system_defined_type) }
 
       it_behaves_like "supports quick action commands"
     end
@@ -709,16 +688,18 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   end
 
   describe '#allowed_work_item_type_change' do
-    let_it_be(:all_types) { WorkItems::Type::BASE_TYPES.keys }
+    context "when using the WorkItems::TypesFramework::SytemDefined::Type model" do
+      let_it_be(:all_types) { WorkItems::TypesFramework::SystemDefined::Type.all }
 
-    it 'is possible to change between all types', :aggregate_failures do
-      all_types.each do |type|
-        work_item = build(:work_item, type, project: reusable_project)
+      it 'is possible to change between all types', :aggregate_failures do
+        all_types.each do |type|
+          work_item = build(:work_item, work_item_type: type, project: reusable_project)
 
-        (all_types - [type]).each do |new_type|
-          work_item.work_item_type_id = create(:work_item_type, new_type).id
+          (all_types - [type]).each do |new_type|
+            work_item.work_item_type_id = new_type
 
-          expect(work_item).to be_valid, "#{type} to #{new_type}"
+            expect(work_item).to be_valid, "#{type} to #{new_type}"
+          end
         end
       end
     end
@@ -761,7 +742,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
   describe '#validate_child_restrictions' do
     let_it_be(:project) { create(:project) }
-    let_it_be(:parent_work_item) { create(:work_item, :issue, project: project) }
+    let_it_be_with_refind(:parent_work_item) { create(:work_item, :issue, project: project) }
     let_it_be(:task_child) { create(:work_item, :task, project: project) }
 
     context 'when there are no child links' do

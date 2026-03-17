@@ -13,12 +13,14 @@ module Pajamas
       name:,
       label_options: {},
       checkbox_options: {},
+      checkbox_wrapper_options: {},
       value: '1',
       checked: false
     )
       @name = name
       @label_options = label_options
       @input_options = checkbox_options
+      @checkbox_wrapper_options = checkbox_wrapper_options
       @value = value
       @checked = checked
     end
@@ -29,6 +31,7 @@ module Pajamas
       :name,
       :label_options,
       :input_options,
+      :checkbox_wrapper_options,
       :value,
       :checked
     )

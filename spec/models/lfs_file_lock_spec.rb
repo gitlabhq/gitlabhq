@@ -56,6 +56,16 @@ RSpec.describe LfsFileLock, feature_category: :source_code_management do
         expect(lfs_file_lock.can_be_unlocked_by?(developer)).to eq(false)
       end
     end
+
+    context 'when current_user is nil' do
+      it "can't be unlocked" do
+        expect(lfs_file_lock.can_be_unlocked_by?(nil)).to eq(false)
+      end
+
+      it "can't be unlocked even when forced" do
+        expect(lfs_file_lock.can_be_unlocked_by?(nil, true)).to eq(false)
+      end
+    end
   end
 
   describe '#for_path!(path)' do

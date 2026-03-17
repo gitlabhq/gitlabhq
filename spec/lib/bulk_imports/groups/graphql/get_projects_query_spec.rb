@@ -9,9 +9,7 @@ RSpec.describe BulkImports::Groups::Graphql::GetProjectsQuery, feature_category:
 
   subject(:query) { described_class.new(context: context) }
 
-  context 'when the test is flaky', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/454244' do
-    it_behaves_like 'a valid Direct Transfer GraphQL query'
-  end
+  it_behaves_like 'a valid Direct Transfer GraphQL query'
 
   context 'with invalid variables' do
     it 'raises an error' do

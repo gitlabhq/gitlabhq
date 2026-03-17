@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Authentication and authorization glossary
 description: Authentication, authorization, permissions, roles, and access control terminology.
 ---
@@ -116,11 +116,11 @@ merge requests, snippets, pipelines, milestones etc.
 
 ### Feature Category
 
-Resources belong to feature categories that are defined in our [monorepo](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_categories.yml) to associate resources against feature domains owned by engineering teams within GitLab. 
+Resources belong to feature categories that are defined in our [monorepo](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/feature_categories.yml) to associate resources against feature domains owned by engineering teams within GitLab.
 
 ## Permission
 
-The specific actions a user can perform on GitLab resources like creating issues, pushing code, or managing project settings. These make up roles. 
+The specific actions a user can perform on GitLab resources like creating issues, pushing code, or managing project settings. These make up roles.
 Internally within GitLab engineering, they are called assignable permission groups and are defined as YAML definitions in our [monorepo](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/authz/permission_groups/assignable_permissions).
 
 For more information, see [roles and permissions](../user/permissions.md).

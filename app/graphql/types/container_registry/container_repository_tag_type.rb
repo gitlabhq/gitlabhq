@@ -27,7 +27,6 @@ module Types
       field :protection,
         Types::ContainerRegistry::Protection::AccessLevelType,
         null: true,
-        experiment: { milestone: '17.9' },
         method: :protection_rule,
         description: 'Minimum GitLab access level required to push and delete container image tags. ' \
           'If the value is `nil`, no minimum access level is enforced. ' \

@@ -6,6 +6,25 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:package) { create(:pypi_package) }
 
+  shared_examples 'an instrumented service' do
+    it "triggers an internal event" do
+      expect { execute }.to trigger_internal_events('delete_package_from_registry').with(
+        category: 'InternalEventTracking',
+        project: package.project,
+        namespace: package.project.group,
+        user: user,
+        additional_properties: {
+          label: package.package_type,
+          property: 'user'
+        }
+      ).and increment_usage_metrics(
+        "counts.package_events_i_package_#{package.package_type}_delete_package",
+        'counts.package_events_i_package_delete_package',
+        'counts.package_events_i_package_delete_package_by_user'
+      )
+    end
+  end
+
   describe '#execute' do
     let(:service) { described_class.new(container: package, current_user: user) }
 
@@ -32,6 +51,8 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
           expect(response).to be_success
           expect(response.message).to eq("Package was successfully marked as pending destruction")
         end
+
+        it_behaves_like 'an instrumented service'
       end
 
       context 'when it is not successful' do
@@ -65,6 +86,8 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
           expect(package).to receive(:sync_npm_metadata_cache).and_call_original
           expect(execute).to be_success
         end
+
+        it_behaves_like 'an instrumented service'
       end
 
       context 'with helm package' do
@@ -88,6 +111,8 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
               expect(context_proc.call(expected_metadatum)).to eq(project: package.project, user: user)
             end
         end
+
+        it_behaves_like 'an instrumented service'
       end
 
       context 'with maven package' do
@@ -97,6 +122,8 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
           expect(package).to receive(:sync_maven_metadata).and_call_original
           expect(execute).to be_success
         end
+
+        it_behaves_like 'an instrumented service'
       end
     end
 

@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: Switchboard
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure SAML single sign-on (SSO) authentication for GitLab Dedicated.
 title: SAML SSO for GitLab Dedicated
 ---

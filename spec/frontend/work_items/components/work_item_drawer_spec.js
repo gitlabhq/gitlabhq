@@ -67,6 +67,7 @@ describe('WorkItemDrawer', () => {
         open,
         issuableType,
         isBoard,
+        viewContext: 'drawer_list',
       },
       listeners: {
         customEvent: mockListener,
@@ -188,13 +189,13 @@ describe('WorkItemDrawer', () => {
       });
     });
 
-    it('emits `workItemDeleted` event when on successful mutation', async () => {
+    it('emits `work-item-deleted` event when on successful mutation', async () => {
       createComponent({ open: true });
       findWorkItem().vm.$emit('deleteWorkItem', { workItemId: '1' });
 
       await waitForPromises();
 
-      expect(wrapper.emitted('workItemDeleted')).toHaveLength(1);
+      expect(wrapper.emitted('work-item-deleted')).toHaveLength(1);
     });
 
     it('emits `deleteWorkItemError` event when mutation failed', async () => {

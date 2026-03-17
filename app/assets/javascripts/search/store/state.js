@@ -10,6 +10,7 @@ const createState = ({
   zoektAvailable,
   groupInitialJson,
   projectInitialJson,
+  workItemTypes,
   defaultBranchName,
   repositoryRef,
 }) => ({
@@ -30,6 +31,7 @@ const createState = ({
     fetching: false,
     data: [],
   },
+  workItemTypes: workItemTypes || [],
   searchLabelString: '',
   searchType,
   searchLevel,

@@ -32,6 +32,7 @@ import {
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
+  VIEW_CONTEXT,
   WIDGET_TYPE_NOTIFICATIONS,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
@@ -85,6 +86,7 @@ export default {
     getWorkItemTypeConfiguration: {
       default: () => {},
     },
+    viewContext: { default: VIEW_CONTEXT.fullScreen },
   },
   props: {
     fullPath: {
@@ -289,6 +291,12 @@ export default {
     },
   },
   computed: {
+    // eslint-disable-next-line vue/no-unused-properties
+    tracking() {
+      return {
+        extra: { viewContext: this.viewContext },
+      };
+    },
     i18n() {
       return {
         deleteWorkItem: sprintf(s__('WorkItem|Delete %{workItemType}'), {
@@ -862,7 +870,7 @@ export default {
       :namespace-full-name="namespaceFullName"
       :is-group="isGroup"
       hide-button
-      @workItemCreated="$emit('workItemCreated')"
+      @work-item-created="$emit('work-item-created')"
       @hideModal="isCreateWorkItemModalVisible = false"
     />
     <work-item-change-type-modal

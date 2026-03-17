@@ -1,5 +1,5 @@
 - if @diff_hunk.header
-  %tr.rd-hunk-header.rd-hunk-header-inline
+  %tr.rd-hunk-header.rd-hunk-header-inline{ data: { hunk_header: true } }
     %td.rd-hunk-header-buttons{ colspan: '2' }= render RapidDiffs::Viewers::Text::ExpandLinesComponent.new(directions: @diff_hunk.header.expand_directions)
     %td.rd-hunk-header-content= @diff_hunk.header.text
 

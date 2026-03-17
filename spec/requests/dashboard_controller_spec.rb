@@ -4,12 +4,24 @@ require 'spec_helper'
 
 RSpec.describe DashboardController, feature_category: :system_access do
   context 'token authentication' do
+    before do
+      stub_feature_flags(work_item_planning_view: false)
+    end
+
     it_behaves_like 'authenticates sessionless user for the request spec', 'issues atom', public_resource: false do
       let(:url) { issues_dashboard_url(:atom, assignee_username: user.username) }
     end
 
     it_behaves_like 'authenticates sessionless user for the request spec', 'issues_calendar ics', public_resource: false do
       let(:url) { issues_dashboard_url(:ics, assignee_username: user.username) }
+    end
+
+    it_behaves_like 'authenticates sessionless user for the request spec', 'work_items atom', public_resource: false do
+      let(:url) { work_items_dashboard_url(:atom, assignee_username: user.username) }
+    end
+
+    it_behaves_like 'authenticates sessionless user for the request spec', 'work_items_calendar ics', public_resource: false do
+      let(:url) { work_items_dashboard_url(:ics, assignee_username: user.username) }
     end
   end
 

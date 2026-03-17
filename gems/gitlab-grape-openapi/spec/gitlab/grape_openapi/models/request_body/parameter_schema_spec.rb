@@ -27,6 +27,61 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
       parameter_schema.build(key, param_options)
     end
 
+    describe 'allow_blank behavior' do
+      let(:key) { :name }
+
+      context 'when allow_blank is not set' do
+        let(:param_options) { { type: 'String', required: false } }
+
+        it 'adds nullable: true' do
+          expect(method_call[:nullable]).to be true
+        end
+      end
+
+      context 'when allow_blank: true' do
+        let(:param_options) { { type: 'String', allow_blank: true, required: false } }
+
+        it 'adds nullable: true' do
+          expect(method_call[:nullable]).to be true
+        end
+      end
+
+      context 'when allow_blank: false with a string type' do
+        let(:param_options) { { type: 'String', allow_blank: false, required: false } }
+
+        it 'adds minLength: 1 and omits nullable' do
+          expect(method_call[:minLength]).to eq(1)
+          expect(method_call[:nullable]).to be_nil
+        end
+      end
+
+      context 'when allow_blank: false with a non-string type' do
+        let(:param_options) { { type: 'Integer', allow_blank: false, required: false } }
+
+        it 'omits both nullable and minLength' do
+          expect(method_call[:nullable]).to be_nil
+          expect(method_call[:minLength]).to be_nil
+        end
+      end
+
+      context 'when params are required with a values constraint' do
+        let(:param_options) { { type: 'String', required: true, values: %w[foo bar] } }
+
+        it 'adds minLength: 1 and omits nullable' do
+          expect(method_call[:minLength]).to eq(1)
+          expect(method_call[:nullable]).to be_nil
+        end
+      end
+
+      context 'when params are optional with a values constraint' do
+        let(:param_options) { { type: 'String', required: false, values: %w[foo bar] } }
+
+        it 'adds nullable: true' do
+          expect(method_call[:nullable]).to be true
+        end
+      end
+    end
+
     describe 'when type starts with "[" and has no comma (e.g., [String])' do
       let(:key) { :items }
 
@@ -37,7 +92,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'array',
             items: { type: 'string' },
-            description: 'Milestone titles'
+            description: 'Milestone titles',
+            nullable: true
           )
         end
       end
@@ -49,7 +105,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'array',
             items: { type: 'integer' },
-            description: 'IDs'
+            description: 'IDs',
+            nullable: true
           )
         end
       end
@@ -60,7 +117,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         it 'generates array schema without description' do
           expect(method_call).to eq(
             type: 'array',
-            items: { type: 'string' }
+            items: { type: 'string' },
+            nullable: true
           )
         end
       end
@@ -77,7 +135,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
             oneOf: [
               { type: 'string' },
               { type: 'integer' }
-            ]
+            ],
+            nullable: true
           )
         end
       end
@@ -100,7 +159,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
             {
               type: 'string',
               format: 'binary',
-              description: 'User profile picture'
+              description: 'User profile picture',
+              nullable: true
             }
           )
         end
@@ -120,7 +180,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
             {
               type: 'string',
               format: 'binary',
-              description: 'User profile picture'
+              description: 'User profile picture',
+              nullable: true
             }
           )
         end
@@ -133,7 +194,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
       context 'with integer range' do
         let(:param_options) { { type: 'Integer', desc: 'Position', required: true, values: (1..20) } }
 
-        it 'generates complete range schema' do
+        it 'generates complete range schema without nullable' do
           expect(method_call).to eq(
             type: 'integer',
             minimum: 1,
@@ -146,11 +207,52 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
       context 'without description' do
         let(:param_options) { { type: 'Integer', required: true, values: (5..10) } }
 
-        it 'generates range schema without description' do
+        it 'generates range schema without description or nullable' do
           expect(method_call).to eq(
             type: 'integer',
             minimum: 5,
             maximum: 10
+          )
+        end
+      end
+
+      context 'with default value' do
+        let(:param_options) { { type: 'Integer', desc: 'Limit', required: false, values: 1..1000, default: 100 } }
+
+        it 'includes both range and default' do
+          expect(method_call).to eq(
+            type: 'integer',
+            minimum: 1,
+            maximum: 1000,
+            default: 100,
+            description: 'Limit',
+            nullable: true
+          )
+        end
+      end
+
+      context 'with Proc default value' do
+        let(:param_options) { { type: 'Integer', required: false, values: 1..100, default: -> { 50 } } }
+
+        it 'does not include Proc default (because the value is computed at runtime)' do
+          expect(method_call).to eq(
+            type: 'integer',
+            minimum: 1,
+            maximum: 100,
+            nullable: true
+          )
+        end
+      end
+
+      context 'with Time object default' do
+        let(:param_options) { { type: 'Integer', required: false, values: 1..100, default: Time.current } }
+
+        it 'does not include Time default (not serializable)' do
+          expect(method_call).to eq(
+            type: 'integer',
+            minimum: 1,
+            maximum: 100,
+            nullable: true
           )
         end
       end
@@ -164,11 +266,12 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           { type: 'String', desc: 'User status', required: true, values: %w[active inactive pending] }
         end
 
-        it 'generates complete enum schema' do
+        it 'generates complete enum schema with minLength' do
           expect(method_call).to eq(
             type: 'string',
             enum: %w[active inactive pending],
-            description: 'User status'
+            description: 'User status',
+            minLength: 1
           )
         end
       end
@@ -176,10 +279,11 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
       context 'without description' do
         let(:param_options) { { type: 'String', required: true, values: %w[yes no] } }
 
-        it 'generates enum schema without description' do
+        it 'generates enum schema with minLength' do
           expect(method_call).to eq(
             type: 'string',
-            enum: %w[yes no]
+            enum: %w[yes no],
+            minLength: 1
           )
         end
       end
@@ -187,10 +291,11 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
       context 'with Proc enum values' do
         let(:param_options) { { type: 'String', desc: 'Dynamic values', required: true, values: -> { %w[a b c] } } }
 
-        it 'generates schema without enum when values is a Proc' do
+        it 'generates schema without enum and with minLength' do
           expect(method_call).to eq(
             type: 'string',
-            description: 'Dynamic values'
+            description: 'Dynamic values',
+            minLength: 1
           )
         end
       end
@@ -198,9 +303,53 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
       context 'with lambda enum values' do
         let(:param_options) { { type: 'Integer', required: true, values: -> { [1, 2, 3] } } }
 
-        it 'generates schema without enum when values is a lambda' do
+        it 'generates schema without enum or nullable' do
           expect(method_call).to eq(
             type: 'integer'
+          )
+        end
+      end
+
+      context 'with enum and default value' do
+        let(:param_options) do
+          { type: 'String', desc: 'Priority', required: false, values: %w[low medium high], default: 'medium' }
+        end
+
+        it 'includes both enum and default' do
+          expect(method_call).to eq(
+            type: 'string',
+            enum: %w[low medium high],
+            default: 'medium',
+            description: 'Priority',
+            nullable: true
+          )
+        end
+      end
+
+      context 'with enum and Proc default value (because the value is computed at runtime)' do
+        let(:param_options) do
+          { type: 'String', required: false, values: %w[low medium high], default: -> { 'medium' } }
+        end
+
+        it 'includes enum but not Proc default' do
+          expect(method_call).to eq(
+            type: 'string',
+            enum: %w[low medium high],
+            nullable: true
+          )
+        end
+      end
+
+      context 'with enum and Time object default' do
+        let(:param_options) do
+          { type: 'String', required: false, values: %w[low medium high], default: Time.current }
+        end
+
+        it 'includes enum but not Time default (not serializable)' do
+          expect(method_call).to eq(
+            type: 'string',
+            enum: %w[low medium high],
+            nullable: true
           )
         end
       end
@@ -227,12 +376,13 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'array',
             description: 'List of items',
+            nullable: true,
             items: {
               type: 'object',
               properties: {
-                'name' => { type: 'string', description: 'Item name' },
-                'quantity' => { type: 'integer', description: 'Quantity' },
-                'notes' => { type: 'string', description: 'Optional notes' }
+                'name' => { type: 'string', description: 'Item name', nullable: true },
+                'quantity' => { type: 'integer', description: 'Quantity', nullable: true },
+                'notes' => { type: 'string', description: 'Optional notes', nullable: true }
               },
               required: %w[name quantity]
             }
@@ -247,6 +397,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'array',
             description: 'Empty array',
+            nullable: true,
             items: { type: 'object' }
           )
         end
@@ -268,10 +419,11 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'array',
             description: 'Optional fields',
+            nullable: true,
             items: {
               type: 'object',
               properties: {
-                'label' => { type: 'string', description: 'Label' }
+                'label' => { type: 'string', description: 'Label', nullable: true }
               }
             }
           )
@@ -289,7 +441,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'array',
             items: { type: 'arraystring' },
-            description: 'User tags'
+            description: 'User tags',
+            nullable: true
           )
         end
       end
@@ -300,7 +453,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         it 'generates array schema without description' do
           expect(method_call).to eq(
             type: 'array',
-            items: { type: 'arrayinteger' }
+            items: { type: 'arrayinteger' },
+            nullable: true
           )
         end
       end
@@ -327,10 +481,11 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'object',
             description: 'Metadata object',
+            nullable: true,
             properties: {
-              'title' => { type: 'string', description: 'Title' },
-              'description' => { type: 'string', description: 'Description' },
-              'version' => { type: 'integer', description: 'Version number' }
+              'title' => { type: 'string', description: 'Title', nullable: true },
+              'description' => { type: 'string', description: 'Description', nullable: true },
+              'version' => { type: 'integer', description: 'Version number', nullable: true }
             },
             required: %w[title version]
           )
@@ -343,7 +498,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         it 'generates object schema without properties' do
           expect(method_call).to eq(
             type: 'object',
-            description: 'Empty hash'
+            description: 'Empty hash',
+            nullable: true
           )
         end
       end
@@ -382,19 +538,22 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'object',
             description: 'Configuration object',
+            nullable: true,
             properties: {
               'database' => {
                 type: 'object',
                 description: 'Database configuration',
+                nullable: true,
                 properties: {
-                  'host' => { type: 'string', description: 'Database host' },
-                  'port' => { type: 'integer', description: 'Database port', default: 5432 },
+                  'host' => { type: 'string', description: 'Database host', nullable: true },
+                  'port' => { type: 'integer', description: 'Database port', default: 5432, nullable: true },
                   'credentials' => {
                     type: 'object',
                     description: 'Database credentials',
+                    nullable: true,
                     properties: {
-                      'username' => { type: 'string', description: 'Username' },
-                      'password' => { type: 'string', description: 'Password' }
+                      'username' => { type: 'string', description: 'Username', nullable: true },
+                      'password' => { type: 'string', description: 'Password', nullable: true }
                     },
                     required: %w[username password]
                   }
@@ -433,16 +592,19 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'object',
             description: 'Object that contains assets for the release',
+            nullable: true,
             properties: {
               'links' => {
                 type: 'array',
                 description: 'Link information about the release',
+                nullable: true,
                 items: {
                   type: 'object',
                   properties: {
-                    'name' => { type: 'string', description: 'The name of the link' },
-                    'url' => { type: 'string', description: 'The URL of the link' },
-                    'direct_asset_path' => { type: 'string', description: 'Optional path for a direct asset link' }
+                    'name' => { type: 'string', description: 'The name of the link', nullable: true },
+                    'url' => { type: 'string', description: 'The URL of the link', nullable: true },
+                    'direct_asset_path' => { type: 'string', description: 'Optional path for a direct asset link',
+                                             nullable: true }
                   },
                   required: %w[name url]
                 }
@@ -462,7 +624,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         it 'generates complete string schema' do
           expect(method_call).to eq(
             type: 'string',
-            description: 'User name'
+            description: 'User name',
+            nullable: true
           )
         end
       end
@@ -473,7 +636,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         it 'generates complete integer schema' do
           expect(method_call).to eq(
             type: 'integer',
-            description: 'User age'
+            description: 'User age',
+            nullable: true
           )
         end
       end
@@ -484,7 +648,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         it 'generates complete boolean schema' do
           expect(method_call).to eq(
             type: 'boolean',
-            description: 'Is active'
+            description: 'Is active',
+            nullable: true
           )
         end
       end
@@ -496,7 +661,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'string',
             format: 'date-time',
-            description: 'Creation time'
+            description: 'Creation time',
+            nullable: true
           )
         end
       end
@@ -507,7 +673,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         it 'generates complete object schema' do
           expect(method_call).to eq(
             type: 'object',
-            description: 'Metadata object'
+            description: 'Metadata object',
+            nullable: true
           )
         end
       end
@@ -518,7 +685,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         it 'defaults to string type' do
           expect(method_call).to eq(
             type: 'string',
-            description: 'Some data'
+            description: 'Some data',
+            nullable: true
           )
         end
       end
@@ -527,7 +695,7 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         let(:param_options) { { type: 'String', required: true } }
 
         it 'generates schema without description' do
-          expect(method_call).to eq(type: 'string')
+          expect(method_call).to eq(type: 'string', nullable: true)
         end
       end
 
@@ -538,7 +706,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'string',
             description: 'User role',
-            default: 'member'
+            default: 'member',
+            nullable: true
           )
         end
       end
@@ -557,7 +726,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'string',
             description: 'User email',
-            example: 'user@example.com'
+            example: 'user@example.com',
+            nullable: true
           )
         end
       end
@@ -578,7 +748,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
           expect(method_call).to eq(
             type: 'string',
             description: 'Username',
-            pattern: '^[a-z0-9_]+$'
+            pattern: '^[a-z0-9_]+$',
+            nullable: true
           )
         end
       end
@@ -610,7 +781,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
             default: 'guest',
             description: 'Username',
             example: 'john_doe',
-            pattern: '^[a-z_]+$'
+            pattern: '^[a-z_]+$',
+            nullable: true
           )
         end
       end
@@ -621,7 +793,8 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
         it 'generates schema without default when default is a Proc' do
           expect(method_call).to eq(
             type: 'string',
-            description: 'Dynamic default'
+            description: 'Dynamic default',
+            nullable: true
           )
         end
       end
@@ -631,7 +804,267 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::RequestBody::ParameterSchema do
 
         it 'generates schema without default when default is a lambda' do
           expect(method_call).to eq(
-            type: 'integer'
+            type: 'integer',
+            nullable: true
+          )
+        end
+      end
+
+      context 'with Time object default' do
+        let(:param_options) { { type: 'String', required: false, default: Time.current } }
+
+        it 'generates schema without default when default is a Time (not serializable)' do
+          expect(method_call).to eq(
+            type: 'string',
+            nullable: true
+          )
+        end
+      end
+    end
+
+    describe "coercer mappings" do
+      before do
+        Gitlab::GrapeOpenapi.configuration.coercer_mappings = {
+          "CommaSeparatedToArray" => {
+            type: "array",
+            items_type: "string",
+            style: "form",
+            explode: false
+          },
+          "CommaSeparatedToIntegerArray" => {
+            type: "array",
+            items_type: "integer",
+            style: "form",
+            explode: false
+          },
+          "HashOfIntegerValues" => {
+            type: "object",
+            additional_properties: { type: "integer" }
+          },
+          "HashWithDirectAdditionalProperties" => {
+            type: "object",
+            additional_properties: { type: "string", format: "date-time" }
+          },
+          "urlsafe_decode64" => {
+            type: "string",
+            format: "byte"
+          }
+        }
+      end
+
+      after do
+        Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+      end
+
+      context "when coerce_with matches CommaSeparatedToArray" do
+        let(:key) { :labels }
+        let(:param_options) { { type: "[String]", desc: "Comma-separated labels", required: false } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:labels],
+              options: {
+                type: Array,
+                method: TestValidations::Types::CommaSeparatedToArray.coerce
+              },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "generates array schema with string items" do
+          expect(method_call).to eq(
+            { type: "array", items: { type: "string" }, description: "Comma-separated labels", nullable: true }
+          )
+        end
+      end
+
+      context "when coerce_with matches CommaSeparatedToIntegerArray" do
+        let(:key) { :ids }
+        let(:param_options) { { type: "[Integer]", desc: "Comma-separated IDs", required: true } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:ids],
+              options: {
+                type: Array,
+                method: TestValidations::Types::CommaSeparatedToIntegerArray.coerce
+              },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "generates array schema with integer items" do
+          expect(method_call).to eq(
+            { type: "array", items: { type: "integer" }, description: "Comma-separated IDs", nullable: true }
+          )
+        end
+      end
+
+      context "when coerce_with matches HashOfIntegerValues" do
+        let(:key) { :counts }
+        let(:param_options) { { type: "Hash", desc: "Counts by category", required: false } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:counts],
+              options: {
+                type: Hash,
+                method: TestValidations::Types::HashOfIntegerValues.coerce
+              },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "generates object schema with additionalProperties" do
+          expect(method_call).to eq(
+            {
+              type: "object",
+              additional_properties: { type: "integer" },
+              description: "Counts by category",
+              nullable: true
+            }
+          )
+        end
+      end
+
+      context "when coerce_with matches urlsafe_decode64" do
+        let(:key) { :encoded_data }
+        let(:param_options) { { type: "String", desc: "Base64-encoded data", required: false } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:encoded_data],
+              options: { type: String, method: Struct.new(:name).new(:urlsafe_decode64) },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "generates string schema with byte format" do
+          expect(method_call).to eq(
+            { type: "string", format: "byte", description: "Base64-encoded data", nullable: true }
+          )
+        end
+      end
+
+      context "when no coercer mapping matches a named coercer" do
+        let(:key) { :data }
+        let(:param_options) { { type: "String", desc: "Some data", required: true } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:data],
+              options: {
+                type: String,
+                method: TestValidations::Types::SomeUnknownCoercer.coerce
+              },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "raises an error" do
+          expect do
+            method_call
+          end.to raise_error(Gitlab::GrapeOpenapi::GenerationError, /No OpenAPI schema mapping found for coercer/)
+        end
+      end
+
+      context "when no coercer mapping matches an inline lambda" do
+        let(:key) { :data }
+        let(:param_options) { { type: "String", desc: "Some data", required: true } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:data],
+              options: { type: String, method: ->(v) { v.downcase } },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "falls back to default schema generation" do
+          expect(method_call).to eq({ type: "string", description: "Some data", nullable: true })
+        end
+      end
+
+      context "when no coerce validation exists" do
+        let(:key) { :name }
+        let(:param_options) { { type: "String", desc: "A name", required: true } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:name],
+              options: /^[a-z]+$/,
+              validator_class: Grape::Validations::Validators::RegexpValidator
+            }
+          ]
+        end
+
+        it "falls back to default schema generation with pattern" do
+          expect(method_call).to eq({ type: "string", description: "A name", pattern: "^[a-z]+$", nullable: true })
+        end
+      end
+
+      context "when coercer_mappings is empty with a named coercer" do
+        before do
+          Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+        end
+
+        let(:key) { :labels }
+        let(:param_options) { { type: "[String]", desc: "Labels", required: false } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:labels],
+              options: {
+                type: Array,
+                method: TestValidations::Types::CommaSeparatedToArray.coerce
+              },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "raises an error" do
+          expect do
+            method_call
+          end.to raise_error(Gitlab::GrapeOpenapi::GenerationError, /No OpenAPI schema mapping found for coercer/)
+        end
+      end
+
+      context "when coercer_mappings is empty with an inline lambda" do
+        before do
+          Gitlab::GrapeOpenapi.configuration.coercer_mappings = {}
+        end
+
+        let(:key) { :labels }
+        let(:param_options) { { type: "[String]", desc: "Labels", required: false } }
+
+        let(:validations) do
+          [
+            {
+              attributes: [:labels],
+              options: { type: Array, method: ->(v) { v } },
+              validator_class: Grape::Validations::Validators::CoerceValidator
+            }
+          ]
+        end
+
+        it "falls back to default schema generation (array for bracket notation)" do
+          expect(method_call).to eq(
+            { type: "array", items: { type: "string" }, description: "Labels", nullable: true }
           )
         end
       end

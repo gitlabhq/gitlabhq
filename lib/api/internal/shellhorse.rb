@@ -54,12 +54,14 @@ module API
               break response_with_status(code: 400, success: false, message: "No valid action specified")
             end
 
-            check_result = access_check_result
-            break check_result if unsuccessful_response?(check_result)
-
+            # ToDo: move need_git_audit_event? check after access_check_result when the human guard is removed
+            # the issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/591573
             unless need_git_audit_event?
               break response_with_status(code: 200, success: false, message: "No git audit event needed")
             end
+
+            check_result = access_check_result
+            break check_result if unsuccessful_response?(check_result)
 
             unless check_result.is_a?(::Gitlab::GitAccessResult::Success)
               break response_with_status(code: 500, success: false,

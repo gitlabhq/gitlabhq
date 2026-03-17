@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLabel, GlTooltipDirective } from '@gitlab/ui';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { s__, sprintf } from '~/locale';
 

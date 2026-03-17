@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Mattermost notifications
 description: "Configure Mattermost notifications to receive notifications from GitLab in Mattermost channels."
 ---
@@ -52,7 +52,7 @@ Display name override is not enabled by default, you need to ask your administra
 After the Mattermost instance has an incoming webhook set up, you can set up GitLab
 to send the notifications:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Mattermost notifications**.
 1. Select the GitLab events to generate notifications for. For each event you select, input the Mattermost channel

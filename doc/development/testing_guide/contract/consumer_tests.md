@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Writing consumer tests
 ---
 
@@ -50,7 +50,7 @@ For more information about how to name consumers and providers, see [Naming conv
 
 ### The `PactFn` parameter
 
-The `PactFn` is where your tests are defined. This is where you set up the mock provider and where you can use the standard Jest methods like [`Jest.describe`](https://jestjs.io/docs/api#describename-fn), [`Jest.beforeEach`](https://jestjs.io/docs/api#beforeeachfn-timeout), and [`Jest.it`](https://jestjs.io/docs/api#testname-fn-timeout). For more information, see [https://jestjs.io/docs/api](https://jestjs.io/docs/api).
+The `PactFn` is where your tests are defined. This is where you set up the mock provider and where you can use the standard Jest methods like [`Jest.describe`](https://jestjs.io/docs/api#describename-fn), [`Jest.beforeEach`](https://jestjs.io/docs/api#beforeeachfn-timeout), and [`Jest.it`](https://jestjs.io/docs/api#testname-fn-timeout). For more information, see <https://jestjs.io/docs/api>.
 
 ```javascript
 import { pactWith } from 'jest-pact';

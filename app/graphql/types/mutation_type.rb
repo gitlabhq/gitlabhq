@@ -120,6 +120,7 @@ module Types
     }
     mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true, scopes: [:api, :ai_workflows]
     mount_mutation Mutations::Notes::Create::DiffNote, calls_gitaly: true
+    mount_mutation Mutations::Notes::Create::LatestDiffNote, calls_gitaly: true, experiment: { milestone: '18.10' }
     mount_mutation Mutations::Notes::Create::ImageDiffNote, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::Discussion, calls_gitaly: true
     mount_mutation Mutations::Notes::Update::Note, scopes: [:api, :ai_workflows]

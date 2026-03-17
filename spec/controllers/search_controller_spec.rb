@@ -144,9 +144,9 @@ RSpec.describe SearchController, feature_category: :global_search do
       end
 
       context 'when search_type is not included in params' do
-        it 'does not verifies search type' do
+        it 'still checks for search errors' do
           expect_next_instance_of(SearchService) do |service|
-            expect(service).not_to receive(:search_type_errors)
+            expect(service).to receive(:search_type_errors)
           end
 
           get :show, params: { search: 'hello', scope: 'blobs' }

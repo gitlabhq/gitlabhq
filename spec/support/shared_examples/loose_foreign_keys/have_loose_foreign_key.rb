@@ -103,6 +103,8 @@ RSpec.shared_examples 'cleanup by a loose foreign key' do |on_delete: nil|
     lfk_debug_log("##- Additional Debug Logs for LFK flakiness end -##")
   end
 
+  private
+
   def lfk_debug_enabled?
     ENV['LFK_DEBUG'] == 'true'
   end

@@ -1,5 +1,3 @@
 ---
 name: update_repository_submodule
 description: Grants the ability to update repository submodules
-boundaries:
-  - project

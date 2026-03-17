@@ -23,25 +23,7 @@ module Mcp
 
       override :description
       def description
-        parts = [
-          'Search across GitLab with automatic selection of the best available search method.',
-          ''
-        ]
-
-        search_capabilities = []
-        search_capabilities << 'basic (keywords, file filters)'
-        search_capabilities << 'advanced (boolean operators)' if advanced_search_enabled?
-        search_capabilities << 'exact code (exact match, regex, symbols)' if exact_code_search_enabled?
-
-        parts << "**Capabilities:** #{search_capabilities.join(', ')}"
-        parts << ''
-
-        parts << '**Syntax Examples:**'
-        parts << "- Basic: \"bug fix\", \"filename:*.rb\", \"extension:js\""
-        parts << "- Advanced: \"bug AND critical\", \"display | banner\", \"#23456\"" if advanced_search_enabled?
-        parts << "- Code: \"class User\", \"foo lang:ruby\", \"sym:initialize\"" if exact_code_search_enabled?
-
-        parts.join("\n")
+        description_parts.join("\n")
       end
 
       override :input_schema
@@ -85,12 +67,6 @@ module Mcp
           - Use "commits" to search commit messages
         DESC
 
-        fields_description = <<~DESC.strip
-          Specify which fields to search within. Currently supported:
-          - Allowed values: title only
-          - Applicable scopes: issues, merge_requests
-        DESC
-
         order_by_description = <<~DESC.strip
           Specify how to order search results.
           - Allowed values: created_at only
@@ -105,7 +81,7 @@ module Mcp
           - Default: desc
         DESC
 
-        {
+        properties_hash = {
           scope: {
             type: 'string',
             description: scope_description
@@ -130,13 +106,6 @@ module Mcp
             type: 'boolean',
             description: 'Filter results by confidentiality. Available for issues scope; other scopes are ignored.'
           },
-          fields: {
-            type: 'array',
-            items: {
-              type: 'string'
-            },
-            description: fields_description
-          },
           order_by: {
             type: 'string',
             description: order_by_description
@@ -145,7 +114,24 @@ module Mcp
             type: 'string',
             description: sort_description
           }
-        }.merge(input_schema_pagination_params)
+        }
+
+        properties_hash.merge(input_schema_pagination_params)
+      end
+
+      def description_parts
+        [
+          'Search across GitLab with automatic selection of the best available search method.',
+          '',
+          "**Capabilities:** #{search_capabilities.join(', ')}",
+          '',
+          '**Syntax Examples:**',
+          "- Basic: \"bug fix\", \"filename:*.rb\", \"extension:js\""
+        ]
+      end
+
+      def search_capabilities
+        ['basic (keywords, file filters)']
       end
 
       override :select_tool

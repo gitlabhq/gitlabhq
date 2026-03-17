@@ -5,7 +5,7 @@ module Types
     class PackageStatusEnum < BaseEnum
       graphql_name 'PackageStatus'
 
-      ::Packages::Package.statuses.keys.each do |status|
+      ::Packages::Package.statuses.each_key do |status|
         value status.to_s.upcase, description: "Packages with a #{status} status", value: status.to_s
       end
     end

@@ -1,0 +1,3 @@
+---
+name: delete_npm_virtual_registry_upstream_cache_entry
+description: Grants the ability to delete NPM virtual registry upstream cache entries

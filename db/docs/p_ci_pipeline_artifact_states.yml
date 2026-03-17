@@ -1,10 +1,11 @@
 ---
 table_name: p_ci_pipeline_artifact_states
 classes:
-  - Geo::PipelineArtifactState
+- Geo::PipelineArtifactState
 feature_categories:
-  - geo_replication
-description: Separate table for CI pipeline artifacts containing Geo verification metadata.
+- geo_replication
+description: Separate table for CI pipeline artifacts containing Geo verification
+  metadata.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182266
 milestone: '18.5'
 gitlab_schema: gitlab_ci
@@ -19,3 +20,4 @@ desired_sharding_key:
         belongs_to: pipeline_artifact
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587555
 table_size: small
+desired_sharding_key_migration_job_name: BackfillPCiPipelineArtifactStatesProjectId

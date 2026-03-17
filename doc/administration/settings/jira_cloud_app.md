@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab for Jira Cloud app administration
 ---
 
@@ -59,12 +59,12 @@ To create an OAuth application on your GitLab Self-Managed instance:
 1. Clear the **Trusted** and **Confidential** checkboxes.
 
    > [!note]
-   > You must clear these checkboxes to avoid [errors](jira_cloud_app_troubleshooting.md#error-failed-to-sign-in-to-gitlab).
+   > You must clear these checkboxes to avoid [sign in errors](jira_cloud_app_troubleshooting.md#error-failed-to-sign-in-to-gitlab).
 
 1. In **Scopes**, select the `api` checkbox only.
 1. Select **Save application**.
 1. Copy the **Application ID** value.
-1. On the left sidebar, select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. Paste the **Application ID** value into **Jira Connect Application ID**.
 1. Select **Save changes**.
@@ -189,6 +189,7 @@ to check if Jira Cloud is linked to:
 
 If you do not want to [use the official Atlassian Marketplace listing](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
 install the GitLab for Jira Cloud app manually.
+This installation method is based on Atlassian Connect.
 
 You must install each Jira Cloud app from a single location. Jira fetches a
 [manifest file](https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/)

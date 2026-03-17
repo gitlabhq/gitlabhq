@@ -162,13 +162,10 @@ While GitLab can be deployed on a single box for up to 500 users, when it is hor
   - GitLab Single EC2 Instance. `[GitLab Built]`
     - [Using 5 Seat AWS marketplace subscription](gitlab_single_box_on_aws.md#marketplace-subscription)
     - [Using Prepared AMIs](gitlab_single_box_on_aws.md#official-gitlab-releases-as-amis) - Bring Your Own License for Enterprise Edition.
-
   - GitLab Cloud Native Hybrid Scaled on AWS EKS and Paas. `[GitLab Built]`
     - [Using GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) - `[GitLab Solution]`
-
   - GitLab Instance Scaled on AWS EC2 and PaaS. `[GitLab Built]`
     - [Using GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) - `[GitLab Solution]`
-
 - [Amazon Managed Grafana](https://docs.aws.amazon.com/grafana/latest/userguide/gitlab-AMG-datasource.html) for GitLab Self-Managed Prometheus metrics. `[AWS Built]`
 
 ### GitLab Runner on AWS Compute

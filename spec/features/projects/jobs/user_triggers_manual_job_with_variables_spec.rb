@@ -47,7 +47,6 @@ RSpec.describe 'User triggers manual job with variables', :js, feature_category:
     end
 
     before do
-      stub_feature_flags(ci_job_inputs: true)
       visit(project_job_path(project, build))
     end
 
@@ -61,18 +60,6 @@ RSpec.describe 'User triggers manual job with variables', :js, feature_category:
 
       expect(build.inputs.map(&:name)).to contain_exactly('environment')
       expect(build.inputs.find_by(name: 'environment').value).to eq('production')
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_job_inputs: false)
-        visit(project_job_path(project, build))
-      end
-
-      it 'does not display job inputs form' do
-        expect(page).not_to have_content('Inputs')
-        expect(page).not_to have_button('Select inputs')
-      end
     end
 
     private

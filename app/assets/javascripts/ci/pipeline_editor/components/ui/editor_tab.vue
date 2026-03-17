@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlBadge, GlTab } from '@gitlab/ui';
+import { GlAlert, GlTab } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 /**
  * Wrapper of <gl-tab> to optionally lazily render this tab's content
@@ -50,7 +50,6 @@ export default {
   },
   components: {
     GlAlert,
-    GlBadge,
     GlTab,
     // Use a small renderless component to know when the tab content mounts because:
     // - gl-tab always gets mounted, even if lazy is `true`. See:
@@ -62,16 +61,6 @@ export default {
   },
   inheritAttrs: false,
   props: {
-    badgeTitle: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    badgeVariant: {
-      type: String,
-      required: false,
-      default: 'info',
-    },
     emptyMessage: {
       type: String,
       required: false,
@@ -115,9 +104,6 @@ export default {
     };
   },
   computed: {
-    hasBadgeTitle() {
-      return this.badgeTitle.length > 0;
-    },
     slots() {
       // eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots
       return Object.keys(this.$slots);
@@ -139,9 +125,6 @@ export default {
   <gl-tab :lazy="isLazy" v-bind="$attrs" v-on="$listeners">
     <template #title>
       <span>{{ title }}</span>
-      <gl-badge v-if="hasBadgeTitle" class="gl-ml-2" :variant="badgeVariant">{{
-        badgeTitle
-      }}</gl-badge>
     </template>
     <gl-alert v-if="isEmpty" variant="tip">{{ emptyMessage }}</gl-alert>
     <gl-alert v-else-if="isUnavailable" variant="danger" :dismissible="false">

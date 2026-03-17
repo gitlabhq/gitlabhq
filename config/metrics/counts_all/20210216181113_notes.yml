@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.notes
 description: Count of Notes across all objects that use them
 product_group: project_management
+product_categories:
+- team_planning
 value_type: number
 status: active
 time_frame: all

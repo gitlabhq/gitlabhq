@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 整合性チェックRakeタスク
 ---
 
@@ -12,30 +12,30 @@ title: 整合性チェックRakeタスク
 
 {{< /details >}}
 
-GitLabは、さまざまなコンポーネントの整合性をチェックするためのRakeタスクを提供します。[GitLab設定チェックRakeタスク](maintenance.md#check-gitlab-configuration)も参照してください。
+GitLabは、さまざまなコンポーネントの整合性をチェックするRakeタスクを提供します。[GitLabの設定Rakeタスクの確認](maintenance.md#check-gitlab-configuration)も参照してください。
 
-## Gitリポジトリの整合性 {#repository-integrity}
+## リポジトリの整合性 {#repository-integrity}
 
-Gitは非常に回復力があり、データ整合性の問題を防止しようとしますが、問題が発生することがあります。以下のRakeタスクは、GitLab管理者が問題のあるリポジトリを診断し、修正できるようにすることを目的としています。
+Gitは非常に回復力が高く、データの整合性の問題を防止しようとしますが、問題が発生することがあります。次のRakeタスクは、GitLab管理者が問題のあるリポジトリを診断し、修正できるようにすることを目的としています。
 
-これらのRakeタスクは、3つの異なるメソッドを使用して、Gitリポジトリの整合性を判断します。
+これらのRakeタスクは、Gitリポジトリの整合性を判断するために3つの異なる方法を使用します。
 
-1. Gitリポジトリのファイルシステムチェック（[`git fsck`](https://git-scm.com/docs/git-fsck)）。このステップでは、リポジトリ内のオブジェクトの接続性と有効性が検証されます。
-1. リポジトリディレクトリに`config.lock`があるか確認します。
-1. `refs/heads`にブランチ/参照ロックファイルがあるか確認します。
+1. Gitリポジトリファイルシステムのチェック（[`git fsck`](https://git-scm.com/docs/git-fsck))。このステップは、リポジトリ内のオブジェクトの接続性と有効性を検証します。
+1. リポジトリディレクトリ内の`config.lock`をチェックします。
+1. `refs/heads`内のブランチ/参照ロックファイルをチェックします。
 
-`config.lock`または参照ロックが存在するだけでは、必ずしも問題があるとは限りません。ロックファイルは、GitとGitLabがリポジトリで操作を実行するときに、ルーチンで作成および削除されます。これらは、データ整合性の問題を防止するのに役立ちます。ただし、Gitの操作が中断された場合、これらのロックが適切にクリーンアップされない可能性があります。
+`config.lock`または参照ロックの存在だけでは、必ずしも問題を示すわけではありません。GitとGitLabがリポジトリで操作を実行する際に、ロックファイルは定期的に作成および削除されます。これらはデータの整合性の問題を防止する役割を果たします。ただし、Git操作が中断された場合、これらのロックが適切にクリーンアップされない可能性があります。
 
-次の症状は、リポジトリの整合性の問題を示している可能性があります。ユーザーがこれらの症状を経験した場合、以下に説明するRakeタスクを使用して、どのリポジトリが問題の原因となっているかを正確に判断できます。
+次の症状は、リポジトリの整合性の問題を示している可能性があります。ユーザーがこれらの症状を経験した場合、以下のRakeタスクを使用して、どのリポジトリが問題を引き起こしているかを正確に判断できます。
 
-- コードをプッシュしようとしたときにエラーを受信する - `remote: error: cannot lock ref`
+- コードをプッシュしようとするとエラーが発生する - `remote: error: cannot lock ref`
 - GitLabダッシュボードを表示しているとき、または特定のプロジェクトにアクセスしているときに500エラーが発生する。
 
-### すべてのプロジェクトコードリポジトリをチェックする {#check-all-project-code-repositories}
+### すべてのプロジェクトcodeリポジトリをチェック {#check-all-project-code-repositories}
 
-このタスクは、プロジェクトコードリポジトリをループし、以前に説明した整合性チェックを実行します。プロジェクトがプールリポジトリを使用している場合は、それもチェックされます。他のタイプのGitリポジトリは[チェックされていません](https://gitlab.com/gitlab-org/gitaly/-/issues/3643)。
+このタスクは、プロジェクトcodeリポジトリをループし、以前に説明した整合性チェックを実行します。プロジェクトがプールリポジトリを使用している場合は、それもチェックされます。他の種類のGitリポジトリは[チェックされません](https://gitlab.com/gitlab-org/gitaly/-/issues/3643)。
 
-プロジェクトコードリポジトリをチェックするには:
+プロジェクトcodeリポジトリをチェックするには:
 
 {{< tabs >}}
 
@@ -57,7 +57,7 @@ sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
 
 {{< /tabs >}}
 
-### 特定のプロジェクトコードリポジトリをチェックする {#check-specific-project-code-repositories}
+### 特定のプロジェクトcodeリポジトリをチェック {#check-specific-project-code-repositories}
 
 {{< history >}}
 
@@ -65,9 +65,9 @@ sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
 
 {{< /history >}}
 
-`PROJECT_IDS`環境変数を、プロジェクトIDのカンマ区切りリストに設定して、特定のプロジェクトIDを持つプロジェクトのリポジトリへのチェックを制限します。
+チェックを特定のプロジェクトIDを持つプロジェクトのリポジトリに限定するには、`PROJECT_IDS`環境変数をプロジェクトIDのコンマ区切りリストに設定します。
 
-たとえば、プロジェクトID `1`と`3`を持つプロジェクトのリポジトリをチェックするには:
+たとえば、プロジェクトIDが`1`と`3`のプロジェクトリポジトリをチェックするには:
 
 {{< tabs >}}
 
@@ -91,15 +91,15 @@ sudo -u git -H PROJECT_IDS="1,3" bundle exec rake gitlab:git:fsck RAILS_ENV=prod
 
 ## リポジトリrefsのチェックサム {#checksum-of-repository-refs}
 
-1つのGitリポジトリを別のリポジトリと比較するには、各リポジトリのすべてのrefsをチェックサムします。両方のリポジトリに同じrefsがあり、両方のリポジトリが整合性チェックに合格した場合、両方のリポジトリが同じであると確信できます。
+あるGitリポジトリは、各リポジトリのすべてのrefsをチェックサムすることで、別のリポジトリと比較できます。両方のリポジトリが同じrefsを持ち、両方のリポジトリが整合性チェックに合格すれば、両方のリポジトリが同じであると確信できます。
 
-たとえば、これを使用して、リポジトリのバックアップをソースリポジトリと比較できます。
+たとえば、これはリポジトリのバックアップをソースリポジトリと比較するために使用できます。
 
-### すべてのGitLabリポジトリをチェックする {#check-all-gitlab-repositories}
+### すべてのGitLabリポジトリをチェック {#check-all-gitlab-repositories}
 
 このタスクは、GitLabサーバー上のすべてのリポジトリをループし、`<PROJECT ID>,<CHECKSUM>`の形式でチェックサムを出力します。
 
-- リポジトリが存在しない場合、プロジェクトIDは空白のチェックサムです。
+- リポジトリが存在しない場合、プロジェクトIDは空のチェックサムになります。
 - リポジトリが存在するが空の場合、出力チェックサムは`0000000000000000000000000000000000000000`です。
 - 存在しないプロジェクトはスキップされます。
 
@@ -127,11 +127,11 @@ sudo -u git -H bundle exec rake gitlab:git:checksum_projects RAILS_ENV=productio
 
 次に例を示します:
 
-- ID＃2のプロジェクトが存在しないため、スキップされます。
-- ID＃4のプロジェクトにはリポジトリがないため、チェックサムは空白です。
-- ID＃5のプロジェクトには空のリポジトリがあるため、チェックサムは`0000000000000000000000000000000000000000`です。
+- ID#2のプロジェクトは存在しないため、スキップされます。
+- ID#4のプロジェクトにはリポジトリがないため、そのチェックサムは空白です。
+- ID#5のプロジェクトには空のリポジトリがあり、そのチェックサムは`0000000000000000000000000000000000000000`です。
 
-出力は次のようになります:
+その後の出力は次のようになります:
 
 ```plaintext
 1,cfa3f06ba235c13df0bb28e079bcea62c5848af2
@@ -141,9 +141,9 @@ sudo -u git -H bundle exec rake gitlab:git:checksum_projects RAILS_ENV=productio
 6,6c6b48adc2712fb3b6ef87cfa3f06ba235c13df0
 ```
 
-### 特定のGitLabリポジトリをチェックする {#check-specific-gitlab-repositories}
+### 特定のGitLabリポジトリをチェック {#check-specific-gitlab-repositories}
 
-オプションで、たとえば、カンマ区切りの整数のリストを使用して、環境変数`CHECKSUM_PROJECT_IDS`を設定することにより、特定のプロジェクトIDをチェックサムできます:
+オプションで、特定のプロジェクトIDをチェックサムするには、コンマ区切りの整数リストを`CHECKSUM_PROJECT_IDS`環境変数に設定します:
 
 ```shell
 sudo CHECKSUM_PROJECT_IDS="1,3" gitlab-rake gitlab:git:checksum_projects
@@ -151,9 +151,9 @@ sudo CHECKSUM_PROJECT_IDS="1,3" gitlab-rake gitlab:git:checksum_projects
 
 ## アップロードされたファイルの整合性 {#uploaded-files-integrity}
 
-さまざまなタイプのファイルをユーザーがGitLabインスタンスにアップロードできます。これらの整合性チェックは、不足しているファイルを検出できます。さらに、ローカルに保存されたファイルの場合、アップロード時にチェックサムが生成されてデータベースに保存され、これらのチェックで現在のファイルと照合して検証されます。
+さまざまな種類のファイルをユーザーがGitLabインスタンスにアップロードできます。これらの整合性チェックは、不足しているファイルを検出できます。さらに、ローカルに保存されたファイルの場合、アップロード時にチェックサムが生成され、データベースに保存されます。これらのチェックは、現在のファイルに対してチェックサムを検証します。
 
-整合性チェックは、次のタイプのファイルでサポートされています:
+整合性チェックは、次の種類のファイルでサポートされています:
 
 - CIアーティファクト
 - LFSオブジェクト
@@ -188,14 +188,14 @@ sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
 
 {{< /tabs >}}
 
-これらのタスクは、特定の値のオーバーライドに使用できる環境変数も受け入れます:
+これらのタスクは、特定の値をオーバーライドするために使用できるいくつかの環境変数も受け入れます:
 
-変数  | 型    | 説明
+変数  | 種類    | 説明
 --------- | ------- | -----------
 `BATCH`   | 整数 | バッチのサイズを指定します。デフォルトは200です。
-`ID_FROM` | 整数 | 開始するIDを、値を含めて指定します。
-`ID_TO`   | 整数 | 終了するID値を、値を含めて指定します。
-`VERBOSE` | ブール値 | 障害をまとめて表示するのではなく、個別にリスト表示します。
+`ID_FROM` | 整数 | 値を含む、開始するIDを指定します。
+`ID_TO`   | 整数 | 値を含む、終了するID値を指定します。
+`VERBOSE` | ブール値 | 失敗した項目が、要約されるのではなく個別にリストされます。
 
 ```shell
 sudo gitlab-rake gitlab:artifacts:check BATCH=100 ID_FROM=50 ID_TO=250
@@ -221,7 +221,7 @@ Checking integrity of Uploads
 Done!
 ```
 
-詳細出力の例:
+冗長出力の例:
 
 ```shell
 $ sudo gitlab-rake gitlab:uploads:check VERBOSE=1
@@ -245,15 +245,15 @@ Done!
 
 ## LDAPチェック {#ldap-check}
 
-LDAPチェックRakeタスクは、バインドDNとパスワード認証情報（設定されている場合）をテストし、LDAPユーザーのサンプルをリストします。このタスクは`gitlab:check`タスクの一部としても実行されますが、個別に実行できます。詳細については、[LDAP Rakeタスク - LDAPチェック](ldap.md#check)を参照してください。
+LDAPチェックのRakeタスクは、バインドDNとパスワード認証情報（設定されている場合）をテストし、LDAPユーザーのサンプルをリストします。このタスクは、`gitlab:check`タスクの一部としても実行されますが、独立して実行することもできます。詳細については、[LDAP Rakeタスク - LDAPチェック](ldap.md#check)を参照してください。
 
-## 現在のシークレットを使用してデータベース値を復号化できることを確認する {#verify-database-values-can-be-decrypted-using-the-current-secrets}
+## 現在のシークレットを使用してデータベース値を復号化できることを確認 {#verify-database-values-can-be-decrypted-using-the-current-secrets}
 
-このタスクは、データベース内の可能なすべての暗号化された値を調べて、現在のシークレットファイル（`gitlab-secrets.json`）を使用して復号化できることを確認します。
+このタスクは、データベース内のすべての可能性のある暗号化された値を確認し、現在のシークレットファイル（`gitlab-secrets.json`）を使用してそれらが復号化できることを検証します。
 
-自動解決はまだ実装されていません。シークレット化をリセットする手順については、[シークレットファイルが失われた場合](../backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost)の対処方法に関するドキュメントを参照してください。
+自動解決はまだ実装されていません。復号化できない値がある場合は、それらをリセットする手順に従うことができます。[シークレットファイルが失われた場合の対処法](../backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost)に関するドキュメントを参照してください。
 
-データベースのサイズによっては、すべてのテーブルのすべての行をチェックするため、非常に時間がかかる場合があります。
+これは、データベースのサイズによっては、すべてのテーブルのすべての行をチェックするため、非常に時間がかかる場合があります。
 
 現在のシークレットを使用してデータベース値を復号化できることを確認するには:
 
@@ -277,7 +277,7 @@ bundle exec rake gitlab:doctor:secrets RAILS_ENV=production
 
 {{< /tabs >}}
 
-**Example output**（出力例）
+**出力例**
 
 ```plaintext
 I, [2020-06-11T17:17:54.951815 #27148]  INFO -- : Checking encrypted values in the database
@@ -291,11 +291,11 @@ I, [2020-06-11T17:18:15.575678 #27148]  INFO -- : Total: 1 row(s) affected
 I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 ```
 
-### 詳細モード {#verbose-mode}
+### 冗長モード {#verbose-mode}
 
-どの行と列を復号化できないかに関する詳細情報を取得するには、`VERBOSE`環境変数を渡します。
+復号化できない行と列に関する詳細情報を取得するには、`VERBOSE`環境変数を渡すことができます。
 
-詳細情報を使用して、現在のシークレットを使用してデータベース値を復号化できることを確認するには:
+現在のシークレットを使用してデータベース値を復号化できることを詳細情報とともに確認するには:
 
 {{< tabs >}}
 
@@ -317,7 +317,7 @@ bundle exec rake gitlab:doctor:secrets RAILS_ENV=production VERBOSE=1
 
 {{< /tabs >}}
 
-**Example verbose output**（詳細出力の例）
+**Example verbose output**
 
 <!-- vale gitlab_base.SentenceSpacing = NO -->
 
@@ -337,7 +337,7 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 
 <!-- vale gitlab_base.SentenceSpacing = YES -->
 
-## 暗号化されたトークンをリセットする（回復できない場合） {#reset-encrypted-tokens-when-they-cant-be-recovered}
+## 回復できない場合に暗号化されたトークンをリセット {#reset-encrypted-tokens-when-they-cant-be-recovered}
 
 {{< history >}}
 
@@ -345,19 +345,17 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 
 {{< /history >}}
 
-{{< alert type="warning" >}}
+> [!warning]
+> 
+> この操作は危険であり、データ損失につながる可能性があります。細心の注意を払って進めてください。この操作を実行する前に、GitLabの内部に関する知識を持っている必要があります。
 
-この操作は危険であり、データ損失につながる可能性があります。細心の注意を払って進めてください。この操作を実行する前に、GitLabの内部構造に関する知識が必要です。
-
-{{< /alert >}}
-
-暗号化されたトークンを回復できなくなり、問題が発生する場合があります。ほとんどの場合、グループおよびプロジェクトのランナーの登録トークンは、非常に大規模なインスタンスで破損している可能性があります。
+場合によっては、暗号化されたトークンが回復できなくなり、問題を引き起こすことがあります。ほとんどの場合、グループとプロジェクトのRunner登録トークンは、非常に大規模なインスタンスで破損する可能性があります。
 
 破損したトークンをリセットするには:
 
-1. 破損した暗号化されたトークンがあるデータベースモデルを特定します。たとえば、`Group`や`Project`などです。
+1. 破損した暗号化されたトークンを持つデータベースモデルを特定します。たとえば、`Group`や`Project`などです。
 1. 破損したトークンを特定します。例: `runners_token`。
-1. 破損したトークンをリセットするには、`gitlab:doctor:reset_encrypted_tokens`を`VERBOSE=true MODEL_NAMES=Model1,Model2 TOKEN_NAMES=broken_token1,broken_token2`で実行します。例: 
+1. 破損したトークンをリセットするには、`gitlab:doctor:reset_encrypted_tokens`を`VERBOSE=true MODEL_NAMES=Model1,Model2 TOKEN_NAMES=broken_token1,broken_token2`とともに実行します。下記は例です: 
 
    {{< tabs >}}
 
@@ -400,7 +398,7 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
    I, [2023-09-26T16:20:30.198462 #88920]  INFO -- : Done!
    ```
 
-1. この操作で正しいトークンがリセットされると確信できる場合は、ドライランモードを無効にして、操作を再度実行します:
+1. この操作が正しいトークンをリセットすると確信している場合は、ドライランモードを無効にして、操作を再度実行します:
 
    {{< tabs >}}
 
@@ -422,18 +420,18 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 
    {{< /tabs >}}
 
-`gitlab:doctor:reset_encrypted_tokens`タスクには、次の制限があります:
+The `gitlab:doctor:reset_encrypted_tokens`タスクには次の制限があります:
 
-- トークン以外の属性（たとえば、`ApplicationSetting:ci_jwt_signing_key`）はリセットされません。
-- 単一モデルレコードに複数の復号化できない属性が存在すると、`TypeError: no implicit conversion of nil into String ... block in aes256_gcm_decrypt`エラーが発生してタスクが失敗します。
+- トークン以外の属性（例: `ApplicationSetting:ci_jwt_signing_key`）はリセットされません。
+- 単一のモデルレコードに復号化できない属性が複数存在すると、タスクは`TypeError: no implicit conversion of nil into String ... block in aes256_gcm_decrypt`エラーで失敗します。
 
 ## トラブルシューティング {#troubleshooting}
 
-以下は、以前にドキュメント化したRakeタスクを使用して発見する可能性のある問題の解決策です。
+以下は、以前に文書化されたRakeタスクを使用して発見する可能性のある問題の解決策です。
 
 ### ぶら下がっているオブジェクト {#dangling-objects}
 
-`gitlab-rake gitlab:git:fsck`タスクは、次のようなぶら下がっているオブジェクトを見つけることができます:
+`gitlab-rake gitlab:git:fsck`タスクは、次のようなぶら下がっているオブジェクトを検出できます:
 
 ```plaintext
 dangling blob a12...
@@ -442,26 +440,26 @@ dangling tag c56...
 dangling tree d78...
 ```
 
-それらを削除するには、[ハウスキーピングの実行](../housekeeping.md)を試してください。
+それらを削除するには、[ハウスキーピングを実行](../housekeeping.md)してみてください。
 
-問題が解決しない場合は、[Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)からガベージコレクションをトリガーしてみてください:
+問題が解決しない場合は、[Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)を介してガベージコレクションをトリガーしてみてください:
 
 ```ruby
 p = Project.find_by_path("project-name")
 Repositories::HousekeepingService.new(p, :gc).execute
 ```
 
-ぶら下がっているオブジェクトが2週間のデフォルト猶予期間よりも短い場合で、自動的に期限切れになるまで待機したくない場合は、次を実行します:
+ぶら下がっているオブジェクトがデフォルトの2週間の猶予期間よりも新しい場合で、それらが自動的に期限切れになるのを待たない場合は、以下を実行します:
 
 ```ruby
 Repositories::HousekeepingService.new(p, :prune).execute
 ```
 
-### 不足しているリモートアップロードへの参照を削除する {#delete-references-to-missing-remote-uploads}
+### 見つからないリモートアップロードへの参照を削除 {#delete-references-to-missing-remote-uploads}
 
-`gitlab-rake gitlab:uploads:check VERBOSE=1`は、外部で削除されたために存在しないリモートオブジェクトを検出しますが、それらの参照はGitLabデータベースにまだ存在します。
+`gitlab-rake gitlab:uploads:check VERBOSE=1`は、外部から削除されたために存在しないリモートオブジェクトを検出しますが、それらの参照はGitLabデータベースにまだ存在します。
 
-エラーメッセージ付きの出力例:
+エラーメッセージを含む出力例:
 
 ```shell
 $ sudo gitlab-rake gitlab:uploads:check VERBOSE=1
@@ -472,7 +470,7 @@ Checking integrity of Uploads
 Done!
 ```
 
-外部で削除されたリモートアップロードへのこれらの参照を削除するには、[GitLab Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)を開き、次を実行します:
+外部から削除されたリモートアップロードへのこれらの参照を削除するには、[GitLab Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)を開き、以下を実行します:
 
 ```ruby
 uploads_deleted=0
@@ -485,14 +483,14 @@ end
 p "#{uploads_deleted} remote objects were destroyed."
 ```
 
-### 不足しているアーティファクトへの参照を削除する {#delete-references-to-missing-artifacts}
+### 見つからないアーティファクトへの参照を削除 {#delete-references-to-missing-artifacts}
 
-`gitlab-rake gitlab:artifacts:check VERBOSE=1`は、アーティファクト（または`job.log`ファイル）を検出します:
+`gitlab-rake gitlab:artifacts:check VERBOSE=1`は、アーティファクト（または`job.log`ファイル）が次の場合を検出します:
 
-- GitLabの外部で削除されます。
-- 参照がGitLabデータベースにまだ存在します。
+- GitLabの外部で削除された。
+- まだGitLabデータベースに参照が残っている。
 
-このシナリオが検出されると、Rakeタスクはエラーメッセージを表示します。例: 
+このシナリオが検出されると、Rakeタスクはエラーメッセージを表示します。下記は例です: 
 
 ```shell
 Checking integrity of Job artifacts
@@ -503,10 +501,10 @@ Done!
 
 ```
 
-不足しているローカルまたはリモートのアーティファクト（`job.log`ファイル）へのこれらの参照を削除するには:
+見つからないローカルおよび/またはリモートのアーティファクト（`job.log`ファイル）へのこれらの参照を削除するには:
 
 1. [GitLab Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)を開きます。
-1. 次のRubyコードを実行します:
+1. 次のRubycodeを実行します:
 
    ```ruby
    artifacts_deleted = 0
@@ -520,31 +518,31 @@ Done!
    puts "Count of identified/destroyed invalid references: #{artifacts_deleted}"
    ```
 
-### 不足しているLFSオブジェクトへの参照を削除する {#delete-references-to-missing-lfs-objects}
+### 見つからないLFSオブジェクトへの参照を削除 {#delete-references-to-missing-lfs-objects}
 
-`gitlab-rake gitlab:lfs:check VERBOSE=1`が、データベースには存在するがディスクには存在しないLFSオブジェクトを検出した場合、[LFSドキュメントの手順に従って](../lfs/_index.md#missing-lfs-objects)、データベースエントリを削除します。
+`gitlab-rake gitlab:lfs:check VERBOSE=1`がデータベースに存在するがディスク上に存在しないLFSオブジェクトを検出した場合、データベースエントリを削除するために[LFSドキュメントの手順に従ってください](../lfs/_index.md#missing-lfs-objects)。
 
-### ぶら下がっているオブジェクトストレージ参照を更新する {#update-dangling-object-storage-references}
+### ぶら下がっているオブジェクトストレージの参照を更新 {#update-dangling-object-storage-references}
 
-[オブジェクトストレージからローカルストレージに移行した](../cicd/job_artifacts.md#migrating-from-object-storage-to-local-storage)場合に、ファイルが見つからないと、ぶら下がっているデータベース参照が残ります。
+[オブジェクトストレージからローカルストレージに移行](../cicd/job_artifacts.md#migrating-from-object-storage-to-local-storage)し、ファイルが見つからなかった場合、ぶら下がったデータベース参照が残ります。
 
-これは、次のようなエラーで移行ログに表示されます:
+これは、移行ログに次のようなエラーとして表示されます:
 
 ```shell
 W, [2022-11-28T13:14:09.283833 #10025]  WARN -- : Failed to transfer Ci::JobArtifact ID 11 with error: undefined method `body' for nil:NilClass
 W, [2022-11-28T13:14:09.296911 #10025]  WARN -- : Failed to transfer Ci::JobArtifact ID 12 with error: undefined method `body' for nil:NilClass
 ```
 
-オブジェクトストレージを無効にした後で[不足しているアーティファクトへの参照を削除](check.md#delete-references-to-missing-artifacts)しようとすると、次のエラーが発生します:
+オブジェクトストレージを無効にした後に[見つからないアーティファクトへの参照を削除](check.md#delete-references-to-missing-artifacts)しようとすると、次のエラーが発生します:
 
 ```plaintext
 RuntimeError (Object Storage is not enabled for JobArtifactUploader)
 ```
 
-これらの参照がローカルストレージを指すように更新するには:
+これらの参照をローカルストレージを指すように更新するには:
 
 1. [GitLab Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)を開きます。
-1. 次のRubyコードを実行します:
+1. 次のRubycodeを実行します:
 
    ```ruby
    artifacts_updated = 0
@@ -556,16 +554,16 @@ RuntimeError (Object Storage is not enabled for JobArtifactUploader)
    puts "Updated file_store count: #{artifacts_updated}"
    ```
 
-[不足しているアーティファクトへの参照を削除する](check.md#delete-references-to-missing-artifacts)スクリプトが正しく機能し、データベースをクリーンアップするようになりました。
+[見つからないアーティファクトへの参照を削除](check.md#delete-references-to-missing-artifacts)するスクリプトは、正しく機能し、データベースをクリーンアップします。
 
-### 不足しているセキュアファイルへの参照を削除する {#delete-references-to-missing-secure-files}
+### 見つからないセキュアファイルへの参照を削除 {#delete-references-to-missing-secure-files}
 
-`VERBOSE=1 gitlab-rake gitlab:ci_secure_files:check`は、セキュアファイルがいつ検出されるかを検出します:
+`VERBOSE=1 gitlab-rake gitlab:ci_secure_files:check`は、セキュアファイルが次の場合を検出します:
 
-- GitLabの外部で削除されます。
-- 参照がGitLabデータベースにまだ存在します。
+- GitLabの外部で削除された。
+- まだGitLabデータベースに参照が残っている。
 
-このシナリオが検出されると、Rakeタスクはエラーメッセージを表示します。例: 
+このシナリオが検出されると、Rakeタスクはエラーメッセージを表示します。下記は例です: 
 
 ```shell
 Checking integrity of CI Secure Files
@@ -576,10 +574,10 @@ Done!
 
 ```
 
-不足しているローカルまたはリモートのセキュアファイルへのこれらの参照を削除するには:
+見つからないローカルまたはリモートのセキュアファイルへのこれらの参照を削除するには:
 
 1. [GitLab Railsコンソール](../operations/rails_console.md#starting-a-rails-console-session)を開きます。
-1. 次のRubyコードを実行します:
+1. 次のRubycodeを実行します:
 
    ```ruby
    secure_files_deleted = 0

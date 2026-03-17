@@ -4,29 +4,20 @@
 # This file tracks deprecated logging fields that need to be migrated to standard fields.
 # Each offense represents a file using a deprecated field that should be replaced.
 #
-# === HOW TO FIX ===
+# How to fix: https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/blob/master/doc/FIELD_STANDARDIZATION.md#how-to-fix-an-offense
 #
-# 1. Replace the deprecated field with the standard field constant
-# 2. Remove the deprecated field entirely (adding the new field is not enough)
-# 3. Run your tests - the offense will be automatically removed
+# Adding offenses (if fixing is not immediately possible):
+#   LABKIT_LOGGING_TODO_UPDATE=true bundle exec rspec <spec_file>
 #
-# Example:
-#   # Before
-#   logger.info(user_id: 123)
-#
-#   # After
-#   logger.info(Labkit::Fields::GL_USER_ID => 123)
-#
-# === ADDING OFFENSES (if fixing is not immediately possible) ===
-#
-# Run: LABKIT_LOGGING_TODO_UPDATE=true bundle exec rspec <spec_file>
-#
-# === REGENERATE ENTIRE TODO ===
-#
-# Delete this file and run: LABKIT_LOGGING_TODO_UPDATE=true bundle exec rspec
+# Regenerate entire TODO:
+#   Delete this file and run: LABKIT_LOGGING_TODO_UPDATE=true bundle exec rspec
 
 ---
 offenses:
+- logger_class: Gitlab::Kubernetes::Logger
+  callsite: app/models/clusters/platforms/kubernetes.rb
+  deprecated_field: status_code
+  standard_field: Labkit::Fields::HTTP_STATUS_CODE
 - logger_class: Gitlab::AppJsonLogger
   callsite: app/models/concerns/namespaces/stateful/transition_logging.rb
   deprecated_field: user_id
@@ -136,10 +127,6 @@ offenses:
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
 - logger_class: Gitlab::AppJsonLogger
-  callsite: ee/app/models/virtual_registries/packages/maven.rb
-  deprecated_field: user_id
-  standard_field: Labkit::Fields::GL_USER_ID
-- logger_class: Gitlab::AppJsonLogger
   callsite: ee/app/services/arkose/record_user_data_service.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
@@ -243,6 +230,10 @@ offenses:
   callsite: lib/gitlab/background_migration/recalculate_two_factor_enforcement_on_users.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::ErrorTracking::Logger
+  callsite: lib/gitlab/error_tracking.rb
+  deprecated_field: extra.status
+  standard_field: Labkit::Fields::HTTP_STATUS_CODE
 - logger_class: Import::Framework::Logger
   callsite: lib/gitlab/import/placeholder_user_creator.rb
   deprecated_field: user_id
@@ -251,6 +242,10 @@ offenses:
   callsite: lib/gitlab/import_export/members_mapper.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::Kubernetes::Logger
+  callsite: lib/gitlab/kubernetes/namespace.rb
+  deprecated_field: status_code
+  standard_field: Labkit::Fields::HTTP_STATUS_CODE
 - logger_class: Gitlab::AuthLogger
   callsite: lib/gitlab/metrics/subscribers/rack_attack.rb
   deprecated_field: user_id
@@ -259,6 +254,10 @@ offenses:
   callsite: lib/gitlab/seeders/ci/runner/runner_fleet_seeder.rb
   deprecated_field: user_id
   standard_field: Labkit::Fields::GL_USER_ID
+- logger_class: Gitlab::AppJsonLogger
+  callsite: lib/gitlab/tracking/destinations/snowplow_context_validator.rb
+  deprecated_field: status_code
+  standard_field: Labkit::Fields::HTTP_STATUS_CODE
 - logger_class: Gitlab::AppJsonLogger
   callsite: spec/workers/process_commit_worker_spec.rb
   deprecated_field: user_id

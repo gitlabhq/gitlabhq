@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Use CI/CD configuration from other files
 description: Use the `include` keyword to extend your CI/CD configuration with content from other YAML files.
 ---
@@ -165,7 +165,7 @@ production:
 The `POSTGRES_USER` and `POSTGRES_PASSWORD` variables
 and the `environment:url` of the `production` job defined in the `.gitlab-ci.yml` file
 override the values defined in the `autodevops-template.yml` file. The other keywords
-do not change. This method is called *merging*.
+do not change. This method is called _merging_.
 
 ### Merge method for `include`
 

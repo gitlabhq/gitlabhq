@@ -52,3 +52,5 @@ export const TYPENAME_CUSTOM_FIELD_SELECT_OPTION = 'Issuables::CustomFieldSelect
 
 export const QUERY_PARAM_START_CURSOR = 'start_cursor';
 export const QUERY_PARAM_END_CURSOR = 'end_cursor';
+
+export const GRAPHQL_GET_QUERY_PARAM_KEYS = ['variables'];

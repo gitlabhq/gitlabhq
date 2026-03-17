@@ -62,6 +62,13 @@ module Types
       null: false,
       description: 'Display settings for the work item lists.'
 
+    field :wiki_use_auto_commit_message,
+      GraphQL::Types::Boolean,
+      null: false,
+      description: 'Whether to skip the commit message modal and use the auto-generated commit message when saving ' \
+        'changes to a wiki document.',
+      experiment: { milestone: '18.10' }
+
     def issues_sort
       user_preference.issues_sort&.to_sym
     end
@@ -84,3 +91,5 @@ module Types
     end
   end
 end
+
+Types::UserPreferencesType.prepend_mod

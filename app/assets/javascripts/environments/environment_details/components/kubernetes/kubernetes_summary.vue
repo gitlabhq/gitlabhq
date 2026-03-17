@@ -1,5 +1,5 @@
 <script>
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { GlTab, GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { fluxSyncStatus } from '~/environments/helpers/k8s_integration_helper';

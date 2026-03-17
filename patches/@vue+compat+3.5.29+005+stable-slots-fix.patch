@@ -1,0 +1,48 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index fe072bd..2b5dce0 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6142,7 +6142,9 @@ function convertLegacyDirectives(vnode, props) {
+ function convertLegacySlots(vnode) {
+   const { props, children } = vnode;
+   let slots;
++  let hadArrayChildren = false;
+   if (vnode.shapeFlag & 6 && isArray(children)) {
++    hadArrayChildren = true;
+     slots = {};
+     for (let i = 0; i < children.length; i++) {
+       const child = children[i];
+@@ -6172,6 +6174,9 @@ function convertLegacySlots(vnode) {
+     }
+   }
+   if (slots) {
++    if (hadArrayChildren) {
++      slots.$stable = false;
++    }
+     normalizeChildren(vnode, slots);
+   }
+   return vnode;
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index 3d4f234..c9e127e 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6049,7 +6049,9 @@ function convertLegacyDirectives(vnode, props) {
+ function convertLegacySlots(vnode) {
+   const { props, children } = vnode;
+   let slots;
++  let hadArrayChildren = false;
+   if (vnode.shapeFlag & 6 && isArray(children)) {
++    hadArrayChildren = true;
+     slots = {};
+     for (let i = 0; i < children.length; i++) {
+       const child = children[i];
+@@ -6079,6 +6081,9 @@ function convertLegacySlots(vnode) {
+     }
+   }
+   if (slots) {
++    if (hadArrayChildren) {
++      slots.$stable = false;
++    }
+     normalizeChildren(vnode, slots);
+   }
+   return vnode;

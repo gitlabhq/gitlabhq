@@ -1,0 +1,10 @@
+---
+name: auto_assign_code_owner_reviewers
+description: Automatically assign CODEOWNERS as reviewers on merge requests when the project setting is enabled
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/589700
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224175
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590879
+milestone: '18.10'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

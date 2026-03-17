@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Tenant Services
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Processing specific job classes
 ---
 
@@ -172,6 +172,21 @@ have higher precedence than `OR`.
 
 As with the standard queue group syntax documented previously, a single `*` as the
 entire queue group selects all queues.
+
+### Test routing rules in the Rails console
+
+You can verify which workers match a given query by running the following in the [Rails console](../operations/rails_console.md):
+
+```ruby
+matcher = Gitlab::SidekiqConfig::WorkerMatcher.new("feature_category=global_search")
+Gitlab::SidekiqConfig.workers
+  .select { |w| matcher.match?(w.to_yaml) }
+  .map(&:klass)
+```
+
+Replace the query string with any valid worker matching query to test different routing rules.
+
+See [List of available job classes](#list-of-available-job-classes) to find the query parameters that work for you.
 
 ### List of available job classes
 

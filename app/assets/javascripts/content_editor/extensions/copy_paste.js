@@ -2,7 +2,7 @@ import OrderedMap from 'orderedmap';
 import { Extension } from '@tiptap/core';
 import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { Schema, DOMParser as ProseMirrorDOMParser, DOMSerializer } from '@tiptap/pm/model';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
 import createMarkdownDeserializer from '../services/gl_api_markdown_deserializer';

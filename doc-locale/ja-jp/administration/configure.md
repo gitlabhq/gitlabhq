@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: 設定方法。
 title: GitLabを設定する
 ---
@@ -56,9 +56,9 @@ GitLab Self-Managedをカスタマイズおよび設定します。
 - [スニペット](snippets/_index.md)
 - [S/MIME署名](smime_signing_email.md)
 - [静的オブジェクト外部ストレージ](static_objects_external_storage.md)
-- [Terraformの制限](settings/terraform_limits.md)
+- [Terraform設定](settings/terraform_state_settings.md)
 - [Terraformステート](terraform_state.md)
-- [Time zone](timezone.md)（タイムゾーン）
+- [タイムゾーン](timezone.md)
 - [アップロード](uploads.md)
 - [Webターミナル](integration/terminal.md)
 - [新機能](whats-new.md)

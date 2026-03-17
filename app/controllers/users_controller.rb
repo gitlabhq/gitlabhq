@@ -93,7 +93,7 @@ class UsersController < ApplicationController
 
         if Feature.enabled?(:profile_tabs_vue, current_user) && !@is_personal_homepage
           @events = if user.include_private_contributions?
-                      @events
+                      @events.reject(&:target_deleted?)
                     else
                       @events.select { |event| event.visible_to_user?(current_user) }
                     end
@@ -227,7 +227,7 @@ class UsersController < ApplicationController
     if followee
       flash[:alert] = followee.errors.full_messages.join(', ') if followee&.errors&.any?
     else
-      flash[:alert] = s_('Action not allowed.')
+      flash[:alert] = _('Action not allowed.')
     end
 
     redirect_path = referer_path(request) || @user

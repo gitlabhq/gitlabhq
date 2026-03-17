@@ -3,7 +3,6 @@ import { markRaw } from 'vue';
 import { GlIcon, GlButton, GlLink, GlSprintf, GlTableLite, GlPopover } from '@gitlab/ui';
 import NumberToHumanSize from '~/vue_shared/components/number_to_human_size/number_to_human_size.vue';
 import { s__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import StorageTypeIcon from './storage_type_icon.vue';
 import RepositoryHealthDetailsSection from './repository_health_details/repository_health_details_section.vue';
 
@@ -23,7 +22,6 @@ export default {
     GlPopover,
     NumberToHumanSize,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     storageTypes: {
       type: Array,
@@ -43,10 +41,7 @@ export default {
   computed: {
     storageTypesWithDetails() {
       return this.storageTypes.map((type) => {
-        if (
-          this.glFeatures?.projectRepositoriesHealthUi &&
-          STATISTICS_DETAILS_COMPONENTS[type.id]
-        ) {
+        if (STATISTICS_DETAILS_COMPONENTS[type.id]) {
           return {
             ...type,
             detailsComponent: STATISTICS_DETAILS_COMPONENTS[type.id],

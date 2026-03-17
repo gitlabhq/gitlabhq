@@ -1,9 +1,10 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Deprecating GitLab features
 ---
+
 For details about the terms used on this page, see [the terminology](../../update/terminology.md).
 
 ## Breaking Change Policy
@@ -158,7 +159,7 @@ See the [GraphQL deprecation process](../api_graphql_styleguide.md#deprecating-s
 We cannot make breaking changes to webhook payloads.
 
 For a list of what constitutes a breaking webhook payload change and what to do instead, see the
-[Webhook breaking changes guide](../../development/webhooks.md#breaking-changes).
+[Webhook breaking changes guide](../webhooks.md#breaking-changes).
 
 ## How are Community Contributions to a deprecated feature handled?
 

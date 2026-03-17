@@ -6,8 +6,10 @@ exports[`Chunk component rendering isHighlighted is true renders line numbers 1`
   data-testid="line-numbers"
 >
   <a
+    aria-label="View blame for line 71"
     class="!gl-shadow-none file-line-blame gl-select-none"
     data-event-tracking="click_chunk_blame_on_blob_page"
+    data-testid="blame-link-71"
     href="some/blame/path.js#L71"
   />
   <a

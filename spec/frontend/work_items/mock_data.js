@@ -1,4 +1,4 @@
-import { map } from 'lodash';
+import { map } from 'lodash-es';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
@@ -5740,6 +5740,42 @@ export const groupEpicsWithMilestonesQueryResponse = {
   },
 };
 
+// This needs to be different from mockMilestone to make sure
+// in test that the component emits the right data based on the FF.
+export const mockFeaturesMilestone = {
+  expired: false,
+  id: 'gid://gitlab/Milestone/45',
+  title: 'v5.0',
+  state: 'active',
+  startDate: '2025-01-01',
+  dueDate: '2025-06-30',
+  webPath: '/milestones/45',
+  projectMilestone: false,
+};
+
+export const groupEpicsWithMilestonesQueryResponseWithFeatures = {
+  ...groupEpicsWithMilestonesQueryResponse,
+  data: {
+    ...groupEpicsWithMilestonesQueryResponse.data,
+    namespace: {
+      ...groupEpicsWithMilestonesQueryResponse.data.namespace,
+      workItems: {
+        ...groupEpicsWithMilestonesQueryResponse.data.namespace.workItems,
+        nodes: groupEpicsWithMilestonesQueryResponse.data.namespace.workItems.nodes.map(
+          (workItem) => ({
+            ...workItem,
+            features: {
+              milestone: {
+                milestone: mockFeaturesMilestone,
+              },
+            },
+          }),
+        ),
+      },
+    },
+  },
+};
+
 export const workItemsQueryResponse = {
   data: {
     namespace: {
@@ -5932,6 +5968,7 @@ export const workItemsWithSubChildQueryResponse = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Issue',
+              iconName: 'work-item-issue',
             },
           },
           {
@@ -5980,6 +6017,7 @@ export const workItemsWithSubChildQueryResponse = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Issue',
+              iconName: 'work-item-issue',
             },
           },
         ],
@@ -6042,6 +6080,7 @@ export const workItemsQueryResponseNoLabels = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Issue',
+              iconName: 'work-item-issue',
             },
             __typename: 'WorkItem',
           },
@@ -6084,6 +6123,7 @@ export const workItemsQueryResponseNoLabels = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Issue',
+              iconName: 'work-item-issue',
             },
             __typename: 'WorkItem',
           },
@@ -6157,6 +6197,7 @@ export const workItemsQueryResponseNoAssignees = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Issue',
+              iconName: 'work-item-issue',
             },
             __typename: 'WorkItem',
           },
@@ -6209,6 +6250,7 @@ export const workItemsQueryResponseNoAssignees = {
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Issue',
+              iconName: 'work-item-issue',
             },
             __typename: 'WorkItem',
           },
@@ -6275,6 +6317,7 @@ export const combinedQueryResultExample = [
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/5',
       name: 'Issue',
+      iconName: 'work-item-issue',
     },
     __typename: 'WorkItem',
   },
@@ -6334,6 +6377,7 @@ export const combinedQueryResultExample = [
     workItemType: {
       id: 'gid://gitlab/WorkItems::Type/5',
       name: 'Issue',
+      iconName: 'work-item-issue',
     },
     __typename: 'WorkItem',
   },
@@ -6917,6 +6961,60 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
     },
   },
 });
+
+export const createWorkItemQueryResponseWithFeatures = (widgets = []) => {
+  const base = createWorkItemQueryResponse(widgets);
+  base.data.namespace.workItem.features = {
+    description: {
+      description: '',
+      descriptionHtml: '',
+      lastEditedAt: '2024-05-09T05:57:04Z',
+      lastEditedBy: {
+        name: 'Administrator',
+        webPath: '/root',
+        __typename: 'UserCore',
+      },
+      taskCompletionStatus: {
+        completedCount: 0,
+        count: 0,
+        __typename: 'TaskCompletionStatus',
+      },
+    },
+    assignees: {
+      allowsMultipleAssignees: true,
+      assignees: {
+        nodes: [],
+        __typename: 'UserCoreConnection',
+      },
+    },
+    awardEmoji: {
+      upvotes: 0,
+      downvotes: 0,
+    },
+    milestone: {
+      milestone: null,
+    },
+    startAndDueDate: {
+      startDate: null,
+      dueDate: null,
+    },
+    timeTracking: {
+      humanReadableAttributes: {
+        timeEstimate: '',
+      },
+    },
+    development: {
+      closingMergeRequests: {
+        count: 0,
+      },
+    },
+    hierarchy: {
+      parent: null,
+    },
+    __typename: 'WorkItemFeatures',
+  };
+  return base;
+};
 
 export const mockToggleResolveDiscussionResponse = {
   data: {
@@ -9041,13 +9139,78 @@ export const namespaceWorkItemTypesQueryResponse = {
   },
 };
 
-export const organisationWorkItemTypesQueryResponse = {
+export const organizationWorkItemTypesQueryResponse = {
   data: {
-    organisation: {
+    organization: {
       id: 'gid://gitlab/2',
       workItemTypes: {
-        nodes: [...namespaceWorkItemTypesQueryResponse.data.namespace.workItemTypes.nodes],
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItems::Type/1',
+            name: 'Issue',
+            archived: false,
+            enabled: true,
+            canPromoteToObjective: true,
+            canUserCreateItems: true,
+            iconName: 'work-item-issue',
+            isConfigurable: true,
+            isFilterableBoardView: true,
+            isFilterableListView: true,
+            isGroupWorkItemType: false,
+            isIncidentManagement: false,
+            isServiceDesk: false,
+            showProjectSelector: false,
+            supportsMoveAction: true,
+            supportsRoadmapView: false,
+            useIssueView: true,
+            visibleInSettings: true,
+            widgetDefinitions: [
+              {
+                type: 'HIERARCHY',
+                propagatesMilestone: false,
+                autoExpandTreeOnMove: false,
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/2',
+            name: 'Task',
+            archived: false,
+            enabled: false,
+            canPromoteToObjective: false,
+            canUserCreateItems: true,
+            iconName: 'work-item-task',
+            isConfigurable: true,
+            isFilterableBoardView: false,
+            isFilterableListView: true,
+            isGroupWorkItemType: false,
+            isIncidentManagement: false,
+            isServiceDesk: false,
+            showProjectSelector: false,
+            supportsMoveAction: true,
+            supportsRoadmapView: false,
+            useIssueView: false,
+            visibleInSettings: true,
+            widgetDefinitions: [
+              {
+                type: 'PROGRESS',
+                showPopover: true,
+                __typename: 'WorkItemWidgetDefinitionProgress',
+              },
+              {
+                type: 'START_AND_DUE_DATE',
+                canRollUp: true,
+                __typename: 'WorkItemWidgetDefinitionStartAndDueDate',
+              },
+            ],
+            __typename: 'WorkItemType',
+          },
+        ],
+        __typename: 'WorkItemTypeConnection',
       },
+      __typename: 'Organization',
     },
   },
 };
@@ -9705,6 +9868,7 @@ export const mockMetadataQueryResponse = {
         readCrmOrganization: true,
         readCrmContact: true,
         createWorkItem: true,
+        createSavedView: true,
       },
       metadata: {
         __typename: 'NamespaceMetadata',
@@ -9736,10 +9900,13 @@ export const mockWorkItemTypesConfigurationResponse = {
             id: 'gid://gitlab/WorkItems::Type/1',
             name: 'Issue',
             archived: false,
+            enabled: true,
             canPromoteToObjective: true,
             canUserCreateItems: true,
+            iconName: 'work-item-issue',
             isConfigurable: true,
-            isFilterable: true,
+            isFilterableBoardView: true,
+            isFilterableListView: true,
             isGroupWorkItemType: false,
             isIncidentManagement: false,
             isServiceDesk: false,
@@ -9762,10 +9929,13 @@ export const mockWorkItemTypesConfigurationResponse = {
             id: 'gid://gitlab/WorkItems::Type/2',
             name: 'Task',
             archived: false,
+            enabled: false,
             canPromoteToObjective: false,
             canUserCreateItems: true,
+            iconName: 'work-item-task',
             isConfigurable: true,
-            isFilterable: true,
+            isFilterableBoardView: false,
+            isFilterableListView: true,
             isGroupWorkItemType: false,
             isIncidentManagement: false,
             isServiceDesk: false,
@@ -9804,8 +9974,10 @@ export const mockFullWorkItemTypeConfiguration = {
     archived: null,
     canPromoteToObjective: null,
     canUserCreateItems: null,
+    iconName: 'work-item-epic',
     isConfigurable: null,
-    isFilterable: null,
+    isFilterableBoardView: false,
+    isFilterableListView: false,
     isGroupWorkItemType: null,
     isIncidentManagement: null,
     isServiceDesk: null,
@@ -9899,8 +10071,10 @@ export const mockFullWorkItemTypeConfiguration = {
     archived: null,
     canPromoteToObjective: null,
     canUserCreateItems: null,
+    iconName: 'work-item-incident',
     isConfigurable: null,
-    isFilterable: null,
+    isFilterableBoardView: true,
+    isFilterableListView: true,
     isGroupWorkItemType: null,
     isIncidentManagement: null,
     isServiceDesk: null,
@@ -9993,8 +10167,10 @@ export const mockFullWorkItemTypeConfiguration = {
     archived: null,
     canPromoteToObjective: null,
     canUserCreateItems: null,
+    iconName: 'work-item-issue',
     isConfigurable: null,
-    isFilterable: null,
+    isFilterableBoardView: true,
+    isFilterableListView: true,
     isGroupWorkItemType: null,
     isIncidentManagement: null,
     isServiceDesk: null,
@@ -10116,8 +10292,10 @@ export const mockFullWorkItemTypeConfiguration = {
     archived: null,
     canPromoteToObjective: null,
     canUserCreateItems: null,
+    iconName: 'work-item-keyresult',
     isConfigurable: null,
-    isFilterable: null,
+    isFilterableBoardView: false,
+    isFilterableListView: true,
     isGroupWorkItemType: null,
     isIncidentManagement: null,
     isServiceDesk: null,
@@ -10196,8 +10374,10 @@ export const mockFullWorkItemTypeConfiguration = {
     archived: null,
     canPromoteToObjective: null,
     canUserCreateItems: null,
+    iconName: 'work-item-objective',
     isConfigurable: null,
-    isFilterable: null,
+    isFilterableBoardView: false,
+    isFilterableListView: true,
     isGroupWorkItemType: null,
     isIncidentManagement: null,
     isServiceDesk: null,
@@ -10275,8 +10455,10 @@ export const mockFullWorkItemTypeConfiguration = {
     archived: null,
     canPromoteToObjective: null,
     canUserCreateItems: null,
+    iconName: 'work-item-requirement',
     isConfigurable: null,
-    isFilterable: null,
+    isFilterableBoardView: false,
+    isFilterableListView: false,
     isGroupWorkItemType: null,
     isIncidentManagement: null,
     isServiceDesk: null,
@@ -10343,8 +10525,10 @@ export const mockFullWorkItemTypeConfiguration = {
     archived: null,
     canPromoteToObjective: null,
     canUserCreateItems: null,
+    iconName: 'work-item-task',
     isConfigurable: null,
-    isFilterable: null,
+    isFilterableBoardView: false,
+    isFilterableListView: true,
     isGroupWorkItemType: null,
     isIncidentManagement: null,
     isServiceDesk: null,
@@ -10446,8 +10630,10 @@ export const mockFullWorkItemTypeConfiguration = {
     archived: null,
     canPromoteToObjective: null,
     canUserCreateItems: null,
+    iconName: 'work-item-test-case',
     isConfigurable: null,
-    isFilterable: null,
+    isFilterableBoardView: false,
+    isFilterableListView: false,
     isGroupWorkItemType: null,
     isIncidentManagement: null,
     isServiceDesk: null,
@@ -10502,8 +10688,10 @@ export const mockFullWorkItemTypeConfiguration = {
     archived: null,
     canPromoteToObjective: null,
     canUserCreateItems: null,
+    iconName: 'work-item-ticket',
     isConfigurable: null,
-    isFilterable: null,
+    isFilterableBoardView: true,
+    isFilterableListView: true,
     isGroupWorkItemType: null,
     isIncidentManagement: null,
     isServiceDesk: null,
@@ -10606,7 +10794,7 @@ export const mockFullWorkItemTypeConfiguration = {
 
 export const singleSavedView = [
   {
-    __typename: 'SavedView',
+    __typename: 'WorkItemSavedViewType',
     name: 'Current sprint 3',
     description: 'The things I am focused on for the sprint',
     subscribed: true,
@@ -10635,6 +10823,18 @@ export const singleSavedView = [
     userPermissions: {
       updateSavedView: true,
       deleteSavedView: true,
+      updateSavedViewVisibility: true,
+      __typename: 'SavedViewPermissions',
+    },
+  },
+];
+
+export const sharedSavedView = [
+  {
+    ...singleSavedView[0],
+    isPrivate: false,
+    userPermissions: {
+      ...singleSavedView[0].userPermissions,
     },
   },
 ];

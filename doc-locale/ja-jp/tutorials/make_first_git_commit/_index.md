@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Tutorials
-info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: 'チュートリアル: 初めてのGitコミットを行う'
 ---
 
@@ -41,7 +41,7 @@ graph LR
     end
 ```
 
-Gitリポジトリで作業するときは、*ブランチ*で作業します。デフォルトでは、リポジトリの内容はデフォルトブランチにあります。変更を加えるには、次の手順に従います:
+Gitリポジトリで作業するときは、*ブランチ*で作業します。デフォルトでは、リポジトリの内容はデフォルトブランチにあります。変更を加えるには、次の手順に従います。
 
 1. ブランチを自分で作成します。このブランチは、作成時のデフォルトブランチのスナップショットです。
 1. 変更を加え、変更をブランチにプッシュします。プッシュするたびにコミットが作成されます。
@@ -67,7 +67,7 @@ flowchart LR
 
 ## ステップ {#steps}
 
-これから次の手順を実行します:
+これから次の手順を実行します。
 
 1. [サンプルプロジェクトを作成する](#create-a-sample-project)。
 1. [リポジトリのクローンを作成する](#clone-the-repository)。
@@ -80,7 +80,7 @@ flowchart LR
 
 まず、GitLabでサンプルプロジェクトを作成します。
 
-1. GitLabの左側のサイドバーの上部で、**新規作成**（{{< icon name="plus" >}}）を選択し、**新規プロジェクト/リポジトリ**を選択します。
+1. GitLabの右上隅で、**新規作成** ({{< icon name="plus" >}}) および**新規プロジェクト/リポジトリ**を選択します。
 1. **プロジェクト名**に、`My sample project`と入力します。プロジェクトslugが生成されます。このslugは、作成後にプロジェクトにアクセスするために使用できるURLです。
 1. **リポジトリを初期化しREADMEファイルを生成する**が選択されていることを確認します。他のフィールドは自由に設定してください。
 1. **プロジェクトを作成**を選択します。
@@ -95,19 +95,19 @@ flowchart LR
 
 1. コンピュータでターミナルを開き、ファイルのクローンを作成するディレクトリに移動します。
 
-1. `git clone`と入力し、URLを貼り付けます:
+1. `git clone`と入力し、URLを貼り付けます。
 
    ```shell
    git clone git@gitlab.com:gitlab-example/my-sample-project.git
    ```
 
-1. ディレクトリに移動します:
+1. ディレクトリに移動します。
 
    ```shell
    cd my-sample-project
    ```
 
-1. デフォルトで、リポジトリのデフォルトブランチのクローンを作成しました。通常、このブランチは`main`です。念のため、デフォルトブランチの名前を取得します:
+1. デフォルトで、リポジトリのデフォルトブランチのクローンを作成しました。通常、このブランチは`main`です。念のため、デフォルトブランチの名前を取得します。
 
    ```shell
    git branch
@@ -125,7 +125,7 @@ flowchart LR
    git checkout -b example-tutorial-branch
    ```
 
-1. Visual Studio Code、Sublime、`vi`などのテキストエディタで、README.mdファイルを開き、次のテキストを追加します:
+1. Visual Studio Code、Sublime、`vi`などのテキストエディタで、README.mdファイルを開き、次のテキストを追加します。
 
    ```plaintext
    Hello world! I'm using Git!
@@ -139,7 +139,7 @@ flowchart LR
    git status
    ```
 
-   次のような出力が得られるはずです:
+   次のような出力が得られるはずです。
 
    ```shell
    On branch example-tutorial-branch
@@ -161,7 +161,7 @@ flowchart LR
    git add README.md
    ```
 
-1. ファイルがステージされたことを確認します:
+1. ファイルがステージされたことを確認します。
 
    ```shell
    git status
@@ -182,7 +182,7 @@ flowchart LR
    git commit -m "I added text to the README file"
    ```
 
-1. 変更はブランチにコミットされましたが、ブランチとそのコミットは、まだ自分のコンピュータでしか使用できません。まだ誰もアクセスできません。ブランチをGitLabにプッシュします:
+1. 変更はブランチにコミットされましたが、ブランチとそのコミットは、まだ自分のコンピュータでしか使用できません。まだ誰もアクセスできません。ブランチをGitLabにプッシュします。
 
    ```shell
    git push origin example-tutorial-branch
@@ -214,11 +214,8 @@ flowchart LR
    git push
    ```
 
-{{< alert type="note" >}}
-
-このチュートリアルでは、ブランチをリポジトリのデフォルトブランチに直接マージします。GitLabでは、通常、[マージリクエスト](../../user/project/merge_requests/_index.md)を使用してブランチをマージします。
-
-{{< /alert >}}
+> [!note]
+> このチュートリアルでは、ブランチをリポジトリのデフォルトブランチに直接マージすることになります。GitLabでは、通常、[マージリクエスト](../../user/project/merge_requests/_index.md)を使用してブランチをマージします。
 
 ### GitLabで変更を表示する {#view-your-changes-in-gitlab}
 
@@ -227,7 +224,7 @@ flowchart LR
 では、UI上で変更を確認しましょう。プロジェクトに移動してください。
 
 - 下にスクロールして、`README.md`ファイルの内容を表示します。変更が表示されるはずです。
-- `README.md`ファイルの上にある**最新コミット**列のテキストを確認します。コミットメッセージがこの列に表示されます:
+- `README.md`ファイルの上にある**最終コミット**列のテキストを確認します。コミットメッセージがこの列に表示されます。
 
   ![最終コミット列にコミットメッセージが表示され、最終更新列に更新時間が表示されています](img/commit_message_v14_10.png)
 
@@ -239,9 +236,9 @@ flowchart LR
 
 ## その他のGit学習リソース {#find-more-git-learning-resources}
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Git for GitLab](https://www.youtube.com/watch?v=4lxvVj7wlZw)初心者向けコースでは、Gitの基本を学べます（1時間33分）。
+- <i class="fa-youtube-play" aria-hidden="true"></i> [Git for GitLab](https://www.youtube.com/watch?v=4lxvVj7wlZw)初心者向けコース（1時間33分）では、Gitの基本を学べます。
 - [チュートリアルページ](../_index.md)で、GitとGitLabに関する他のチュートリアルを見つけることができます。
 - PDFダウンロード: [GitLab Gitチートシート](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)。
-- ブログ投稿: [Git Tips & Tricks](https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/)。
-- ブログ投稿: [Eight Tips to help you work better with Git](https://about.gitlab.com/blog/2015/02/19/8-tips-to-help-you-work-better-with-git/)。
-- 公式のGit[ドキュメント](https://git-scm.com) （[Git on the Server - GitLab](https://git-scm.com/book/en/v2/Git-on-the-Server-GitLab)、他）。
+- ブログ投稿: [Git Tips & Tricks](https://about.gitlab.com/blog/git-tips-and-tricks/)（Gitのヒントとコツ）。
+- ブログ投稿: [Eight Tips to help you work better with Git](https://about.gitlab.com/blog/8-tips-to-help-you-work-better-with-git/)（Gitを使用するときに役立つ8つのヒント）。
+- 公式のGit[ドキュメント](https://git-scm.com)（[Git on the Server - GitLab](https://git-scm.com/book/en/v2/Git-on-the-Server-GitLab)、他）。

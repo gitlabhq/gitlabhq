@@ -144,6 +144,7 @@ export default {
   mounted() {
     this.noteData.noteable_type = this.noteableType;
     this.noteData.noteable_id = this.getNoteableData.id;
+    this.noteData.merge_request_diff_head_sha = this.getNoteableData.diff_head_sha;
   },
   methods: {
     ...mapActions(useLegacyDiffs, ['goToFile']),
@@ -294,6 +295,7 @@ export default {
     :header-height="getDrawerHeaderHeight"
     :z-index="$options.DRAWER_Z_INDEX"
     :open="drawerOpened"
+    header-sticky
     class="merge-request-review-drawer !gl-w-[100cqw] !gl-max-w-2xl"
     data-testid="review-drawer-toggle"
     @close="setDrawerOpened(false)"

@@ -76,6 +76,16 @@ module Banzai
           a['href'] = href
           a.inner_html = original_content
           a.to_html
+        elsif node.attr('data-link') == 'true' && node.attr('data-original-href')
+          # Reference was inside a link like [custom text](reference).
+          # Restore as a plain link with the original href to avoid leaking
+          # information about the reference's existence.
+          original_href = node.attr('data-original-href')
+
+          a = node.document.create_element('a')
+          a['href'] = original_href
+          a.inner_html = original_content
+          a.to_html
         end
 
       # The reference should be replaced by the original link's content,

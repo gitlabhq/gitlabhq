@@ -260,13 +260,6 @@ RSpec.describe API::GroupLabels, feature_category: :team_planning do
       let(:params) { { name: group_label1.name } }
     end
 
-    context 'with valid label params' do
-      let(:api_path) { api("/groups/#{group.id}/labels", user) }
-      let(:label_title) { valid_new_label_title }
-
-      it_behaves_like 'ignores archived param when feature flag is disabled'
-    end
-
     it_behaves_like 'authorizing granular token permissions', :delete_label do
       let(:boundary_object) { group }
       let(:request) do

@@ -1,0 +1,28 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index ac004f8..c8c3baa 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -6094,6 +6094,9 @@ function convertLegacyProps(legacyProps, type) {
+           }
+         }
+       }
++    } else if (key === "tag" && legacyProps[key] === "component") {
++      // Vue 2 compiler adds `tag: "component"` to dynamic component render functions.
++      // This is an internal marker that should not be passed through as a prop.
+     } else if (!skipLegacyRootLevelProps(key)) {
+       if (isOn(key) && converted[key] && converted[key] !== legacyProps[key]) {
+         converted[key] = [].concat(converted[key], legacyProps[key]);
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index 9a300ee..4127b2a 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -6001,6 +6001,9 @@ function convertLegacyProps(legacyProps, type) {
+           }
+         }
+       }
++    } else if (key === "tag" && legacyProps[key] === "component") {
++      // Vue 2 compiler adds `tag: "component"` to dynamic component render functions.
++      // This is an internal marker that should not be passed through as a prop.
+     } else if (!skipLegacyRootLevelProps(key)) {
+       if (isOn(key) && converted[key] && converted[key] !== legacyProps[key]) {
+         converted[key] = [].concat(converted[key], legacyProps[key]);

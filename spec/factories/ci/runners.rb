@@ -158,5 +158,13 @@ FactoryBot.define do
     trait :hosted_runner do
       creator { Users::Internal.in_organization(organization_id).admin_bot }
     end
+
+    trait :with_future_rotation_deadline do
+      token_rotation_deadline { 1.hour.from_now }
+    end
+
+    trait :with_past_rotation_deadline do
+      token_rotation_deadline { 1.minute.ago }
+    end
   end
 end

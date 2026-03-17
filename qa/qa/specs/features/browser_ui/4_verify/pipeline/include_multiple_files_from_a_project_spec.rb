@@ -25,6 +25,7 @@ module QA
       it 'runs the pipeline with composed config',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348087' do
         Page::Project::Pipeline::Show.perform do |pipeline|
+          pipeline.close_dap_panel_if_exists
           aggregate_failures 'pipeline has all expected jobs' do
             expect(pipeline).to have_job('build')
             expect(pipeline).to have_job('test')

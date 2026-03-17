@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Project and group visibility
 description: Public, private, and internal.
 ---
@@ -80,7 +80,7 @@ Prerequisites:
 
 - You must have the Owner role for a project.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. From the **Project visibility** dropdown list, select an option.
@@ -94,9 +94,9 @@ You can change the visibility of individual features in a project.
 
 Prerequisites:
 
-- You must have at least the Maintainer role for the project.
+- You must have the Maintainer or Owner role for the project.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. To enable or disable a feature, turn on or turn off the feature toggle.
@@ -113,7 +113,7 @@ Prerequisites:
   restrictive as the new setting of the parent group. For example, you cannot set a group
   to private if a project or subgroup in that group is public.
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Naming, description, visibility**.
 1. For **Visibility level**, select an option.

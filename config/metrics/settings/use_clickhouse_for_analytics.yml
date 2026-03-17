@@ -3,6 +3,8 @@ data_category: optional
 key_path: settings.use_clickhouse_for_analytics
 description: Whether ClickHouse is enabled for analytics
 product_group: platform_insights
+product_categories:
+- product_analytics
 value_type: boolean
 status: active
 time_frame: none

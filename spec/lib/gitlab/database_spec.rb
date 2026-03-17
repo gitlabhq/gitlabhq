@@ -322,8 +322,6 @@ RSpec.describe Gitlab::Database, feature_category: :database do
       'main'             | { database_tasks: false } | nil
       'ci'               | { database_tasks: true }  | nil
       'ci'               | { database_tasks: false } | 'main'
-      'main_clusterwide' | { database_tasks: true }  | nil
-      'main_clusterwide' | { database_tasks: false } | 'main'
       '_test_unknown'    | { database_tasks: true }  | nil
       '_test_unknown'    | { database_tasks: false } | 'main'
     end

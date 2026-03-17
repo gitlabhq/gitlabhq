@@ -1,6 +1,6 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
-import { forEach, escape } from 'lodash';
+import { forEach, escape } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';

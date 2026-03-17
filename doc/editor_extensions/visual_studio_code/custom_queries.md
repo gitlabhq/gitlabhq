@@ -1,11 +1,11 @@
 ---
 stage: AI-powered
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Custom queries in the VS Code extension
 ---
 
-The GitLab Workflow extension adds a [sidebar](_index.md#view-issues-and-merge-requests)
+The GitLab for VS Code extension adds a [sidebar](projects.md#view-issues-and-merge-requests)
 to VS Code. This sidebar displays default search queries for each of your projects:
 
 - Issues assigned to me
@@ -26,8 +26,8 @@ Prerequisites:
 
 To see search results from your project:
 
-1. On the left vertical menu bar, select **GitLab Workflow** ({{< icon name="tanuki" >}}) to display the extension sidebar.
-1. On the sidebar, expand **Issues and merge requests**.
+1. On the left vertical menu bar, select **GitLab** ({{< icon name="tanuki" >}}) to display the extension sidebar.
+1. In the sidebar, expand **Issues and merge requests**.
 1. Select a project to view its queries, then select the query you want to run.
 1. Below the query title, select the search result you want to see.
 1. If your search result is a merge request, select what you want to view in VS Code:
@@ -39,12 +39,12 @@ To see search results from your project:
 ## Create a custom query
 
 Any custom queries you define override the default queries shown in the
-[VS Code sidebar](_index.md#view-issues-and-merge-requests),
+[VS Code sidebar](projects.md#view-issues-and-merge-requests),
 under **Issues and Merge requests**.
 
 To override the extension's default queries and replace them with your own:
 
-1. In VS Code, on the top bar, go to **Code** > **Preferences** > **Settings**.
+1. In VS Code, in the top bar, go to **Code** > **Preferences** > **Settings**.
 1. In the upper-right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
 1. In the file, define `gitlab.customQueries`, like in this example. Each query should be an entry
    in the `gitlab.customQueries` JSON array:

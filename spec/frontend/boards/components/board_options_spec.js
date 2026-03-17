@@ -1,7 +1,7 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BoardOptions from '~/boards/components/board_options.vue';
 import ToggleEpicsSwimlanes from 'ee_component/boards/components/toggle_epics_swimlanes.vue';
@@ -29,10 +29,8 @@ describe('BoardOptions component', () => {
 
     const mockSetIsShowingLabelsResolver = jest.fn();
 
-    const mockApollo = createMockApollo([], {
-      Mutation: {
-        setIsShowingLabels: mockSetIsShowingLabelsResolver,
-      },
+    const { apolloProvider: mockApollo } = createControlledMockApollo([], {
+      Mutation: { setIsShowingLabels: mockSetIsShowingLabelsResolver },
     });
 
     beforeEach(() => {

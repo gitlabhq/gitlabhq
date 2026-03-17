@@ -101,6 +101,7 @@ export default {
             class="gl-mr-1 gl-cursor-help"
             icon-variant="subtle"
             :work-item-type="workItem.workItemType.name"
+            :type-icon-name="workItem.workItemType.iconName"
           />
           <gl-link
             :href="workItem.webUrl"

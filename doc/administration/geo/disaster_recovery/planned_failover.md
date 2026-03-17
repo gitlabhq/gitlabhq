@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use Geo for planned failover to migrate GitLab with minimal downtime by following preflight checks and sync steps to promote a secondary site without data loss.
 title: Disaster recovery for planned failover
 ---
@@ -147,7 +147,6 @@ site:
 
 1. Copy the backup tarball generated from your primary site to the `/var/opt/gitlab/backups` folder
    on your secondary site.
-
 1. On your secondary site, restore the registry following the
    [Restore GitLab](../../backup_restore/_index.md#restore-gitlab) documentation.
 
@@ -238,7 +237,7 @@ For pre-maintenance validation while the primary is still operational, use the m
 
 ### DNS TTL
 
-If you plan to [update the primary domain DNS record](_index.md#step-4-optional-updating-the-primary-domain-dns-record),
+If you plan to [update the primary domain DNS record](_index.md#optional-updating-the-primary-domain-dns-record),
 consider setting a low TTL (time-to-live) to ensure fast propagation of DNS changes.
 
 ### Object storage

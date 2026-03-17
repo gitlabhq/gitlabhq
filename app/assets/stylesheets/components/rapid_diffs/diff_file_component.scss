@@ -13,12 +13,19 @@
   --rd-diff-file-outer-border-color: var(--gl-highlight-target-border-color);
 }
 
+.rd-diff-file-component-conflict {
+  --rd-diff-file-header-background-color: var(--gl-feedback-danger-background-color);
+  --rd-diff-file-outer-border-color: var(--gl-feedback-danger-border-color);
+}
+
 .rd-diff-file {
   $header-padding: constants.$diff-file-header-padding-y * 2;
   // top/bottom padding + toggle button size, excluding borders
   $file-header-height: calc($header-padding + $gl-button-small-size);
   --rd-diff-file-header-height: #{$file-header-height};
   --rd-diff-file-border-radius: #{$gl-border-radius-lg};
+  --rd-diff-file-header-radius: var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius) 0 0;
+  --rd-diff-file-header-collapsed-radius: var(--rd-diff-file-border-radius);
   container: diff-file / normal;
 }
 
@@ -26,13 +33,32 @@
 .rd-diff-file-error.rd-diff-file-error {
   --gl-alert-border-radius: 0;
   margin: 0;
-  border: 1px solid var(--gl-border-color-default);
+  padding: 0;
+  border: 1px solid var(--rd-diff-file-outer-border-color);
   border-top: 0;
   max-width: none;
 
   &:empty {
     display: none;
   }
+}
+
+.rd-diff-file-conflict-message {
+  --gl-alert-border-radius: var(--rd-diff-file-header-radius);
+  border: 1px solid var(--rd-diff-file-outer-border-color);
+  border-bottom: 0;
+  border-radius: var(--gl-alert-border-radius);
+}
+
+.rd-diff-file-conflict-message + .rd-diff-file-header-sticky .rd-diff-file-header {
+  --rd-diff-file-header-radius: 0;
+  --rd-diff-file-header-collapsed-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
+  border-top: 1px solid transparent;
+}
+
+.rd-diff-file-details {
+  --rd-content-border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
+  --rd-content-border-color: var(--rd-diff-file-border-color, var(--gl-border-color-default));
 }
 
 .rd-diff-file-details > summary {
@@ -56,8 +82,7 @@
        We need to disable content-visibility with opened dropdowns because it applies paint containment,
        which clips dropdowns content.
  */
-.rd-diff-file[data-virtual],
-.rd-diff-file[data-collapsed] {
+.rd-diff-file:where([data-virtual], [data-collapsed]) {
   content-visibility: var(--rd-content-visibility-auto, auto);
 }
 
@@ -82,7 +107,7 @@
 
 // content-visibility: auto; applies paint containment, which means you can not draw outside a diff file
 // we need to disable this when we show dropdowns and other elements which extend past a diff file
-.rd-diff-file[data-virtual]:has(button[aria-controls*='base-dropdown'][aria-expanded='true']),
+.rd-diff-file:where([data-virtual], [data-collapsed]):has(button[aria-controls*='base-dropdown'][aria-expanded='true']),
 // discussions change the dimensions of a diff file, virtual dimensions are no longer relevant,
 // switch into Fine-grained mode
 .rd-diff-file[data-virtual]:has([data-new-discussion-toggle]),
@@ -111,7 +136,7 @@
   background-color: var(--rd-diff-file-header-background-color);
   border: 1px solid var(--rd-diff-file-outer-border-color, var(--rd-diff-file-border-color));
   padding: #{constants.$diff-file-header-padding-y} var(--rd-diff-file-header-horizontal-padding);
-  border-radius: var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius) 0 0;
+  border-radius: var(--rd-diff-file-header-radius);
   word-break: break-word;
 
   @container scroll-state(stuck: top) {
@@ -120,7 +145,7 @@
 }
 
 .rd-diff-file[data-collapsed] .rd-diff-file-header {
-  border-radius: var(--rd-diff-file-border-radius);
+  border-radius: var(--rd-diff-file-header-collapsed-radius);
 }
 
 .rd-diff-file-header-main {
@@ -226,8 +251,6 @@
 }
 
 .rd-diff-file-body {
-  --rd-content-border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
-  --rd-content-border-color: var(--rd-diff-file-border-color, var(--gl-border-color-default));
   border: constants.$diff-file-border-width solid var(--rd-diff-file-outer-border-color, var(--rd-content-border-color));
   border-top: 0;
   border-radius: var(--rd-content-border-radius);

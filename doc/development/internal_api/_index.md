@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Internal API
 ---
 
@@ -13,6 +13,8 @@ This documentation does not yet include the internal API used by
 GitLab Pages.
 
 For information on the GitLab Subscriptions internal API, see [the dedicated page](gitlab_subscriptions.md).
+
+For information on the Orbit internal API, see [the dedicated page](orbit.md).
 
 ## Add new endpoints
 

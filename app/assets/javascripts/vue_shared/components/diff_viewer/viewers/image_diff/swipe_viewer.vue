@@ -1,5 +1,5 @@
 <script>
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import ImageViewer from '../../../content_viewer/viewers/image_viewer.vue';
 import { pixeliseValue } from '../../../lib/utils/dom_utils';
 

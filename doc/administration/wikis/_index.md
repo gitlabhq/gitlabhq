@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Wiki settings
 description: Configure Wiki settings.
 ---
@@ -127,7 +127,7 @@ To check if includes are enabled, start the Rails console and run:
 ### Through the API
 
 To set the wiki to allow URI includes for AsciiDoc through the
-[Application Settings API](../../api/settings.md#update-application-settings),
+[Application settings API](../../api/settings.md#update-application-settings),
 use a `curl` command:
 
 ```shell

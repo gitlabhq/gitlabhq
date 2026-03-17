@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Remote Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use Ona to build and configure prebuilt development environments for your GitLab project.
 title: Ona
 ---
@@ -54,7 +54,7 @@ For GitLab Self-Managed, a GitLab administrator must:
 
 1. Enable the Ona integration in GitLab:
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Settings** > **General**.
+   1. In the left sidebar, select **Settings** > **General**.
    1. Expand the **Ona** configuration section.
    1. Select the **Enable Ona integration** checkbox.
    1. Enter the Ona instance URL (for example, `https://app.ona.com`).
@@ -69,9 +69,8 @@ After you [enable Ona](#enable-ona-in-your-user-preferences),
 you can launch it from GitLab in one of these ways:
 
 - From a project repository:
-  1. On the top bar, select **Search or go to** and find your project.
+  1. In the top bar, select **Search or go to** and find your project.
   1. In the upper right, select **Code** > **Ona**.
-
 - From a merge request:
   1. Go to your merge request.
   1. In the upper-right corner, select **Code** > **Open in Ona**.

@@ -1,5 +1,3 @@
 ---
 name: create_fork_relationship
 description: Grants the ability to create a fork relationship between projects
-boundaries:
-  - project

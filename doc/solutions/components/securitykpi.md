@@ -42,13 +42,11 @@ This solution exports vulnerability data from GitLab projects or groups using th
 The solution consists of two main components:
 
 1. A vulnerability exporter that fetches data from GitLab Security Dashboard
-
 1. A Splunk ingester that processes the exported data and sends it to Splunk HEC
 
 The pipeline runs in two stages:
 
 1. `extract`: Fetches vulnerabilities and saves to CSV
-
 1. `ingest`: Sends the vulnerability data to Splunk
 
 ## Configuration
@@ -153,7 +151,6 @@ The script sends vulnerabilities as events to Splunk.
 ### Index Configuration
 
 1. Create a new index named `gitlab_vulns` in Splunk
-
 1. When creating your HEC token:
    - Set the default **index** to `gitlab_vulns` (this index is referenced in the base search of the provided Splunk dashboard)
    - Ensure the token has permissions to write to this index
@@ -183,9 +180,9 @@ To set up the dashboard:
 1. **Business Unit Mapping**:
    1. Create a CSV file with two columns:
 
-     ```shell
-     project_url,business_unit
-     ```
+      ```shell
+      project_url,business_unit
+      ```
 
    1. Map each GitLab project URL to its corresponding business unit.
    1. Upload the file to Splunk as a lookup table:

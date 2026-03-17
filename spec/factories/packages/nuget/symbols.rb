@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     after(:build) do |symbol, evaluator|
-      symbol.file = fixture_file_upload(evaluator.file_fixture)
+      symbol.file = fixture_file_upload(evaluator.file_fixture) if evaluator.file_fixture.present?
     end
 
     trait :orphan do

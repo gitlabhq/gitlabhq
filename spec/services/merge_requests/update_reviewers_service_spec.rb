@@ -68,8 +68,8 @@ RSpec.describe MergeRequests::UpdateReviewersService, feature_category: :code_re
       it 'updates the MR' do
         expect { set_reviewers }
           .to change { merge_request.reload.reviewers }.from([user3]).to([user2])
-          .and change(merge_request, :updated_at)
-          .and change(merge_request, :updated_by).to(user)
+          .and change { merge_request.updated_at }
+          .and change { merge_request.updated_by }.to(user)
       end
 
       it 'creates system note about merge_request review request' do

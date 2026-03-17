@@ -52,6 +52,7 @@ export default {
         </template>
         <template #link="{ content }">
           <gl-link
+            variant="inline"
             class="gl-text-sm"
             target="_blank"
             :href="simulatePipelineHelpPagePath"

@@ -27,6 +27,10 @@ AllCops:
   NewCops: disable
 
 # This cop doesn't make sense in the context of gems
+Gitlab/Authz/PermissionCheck:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
 CodeReuse/ActiveRecord:
   Enabled: false
 
@@ -80,6 +84,10 @@ Gitlab/RSpec/MisplacedEeSpecFile:
 
 # This cop doesn't make sense in the context of gems
 Graphql/AuthorizeTypes:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
+Gitlab/Authz/RoleCheckInRule:
   Enabled: false
 
 Gitlab/Json:
@@ -156,6 +164,10 @@ Rails/StrongParams:
 Gitlab/NoFindInWorkers:
   Enabled: false
 
+# This cop doesn't make sense in the context of gems
+Gitlab/Authz/EnableInBasePolicy:
+  Enabled: false
+
 Rake/TopLevelMethodDefinition:
   Enabled: true
   Include:
@@ -177,3 +189,10 @@ Gitlab/NoHelpersInPresenters:
   Include:
     - '{,ee/,jh/}app/presenters/**/*.rb'
 
+# This cop doesn't make sense in the context of gems
+Gitlab/Authz/DisallowAbilityAllowed:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
+Gitlab/Authz/UsePolicyHelpers:
+  Enabled: false

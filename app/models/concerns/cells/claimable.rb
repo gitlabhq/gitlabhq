@@ -3,6 +3,7 @@
 module Cells
   module Claimable
     extend ActiveSupport::Concern
+    include Gitlab::Utils::StrongMemoize
 
     CLAIMS_BUCKET_TYPE = Gitlab::Cells::TopologyService::Claims::V1::Bucket::Type
     CLAIMS_SUBJECT_TYPE = Gitlab::Cells::TopologyService::Claims::V1::Subject::Type
@@ -33,8 +34,12 @@ module Cells
         self.cells_claims_attributes = cells_claims_attributes
           .merge(name => { type: type, feature_flag: feature_flag })
           .freeze
+
+        register_as_model_with_claims
       end
     end
+
+    mattr_reader :models_with_claims, default: Set.new
 
     def handle_grpc_error(error)
       case error.code
@@ -53,7 +58,20 @@ module Cells
       end
     end
 
+    # Returns an array of metadata for all claim attributes
+    def cells_claims_metadata
+      self.class.cells_claims_attributes.map do |attribute, config|
+        cells_claims_metadata_for(config[:type], self[attribute])
+      end
+    end
+
     private
+
+    class_methods do
+      def register_as_model_with_claims
+        Claimable.models_with_claims.add(self)
+      end
+    end
 
     # rubocop:disable Gitlab/FeatureFlagKeyDynamic -- need to check against feature flag name dynamically
     def cells_claims_enabled_for_attribute?(attribute_config)
@@ -107,38 +125,23 @@ module Cells
     end
 
     def cells_claims_default_metadata
-      @cells_claims_default_metadata ||= begin
-        rails_primary_key = read_attribute(self.class.primary_key)
+      rails_primary_key = read_attribute(self.class.primary_key)
 
-        raise MissingPrimaryKeyError unless rails_primary_key
+      raise MissingPrimaryKeyError unless rails_primary_key
 
-        rails_primary_key_bytes =
-          case rails_primary_key
-          when Integer
-            [rails_primary_key].pack("Q>") # uint64 big-endian
-          when String
-            if Gitlab::UUID.uuid?(rails_primary_key)
-              [rails_primary_key.delete("-")].pack("H*") # UUID: remove dashes and encode as hex
-            else
-              rails_primary_key # Raw string, pass as is
-            end
-          else
-            raise ArgumentError, "Unsupported primary key type: #{rails_primary_key.class}"
-          end
-
-        {
-          subject: {
-            type: self.class.cells_claims_subject_type,
-            id: cells_claims_subject_key
-          },
-          source: {
-            type: self.class.cells_claims_source_type,
-            rails_primary_key_id: rails_primary_key_bytes
-          },
-          record: self
-        }
-      end
+      {
+        subject: {
+          type: self.class.cells_claims_subject_type,
+          id: cells_claims_subject_key
+        },
+        source: {
+          type: self.class.cells_claims_source_type,
+          rails_primary_key_id: Serialization.to_bytes(rails_primary_key)
+        },
+        record: self
+      }
     end
+    strong_memoize_attr :cells_claims_default_metadata
 
     def cells_claims_subject_key
       subject_key = self.class.cells_claims_subject_key

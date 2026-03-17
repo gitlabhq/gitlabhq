@@ -121,7 +121,7 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
         context 'with keyset pagination option' do
           let(:base_params) { { pagination: 'keyset' } }
 
-          context 'with gitaly pagination params ' do
+          context 'with gitaly pagination params' do
             it 'returns the repository branches' do
               get api(route, current_user), params: base_params.merge(per_page: 100)
 

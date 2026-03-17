@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Global Search
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Advanced search development guidelines
 ---
 
@@ -32,7 +32,6 @@ Developers making significant changes to Elasticsearch queries should test their
 ### Setting up your development environment
 
 - See the [Elasticsearch GDK setup instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/elasticsearch.md)
-
 - Ensure [Elasticsearch is running](#setting-up-your-development-environment):
 
   ```shell
@@ -814,7 +813,6 @@ search functionality:
 - **Queries** are essential when relevance scoring is required to rank results by how well they match search criteria.
   They use the Boolean query's `must`, `should`, and `must_not` clauses, all of which influence the document's final
   relevance score.
-
 - **Filters** (within query context) determine whether documents appear in search results without affecting their score.
   For search operations where results only need to be included/excluded without ranking by relevance, using filters
   alone is more efficient and performs better at scale.
@@ -1330,6 +1328,174 @@ This filter combines `by_project_confidentiality` and `by_group_level_confidenti
     }
   }
 ]
+```
+
+#### `by_note_confidentiality`
+
+Applies confidentiality filters for notes. Notes have two levels of confidentiality:
+
+1. Note's own confidentiality (`confidential` field)
+1. Issue's confidentiality (`issue.confidential`, `issue.author_id`, `issue.assignee_id`)
+
+Requires `confidential`, `issue.confidential`, `issue.author_id`, `issue.assignee_id`, `project_id`, and `traversal_ids` fields.
+
+A note is visible if ANY of these conditions are met:
+
+- It's on a non-confidential issue AND the note isn't confidential
+- It's on a confidential issue but user is author/assignee/has project access via `project_id` or `traversal_ids`
+- The note is confidential but user has project access via `project_id` or `traversal_ids`
+
+This filter uses both `project_id` terms and `traversal_ids`-based authorization for efficient group-level searches.
+
+```json
+{
+  "bool": {
+    "minimum_should_match": 1,
+    "should": [
+      {
+        "bool": {
+          "filter": [
+            {
+              "bool": {
+                "_name": "filters:confidentiality:notes:not_on_issue_or_not_confidential",
+                "should": [
+                  {
+                    "bool": {
+                      "_name": "filters:confidentiality:notes:not_on_issue",
+                      "must_not": [{ "exists": { "field": "issue" } }]
+                    }
+                  },
+                  {
+                    "term": {
+                      "issue.confidential": {
+                        "_name": "filters:confidentiality:notes:non_confidential_issue",
+                        "value": false
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "bool": {
+                "_name": "filters:confidentiality:notes:not_confidential",
+                "should": [
+                  { "bool": { "must_not": [{ "exists": { "field": "confidential" } }] } },
+                  { "term": { "confidential": false } }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "bool": {
+          "filter": [
+            {
+              "term": {
+                "issue.confidential": {
+                  "_name": "filters:confidentiality:notes:issue:confidential",
+                  "value": true
+                }
+              }
+            },
+            {
+              "bool": {
+                "_name": "filters:confidentiality:notes:not_confidential",
+                "should": [
+                  { "bool": { "must_not": [{ "exists": { "field": "confidential" } }] } },
+                  { "term": { "confidential": false } }
+                ]
+              }
+            },
+            {
+              "bool": {
+                "minimum_should_match": 1,
+                "should": [
+                  {
+                    "term": {
+                      "issue.author_id": {
+                        "_name": "filters:confidentiality:notes:confidential:as_author",
+                        "value": 1
+                      }
+                    }
+                  },
+                  {
+                    "term": {
+                      "issue.assignee_id": {
+                        "_name": "filters:confidentiality:notes:confidential:as_assignee",
+                        "value": 1
+                      }
+                    }
+                  },
+                  {
+                    "terms": {
+                      "_name": "filters:confidentiality:notes:private:project:member",
+                      "project_id": [1]
+                    }
+                  },
+                  {
+                    "bool": {
+                      "minimum_should_match": 1,
+                      "should": [
+                        {
+                          "prefix": {
+                            "traversal_ids": {
+                              "_name": "filters:confidentiality:notes:private:ancestry_filter:descendants",
+                              "value": "123-"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "bool": {
+          "filter": [
+            {
+              "term": {
+                "confidential": {
+                  "_name": "filters:confidentiality:notes:confidential",
+                  "value": true
+                }
+              }
+            }
+          ],
+          "minimum_should_match": 1,
+          "should": [
+            {
+              "terms": {
+                "_name": "filters:confidentiality:notes:private:project:member",
+                "project_id": [1]
+              }
+            },
+            {
+              "bool": {
+                "minimum_should_match": 1,
+                "should": [
+                  {
+                    "prefix": {
+                      "traversal_ids": {
+                        "_name": "filters:confidentiality:notes:private:ancestry_filter:descendants",
+                        "value": "123-"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
 ```
 
 #### `by_label_ids`
@@ -2119,6 +2285,116 @@ Requires `search_level` field and at least one of `use_group_authorization` or `
     }
   }
 ]
+```
+
+#### `by_user_accessible_namespaces`
+
+Filters documents based on user access to namespaces (groups and projects). This filter is specific
+to user search queries and handles authorization at the namespace level for global, group, and
+project search levels.
+
+**Required fields:**
+
+- `namespace_ancestry_ids` - keyword field populated from `Namespace#elastic_namespace_ancestry` / `Project#elastic_namespace_ancestry` (including the `p<id>` project segment), used for `prefix` and `terms` queries in namespace hierarchy filtering
+- `current_user` - the user performing the search (for global scope)
+- `search_level` - one of `:global`, `:group`, or `:project`
+
+**Optional fields:**
+
+- `group_id` - group ID for group-level search
+- `project_id` - project ID for project-level search
+- `autocomplete` - boolean flag for autocomplete searches
+
+**Behavior by search level:**
+
+- **Global**: Returns all users
+  - **With autocomplete**: Returns users accessible through authorized groups and projects. Uses `traversal_id_prefixes` to match group hierarchies and direct project membership.
+- **Group**: Returns users in the specified group and its descendants, plus users in ancestor
+  groups.
+- **Project**: Returns users in the specified project and its ancestor groups.
+
+Example for global search:
+
+```json
+{
+  "bool": {
+    "should": [
+      {
+        "prefix": {
+          "namespace_ancestry_ids": {
+            "_name": "namespace:ancestry_filter:descendants",
+            "value": "285-"
+          }
+        }
+      },
+      {
+        "prefix": {
+          "namespace_ancestry_ids": {
+            "_name": "namespace:ancestry_filter:descendants",
+            "value": "417-418-419-"
+          }
+        }
+      },
+      {
+        "terms": {
+          "namespace_ancestry_ids": [
+            "417-418-419-p91-"
+          ],
+          "_name": "namespace:ancestry_filter:ancestors"
+        }
+      }
+    ],
+    "minimum_should_match": 1
+  }
+}
+```
+
+Example for group search in a subgroup:
+
+```json
+{
+  "bool": {
+    "should": [
+      {
+        "prefix": {
+          "namespace_ancestry_ids": {
+            "_name": "namespace:ancestry_filter:descendants",
+            "value": "807-806-805"
+          }
+        }
+      },
+      {
+        "terms": {
+          "namespace_ancestry_ids": [
+            "807-","807-806-"
+          ],
+          "_name": "namespace:ancestry_filter:ancestors"
+        }
+      }
+    ],
+    "minimum_should_match": 1
+  }
+}
+```
+
+Example for project search:
+
+```json
+{
+  "bool": {
+    "should": [
+      {
+        "terms": {
+          "namespace_ancestry_ids": [
+            "807-","807-806-", "807-806-805", "807-806-805-p123"
+          ],
+          "_name": "namespace:ancestry_filter:ancestors"
+        }
+      }
+    ],
+    "minimum_should_match": 1
+  }
+}
 ```
 
 #### `by_noteable_type`

@@ -1,7 +1,7 @@
 <script>
 import { GlEmptyState, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-environment-md.svg';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';

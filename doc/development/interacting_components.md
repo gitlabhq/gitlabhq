@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Developing against interacting components or features
 ---
 
@@ -19,7 +19,7 @@ change that affects uploads should also be tested against [object storage](https
 which is _not_ enabled by default in [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit).
 
 When working on a related feature, make sure to enable and test it
-against [MinIO](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/object_storage.md).
+against [object storage](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/object_storage.md).
 
 See also [File Storage in GitLab](file_storage.md).
 

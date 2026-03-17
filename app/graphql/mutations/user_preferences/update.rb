@@ -11,7 +11,8 @@ module Mutations
         :visibility_pipeline_id_type,
         :use_work_items_view,
         :merge_request_dashboard_list_type,
-        :merge_request_dashboard_show_drafts
+        :merge_request_dashboard_show_drafts,
+        :wiki_use_auto_commit_message
       ].freeze
 
       argument :extensions_marketplace_opt_in_status, Types::ExtensionsMarketplaceOptInStatusEnum,
@@ -55,6 +56,13 @@ module Mutations
         description: 'Display settings for the work item lists, e.g.: "{ shouldOpenItemsInSidePanel: false }".',
         required: false,
         experiment: { milestone: '18.1' }
+
+      argument :wiki_use_auto_commit_message,
+        GraphQL::Types::Boolean,
+        required: false,
+        description: 'Whether to skip the commit message modal and use the auto-generated commit message when saving ' \
+          'changes to a wiki document.',
+        experiment: { milestone: '18.10' }
 
       field :user_preferences,
         Types::UserPreferencesType,

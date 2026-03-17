@@ -123,6 +123,12 @@ export const listIssuablesQueries = {
       type: 'ISSUE',
       webUrl: '',
       weight: null,
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/-1',
+        name: TYPENAME_ISSUE,
+        iconName: 'work-item-issue',
+        __typename: 'WorkItemType',
+      },
       __typename: TYPENAME_ISSUE,
     },
   },

@@ -8,7 +8,7 @@ module ActiveContext
         DEFAULT_POOL_SIZE = 5
 
         def self.build_database_config(options)
-          {
+          config = {
             adapter: 'postgresql',
             host: options[:host],
             port: options[:port],
@@ -20,7 +20,23 @@ module ActiveContext
             prepared_statements: false,
             advisory_locks: false,
             database_tasks: false
-          }.compact
+          }
+
+          # Force TCP/IP connection by setting hostaddr when host is an IP address.
+          # This prevents PostgreSQL from trying to use Unix sockets.
+          # Only set hostaddr for IP addresses (not hostnames like 'localhost').
+          config[:hostaddr] = options[:host] if ip_address?(options[:host])
+
+          config.compact
+        end
+
+        def self.ip_address?(host)
+          return false if host.nil? || host.start_with?('/')
+
+          IPAddr.new(host)
+          true
+        rescue IPAddr::InvalidAddressError
+          false
         end
       end
     end

@@ -26,9 +26,11 @@ class CustomEnvironment extends TestEnvironment {
         // https://gitlab.com/gitlab-org/gitlab/-/issues/396779#note_1788506238
         /^\[Vue warn\]: Missing required prop/,
         /^\[Vue warn\]: Invalid prop/,
+        /^\[Vue warn\]: Property .* was accessed during render but is not defined on instance/,
         // TODO: Implement robust vue-demi switching logic.
         // https://gitlab.com/groups/gitlab-org/-/epics/15340
         /^\[Vue warn\]: \(deprecation GLOBAL_PRIVATE_UTIL\)/,
+        /^\[Vue warn\]: Slot ".*" invoked outside of the render function/,
       ],
       // TODO: Remove this and replace with localized calls to `useConsoleWatcherThrowsImmediately`
       // https://gitlab.com/gitlab-org/gitlab/-/issues/396779#note_1788506238

@@ -1,16 +1,10 @@
 import { GlSprintf } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
-import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
+import { mount } from '@vue/test-utils';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
 import MrWidgetIcon from '~/vue_merge_request_widget/components/mr_widget_icon.vue';
 import suggestPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
-import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
-import {
-  SP_TRACK_LABEL,
-  SP_SHOW_TRACK_EVENT,
-  SP_SHOW_TRACK_VALUE,
-  SP_HELP_URL,
-} from '~/vue_merge_request_widget/constants';
+import { SP_TRACK_LABEL, SP_HELP_URL } from '~/vue_merge_request_widget/constants';
 
 import { suggestProps, iconName } from './pipeline_tour_mock_data';
 
@@ -19,13 +13,7 @@ describe('MRWidgetSuggestPipeline', () => {
     let wrapper;
 
     describe('core functionality', () => {
-      const findOkBtn = () => wrapper.find('[data-testid="ok"]');
       let trackingSpy;
-
-      const mockTrackingOnWrapper = () => {
-        unmockTracking();
-        trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
-      };
 
       beforeEach(() => {
         document.body.dataset.page = 'projects:merge_requests:show';
@@ -63,26 +51,11 @@ describe('MRWidgetSuggestPipeline', () => {
         );
       });
 
-      it('renders the show me how button', () => {
-        const button = findOkBtn();
-
-        expect(button.exists()).toBe(true);
-        expect(button.classes('btn-confirm')).toEqual(true);
-        expect(button.attributes('href')).toBe(suggestProps.pipelinePath);
-      });
-
       it('renders the help link', () => {
         const link = wrapper.find('[data-testid="help"]');
 
         expect(link.exists()).toBe(true);
         expect(link.attributes('href')).toBe(SP_HELP_URL);
-      });
-
-      it('renders the empty pipelines image', () => {
-        const image = wrapper.find('[data-testid="pipeline-image"]');
-
-        expect(image.exists()).toBe(true);
-        expect(image.element.src).toBe(suggestProps.pipelineSvgPath);
       });
 
       describe('tracking', () => {
@@ -95,69 +68,6 @@ describe('MRWidgetSuggestPipeline', () => {
             property: suggestProps.humanAccess,
           });
         });
-
-        it('send an event when ok button is clicked', () => {
-          mockTrackingOnWrapper();
-          const okBtn = findOkBtn();
-          triggerEvent(okBtn.element);
-
-          expect(trackingSpy).toHaveBeenCalledWith('_category_', SP_SHOW_TRACK_EVENT, {
-            label: SP_TRACK_LABEL,
-            property: suggestProps.humanAccess,
-            value: SP_SHOW_TRACK_VALUE.toString(),
-          });
-        });
-      });
-    });
-
-    describe('dismissible', () => {
-      const findDismissContainer = () => wrapper.findComponent(UserCalloutDismisser);
-      const findCloseButton = () => wrapper.find('[data-testid="close"]');
-
-      let userCalloutDismissSpy;
-
-      const createWrapper = ({ shouldShowCallout = true } = {}) => {
-        userCalloutDismissSpy = jest.fn();
-
-        wrapper = shallowMount(suggestPipelineComponent, {
-          propsData: suggestProps,
-          stubs: {
-            GlSprintf,
-            UserCalloutDismisser: makeMockUserCalloutDismisser({
-              dismiss: userCalloutDismissSpy,
-              shouldShowCallout,
-            }),
-          },
-        });
-      };
-
-      beforeEach(() => {
-        createWrapper();
-      });
-
-      it('renders the UserCalloutDismisser component', () => {
-        expect(findDismissContainer().exists()).toBe(true);
-      });
-
-      it('passes the correct feature-name prop', () => {
-        expect(findDismissContainer().props('featureName')).toBe(suggestProps.userCalloutFeatureId);
-      });
-
-      it('renders content when shouldShowCallout is true', () => {
-        expect(wrapper.text()).toContain("Looks like there's no pipeline here");
-      });
-
-      it('does not render content when shouldShowCallout is false', () => {
-        createWrapper({ shouldShowCallout: false });
-
-        expect(wrapper.text()).not.toContain("Looks like there's no pipeline here");
-      });
-
-      it('calls dismiss and emits dismiss event when close button is clicked', async () => {
-        await findCloseButton().trigger('click');
-
-        expect(userCalloutDismissSpy).toHaveBeenCalled();
-        expect(wrapper.emitted().dismiss).toHaveLength(1);
       });
     });
   });

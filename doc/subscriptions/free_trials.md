@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Acquisition
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Start an Ultimate trial on GitLab.com or GitLab Self-Managed.
 title: Ultimate trials
 ---
@@ -55,7 +55,7 @@ You can start a trial even if you have not signed up for a GitLab account yet.
 
 If you don't have a GitLab account, to start a free trial:
 
-1. Go to [https://gitlab.com/-/trial_registrations/new](https://gitlab.com/-/trial_registrations/new).
+1. Go to <https://gitlab.com/-/trial_registrations/new>.
 1. Fill in the form details, and select **Continue**.
 1. Complete the remaining steps and select **Create project**. You are taken to your new project and signed in as the new user you created.
 1. In the left sidebar, at the bottom, a widget displays your trial type and the remaining days in your trial.
@@ -71,7 +71,7 @@ Prerequisites:
 
 To start a trial:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Billing**.
 1. Select **Start free trial**.
 1. Complete the fields.
@@ -112,6 +112,6 @@ The subscription is activated.
 
 You can keep track of your remaining trial period time to help you plan for a subscription upgrade.
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, at the bottom, a widget displays your trial type and the remaining days in your trial.
 1. On GitLab Self-Managed, to access information about features available when you upgrade, select **Learn more**.

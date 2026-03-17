@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Reduce container registry storage
 description: Tips for monitoring and reducing storage usage for GitLab container registries.
 ---
@@ -43,14 +43,14 @@ View storage usage data for your container registry repositories.
 Prerequisites:
 
 - For GitLab Self-Managed instances, an administrator must [enable the container registry metadata database](../../../administration/packages/container_registry_metadata_database.md).
-- You must have at least the Maintainer role for the project or the Owner role for the namespace.
+- You must have the Maintainer or Owner role for the project or the Owner role for the namespace.
 
 To view storage usage for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Do one of the following:
    - To view total storage usage, select **Settings** > **Usage quotas**.
-    Under **Namespace entities**, select **Container Registry** to view individual repositories.
+     Under **Namespace entities**, select **Container Registry** to view individual repositories.
    - To view storage usage by repository directly, select **Deploy** > **Container Registry**.
 
 You can also use:
@@ -67,7 +67,7 @@ Prerequisites:
 
 To view storage usage for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Usage quotas**.
 1. Select the **Storage** tab.
 
@@ -241,7 +241,7 @@ You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the
 
 To create a cleanup policy in the UI:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Container registry cleanup policies**, select **Set cleanup rules**.
@@ -253,8 +253,8 @@ To create a cleanup policy in the UI:
    | **Run cleanup**            | How often the policy should run. |
    | **Keep the most recent**   | How many tags to always keep for each image. |
    | **Keep tags matching**     | A regex pattern that determines which tags to preserve. The `latest` tag is always preserved. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
-   | **Remove tags older than** | Remove only tags older than X days. |
-   | **Remove tags matching**   | A regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
+   | **Remove tags older than** | Remove only tags older than X days. You should start with a high number so that only the oldest images are deleted during the first cleanups. After monitoring the resources used by cleanup background workers, the number of days can be reduced gradually. |
+   | **Remove tags matching**   | A regex pattern that determines which tags to remove. This value cannot be blank. You should start with a relatively specific regex so that only a few images are deleted during the first cleanups. After monitoring the resources used by cleanup background workers, adjust the regex to be more generic, up to `.*` to match all tags. For more information, see [Regex pattern examples](#regex-pattern-examples). |
 
    > [!note]
    > Both keep and remove regex patterns are automatically surrounded with `\A` and `\Z` anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.
@@ -308,41 +308,39 @@ Here are some examples of regex patterns you can use:
 
 ### Set cleanup limits to conserve resources
 
-{{< history >}}
+{{< details >}}
 
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84996) the feature flag `container_registry_expiration_policies_throttling` in GitLab 15.0.
+- Offering: GitLab Self-Managed
 
-{{< /history >}}
+{{< /details >}}
 
-Cleanup policies are executed as a background process. This process is complex, and depending on the number of tags to delete,
-the process can take time to finish.
+Cleanup policies are executed as a background process. Depending on the number of tags to delete,
+the process can take awhile to complete.
 
 You can use the following application settings to prevent server resource starvation:
 
-- `container_registry_expiration_policies_worker_capacity`: the maximum number of cleanup workers
-  running concurrently. This value must be greater than or equal to `0`. You should start with a low
-  number and increase it after monitoring the resources used by the background workers. To remove
-  all workers and not execute the cleanup policies, set this to `0`. The default value is `4`.
-- `container_registry_delete_tags_service_timeout`: the maximum time (in seconds) that the cleanup
-  process can take to delete a batch of tags. The default value is `250`.
-- `container_registry_cleanup_tags_service_max_list_size`: the maximum number of tags that can be
-  deleted in a single execution. Additional tags must be deleted in another execution. You should
-  start with a low number and increase it after verifying that container images are properly
-  deleted. The default value is `200`.
-- `container_registry_expiration_policies_caching`: enable or disable tag creation timestamp caching
-  during execution of policies. Cached timestamps are stored in Redis.
-  Enabled by default.
+| Application setting | Type | Description |
+|---------|------|-------------|
+| `container_registry_expiration_policies_worker_capacity` | integer | The maximum number of cleanup workers running concurrently. Defaults to `4`. Set this value to `0` to remove all workers and stop cleanup policies from running. Start with a low number and increase it after monitoring the resources used by background workers. |
+| `container_registry_delete_tags_service_timeout` | integer | The maximum time (in seconds) that the cleanup process can take to delete a batch of tags. Defaults to `250`. |
+| `container_registry_cleanup_tags_service_max_list_size` | integer | The maximum number of tags that can be deleted in a single execution. Defaults to `200`. Additional tags must be deleted in another execution. Start with a low number and increase it after verifying that container images are properly deleted. |
+| `container_registry_expiration_policies_caching` | boolean | The tag creation timestamp caching during the execution of policies. Defaults to `true`. Cached timestamps are stored in Redis. |
 
-For GitLab Self-Managed instances, those settings can be updated in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+Prerequisites:
+
+- Administrator access.
+
+You can change these settings in the
+[Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session). For example:
 
 ```ruby
 ApplicationSetting.last.update(container_registry_expiration_policies_worker_capacity: 3)
 ```
 
-They are also available in the [**Admin** area](../../../administration/admin_area.md):
+To change these settings in the **Admin** area:
 
 1. In the upper-right corner, select **Admin**.
-1. Select **Settings** > **CI/CD**
+1. Select **Settings** > **CI/CD**.
 1. Expand **Container Registry**.
 
 ### Use the cleanup policy API

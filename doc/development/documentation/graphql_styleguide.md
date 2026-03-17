@@ -1,7 +1,7 @@
 ---
 stage: Developer Experience
 group: API Platform
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: Writing styles, markup, formatting, and other standards for GraphQL API documentation on GitLab.
 title: Creating a GraphQL example page
 ---
@@ -34,7 +34,7 @@ Add descriptive content and a title at the top of the page, for example:
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: List branch rules for a project by using GraphQL
 ---
 

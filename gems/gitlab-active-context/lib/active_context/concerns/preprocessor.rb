@@ -11,7 +11,7 @@ module ActiveContext
         preprocessors << { name: name, block: block }
       end
 
-      def preprocess(refs)
+      def preprocess(refs, **options)
         result = { successful: [], failed: [] }
 
         refs_by_class = refs.group_by(&:class)
@@ -23,7 +23,7 @@ module ActiveContext
           klass.preprocessors.each do |preprocessor|
             next if current_successful_refs.empty?
 
-            processed = preprocessor[:block].call(current_successful_refs)
+            processed = preprocessor[:block].call(current_successful_refs, **options)
 
             all_failed_refs.concat(processed[:failed])
             current_successful_refs = processed[:successful]

@@ -7,6 +7,17 @@ import TableRow from '~/repository/components/table/row.vue';
 import refQuery from '~/repository/queries/ref.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
+let itemVisibilityCallback;
+
+jest.mock('~/lib/utils/lazy_render_utils', () => ({
+  ...jest.requireActual('~/lib/utils/lazy_render_utils'),
+  createItemVisibilityObserver: jest.fn((cb) => {
+    itemVisibilityCallback = cb;
+    return { observe: jest.fn(), disconnect: jest.fn() };
+  }),
+  observeElementsByIds: jest.fn(),
+}));
+
 let wrapper;
 
 const createMockApolloProvider = (ref) => {
@@ -83,6 +94,13 @@ const MOCK_COMMITS = [
   },
 ];
 
+const triggerAllIntersections = async () => {
+  wrapper.element.querySelectorAll('[data-item-id]').forEach((el) => {
+    itemVisibilityCallback(el.dataset.itemId);
+  });
+  await nextTick();
+};
+
 function factory({
   path,
   isLoading = false,
@@ -108,9 +126,17 @@ function factory({
   });
 }
 
+async function factoryWithVisibleRows(options) {
+  factory(options);
+  await nextTick();
+  triggerAllIntersections();
+  await nextTick();
+}
+
 const findTableRows = () => wrapper.findAllComponents(TableRow);
 const findShowMoreButton = () => wrapper.findComponent(GlButton);
 const findLoadingIndicators = () => wrapper.findAllByTestId('loader');
+const findPlaceholderRows = () => wrapper.findAll('tr.tree-item[data-item-id]');
 
 describe('Repository table component', () => {
   it.each`
@@ -133,12 +159,10 @@ describe('Repository table component', () => {
     expect(findLoadingIndicators()).toHaveLength(3);
   });
 
-  it('renders table rows', () => {
-    factory({
+  it('renders table rows after items become visible', async () => {
+    await factoryWithVisibleRows({
       path: 'test_dir',
-      entries: {
-        blobs: MOCK_BLOBS,
-      },
+      entries: { blobs: MOCK_BLOBS },
       commits: MOCK_COMMITS,
     });
 
@@ -150,8 +174,20 @@ describe('Repository table component', () => {
     expect(rows.at(2).props().commitInfo).toEqual(MOCK_COMMITS[2]);
   });
 
-  it('renders correct commit info for blobs in the root', () => {
+  it('renders placeholder rows before items become visible', async () => {
     factory({
+      path: 'test_dir',
+      entries: { blobs: MOCK_BLOBS },
+      commits: MOCK_COMMITS,
+    });
+    await nextTick();
+
+    expect(findTableRows()).toHaveLength(0);
+    expect(findPlaceholderRows()).toHaveLength(3);
+  });
+
+  it('renders correct commit info for blobs in the root', async () => {
+    await factoryWithVisibleRows({
       path: '/',
       entries: {
         blobs: [

@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how long your open merge requests have spent in code review, and what distinguishes the longest-running.
 title: Code review analytics
 ---
@@ -44,7 +44,7 @@ Prerequisites:
 
 To view code review analytics:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Analyze** > **Code review analytics**.
 1. Optional. Filter results:
    1. Select the filter bar.

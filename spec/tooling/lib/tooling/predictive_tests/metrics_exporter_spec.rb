@@ -270,6 +270,70 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
         }
       })
     end
+
+    context "with Duo metrics" do
+      let(:duo_system_test_files_path) { File.join(input_dir, "duo_system_test_files.txt") }
+      let(:feature_spec) { "spec/features/user_spec.rb" }
+      let(:non_feature_spec) { "spec/models/user_spec.rb" }
+      let(:failed_tests_content) { "#{feature_spec}\n#{non_feature_spec}" }
+
+      before do
+        stub_env("GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH" => duo_system_test_files_path)
+        File.write(duo_system_test_files_path, feature_spec)
+      end
+
+      it "calculates misses against feature specs only, not all failures" do
+        exporter.execute
+
+        expect(read_metrics("duo")).to include(
+          "core_metrics" => hash_including(
+            "failed_test_files_count" => 1, # only the feature spec, not non_feature_spec
+            "missed_failing_test_files" => 0,
+            "predicted_failing_test_files" => 1
+          )
+        )
+      end
+
+      context 'when GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH is not set' do
+        before do
+          stub_env('GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH' => nil)
+        end
+
+        it 'skips Duo metrics export without error' do
+          expect { exporter.execute }.not_to raise_error
+        end
+
+        it 'does not create duo metrics file' do
+          exporter.execute
+          expect(File).not_to exist(File.join(output_dir, test_type.to_s, "metrics_duo.json"))
+        end
+      end
+
+      context 'when artifact file does not exist' do
+        before do
+          stub_env('GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH' => '/nonexistent/duo.txt')
+        end
+
+        it 'skips without raising' do
+          expect { exporter.execute }.not_to raise_error
+        end
+      end
+
+      context 'when export_duo_metrics raises an error' do
+        before do
+          stub_env('GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH' => File.join(input_dir, 'duo.txt'))
+          File.write(File.join(input_dir, 'duo.txt'), 'spec/features/user_spec.rb')
+          allow(exporter).to receive(:generate_and_record_metrics).and_call_original
+          allow(exporter).to receive(:generate_and_record_metrics)
+                               .with(:duo, anything, scoped_failed_files: anything)
+                               .and_raise(StandardError, 'boom')
+        end
+
+        it 'rescues and does not propagate the error' do
+          expect { exporter.execute }.not_to raise_error
+        end
+      end
+    end
   end
 
   context "when test_type is :frontend" do

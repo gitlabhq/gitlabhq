@@ -77,6 +77,45 @@ RSpec.shared_examples 'graphql work item list request spec' do
           expect(work_item_ids).to include(task_work_item.to_global_id.to_s)
         end
       end
+
+      context 'when filtering by work item type GID' do
+        let(:item_filter_params) { { workItemTypeIds: [issue_work_item.work_item_type.to_global_id.to_s] } }
+
+        it 'filters by work item type GID' do
+          expect(work_item_ids).to include(issue_work_item.to_global_id.to_s)
+          expect(work_item_ids).not_to include(task_work_item.to_global_id.to_s)
+        end
+      end
+
+      context 'when filtering by multiple work item type GIDs' do
+        let(:item_filter_params) do
+          {
+            workItemTypeIds: [
+              issue_work_item.work_item_type.to_global_id.to_s,
+              task_work_item.work_item_type.to_global_id.to_s
+            ]
+          }
+        end
+
+        it 'returns items matching any of the type GIDs' do
+          expect(work_item_ids).to include(issue_work_item.to_global_id.to_s)
+          expect(work_item_ids).to include(task_work_item.to_global_id.to_s)
+        end
+      end
+
+      context 'when both types and workItemTypeIds are provided' do
+        let(:item_filter_params) do
+          { types: [:TASK], workItemTypeIds: [issue_work_item.work_item_type.to_global_id.to_s] }
+        end
+
+        it 'returns a mutual exclusion error' do
+          expect(graphql_errors).to include(
+            a_hash_including('message' => a_string_including(
+              'Only one of [issueTypes, workItemTypeIds] arguments is allowed at the same time.'
+            ))
+          )
+        end
+      end
     end
 
     context 'when filtering by iid' do

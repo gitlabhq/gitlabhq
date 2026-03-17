@@ -188,10 +188,10 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
         expect(commit_nodes.pluck('sha')).to eq(repository.list_commits(ref: ref).commits.map(&:sha))
       end
 
-      it 'includes end_cursor for pagination' do
-        expect(page_info['hasNextPage']).to be(true)
+      it 'does not include cursor or hasNextPage if all commits were returned' do
+        expect(page_info['hasNextPage']).to be(false)
         expect(page_info['startCursor']).to be_nil
-        expect(page_info['endCursor']).to eq(Base64.encode64(commit_nodes.last['sha']))
+        expect(page_info['endCursor']).to be_nil
       end
 
       describe 'query' do
@@ -219,7 +219,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
           it 'respects the passed value' do
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: first }))
+              .with(a_hash_including(pagination_params: { limit: first + 1 }))
           end
         end
 
@@ -229,7 +229,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
           it 'respects the default_max_page_size' do
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: max_page_size }))
+              .with(a_hash_including(pagination_params: { limit: max_page_size + 1 }))
           end
         end
 
@@ -237,7 +237,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
           it 'picks the fields max_page_size' do
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: max_page_size }))
+              .with(a_hash_including(pagination_params: { limit: max_page_size + 1 }))
           end
         end
 
@@ -247,7 +247,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
           it 'picks the fields max_page_size' do
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: max_page_size }))
+              .with(a_hash_including(pagination_params: { limit: max_page_size + 1 }))
           end
         end
 
@@ -261,7 +261,7 @@ RSpec.describe 'getting a repository in a project', feature_category: :source_co
           it 'passes the decoded page_token' do
             expect(repository)
               .to have_received(:list_commits)
-              .with(a_hash_including(pagination_params: { limit: max_page_size, page_token: page_token }))
+              .with(a_hash_including(pagination_params: { limit: max_page_size + 1, page_token: page_token }))
           end
         end
       end

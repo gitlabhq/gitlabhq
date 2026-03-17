@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting the Agent Platform in your IDE
 ---
 
@@ -24,7 +24,7 @@ WebSocket endpoints in your logs, your WebSocket connections may be blocked.
 
 Your GitLab instance must allow inbound WebSocket connections from IDE clients.
 Ask your network administrator to
-[allow WebSocket traffic to your GitLab instance](../../administration/gitlab_duo/configure/gitlab_self_managed.md#allow-inbound-connections-from-clients-to-the-gitlab-instance)
+[allow WebSocket traffic to your GitLab instance](../../administration/gitlab_duo/configure/_index.md#allow-inbound-connections-from-clients-to-the-gitlab-instance)
 if you suspect this is the issue.
 
 ## View debugging logs in VS Code
@@ -38,18 +38,18 @@ In VS Code, you can troubleshoot some issues by viewing debugging logs.
 1. Open the language server logs:
    1. In VS Code, select **View** > **Output**.
    1. In the output panel at the bottom, in the upper-right corner,
-      select **GitLab Workflow** or **GitLab Language Server** from the list.
+      select **GitLab** or **GitLab Language Server** from the list.
 1. Review for errors, warnings, connection issues, or authentication problems.
 
 ## VS Code configuration
 
 You can try several things to ensure your repository is properly configured and connected in VS Code.
 
-### View the project in the GitLab Workflow extension
+### View the project in the GitLab for VS Code extension
 
-Start by ensuring the correct project is selected in the GitLab Workflow extension for VS Code.
+Start by ensuring the correct project is selected in the GitLab for VS Code extension.
 
-1. In VS Code, on the left sidebar, select **GitLab Workflow** ({{< icon name="tanuki" >}}).
+1. In VS Code, in the left sidebar, select **GitLab** ({{< icon name="tanuki" >}}).
 1. Ensure the project is listed and selected.
 
 If an error message appears next to the project name, select it to reveal what needs to be updated.
@@ -60,7 +60,7 @@ For example, you might have multiple repositories and need to select one, or the
 
 If your workspace doesn't have a Git repository initialized, you must create a new one:
 
-1. On the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
+1. In the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
 1. Select **Initialize Repository**.
 
 When the repository is initialized, you should see the name in the **Source Control** view.
@@ -69,7 +69,7 @@ When the repository is initialized, you should see the name in the **Source Cont
 
 You might have a Git repository but it's not properly connected to GitLab.
 
-1. On the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
+1. In the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
 1. On the **Source Control** label, right-click and select **Repositories**.
 1. Next to your repository, select the ellipsis ({{< icon name=ellipsis_h >}}), then **Remote** > **Add Remote**.
 1. Enter your GitLab project URL.
@@ -80,7 +80,7 @@ You might have a Git repository but it's not properly connected to GitLab.
 Your repository might have multiple GitLab remotes configured.
 To select the correct one:
 
-1. On the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
+1. In the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
 1. On the status bar, select the current remote name.
 1. From the list, select the appropriate GitLab remote.
 1. Ensure the selected remote belongs to a group namespace in GitLab.
@@ -92,13 +92,13 @@ to close all the projects you're not using.
 
 To close projects:
 
-1. On the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
+1. In the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
 1. Ensure repositories are shown: on the **Source Control** label, right-click and select **Repositories**.
 1. Right-click the repository you want to close and select **Close Repository**.
 
 #### Git remote with SSH custom alias
 
-If your repository remote uses an SSH custom alias (for example, `git@my-work-gitlab:group/project.git` instead of `git@gitlab.com:group/project.git`), the GitLab Workflow extension might not correctly match your repository to your GitLab project.
+If your repository remote uses an SSH custom alias (for example, `git@my-work-gitlab:group/project.git` instead of `git@gitlab.com:group/project.git`), the GitLab for VS Code extension might not correctly match your repository to your GitLab project.
 
 To resolve this issue, you can:
 
@@ -122,7 +122,7 @@ If necessary, you can
 
 ## IDE commands fail or run indefinitely
 
-When using GitLab Duo Chat (Agentic) or the Software Development flow in your IDE,
+When using GitLab Duo Chat (agentic) or the Software Development flow in your IDE,
 GitLab Duo can get stuck in a loop or have difficulty running commands.
 
 This issue can occur when you are using shell themes or integrations, like `Oh My ZSH!` or `powerlevel10k`.

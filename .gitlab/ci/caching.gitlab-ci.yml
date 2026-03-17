@@ -1,4 +1,4 @@
-#===== extensions ======
+# ===== extensions ======
 .cache-pull-push-base:
   stage: sync
   extends:
@@ -8,9 +8,9 @@
     GIT_DEPTH: 1
     GIT_STRATEGY: fetch
   allow_failure: true
-#=================================
+# =================================
 # Dependencies
-#=================================
+# =================================
 cache:ruby-gems:
   extends:
     - .with-ruby-slim-image
@@ -57,6 +57,7 @@ cache:e2e-ruby-gems:
     - .cache-pull-push-base
     - .qa-cache-pull-push
   before_script:
+    - (command -v git &> /dev/null && git config --global http.https://gitlab.com/gitlab-org/gitlab.proactiveAuth basic) || true
     - source scripts/utils.sh
     - cd qa
     # e2e tests do not have alternative Gemfile but it could be set by rails-next pipeline
@@ -87,9 +88,9 @@ cache:orchestrator-gems:
   script:
     - bundle_install_script
 
-#=================================
+# =================================
 # Workhorse
-#=================================
+# =================================
 cache:workhorse-hash:
   extends:
     - .cache-pull-push-base
@@ -102,9 +103,9 @@ cache:workhorse-hash:
     reports:
       dotenv: build.env
 
-#=================================
+# =================================
 # Frontend
-#=================================
+# =================================
 cache:assets-hash:
   extends:
     - .cache-pull-push-base
@@ -118,9 +119,9 @@ cache:assets-hash:
       dotenv: build.env
   allow_failure: false
 
-#=================================
+# =================================
 # FE Island
-#=================================
+# =================================
 cache:fe-islands-hash:
   extends:
     - .cache-pull-push-base

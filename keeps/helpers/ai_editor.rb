@@ -8,7 +8,7 @@ module Keeps
       START_NEW_CODE = '<new_code>'
       END_NEW_CODE = '</new_code>'
       PATCH_SYSTEM_MESSAGE = File.read(File.expand_path('patch_system_message.md', __dir__))
-      AI_MODEL = 'claude-3-7-sonnet-20250219'
+      AI_MODEL = 'claude-sonnet-4-6'
       ANTHROPIC_API = 'https://api.anthropic.com/v1/messages'
 
       attr_reader :model, :token

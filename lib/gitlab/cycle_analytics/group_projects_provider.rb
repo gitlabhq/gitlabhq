@@ -18,7 +18,7 @@ module Gitlab
       private
 
       def projects_for_group
-        projects = Project.inside_path(group.full_path)
+        projects = Project.for_group_and_its_subgroups(group)
         projects = projects.where(id: options[:projects]) if options[:projects]
         projects
       end

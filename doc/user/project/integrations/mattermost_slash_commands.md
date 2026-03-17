@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Mattermost slash commands
 description: "Configure Mattermost slash commands to run common GitLab operations from a Mattermost chat environment."
 ---
@@ -24,7 +24,7 @@ For a list of available slash commands, see [Slash commands](gitlab_slack_applic
 ## Configuration options
 
 GitLab provides different ways to configure Mattermost slash commands. For any of these options,
-you must have Mattermost [3.4 or later](https://mattermost.com/blog/category/platform/releases/).
+you must have [Mattermost 3.4 or later](https://mattermost.com/blog/category/platform/releases/).
 
 - Linux package installations: Mattermost is bundled with
   [Linux package](https://docs.gitlab.com/omnibus/). To configure Mattermost for Linux package
@@ -38,7 +38,7 @@ you must have Mattermost [3.4 or later](https://mattermost.com/blog/category/pla
 If Mattermost is installed on the same server as GitLab,
 you can automatically configure Mattermost slash commands:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Mattermost slash commands**.
 1. Under **Enable integration**, ensure the **Active** checkbox is selected.
@@ -87,7 +87,7 @@ To create a slash command in Mattermost:
 1. [In the Mattermost browser tab](#enable-custom-slash-commands-in-mattermost),
    go to your team page.
 1. Select the {{< icon name="ellipsis_v" >}} **Settings** icon, and select **Integrations**.
-1. On the left sidebar, select **Slash commands**.
+1. In the left sidebar, select **Slash commands**.
 1. Select **Add Slash Command**.
 1. Provide a **Display Name** and **Description** for your new command.
 1. Provide a **Command Trigger Word** based on your application's configuration:

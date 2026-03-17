@@ -1,6 +1,3 @@
 ---
 name: read_milestone_burndown_event
 description: Grants the ability to read milestone burndown events
-boundaries:
-  - group
-  - project

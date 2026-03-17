@@ -17,7 +17,11 @@ module Ci
       raise InvalidQueueTransition unless transition.to == 'pending'
 
       transition.within_transaction do
-        result = build.create_queuing_entry!
+        result = if build.pending_build_args
+                   ::Ci::PendingBuild.upsert_from_args!(build.pending_build_args)
+                 else
+                   build.create_queuing_entry!
+                 end
 
         unless result.empty?
           metrics.increment_queue_operation(:build_queue_push)

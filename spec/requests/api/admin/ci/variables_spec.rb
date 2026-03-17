@@ -11,6 +11,14 @@ RSpec.describe ::API::Admin::Ci::Variables, :aggregate_failures, feature_categor
   describe 'GET /admin/ci/variables' do
     it_behaves_like 'GET request permissions for admin mode'
 
+    it_behaves_like 'authorizing granular token permissions', :read_variable do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
+    end
+
     it 'returns instance-level variables for admins' do
       get api(path, admin, admin_mode: true)
 
@@ -28,6 +36,14 @@ RSpec.describe ::API::Admin::Ci::Variables, :aggregate_failures, feature_categor
     let_it_be(:path) { "/admin/ci/variables/#{variable.key}" }
 
     it_behaves_like 'GET request permissions for admin mode'
+
+    it_behaves_like 'authorizing granular token permissions', :read_variable do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) do
+        get api(path, personal_access_token: pat)
+      end
+    end
 
     it 'returns instance-level variable details for admins' do
       get api(path, admin, admin_mode: true)
@@ -53,6 +69,14 @@ RSpec.describe ::API::Admin::Ci::Variables, :aggregate_failures, feature_categor
   describe 'POST /admin/ci/variables' do
     it_behaves_like 'POST request permissions for admin mode' do
       let(:params) { { key: 'KEY', value: 'VALUE' } }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_variable do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) do
+        post api(path, personal_access_token: pat), params: { key: 'TEST_VAR', value: 'TEST_VALUE' }
+      end
     end
 
     context 'authorized user with proper permissions' do
@@ -151,6 +175,14 @@ RSpec.describe ::API::Admin::Ci::Variables, :aggregate_failures, feature_categor
 
     it_behaves_like 'PUT request permissions for admin mode'
 
+    it_behaves_like 'authorizing granular token permissions', :update_variable do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) do
+        put api(path, personal_access_token: pat), params: { value: 'UPDATED_VALUE' }
+      end
+    end
+
     context 'authorized user with proper permissions' do
       it 'updates variable data' do
         put api(path, admin, admin_mode: true), params: params
@@ -191,6 +223,14 @@ RSpec.describe ::API::Admin::Ci::Variables, :aggregate_failures, feature_categor
     let_it_be(:path) { "/admin/ci/variables/#{variable.key}" }
 
     it_behaves_like 'DELETE request permissions for admin mode'
+
+    it_behaves_like 'authorizing granular token permissions', :delete_variable do
+      let(:user) { admin }
+      let(:boundary_object) { :instance }
+      let(:request) do
+        delete api(path, personal_access_token: pat)
+      end
+    end
 
     context 'authorized user with proper permissions' do
       it 'deletes variable' do

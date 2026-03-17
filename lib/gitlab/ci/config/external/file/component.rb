@@ -90,9 +90,12 @@ module Gitlab
               context.logger.instrument(:config_file_fetch_component_content) do
                 ::Ci::Components::FetchService.new(
                   address: location,
-                  current_user: context.user
+                  current_user: context.user,
+                  logger: context.logger
                 ).execute
               end
+            rescue GRPC::DeadlineExceeded
+              log_and_raise_timeout_error
             end
             strong_memoize_attr :component_result
 

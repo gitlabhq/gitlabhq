@@ -49,6 +49,7 @@ RSpec.describe Gitlab::ImportExport::Project::Sample::RelationTreeRestorer, :cle
       end
 
       it 'has the project attributes and relations', :aggregate_failures do
+        expect(project.name).to eq('Project name')
         expect(project.description).to eq('Nisi et repellendus ut enim quo accusamus vel magnam.')
         expect(project.issues.count).to eq(10)
         expect(project.milestones.count).to eq(3)

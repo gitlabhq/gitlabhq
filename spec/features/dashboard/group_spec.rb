@@ -61,10 +61,10 @@ RSpec.describe 'Dashboard Group', :with_current_organization, :js, feature_categ
       group.add_developer(user)
     end
 
-    it 'defaults sort dropdown to Updated date' do
+    it 'defaults sort dropdown to Created date' do
       visit dashboard_groups_path
 
-      expect(page).to have_button('Updated date')
+      expect(page).to have_button('Created date')
     end
   end
 end

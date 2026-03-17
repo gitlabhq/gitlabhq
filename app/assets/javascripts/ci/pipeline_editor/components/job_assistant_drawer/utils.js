@@ -1,4 +1,14 @@
-import { isEmpty, isObject, isArray, isString, reject, omitBy, mapValues, map, trim } from 'lodash';
+import {
+  isEmpty,
+  isObject,
+  isArray,
+  isString,
+  reject,
+  omitBy,
+  mapValues,
+  map,
+  trim,
+} from 'lodash-es';
 import {
   JOB_RULES_WHEN,
   SECONDS_MULTIPLE_MAP,

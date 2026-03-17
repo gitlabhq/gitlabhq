@@ -19,7 +19,7 @@ RSpec.describe Types::WorkItems::SavedViews::NegatedFilterInputType, feature_cat
 
     # Arguments that exist in NegatedWorkItemFilterInputType but should NOT be in
     # Types::WorkItems::SavedViews::NegatedFilterInputType
-    excluded_from_saved_views = %w[]
+    excluded_from_saved_views = %w[workItemTypeIds]
 
     # Arguments that exist in Types::WorkItems::SavedViews::NegatedFilterInputType but NOT in
     # NegatedWorkItemFilterInputType (i.e. saved view-specific filters)

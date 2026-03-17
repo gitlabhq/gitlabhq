@@ -17,6 +17,10 @@ module Projects
         integration.is_a?(::Integrations::Prometheus) && Feature.enabled?(:remove_monitor_metrics)
       end
 
+      before_action only: [:edit] do
+        push_frontend_feature_flag(:finer_filters_for_integrations, project)
+      end
+
       respond_to :html
 
       layout "project_settings"

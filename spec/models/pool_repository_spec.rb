@@ -49,19 +49,19 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
     end
 
     context 'when model hooks are bypassed' do
-      context 'when source project is available' do
-        it 'sets organization_id from the source project via database trigger' do
+      context 'when source project is available but organization_id it missing' do
+        it 'raises an exception' do
           # Use insert_all to bypass ActiveRecord callbacks and model hooks
-          result = described_class.insert_all([{
-            source_project_id: project.id,
-            organization_id: nil,
-            disk_path: 'pool/trigger_test',
-            state: 'ready',
-            shard_id: shard.id
-          }], returning: [:id, :organization_id])
-
-          pool_repo = described_class.find(result.rows.first[0])
-          expect(pool_repo.organization_id).to eq(project.organization_id)
+          #
+          expect do
+            described_class.insert_all([{
+              source_project_id: project.id,
+              organization_id: nil,
+              disk_path: 'pool/trigger_default_test',
+              state: 'ready',
+              shard_id: shard.id
+            }], returning: [:id, :organization_id])
+          end.to raise_error(ActiveRecord::StatementInvalid)
         end
       end
 
@@ -95,15 +95,14 @@ RSpec.describe PoolRepository, feature_category: :source_code_management do
         end
       end
 
-      it 'works during updates when organization_id is cleared' do
+      it 'raises and exception when organization_id is cleared' do
         pool_repo = create(:pool_repository, source_project: project)
-        original_org_id = pool_repo.organization_id
 
         # Use update_all to bypass ActiveRecord callbacks
-        described_class.where(id: pool_repo.id).update_all(organization_id: nil)
-
-        pool_repo.reload
-        expect(pool_repo.organization_id).to eq(original_org_id)
+        #
+        expect do
+          described_class.where(id: pool_repo.id).update_all(organization_id: nil)
+        end.to raise_error(ActiveRecord::StatementInvalid)
       end
     end
   end

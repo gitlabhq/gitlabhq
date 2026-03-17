@@ -59,7 +59,6 @@ RSpec.describe 'graphql queries', feature_category: :api do
     app/assets/javascripts/security_configuration/graphql/set_license_configuration_source.graphql
     app/assets/javascripts/projects/settings/branch_rules/mutations/delete_squash_option.mutation.graphql
     app/assets/javascripts/security_configuration/graphql/security_configuration.query.graphql
-    app/assets/javascripts/work_items/graphql/work_item_types_configuration.query.graphql
   ]
 
   Gitlab::Graphql::Queries.all.each do |definition| # rubocop:disable Rails/FindEach -- Not an ActiveRecord relation

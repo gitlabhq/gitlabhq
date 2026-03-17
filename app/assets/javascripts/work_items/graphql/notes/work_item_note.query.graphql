@@ -7,6 +7,15 @@ query workItemNote($id: NoteID!) {
     noteableId
     discussion {
       id
+      resolved
+      resolvable
+      resolvedBy {
+        id
+        name
+      }
+      userPermissions {
+        resolveNote
+      }
       notes {
         nodes {
           ...WorkItemNote

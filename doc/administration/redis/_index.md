@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Tenant Services
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Configuring Redis for scaling
 description: Configure Redis for scaling.
 ---
@@ -62,6 +62,12 @@ Both Redis and Sentinel are bundled in the package, so you can use it to set up 
 replica and sentinel).
 
 For more information, see [Redis replication and failover with the Linux package](replication_and_failover.md).
+
+### Secure Redis and Sentinel with TLS
+
+Secure Redis and Sentinel communication using TLS (Transport
+Layer Security). For detailed instructions on enabling standard TLS and
+mutual TLS (mTLS), see [securing Redis and Sentinel with TLS](tls.md).
 
 ## Redis replication and failover using the non-bundled Redis
 

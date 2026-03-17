@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: SAST false positive detection
 description: Automatic detection and filtering of false positives in SAST findings.
 ---
@@ -11,19 +11,15 @@ description: Automatic detection and filtering of false positives in SAST findin
 - Tier: Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18977) in GitLab 18.7 as a [beta](../../../policy/development_stages_support.md#beta) [with feature flags](../../../administration/feature_flags/_index.md) named `enable_vulnerability_fp_detection` and `ai_experiment_sast_fp_detection`. Enabled by default.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/work_items/19789) in GitLab 18.10.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 When a static application security testing (SAST) scan runs, GitLab Duo automatically analyzes each Critical and High severity SAST vulnerabilities to determine the likelihood that it's a false positive. Detection is available for vulnerabilities from [GitLab-supported SAST analyzers](../sast/analyzers.md).
 
@@ -36,6 +32,9 @@ The GitLab Duo assessment includes:
 The detection runs automatically after each security scan with no manual triggering required.
 
 Results are based on AI analysis and should be reviewed by security professionals. The feature requires GitLab Duo with an active subscription.
+
+For a click-through demo, see [SAST False Positive Detection Flow](https://gitlab.navattic.com/sast-fp-detection-flow).
+<!-- Demo published on 2026-02-17 -->
 
 ## Automatic detection
 
@@ -51,7 +50,7 @@ The analysis happens in the background and results appear in the vulnerability r
 
 You can manually trigger false positive detection for existing vulnerabilities:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to analyze.
 1. In the upper-right corner, select **Check for false positive** to trigger false positive detection.
@@ -76,7 +75,7 @@ False positive detection is turned off by default. To use this feature, you must
 You can allow all projects in a group to use the foundational flow. Individual projects must still enable the feature in their project settings.
 To allow false positive detection for all projects in a group:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Under **Allow foundational flows**, select the **SAST False Positive Detection** checkbox.
 1. Select **Save changes**.
@@ -85,7 +84,7 @@ To allow false positive detection for all projects in a group:
 
 To turn on false positive detection for a specific project:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn on the **Turn on SAST false positive detection** toggle.
@@ -110,7 +109,7 @@ When the GitLab Duo analysis identifies a vulnerability as a false positive, you
 
 ### Dismiss the vulnerability
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability you want to dismiss.
 1. Select **Change status**.
@@ -125,7 +124,7 @@ The vulnerability is marked as dismissed and does not appear in future scans unl
 
 If you want to remove the false positive assessment and keep the vulnerability:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Locate the vulnerability with the false positive flag.
 1. Hover over the false positive badge on the vulnerability.

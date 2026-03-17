@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Custom roles
 description: Create custom roles with tailored permissions to meet specific organizational needs.
 ---
@@ -33,7 +33,7 @@ There are two types of custom roles:
 
 - Custom member roles:
   - Can be assigned to members of a group or project.
-  - Gains the same permissions in any subgroups or projects. For more information, see [membership types](../../user/project/members/_index.md#membership-types).
+  - Gains the same permissions in any subgroups or projects. For more information, see [membership types](../project/members/_index.md#membership-types).
   - [Uses a seat](../../subscriptions/manage_users_and_seats.md#gitlabcom-billing-and-usage) and becomes a [billable user](../../subscriptions/manage_users_and_seats.md#billable-users).
     - A custom Guest member role that includes only the `read_code` permission does not use a seat.
 - Custom admin roles:
@@ -67,8 +67,8 @@ Prerequisites:
 
 To create a custom member role:
 
-1. On the left sidebar:
-   - For GitLab.com, on the top bar, select **Search or go to** and find your group.
+1. In the left sidebar:
+   - For GitLab.com, in the top bar, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Select **New role**.
@@ -126,8 +126,8 @@ Prerequisites:
 
 To edit a custom role:
 
-1. On the left sidebar:
-   - For GitLab.com, on the top bar, select **Search or go to** and find your group.
+1. In the left sidebar:
+   - For GitLab.com, in the top bar, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Edit role**.
@@ -152,8 +152,8 @@ Prerequisites:
 
 To view details of a custom role:
 
-1. On the left sidebar:
-   - For GitLab.com, on the top bar, select **Search or go to** and find your group.
+1. In the left sidebar:
+   - For GitLab.com, in the top bar, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **View details**.
@@ -169,8 +169,8 @@ Prerequisites:
 
 To delete a custom role:
 
-1. On the left sidebar:
-   - For GitLab.com, on the top bar, select **Search or go to** and find your group.
+1. In the left sidebar:
+   - For GitLab.com, in the top bar, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, in the upper-right corner, select **Admin**.
 1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete role**.
@@ -192,7 +192,7 @@ Prerequisites:
 
 To assign a custom member role to an existing user:
 
-1. On the top bar, select **Search or go to** and find your group or project.
+1. In the top bar, select **Search or go to** and find your group or project.
 1. Select **Manage** > **Members**.
 1. In the **Role** column, select the role for an existing member. The **Role details** drawer opens.
 1. From the **Role** dropdown list, select a role to assign to the member.

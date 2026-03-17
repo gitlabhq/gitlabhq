@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: CI/CD YAML syntax reference
 description: Pipeline configuration keywords, syntax, examples, and inputs.
 ---
@@ -33,7 +33,7 @@ Use [CI/CD expressions](expressions.md) for more dynamic pipeline configuration 
 
 <!--
 If you are editing content on this page, follow the instructions for documenting keywords:
-https://docs.gitlab.com/development/cicd/cicd_reference_documentation_guide/
+<https://docs.gitlab.com/development/cicd/cicd_reference_documentation_guide/>
 -->
 
 ## Keywords
@@ -1385,7 +1385,7 @@ deploy:
 - You cannot use `spec:include` in [CI/CD components](../components/_index.md#component-spec-section).
 - External input files must contain only the `inputs` key. Other keys cause validation errors.
 - External inputs are merged first, then inline inputs are applied.
-- Inline inputs take precedence over external inputs with the same name.
+- Inline inputs cannot have the same name as included inputs.
 - When you include multiple input files, they are merged in the order specified.
 - Supports [`local`](#includelocal), [`remote`](#includeremote), and [`project`](#includeproject) include types.
   Does not support `template`, `component`, or `artifact` includes.
@@ -1458,6 +1458,38 @@ build-image:
 **Related topics**:
 
 - [Use component context in components](../components/_index.md#use-component-context-in-components).
+
+---
+
+#### `spec:description`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/588286) in GitLab 18.10.
+
+{{< /history >}}
+
+Use `spec:description` to provide a short description of the component. The description
+is displayed in the CI/CD Catalog on the component details page, above the inputs table.
+
+**Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
+in a header section.
+
+**Supported values**: A string describing the component.
+
+**Example of `spec:description`**:
+
+```yaml
+spec:
+  description: "A description of the component visible to users in the CI/CD Catalog."
+  inputs:
+    stage:
+      default: test
+---
+scan-job:
+  stage: $[[ inputs.stage ]]
+  script: ./run-scan.sh
+```
 
 ---
 
@@ -2268,10 +2300,8 @@ cache-job:
 - If you use **Windows Batch** to run your shell scripts you must replace
   `$` with `%`. For example: `key: %CI_COMMIT_REF_SLUG%`
 - The `cache:key` value can't contain:
-
   - The `/` character, or the equivalent URI-encoded `%2F`.
   - Only the `.` character (any number), or the equivalent URI-encoded `%2E`.
-
 - The cache is shared between jobs, so if you're using different
   paths for different jobs, you should also set a different `cache:key`.
   Otherwise cache content can be overwritten.
@@ -3573,6 +3603,186 @@ job2:
 - [Run your CI/CD jobs in Docker containers](../docker/using_docker_images.md).
 - [Configure how runners pull images](https://docs.gitlab.com/runner/executors/docker/#configure-how-runners-pull-images).
 - [Set multiple pull policies](https://docs.gitlab.com/runner/executors/docker/#set-multiple-pull-policies).
+
+---
+
+### `inputs`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17833) in GitLab 18.10.
+
+{{< /history >}}
+
+Use `inputs` to define typed and validated inputs for a job. [Job inputs](../jobs/job_inputs.md)
+can be overridden when manually running or retrying a job.
+
+Job inputs are parameters that provide type safety and validation. Unlike [CI/CD variables](../variables/_index.md),
+only inputs explicitly defined in the job can be specified when running or retrying the job.
+All job input names must be predefined.
+
+Reference job input values with the `${{ job.inputs.INPUT_NAME }}` [Moa expression](../functions/moa.md) syntax.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Supported values**:
+
+A hash of input names, where each input is configured with one or more subkeys:
+
+- [`default`](#inputsdefault) (required)
+- [`type`](#inputstype)
+- [`options`](#inputsoptions)
+- [`description`](#inputsdescription)
+- [`regex`](#inputsregex)
+
+**Example of `inputs`**:
+
+```yaml
+test_job:
+  inputs:
+    test_suite:
+      default: unit
+      description: Which test suite to run
+      options: [unit, integration, e2e]
+    parallel_count:
+      type: number
+      default: 5
+      description: Number of parallel test runners
+    verbose:
+      type: boolean
+      default: false
+      description: Enable verbose test output
+  script:
+    - 'echo "Running ${{ job.inputs.test_suite }} tests"'
+    - 'if [ "${{ job.inputs.verbose }}" == "true" ]; then export TEST_VERBOSE=1; fi'
+    - ./run_tests.sh --suite ${{ job.inputs.test_suite }} --parallel ${{ job.inputs.parallel_count }}
+```
+
+**Additional details**:
+
+- Job inputs are validated when the job is created and when you try to retry a job with new input values.
+  If validation fails, the job does not start.
+- Job inputs are scoped to the job where they are defined and cannot be accessed by other jobs.
+- For a complete list of keywords that support job inputs, see [where you can use job inputs](../jobs/job_inputs.md#where-you-can-use-job-inputs).
+
+---
+
+#### `inputs:default`
+
+All job inputs must have a default value defined with `default`.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Supported values**: Any value matching the input's [`type`](#inputstype).
+
+**Example of `inputs:default`**:
+
+```yaml
+test_job:
+  inputs:
+    environment:
+      default: staging
+    timeout:
+      type: number
+      default: 30
+```
+
+---
+
+#### `inputs:type`
+
+Use `type` to define the data type of the input value.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Supported values**:
+
+- `string` (default)
+- `number`
+- `boolean`
+- `array`.
+
+**Example of `inputs:type`**:
+
+```yaml
+test_job:
+  inputs:
+    count:
+      type: number
+      default: 5
+    enabled:
+      type: boolean
+      default: true
+```
+
+---
+
+#### `inputs:description`
+
+Use `description` to provide information about the input's purpose.
+The description does not affect the input's behavior.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Supported values**: A string.
+
+**Example of `inputs:description`**:
+
+```yaml
+deploy_job:
+  inputs:
+    environment:
+      default: staging
+      description: Target deployment environment
+```
+
+---
+
+#### `inputs:options`
+
+Use `options` to specify a list of allowed values for an input.
+
+The input value must match one of the listed options exactly (case-sensitive).
+Validation fails if the value does not match an option.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Supported values**: An array of allowed values.
+
+**Example of `inputs:options`**:
+
+```yaml
+deploy_job:
+  inputs:
+    environment:
+      default: staging
+      options: [development, staging, production]
+```
+
+---
+
+#### `inputs:regex`
+
+Use `regex` to specify a regular expression pattern that the input value must match.
+
+Validation fails if the value does not match the regular expression.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Supported values**: A regular expression string.
+
+**Example of `inputs:regex`**:
+
+```yaml
+deploy_job:
+  inputs:
+    version:
+      default: v1.0.0
+      regex: ^v\d+\.\d+\.\d+$
+```
+
+In this example, an input value of `v1.1.1` passes the regex validation, but an input of
+`v1.1.1-beta` does not.
 
 ---
 

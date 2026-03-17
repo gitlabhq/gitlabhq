@@ -2,10 +2,10 @@
 
 module Ci
   class Stage < Ci::ApplicationRecord
+    include AfterCommitQueue
     include Ci::Partitionable
     include Ci::HasStatus
     include Importable
-    include Gitlab::OptimisticLocking
     include Presentable
 
     self.table_name = :p_ci_stages
@@ -136,11 +136,17 @@ module Ci
       event :delay do
         transition any - [:scheduled] => :scheduled
       end
+
+      after_transition any => any do |stage, _transition|
+        stage.run_after_commit do
+          GraphqlTriggers.ci_stage_status_updated(self)
+        end
+      end
     end
 
     # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability, consider refactoring issue #439268
     def set_status(new_status)
-      retry_optimistic_lock(self, name: 'ci_stage_set_status') do
+      Gitlab::OptimisticLocking.retry_lock(self, name: 'ci_stage_set_status') do
         case new_status
         when 'created' then nil
         when 'waiting_for_resource' then request_resource
@@ -207,6 +213,10 @@ module Ci
       end
     end
 
+    def play_manual(current_user)
+      Ci::PlayManualStageWorker.perform_async(id, current_user.id)
+    end
+
     # This will be removed with ci_remove_ensure_stage_service
     def latest_stage_status
       statuses.latest.composite_status || 'skipped'
@@ -224,7 +234,7 @@ module Ci
     private
 
     def preload_metadata(statuses)
-      relations = [:metadata, :job_definition, :error_job_messages, :pipeline,
+      relations = [:metadata, :job_definition, :error_job_messages, :pipeline, :supply_chain_attestation,
         { downstream_pipeline: [:user, { project: [:route, { namespace: :route }] }] }]
 
       ::Ci::Preloaders::CommitStatusPreloader.new(statuses).execute(relations)

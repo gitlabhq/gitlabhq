@@ -71,13 +71,16 @@ describe('Branches Sort Dropdown', () => {
   describe('when url contains a search param', () => {
     const branchName = 'branch-1';
 
-    beforeEach(() => {
+    it('should set the default the input value to search param', () => {
       setWindowLocation(`/root/ci-cd-project-demo/-/branches?search=${branchName}`);
       wrapper = createWrapper();
+      expect(findSearchBox().props('value')).toBe(branchName);
     });
 
-    it('should set the default the input value to search param', () => {
-      expect(findSearchBox().props('value')).toBe(branchName);
+    it('preserves plus in branch search (e.g. release/4.5+4)', () => {
+      setWindowLocation('/root/ci-cd-project-demo/-/branches?search=release%2F4.5%2B4');
+      wrapper = createWrapper();
+      expect(findSearchBox().props('value')).toBe('release/4.5+4');
     });
   });
 

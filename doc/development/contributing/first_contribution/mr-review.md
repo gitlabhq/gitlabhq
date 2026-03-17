@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Create a merge request
 ---
 
@@ -16,25 +16,21 @@ Now you're ready to push changes from the community fork to the main GitLab repo
 
    Select **Create merge request**.
    If you don't see this message, in the left sidebar, select **Code** > **Merge requests** > **New merge request**.
-
 1. Take a look at the branch names. You should be merging from your branch
    in the community fork to the `master` branch in the GitLab repository.
 
    ![The user interface for creating a new merge request that highlights the source and destination branches](img/new_merge_request_v15_11.png)
-
 1. Fill out the information and then select **Save changes**.
    Don't worry if your merge request is not complete.
 
    If you don't want anyone from GitLab to review it, you can select the **Mark as draft** checkbox.
    If you're not happy with the merge request after you create it, you can close it, no harm done.
-
 1. Select the **Changes** tab. It should look something like this:
 
    ![A snapshot of the changes made in the merge request, with differences highlighted in red and green](img/changes_tab_v15_11.png)
 
    The red text shows the code before you made changes. The green shows what
    the code looks like now.
-
 1. If you're happy with this merge request and want to start the review process, type
    `@gitlab-bot ready` in a comment and then select **Comment**.
 
@@ -59,7 +55,8 @@ GitLab will triage your merge request automatically.
 However, you can type `@gitlab-bot ready` in a comment to alert reviewers that your MR is ready.
 
 - When the label is set to `workflow::ready for review`, [a developer reviews the MR](../../code_review.md).
-- After you have resolved all of their feedback and the MR has been approved, the MR is ready for merge.
+- After you have resolved all of their feedback and the MR has been approved, [a maintainer merges the MR](../../code_review.md#the-responsibility-of-the-maintainer).
+  As a community contributor, you cannot merge your own MR. A GitLab maintainer will handle the merge.
 
 If you need help at any point in the process, type `@gitlab-bot help` in a comment or initiate a
 [mentor session](https://about.gitlab.com/community/contribute/mentor-sessions/) on [Discord](https://discord.com/invite/gitlab).

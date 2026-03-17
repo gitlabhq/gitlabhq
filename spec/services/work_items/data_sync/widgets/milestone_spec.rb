@@ -51,22 +51,55 @@ RSpec.describe WorkItems::DataSync::Widgets::Milestone, feature_category: :team_
     end
 
     context 'when source and target work items are within same hierarchy' do
-      context 'with before_create callback' do
-        it 'copies milestone from work_item to target_work_item' do
-          expect(callback).to receive(:matching_milestone).and_call_original
+      context 'when milestone is active' do
+        context 'with before_create callback' do
+          it 'copies milestone from work_item to target_work_item' do
+            expect(callback).to receive(:matching_milestone).and_call_original
 
-          callback.before_create
+            callback.before_create
 
-          expect(target_work_item.milestone).to eq(milestone1)
+            expect(target_work_item.milestone).to eq(milestone1)
+          end
+        end
+
+        context 'with after_save_commit callback' do
+          it 'does not create milestone resource event' do
+            expect(callback).to receive(:handle_changed_milestone_system_notes).and_call_original
+
+            callback.before_create
+            expect { callback.after_save_commit }.not_to change { ResourceMilestoneEvent.count }
+          end
         end
       end
 
-      context 'with after_save_commit callback' do
-        it 'does not create milestone resource event' do
-          expect(callback).to receive(:handle_changed_milestone_system_notes).and_call_original
+      context 'when milestone is closed' do
+        let_it_be(:milestone_closed) do
+          create(:milestone, group: group, title: 'Milestone Closed', state: :closed)
+        end
 
-          callback.before_create
-          expect { callback.after_save_commit }.not_to change { ResourceMilestoneEvent.count }
+        let_it_be_with_reload(:work_item) do
+          create(:work_item, milestone: milestone_closed, project: project1)
+        end
+
+        context 'with before_create callback' do
+          it 'copies milestone from work_item to target_work_item' do
+            expect(callback).to receive(:matching_milestone).and_call_original
+
+            callback.before_create
+
+            expect(target_work_item.milestone).to eq(milestone_closed)
+          end
+        end
+
+        context 'with after_save_commit callback' do
+          it 'copies the closed milestone from work_item to target_work_item' do
+            expect(callback).to receive(:handle_changed_milestone_system_notes).and_call_original
+
+            callback.before_create
+            expect(target_work_item.milestone).to eq(milestone_closed)
+            expect(target_work_item.milestone).to be_closed
+            expect { callback.after_save_commit }.not_to change { ResourceMilestoneEvent.count }
+          end
         end
       end
     end

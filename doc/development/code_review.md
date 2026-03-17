@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Code Review Guidelines
 ---
 
@@ -137,7 +137,6 @@ page, with these behaviors:
   project under the [security group](https://gitlab.com/gitlab-org/security/) are
   not counted. These MRs are usually backports, and maintainers or reviewers usually
   do not need much time reviewing them.
-
 - It always picks the same reviewers and maintainers for the same
   branch name (unless their out-of-office (`OOO`) status changes, as in point 1). It
   removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
@@ -358,7 +357,7 @@ If there are any projects, snippets, or other assets that are required for a rev
 
 When assigning reviewers, it can be helpful to:
 
-- Add a comment to the MR indicating which *type* of review you are looking for
+- Add a comment to the MR indicating which _type_ of review you are looking for
   from that reviewer.
   - For example, if an MR changes a database query and updates
     backend code, the MR author first needs a `~backend` review and a `~database`
@@ -800,7 +799,6 @@ When reviewing merge requests from forked repositories, you have several methods
   ```
 
   For more information, see the [GitLab CLI commands](https://docs.gitlab.com/cli/mr/checkout/).
-
 - Use cURL to apply the diff.
   Use one of the following methods:
 

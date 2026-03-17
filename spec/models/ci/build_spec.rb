@@ -55,6 +55,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to have_one(:trace_metadata).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:runtime_metadata).with_foreign_key(:build_id) }
   it { is_expected.to have_one(:pending_state).with_foreign_key(:build_id).inverse_of(:build) }
+  it { is_expected.to have_one(:supply_chain_attestation).with_foreign_key(:build_id).inverse_of(:build) }
 
   it do
     is_expected.to have_one(:queuing_entry).class_name('Ci::PendingBuild').with_foreign_key(:build_id).inverse_of(:build)
@@ -553,27 +554,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe 'callbacks' do
     context 'when running after_create callback' do
-      it 'executes hooks' do
-        expect_next(described_class).to receive(:execute_hooks)
+      it 'does not execute hooks when chain is handling webhooks' do
+        allow(Gitlab::SafeRequestStore).to receive(:[]).and_call_original
+        allow(Gitlab::SafeRequestStore).to receive(:[]).with(:ci_triggering_build_hooks_via_chain).and_return(true)
+
+        expect_next(described_class).not_to receive(:execute_hooks)
 
         create(:ci_build, pipeline: pipeline)
       end
-    end
 
-    context 'when running after_commit callbacks' do
-      let(:name) { 'test123' }
+      it 'executes hooks when chain is not handling webhooks' do
+        expect_next(described_class).to receive(:execute_hooks)
 
-      subject(:create_ci_build) { create(:ci_build, user: user, project: project, name: name) }
-
-      it 'tracks creation event with merged properties' do
-        expect { create_ci_build }
-          .to trigger_internal_events('create_ci_build')
-          .with(
-            category: 'InternalEventTracking',
-            user: user,
-            project: project,
-            property: name
-          )
+        create(:ci_build, pipeline: pipeline)
       end
     end
 
@@ -2304,32 +2297,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
       end
     end
-
-    context 'when feature flag read_from_ci_job_definition_run_steps is disabled' do
-      before do
-        stub_feature_flags(read_from_ci_job_definition_run_steps: false)
-      end
-
-      it 'returns run_steps from execution config' do
-        expect(subject).to eq(job_execution_config_run_steps)
-      end
-
-      context 'with nil run_steps' do
-        let(:job_execution_config_run_steps) { nil }
-
-        it 'returns an empty array' do
-          expect(subject).to eq([])
-        end
-      end
-
-      context 'with nil job_execution_config' do
-        let(:job_execution_config) { nil }
-
-        it 'returns an empty array' do
-          expect(subject).to eq([])
-        end
-      end
-    end
   end
 
   describe '#tag_list' do
@@ -2440,6 +2407,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       subject { create(:ci_build, tag_list: [], pipeline: pipeline) }
 
       it { is_expected.not_to have_tags }
+    end
+  end
+
+  describe '.tag_names_array_query' do
+    it 'includes explicit ::text[] cast to ensure proper array type recognition' do
+      sql = described_class.tag_names_array_query
+
+      expect(sql).to include('::text[]')
     end
   end
 
@@ -3080,6 +3055,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s, public: true, masked: false },
           { key: 'CI_COMMIT_TIMESTAMP', value: pipeline.git_commit_timestamp, public: true, masked: false },
           { key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text, public: true, masked: false },
+          { key: 'CI_COMMIT_USER_LOGIN', value: pipeline.git_author_login.to_s, public: true, masked: false },
           { key: 'CI_PAGES_URL', value: pages_url, public: true, masked: false }
         ]
       end
@@ -3181,7 +3157,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
                 { key: 'CI_ENVIRONMENT_SLUG', value: 'start', public: true, masked: false },
                 { key: 'CI_ENVIRONMENT_URL', value: 'https://gitlab.com', public: true, masked: false }
               ],
-              after: 'CI_COMMIT_AUTHOR')
+              after: 'CI_COMMIT_USER_LOGIN')
           end
 
           it 'matches explicit variables ordering' do
@@ -4540,6 +4516,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       build.enqueue
     end
 
+    it 'creates a queuing entry' do
+      expect { build.enqueue }.to change { build.reload.queuing_entry.present? }.from(false).to(true)
+    end
+
     context 'with a database token' do
       before do
         stub_feature_flags(ci_job_token_jwt: false)
@@ -4547,6 +4527,44 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it 'assigns the token' do
         expect { build.enqueue }.to change(build, :token).from(nil).to(an_instance_of(String))
+      end
+    end
+
+    context 'when precompute_pending_build_args is enabled' do
+      it 'pre-computes pending build args outside the transaction' do
+        expect(Ci::PendingBuild).to receive(:args_from_build).with(build).and_wrap_original do |method, *args|
+          expect(Ci::ApplicationRecord).not_to be_inside_transaction
+
+          method.call(*args)
+        end
+
+        build.enqueue
+      end
+
+      it 'upserts using the pre-computed args inside the transaction' do
+        expect(Ci::PendingBuild).to receive(:upsert_from_args!)
+          .with(a_hash_including(:build, :project, :namespace))
+          .and_call_original
+
+        build.enqueue
+      end
+    end
+
+    context 'when precompute_pending_build_args is disabled' do
+      before do
+        stub_feature_flags(precompute_pending_build_args: false)
+      end
+
+      it 'does not set pending_build_args on the build' do
+        build.enqueue
+
+        expect(build.pending_build_args).to be_nil
+      end
+
+      it 'computes args inline inside the transaction via create_queuing_entry!' do
+        expect(build).to receive(:create_queuing_entry!).and_call_original
+
+        build.enqueue
       end
     end
   end
@@ -5435,6 +5453,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to include(:job_inputs) }
+    end
+  end
+
+  describe '#features' do
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+
+    subject { build.features }
+
+    it 'includes default features' do
+      is_expected.to include(
+        trace_sections: true,
+        failure_reasons: include('script_failure')
+      )
     end
   end
 
@@ -6358,7 +6389,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it 'includes partition_id in the token prefix' do
-        prefix = ci_build.token.match(/^glcbt-([\h]+)_/)
+        prefix = ci_build.token.match(/^glcbt-(\h+)_/)
         partition_prefix = prefix[1].to_i(16)
 
         expect(partition_prefix).to eq(ci_testing_partition_id)
@@ -6378,77 +6409,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       expect(build.token).to be_nil
       expect(build.changes).to be_empty
-    end
-  end
-
-  describe 'secrets management id_tokens usage data' do
-    context 'when ID tokens are defined' do
-      context 'on create' do
-        let(:ci_build) { create(:ci_build, user: user, id_tokens: { 'ID_TOKEN_1' => { aud: 'developers' } }) }
-
-        before do
-          allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).and_call_original
-        end
-
-        it 'tracks RedisHLL event with user_id' do
-          expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
-            .with('i_ci_secrets_management_id_tokens_build_created', values: user.id)
-
-          ci_build
-        end
-
-        it 'tracks Snowplow event with RedisHLL context' do
-          params = {
-            category: described_class.to_s,
-            action: 'create_id_tokens',
-            namespace: ci_build.namespace,
-            user: user,
-            label: 'redis_hll_counters.ci_secrets_management.i_ci_secrets_management_id_tokens_build_created_monthly',
-            ultimate_namespace_id: ci_build.namespace.root_ancestor.id,
-            context: [Gitlab::Tracking::ServicePingContext.new(
-              data_source: :redis_hll,
-              event: 'i_ci_secrets_management_id_tokens_build_created'
-            ).to_context.to_json]
-          }
-
-          ci_build
-          expect_snowplow_event(**params)
-        end
-      end
-
-      context 'on update' do
-        let_it_be(:ci_build) { create(:ci_build, user: user, id_tokens: { 'ID_TOKEN_1' => { aud: 'developers' } }) }
-
-        it 'does not track RedisHLL event' do
-          expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-
-          ci_build.success
-        end
-
-        it 'does not track Snowplow event' do
-          ci_build.success
-
-          expect_no_snowplow_event
-        end
-      end
-    end
-
-    context 'when ID tokens are not defined' do
-      let(:ci_build) { create(:ci_build, user: user) }
-
-      context 'on create' do
-        it 'does not track RedisHLL event' do
-          expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
-            .with('i_ci_secrets_management_id_tokens_build_created', values: user.id)
-
-          ci_build
-        end
-
-        it 'does not track Snowplow event' do
-          ci_build.save!
-          expect_no_snowplow_event
-        end
-      end
     end
   end
 
@@ -6474,24 +6434,27 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       stub_application_setting(ci_jwt_signing_key: OpenSSL::PKey::RSA.generate(3072).to_s)
 
       project.ci_cd_settings.update!(
-        id_token_sub_claim_components: %w[project_path environment_protected deployment_tier]
+        id_token_sub_claim_components: %w[project_path ref_protected environment_protected deployment_tier]
       )
     end
 
-    it 'generates JWT with environment_protected and deployment_tier in sub claim' do
+    it 'generates JWT with ref_protected, environment_protected and deployment_tier in sub claim' do
       expect(build.id_tokens).to eq({ 'ID_TOKEN_1' => { 'aud' => 'https://example.com' } })
 
       expect(project.ci_cd_settings.id_token_sub_claim_components)
-        .to eq(%w[project_path environment_protected deployment_tier])
+        .to eq(%w[project_path ref_protected environment_protected deployment_tier])
 
       id_token = build.variables.find { |v| v[:key] == 'ID_TOKEN_1' }
       expect(id_token).not_to be_nil
 
       token = JWT.decode(id_token[:value], nil, false).first
       expect(token['sub']).to include('project_path')
+      expect(token['sub']).to include('ref_protected')
       expect(token['sub']).to include('environment_protected')
       expect(token['sub']).to include('deployment_tier')
-      expect(token['sub']).to eq("project_path:#{project.full_path}:environment_protected:false:deployment_tier:production")
+      expect(token['sub']).to eq(
+        "project_path:#{project.full_path}:ref_protected:false:environment_protected:false:deployment_tier:production"
+      )
     end
   end
 
@@ -6670,7 +6633,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       }
     end
 
-    subject(:fabricate) { described_class.fabricate(build_attributes) }
+    subject(:fabricate) { described_class.fabricate(**build_attributes) }
 
     it 'initializes with temp_job_definition' do
       expect(fabricate).to have_attributes(

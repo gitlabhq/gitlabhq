@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Backup and restore, move repos, maintenance tasks.
 title: Maintain GitLab
 ---
@@ -23,7 +23,7 @@ Keep your GitLab instance up and running.
 - [Rails console](rails_console.md)
 - [Use SSH certificates](ssh_certificates.md)
 - [Enable encrypted configuration](../encrypted_configuration.md)
-- [Rake tasks](../../administration/raketasks/_index.md)
+- [Rake tasks](../raketasks/_index.md)
 - [Backup and restore](../backup_restore/_index.md)
 - [Dormant project deletion](../dormant_project_deletion.md)
 - [Move repositories](moving_repositories.md)

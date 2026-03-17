@@ -56,6 +56,8 @@ RSpec.describe AntiAbuse::AbuseReport::CreateService, feature_category: :insider
       let(:error_message) { 'AbuseReport record was not created' }
 
       it_behaves_like 'returning an error'
+
+      it { expect(service_response.payload).to be_instance_of(::AbuseReport) }
     end
 
     context 'with invalid params' do

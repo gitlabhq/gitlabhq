@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting LDAP
 ---
 
@@ -417,7 +417,7 @@ things to debug the situation.
 - Check that the user has an LDAP identity:
   1. Sign in to GitLab as an administrator user.
   1. In the upper-right corner, select **Admin**.
-  1. On the left sidebar, select **Overview** > **Users**.
+  1. In the left sidebar, select **Overview** > **Users**.
   1. Search for the user.
   1. Open the user by selecting their name. Do not select **Edit**.
   1. Select the **Identities** tab. There should be an LDAP identity with

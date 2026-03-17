@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Autocomplete characters in Markdown fields.
 title: Autocomplete characters
 ---
@@ -29,6 +29,7 @@ matching values. The string matching is not case-sensitive.
 | `$`       | Snippets         | 5                      |
 | `:`       | Emoji            | 5                      |
 | `/`       | Quick actions    | 100                    |
+| `*iteration:` | Iterations | 5 |
 
 When you select an item from the list, the value is entered in the field.
 The more characters you enter, the more precise the matches are.

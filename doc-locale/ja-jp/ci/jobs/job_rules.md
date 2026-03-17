@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: "`rules`でジョブの実行タイミングを指定する"
 ---
 
@@ -12,7 +12,7 @@ title: "`rules`でジョブの実行タイミングを指定する"
 
 {{< /details >}}
 
-[`rules`rules](../yaml/_index.md#rules)キーワードを使用して、パイプラインにジョブを含めたり、除外したりできます。
+[`rules`](../yaml/_index.md#rules)キーワードを使用して、パイプラインにジョブを含めるか除外するかを指定します。
 
 ルールは順番に評価され、最初に一致したものが適用されます。一致が見つかると、そのジョブは設定に応じて、パイプラインに含められるか除外されます。
 
@@ -20,7 +20,7 @@ title: "`rules`でジョブの実行タイミングを指定する"
 
 ## `rules`の例 {#rules-examples}
 
-次の例では、`if`を使用して、2つの特定のケースでのみジョブが実行されるように定義しています:
+次の例では、`if`を使用して、2つの特定のケースでのみジョブが実行されるように定義しています。
 
 ```yaml
 job:
@@ -32,16 +32,16 @@ job:
     - if: $CI_PIPELINE_SOURCE == "schedule"
 ```
 
-- パイプラインがマージリクエスト用の場合、最初の属性が一致し、ジョブは次の属性を持ってマージリクエストパイプラインに追加されます:
+- パイプラインがマージリクエスト用の場合、最初のルールが一致し、ジョブが以下の属性を持つマージリクエストパイプラインに追加されます:
   - `when: manual`（手動ジョブ）
   - `allow_failure: true`（手動ジョブが実行されなくてもパイプラインの実行は継続される）
-- パイプラインがマージリクエスト用でない場合、最初の属性は一致せず、2番目の属性が評価されます。
-- パイプラインがスケジュールされたパイプラインである場合、2番目のルールが一致し、ジョブがスケジュールされたパイプラインに追加されます。属性が定義されていないため、次の属性で追加されます:
+- パイプラインがマージリクエスト用ではない場合、最初のルールは一致せず、2番目のルールが評価されます。
+- パイプラインがスケジュールされたパイプラインである場合、2番目のルールが一致し、ジョブがスケジュールされたパイプラインに追加されます。属性が定義されていないため、次の属性で追加されます。
   - `when: on_success`（デフォルト）
   - `allow_failure: false`（デフォルト）
-- その他すべての場合では、一致する属性がないため、ジョブは他のパイプラインには追加されません。
+- その他のすべての場合、ルールは一致せず、ジョブは他のどのパイプラインにも追加されません。
 
-または、いくつかのケースでジョブを除外し、それ以外のすべてのケースで実行するようなルールセットを定義することもできます:
+または、いくつかのケースでジョブを除外し、それ以外のすべてのケースで実行するようなルールセットを定義することもできます。
 
 ```yaml
 job:
@@ -56,13 +56,11 @@ job:
 
 - パイプラインがマージリクエスト用の場合、ジョブはパイプラインに追加されません。
 - パイプラインがスケジュールされたパイプラインの場合、ジョブはパイプラインに追加されません。
-- その他すべての場合では、`when: on_success`の設定でパイプラインに追加されます。
+- その他のすべての場合、ジョブは`when: on_success`でパイプラインに追加されます。
 
-{{< alert type="warning" >}}
-
-最後のルールとして`when`句（`when: never`を除く）を使用すると、2つのパイプラインが同時に開始される可能性があります。プッシュパイプラインとマージリクエストパイプラインが、同じイベント（オープンマージリクエストのソースブランチへのプッシュ）によってトリガーされる可能性があるためです。詳細については、[重複パイプラインを回避する方法](#avoid-duplicate-pipelines)をご覧ください。
-
-{{< /alert >}}
+> [!warning]
+> 
+> 最終ルールとして`when`句を使用する場合（`when: never`を含まない場合）、2つの同時実行パイプラインが開始されることがあります。プッシュパイプラインとマージリクエストパイプラインが、同じイベント（オープンマージリクエストのソースブランチへのプッシュ）によってトリガーされる可能性があるためです。詳細については、[重複パイプラインを回避する方法](#avoid-duplicate-pipelines)を参照してください。
 
 ### スケジュールされたパイプラインでジョブを実行する {#run-jobs-for-scheduled-pipelines}
 
@@ -86,12 +84,12 @@ job:
 
 ### ブランチが空の場合にジョブをスキップする {#skip-jobs-if-the-branch-is-empty}
 
-[`rules:changes:compare_to`](../yaml/_index.md#ruleschangescompare_to)を使用して、ブランチが空の場合にジョブをスキップします。これにより、CI/CDリソースを節約できます。この設定では、ブランチをデフォルトブランチと比較し、その結果に応じて処理します:
+[`rules:changes:compare_to`](../yaml/_index.md#ruleschangescompare_to)を使用して、ブランチが空の場合にジョブをスキップします。これにより、CI/CDリソースを節約できます。この設定では、ブランチをデフォルトブランチと比較し、その結果に応じて処理します。
 
 - ブランチに変更されたファイルがない場合、ジョブは実行されません。
 - ブランチに変更されたファイルがある場合、ジョブは実行されます。
 
-デフォルトブランチが`main`のプロジェクトの例を次に示します:
+デフォルトブランチが`main`のプロジェクトの例を次に示します。
 
 ```yaml
 job:
@@ -107,9 +105,27 @@ job:
 
 このジョブのルールは、現在のブランチにあるすべてのファイルとパス（`**/*`）を`main`ブランチと再帰的に比較します。ブランチ内のファイルが変更された場合にのみルールが一致し、ジョブが実行されます。
 
+## ファイルが存在しない場合にジョブを実行する {#run-a-job-when-a-file-is-not-present}
+
+特定のファイルが存在しない場合にのみジョブが実行されるように設定するには、`rules: exists`を使用できます。
+
+たとえば、`example.yml`ファイルが存在しない場合にマージリクエストパイプラインでジョブを実行するには、次のようにします:
+
+```yaml
+job:
+  script: echo "Hello, Rules!"
+  rules:
+    - exists:
+      - "example_dir/example.yml"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+```
+
+この例では、`example_dir/example.yml`ファイルがブランチに存在する場合、ジョブは実行されません。ファイルが存在しない場合、ジョブはマージリクエストパイプラインで実行できます。
+
 ## 定義済み変数を使用した一般的な`if`句 {#common-if-clauses-with-predefined-variables}
 
-`rules:if`句は、特に`CI_PIPELINE_SOURCE`などの[定義済みのCI/CD変数](../variables/predefined_variables.md)でよく使用されます。
+`rules:if`句は、特に`CI_PIPELINE_SOURCE`のような[事前定義されたCI/CD変数](../variables/predefined_variables.md)とともに一般的に使用されます。
 
 次の例では、スケジュールされたパイプラインまたはプッシュパイプライン（ブランチまたはタグへのプッシュ）において、ジョブを手動ジョブとして`when: on_success`（デフォルト）で実行します。他のパイプラインタイプにはジョブは追加されません。
 
@@ -123,7 +139,7 @@ job:
     - if: $CI_PIPELINE_SOURCE == "push"
 ```
 
-次の例では、マージリクエストパイプラインおよびスケジュールされたパイプラインにおいて、ジョブを`when: on_success`ジョブとして実行します。他のパイプラインタイプでは実行されません。
+次の例では、ジョブをマージリクエストパイプラインおよびスケジュールされたパイプラインで`when: on_success`ジョブとして実行します。他のパイプラインタイプでは実行されません。
 
 ```yaml
 job:
@@ -145,13 +161,13 @@ job:
 
 ### 特定のパイプラインタイプでのみジョブを実行する {#run-jobs-only-in-specific-pipeline-types}
 
-`rules`で定義済みのCI/CD変数を使用すると、ジョブを実行するパイプラインタイプを選択できます。
+CI/CD変数を`rules`とともに使用して、ジョブを実行するパイプラインタイプを選択できます。
 
-次の表は、使用できる変数の一部と、各変数が制御できるパイプラインタイプを示しています:
+次の表は、使用できる変数の一部と、各変数が制御できるパイプラインタイプを示しています。
 
 - ブランチパイプライン: 新しいコミットやタグなど、ブランチへのGit `push`イベントで実行される。
 - タグパイプライン: 新しいGitタグがブランチにプッシュされた場合にのみ実行される。
-- **パイプラインの実行**: マージリクエストの変更（新しいコミットやマージリクエストのパイプラインタブでパイプラインを実行するを選択するなど）に応じて実行されます。
+- 新しいコミット、またはマージリクエストのパイプラインタブで**パイプラインの実行**を選択するなど、マージリクエストへの変更に対して実行されるマージリクエストパイプライン。
 - スケジュールされたパイプライン。
 
 | 変数                                  | ブランチ | タグ | マージリクエスト | スケジュール |
@@ -163,7 +179,7 @@ job:
 | `CI_PIPELINE_SOURCE = merge_request_event` |        |     | はい           |           |
 | `CI_MERGE_REQUEST_IID`                     |        |     | はい           |           |
 
-たとえば、マージリクエストパイプラインやスケジュールされたパイプラインでは実行するが、ブランチパイプラインやタグパイプラインでは実行しないようにジョブを設定する場合は、次のようになります:
+たとえば、マージリクエストパイプラインやスケジュールされたパイプラインでは実行するが、ブランチパイプラインやタグパイプラインでは実行しないようにジョブを設定する場合は、次のようになります。
 
 ```yaml
 job1:
@@ -178,7 +194,7 @@ job1:
 
 ### `CI_PIPELINE_SOURCE`定義済み変数 {#ci_pipeline_source-predefined-variable}
 
-`CI_PIPELINE_SOURCE`変数を使用して、以下のパイプラインタイプにジョブを追加するタイミングを制御します:
+`CI_PIPELINE_SOURCE`変数を使用して、以下のパイプラインタイプにジョブを追加するタイミングを制御します。
 
 | 値                           | 説明 |
 |---------------------------------|-------------|
@@ -186,16 +202,16 @@ job1:
 | `chat`                          | [GitLab ChatOps](../chatops/_index.md)コマンドを使用して作成されたパイプライン。 |
 | `external`                      | GitLab以外のCIサービスを使用する場合。 |
 | `external_pull_request_event`   | [GitHubの外部プルリクエスト](../ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests)が作成または更新された場合。 |
-| `merge_request_event`           | マージリクエストの作成または更新時に作成されたパイプライン。[マージリクエストパイプライン](../pipelines/merge_request_pipelines.md) 、[マージ結果パイプライン](../pipelines/merged_results_pipelines.md) 、[マージトレイン](../pipelines/merge_trains.md)を有効にする場合、必須。 |
+| `merge_request_event`           | マージリクエストの作成または更新時に作成されたパイプライン。[マージリクエストパイプライン](../pipelines/merge_request_pipelines.md)、[マージ結果パイプライン](../pipelines/merged_results_pipelines.md)、[マージトレイン](../pipelines/merge_trains.md)を有効にする場合、必須。 |
 | `ondemand_dast_scan`            | [DASTオンデマンドスキャン](../../user/application_security/dast/on-demand_scan.md)パイプライン。 |
 | `ondemand_dast_validation`      | [DASTオンデマンド検証](../../user/application_security/dast/profiles.md#site-profile-validation)パイプライン。 |
 | `parent_pipeline`               | [親/子パイプライン](../pipelines/downstream_pipelines.md#parent-child-pipelines)によってトリガーされたパイプライン。親パイプラインからトリガーできるように、子パイプラインの設定でこのパイプラインソースを使用します。 |
-| `pipeline`                      | [マルチプロジェクトパイプライン](../pipelines/downstream_pipelines.md#multi-project-pipelines)の場合。 |
+| `pipeline`                      | [マルチプロジェクトパイプライン](../pipelines/downstream_pipelines.md#multi-project-pipelines)用。 |
 | `push`                          | ブランチやタグを含む、Gitプッシュイベントによってトリガーされたパイプライン。 |
 | `schedule`                      | [スケジュールされたパイプライン](../pipelines/schedules.md)。 |
 | `security_orchestration_policy` | [スケジュールされたスキャン実行ポリシー](../../user/application_security/policies/scan_execution_policies.md)パイプライン。 |
 | `trigger`                       | [トリガートークン](../triggers/_index.md#configure-cicd-jobs-to-run-in-triggered-pipelines)を使用して作成されたパイプライン。 |
-| `web`                           | GitLab **新しいパイプライン**を選択して作成されたパイプラインは、プロジェクトの**ビルド** > **パイプライン**セクションにあります。 |
+| `web`                           | プロジェクトの**ビルド** > **パイプライン**セクションから、GitLab UIで**新しいパイプライン**を選択して作成されたパイプラインの場合。 |
 | `webide`                        | [Web IDE](../../user/project/web_ide/_index.md)を使用して作成されたパイプライン。 |
 
 これらの値は、[パイプラインAPIエンドポイント](../../api/pipelines.md#list-project-pipelines)を使用する際に`source`パラメータとして返される値と同じです。
@@ -218,9 +234,9 @@ docker build:
       allow_failure: true
 ```
 
-`Dockerfile`ファイル、または`/docker/scripts`内のファイルが変更され、`$VAR == "string value"`場合、そのジョブは手動で実行され、失敗が許可されます。
+`Dockerfile`ファイルまたは`/docker/scripts`内のいずれかのファイルが変更され、かつ`$VAR == "string value"`の場合、ジョブは手動で実行され、失敗が許可されます。
 
-括弧と`&&`および`||`を組み合わせて、より複雑な変数式を構築できます。
+`&&`と`||`とともに括弧を使用して、より複雑な変数式を構築できます。
 
 ```yaml
 job1:
@@ -245,12 +261,12 @@ job:
     - when: always
 ```
 
-このジョブは`$CUSTOM_VARIABLE`がfalseの場合は実行されませんが、プッシュ（ブランチ）パイプラインとマージリクエストパイプラインの両方を含む、その他**both**（すべての）パイプラインでは実行されます。この設定では、オープンマージリクエストのソースブランチにプッシュするたびに重複パイプラインが発生します。
+このジョブは`$CUSTOM_VARIABLE`がfalseの場合には実行されませんが、**both**パイプラインとマージリクエストパイプラインの**both**を含む他のすべてのパイプラインで実行されます。この設定では、オープンマージリクエストのソースブランチにプッシュするたびに重複パイプラインが発生します。
 
-重複パイプラインを回避するには、次の方法があります:
+重複パイプラインを回避するには、次の方法があります。
 
 - [`workflow`](../yaml/_index.md#workflow)を使用して、実行可能なパイプラインのタイプを指定する。
-- 非常に限られたケースでのみジョブを実行するようにルールを修正し、最後に`when`ルールを配置しない:
+- 非常に限られたケースでのみジョブを実行するようにルールを修正し、最後に`when`ルールを配置しない。
 
   ```yaml
   job:
@@ -259,9 +275,9 @@ job:
       - if: $CUSTOM_VARIABLE == "true" && $CI_PIPELINE_SOURCE == "merge_request_event"
   ```
 
-重複パイプラインを回避できるもう1つの方法は、プッシュ（ブランチ）パイプラインまたはマージリクエストパイプラインのいずれかを回避するようにジョブのルールを変更することです。ただし、`workflow: rules`を使用せずに`- when: always`ルールを使用した場合も、GitLabは依然として[パイプラインの警告](../debugging.md#pipeline-warnings)を表示します。
+重複パイプラインを回避できるもう1つの方法は、プッシュ（ブランチ）パイプラインまたはマージリクエストパイプラインのいずれかを回避するようにジョブのルールを変更することです。ただし、`workflow: rules`なしで`- when: always`ルールを使用すると、GitLabは[パイプライン警告](../debugging.md#pipeline-warnings)を表示します。
 
-たとえば、次のスクリプトは二重パイプラインをトリガーしませんが、`workflow: rules`なしでの使用は推奨されていません:
+たとえば、次のスクリプトは二重パイプラインをトリガーしませんが、`workflow: rules`なしでの使用は推奨されていません。
 
 ```yaml
 job:
@@ -272,7 +288,7 @@ job:
     - when: always
 ```
 
-[重複パイプラインを防ぐ`workflow:rules`](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines)を使用しない場合、プッシュパイプラインとマージリクエストパイプラインの両方を同じジョブに含めるべきではありません:
+[重複パイプラインを防ぐ`workflow:rules`](../yaml/workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines)を使用しない場合、プッシュパイプラインとマージリクエストパイプラインの両方を同じジョブに含めるべきではありません。
 
 ```yaml
 job:
@@ -282,7 +298,7 @@ job:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 ```
 
-また、同じパイプラインで`only/except`ジョブと`rules`ジョブを混在させないでください。YAMLエラーは発生しないかもしれませんが、`only/except`と`rules`のデフォルトの動作が異なるため、トラブルシューティングが困難な問題を引き起こす可能性があります:
+また、同じパイプラインで`only/except`ジョブと`rules`ジョブを混在させないでください。YAMLエラーは発生しないかもしれませんが、`only/except`と`rules`のデフォルトの動作が異なるため、トラブルシューティングが困難な問題を引き起こす可能性があります。
 
 ```yaml
 job-with-no-rules:
@@ -294,11 +310,11 @@ job-with-rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 ```
 
-オープンマージリクエストでブランチにプッシュされたすべての変更について、重複するパイプラインが実行されます。1つのブランチパイプラインが1つのジョブ（`job-with-no-rules`）を実行し、1つのマージリクエストパイプラインが別のジョブ（`job-with-rules`）を実行します。ルールなしのジョブはデフォルトで[`except: merge_requests`](../yaml/deprecated_keywords.md#only--except)になるため、`job-with-no-rules`はマージリクエストを除くすべてのケースで実行されます。
+開いているマージリクエストのあるブランチにプッシュされたすべての変更に対して、重複パイプラインが実行されます。1つのブランチパイプラインが1つのジョブ（`job-with-no-rules`）を実行し、1つのマージリクエストパイプラインが別のジョブ（`job-with-rules`）を実行します。ルールなしのジョブはデフォルトで[`except: merge_requests`](../yaml/deprecated_keywords.md#only--except)になるため、`job-with-no-rules`はマージリクエストを除くすべてのケースで実行されます。
 
 ## 異なるジョブでルールを再利用する {#reuse-rules-in-different-jobs}
 
-[`!reference`タグ](../yaml/yaml_optimization.md#reference-tags)を使用して、異なるジョブでルールを再利用できます。`!reference`ルールと、ジョブで定義されている標準のルールを組み合わせることも可能です。例: 
+[`!reference`タグ](../yaml/yaml_optimization.md#reference-tags)を使用して、異なるジョブでルールを再利用できます。`!reference`ルールをジョブで定義されたルールと組み合わせることができます。例: 
 
 ```yaml
 .default_rules:
@@ -356,7 +372,7 @@ job2:
 
 `=~`および`!~`演算子を使用して、変数値を正規表現とマッチングできます。
 
-式は、次の場合に`true`として評価されます:
+式は、次の場合に`true`として評価されます。
 
 - `=~`を使用して一致が見つかった場合。
 - `!~`を使用して一致が見つからなかった場合。
@@ -399,7 +415,7 @@ regex-job2:
     - if: '$teststring =~ $pattern'
 ```
 
-正規表現内の変数は解決されません。例: 
+正規表現内の変数は展開されません。例: 
 
 ```yaml
 variables:
@@ -420,13 +436,13 @@ regex-job2:
 
 ### 変数式を結合する {#join-variable-expressions-together}
 
-複数の式を`&&`（and）または`||`（or）を使用して結合できます。次に例を示します:
+複数の式を`&&`（and）または`||`（or）を使用して結合できます。次に例を示します。
 
 - `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 == "something"`
 - `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 =~ /thing$/ && $VARIABLE3`
 - `$VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/ && $VARIABLE3`
 
-括弧を使用して式をグループ化できます。括弧は`&&`や`||`よりも優先されるため、括弧内の式が先に評価され、その結果が式の残りの部分に使用されます。演算子の優先順位では、`&&``||`の前に評価されます。
+括弧を使用して式をグループ化できます。括弧は`&&`や`||`よりも優先されるため、括弧内の式が先に評価され、その結果が式の残りの部分に使用されます。演算子の優先順位では、`&&`が`||`より前に評価されます。
 
 括弧をネストして複雑な条件式を作成することもでき、最も内側の括弧内の式から順に評価されます。例: 
 

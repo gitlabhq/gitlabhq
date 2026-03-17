@@ -1,9 +1,9 @@
 ---
 stage: AI-powered
 group: Custom Models
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure large language models for GitLab Duo features.
-title: GitLab Duo (Classic) AI models
+title: GitLab Duo AI models
 ---
 
 {{< details >}}
@@ -14,7 +14,7 @@ title: GitLab Duo (Classic) AI models
 
 {{< /details >}}
 
-Every GitLab Duo (Classic) feature uses a default model. GitLab might update default models to optimize performance. You can select a different model for a feature, which persists until you change it.
+Every GitLab Duo feature uses a default model. GitLab might update default models to optimize performance. You can select a different model for a feature, which persists until you change it.
 
 ## Default models
 
@@ -24,7 +24,7 @@ The following table lists the default model for each GitLab Duo feature.
 |---------|---------------|
 | **Code Suggestions** | |
 | Code Generation | Claude Sonnet 4 Vertex |
-| Code Completion | Codestral 25.01 Fireworks|
+| Code Completion | Codestral 25.08 Fireworks |
 | **GitLab Duo Chat** | |
 | General Chat | Claude Sonnet 4.5 Vertex |
 | Code Explanation | Claude Sonnet 4 |
@@ -53,14 +53,14 @@ The following tables list the models you can select for each feature.
 |------------|-----------------|-----------------|
 | Claude Sonnet 4 | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4 Vertex | {{< yes >}} | {{< yes >}} |
+| Claude Sonnet 4 Bedrock | {{< yes >}} | {{< yes >}} |
 | Claude Sonnet 4.5 | {{< yes >}} | {{< yes >}} |
 | Codestral 25.01 Fireworks | {{< no >}} | {{< yes >}} |
-| Codestral 25.01 Vertex | {{< no >}} | {{< yes >}} |
-| Codestral 25.08 Fireworks| {{< no >}} | {{< yes >}} |
-| Codestral 25.08 Vertex| {{< no >}} | {{< yes >}} |
-| Gemini 2.5 Flash | {{< yes >}} | {{< no >}} |
+| Codestral 25.08 Fireworks | {{< no >}} | {{< yes >}} |
+| Codestral 25.08 Vertex | {{< no >}} | {{< yes >}} |
+| Gemini 2.5 Flash Vertex | {{< yes >}} | {{< no >}} |
 
-### GitLab Duo Chat (Classic)
+### GitLab Duo Chat (non-agentic)
 
 | Model | General Chat | Code Explanation | Test Generation | Refactor Code | Fix Code | Root Cause Analysis |
 |------------|--------------|------------------|-----------------|---------------|----------|---------------------|
@@ -115,11 +115,11 @@ Prerequisites:
 
 - You have the Owner role for the group.
 - The group that you select models for is a top-level group.
-- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+- In GitLab 18.3 or later, if you belong to multiple GitLab Duo namespaces, you must [assign a default namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).
 
 To select a model for a feature:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Configure features**.
 1. For the feature you want to configure, select a model from the dropdown list.
@@ -144,4 +144,4 @@ When using a GitLab Duo feature with a selected model, you might get an error th
 
 This issue occurs when you belong to multiple GitLab Duo namespaces, but have not chosen one as your default namespace.
 
-To resolve this, [set a default GitLab Duo namespace](../../user/profile/preferences.md#set-a-default-gitlab-duo-namespace).
+To resolve this, [set a default GitLab Duo namespace](../profile/preferences.md#set-a-default-gitlab-duo-namespace).

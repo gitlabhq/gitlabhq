@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_templates.p_ci_templates_jobs_dependency_scanning_v2_monthly
 description: Monthly counts for Dependency Scanning CI v2 template (Jobs folder)
 product_group: composition_analysis
+product_categories:
+- software_composition_analysis
 value_type: number
 status: active
 milestone: '18.5'

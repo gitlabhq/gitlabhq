@@ -373,12 +373,15 @@ RSpec.describe Gitlab::Ci::Config::External::Processor, feature_category: :pipel
       it 'propagates the pipeline logger' do
         processor.perform
 
-        process_obs_count = processor
-          .logger
-          .observations_hash
-          .dig('config_file_fetch_component_content_duration_s', 'count')
+        observations = processor.logger.observations_hash
 
-        expect(process_obs_count).to eq(1)
+        expect(observations.dig('config_file_fetch_component_content_duration_s', 'count')).to eq(1)
+        expect(observations.dig('config_component_fetch_content_duration_s', 'count')).to eq(1)
+        expect(observations.dig('config_component_find_project_duration_s', 'count')).to eq(1)
+        expect(observations.dig('config_component_find_sha_duration_s', 'count')).to eq(1)
+        expect(observations.dig('config_component_find_catalog_version_duration_s', 'count')).to eq(1)
+        expect(observations.dig('config_component_matched_version_duration_s', 'count')).to eq(1)
+        expect(observations.dig('config_component_check_access_duration_s', 'count')).to eq(1)
       end
     end
 

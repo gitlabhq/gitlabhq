@@ -5,9 +5,10 @@ module Gitlab
     class Gap
       attr_reader :start_pos, :end_pos
 
-      def initialize(start_pos, end_pos)
+      def initialize(start_pos, end_pos, ideal_distance: RelativePositioning::IDEAL_DISTANCE)
         @start_pos = start_pos
         @end_pos = end_pos
+        @ideal_distance = ideal_distance
       end
 
       def ==(other)
@@ -15,7 +16,7 @@ module Gitlab
       end
 
       def delta
-        ((start_pos - end_pos) / 2.0).abs.ceil.clamp(0, RelativePositioning::IDEAL_DISTANCE)
+        ((start_pos - end_pos) / 2.0).abs.ceil.clamp(0, @ideal_distance)
       end
     end
   end

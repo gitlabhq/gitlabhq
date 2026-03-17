@@ -102,10 +102,4 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
       it_behaves_like 'issue description templates from current project only'
     end
   end
-
-  it 'pushes feature flags to frontend' do
-    visit edit_project_path(project)
-
-    expect(page).to have_pushed_frontend_feature_flags(issueEmailParticipants: true)
-  end
 end

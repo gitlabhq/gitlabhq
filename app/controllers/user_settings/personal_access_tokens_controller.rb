@@ -11,6 +11,7 @@ module UserSettings
     before_action :check_personal_access_tokens_enabled
     before_action :ensure_granular_tokens_feature_flag, only: [:legacy_new, :granular_new]
     before_action :set_access_token_params, only: [:index, :legacy_new]
+    before_action :set_hide_search_settings, only: [:index, :legacy_new, :granular_new]
 
     prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:ics) }
 
@@ -76,6 +77,10 @@ module UserSettings
     end
 
     private
+
+    def set_hide_search_settings
+      @hide_search_settings = true
+    end
 
     def set_access_token_params
       @access_token_params = {

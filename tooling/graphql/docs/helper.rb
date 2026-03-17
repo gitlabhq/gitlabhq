@@ -57,7 +57,7 @@ module Tooling
             ---
             stage: Developer Experience
             group: API Platform
-            info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+            info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
             title: GraphQL API resources
             ---
 
@@ -94,7 +94,15 @@ module Tooling
         end
 
         def render_argument_table(level, args, owner)
-          arg_header = ('#' * level) + ARG_HEADER
+          arg_header =
+
+            # Only permit heading levels valid in CommonMark
+            if level < 6
+              ('#' * level) + ARG_HEADER
+            else
+              ARG_HEADER.sub("# Arguments", "Arguments:")
+            end
+
           render_field_table(arg_header, args, owner)
         end
 
@@ -240,7 +248,7 @@ module Tooling
           fields = mutation[:return_fields]
           return if fields.blank?
 
-          name = owner.to_s + mutation[:name]
+          name = [owner, mutation[:name]].compact.join('-')
           render_object_fields(fields, owner: { name: name })
         end
 
@@ -260,8 +268,7 @@ module Tooling
 
           return rendered_name unless owner
 
-          owner = Array.wrap(owner).join('')
-          id = (owner + object[:name]).downcase
+          id = (Array.wrap(owner) + [object[:name]]).join('-').downcase
 
           %(<a id="#{id}"></a>) + rendered_name
         end

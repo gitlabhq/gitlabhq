@@ -19,6 +19,10 @@
       "type": "string",
       "description": "Override for the generated resource name"
     },
+    "deprecated": {
+      "type": "boolean",
+      "description": "When true, the permission is hidden from view but continues to function for existing tokens"
+    },
     "boundaries": {
       "type": "array",
       "items": {

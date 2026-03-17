@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Using PostgreSQL
 ---
 
@@ -31,7 +31,6 @@ Fatal: invalid character in extension
 The workaround is to set your variables in [GitLab CI/CD variables](../variables/_index.md) or set variables in string form:
 
 1. [Set Postgres variables in GitLab](../variables/_index.md#for-a-project). Variables set in the GitLab UI are not passed down to the service containers.
-
 1. In the `.gitlab-ci.yml` file, specify a Postgres image:
 
    ```yaml

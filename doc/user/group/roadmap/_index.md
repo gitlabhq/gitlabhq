@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Roadmap
 description: Epic progress, timelines, milestones, and goals.
 ---
@@ -32,7 +32,7 @@ The epic roadmap offers the following benefits:
 
 To view the roadmap in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Roadmap**.
 
 The roadmap shows the epics and milestones in a
@@ -53,7 +53,7 @@ heading to toggle the list of the milestone bars.
 
 ![The roadmap view with epics and milestones.](img/roadmap_view_v14_3.png)
 
-From an epic, you can also [view the roadmap filtered to this epic's descendants](../epics/_index.md#roadmap-in-epics).
+From an epic, you can also [view the roadmap filtered to this epic's descendants](../epics/manage_epics.md#view-child-epics-on-a-roadmap).
 
 ## Sort and filter the roadmap
 
@@ -94,7 +94,7 @@ In the Roadmap view, you can also filter by the epics':
 
 ![Filtering a GitLab epics roadmap by 'Documentation Update' label, showing additional filter options in the dropdown .](img/roadmap_filters_v13_11.png)
 
-From an epic, you can also [view the roadmap filtered to this epic's descendants](../epics/_index.md#roadmap-in-epics).
+From an epic, you can also [view the roadmap filtered to this epic's descendants](../epics/manage_epics.md#view-child-epics-on-a-roadmap).
 
 ### Improve the performance of the roadmap
 

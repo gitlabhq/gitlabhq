@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Set up a project for idea management'
 ---
 
@@ -160,15 +160,16 @@ To invite your stakeholders:
 
 Your stakeholders can now access your project to create new ideas:
 
-1. In the left sidebar, select **Plan** > **Issues**
-1. In the upper right, select **New issue**
+1. In the left sidebar, select **Plan** > **Work items**.
+1. In the upper-right corner, select **New item**.
+1. From the **Type** dropdown list, select **Issue** if it is not already selected.
 1. Enter a title and description.
-1. Select **Create issue**
+1. Select **Create issue**.
 
 Stakeholders can also upvote an existing idea to signal that they are interested in an idea:
 
-1. In the left sidebar, select **Plan** > **Issues**.
-1. Select an issue.
+1. In the left sidebar, select **Plan** > **Work items**.
+1. Filter the list by **Type** = **Issue**, then select an issue.
 1. Select the **Thumbs up** [emoji reaction](../../user/emoji_reactions.md) under the issue description.
 
 ## Triage new ideas

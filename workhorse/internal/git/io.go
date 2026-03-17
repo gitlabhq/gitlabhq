@@ -2,10 +2,13 @@ package git
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"sync"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
 
 type contextReader struct {
@@ -138,7 +141,11 @@ func (w *coupledWriter) Flush() error {
 	}
 
 	w.tempfile = nil
-	defer tempfile.Close()
+	defer func() {
+		if err := tempfile.Close(); err != nil {
+			log.WithError(err).Error("Could not close coupled writer tempfile")
+		}
+	}()
 
 	if _, err := tempfile.Seek(0, 0); err != nil {
 		return err
@@ -170,8 +177,8 @@ func (*coupledWriter) newTempfile() (tempfile *os.File, err error) {
 		return nil, err
 	}
 	if err := os.Remove(tempfile.Name()); err != nil {
-		tempfile.Close()
-		return nil, err
+		closeErr := tempfile.Close()
+		return nil, errors.Join(err, closeErr)
 	}
 
 	return tempfile, nil

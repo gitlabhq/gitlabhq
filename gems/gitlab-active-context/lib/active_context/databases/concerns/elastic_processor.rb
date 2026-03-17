@@ -12,6 +12,8 @@ module ActiveContext
       # - Term queries for exact matches (single values)
       # - Terms queries for multiple value matches (array values)
       # - Prefix queries for starts-with matches
+      # - Missing queries for field absence checks
+      # - Exists queries for field presence checks
       # - Bool queries for AND/OR combinations
       # - KNN queries for vector similarity search
       #
@@ -68,6 +70,7 @@ module ActiveContext
           when :filter  then process_filter(node.value)
           when :prefix  then process_prefix(node.value)
           when :missing then process_missing(node)
+          when :exists  then process_exists(node)
           when :or      then process_or(node)
           when :and     then process_and(node.children)
           when :knn     then process_knn(node)
@@ -139,6 +142,24 @@ module ActiveContext
               queries << extract_query(process(child))
             end
             queries << { bool: { must_not: { exists: { field: field } } } }
+          end
+        end
+
+        # Processes exists field conditions into exists queries
+        #
+        # @param node [ActiveContext::Query] The exists query node
+        # @return [Hash] A bool query with exists clause
+        # @example
+        #   process_exists(node)
+        #   # => { query: { bool: { must: [{ exists: { field: 'embedding' } }] } } }
+        def process_exists(node)
+          field = node.value
+
+          build_bool_query(:must) do |queries|
+            node.children.each do |child|
+              queries << extract_query(process(child))
+            end
+            queries << { exists: { field: field } }
           end
         end
 
@@ -268,11 +289,11 @@ module ActiveContext
 
         def knn_node_values(node)
           node_values = node.value
-          preset_values = collection.current_search_embedding_version
+          embedding_model = collection.search_embedding_model
 
           k = node_values[:k]
-          field = node_values[:target] || preset_values[:field]
-          vector = node_values[:vector] || get_embeddings(node_values[:content], preset_values)
+          field = node_values[:target] || embedding_model.field
+          vector = node_values[:vector] || get_embeddings(node_values[:content], embedding_model)
 
           {
             k: k,

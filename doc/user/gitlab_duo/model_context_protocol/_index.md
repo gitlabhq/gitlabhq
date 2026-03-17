@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Describes Model Context Protocol and how to use it
 title: Model Context Protocol
 ---
@@ -25,10 +25,14 @@ access to the context they need.
 
 GitLab supports MCP in two ways:
 
-- [MCP clients](mcp_clients.md): Connect GitLab Duo features like GitLab Duo Chat (Agentic)
+- [MCP clients](mcp_clients.md): Connect GitLab Duo features like GitLab Duo Chat (agentic)
   to external MCP servers for access to data and tools from other systems to
   provide more comprehensive assistance.
 
 - [MCP server](mcp_server.md): Connect external AI tools to your GitLab instance.
   Connected tools have secure access to your projects, issues, merge requests,
   and other GitLab data.
+
+## Related topics
+
+- [Get started with the MCP](https://modelcontextprotocol.io/introduction)

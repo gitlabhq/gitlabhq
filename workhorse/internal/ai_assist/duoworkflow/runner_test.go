@@ -268,8 +268,7 @@ func Test_newRunner(t *testing.T) {
 	require.Equal(t, "oauth-token-123", runner.token)
 	require.Equal(t, req, runner.originalReq)
 	require.Equal(t, mockConn, runner.conn)
-	require.NotNil(t, runner.wf)
-	require.NotNil(t, runner.client)
+	require.NotNil(t, runner.streamManager)
 	require.Equal(t, apiClient, runner.rails)
 
 	runner.Close()
@@ -394,8 +393,8 @@ func Test_newRunner_WithCloudConnector(t *testing.T) {
 	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), req, cfg, nil)
 
 	require.NoError(t, err)
-	require.NotNil(t, runner.cloudServiceClient)
-	require.NotNil(t, runner.cloudServiceStream)
+	require.NotNil(t, runner.streamManager.cloudServiceClient)
+	require.NotNil(t, runner.streamManager.cloudServiceStream)
 
 	runner.Close()
 }
@@ -429,8 +428,8 @@ func Test_newRunner_WithoutCloudConnector(t *testing.T) {
 	runner, err := newRunner(mockConn, apiClient, http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}), req, cfg, nil)
 
 	require.NoError(t, err)
-	require.Nil(t, runner.cloudServiceClient)
-	require.Nil(t, runner.cloudServiceStream)
+	require.Nil(t, runner.streamManager.cloudServiceClient)
+	require.Nil(t, runner.streamManager.cloudServiceStream)
 
 	runner.Close()
 }
@@ -486,15 +485,19 @@ func TestRunner_Execute(t *testing.T) {
 			}
 
 			testURL, _ := url.Parse("http://example.com")
+			req := httptest.NewRequest("GET", "/duo", nil)
 			r := &runner{
 				rails: &api.API{
 					Client: &http.Client{},
 					URL:    testURL,
 				},
 				token:       "test-token",
-				originalReq: &http.Request{},
+				originalReq: req,
 				conn:        mockConn,
-				wf:          mockWf,
+				streamManager: &streamManager{
+					wf:          mockWf,
+					originalReq: req,
+				},
 			}
 
 			ctx := context.Background()
@@ -558,7 +561,12 @@ func TestRunner_Execute_with_errors(t *testing.T) {
 				blockCh:   tt.wfBlockCh,
 			}
 
-			r := &runner{conn: mockConn, wf: mockWf}
+			r := &runner{
+				conn: mockConn,
+				streamManager: &streamManager{
+					wf: mockWf,
+				},
+			}
 			err := r.Execute(context.Background())
 
 			if tt.expectedErrMsg != "" {
@@ -602,8 +610,11 @@ func TestRunner_Execute_with_close_errors(t *testing.T) {
 			req := httptest.NewRequest("GET", "/duo", nil)
 			r := &runner{
 				conn:        mockConn,
-				wf:          mockWf,
 				originalReq: req,
+				streamManager: &streamManager{
+					wf:          mockWf,
+					originalReq: req,
+				},
 			}
 
 			errCh := make(chan error, 1)
@@ -678,22 +689,36 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 		},
 		{
 			name:               "start request with supported and unsupported ClientCapabilities",
-			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "incremental_streaming", "unsupported_capability"]}}`),
-			clientCapabilities: []string{"shell_command", "incremental_streaming"},
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "incremental_streaming", "read_file_chunked", "unsupported_capability"]}}`),
+			clientCapabilities: []string{"shell_command", "incremental_streaming", "read_file_chunked"},
 			expectedErrMsg:     "",
 		},
 		{
 			name:               "start request with server capabilities",
-			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command"]}}`),
-			clientCapabilities: []string{"shell_command", "advanced_search"},
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "read_file_chunked"]}}`),
+			clientCapabilities: []string{"shell_command", "read_file_chunked", "advanced_search"},
 			serverCapabilities: []string{"advanced_search"},
 			expectedErrMsg:     "",
 		},
 		{
 			name:               "start request without server capabilities",
-			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command"]}}`),
-			clientCapabilities: []string{"shell_command"},
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command", "read_file_chunked"]}}`),
+			clientCapabilities: []string{"shell_command", "read_file_chunked"},
 			serverCapabilities: []string{},
+			expectedErrMsg:     "",
+		},
+		{
+			name:               "start request with tool_call_approval server capability",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": []}}`),
+			clientCapabilities: []string{"tool_call_approval"},
+			serverCapabilities: []string{"tool_call_approval"},
+			expectedErrMsg:     "",
+		},
+		{
+			name:               "start request with multiple server capabilities including tool_call_approval",
+			message:            []byte(`{"startRequest": {"workflowID": "id-123", "goal": "test goal", "clientCapabilities": ["shell_command"]}}`),
+			clientCapabilities: []string{"shell_command", "advanced_search", "tool_call_approval"},
+			serverCapabilities: []string{"advanced_search", "tool_call_approval"},
 			expectedErrMsg:     "",
 		},
 	}
@@ -707,15 +732,19 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			rdb := initRdb(t)
 
 			testURL, _ := url.Parse("http://example.com")
+			req := httptest.NewRequest("GET", "/duo", nil)
 			r := &runner{
 				rails: &api.API{
 					Client: &http.Client{},
 					URL:    testURL,
 				},
-				token:              "test-token",
-				originalReq:        &http.Request{},
-				conn:               &mockWebSocketConn{},
-				wf:                 mockWf,
+				token:       "test-token",
+				originalReq: req,
+				conn:        &mockWebSocketConn{},
+				streamManager: &streamManager{
+					wf:          mockWf,
+					originalReq: req,
+				},
 				mcpManager:         tt.mcpManager,
 				lockManager:        newWorkflowLockManager(rdb),
 				serverCapabilities: tt.serverCapabilities,
@@ -933,6 +962,7 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				sendError: tt.wfSendError,
 			}
 
+			req := httptest.NewRequest("GET", "/duo", nil)
 			r := &runner{
 				rails: &api.API{
 					Client: server.Client(),
@@ -940,10 +970,13 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				},
 				backend:     createBackendHandler(server.Client()),
 				token:       "test-token",
-				originalReq: &http.Request{},
+				originalReq: req,
 				conn:        mockConn,
-				wf:          mockWf,
-				mcpManager:  tt.mcpManager,
+				streamManager: &streamManager{
+					wf:          mockWf,
+					originalReq: req,
+				},
+				mcpManager: tt.mcpManager,
 			}
 
 			ctx := context.Background()
@@ -1008,12 +1041,14 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 		mockCloudStream := &mockSelfHostedWorkflowStream{}
 
 		r := &runner{
-			conn:               mockConn,
-			wf:                 mockWf,
-			client:             mainClient,
-			cloudServiceStream: mockCloudStream,
-			cloudServiceClient: cloudClient,
-			mcpManager:         &mockMcpManager{},
+			conn: mockConn,
+			streamManager: &streamManager{
+				wf:                 mockWf,
+				client:             mainClient,
+				cloudServiceStream: mockCloudStream,
+				cloudServiceClient: cloudClient,
+			},
+			mcpManager: &mockMcpManager{},
 		}
 
 		err = r.Close()
@@ -1034,12 +1069,14 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 		mockWf := &mockWorkflowStream{}
 
 		r := &runner{
-			conn:               mockConn,
-			wf:                 mockWf,
-			client:             mainClient,
-			cloudServiceStream: nil,
-			cloudServiceClient: nil,
-			mcpManager:         &mockMcpManager{},
+			conn: mockConn,
+			streamManager: &streamManager{
+				wf:                 mockWf,
+				client:             mainClient,
+				cloudServiceStream: nil,
+				cloudServiceClient: nil,
+			},
+			mcpManager: &mockMcpManager{},
 		}
 
 		err = r.Close()
@@ -1061,12 +1098,14 @@ func TestRunner_Close_WithCloudConnector(t *testing.T) {
 		mockCloudStream := &mockSelfHostedWorkflowStream{}
 
 		r := &runner{
-			conn:               mockConn,
-			wf:                 mockWf,
-			client:             mainClient,
-			cloudServiceStream: mockCloudStream,
-			cloudServiceClient: nil,
-			mcpManager:         &mockMcpManager{},
+			conn: mockConn,
+			streamManager: &streamManager{
+				wf:                 mockWf,
+				client:             mainClient,
+				cloudServiceStream: mockCloudStream,
+				cloudServiceClient: nil,
+			},
+			mcpManager: &mockMcpManager{},
 		}
 
 		err = r.Close()
@@ -1271,13 +1310,16 @@ func TestRunner_Shutdown(t *testing.T) {
 		r := &runner{
 			originalReq: req,
 			lockFlow:    true,
-			wf:          mockWf,
+			streamManager: &streamManager{
+				wf:          mockWf,
+				originalReq: req,
+			},
 			lockManager: newWorkflowLockManager(rdb),
 			workflowID:  "shutdown-lock-test-123",
 		}
 
 		// Acquire lock first
-		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID)
+		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID, "software_development")
 		require.NoError(t, err)
 		r.mutex = mutex
 
@@ -1307,13 +1349,16 @@ func TestRunner_Shutdown(t *testing.T) {
 		r := &runner{
 			originalReq: req,
 			lockFlow:    true,
-			wf:          mockWf,
+			streamManager: &streamManager{
+				wf:          mockWf,
+				originalReq: req,
+			},
 			lockManager: newWorkflowLockManager(rdb),
 			workflowID:  "shutdown-lock-test-234",
 		}
 
 		// Acquire lock first
-		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID)
+		mutex, err := r.lockManager.acquireLock(context.Background(), r.workflowID, "software_development")
 		require.NoError(t, err)
 		r.mutex = mutex
 
@@ -1374,27 +1419,35 @@ func TestRunner_AcquireWorkflowLock_ConcurrentAttempts(t *testing.T) {
 
 	testURL, _ := url.Parse("http://example.com")
 
+	req1 := httptest.NewRequest("GET", "/", nil)
 	r1 := &runner{
 		rails: &api.API{
 			Client: &http.Client{},
 			URL:    testURL,
 		},
-		originalReq: httptest.NewRequest("GET", "/", nil),
+		originalReq: req1,
 		conn:        mockConn1,
-		wf:          mockWf1,
+		streamManager: &streamManager{
+			wf:          mockWf1,
+			originalReq: req1,
+		},
 		lockManager: newWorkflowLockManager(rdb),
 		mcpManager:  &mockMcpManager{},
 		lockFlow:    true,
 	}
 
+	req2 := httptest.NewRequest("GET", "/", nil)
 	r2 := &runner{
 		rails: &api.API{
 			Client: &http.Client{},
 			URL:    testURL,
 		},
-		originalReq: httptest.NewRequest("GET", "/", nil),
+		originalReq: req2,
 		conn:        mockConn2,
-		wf:          mockWf2,
+		streamManager: &streamManager{
+			wf:          mockWf2,
+			originalReq: req2,
+		},
 		lockManager: newWorkflowLockManager(rdb),
 		mcpManager:  &mockMcpManager{},
 		lockFlow:    true,
@@ -1419,7 +1472,7 @@ func TestRunner_AcquireWorkflowLock_ConcurrentAttempts(t *testing.T) {
 	assert.Nil(t, r2.mutex)
 
 	// Clean up
-	r1.lockManager.releaseLock(context.Background(), r1.mutex, r1.workflowID)
+	r1.lockManager.releaseLock(context.Background(), r1.mutex, r1.workflowID, "software_development")
 }
 
 func TestRunner_HandleWebSocketMessage_AcquiresLock(t *testing.T) {
@@ -1428,14 +1481,18 @@ func TestRunner_HandleWebSocketMessage_AcquiresLock(t *testing.T) {
 	mockWf := &mockWorkflowStream{}
 
 	testURL, _ := url.Parse("http://example.com")
+	req := httptest.NewRequest("GET", "/", nil)
 	r := &runner{
 		rails: &api.API{
 			Client: &http.Client{},
 			URL:    testURL,
 		},
-		originalReq: httptest.NewRequest("GET", "/", nil),
+		originalReq: req,
 		conn:        mockConn,
-		wf:          mockWf,
+		streamManager: &streamManager{
+			wf:          mockWf,
+			originalReq: req,
+		},
 		lockManager: newWorkflowLockManager(rdb),
 		mcpManager:  &mockMcpManager{},
 		lockFlow:    true,
@@ -1450,7 +1507,7 @@ func TestRunner_HandleWebSocketMessage_AcquiresLock(t *testing.T) {
 	assert.NotNil(t, r.mutex)
 
 	// Clean up
-	r.lockManager.releaseLock(context.Background(), r.mutex, r.workflowID)
+	r.lockManager.releaseLock(context.Background(), r.mutex, r.workflowID, "software_development")
 }
 
 func TestRunner_Execute_ReleasesLock(t *testing.T) {
@@ -1467,14 +1524,18 @@ func TestRunner_Execute_ReleasesLock(t *testing.T) {
 	}
 
 	testURL, _ := url.Parse("http://example.com")
+	req := httptest.NewRequest("GET", "/", nil)
 	r := &runner{
 		rails: &api.API{
 			Client: &http.Client{},
 			URL:    testURL,
 		},
-		originalReq: httptest.NewRequest("GET", "/", nil),
+		originalReq: req,
 		conn:        mockConn,
-		wf:          mockWf,
+		streamManager: &streamManager{
+			wf:          mockWf,
+			originalReq: req,
+		},
 		lockManager: newWorkflowLockManager(rdb),
 		mcpManager:  &mockMcpManager{},
 		lockFlow:    true,
@@ -1487,7 +1548,7 @@ func TestRunner_Execute_ReleasesLock(t *testing.T) {
 	require.Equal(t, "handleWebSocketMessages: failed to read a WS message: EOF", err.Error())
 
 	// Verify lock was released (we can acquire it again)
-	mutex, err := r.lockManager.acquireLock(ctx, "execute-test-123")
+	mutex, err := r.lockManager.acquireLock(ctx, "execute-test-123", "software_development")
 	require.NoError(t, err)
 	require.NotNil(t, mutex)
 }
@@ -1532,8 +1593,8 @@ func TestRunner_isUsageQuotaExceededError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &runner{}
-			result := r.isUsageQuotaExceededError(tt.err)
+			sm := &streamManager{}
+			result := sm.isUsageQuotaExceededError(tt.err)
 			require.Equal(t, tt.expected, result)
 		})
 	}
@@ -1556,7 +1617,9 @@ func TestRunner_AcquireWorkflowLock_MisconfiguredRedis(t *testing.T) {
 		},
 		originalReq: httptest.NewRequest("GET", "/", nil),
 		conn:        mockConn,
-		wf:          mockWf,
+		streamManager: &streamManager{
+			wf: mockWf,
+		},
 		lockManager: lockManager,
 		lockFlow:    true,
 	}
@@ -1588,15 +1651,19 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		}
 
 		testURL, _ := url.Parse("http://example.com")
+		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
 			rails: &api.API{
 				Client: &http.Client{},
 				URL:    testURL,
 			},
-			originalReq:        &http.Request{},
-			conn:               mockConn,
-			wf:                 mockWf,
-			cloudServiceStream: mockCloudStream,
+			originalReq: req,
+			conn:        mockConn,
+			streamManager: &streamManager{
+				wf:                 mockWf,
+				cloudServiceStream: mockCloudStream,
+				originalReq:        req,
+			},
 		}
 
 		action := &pb.Action{
@@ -1631,7 +1698,7 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		require.Equal(t, "req-123", actionResponse.RequestID)
 		plainTextResp := actionResponse.GetPlainTextResponse()
 		require.NotNil(t, plainTextResp)
-		require.Equal(t, "authenticated", plainTextResp.Response)
+		require.Empty(t, plainTextResp.Response)
 	})
 
 	t.Run("error when cloud service stream not initialized", func(t *testing.T) {
@@ -1639,15 +1706,19 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		mockWf := &mockWorkflowStream{}
 
 		testURL, _ := url.Parse("http://example.com")
+		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
 			rails: &api.API{
 				Client: &http.Client{},
 				URL:    testURL,
 			},
-			originalReq:        &http.Request{},
-			conn:               mockConn,
-			wf:                 mockWf,
-			cloudServiceStream: nil,
+			originalReq: req,
+			conn:        mockConn,
+			streamManager: &streamManager{
+				wf:                 mockWf,
+				cloudServiceStream: nil,
+				originalReq:        req,
+			},
 		}
 
 		action := &pb.Action{
@@ -1676,15 +1747,19 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		}
 
 		testURL, _ := url.Parse("http://example.com")
+		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
 			rails: &api.API{
 				Client: &http.Client{},
 				URL:    testURL,
 			},
-			originalReq:        &http.Request{},
-			conn:               mockConn,
-			wf:                 mockWf,
-			cloudServiceStream: mockCloudStream,
+			originalReq: req,
+			conn:        mockConn,
+			streamManager: &streamManager{
+				wf:                 mockWf,
+				cloudServiceStream: mockCloudStream,
+				originalReq:        req,
+			},
 		}
 
 		action := &pb.Action{
@@ -1713,15 +1788,19 @@ func TestRunner_handleAgentAction_TrackLlmCallForSelfHosted(t *testing.T) {
 		}
 
 		testURL, _ := url.Parse("http://example.com")
+		req := httptest.NewRequest("GET", "/duo", nil)
 		r := &runner{
 			rails: &api.API{
 				Client: &http.Client{},
 				URL:    testURL,
 			},
-			originalReq:        &http.Request{},
-			conn:               mockConn,
-			wf:                 mockWf,
-			cloudServiceStream: mockCloudStream,
+			originalReq: req,
+			conn:        mockConn,
+			streamManager: &streamManager{
+				wf:                 mockWf,
+				cloudServiceStream: mockCloudStream,
+				originalReq:        req,
+			},
 		}
 
 		action := &pb.Action{

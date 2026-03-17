@@ -2,6 +2,9 @@
 key_path: counts.groups_inheriting_matrix_active
 description: Count of active groups inheriting integrations for Matrix
 product_group: engagement
+product_categories:
+- integrations
+- notifications
 value_type: number
 status: active
 milestone: "17.3"

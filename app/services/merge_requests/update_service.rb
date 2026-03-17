@@ -140,8 +140,7 @@ module MergeRequests
     end
 
     def should_publish_update_event?(merge_request, changed_fields)
-      ::Feature.enabled?(:merge_request_title_regex, merge_request.project) &&
-        changed_fields.include?('title') &&
+      changed_fields.include?('title') &&
         merge_request.project.merge_request_title_regex.present?
     end
 

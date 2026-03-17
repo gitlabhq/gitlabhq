@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Remote Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Create a GitLab workspaces proxy to authenticate and authorize workspaces in your cluster.
 title: Troubleshooting workspaces
 ---
@@ -127,18 +127,15 @@ When accessing a workspace, you might encounter an OAuth error about an invalid 
 This error can occur for the following reasons:
 
 - OAuth application is not configured correctly. To resolve this issue:
-
   1. Verify your OAuth application redirect URI in GitLab matches your domain.
   1. Update the OAuth application redirect URI. For example: `https://YOUR_DOMAIN/auth/callback`.
-
 - Workspaces proxy is using outdated OAuth credentials. to resolve this issue:
-
   1. Verify the proxy is using the latest OAuth credentials.
   1. Restart the workspaces proxy:
 
-      ```shell
-      kubectl rollout restart deployment -n gitlab-workspaces gitlab-workspaces-proxy
-      ```
+     ```shell
+     kubectl rollout restart deployment -n gitlab-workspaces gitlab-workspaces-proxy
+     ```
 
 ## Error: `Workspace does not exist`
 

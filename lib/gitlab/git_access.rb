@@ -113,7 +113,7 @@ module Gitlab
       authentication_abilities.include?(:download_code) &&
         deploy_key? &&
         deploy_key.has_access_to?(container) &&
-        (project? && repository_access_level != ::Featurable::DISABLED)
+        project? && repository_access_level != ::Featurable::DISABLED
     end
 
     # @return [Symbol] the name of a Declarative Policy ability to check
@@ -424,7 +424,8 @@ module Gitlab
         push_options: push_options,
         gitaly_context: gitaly_context
       ).validate!
-    rescue Checks::TimedLogger::TimeoutError
+    rescue Checks::TimedLogger::TimeoutError => e
+      Gitlab::ErrorTracking.log_exception(e, project_id: project.id, Labkit::Fields::GL_USER_ID => user&.id, deploy_key_id: deploy_key&.id)
       raise TimeoutError, logger.full_message
     end
 

@@ -97,7 +97,7 @@ RSpec.describe 'Database schema',
       ci_job_artifact_states: %w[project_id],
       cluster_providers_aws: %w[security_group_id vpc_id access_key_id],
       cluster_providers_gcp: %w[gcp_project_id operation_id],
-      compliance_management_frameworks: %w[source_id],
+      compliance_management_frameworks: %w[source_id template_id],
       commit_user_mentions: %w[commit_id],
       dast_site_profiles_builds: %w[project_id],
       dast_scanner_profiles_builds: %w[project_id],
@@ -116,7 +116,7 @@ RSpec.describe 'Database schema',
       geo_repository_deleted_events: %w[project_id],
       ghost_user_migrations: %w[initiator_user_id],
       gitlab_subscription_histories: %w[gitlab_subscription_id hosted_plan_id namespace_id],
-      issues: %w[last_edited_by_id state_id],
+      issues: %w[last_edited_by_id state_id work_item_type_id],
       issue_emails: %w[email_message_id],
       jira_tracker_data: %w[jira_issue_transition_id],
       keys: %w[user_id],
@@ -137,10 +137,6 @@ RSpec.describe 'Database schema',
       namespaces: %w[owner_id],
       namespace_descendants: %w[namespace_id],
       notes: %w[author_id commit_id noteable_id updated_by_id resolved_by_id discussion_id],
-      award_emoji_archived: %w[user_id awardable_id namespace_id organization_id], # temp table
-      slack_integrations_scopes_archived: %w[
-        slack_api_scope_id slack_integration_id project_id group_id organization_id
-      ], # Temp table
       notification_settings: %w[source_id],
       oauth_access_grants: %w[resource_owner_id application_id],
       oauth_access_tokens: %w[resource_owner_id application_id],
@@ -164,6 +160,9 @@ RSpec.describe 'Database schema',
       p_ci_pipelines_config: %w[partition_id project_id],
       p_ci_stages: %w[project_id],
       p_duo_workflows_checkpoints: %w[project_id namespace_id],
+      # No LFK needed: daily partitions are dropped after 1 day via retain_for
+      # https://gitlab.com/gitlab-org/gitlab/-/blob/ccc2459924e2805e43ad8f97eec15a6932d84f68/ee/app/models/analytics/knowledge_graph/code_indexing_task.rb#L13
+      p_knowledge_graph_code_indexing_tasks: %w[project_id],
       project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
       project_data_transfers: %w[project_id namespace_id],
       project_error_tracking_settings: %w[sentry_project_id],
@@ -222,10 +221,10 @@ RSpec.describe 'Database schema',
       vulnerability_occurrence_identifiers: %w[project_id],
       vulnerability_scanners: %w[external_id],
       vulnerability_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
-      vulnerability_external_issue_links: %w[project_id vulnerability_occurrence_id],
+      vulnerability_external_issue_links: %w[project_id],
       vulnerability_issue_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_merge_request_links: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
-      vulnerability_severity_overrides: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
+      vulnerability_severity_overrides: %w[vulnerability_occurrence_id security_policy_id], # vulnerability_occurrence_id: foreign key will be added at a later date, security_policy_id: cross-database (gitlab_sec vs gitlab_main_org)
       sbom_occurrences_vulnerabilities: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_representation_information: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
       vulnerability_user_mentions: %w[vulnerability_occurrence_id], # foreign key will be added at a later date
@@ -247,7 +246,7 @@ RSpec.describe 'Database schema',
       backup_vulnerability_severity_overrides: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_state_transitions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_user_mentions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
-      vulnerability_reads: %w[cluster_agent_id security_project_tracked_context_id vulnerability_occurrence_id partition_id], # tracked_contexts cannot be a foreign key yet. vulnerability_occurrence_id foreign key will be added at a later date
+      vulnerability_reads: %w[cluster_agent_id security_project_tracked_context_id partition_id], # tracked_contexts cannot be a foreign key yet. vulnerability_occurrence_id foreign key will be added at a later date
       # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
       # Fixes performance issues with the deletion of web-hooks with many log entries
       web_hook_logs: %w[web_hook_id],
@@ -283,7 +282,12 @@ RSpec.describe 'Database schema',
       background_operation_jobs_cell_local: %w[worker_id], # background operation workers partitions have to dropped independently.
       background_operation_jobs: %w[worker_id], # background operation workers partitions have to dropped independently.
       sbom_occurrence_refs: %w[pipeline_id project_id],
-      sbom_occurrences: %w[partition_id]
+      sbom_occurrences: %w[partition_id],
+      work_item_custom_status_mappings: %w[work_item_type_id], # Referential integrity will be handled by application code
+      work_item_type_custom_fields: %w[work_item_type_id], # Referential integrity will be handled by application code
+      work_item_type_custom_lifecycles: %w[work_item_type_id], # Referential integrity will be handled by application code
+      work_item_type_user_preferences: %w[work_item_type_id], # Referential integrity will be handled by application code
+      lfs_objects_projects: %w[lfs_object_id] # Referential integrity will be handled by application code
     }.with_indifferent_access.freeze
   end
 
@@ -298,7 +302,7 @@ RSpec.describe 'Database schema',
       issues: 35,
       members: 19,
       merge_requests: 29,
-      namespaces: 27,
+      namespaces: 26,
       notes: 16,
       p_ci_builds: 26,
       p_ci_pipelines: 24,
@@ -308,7 +312,7 @@ RSpec.describe 'Database schema',
       projects: 54, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217449
       sbom_occurrences: 25,
       users: 34, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
-      vulnerability_reads: 23
+      vulnerability_reads: 24 # Decrement by 1 after removing vulnerability_id from the table
     }.with_indifferent_access.freeze
   end
 

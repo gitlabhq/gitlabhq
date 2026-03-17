@@ -37,8 +37,6 @@ export default {
       config: undefined,
       variables: undefined,
       fields: undefined,
-      aggregate: undefined,
-      groupBy: undefined,
       error: undefined,
     };
   },
@@ -65,8 +63,6 @@ export default {
       this.config = undefined;
       this.variables = undefined;
       this.fields = undefined;
-      this.aggregate = undefined;
-      this.groupBy = undefined;
       this.error = undefined;
     },
 
@@ -79,8 +75,6 @@ export default {
           'config',
           'variables',
           'fields',
-          'aggregate',
-          'groupBy',
           'error',
           'loading',
           'hasNextPage',
@@ -102,16 +96,12 @@ export default {
       this.emitChange();
 
       try {
-        const { query, config, variables, fields, aggregate, groupBy } = await parse(
-          this.glqlQuery,
-        );
+        const { query, config, variables, fields } = await parse(this.glqlQuery);
 
         this.query = query;
         this.config = config;
         this.variables = variables;
         this.fields = fields;
-        this.aggregate = aggregate;
-        this.groupBy = groupBy;
 
         this.setVariable('limit', this.config.limit ?? DEFAULT_PAGE_SIZE);
         this.data = await transform(await execute(this.query, this.variables), this.config);
@@ -170,8 +160,6 @@ export default {
       v-if="hasDisplayType"
       :data="data"
       :fields="fields"
-      :aggregate="aggregate"
-      :group-by="groupBy"
       :display-type="config.display"
       :loading="loading"
       @error="handlePresenterError"

@@ -174,6 +174,7 @@ export default {
         searchable
         :items="createRuleItems"
         :toggle-text="createRuleText"
+        :search-placeholder="s__('BranchRules|Search branches')"
         block
         @search="handleBranchRuleSearch"
         @select="selectBranchRuleName"

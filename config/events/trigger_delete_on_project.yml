@@ -1,0 +1,25 @@
+---
+description: Events where a project is scheduled for deletion or permanently deleted
+internal_events: true
+status: active
+action: trigger_delete_on_project
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Location from where the deletion occurred
+  property:
+    description: Whether the deletion is permanent or not. Set to `true` if permanent.
+  actor:
+    description: Determines who initiated the event (`user` or `system`)
+product_group: organizations
+product_categories:
+- groups_and_projects
+milestone: '18.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224842
+tiers:
+- free
+- premium
+- ultimate

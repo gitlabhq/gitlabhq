@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
-import { kebabCase, snakeCase } from 'lodash';
+import { kebabCase, snakeCase } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
@@ -191,6 +191,18 @@ export default {
     shouldSkipRealTimeEpicLinkUpdates() {
       return !this.issuableId || this.issuableAttribute !== IssuableAttributeType.Epic;
     },
+    supportsPopover() {
+      return this.issuableAttribute === IssuableAttributeType.Milestone;
+    },
+    popoverAttributes() {
+      if (!this.supportsPopover || !this.currentAttribute?.id) return {};
+
+      return {
+        'data-reference-type': IssuableAttributeType.Milestone,
+        'data-placement': 'left',
+        'data-milestone': getIdFromGraphQLId(this.currentAttribute.id),
+      };
+    },
   },
   methods: {
     updateAttribute({ id, workItemType }) {
@@ -290,10 +302,11 @@ export default {
           :current-attribute="currentAttribute"
         >
           <gl-link
-            v-gl-tooltip="tooltipText"
-            class="gl-text-inherit hover:gl-text-blue-800"
+            v-gl-tooltip="!supportsPopover ? tooltipText : null"
+            :class="['gl-text-inherit hover:gl-text-blue-800', { 'has-popover': supportsPopover }]"
             :href="attributeUrl"
             :data-testid="`${formatIssuableAttribute.kebab}-link`"
+            v-bind="supportsPopover ? popoverAttributes : {}"
           >
             {{ attributeTitle }}
             <span v-if="isAttributeOverdue(currentAttribute)">{{ $options.i18n.expired }}</span>

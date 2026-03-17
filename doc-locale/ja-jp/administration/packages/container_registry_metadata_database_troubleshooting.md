@@ -1,9 +1,9 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: コンテナレジストリメタデータデータベースのトラブルシューティング
-description: コンテナレジストリメタデータデータベースに関する問題をトラブルシューティングします。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: コンテナレジストリのメタデータデータベースのトラブルシューティング
+description: コンテナレジストリのメタデータデータベースに関する問題をトラブルシューティングします。
 ---
 
 {{< details >}}
@@ -52,7 +52,7 @@ err="ERROR: cannot execute CREATE TABLE in a read-only transaction (SQLSTATE 250
 error="processing task: fetching next GC blob task: scanning GC blob task: ERROR: cannot execute SELECT FOR UPDATE in a read-only transaction (SQLSTATE 25006)"
 ```
 
-読み取り専用トランザクションが無効になっていることを確認するには、PostgreSQLコンソールで`default_transaction_read_only`と`transaction_read_only`の値をチェックする必要があります。例: 
+読み取り専用トランザクションが無効になっていることを確認するには、PostgreSQLコンソールで`default_transaction_read_only`と`transaction_read_only`の値をチェックする必要があります。下記は例です: 
 
 ```sql
 # SHOW default_transaction_read_only;
@@ -77,23 +77,23 @@ error="processing task: fetching next GC blob task: scanning GC blob task: ERROR
    ```
 
 1. これらの設定を適用するには、Postgresサーバーを再起動します。
-1. 該当する場合は、[データベースの移行の適用](container_registry_metadata_database.md#apply-database-migrations)を再度試してください。
+1. 該当する場合は、[データベースの移行の適用](container_registry_metadata_database.md#apply-database-migrations)を再度試します。
 1. レジストリ`sudo gitlab-ctl restart registry`を再起動します。
 
 ### エラー: `cannot import all repositories while the tags table has entries` {#error-cannot-import-all-repositories-while-the-tags-table-has-entries}
 
-[既存のレジストリメタデータのインポート](container_registry_metadata_database.md#enable-the-database-for-existing-registries)を実行しようとして、次のエラーが発生した場合:
+[既存のレジストリメタデータのインポート](container_registry_metadata_database.md#enable-the-database-for-existing-registries)を実行しようとして、次のエラーが発生する場合があります:
 
 ```shell
 ERRO[0000] cannot import all repositories while the tags table has entries, you must truncate the table manually before retrying,
-see https://docs.gitlab.com/ee/administration/packages/container_registry_metadata_database.html#troubleshooting
+see https://docs.gitlab.com/administration/packages/container_registry_metadata_database/#troubleshooting
 common_blobs=true dry_run=false error="tags table is not empty"
 ```
 
-このエラーは、レジストリデータベースの`tags`テーブルに既存のエントリがある場合に発生します。これは、次の場合に発生する可能性があります:
+このエラーは、レジストリデータベースの`tags`テーブルに既存のエントリがあるときに出ます。エントリは、次の場合に発生する可能性があります:
 
 - [ワンステップインポート](container_registry_metadata_database_one_step_import.md)を試みて、エラーが発生した場合。
-- [3段階インポート](container_registry_metadata_database_three_step_import.md)プロセスを試みて、エラーが発生した場合。
+- [3ステップインポート](container_registry_metadata_database_three_step_import.md)プロセスを試みて、エラーが発生した場合。
 - インポートプロセスを意図的に停止した場合。
 - 以前のいずれかの操作の後で、インポートを再度実行しようとした場合。
 - 誤った設定ファイルに対してインポートを実行した場合。
@@ -119,7 +119,7 @@ common_blobs=true dry_run=false error="tags table is not empty"
 
 ### エラー: `database-in-use lockfile exists` {#error-database-in-use-lockfile-exists}
 
-[既存のレジストリメタデータのインポート](container_registry_metadata_database.md#enable-the-database-for-existing-registries)を実行しようとして、次のエラーが発生した場合:
+[既存のレジストリメタデータのインポート](container_registry_metadata_database.md#enable-the-database-for-existing-registries)を実行しようとして、次のエラーが発生する場合があります:
 
 ```shell
 |  [0s] step two: import tags failed to import metadata: importing all repositories: 1 error occurred:
@@ -156,18 +156,18 @@ common_blobs=true dry_run=false error="tags table is not empty"
 
 #### ロックファイルのチェックまたは作成に関する問題 {#problems-checking-or-creating-the-lock-files}
 
-次のいずれかのエラーが発生した場合: 
+次のいずれかのエラーが発生した場合:
 
 - `could not check if filesystem metadata is locked`
 - `could not check if database metadata is locked`
 - `failed to mark filesystem for database only usage`
 - `failed to mark filesystem only usage`
 
-レジストリは、設定された`rootdirectory`にアクセスできません。以前に動作していたレジストリがある場合は、このエラーが発生する可能性は低いです。設定ミスの問題がないかエラーログをレビューします。
+レジストリは、設定された`rootdirectory`にアクセスできません。以前に動作していたレジストリがある場合は、このエラーが発生する可能性は低いです。設定ミスの問題がないかエラーログをレビューしてください。
 
 ### タグを削除した後もストレージ使用量が減少しない {#storage-usage-not-decreasing-after-deleting-tags}
 
-デフォルトでは、オンラインガベージコレクターは、関連付けられているすべてのタグが削除された時点から48時間後に、参照されていないレイヤーの削除を開始します。この遅延により、イメージとタグに関連付けられる前にレイヤーがレジストリにプッシュされるため、ガベージコレクターが長時間実行されるイメージのプッシュや中断されたイメージのプッシュを妨げることがなくなります。
+デフォルトでは、オンラインガベージコレクターは、関連付けられていたすべてのタグが削除されてから48時間後に、参照されていないレイヤーの削除を開始します。この遅延は、レイヤーがイメージやタグに関連付けられる前にレジストリへプッシュされるため、ガベージコレクターが長時間実行中または中断されたイメージのプッシュ処理に影響を与えないようにするためのものです。
 
 ### エラー: `permission denied for schema public (SQLSTATE 42501)` {#error-permission-denied-for-schema-public-sqlstate-42501}
 
@@ -176,7 +176,7 @@ common_blobs=true dry_run=false error="tags table is not empty"
 - `ERROR: permission denied for schema public (SQLSTATE 42501)`
 - `ERROR: relation "public.blobs" does not exist (SQLSTATE 42P01)`
 
-これらのタイプのエラーは、PostgreSQL 15+の変更によるものであり、セキュリティ上の理由から、パブリックスキーマに対するデフォルトのCREATE特権が削除されています。デフォルトでは、データベースオーナーのみがPostgreSQL 15+のパブリックスキーマにオブジェクトを作成できます。
+この種のエラーは、PostgreSQL 15以降での仕様変更が原因です。セキュリティ上の理由から、デフォルトでpublicスキーマに対するCREATE権限が削除されました。そのため、PostgreSQL 15以降では、デフォルトではデータベースのオーナーのみがpublicスキーマ内にオブジェクトを作成できます。
 
 エラーを解決するには、次のコマンドを実行して、レジストリデータベースのオーナー特権をレジストリユーザーに付与します:
 
@@ -209,4 +209,4 @@ registry['database'] = {
 
 または、上記のシナリオが当てはまらず、レジストリが従来のメタデータストレージを使用するように設計されている場合は、`/docker/registry/lockfiles/database-in-use`にある`database-in-use`ロックファイルを削除します。
 
-最後に、`REGISTRY_FF_ENFORCE_LOCKFILES`コンテナレジストリの機能フラグを`false`に設定して、ロックファイルのチェックを無効にすることができます。これによりチェックは無効になりますが、このエラーはレジストリデータの整合性を確保するためのものであり、使用しているメタデータストレージを確認することをお勧めします。`REGISTRY_FF_ENFORCE_LOCKFILES`は[非推奨](https://gitlab.com/gitlab-org/container-registry/-/issues/1439)であり、GitLab 18.10で削除される予定です。詳細については、[コンテナレジストリの機能フラグ](container_registry.md#container-registry-feature-flags)を参照してください。
+最後に、コンテナレジストリの機能フラグ`REGISTRY_FF_ENFORCE_LOCKFILES`を`false`に設定することで、ロックファイルのチェックを無効にできます。ただし、このエラーはレジストリデータの整合性を確保するためのものです。使用しているメタデータストレージの種類を確認することをおすすめします。`REGISTRY_FF_ENFORCE_LOCKFILES`は[非推奨](https://gitlab.com/gitlab-org/container-registry/-/issues/1439)となっており、GitLab 18.10で削除が予定されています。詳細については、[コンテナレジストリの機能フラグ](container_registry.md#container-registry-feature-flags)を参照してください。

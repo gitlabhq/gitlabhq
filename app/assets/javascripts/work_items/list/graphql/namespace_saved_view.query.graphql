@@ -1,0 +1,20 @@
+# @feature_category: portfolio_management
+
+#import "./saved_view.fragment.graphql"
+
+query namespaceSavedView($fullPath: ID!, $id: WorkItemsSavedViewsSavedViewID!) {
+  namespace(fullPath: $fullPath) {
+    id
+    currentSavedViews: savedViews(subscribedOnly: true) {
+      nodes {
+        id
+      }
+    }
+    subscribedSavedViewLimit
+    savedViews(id: $id) {
+      nodes {
+        ...SavedView
+      }
+    }
+  }
+}

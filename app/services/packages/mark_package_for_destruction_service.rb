@@ -14,6 +14,10 @@ module Packages
       package.sync_npm_metadata_cache if package.npm?
       sync_helm_metadata_caches(current_user) if package.helm?
 
+      ::Packages::CreateEventService
+        .new(package.project, current_user, event_name: 'delete_package', scope: package)
+        .execute
+
       service_response_success('Package was successfully marked as pending destruction')
     rescue StandardError => e
       track_exception(e)

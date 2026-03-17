@@ -33,7 +33,7 @@ describe('Time ago with tooltip component', () => {
   it('should render timeago with a bootstrap tooltip', () => {
     buildVm();
 
-    expect(vm.attributes('title')).toEqual('May 8, 2017 at 2:57:39 PM GMT');
+    expect(vm.attributes('title')).toEqual('Monday, May 8, 2017 at 2:57:39 PM GMT');
     expect(vm.text()).toEqual(timeAgoTimestamp);
   });
 

@@ -145,12 +145,14 @@ tags:
   description: Operations about jobs
 - name: glql
   description: Operations about glqls
+- name: internal_operations
+  description: Operations about internal_operations
 - name: markdown
   description: Operations about markdowns
 - name: namespaces
   description: Operations about namespaces
-- name: offline_exports
-  description: Operations about offline_exports
+- name: offline_transfers
+  description: Operations about offline_transfers
 - name: organizations
   description: Operations about organizations
 - name: unleash
@@ -2213,6 +2215,7 @@ paths:
       operationId: postApiV4GroupsIdShare
   "/api/v4/groups/{id}/share/{group_id}":
     delete:
+      description: Unshare a group with a group
       produces:
       - application/json
       parameters:
@@ -2229,7 +2232,7 @@ paths:
         required: true
       responses:
         '204':
-          description: deleted Share
+          description: Unshare a group with a group
       tags:
       - groups
       operationId: deleteApiV4GroupsIdShareGroupId
@@ -4217,7 +4220,9 @@ paths:
   "/api/v4/groups/{id}/placeholder_reassignments":
     get:
       summary: Download the list of pending placeholder assignments for a group
-      description: This feature was added in GitLab 17.10
+      description: |-
+        Downloads a CSV file of pending placeholder assignments for a group.
+                  This feature was added in GitLab 17.10
       produces:
       - application/json
       parameters:
@@ -4234,6 +4239,8 @@ paths:
       - groups
       operationId: getApiV4GroupsIdPlaceholderReassignments
     post:
+      summary: Upload placeholder reassignments CSV file
+      description: Uploads a CSV file containing placeholder reassignments for a group
       produces:
       - application/json
       consumes:
@@ -4251,14 +4258,16 @@ paths:
           "$ref": "#/definitions/postApiV4GroupsIdPlaceholderReassignments"
       responses:
         '201':
-          description: created PlaceholderReassignment
+          description: Upload placeholder reassignments CSV file
       tags:
       - groups
       operationId: postApiV4GroupsIdPlaceholderReassignments
   "/api/v4/groups/{id}/placeholder_reassignments/authorize":
     post:
       summary: Workhorse authorization for the reassignment CSV file
-      description: This feature was introduced in GitLab 17.10
+      description: |-
+        Authorizes Workhorse to handle CSV file uploads for placeholder reassignments.
+                  This feature was introduced in GitLab 17.10
       produces:
       - application/json
       consumes:
@@ -8834,7 +8843,7 @@ paths:
         '404':
           description: Not Found
       tags:
-      - packages
+      - pypi_packages
       operationId: getApiV4GroupsIdPackagesPypiFilesSha256*fileIdentifier
   "/api/v4/groups/{id}/-/packages/pypi/simple":
     get:
@@ -14131,6 +14140,11 @@ paths:
         type: string
         required: false
         example: README.md
+      - in: query
+        name: follow
+        description: Follow file renames when filtering by path
+        type: boolean
+        required: false
       - in: query
         name: author
         description: Search commits by commit author
@@ -25996,6 +26010,7 @@ paths:
       operationId: getApiV4ProjectsIdIssuesIssueIidUserAgentDetail
   "/api/v4/projects/{id}/issues/{issue_iid}/metric_images/authorize":
     post:
+      description: Upload a metric image for an incident
       produces:
       - application/json
       consumes:
@@ -26013,9 +26028,9 @@ paths:
         required: true
       responses:
         '201':
-          description: created Authorize
+          description: Upload a metric image for an incident
       tags:
-      - projects
+      - metric_images
       operationId: postApiV4ProjectsIdIssuesIssueIidMetricImagesAuthorize
   "/api/v4/projects/{id}/issues/{issue_iid}/metric_images":
     post:
@@ -26834,7 +26849,8 @@ paths:
       operationId: getApiV4ProjectsIdMembersAllUserId
   "/api/v4/projects/{id}/create_ci_config":
     post:
-      description: Creates merge request for missing ci config in project
+      summary: Create merge request for missing ci config in project
+      description: Creates a merge request to add missing CI configuration
       produces:
       - application/json
       consumes:
@@ -26847,9 +26863,10 @@ paths:
         required: true
       responses:
         '201':
-          description: Creates merge request for missing ci config in project
+          description: Create merge request for missing ci config in project
       tags:
       - projects
+      - merge_requests
       operationId: postApiV4ProjectsIdCreateCiConfig
   "/api/v4/projects/{id}/merge_requests/{merge_request_iid}/time_estimate":
     post:
@@ -31157,7 +31174,8 @@ paths:
       operationId: getApiV4ProjectsIdExportRelationsStatus
   "/api/v4/projects/{id}/hooks/{hook_id}/url_variables/{key}":
     put:
-      description: Set a url variable
+      summary: Set a url variable
+      description: Sets a URL variable for a webhook
       produces:
       - application/json
       consumes:
@@ -31188,10 +31206,11 @@ paths:
         '200':
           description: Set a url variable
       tags:
-      - projects
+      - hooks
       operationId: putApiV4ProjectsIdHooksHookIdUrlVariablesKey
     delete:
-      description: Un-Set a url variable
+      summary: Un-Set a url variable
+      description: Removes a URL variable from a webhook
       produces:
       - application/json
       parameters:
@@ -31215,11 +31234,12 @@ paths:
         '204':
           description: Un-Set a url variable
       tags:
-      - projects
+      - hooks
       operationId: deleteApiV4ProjectsIdHooksHookIdUrlVariablesKey
   "/api/v4/projects/{id}/hooks/{hook_id}/custom_headers/{key}":
     put:
-      description: Set a custom header
+      summary: Set a custom header
+      description: Sets a custom header for a webhook
       produces:
       - application/json
       consumes:
@@ -31250,10 +31270,11 @@ paths:
         '200':
           description: Set a custom header
       tags:
-      - projects
+      - hooks
       operationId: putApiV4ProjectsIdHooksHookIdCustomHeadersKey
     delete:
-      description: Un-Set a custom header
+      summary: Un-Set a custom header
+      description: Removes a custom header from a webhook
       produces:
       - application/json
       parameters:
@@ -31277,7 +31298,7 @@ paths:
         '204':
           description: Un-Set a custom header
       tags:
-      - projects
+      - hooks
       operationId: deleteApiV4ProjectsIdHooksHookIdCustomHeadersKey
   "/api/v4/projects/{id}/hooks":
     get:
@@ -31594,6 +31615,7 @@ paths:
         - push_events
         - releases_events
         - resource_access_token_events
+        - resource_deploy_token_events
         - tag_push_events
         - wiki_page_events
         - vulnerability_events
@@ -32213,16 +32235,6 @@ paths:
         type: boolean
         required: false
       - in: formData
-        name: override_params[merge_request_title_regex]
-        description: The regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
-        name: override_params[merge_request_title_regex_description]
-        description: The description for the regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
         description: Blocks merge requests from merging unless all status checks have
           passed
@@ -32280,6 +32292,12 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[duo_secret_detection_fp_enabled]
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
+        type: boolean
+        required: false
+      - in: formData
         name: override_params[duo_sast_vr_workflow_enabled]
         description: Enable GitLab Duo SAST vulnerability resolution workflow for
           this project
@@ -32290,6 +32308,16 @@ paths:
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
         type: boolean
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex]
+        description: The regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
+        type: string
         required: false
       - in: formData
         name: file.path
@@ -32390,6 +32418,45 @@ paths:
       tags:
       - project_import
       operationId: getApiV4ProjectsIdImport
+  "/api/v4/projects/{id}/import/git":
+    post:
+      summary: Import a project from a Git URL
+      description: This feature was introduced in GitLab 18.10.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - name: postApiV4ProjectsIdImportGit
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/postApiV4ProjectsIdImportGit"
+      responses:
+        '201':
+          description: Import a project from a Git URL
+          schema:
+            "$ref": "#/definitions/API_Entities_ProjectImportStatus"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '400':
+          description: Bad request
+        '404':
+          description: Not found
+        '409':
+          description: Conflict
+        '422':
+          description: Unprocessable Entity
+      tags:
+      - project_import
+      operationId: postApiV4ProjectsIdImportGit
   "/api/v4/projects/remote-import":
     post:
       summary: Create a new project import using a remote object storage path
@@ -32936,16 +33003,6 @@ paths:
         type: boolean
         required: false
       - in: formData
-        name: override_params[merge_request_title_regex]
-        description: The regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
-        name: override_params[merge_request_title_regex_description]
-        description: The description for the regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
         description: Blocks merge requests from merging unless all status checks have
           passed
@@ -33003,6 +33060,12 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[duo_secret_detection_fp_enabled]
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
+        type: boolean
+        required: false
+      - in: formData
         name: override_params[duo_sast_vr_workflow_enabled]
         description: Enable GitLab Duo SAST vulnerability resolution workflow for
           this project
@@ -33013,6 +33076,16 @@ paths:
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
         type: boolean
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex]
+        description: The regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
+        type: string
         required: false
       responses:
         '201':
@@ -33738,16 +33811,6 @@ paths:
         type: boolean
         required: false
       - in: formData
-        name: override_params[merge_request_title_regex]
-        description: The regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
-        name: override_params[merge_request_title_regex_description]
-        description: The description for the regex the Merge Request must adhere to
-        type: string
-        required: false
-      - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
         description: Blocks merge requests from merging unless all status checks have
           passed
@@ -33805,6 +33868,12 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[duo_secret_detection_fp_enabled]
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
+        type: boolean
+        required: false
+      - in: formData
         name: override_params[duo_sast_vr_workflow_enabled]
         description: Enable GitLab Duo SAST vulnerability resolution workflow for
           this project
@@ -33815,6 +33884,16 @@ paths:
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
         type: boolean
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex]
+        description: The regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
+        type: string
         required: false
       responses:
         '201':
@@ -40035,6 +40114,34 @@ paths:
       tags:
       - clusters
       operationId: postApiV4AdminClustersAdd
+  "/api/v4/admin/migrations/pending":
+    get:
+      description: List pending database migrations
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: database
+        description: The name of the database
+        type: string
+        default: main
+        enum:
+        - main
+        - ci
+        - sec
+        - embedding
+        - geo
+        required: false
+      responses:
+        '200':
+          description: 200 OK
+        '401':
+          description: 401 Unauthorized
+        '403':
+          description: 403 Forbidden
+      tags:
+      - migrations
+      operationId: getApiV4AdminMigrationsPending
   "/api/v4/admin/migrations/{timestamp}/mark":
     post:
       description: Mark the migration as successfully executed
@@ -44253,27 +44360,33 @@ paths:
       operationId: postApiV4IntegrationsSlackEvents
   "/api/v4/integrations/slack/interactions":
     post:
+      summary: Process Slack interaction events
+      description: Processes interaction events from Slack
       produces:
       - application/json
       consumes:
       - application/json
       responses:
         '201':
-          description: created Interaction
+          description: Process Slack interaction events
       tags:
       - integrations
+      - internal_operations
       operationId: postApiV4IntegrationsSlackInteractions
   "/api/v4/integrations/slack/options":
     post:
+      summary: Get Slack interactive component options
+      description: Retrieves options for Slack interactive components
       produces:
       - application/json
       consumes:
       - application/json
       responses:
         '201':
-          description: created Option
+          description: Get Slack interactive component options
       tags:
       - integrations
+      - internal_operations
       operationId: postApiV4IntegrationsSlackOptions
   "/api/v4/integrations/jira_connect/subscriptions":
     post:
@@ -45388,7 +45501,8 @@ paths:
       operationId: getApiV4NamespacesIdExists
   "/api/v4/offline_exports":
     post:
-      description: Start a new offline transfer export
+      summary: Start a new offline transfer export
+      description: Initiates a new offline transfer export
       produces:
       - application/json
       consumes:
@@ -45403,10 +45517,11 @@ paths:
         '201':
           description: Start a new offline transfer export
       tags:
-      - offline_exports
+      - offline_transfers
       operationId: postApiV4OfflineExports
     get:
-      description: List all offline transfer exports
+      summary: List all offline transfer exports
+      description: Lists all offline transfer exports
       produces:
       - application/json
       parameters:
@@ -45450,11 +45565,12 @@ paths:
         '200':
           description: List all offline transfer exports
       tags:
-      - offline_exports
+      - offline_transfers
       operationId: getApiV4OfflineExports
   "/api/v4/offline_exports/{id}":
     get:
-      description: Get offline transfer export details
+      summary: Get offline transfer export details
+      description: Retrieves details of an offline transfer export
       produces:
       - application/json
       parameters:
@@ -45468,7 +45584,7 @@ paths:
         '200':
           description: Get offline transfer export details
       tags:
-      - offline_exports
+      - offline_transfers
       operationId: getApiV4OfflineExportsId
   "/api/v4/organizations":
     post:
@@ -46295,7 +46411,8 @@ paths:
       operationId: putApiV4SuggestionsBatchApply
   "/api/v4/hooks/{hook_id}/url_variables/{key}":
     put:
-      description: Set a url variable
+      summary: Set a url variable
+      description: Sets a URL variable for a webhook
       produces:
       - application/json
       consumes:
@@ -46324,7 +46441,8 @@ paths:
       - hooks
       operationId: putApiV4HooksHookIdUrlVariablesKey
     delete:
-      description: Un-Set a url variable
+      summary: Un-Set a url variable
+      description: Removes a URL variable from a webhook
       produces:
       - application/json
       parameters:
@@ -46347,7 +46465,8 @@ paths:
       operationId: deleteApiV4HooksHookIdUrlVariablesKey
   "/api/v4/hooks/{hook_id}/custom_headers/{key}":
     put:
-      description: Set a custom header
+      summary: Set a custom header
+      description: Sets a custom header for a webhook
       produces:
       - application/json
       consumes:
@@ -46376,7 +46495,8 @@ paths:
       - hooks
       operationId: putApiV4HooksHookIdCustomHeadersKey
     delete:
-      description: Un-Set a custom header
+      summary: Un-Set a custom header
+      description: Removes a custom header from a webhook
       produces:
       - application/json
       parameters:
@@ -46514,6 +46634,8 @@ paths:
       - hooks
       operationId: putApiV4HooksHookId
     post:
+      summary: Test a hook
+      description: Tests a webhook by triggering a test event
       produces:
       - application/json
       consumes:
@@ -46527,7 +46649,7 @@ paths:
         required: true
       responses:
         '201':
-          description: created Hook
+          description: Test a hook
       tags:
       - hooks
       operationId: postApiV4HooksHookId
@@ -46555,6 +46677,7 @@ paths:
       operationId: deleteApiV4HooksHookId
   "/api/v4/feature_flags/unleash/{project_id}":
     get:
+      description: Get Unleash features
       produces:
       - application/json
       parameters:
@@ -46575,9 +46698,9 @@ paths:
         required: false
       responses:
         '200':
-          description: get Unleash(s)
+          description: Get Unleash features
       tags:
-      - feature_flags
+      - unleash
       operationId: getApiV4FeatureFlagsUnleashProjectId
   "/api/v4/feature_flags/unleash/{project_id}/features":
     get:
@@ -46637,6 +46760,7 @@ paths:
       operationId: getApiV4FeatureFlagsUnleashProjectIdClientFeatures
   "/api/v4/feature_flags/unleash/{project_id}/client/register":
     post:
+      description: Register Unleash client
       produces:
       - application/json
       consumes:
@@ -46654,12 +46778,13 @@ paths:
           "$ref": "#/definitions/postApiV4FeatureFlagsUnleashProjectIdClientRegister"
       responses:
         '201':
-          description: created Register
+          description: Register Unleash client
       tags:
-      - feature_flags
+      - unleash
       operationId: postApiV4FeatureFlagsUnleashProjectIdClientRegister
   "/api/v4/feature_flags/unleash/{project_id}/client/metrics":
     post:
+      description: Report Unleash client metrics
       produces:
       - application/json
       consumes:
@@ -46677,9 +46802,9 @@ paths:
           "$ref": "#/definitions/postApiV4FeatureFlagsUnleashProjectIdClientMetrics"
       responses:
         '201':
-          description: created Metric
+          description: Report Unleash client metrics
       tags:
-      - feature_flags
+      - unleash
       operationId: postApiV4FeatureFlagsUnleashProjectIdClientMetrics
   "/api/v4/usage_data/increment_counter":
     post:
@@ -49589,6 +49714,10 @@ definitions:
         example: continuous
       ci_push_repository_for_job_token_allowed:
         type: boolean
+      protect_merge_request_pipelines:
+        type: boolean
+      ci_display_pipeline_variables:
+        type: boolean
       runners_token:
         type: string
         example: b8547b1dc37721d05889db52fa2f02
@@ -49616,12 +49745,6 @@ definitions:
       merge_method:
         type: string
         example: merge
-      merge_request_title_regex:
-        type: string
-        example: "/Title of merge request/"
-      merge_request_title_regex_description:
-        type: string
-        example: This requires the title to include a Jira label
       squash_option:
         type: string
         example: default_off
@@ -49700,6 +49823,8 @@ definitions:
         type: string
       duo_sast_fp_detection_enabled:
         type: string
+      duo_secret_detection_fp_enabled:
+        type: string
       duo_sast_vr_workflow_enabled:
         type: string
       web_based_commit_signing_enabled:
@@ -49708,6 +49833,12 @@ definitions:
         type: boolean
         description: The spp_repository_pipeline_access setting is only visible if
           the security_orchestration_policies feature is available.
+      merge_request_title_regex:
+        type: string
+        example: "/Title of merge request/"
+      merge_request_title_regex_description:
+        type: string
+        example: This requires the title to include a Jira label
     required:
     - id
     - description
@@ -49779,8 +49910,6 @@ definitions:
     - remove_source_branch_after_merge
     - printing_merge_request_link_enabled
     - merge_method
-    - merge_request_title_regex
-    - merge_request_title_regex_description
     - squash_option
     - enforce_auth_checks_on_uploads
     - suggestion_commit_message
@@ -51234,6 +51363,7 @@ definitions:
         description: The CSV file containing the reassignments
     required:
     - file
+    description: Upload placeholder reassignments CSV file
   API_Entities_Ci_Variable:
     type: object
     properties:
@@ -51775,10 +51905,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -51792,7 +51922,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -51954,10 +52084,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -51967,7 +52097,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -52043,10 +52173,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -52060,7 +52190,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -52332,10 +52462,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -52345,7 +52475,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -52519,10 +52649,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -52536,7 +52666,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -52747,10 +52877,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -52760,7 +52890,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -52814,10 +52944,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -52831,7 +52961,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -52924,10 +53054,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -52937,7 +53067,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -53033,10 +53163,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -53046,7 +53176,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -53095,10 +53225,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -53112,7 +53242,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -53151,10 +53281,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -53168,7 +53298,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -53218,10 +53348,10 @@ definitions:
         description: Secret token.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       use_inherited_settings:
         type: boolean
@@ -53603,7 +53733,7 @@ definitions:
       time_stats:
         "$ref": "#/definitions/API_Entities_IssuableTimeStats"
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       weight:
         type: string
       blocking_issues_count:
@@ -53758,6 +53888,20 @@ definitions:
     - human_time_estimate
     - human_total_time_spent
     description: API_Entities_IssuableTimeStats model
+  API_Entities_TaskCompletionStatus:
+    type: object
+    properties:
+      count:
+        type: integer
+        format: int32
+        example: 5
+      completed_count:
+        type: integer
+        format: int32
+        example: 3
+    required:
+    - count
+    - completed_count
   API_Entities_IssuableReferences:
     type: object
     properties:
@@ -53982,9 +54126,9 @@ definitions:
         type: boolean
       archive_project:
         type: boolean
-      remove_group:
-        type: boolean
       remove_project:
+        type: boolean
+      remove_group:
         type: boolean
       manage_security_policy_link:
         type: boolean
@@ -54015,8 +54159,6 @@ definitions:
       admin_runners:
         type: boolean
       admin_security_attributes:
-        type: boolean
-      admin_security_testing:
         type: boolean
       admin_terraform_state:
         type: boolean
@@ -54061,8 +54203,8 @@ definitions:
     - apply_security_scan_profiles
     - admin_merge_request
     - archive_project
-    - remove_group
     - remove_project
+    - remove_group
     - manage_security_policy_link
     - admin_compliance_framework
     - admin_cicd_variables
@@ -54078,7 +54220,6 @@ definitions:
     - admin_push_rules
     - admin_runners
     - admin_security_attributes
-    - admin_security_testing
     - admin_terraform_state
     - admin_vulnerability
     - admin_web_hook
@@ -54309,7 +54450,7 @@ definitions:
       squash_on_merge:
         type: string
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       has_conflicts:
         type: string
       blocking_discussions_resolved:
@@ -59531,10 +59672,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -59548,7 +59689,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -59710,10 +59851,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -59723,7 +59864,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -59799,10 +59940,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -59816,7 +59957,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -60088,10 +60229,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -60101,7 +60242,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -60275,10 +60416,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -60292,7 +60433,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -60503,10 +60644,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -60516,7 +60657,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -60570,10 +60711,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -60587,7 +60728,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -60680,10 +60821,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -60693,7 +60834,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -60789,10 +60930,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -60802,7 +60943,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -60851,10 +60992,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -60868,7 +61009,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -60907,10 +61048,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -60924,7 +61065,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -60974,10 +61115,10 @@ definitions:
         description: Secret token.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       use_inherited_settings:
         type: boolean
@@ -61475,10 +61616,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -61492,7 +61633,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -61654,10 +61795,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -61667,7 +61808,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -61743,10 +61884,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -61760,7 +61901,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -62032,10 +62173,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -62045,7 +62186,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -62219,10 +62360,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -62236,7 +62377,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -62447,10 +62588,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -62460,7 +62601,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -62514,10 +62655,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -62531,7 +62672,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -62624,10 +62765,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -62637,7 +62778,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -62733,10 +62874,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       merge_requests_events:
         type: boolean
@@ -62746,7 +62887,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -62795,10 +62936,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -62812,7 +62953,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -62851,10 +62992,10 @@ definitions:
         description: Trigger event for pushes to the repository.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       work_item_events:
         type: boolean
@@ -62868,7 +63009,7 @@ definitions:
         description: Trigger event for new comments.
       confidential_note_events:
         type: boolean
-        description: Trigger event for new comments on confidential issues.
+        description: Trigger event for new comments on confidential work items.
       tag_push_events:
         type: boolean
         description: Trigger event for new tags pushed to the repository.
@@ -62918,10 +63059,10 @@ definitions:
         description: Secret token.
       issues_events:
         type: boolean
-        description: Trigger event when an issue is created, updated, or closed.
+        description: Trigger event when a work item is created, updated, or closed.
       confidential_issues_events:
         type: boolean
-        description: Trigger event when a confidential issue is created, updated,
+        description: Trigger event when a confidential work item is created, updated,
           or closed.
       use_inherited_settings:
         type: boolean
@@ -63208,7 +63349,7 @@ definitions:
       time_stats:
         "$ref": "#/definitions/API_Entities_IssuableTimeStats"
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       weight:
         type: string
       blocking_issues_count:
@@ -63436,7 +63577,7 @@ definitions:
       time_stats:
         "$ref": "#/definitions/API_Entities_IssuableTimeStats"
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       weight:
         type: string
       blocking_issues_count:
@@ -64177,7 +64318,7 @@ definitions:
       squash_on_merge:
         type: string
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       has_conflicts:
         type: string
       blocking_discussions_resolved:
@@ -64430,7 +64571,7 @@ definitions:
       squash_on_merge:
         type: string
       task_completion_status:
-        type: string
+        "$ref": "#/definitions/API_Entities_TaskCompletionStatus"
       has_conflicts:
         type: string
       blocking_discussions_resolved:
@@ -66075,6 +66216,8 @@ definitions:
         type: boolean
       resource_access_token_events:
         type: boolean
+      resource_deploy_token_events:
+        type: boolean
       vulnerability_events:
         type: boolean
     required:
@@ -66107,6 +66250,7 @@ definitions:
     - milestone_events
     - emoji_events
     - resource_access_token_events
+    - resource_deploy_token_events
     - vulnerability_events
     description: API_Entities_ProjectHook model
   putApiV4ProjectsIdHooksHookId:
@@ -66169,6 +66313,9 @@ definitions:
       resource_access_token_events:
         type: boolean
         description: Trigger hook on project access token expiry events
+      resource_deploy_token_events:
+        type: boolean
+        description: Trigger hook on deploy token expiry events
       enable_ssl_verification:
         type: boolean
         description: Do SSL verification when triggering the hook
@@ -66289,6 +66436,9 @@ definitions:
       resource_access_token_events:
         type: boolean
         description: Trigger hook on project access token expiry events
+      resource_deploy_token_events:
+        type: boolean
+        description: Trigger hook on deploy token expiry events
       enable_ssl_verification:
         type: boolean
         description: Do SSL verification when triggering the hook
@@ -66442,6 +66592,21 @@ definitions:
     - exception_message
     - relation_name
     - line_number
+  postApiV4ProjectsIdImportGit:
+    type: object
+    properties:
+      import_url:
+        type: string
+        description: The URL from which the project is imported
+      import_url_user:
+        type: string
+        description: Username for the import URL
+      import_url_password:
+        type: string
+        description: Password for the import URL
+    required:
+    - import_url
+    description: Import a project from a Git URL
   API_Entities_RelationImportTracker:
     type: object
     properties:
@@ -67273,12 +67438,6 @@ definitions:
       mr_default_target_self:
         type: boolean
         description: Merge requests of this forked project targets itself by default
-      merge_request_title_regex:
-        type: string
-        description: The regex the Merge Request must adhere to
-      merge_request_title_regex_description:
-        type: string
-        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -67316,6 +67475,10 @@ definitions:
       duo_sast_fp_detection_enabled:
         type: boolean
         description: Enable GitLab Duo SAST false positive detection for this project
+      duo_secret_detection_fp_enabled:
+        type: boolean
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
       duo_sast_vr_workflow_enabled:
         type: boolean
         description: Enable GitLab Duo SAST vulnerability resolution workflow for
@@ -67324,6 +67487,12 @@ definitions:
         type: boolean
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
+      merge_request_title_regex:
+        type: string
+        description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       repository_object_format:
         type: string
         description: The object format of the project repository
@@ -67723,12 +67892,6 @@ definitions:
       mr_default_target_self:
         type: boolean
         description: Merge requests of this forked project targets itself by default
-      merge_request_title_regex:
-        type: string
-        description: The regex the Merge Request must adhere to
-      merge_request_title_regex_description:
-        type: string
-        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -67766,6 +67929,10 @@ definitions:
       duo_sast_fp_detection_enabled:
         type: boolean
         description: Enable GitLab Duo SAST false positive detection for this project
+      duo_secret_detection_fp_enabled:
+        type: boolean
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
       duo_sast_vr_workflow_enabled:
         type: boolean
         description: Enable GitLab Duo SAST vulnerability resolution workflow for
@@ -67774,6 +67941,12 @@ definitions:
         type: boolean
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
+      merge_request_title_regex:
+        type: string
+        description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       repository_object_format:
         type: string
         description: The object format of the project repository
@@ -68115,6 +68288,10 @@ definitions:
         example: continuous
       ci_push_repository_for_job_token_allowed:
         type: boolean
+      protect_merge_request_pipelines:
+        type: boolean
+      ci_display_pipeline_variables:
+        type: boolean
       runners_token:
         type: string
         example: b8547b1dc37721d05889db52fa2f02
@@ -68142,12 +68319,6 @@ definitions:
       merge_method:
         type: string
         example: merge
-      merge_request_title_regex:
-        type: string
-        example: "/Title of merge request/"
-      merge_request_title_regex_description:
-        type: string
-        example: This requires the title to include a Jira label
       squash_option:
         type: string
         example: default_off
@@ -68226,6 +68397,8 @@ definitions:
         type: string
       duo_sast_fp_detection_enabled:
         type: string
+      duo_secret_detection_fp_enabled:
+        type: string
       duo_sast_vr_workflow_enabled:
         type: string
       web_based_commit_signing_enabled:
@@ -68234,6 +68407,12 @@ definitions:
         type: boolean
         description: The spp_repository_pipeline_access setting is only visible if
           the security_orchestration_policies feature is available.
+      merge_request_title_regex:
+        type: string
+        example: "/Title of merge request/"
+      merge_request_title_regex_description:
+        type: string
+        example: This requires the title to include a Jira label
       permissions:
         type: object
         properties:
@@ -68315,8 +68494,6 @@ definitions:
     - remove_source_branch_after_merge
     - printing_merge_request_link_enabled
     - merge_method
-    - merge_request_title_regex
-    - merge_request_title_regex_description
     - squash_option
     - enforce_auth_checks_on_uploads
     - suggestion_commit_message
@@ -68763,12 +68940,6 @@ definitions:
       mr_default_target_self:
         type: boolean
         description: Merge requests of this forked project targets itself by default
-      merge_request_title_regex:
-        type: string
-        description: The regex the Merge Request must adhere to
-      merge_request_title_regex_description:
-        type: string
-        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -68806,6 +68977,10 @@ definitions:
       duo_sast_fp_detection_enabled:
         type: boolean
         description: Enable GitLab Duo SAST false positive detection for this project
+      duo_secret_detection_fp_enabled:
+        type: boolean
+        description: Enable GitLab Duo Secret Detection false positive detection for
+          this project
       duo_sast_vr_workflow_enabled:
         type: boolean
         description: Enable GitLab Duo SAST vulnerability resolution workflow for
@@ -68814,6 +68989,12 @@ definitions:
         type: boolean
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
+      merge_request_title_regex:
+        type: string
+        description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       ci_default_git_depth:
         type: integer
         format: int32
@@ -68862,6 +69043,14 @@ definitions:
         type: integer
         format: int32
         description: Set the maximum file size for each job's artifacts
+      protect_merge_request_pipelines:
+        type: boolean
+        description: Make protected CI/CD variables and runners available in merge
+          request pipelines
+      ci_display_pipeline_variables:
+        type: boolean
+        description: Display all manually-defined variables in the pipeline details
+          page after running a pipeline manually
       allow_pipeline_trigger_approve_deployment:
         type: boolean
         description: Allow pipeline triggerer to approve deployments
@@ -72859,6 +73048,46 @@ definitions:
         type: string
       packages_helm_metadata_caches_verification_failed_count:
         type: string
+      project_uploads_count:
+        type: string
+      project_uploads_checksum_total_count:
+        type: string
+      project_uploads_checksummed_count:
+        type: string
+      project_uploads_checksum_failed_count:
+        type: string
+      project_uploads_synced_count:
+        type: string
+      project_uploads_failed_count:
+        type: string
+      project_uploads_registry_count:
+        type: string
+      project_uploads_verification_total_count:
+        type: string
+      project_uploads_verified_count:
+        type: string
+      project_uploads_verification_failed_count:
+        type: string
+      abuse_report_uploads_count:
+        type: string
+      abuse_report_uploads_checksum_total_count:
+        type: string
+      abuse_report_uploads_checksummed_count:
+        type: string
+      abuse_report_uploads_checksum_failed_count:
+        type: string
+      abuse_report_uploads_synced_count:
+        type: string
+      abuse_report_uploads_failed_count:
+        type: string
+      abuse_report_uploads_registry_count:
+        type: string
+      abuse_report_uploads_verification_total_count:
+        type: string
+      abuse_report_uploads_verified_count:
+        type: string
+      abuse_report_uploads_verification_failed_count:
+        type: string
       git_fetch_event_count_weekly:
         type: string
       git_push_event_count_weekly:
@@ -72950,6 +73179,14 @@ definitions:
       packages_helm_metadata_caches_synced_in_percentage:
         type: string
       packages_helm_metadata_caches_verified_in_percentage:
+        type: string
+      project_uploads_synced_in_percentage:
+        type: string
+      project_uploads_verified_in_percentage:
+        type: string
+      abuse_report_uploads_synced_in_percentage:
+        type: string
+      abuse_report_uploads_verified_in_percentage:
         type: string
       repositories_count:
         type: string
@@ -73211,6 +73448,26 @@ definitions:
     - packages_helm_metadata_caches_verification_total_count
     - packages_helm_metadata_caches_verified_count
     - packages_helm_metadata_caches_verification_failed_count
+    - project_uploads_count
+    - project_uploads_checksum_total_count
+    - project_uploads_checksummed_count
+    - project_uploads_checksum_failed_count
+    - project_uploads_synced_count
+    - project_uploads_failed_count
+    - project_uploads_registry_count
+    - project_uploads_verification_total_count
+    - project_uploads_verified_count
+    - project_uploads_verification_failed_count
+    - abuse_report_uploads_count
+    - abuse_report_uploads_checksum_total_count
+    - abuse_report_uploads_checksummed_count
+    - abuse_report_uploads_checksum_failed_count
+    - abuse_report_uploads_synced_count
+    - abuse_report_uploads_failed_count
+    - abuse_report_uploads_registry_count
+    - abuse_report_uploads_verification_total_count
+    - abuse_report_uploads_verified_count
+    - abuse_report_uploads_verification_failed_count
     - git_fetch_event_count_weekly
     - git_push_event_count_weekly
     - proxy_remote_requests_event_count_weekly
@@ -73257,6 +73514,10 @@ definitions:
     - supply_chain_attestations_verified_in_percentage
     - packages_helm_metadata_caches_synced_in_percentage
     - packages_helm_metadata_caches_verified_in_percentage
+    - project_uploads_synced_in_percentage
+    - project_uploads_verified_in_percentage
+    - abuse_report_uploads_synced_in_percentage
+    - abuse_report_uploads_verified_in_percentage
     - repositories_count
     - replication_slots_count
     - replication_slots_used_count
@@ -74944,6 +75205,7 @@ definitions:
       app_name:
         type: string
         description: The application name of Unleash Client
+    description: Register Unleash client
   postApiV4FeatureFlagsUnleashProjectIdClientMetrics:
     type: object
     properties:
@@ -74953,6 +75215,7 @@ definitions:
       app_name:
         type: string
         description: The application name of Unleash Client
+    description: Report Unleash client metrics
   postApiV4UsageDataIncrementCounter:
     type: object
     properties:
@@ -75126,6 +75389,17 @@ definitions:
         format: int32
         description: Maximum timeout that limits the amount of time (in seconds) that
           runners can run jobs
+      token_expires_at:
+        type: string
+        format: date-time
+        description: The expiration time for the runner authentication token (ISO
+          8601 format). Must be between 5 minutes and 15 days in the future, and cannot
+          exceed instance/group/project limits.
+      token_rotation_deadline:
+        type: string
+        format: date-time
+        description: The deadline for token rotation (ISO 8601 format). Must be specified
+          with token_expires_at and be <= token_expires_at.
     required:
     - runner_type
     - group_id

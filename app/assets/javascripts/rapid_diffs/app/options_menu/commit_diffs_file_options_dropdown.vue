@@ -1,13 +1,14 @@
 <script>
-import { mapActions, mapState } from 'pinia';
 import { __ } from '~/locale';
 import DiffFileOptionsDropdown from '~/rapid_diffs/app/options_menu/diff_file_options_dropdown.vue';
-import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 
 export default {
   name: 'CommitDiffsFileOptionsDropdown',
   components: {
     DiffFileOptionsDropdown,
+  },
+  inject: {
+    store: { type: Object },
   },
   props: {
     items: {
@@ -28,9 +29,8 @@ export default {
     },
   },
   computed: {
-    ...mapState(useDiffDiscussions, ['findDiscussionsForFile']),
     fileDiscussions() {
-      return this.findDiscussionsForFile({
+      return this.store.findDiscussionsForFile({
         oldPath: this.oldPath,
         newPath: this.newPath,
       });
@@ -69,9 +69,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useDiffDiscussions, ['setFileDiscussionsHidden']),
     toggleComments() {
-      this.setFileDiscussionsHidden(this.oldPath, this.newPath, !this.discussionsHidden);
+      this.store.setFileDiscussionsHidden(this.oldPath, this.newPath, !this.discussionsHidden);
       this.$refs['diff-file-options-dropdown']?.closeAndFocus();
     },
   },

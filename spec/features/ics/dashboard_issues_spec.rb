@@ -23,6 +23,7 @@ RSpec.describe 'Dashboard Issues Calendar Feed', feature_category: :team_plannin
 
     before do
       project.add_maintainer(user)
+      stub_feature_flags(work_item_planning_view: false)
     end
 
     context 'when authenticated' do

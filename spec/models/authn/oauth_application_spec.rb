@@ -138,4 +138,75 @@ RSpec.describe Authn::OauthApplication, feature_category: :system_access do
       end
     end
   end
+
+  describe '.with_token_digests' do
+    let(:hashed_token_1) { described_class.encode('hashed_token_1') }
+    let!(:app1) { create(:oauth_application, secret: hashed_token_1) }
+
+    let(:hashed_token_2) { described_class.encode('hashed_token_2') }
+    let!(:app2) { create(:oauth_application, secret: hashed_token_2) }
+
+    let!(:app3) { create(:oauth_application, secret: 'different_token') }
+
+    context 'when hashed_tokens is provided' do
+      it 'returns applications with matching secret digests' do
+        hashed_tokens = [hashed_token_1, hashed_token_2]
+
+        result = described_class.with_token_digests(hashed_tokens)
+
+        expect(result).to contain_exactly(app1, app2)
+      end
+
+      it 'returns empty relation when no matches found' do
+        hashed_tokens = ['non_existent_token']
+
+        result = described_class.with_token_digests(hashed_tokens)
+
+        expect(result).to be_empty
+      end
+
+      it 'handles single token in array' do
+        hashed_tokens = [hashed_token_1]
+
+        result = described_class.with_token_digests(hashed_tokens)
+
+        expect(result).to contain_exactly(app1)
+      end
+    end
+
+    context 'when hashed_tokens is blank' do
+      it 'returns none scope for nil' do
+        result = described_class.with_token_digests(nil)
+
+        expect(result).to eq(described_class.none)
+      end
+
+      it 'returns none scope for empty array' do
+        result = described_class.with_token_digests([])
+
+        expect(result).to eq(described_class.none)
+      end
+
+      it 'returns none scope for empty string' do
+        result = described_class.with_token_digests('')
+
+        expect(result).to eq(described_class.none)
+      end
+    end
+  end
+
+  describe '.encode' do
+    let(:raw_token) { 'my_secret_token_123' }
+
+    it 'encodes raw token using Sha512Hash' do
+      expect(::Gitlab::DoorkeeperSecretStoring::Sha512Hash)
+        .to receive(:transform_secret)
+        .with(raw_token)
+        .and_return('encoded_token_hash')
+
+      result = described_class.encode(raw_token)
+
+      expect(result).to eq('encoded_token_hash')
+    end
+  end
 end

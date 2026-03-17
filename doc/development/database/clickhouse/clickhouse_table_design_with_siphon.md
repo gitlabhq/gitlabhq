@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: ClickHouse table design with Siphon
 ---
 
@@ -632,7 +632,31 @@ With all denormalizations, there are trade-offs. The Siphon-based hierarchy deno
 
 In development, consistency issues may appear more often as record creation may happen very close to the project or group creation. In these cases, the eventual consistency enforcement should resolve the problems in seconds or minutes (configurable).
 
-#### Working in Cells Environment
+## Table Partitioning
+
+ClickHouse [partitioning](https://clickhouse.com/docs/engines/table-engines/mergetree-family/custom-partitioning-key) is a data management tool intended for data lifecycle operations (like dropping old data), rather than a primary tool for query optimization.
+
+### Partition Granularity
+
+Avoid overly granular partitioning schemes. As a rule of thumb, you should not go more granular than **yearly partitioning** (for example, `toYear(created_at)`).
+
+Too many partitions can severely degrade ClickHouse performance:
+
+- Ingestion Speed: Each `INSERT` creates separate data "parts" for every partition touched by the `INSERT` block. High partition counts lead to a "part explosion", increasing metadata overhead and merge pressure.
+- Query Performance: Queries spanning many partitions must open and process metadata for a large number of small files, which can significantly slow down execution.
+
+### Constraints and Siphon Snapshots
+
+There is a hard limit on the number of partitions that can be touched in a single insert statement: `max_partitions_per_insert_block=100`. This limit is enforced on ClickHouse Cloud and cannot be increased.
+
+When Siphon performs an initial snapshot of a PostgreSQL table, data is often read in a sequence that does not match the ClickHouse partition key. If the snapshot contains data spanning more than 100 different months, the insert will fail.
+
+You should only consider more granular partitioning (such as monthly) if the following conditions are met:
+
+1. The PostgreSQL source table follows the same partitioning logic. Siphon snapshots each PostgreSQL partition individually, which naturally keeps the data blocks within ClickHouse's limits.
+1. The data volume is exceptionally high, justifying the management overhead of more partitions.
+
+## Working in Cells Environment
 
 Siphon-replicated database tables are by design support the [Cells architecture](../../cells/_index.md). Assuming that Siphon is configured on all cells, when an organization or group is moved to another cell, no extra data migrations are needed for ClickHouse.
 

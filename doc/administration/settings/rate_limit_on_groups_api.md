@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Rate limits on Groups API
 description: Set rate limits on Groups API endpoints.
 ---
@@ -81,7 +81,7 @@ To modify this rate limit for both endpoints:
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
 1. Expand **Projects API rate limits**.
-1. In the **Maximum requests to the GET /projects/:id/members/all API per minute per user or IP address** text box, enter a value.
+1. In the **Maximum requests to the `GET /projects/:id/members/all` API per minute per user or IP address** text box, enter a value.
 1. Select **Save changes**.
 
 The rate limit:
@@ -128,8 +128,8 @@ To change the rate limit:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **Network**.
-1. Expand **Groups API**.
-1. In the **Maximum requests to the POST /groups/:id/archive and POST /groups/:id/unarchive API per minute per user or IP address** text box, enter a value.
+1. Expand **Groups API rate limits**.
+1. In the **Maximum requests to the `POST /groups/:id/archive` and `POST /groups/:id/unarchive` API per minute per user or IP address** text box, enter a value.
 1. Select **Save changes**.
 
 The rate limit:

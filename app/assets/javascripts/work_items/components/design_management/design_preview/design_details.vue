@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { isNull } from 'lodash';
+import { isNull } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { Mousetrap } from '~/lib/mousetrap';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';

@@ -105,5 +105,28 @@ RSpec.describe Banzai::Filter::AssetProxyFilter, feature_category: :markdown do
     end
   end
 
+  context 'when the img has the js-render-iframe class' do
+    before do
+      stub_asset_proxy_enabled(
+        url: 'https://assets.example.com',
+        secret_key: 'shared-secret',
+        allowlist: [Gitlab.config.gitlab.host]
+      )
+      @context = described_class.transform_context({})
+    end
+
+    it 'does not proxy the image' do
+      src = 'http://example.com/test.png'
+      img = Nokogiri::HTML.fragment('<img>').at_css('img')
+      img['src'] = src
+      img['class'] = 'js-render-iframe'
+
+      doc = filter(img.to_html, @context)
+
+      expect(doc.at_css('img')['src']).to eq src
+      expect(doc.at_css('img')['data-canonical-src']).to be_nil
+    end
+  end
+
   it_behaves_like 'pipeline timing check', context: { disable_asset_proxy: true }
 end

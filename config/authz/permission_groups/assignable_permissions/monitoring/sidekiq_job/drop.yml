@@ -1,0 +1,7 @@
+---
+name: drop_sidekiq_job
+description: Grants the ability to drop Sidekiq jobs
+boundaries:
+  - instance
+permissions:
+  - drop_sidekiq_job

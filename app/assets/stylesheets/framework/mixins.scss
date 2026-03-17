@@ -203,13 +203,7 @@
   z-index: 2;
   position: sticky;
   @apply gl-rounded-t-lg;
-
-  top: calc(#{$calc-application-header-height} - 1px);
-
-  .page-with-panels & {
-    // Project studio overrides, should become the default.
-    top: -1px;
-  }
+  top: -1px;
 }
 
 /*
@@ -561,4 +555,26 @@
       }
     }
   }
+}
+
+@mixin checkerboard-bg {
+  background-color: var(--gl-background-color-default);
+  background-image: linear-gradient(
+      45deg,
+      var(--gl-background-color-strong) 25%,
+      transparent 25%,
+      transparent 75%,
+      var(--gl-background-color-strong) 75%,
+      var(--gl-background-color-strong) 100%
+    ),
+    linear-gradient(
+      45deg,
+      var(--gl-background-color-strong) 25%,
+      transparent 25%,
+      transparent 75%,
+      var(--gl-background-color-strong) 75%,
+      var(--gl-background-color-strong) 100%
+    );
+  background-size: 10px 10px;
+  background-position: 0 0, 5px 5px;
 }

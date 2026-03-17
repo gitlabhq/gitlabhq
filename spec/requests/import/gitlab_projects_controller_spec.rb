@@ -79,7 +79,7 @@ RSpec.describe Import::GitlabProjectsController, feature_category: :importers do
       expect_any_instance_of(ProjectImportState).to receive(:schedule)
       expect(::Projects::CreateService)
         .to receive(:new)
-        .with(user, instance_of(ActionController::Parameters))
+        .with(user, kind_of(Hash))
         .and_call_original
     end
   end

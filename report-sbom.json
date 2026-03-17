@@ -1,0 +1,360 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "serialNumber": "urn:uuid:460b0ca9-6d56-404d-a481-73096a99a92f",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-02-20T01:04:43Z",
+    "tools": [
+      {
+        "vendor": "GitLab",
+        "name": "Gemnasium",
+        "version": "6.6.1"
+      }
+    ],
+    "authors": [
+      {
+        "name": "GitLab",
+        "email": "support@gitlab.com"
+      }
+    ],
+    "properties": [
+      {
+        "name": "gitlab:dependency_scanning:input_file:path",
+        "value": "Gemfile.lock"
+      },
+      {
+        "name": "gitlab:dependency_scanning:package_manager:name",
+        "value": "bundler"
+      },
+      {
+        "name": "gitlab:meta:schema_version",
+        "value": "1"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "activesupport",
+      "version": "5.1.4",
+      "purl": "pkg:gem/activesupport@5.1.4",
+      "type": "library",
+      "bom-ref": "pkg:gem/activesupport@5.1.4"
+    },
+    {
+      "name": "byebug",
+      "version": "10.0.0",
+      "purl": "pkg:gem/byebug@10.0.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/byebug@10.0.0"
+    },
+    {
+      "name": "coderay",
+      "version": "1.1.2",
+      "purl": "pkg:gem/coderay@1.1.2",
+      "type": "library",
+      "bom-ref": "pkg:gem/coderay@1.1.2"
+    },
+    {
+      "name": "concurrent-ruby",
+      "version": "1.0.5",
+      "purl": "pkg:gem/concurrent-ruby@1.0.5",
+      "type": "library",
+      "bom-ref": "pkg:gem/concurrent-ruby@1.0.5"
+    },
+    {
+      "name": "connection_pool",
+      "version": "2.2.1",
+      "purl": "pkg:gem/connection_pool@2.2.1",
+      "type": "library",
+      "bom-ref": "pkg:gem/connection_pool@2.2.1"
+    },
+    {
+      "name": "diff-lcs",
+      "version": "1.3",
+      "purl": "pkg:gem/diff-lcs@1.3",
+      "type": "library",
+      "bom-ref": "pkg:gem/diff-lcs@1.3"
+    },
+    {
+      "name": "faker",
+      "version": "1.6.6",
+      "purl": "pkg:gem/faker@1.6.6",
+      "type": "library",
+      "bom-ref": "pkg:gem/faker@1.6.6"
+    },
+    {
+      "name": "ffi",
+      "version": "1.9.21",
+      "purl": "pkg:gem/ffi@1.9.21",
+      "type": "library",
+      "bom-ref": "pkg:gem/ffi@1.9.21"
+    },
+    {
+      "name": "formatador",
+      "version": "0.2.5",
+      "purl": "pkg:gem/formatador@0.2.5",
+      "type": "library",
+      "bom-ref": "pkg:gem/formatador@0.2.5"
+    },
+    {
+      "name": "guard",
+      "version": "2.14.2",
+      "purl": "pkg:gem/guard@2.14.2",
+      "type": "library",
+      "bom-ref": "pkg:gem/guard@2.14.2"
+    },
+    {
+      "name": "guard-compat",
+      "version": "1.2.1",
+      "purl": "pkg:gem/guard-compat@1.2.1",
+      "type": "library",
+      "bom-ref": "pkg:gem/guard-compat@1.2.1"
+    },
+    {
+      "name": "guard-rspec",
+      "version": "4.7.3",
+      "purl": "pkg:gem/guard-rspec@4.7.3",
+      "type": "library",
+      "bom-ref": "pkg:gem/guard-rspec@4.7.3"
+    },
+    {
+      "name": "i18n",
+      "version": "0.9.5",
+      "purl": "pkg:gem/i18n@0.9.5",
+      "type": "library",
+      "bom-ref": "pkg:gem/i18n@0.9.5"
+    },
+    {
+      "name": "listen",
+      "version": "3.1.5",
+      "purl": "pkg:gem/listen@3.1.5",
+      "type": "library",
+      "bom-ref": "pkg:gem/listen@3.1.5"
+    },
+    {
+      "name": "lumberjack",
+      "version": "1.0.12",
+      "purl": "pkg:gem/lumberjack@1.0.12",
+      "type": "library",
+      "bom-ref": "pkg:gem/lumberjack@1.0.12"
+    },
+    {
+      "name": "method_source",
+      "version": "0.9.0",
+      "purl": "pkg:gem/method_source@0.9.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/method_source@0.9.0"
+    },
+    {
+      "name": "mini_portile2",
+      "version": "2.0.0",
+      "purl": "pkg:gem/mini_portile2@2.0.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/mini_portile2@2.0.0"
+    },
+    {
+      "name": "minitest",
+      "version": "5.11.3",
+      "purl": "pkg:gem/minitest@5.11.3",
+      "type": "library",
+      "bom-ref": "pkg:gem/minitest@5.11.3"
+    },
+    {
+      "name": "mustermann",
+      "version": "1.0.1",
+      "purl": "pkg:gem/mustermann@1.0.1",
+      "type": "library",
+      "bom-ref": "pkg:gem/mustermann@1.0.1"
+    },
+    {
+      "name": "nenv",
+      "version": "0.3.0",
+      "purl": "pkg:gem/nenv@0.3.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/nenv@0.3.0"
+    },
+    {
+      "name": "nokogiri",
+      "version": "1.6.7.2",
+      "purl": "pkg:gem/nokogiri@1.6.7.2",
+      "type": "library",
+      "bom-ref": "pkg:gem/nokogiri@1.6.7.2"
+    },
+    {
+      "name": "notiffany",
+      "version": "0.1.1",
+      "purl": "pkg:gem/notiffany@0.1.1",
+      "type": "library",
+      "bom-ref": "pkg:gem/notiffany@0.1.1"
+    },
+    {
+      "name": "pg",
+      "version": "1.0.0",
+      "purl": "pkg:gem/pg@1.0.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/pg@1.0.0"
+    },
+    {
+      "name": "pry",
+      "version": "0.11.3",
+      "purl": "pkg:gem/pry@0.11.3",
+      "type": "library",
+      "bom-ref": "pkg:gem/pry@0.11.3"
+    },
+    {
+      "name": "puma",
+      "version": "3.12.0",
+      "purl": "pkg:gem/puma@3.12.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/puma@3.12.0"
+    },
+    {
+      "name": "rack",
+      "version": "2.0.4",
+      "purl": "pkg:gem/rack@2.0.4",
+      "type": "library",
+      "bom-ref": "pkg:gem/rack@2.0.4"
+    },
+    {
+      "name": "rack-protection",
+      "version": "2.0.0",
+      "purl": "pkg:gem/rack-protection@2.0.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/rack-protection@2.0.0"
+    },
+    {
+      "name": "rb-fsevent",
+      "version": "0.10.2",
+      "purl": "pkg:gem/rb-fsevent@0.10.2",
+      "type": "library",
+      "bom-ref": "pkg:gem/rb-fsevent@0.10.2"
+    },
+    {
+      "name": "rb-inotify",
+      "version": "0.9.10",
+      "purl": "pkg:gem/rb-inotify@0.9.10",
+      "type": "library",
+      "bom-ref": "pkg:gem/rb-inotify@0.9.10"
+    },
+    {
+      "name": "redis",
+      "version": "3.3.5",
+      "purl": "pkg:gem/redis@3.3.5",
+      "type": "library",
+      "bom-ref": "pkg:gem/redis@3.3.5"
+    },
+    {
+      "name": "rspec",
+      "version": "3.7.0",
+      "purl": "pkg:gem/rspec@3.7.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/rspec@3.7.0"
+    },
+    {
+      "name": "rspec-core",
+      "version": "3.7.1",
+      "purl": "pkg:gem/rspec-core@3.7.1",
+      "type": "library",
+      "bom-ref": "pkg:gem/rspec-core@3.7.1"
+    },
+    {
+      "name": "rspec-expectations",
+      "version": "3.7.0",
+      "purl": "pkg:gem/rspec-expectations@3.7.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/rspec-expectations@3.7.0"
+    },
+    {
+      "name": "rspec-mocks",
+      "version": "3.7.0",
+      "purl": "pkg:gem/rspec-mocks@3.7.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/rspec-mocks@3.7.0"
+    },
+    {
+      "name": "rspec-support",
+      "version": "3.7.1",
+      "purl": "pkg:gem/rspec-support@3.7.1",
+      "type": "library",
+      "bom-ref": "pkg:gem/rspec-support@3.7.1"
+    },
+    {
+      "name": "ruby_dep",
+      "version": "1.5.0",
+      "purl": "pkg:gem/ruby_dep@1.5.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/ruby_dep@1.5.0"
+    },
+    {
+      "name": "shellany",
+      "version": "0.0.1",
+      "purl": "pkg:gem/shellany@0.0.1",
+      "type": "library",
+      "bom-ref": "pkg:gem/shellany@0.0.1"
+    },
+    {
+      "name": "sidekiq",
+      "version": "4.2.10",
+      "purl": "pkg:gem/sidekiq@4.2.10",
+      "type": "library",
+      "bom-ref": "pkg:gem/sidekiq@4.2.10"
+    },
+    {
+      "name": "sinatra",
+      "version": "2.0.0",
+      "purl": "pkg:gem/sinatra@2.0.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/sinatra@2.0.0"
+    },
+    {
+      "name": "slim",
+      "version": "3.0.9",
+      "purl": "pkg:gem/slim@3.0.9",
+      "type": "library",
+      "bom-ref": "pkg:gem/slim@3.0.9"
+    },
+    {
+      "name": "spring",
+      "version": "2.0.2",
+      "purl": "pkg:gem/spring@2.0.2",
+      "type": "library",
+      "bom-ref": "pkg:gem/spring@2.0.2"
+    },
+    {
+      "name": "temple",
+      "version": "0.8.0",
+      "purl": "pkg:gem/temple@0.8.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/temple@0.8.0"
+    },
+    {
+      "name": "thor",
+      "version": "0.20.0",
+      "purl": "pkg:gem/thor@0.20.0",
+      "type": "library",
+      "bom-ref": "pkg:gem/thor@0.20.0"
+    },
+    {
+      "name": "thread_safe",
+      "version": "0.3.6",
+      "purl": "pkg:gem/thread_safe@0.3.6",
+      "type": "library",
+      "bom-ref": "pkg:gem/thread_safe@0.3.6"
+    },
+    {
+      "name": "tilt",
+      "version": "2.0.8",
+      "purl": "pkg:gem/tilt@2.0.8",
+      "type": "library",
+      "bom-ref": "pkg:gem/tilt@2.0.8"
+    },
+    {
+      "name": "tzinfo",
+      "version": "1.2.5",
+      "purl": "pkg:gem/tzinfo@1.2.5",
+      "type": "library",
+      "bom-ref": "pkg:gem/tzinfo@1.2.5"
+    }
+  ]
+}

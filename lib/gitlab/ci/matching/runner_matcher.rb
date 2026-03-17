@@ -54,7 +54,12 @@ module Gitlab
         end
 
         def accepting_tags?(build_matcher)
-          (run_untagged || build_matcher.has_tags?) && (build_matcher.tag_list - tag_list).empty?
+          (run_untagged || build_matcher.has_tags?) &&
+            (decode_pg_array(build_matcher.tag_list) - decode_pg_array(tag_list)).empty?
+        end
+
+        def decode_pg_array(value)
+          value.is_a?(String) ? PG::TextDecoder::Array.new.decode(value) : Array(value)
         end
 
         def ensure_build_matcher_instance!(build_matcher)

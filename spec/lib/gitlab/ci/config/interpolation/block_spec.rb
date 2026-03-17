@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Block, feature_category: :pipeline_composition do
   subject { described_class.new(block, data, ctx) }
@@ -111,6 +111,15 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Block, feature_category: :pipe
       expect(subject).to be_valid
       expect(subject.value).to eq('$[[ matrix.PROVIDER ]]')
       expect(subject.errors).to be_empty
+    end
+  end
+
+  context 'when using array index with functions' do
+    let(:ctx) { { inputs: { items: ['hello world', 'foo'] } } }
+    let(:data) { 'inputs.items[0] | truncate(0,5)' }
+
+    it 'applies function to indexed value' do
+      expect(subject.value).to eq 'hello'
     end
   end
 end

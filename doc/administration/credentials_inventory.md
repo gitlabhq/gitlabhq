@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: Credentials inventory
 description: Monitor credentials through a comprehensive access inventory.
@@ -24,9 +24,9 @@ description: Monitor credentials through a comprehensive access inventory.
 Use the credentials inventory to monitor and control access to your organization.
 
 - On GitLab.com, the credentials inventory monitors enterprise users and service
-accounts in a top-level group.
+  accounts in a top-level group.
 - On GitLab Self-Managed and GitLab Dedicated, the credentials inventory monitors
-all human users and service accounts across the entire instance.
+  all human users and service accounts across the entire instance.
 
 Prerequisites:
 

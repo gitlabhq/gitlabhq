@@ -98,6 +98,7 @@ export const buildWorkbenchUrl = async ({
  */
 export const getWebIDEWorkbenchConfig = async ({
   extensionHostDomain,
+  isSingleOriginFallbackEnabled,
   extensionHostDomainChanged = false,
   workbenchSecret,
 } = {}) => {
@@ -134,9 +135,15 @@ export const getWebIDEWorkbenchConfig = async ({
       crossOriginExtensionHost: true,
     };
   } catch (e) {
-    return {
-      workbenchBaseUrl: getGitLabUrl(process.env.GITLAB_WEB_IDE_PUBLIC_PATH),
-      crossOriginExtensionHost: false,
-    };
+    if (isSingleOriginFallbackEnabled) {
+      return {
+        workbenchBaseUrl: getGitLabUrl(process.env.GITLAB_WEB_IDE_PUBLIC_PATH),
+        crossOriginExtensionHost: false,
+      };
+    }
+
+    throw new Error(
+      s__('WebIDE|The Web IDE could not load because the extension host domain is unreachable.'),
+    );
   }
 };

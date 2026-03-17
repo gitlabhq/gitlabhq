@@ -1,6 +1,6 @@
 <script>
 import { GlLabel } from '@gitlab/ui';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {

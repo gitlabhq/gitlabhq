@@ -64,6 +64,11 @@ module WorkItems
         as: :issue_types,
         description: 'Filter work items by the given work item types.',
         required: false
+      argument :work_item_type_ids,
+        [::Types::GlobalIDType[::WorkItems::Type]],
+        required: false,
+        description: 'Filter work items by work item type global IDs.',
+        prepare: ->(global_ids, _ctx) { global_ids.map(&:model_id) }
 
       argument :created_before, ::Types::TimeType,
         required: false,
@@ -146,6 +151,7 @@ module WorkItems
         required: false,
         description: 'Filter by ID of CRM contact organization.'
 
+      validates mutually_exclusive: [:issue_types, :work_item_type_ids]
       validates mutually_exclusive: [:assignee_usernames, :assignee_wildcard_id]
       validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
       validates mutually_exclusive: [:release_tag, :release_tag_wildcard_id]

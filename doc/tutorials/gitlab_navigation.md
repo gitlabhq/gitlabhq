@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Tutorials
-info: For assistance with this tutorials page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorials page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 description: Introduction to the product.
 title: 'Tutorials: Find your way around GitLab'
 ---
@@ -15,6 +15,15 @@ and running quickly.
 | [Navigate the GitLab interface](left_sidebar/_index.md) |  Start navigating the GitLab UI. | {{< icon name="star" >}} |
 | [Use the personal homepage](personal_homepage/_index.md) |  Learn how to use the personal homepage to keep track of your activity across GitLab. | |
 | <i class="fa-youtube-play" aria-hidden="true"></i> [GitLab Continuous Delivery overview](https://www.youtube.com/watch?v=M7rBDZYsx8U&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=193) (17m 2s) | Learn how to use GitLab features to continuously build, test, and deploy iterative code changes. | |
+
+## Contribute as a non-developer
+
+Onboard to an existing [project](../user/project/organize_work_with_projects.md) without any prerequisite software development knowledge. Assist with project management, issue tracking, reviews, and more.
+
+| Topic                                                                                | Description                                                | Good for beginners |
+|--------------------------------------------------------------------------------------|------------------------------------------------------------|--------------------|
+| [Create an issue in an existing project](create_issue_in_existing_project/_index.md) | Use a project's issue board to track tasks and other work. | {{< icon name="star" >}} |
+| [Edit a file using the Web Editor](edit_file_using_web_editor/_index.md)             | Use the web-based file editor to make simple changes directly in the UI. | {{< icon name="star" >}} |
 
 ## Find more tutorial content
 

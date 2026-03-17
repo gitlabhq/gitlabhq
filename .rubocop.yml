@@ -76,6 +76,9 @@ Rails/Pluck:
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94047#note_1179689274
   AutoCorrect: false
 
+Rails/Inquiry:
+  Enabled: false
+
 # Disabled by default and enabled via `.rubocop/internal_affairs.yml`.
 InternalAffairs:
   Enabled: false
@@ -585,6 +588,8 @@ Gitlab/AvoidCurrentOrganization:
     - 'ee/lib/api/**/*'
     - 'app/graphql/**/*'
     - 'ee/app/graphql/**/*'
+    - 'app/workers/**/*'
+    - 'ee/app/workers/**/*'
     - 'lib/gitlab/current_settings.rb'
     - 'lib/gitlab/middleware/organizations/current.rb'
     - 'spec/**/*'
@@ -696,13 +701,26 @@ Gitlab/HardDeleteCalls:
     - 'app/services/namespaces/groups/adjourned_deletion_service.rb'
     - 'app/services/projects/adjourned_deletion_service.rb'
 
+Gitlab/Authz/DisallowAbilityAllowed:
+  Enabled: true
+  Include:
+    - 'app/policies/**/*.rb'
+    - 'ee/app/policies/**/*.rb'
+
 Gitlab/PolicyRuleBoolean:
   Enabled: true
   Include:
     - 'app/policies/**/*'
     - 'ee/app/policies/**/*'
 
-Gitlab/PolicyConditionScope:
+Gitlab/Authz/UsePolicyHelpers:
+  Enabled: true
+  Include:
+    - 'spec/policies/**/*'
+    - 'ee/spec/policies/**/*'
+
+Gitlab/Authz/ConditionScope:
+  Enabled: true
   Include:
     - '{,ee/,jh/}app/policies/**/*.rb'
 
@@ -864,6 +882,12 @@ API/DescriptionDetail:
     - 'lib/**/api/**/*.rb'
     - 'ee/lib/**/api/**/*.rb'
 
+API/LifecycleInDescription:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
 API/DescriptionSuccessResponse:
   Enabled: true
   Include:
@@ -903,6 +927,12 @@ API/ParameterDocumentation:
     - 'ee/lib/**/api/**/*.rb'
 
 API/ParameterType:
+  Enabled: true
+  Include:
+    - 'lib/**/api/**/*.rb'
+    - 'ee/lib/**/api/**/*.rb'
+
+API/RouteSettingLifecycle:
   Enabled: true
   Include:
     - 'lib/**/api/**/*.rb'
@@ -1431,6 +1461,11 @@ Gitlab/LicenseAvailableUsage:
     - 'ee/app/models/ee/application_setting.rb'
     - 'lib/gitlab/current_settings.rb'
 
+Gitlab/Lookbook/NoUrlParamInPreview:
+  Enabled: true
+  Include:
+    - 'spec/components/previews/**/*'
+
 Gitlab/TokenWithoutPrefix:
   Enabled: true
   Include:
@@ -1543,3 +1578,22 @@ Gitlab/AvoidConstDefaultOrganizationId:
 Gitlab/UsersInternalOrganization:
   Description: 'Enforce using Users::Internal.in_organization(organization) for bot methods'
   Enabled: true
+
+Gitlab/Authz/PermissionCheck:
+  Enabled: true
+  Description: 'Enforce using granular permissions when checking access'
+  Exclude:
+    - '{,ee/}app/policies/**/*.rb'
+    - '{,ee/}spec/**/*.rb'
+
+Gitlab/Authz/RoleCheckInRule:
+  Enabled: true
+  Include:
+    - 'app/policies/**/*.rb'
+    - 'ee/app/policies/**/*.rb'
+
+Gitlab/Authz/EnableInBasePolicy:
+  Enabled: true
+  Include:
+    - 'app/policies/base_policy.rb'
+    - 'ee/app/policies/ee/base_policy.rb'

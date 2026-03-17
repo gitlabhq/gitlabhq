@@ -76,15 +76,38 @@ module Gitlab
           def self.fabricate(resource)
             case resource
             when Hash
-              self.new(**resource.symbolize_keys)
+              new(**fast_symbolize_keys(resource))
             when ::Ci::HasVariable, ::Ci::PipelineVariableItem
-              self.new(**resource.to_hash_variable)
+              new(**resource.to_hash_variable)
             when self
               resource.dup
             else
               raise ArgumentError, "Unknown `#{resource.class}` variable resource!"
             end
           end
+
+          # Optimized version of symbolize_keys that skips the allocation when keys are already symbols.
+          # Most callers pass hashes with symbol keys, so checking the first key avoids
+          # creating a new hash in the common case.
+          #
+          # When string keys are detected, we log the occurrence to verify our assumption
+          # that callers always use symbol keys. After monitoring production logs, if no
+          # string keys are detected, we can simplify this code and potentially refactor
+          # the initialize method to only accept symbol keys.
+          def self.fast_symbolize_keys(hash)
+            return hash.symbolize_keys unless Collection.ci_optimization_enabled?
+
+            if hash.empty? || hash.first.first.is_a?(Symbol)
+              hash
+            else
+              Gitlab::AppJsonLogger.info(
+                message: "CI variables Item: string keys detected in hash",
+                caller: Gitlab::BacktraceCleaner.clean_backtrace(caller)
+              )
+              hash.symbolize_keys
+            end
+          end
+          private_class_method :fast_symbolize_keys
 
           def self.possible_var_reference?(value)
             return unless value

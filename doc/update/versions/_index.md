@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab upgrade notes
 description: Version-specific upgrade information and breaking changes for GitLab releases.
 ---
@@ -17,3 +17,5 @@ Upgrade notes for supported GitLab versions. For upgrade notes for older version
 - [GitLab 15 upgrade notes](gitlab_15_changes.md)
 
 {{< /cards >}}
+
+For the latest release notes, see the [GitLab blog](https://about.gitlab.com/releases/categories/releases/) or review the [changelog file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md).

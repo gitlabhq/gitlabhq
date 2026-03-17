@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: tutorials
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Create and deploy a web service with the Google Cloud Run component'
 ---
 
@@ -27,7 +27,6 @@ Learn how to use the [Google Cloud Run component](https://gitlab.com/google-gitl
    ```
 
    After you set your default project, you don't need to pass the `--project` flag with `gcloud` commands.
-
 1. Enable the Compute Engine and Cloud Run APIs:
 
    ```shell
@@ -142,7 +141,6 @@ Google Cloud infrastructure.
 
 1. In your GitLab project, create a
    [`.gitlab-ci.yml` file](../../ci/quick_start/_index.md#create-a-gitlab-ciyml-file).
-
 1. To create a pipeline that builds your image, pushes it to the GitLab container
    registry, copies it to Google Artifact Registry, and uses Cloud Run to deploy,
    modify the contents of your `.gitlab-ci.yml` file to resemble the following.

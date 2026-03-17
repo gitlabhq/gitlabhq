@@ -41,7 +41,7 @@ module Projects
 
     def archive_project
       ApplicationRecord.transaction do
-        (project.state == Namespaces::Stateful::STATES[:archived] || project.archive(transition_user: current_user)) &&
+        (project.state == 'archived' || project.archive(transition_user: current_user)) &&
           project.update(archived: true)
       end
     end

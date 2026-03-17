@@ -2,7 +2,7 @@
 
 module HooksHelper
   def webhook_form_data(hook)
-    {
+    data = {
       name: hook.name,
       description: hook.description,
       secret_token: hook.masked_token, # always use masked_token to avoid exposing secret_token to frontend
@@ -12,6 +12,15 @@ module HooksHelper
       is_new_hook: hook.new_record?.to_s,
       triggers: Gitlab::Json.dump(all_triggers(hook))
     }
+
+    if hook.is_a?(ProjectHook) && hook.project
+      data[:deploy_token_events_enabled] = Feature.enabled?(
+        :project_deploy_token_expiring_notifications,
+        hook.project
+      ).to_s
+    end
+
+    data
   end
 
   def webhook_test_items(hook, triggers)

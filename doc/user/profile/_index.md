@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: User account
 description: Profile settings, preferences, authentication, and notifications.
 ---
@@ -60,7 +60,7 @@ To generate a new Support PIN:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Select **Generate New PIN**.
 
 ## Access your Support PIN
@@ -72,7 +72,7 @@ To access your Support PIN:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 
 ## Change your username
 
@@ -99,7 +99,7 @@ To change your username:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. In the **Change username** section, enter a new username as the path.
 1. Select **Update username**.
 
@@ -109,7 +109,7 @@ To add a new email address to your account:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Emails**.
+1. In the left sidebar, select **Emails**.
 1. Select **Add new email**.
 1. In the **Email** text box, enter the new email.
 1. Select **Add email address**.
@@ -147,7 +147,7 @@ To delete an email address from your account:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Emails**.
+1. In the left sidebar, select **Emails**.
 1. Select **Delete** ({{< icon name="remove" >}}) and confirm you want to **Remove**.
 
 You can also [use the API to delete a secondary email address](../../api/user_email_addresses.md#delete-an-email-address).
@@ -263,7 +263,7 @@ To add a Mastodon handle:
    1. In the upper-right corner, select your avatar.
    1. Select your name or username.
    1. On the right side, select your Mastodon handle.
-   1, Copy the URI from the page that opens.
+   1. Copy the URI from the page that opens.
 1. Add verification to Mastodon.
    1. Go to your Mastodon profile settings.
    1. In the **Extra fields** section, enter the URI from earlier.
@@ -447,7 +447,7 @@ A list of **Most Recent Activity** contributions is displayed.
 
 To view your activity:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **Your work**.
 1. Select **Activity**.
 1. Optional. To filter your activity by contribution type, in the **Your Activity** tab, select a tab:

@@ -1,6 +1,8 @@
+import setWindowLocation from 'helpers/set_window_location_helper';
 import {
   createJobsHash,
   generateJobNeedsDict,
+  getInitialFilterParams,
   getPipelineDefaultTab,
 } from '~/ci/pipeline_details/utils';
 import { validPipelineTabNames, pipelineTabName } from '~/ci/pipeline_details/constants';
@@ -172,6 +174,23 @@ describe('utils functions', () => {
         [jobPrepareA2]: [],
         [jobPrepareA3]: [],
       });
+    });
+  });
+
+  describe('getInitialFilterParams', () => {
+    it('merges server params with validated result', () => {
+      setWindowLocation('https://gitlab.com/group/project/-/pipelines');
+      expect(getInitialFilterParams({ status: 'success' })).toEqual({ status: 'success' });
+    });
+
+    it('overrides params with ref from URL when ref is present', () => {
+      setWindowLocation('https://gitlab.com/group/project/-/pipelines?ref=main');
+      expect(getInitialFilterParams({})).toEqual({ ref: 'main' });
+    });
+
+    it('preserves plus in ref from URL (branch names containing +)', () => {
+      setWindowLocation('https://gitlab.com/group/project/-/pipelines?ref=release%2F4.5%2B4');
+      expect(getInitialFilterParams({})).toEqual({ ref: 'release/4.5+4' });
     });
   });
 

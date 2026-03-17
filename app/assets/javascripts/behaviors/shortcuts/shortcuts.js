@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import { flatten } from 'lodash';
 import Vue from 'vue';
+import { MARKDOWN_EVENT_TOGGLE } from '~/behaviors/preview_markdown';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_SHORTCUT_CLICK } from '~/tracking/constants';
 import { Mousetrap, addStopCallback } from '~/lib/mousetrap';
@@ -272,7 +273,9 @@ export default class Shortcuts {
   }
 
   static toggleMarkdownPreview(e) {
-    $(document).triggerHandler('markdown-preview:toggle', [e]);
+    document.dispatchEvent(
+      new CustomEvent(MARKDOWN_EVENT_TOGGLE, { detail: { keyboardEvent: e } }),
+    );
   }
 
   static toggleFindAndReplaceBar(e) {

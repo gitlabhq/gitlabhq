@@ -114,6 +114,27 @@ module Integrations
       Gitlab::DataBuilder::ResourceAccessTokenPayload.build(resource_access_token, :expiring, project)
     end
 
+    def deploy_tokens_events_data
+      resource_deploy_token = DeployToken.new(
+        id: 1,
+        name: 'deploy_token_for_webhook_event',
+        username: 'deploy-token-user',
+        created_at: Time.zone.now,
+        expires_at: 7.days.from_now,
+        revoked: false,
+        deploy_token_type: 'project_type'
+      )
+
+      Gitlab::DataBuilder::ResourceDeployTokenPayload.build(
+        resource_deploy_token,
+        :expiring,
+        project,
+        {
+          interval: 'seven_days'
+        }
+      )
+    end
+
     def vulnerability_events_data
       vulnerability = project.vulnerabilities.limit(1).last
 

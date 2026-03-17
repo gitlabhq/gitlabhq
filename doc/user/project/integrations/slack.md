@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Slack notifications (deprecated)
 ---
 
@@ -41,13 +41,13 @@ to control GitLab from Slack. Slash commands are configured separately.
 
 {{< /history >}}
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Slack notifications**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. In the **Trigger** section, select the checkboxes for each type of GitLab
    event to send to Slack as a notification. For a full list, see
-   [Triggers for Slack notifications](#triggers-for-slack-notifications).
+   [triggers for Slack notifications](#triggers-for-slack-notifications).
    By default, messages are sent to the channel you configured during
    [Slack configuration](#configure-slack).
 1. Optional. To send messages to a different channel, multiple channels, or as
@@ -78,12 +78,12 @@ The following triggers are available for Slack notifications:
 | Trigger name                                                              | Trigger event |
 | ------------------------------------------------------------------------- | ------------- |
 | **Push**                                                                  | A push to the repository. |
-| **Issue**                                                                 | An issue is created, closed, or reopened. |
+| **Issue**                                                                 | A work item is created, closed, or reopened. |
 | **Incident**                                                              | An incident is created, closed, or reopened. |
-| **Confidential issue**                                                    | A confidential issue is created, closed, or reopened. |
+| **Confidential issue**                                                    | A confidential work item is created, closed, or reopened. |
 | **Merge request**                                                         | A merge request is created, merged, approved, closed, or reopened. |
 | **Note**                                                                  | A comment is added. |
-| **Confidential note**                                                     | An internal note or comment on a confidential issue is added. |
+| **Confidential note**                                                     | An internal note or comment on a confidential work item is added. |
 | **Tag push**                                                              | A new tag is pushed to the repository or removed. |
 | **Pipeline**                                                              | A pipeline status changed. |
 | **Wiki page**                                                             | A wiki page is created or updated. |

@@ -107,7 +107,9 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
           end
 
           it 'stores the payload as a variable' do
-            expect { result }.to change { Ci::PipelineVariable.count }.by(1)
+            expect { result }.to change { Ci::PipelineArtifact.where(file_type: :pipeline_variables).count }.by(1)
+              # TODO: Remove below expectation with FF `ci_stop_writing_to_pipeline_variables`
+              .and not_change { Ci::PipelineVariable.count }
 
             var = result[:pipeline].variables.first
 
@@ -115,6 +117,16 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
             expect(var.value).to eq('{"ref":"master","variables":null}')
             expect(var.variable_type).to eq('file')
             expect(var.raw).to eq(true)
+          end
+
+          context 'when ci_stop_writing_to_pipeline_variables FF is disabled' do
+            before do
+              stub_feature_flags(ci_stop_writing_to_pipeline_variables: false)
+            end
+
+            it 'stores the payload as a DB variable' do
+              expect { result }.to change { Ci::PipelineVariable.count }.by(1)
+            end
           end
 
           context 'when commit message has [ci skip]' do
@@ -133,8 +145,20 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
             let(:variables) { { 'AAA' => 'AAA123' } }
 
             it 'has variables' do
-              expect { result }.to change { Ci::PipelineVariable.count }.by(2)
+              expect { result }.to change { Ci::PipelineArtifact.where(file_type: :pipeline_variables).count }.by(1)
+                # TODO: Remove below expectation with FF `ci_stop_writing_to_pipeline_variables`
+                .and not_change { Ci::PipelineVariable.count }
               expect(result[:pipeline].variables.map { |v| { v.key => v.value } }.first).to eq(variables)
+            end
+
+            context 'when ci_stop_writing_to_pipeline_variables FF is disabled' do
+              before do
+                stub_feature_flags(ci_stop_writing_to_pipeline_variables: false)
+              end
+
+              it 'writes variables to DB' do
+                expect { result }.to change { Ci::PipelineVariable.count }.by(2)
+              end
             end
           end
 
@@ -240,10 +264,23 @@ RSpec.describe Ci::PipelineTriggerService, feature_category: :continuous_integra
             let(:variables) { { 'AAA' => 'AAA123' } }
 
             it 'has variables' do
-              expect { result }.to change { Ci::PipelineVariable.count }.by(2)
-                               .and change { Ci::Sources::Pipeline.count }.by(1)
+              expect { result }.to change { Ci::PipelineArtifact.where(file_type: :pipeline_variables).count }.by(1)
+                # TODO: Remove below expectation with FF `ci_stop_writing_to_pipeline_variables`
+                .and not_change { Ci::PipelineVariable.count }
+                .and change { Ci::Sources::Pipeline.count }.by(1)
               expect(result[:pipeline].variables.map { |v| { v.key => v.value } }.first).to eq(variables)
               expect(job.sourced_pipelines.last.pipeline_id).to eq(result[:pipeline].id)
+            end
+
+            context 'when ci_stop_writing_to_pipeline_variables FF is disabled' do
+              before do
+                stub_feature_flags(ci_stop_writing_to_pipeline_variables: false)
+              end
+
+              it 'writes variables to DB' do
+                expect { result }.to change { Ci::PipelineVariable.count }.by(2)
+                                 .and change { Ci::Sources::Pipeline.count }.by(1)
+              end
             end
           end
 

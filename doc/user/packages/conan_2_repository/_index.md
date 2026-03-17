@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Conan 2 packages in the package registry
 ---
 
@@ -9,7 +9,7 @@ title: Conan 2 packages in the package registry
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
@@ -210,7 +210,7 @@ Prerequisites:
 > If you try installing the package you created in this tutorial, the install command
 > has no effect because the package already exists.
 > Use this command to remove an existing package locally and then try again:
-> 
+>
 > ```shell
 > conan remove hello/0.1@mycompany/beta
 > ```

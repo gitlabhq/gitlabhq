@@ -494,6 +494,314 @@ RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_agent_pl
     end
   end
 
+  describe '#network_policy' do
+    context 'with valid network_policy containing duplicates' do
+      let(:config_content) do
+        <<~YAML
+          network_policy:
+            allowed_domains:
+              - example.com
+              - example.com
+              - EXAMPLE.COM
+              - test.com
+              - test.com
+            denied_domains:
+              - blocked.com
+              - blocked.com
+              - malicious.com
+              - malicious.com
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'removes duplicates from allowed_domains and denied_domains' do
+        expected = {
+          'allowed_domains' => ['example.com', 'test.com'],
+          'denied_domains' => ['blocked.com', 'malicious.com']
+        }
+        expect(config.network_policy).to eq(expected)
+      end
+    end
+
+    context 'with domains containing single quotes' do
+      let(:config_content) do
+        <<~YAML
+          network_policy:
+            allowed_domains:
+              - "EXAM'PLE.COM"
+            denied_domains:
+              - "mali'cious.com"
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'removes single quotes and downcases domains' do
+        expected = {
+          'allowed_domains' => ['example.com'],
+          'denied_domains' => ['malicious.com']
+        }
+        expect(config.network_policy).to eq(expected)
+      end
+    end
+
+    context 'with various input formats' do
+      let(:config_content) do
+        <<~YAML
+          network_policy:
+            allowed_domains:
+              - 1
+              - nil
+              - abcdef
+            denied_domains:
+              - blocked.com
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'converts inputs to array of strings' do
+        expected = {
+          'allowed_domains' => %w[1 nil abcdef],
+          'denied_domains' => ['blocked.com']
+        }
+        expect(config.network_policy).to eq(expected)
+      end
+    end
+
+    context 'when network_policy is not a hash' do
+      let(:config_content) do
+        <<~YAML
+          network_policy: invalid_string
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns nil' do
+        expect(config.network_policy).to be_nil
+      end
+    end
+
+    context 'when allowed_domains contains non-array' do
+      let(:config_content) do
+        <<~YAML
+          network_policy:
+            allowed_domains: example.com
+            denied_domains:
+              - blocked.com
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'converts single string to array' do
+        expected = {
+          'allowed_domains' => ['example.com'],
+          'denied_domains' => ['blocked.com']
+        }
+        expect(config.network_policy).to eq(expected)
+      end
+    end
+
+    context 'when config does not contain network_policy' do
+      let(:config_content) do
+        <<~YAML
+          image: node:18-alpine
+          setup_script:
+            - npm install
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns nil' do
+        expect(config.network_policy).to be_nil
+      end
+    end
+
+    context 'when config file does not exist' do
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(config.network_policy).to be_nil
+      end
+    end
+
+    context 'when network_policy has empty arrays' do
+      let(:config_content) do
+        <<~YAML
+          network_policy:
+            allowed_domains: []
+            denied_domains: []
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns empty arrays for both domains' do
+        expected = {
+          'allowed_domains' => [],
+          'denied_domains' => []
+        }
+        expect(config.network_policy).to eq(expected)
+      end
+    end
+
+    context 'when network_policy has only allowed_domains' do
+      let(:config_content) do
+        <<~YAML
+          network_policy:
+            allowed_domains:
+              - example.com
+              - test.com
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns normalized policy with only allowed_domains' do
+        expected = {
+          'allowed_domains' => ['example.com', 'test.com'],
+          'denied_domains' => []
+        }
+        expect(config.network_policy).to eq(expected)
+      end
+    end
+
+    context 'when network_policy has only denied_domains' do
+      let(:config_content) do
+        <<~YAML
+          network_policy:
+            denied_domains:
+              - blocked.com
+              - malicious.com
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'returns normalized policy with only denied_domains' do
+        expected = {
+          'allowed_domains' => [],
+          'denied_domains' => ['blocked.com', 'malicious.com']
+        }
+        expect(config.network_policy).to eq(expected)
+      end
+    end
+
+    context 'when network_policy has nil values' do
+      let(:config_content) do
+        <<~YAML
+          network_policy:
+            allowed_domains:
+            denied_domains:
+        YAML
+      end
+
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'filters out nil values and returns empty arrays' do
+        expected = {
+          'allowed_domains' => [],
+          'denied_domains' => []
+        }
+        expect(config.network_policy).to eq(expected)
+      end
+    end
+
+    context 'when @config is nil' do
+      before do
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(nil)
+        allow(Rails.cache).to receive(:fetch).and_return(nil)
+      end
+
+      it 'returns nil without calling dig' do
+        expect(config.network_policy).to be_nil
+      end
+    end
+
+    context 'when domains exceed MAX_USER_SPECIFIED_DOMAINS' do
+      let(:max_domains) { 10 }
+      let(:excess_count) { max_domains + 10 }
+      let(:config_content) do
+        allowed = (1..excess_count).map { |i| "allowed#{i}.com" }
+        denied = (1..excess_count).map { |i| "denied#{i}.com" }
+        <<~YAML
+          network_policy:
+            allowed_domains:
+              #{allowed.map { |d| "- #{d}" }.join("\n    ")}
+            denied_domains:
+              #{denied.map { |d| "- #{d}" }.join("\n    ")}
+        YAML
+      end
+
+      before do
+        stub_const("#{described_class}::MAX_USER_SPECIFIED_DOMAINS", max_domains)
+        allow(project.repository).to receive(:blob_data_at)
+                                       .with(default_branch, config_path)
+                                       .and_return(config_content)
+      end
+
+      it 'limits allowed_domains and denied_domains to MAX_USER_SPECIFIED_DOMAINS' do
+        result = config.network_policy
+        expect(result['allowed_domains'].length).to eq(max_domains)
+        expect(result['denied_domains'].length).to eq(max_domains)
+        expect(result['allowed_domains'].first).to eq('allowed1.com')
+        expect(result['allowed_domains'].last).to eq("allowed#{max_domains}.com")
+        expect(result['denied_domains'].first).to eq('denied1.com')
+        expect(result['denied_domains'].last).to eq("denied#{max_domains}.com")
+      end
+    end
+  end
+
   describe 'caching' do
     let(:cache_key) { "duo_config:#{project.id}:#{commit_sha}" }
 

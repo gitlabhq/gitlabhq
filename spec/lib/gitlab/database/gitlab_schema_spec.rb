@@ -38,7 +38,6 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       'audit_events_part_5fc467ac26'                 | :gitlab_main
       '_test_gitlab_main_table'                      | :gitlab_main
       '_test_gitlab_ci_table'                        | :gitlab_ci
-      '_test_gitlab_main_cell_table'                 | :gitlab_main_cell
       '_test_gitlab_main_org_table'                  | :gitlab_main_org
       '_test_gitlab_pm_table'                        | :gitlab_pm
       '_test_gitlab_sec_table'                       | :gitlab_sec
@@ -330,7 +329,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         %w[evidences ci_pipelines] | false
         %w[users detached_partitions] | false
         %w[users namespaces] | true
-        %w[plans namespaces] | true
+        %w[plans namespaces] | false
         %w[users achievements] | true
         %w[users agent_group_authorizations] | true
       end

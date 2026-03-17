@@ -13,7 +13,7 @@
  * />
  */
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { sanitize } from '~/lib/dompurify';
 
 import { __ } from '~/locale';

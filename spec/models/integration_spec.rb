@@ -257,7 +257,7 @@ RSpec.describe Integration, feature_category: :integrations do
       end
 
       context 'when there is an instance specific integration' do
-        let!(:beyond_identity_integration) { create(:beyond_identity_integration, instance: false, group: group) }
+        let!(:beyond_identity_integration) { create(:beyond_identity_integration, project: nil, group: group) }
 
         it 'includes the instance specific integration' do
           expect(described_class.for_group(group)).to include(jira_group_integration, beyond_identity_integration)
@@ -905,7 +905,7 @@ RSpec.describe Integration, feature_category: :integrations do
       end
 
       context 'with active group-level integration' do
-        let!(:group_integration) { create(:beyond_identity_integration, group: group, instance: false) }
+        let!(:group_integration) { create(:beyond_identity_integration, project: nil, group: group) }
 
         it 'creates an integration from the group-level integration' do
           described_class.create_from_default_instance_specific_integrations(project, :project_id)
@@ -916,7 +916,7 @@ RSpec.describe Integration, feature_category: :integrations do
 
         context 'when group level integration is not active' do
           let!(:group_integration) do
-            create(:beyond_identity_integration, group: group, instance: false, active: false)
+            create(:beyond_identity_integration, project: nil, group: group, active: false)
           end
 
           it 'creates an integration from the group-level integration' do
@@ -942,7 +942,7 @@ RSpec.describe Integration, feature_category: :integrations do
         context 'with an active subgroup' do
           let_it_be(:subgroup) { create(:group, parent: group) }
           let_it_be(:project) { create(:project, group: subgroup) }
-          let!(:subgroup_integration) { create(:beyond_identity_integration, group: subgroup, instance: false) }
+          let!(:subgroup_integration) { create(:beyond_identity_integration, project: nil, group: subgroup) }
 
           it 'creates an integration from the subgroup-level integration' do
             described_class.create_from_default_instance_specific_integrations(project, :project_id)
@@ -967,8 +967,8 @@ RSpec.describe Integration, feature_category: :integrations do
 
                 context 'when having an integration inheriting settings' do
                   let!(:subgroup_integration) do
-                    create(:beyond_identity_integration, group: subgroup, inherit_from_id: group_integration.id,
-                      instance: false)
+                    create(:beyond_identity_integration, project: nil, group: subgroup,
+                      inherit_from_id: group_integration.id)
                   end
 
                   it 'creates an integration from the group-level integration' do
@@ -1616,6 +1616,47 @@ RSpec.describe Integration, feature_category: :integrations do
         expect(described_class.last.project_id).to eq(project.id)
         expect(described_class.last.group_id).to be_nil
         expect(described_class.last.organization_id).to be_nil
+      end
+    end
+
+    context 'when filter is set' do
+      let(:filter) do
+        {
+          'rules' => [
+            { 'field' => 'status', 'operator' => 'eq', 'value' => 'failed' }
+          ]
+        }
+      end
+
+      before do
+        record.filter = filter
+      end
+
+      it 'includes filter in the hash' do
+        hash = record.to_database_hash
+
+        expect(hash).to have_key('filter')
+        expect(hash['filter']).to eq(filter)
+      end
+
+      it 'preserves filter when saving with insert_all' do
+        hash = record.to_database_hash
+        hash[:project_id] = project.id
+
+        expect do
+          described_class.insert_all([hash])
+        end.to change { described_class.count }.by(1)
+
+        expect(described_class.last.filter).to eq(filter)
+      end
+    end
+
+    context 'when filter is nil' do
+      it 'includes filter as nil in the hash' do
+        hash = record.to_database_hash
+
+        expect(hash).to have_key('filter')
+        expect(hash['filter']).to be_empty
       end
     end
   end

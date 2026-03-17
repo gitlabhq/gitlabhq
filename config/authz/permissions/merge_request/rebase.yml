@@ -1,5 +1,3 @@
 ---
 name: rebase_merge_request
 description: Grants the ability to rebase merge requests
-boundaries:
-  - project

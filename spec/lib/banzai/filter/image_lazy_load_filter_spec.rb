@@ -38,5 +38,38 @@ RSpec.describe Banzai::Filter::ImageLazyLoadFilter, feature_category: :markdown 
     expect(doc.at_css('img')['data-src']).to eq 'https://i.imgur.com/DfssX9C.jpg'
   end
 
+  describe '.apply_lazy_load' do
+    it 'sets decoding, class, data-src, and placeholder src on an img node' do
+      doc = Nokogiri::HTML.fragment('<img src="/uploads/test.jpg" />')
+      img = doc.at_css('img')
+
+      described_class.apply_lazy_load(img)
+
+      expect(img['decoding']).to eq 'async'
+      expect(img['class']).to eq 'lazy'
+      expect(img['data-src']).to eq '/uploads/test.jpg'
+      expect(img['src']).to eq LazyImageTagHelper.placeholder_image
+    end
+
+    it 'appends lazy to existing classes' do
+      doc = Nokogiri::HTML.fragment('<img src="/uploads/test.jpg" class="existing" />')
+      img = doc.at_css('img')
+
+      described_class.apply_lazy_load(img)
+
+      expect(img['class']).to eq 'existing lazy'
+    end
+  end
+
+  it 'skips images with the js-render-iframe class' do
+    doc = filter(image_with_class('https://www.youtube.com/embed/foo', 'js-render-iframe'))
+    img = doc.at_css('img')
+
+    expect(img['src']).to eq 'https://www.youtube.com/embed/foo'
+    expect(img['data-src']).to be_nil
+    expect(img['class']).to eq 'js-render-iframe'
+    expect(img['decoding']).to be_nil
+  end
+
   it_behaves_like 'pipeline timing check'
 end

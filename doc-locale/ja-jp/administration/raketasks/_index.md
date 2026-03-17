@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Rakeタスク
 ---
 
@@ -12,48 +12,48 @@ title: Rakeタスク
 
 {{< /details >}}
 
-GitLabは、一般的な管理および運用プロセスを支援するために、[Rake](https://ruby.github.io/rake/)タスクを提供します。
+GitLabは、一般的な管理および運用プロセスを支援するために、[Rake](https://ruby.github.io/rake/)タスクを提供しています。
 
-特に明記されていない限り、すべてのRakeタスクはRailsノード上で実行する必要があります。
+特定のタスクのドキュメントで別途明記されていない限り、すべてのRakeタスクはRailsノード上で実行する必要があります。
 
 次のいずれかの方法でGitLab Rakeタスクを実行できます:
 
-- `gitlab-rake <raketask>`（[Linuxパッケージ](https://docs.gitlab.com/omnibus/)および[GitLab Helmチャート](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information)のインストールの場合）。
-- `bundle exec rake <raketask>`（[セルフコンパイル](../../install/self_compiled/_index.md)インストールの場合）。
+- [Linuxパッケージ](https://docs.gitlab.com/omnibus/)および[GitLab Helmチャート](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/#gitlab-specific-kubernetes-information)によるインストールの場合、`gitlab-rake <raketask>`。
+- [自己コンパイルによる](../../install/self_compiled/_index.md)インストールの場合、`bundle exec rake <raketask>`。
 
 ## 利用可能なRakeタスク {#available-rake-tasks}
 
-以下のRakeタスクをGitLabで使用できます:
+GitLabでは次のRakeタスクを使用できます:
 
 | タスク                                                                                                 | 説明 |
 |:------------------------------------------------------------------------------------------------------|:------------|
-| [アクセストークンの有効期限タスク](tokens/_index.md)                                                     | アクセストークンの有効期限日を一括で延長または削除します。 |
+| [アクセストークンの有効期限タスク](tokens/_index.md)                                                     | アクセストークンの有効期限を一括で延長または削除します。 |
 | [AIカタログの外部エージェント](ai_catalog.md)                                                           | AIカタログの外部エージェントをシードします。 |
-| [バックアップと復元](../backup_restore/_index.md)                                                    | サーバー間でGitLabインスタンスをバックアップ、復元、および移行します。 |
+| [バックアップと復元](../backup_restore/_index.md)                                                    | GitLabインスタンスをバックアップ、復元、サーバー間で移行します。 |
 | [クリーンアップ](cleanup.md)                                                                                | GitLabインスタンスから不要なアイテムをクリーンアップします。 |
 | 開発                                                                                           | GitLabコントリビューター向けのタスク。詳細については、開発ドキュメントを参照してください。 |
-| [Elasticsearch](../../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks) | GitLabインスタンスでElasticsearchをメンテナンスします。 |
+| [Elasticsearch](../../integration/advanced_search/elasticsearch.md#gitlab-advanced-search-rake-tasks) | GitLabインスタンス内のElasticsearchをメンテナンスします。 |
 | [一般的なメンテナンス](maintenance.md)                                                                 | 一般的なメンテナンスと自己チェックタスク。 |
 | [GitHubインポート](../../user/project/import/github.md)                                                  | GitHubからリポジトリを取得してインポートします。 |
-| [大規模なプロジェクトエクスポートをインポートする](project_import_export.md#import-large-projects)                        | 大規模なGitLab[プロジェクトエクスポート](../../user/project/settings/import_export.md)をインポートします。 |
+| [大規模なプロジェクトエクスポートのインポート](project_import_export.md#import-large-projects)                        | 大規模なGitLab[プロジェクトエクスポート](../../user/project/settings/import_export.md)をインポートします。 |
 | [受信メール](incoming_email.md)                                                                   | 受信メール関連のタスク。 |
 | [整合性チェック](check.md)                                                                          | リポジトリ、ファイル、LDAPなどの整合性をチェックします。 |
-| [Keep-around参照](keep_around.md)                                                              | プロジェクトの孤立したkeep-around参照をすべて検索します。 |
+| [keep-around参照](keep_around.md)                                                              | プロジェクトの孤立したkeep-around参照をすべて検索します。 |
 | [LDAPメンテナンス](ldap.md)                                                                           | [LDAP](../auth/ldap/_index.md)関連のタスク。 |
 | [パスワード](password.md)                                                                               | パスワード管理タスク。 |
 | [Praefect Rakeタスク](praefect.md)                                                                    | [Praefect](../gitaly/praefect/_index.md)関連のタスク。 |
 | [プロジェクトのインポート/エクスポート](project_import_export.md)                                                     | [プロジェクトのエクスポートとインポート](../../user/project/settings/import_export.md)の準備をします。 |
-| [Sidekiqジョブの移行](../sidekiq/sidekiq_job_migration.md)                                          | 将来の日付にスケジュールされたSidekiqジョブを新しいキューに移行します。 |
-| [サービスデスクメール](service_desk_email.md)                                                           | サービスデスクのメール関連のタスク。 |
+| [Sidekiqジョブの移行](../sidekiq/sidekiq_job_migration.md)                                          | 将来の日付でスケジュールされたSidekiqジョブを新しいキューに移行します。 |
+| [サービスデスクのメール](service_desk_email.md)                                                           | サービスデスクのメール関連のタスク。 |
 | [SMTPメンテナンス](smtp.md)                                                                           | SMTP関連のタスク。 |
-| [SPDXライセンスリストのインポート](spdx.md)                                                                   | [ライセンス承認ポリシー](../../user/compliance/license_approval_policies.md)をマッチングするために、[SPDXライセンスリスト](https://spdx.org/licenses/)のローカルコピーをインポートします。 |
-| [ユーザーパスワードをリセットする](../../security/reset_user_password.md#use-a-rake-task)                         | Rakeを使用してユーザーパスワードをリセットします。 |
-| [アップロードの移行](uploads/migrate.md)                                                                 | ローカルストレージとオブジェクトストレージの間でアップロードを移行します。 |
+| [SPDXライセンスリストのインポート](spdx.md)                                                                   | [ライセンス承認ポリシー](../../user/compliance/license_approval_policies.md)を照合するために、[SPDXライセンスリスト](https://spdx.org/licenses/)のローカルコピーをインポートします。 |
+| [ユーザーパスワードのリセット](../../security/reset_user_password.md#use-a-rake-task)                         | Rakeを使用してユーザーパスワードをリセットします。 |
+| [アップロードの移行](uploads/migrate.md)                                                                 | ローカルストレージとオブジェクトストレージ間でアップロードを移行します。 |
 | [アップロードのサニタイズ](uploads/sanitize.md)                                                               | GitLabの以前のバージョンにアップロードされた画像からEXIFデータを削除します。 |
-| サービスデータ                                                                                          | Service Pingを生成してトラブルシューティングを行う。詳細については、Service Pingの開発ドキュメントを参照してください。 |
+| サービスデータ                                                                                          | Service Pingを生成してトラブルシューティングを行います。詳細については、Service Pingの開発ドキュメントを参照してください。 |
 | [ユーザー管理](user_management.md)                                                                 | ユーザー管理タスクを実行します。 |
-| [Webhook管理](web_hooks.md)                                                                | プロジェクトWebhookをメンテナンスします。 |
-| [X.509署名](x509_signatures.md)                                                                | X.509署名のコミット署名を更新します。これは、証明書ストアが変更された場合に役立ちます。 |
+| [Webhook管理](web_hooks.md)                                                                | プロジェクトのWebhookをメンテナンスします。 |
+| [X.509署名](x509_signatures.md)                                                                | X.509のコミット署名を更新します。これは、証明書ストアが変更された場合などに役立ちます。 |
 
 利用可能なすべてのRakeタスクをリストするには:
 

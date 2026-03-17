@@ -126,7 +126,8 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
 
   def create_note_params
     params.permit(
-      :note
+      :note,
+      :merge_request_diff_head_sha
     ).tap do |create_params|
       create_params[:noteable_type] = merge_request.class.name
       create_params[:noteable_id] = merge_request.id

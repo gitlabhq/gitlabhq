@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting the container registry metadata database
 description: Troubleshoot problems with the container registry metadata database.
 ---
@@ -238,11 +238,8 @@ Alternatively, if the above scenarios are not true, and your registry is meant
 to use legacy metadata storage, delete the `database-in-use` lockfile at
 `/docker/registry/lockfiles/database-in-use`.
 
-Finally, you can disable the lockfile checks by setting the
-`REGISTRY_FF_ENFORCE_LOCKFILES` container registry feature flag to `false`.
-While this disables the checks, this
-error is meant to ensure the integrity of your registry data and it is preferable
-to confirm which metadata storage you are using. `REGISTRY_FF_ENFORCE_LOCKFILES`
-is [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1439)
-and scheduled for removal in GitLab 18.10. For more information, see
-[Container registry feature flags](container_registry.md#container-registry-feature-flags).
+For GitLab 18.8 and 18.9, you can disable the lockfile checks by setting
+the `REGISTRY_FF_ENFORCE_LOCKFILES` container registry feature flag to `false`.
+While this disables the checks, this error is meant to ensure the integrity of
+your registry data and it is preferable to confirm which metadata storage you
+are using. `REGISTRY_FF_ENFORCE_LOCKFILES` feature flag removed in GitLab 18.10. For more information, see [Container registry feature flags](container_registry.md#container-registry-feature-flags).

@@ -96,6 +96,7 @@ describe('Work Item Note', () => {
     updateWorkItemMutationHandler = updateWorkItemMutationSuccessHandler,
     assignees = mockAssignees,
     workItemByIidResponseHandler = workItemResponseHandler,
+    provideData = {},
   } = {}) => {
     wrapper = shallowMount(WorkItemNote, {
       propsData: {
@@ -111,6 +112,7 @@ describe('Work Item Note', () => {
         autocompleteDataSources: {},
         assignees,
       },
+      provide: provideData,
       stubs: {
         TimelineEntryItem,
       },
@@ -360,6 +362,7 @@ end`;
               assigneeIds: [mockAssignees[1].id],
             },
           },
+          useWorkItemFeatures: false,
         });
       });
 
@@ -394,6 +397,62 @@ end`;
           category: TRACKING_CATEGORY_SHOW,
           label: 'work_item_note_actions',
           property: 'type_Task',
+          extra: { viewContext: 'full_screen' },
+        });
+      });
+
+      describe('when FF workItemFeaturesField is true and features.assignees is present', () => {
+        const mockFeatures = {
+          assignees: {
+            allowsMultipleAssignees: true,
+            assignees: {
+              nodes: mockAssignees,
+              __typename: 'UserCoreConnection',
+            },
+          },
+        };
+        let updateWorkItemWithFeaturesHandler;
+
+        beforeEach(async () => {
+          const response = workItemByIidResponseFactory();
+          response.data.namespace.workItem.features = mockFeatures;
+
+          const { workItemUpdate } = updateWorkItemMutationResponse.data;
+          const mutationResponse = {
+            data: {
+              workItemUpdate: {
+                ...workItemUpdate,
+                workItem: {
+                  ...workItemUpdate.workItem,
+                  features: mockFeatures,
+                },
+              },
+            },
+          };
+          updateWorkItemWithFeaturesHandler = jest.fn().mockResolvedValue(mutationResponse);
+
+          createComponent({
+            assignees: mockAssignees,
+            workItemByIidResponseHandler: jest.fn().mockResolvedValue(response),
+            updateWorkItemMutationHandler: updateWorkItemWithFeaturesHandler,
+            provideData: { glFeatures: { workItemFeaturesField: true } },
+          });
+          await waitForPromises();
+        });
+
+        it('calls mutation with useWorkItemFeatures set to true', async () => {
+          findNoteActions().vm.$emit('assign-user');
+          await waitForPromises();
+
+          expect(updateWorkItemWithFeaturesHandler).toHaveBeenCalledWith({
+            input: {
+              id: mockWorkItemId,
+              assigneesWidget: {
+                assigneeIds: [mockAssignees[1].id],
+              },
+            },
+            useWorkItemFeatures: true,
+          });
         });
       });
     });

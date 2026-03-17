@@ -87,6 +87,7 @@ module QA
             # The dropdown button comes from the `GlDropdown` component of `@gitlab/ui`,
             # so it wasn't possible to add a `data-testid` to it.
             find_element('boards-dropdown').find('button').click
+            has_css?('[role="listbox"]', visible: true)
           end
 
           def click_focus_mode_button

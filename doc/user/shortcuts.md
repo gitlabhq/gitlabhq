@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Engagement
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab keyboard shortcuts
 description: Global shortcuts, navigation, and quick access.
 ---
@@ -85,8 +85,8 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd>+<kbd>c</kbd>   | Go to the project **Commits** page (**Code** > **Commits**). |
 | <kbd>g</kbd>+<kbd>n</kbd>   | Go to the [**Repository graph**](#repository-graph) page (**Code** > **Repository graph**). |
 | <kbd>g</kbd>+<kbd>d</kbd>   | Go to the charts in the **Repository analytics** page (**Analyze** > **Repository analytics**). |
-| <kbd>g</kbd>+<kbd>i</kbd>   | Go to the project **Issues** page (**Plan** > **Issues**). |
-| <kbd>i</kbd>                | Go to the **New Issue** page (**Plan** > **Issues**, select **New issue** ). |
+| <kbd>g</kbd>+<kbd>i</kbd>   | Go to the project **Work items** page (**Plan** > **Work items**). |
+| <kbd>i</kbd>                | Go to the **New Issue** page (**Plan** > **Work items**, select **New item** ). |
 | <kbd>g</kbd>+<kbd>b</kbd>   | Go to the project **Issue boards** page (**Plan** > **Issue boards**). |
 | <kbd>g</kbd>+<kbd>m</kbd>   | Go to the project **Merge requests** page (**Code** > **Merge requests**). |
 | <kbd>g</kbd>+<kbd>p</kbd>   | Go to the CI/CD **Pipelines** page (**Build** > **Pipelines**). |

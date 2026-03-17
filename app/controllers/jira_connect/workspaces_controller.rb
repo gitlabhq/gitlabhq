@@ -2,7 +2,7 @@
 
 module JiraConnect
   class WorkspacesController < JiraConnect::ApplicationController
-    feature_category :integrations
+    feature_category :team_planning
 
     def search
       namespaces = available_namespaces.by_name(search_query)

@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: Kroki
 ---
@@ -26,6 +26,9 @@ To do that, sign in with an administrator account and follow these steps:
 1. Expand the **Kroki** section.
 1. Select **Enable Kroki** checkbox.
 1. Enter the **Kroki URL**, for example, `https://kroki.io`.
+
+To prevent browsers from sending diagram content to the external Kroki service,
+use the [diagram proxy](diagram_proxy.md).
 
 ## Kroki server
 

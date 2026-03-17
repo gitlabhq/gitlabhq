@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Embody
-info: This page is owned by https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/embody-team/
+info: This page is owned by <https://handbook.gitlab.com/handbook/engineering/embody-team/>
 description: Monitor application performance and troubleshoot performance issues.
 ignore_in_report: true
 title: Observability
@@ -32,7 +32,7 @@ Use GitLab Observability (O11y) to:
 - View distributed traces, logs, and metrics in a single platform.
 - Identify and troubleshoot performance bottlenecks in your applications.
 
-{{< alert type="disclaimer" />}}
+> [!disclaimer]
 
 By adding observability to GitLab itself users can gain [these (planned) features](https://gitlab.com/gitlab-org/embody-team/experimental-observability/gitlab_o11y/-/issues/8).
 
@@ -81,7 +81,7 @@ Once access is granted:
 1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Observability**.
 
-If **Observability** isn't displayed on the left sidebar, go directly to `https://gitlab.com/groups/<group_path>/-/observability/services`.
+If **Observability** isn't displayed in the left sidebar, go directly to `https://gitlab.com/groups/<group_path>/-/observability/services`.
 
 ![GitLab.com Observability Dashboard](img/gitLab_o11y_gitlab_com_dashboard_v18_1.png "GitLab.com Observability Dashboard")
 
@@ -311,7 +311,7 @@ After you have configured GitLab O11y, to access the dashboard embedded in GitLa
 1. In the top bar, select **Search or go to** and find your group where the feature flag is enabled.
 1. In the left sidebar, select **Observability**.
 
-If **Observability** isn't displayed on the left sidebar,
+If **Observability** isn't displayed in the left sidebar,
 go directly to `http://<gitlab_instance>/groups/<group_path>/-/observability/services`.
 
 ![GitLab Experimental Observability example](img/gitLab_o11y_example_v18_1.png "GitLab Observability Example")

@@ -38,6 +38,15 @@ RSpec.describe BitbucketServer::Connection, feature_category: :importers do
       expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
     end
 
+    it 'raises JSON::NestingError as is' do
+      response = instance_double(HTTParty::Response, code: 200)
+
+      allow(response).to receive(:parsed_response).and_raise(JSON::NestingError)
+      allow(Import::Clients::HTTP).to receive(:get).and_return(response)
+
+      expect { subject.get(url, { something: 1 }) }.to raise_error(JSON::NestingError)
+    end
+
     it 'throws an exception upon a network error' do
       WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' }).to_raise(OpenSSL::SSL::SSLError)
 

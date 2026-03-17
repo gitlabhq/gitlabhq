@@ -3,7 +3,7 @@ table_name: ci_job_token_group_scope_links
 classes:
 - Ci::JobToken::GroupScopeLink
 feature_categories:
-- continuous_integration
+- system_access
 description: |
   Links a source project and target group, allowing a groups's job token
   to provide access to another project within the target group.

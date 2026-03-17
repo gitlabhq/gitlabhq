@@ -280,11 +280,6 @@ describe('Pipeline Editor | Commit section', () => {
     expect(handler).toHaveBeenCalled();
   });
 
-  it('passes down scroll-to-commit-form prop to commit form', () => {
-    createComponent({ props: { 'scroll-to-commit-form': true } });
-    expect(findCommitForm().props('scrollToCommitForm')).toBe(true);
-  });
-
   describe('tracking', () => {
     let trackingSpy;
     const { actions, label } = pipelineEditorTrackingOptions;

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to clone Git repositories from a GitLab server using different protocols (SSH or HTTPS) and various IDEs.
 title: Clone a Git repository to your local computer
 ---
@@ -25,7 +25,7 @@ Cloning a repository:
 Clone with SSH when you want to authenticate only one time.
 
 1. Authenticate with GitLab by following the instructions in the [SSH documentation](../../user/ssh.md).
-1. On the top bar, select **Search or go to** and find the project you want to clone.
+1. In the top bar, select **Search or go to** and find the project you want to clone.
 1. On the project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with SSH**.
 1. Open a terminal and go to the directory where you want to clone the files.
    Git automatically creates a folder with the repository name and downloads the files there.
@@ -47,7 +47,7 @@ Clone with HTTPS when you want to authenticate each time you perform an operatio
 [OAuth credential helpers](../../user/profile/account/two_factor_authentication.md#oauth-credential-helpers) can decrease
 the number of times you must manually authenticate, making HTTPS a seamless experience.
 
-1. On the top bar, select **Search or go to** and find the project you want to clone.
+1. In the top bar, select **Search or go to** and find the project you want to clone.
 1. On the project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with HTTPS**.
 1. Open a terminal and go to the directory where you want to clone the files.
 1. Run the following command. Git automatically creates a folder with the repository name and downloads the files there.
@@ -110,7 +110,7 @@ prompted to open Xcode.
 ## Clone and open in Visual Studio Code
 
 All projects can be cloned into Visual Studio Code from the GitLab user interface, but you
-can also install the [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/_index.md) to clone from
+can also install the [GitLab for VS Code extension](../../editor_extensions/visual_studio_code/_index.md) to clone from
 Visual Studio Code.
 
 Prerequisites:
@@ -118,7 +118,6 @@ Prerequisites:
 - [Visual Studio Code](https://code.visualstudio.com/) must be installed on your local machine.
   Other versions of VS Code, like VS Code Insiders and VSCodium, are not supported.
 - [Configure your browser for IDE protocols](#configure-browsers-for-ide-protocols).
-
 - From the GitLab interface:
   1. Go to the project's overview page.
   1. In the upper-right corner, select **Code**.
@@ -365,7 +364,6 @@ remove filtering:
 
 1. Delete the `.promisor` file. The previous step should have left only one
    `pack-<SHA1>.promisor` file, which should be empty and should be deleted.
-
 1. Remove partial clone configuration. The partial clone-related configuration
    variables should be removed from Git configuration files. Usually only the following
    configuration must be removed:

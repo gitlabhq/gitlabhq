@@ -86,6 +86,7 @@ export default {
       default: false,
     },
   },
+  emits: ['copy', 'showForkSuggestion'],
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     projectInfo: {

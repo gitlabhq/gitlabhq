@@ -11,7 +11,7 @@ import {
   GlAnimatedChevronLgRightDownIcon,
   GlCollapse,
 } from '@gitlab/ui';
-import { cloneDeep, uniqueId } from 'lodash';
+import { cloneDeep, uniqueId } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { reportToSentry } from '~/ci/utils';
 import { JOB_GRAPHQL_ERRORS } from '~/ci/constants';
@@ -48,11 +48,6 @@ export default {
     jobId: {
       type: Number,
       required: true,
-    },
-    isExpanded: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
   },
   emits: ['update-variables'],
@@ -91,7 +86,7 @@ export default {
           value: '',
         },
       ],
-      expanded: this.isExpanded,
+      expanded: false,
       manualJob: false,
     };
   },

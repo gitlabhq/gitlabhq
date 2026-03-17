@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Advanced SSH key configuration
 description: Use SSH keys for secure authentication and communication with GitLab repositories.
 ---
@@ -60,7 +60,6 @@ To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later:
    ```
 
 1. Touch the button on the hardware security key.
-
 1. Accept the suggested filename and directory:
 
    ```plaintext
@@ -89,7 +88,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 1. Sign in to GitLab.
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **SSH Keys**.
+1. In the left sidebar, select **Access** > **SSH keys**.
 1. Select **Add new key**.
 1. Select **Key**, and you should see the 1Password helper appear.
 1. Select the 1Password icon and unlock 1Password.
@@ -123,7 +122,7 @@ This also applies to enterprise users who are administrators of the group.
 
 To disable the enterprise users' SSH Keys:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Enterprise users**, select **Disable SSH Keys**.

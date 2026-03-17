@@ -49,11 +49,13 @@ module API
         access_token.application&.id == WebIde::DefaultOauthApplication.oauth_application_id
       end
 
-      def track_web_ide_commit_events
+      def track_web_ide_commit_events(attrs)
         return unless web_ide_request?
 
         Gitlab::InternalEvents.track_event('create_commit_from_web_ide', user: current_user, project: user_project)
         Gitlab::InternalEvents.track_event('g_edit_by_web_ide', user: current_user, project: user_project)
+
+        track_ci_config_creation_from_web_ide(attrs)
 
         namespace = user_project.namespace
 
@@ -71,7 +73,29 @@ module API
         )
       end
 
+      def track_ci_config_creation_from_web_ide(attrs)
+        creates_ci_config = attrs[:actions].any? do |action|
+          action[:action].to_s == 'create' && action[:file_path].to_s == user_project.ci_config_path_or_default
+        end
+
+        return unless creates_ci_config
+
+        Gitlab::InternalEvents.track_event(
+          'create_ci_config_file_from_web_ide',
+          user: current_user,
+          project: user_project,
+          namespace: user_project.namespace
+        )
+      end
+
       def validate_commits_attrs!(attrs)
+        validate_string_param!(attrs, :branch)
+        validate_string_param!(attrs, :commit_message)
+        validate_string_param!(attrs, :start_branch)
+        validate_string_param!(attrs, :start_sha)
+        validate_string_param!(attrs, :author_email)
+        validate_string_param!(attrs, :author_name)
+
         bad_request!('branch is required') if attrs[:branch].blank?
         bad_request!('commit_message is required') if attrs[:commit_message].blank?
         validate_actions_allow_empty!(attrs)
@@ -82,6 +106,10 @@ module API
         end
 
         attrs[:actions].each_with_index do |action, index|
+          validate_string_param!(action, :file_path, prefix: "actions[#{index}]")
+          validate_string_param!(action, :previous_path, prefix: "actions[#{index}]")
+          validate_string_param!(action, :last_commit_id, prefix: "actions[#{index}]")
+
           bad_request!("actions[#{index}][action] is required") if action[:action].blank?
           bad_request!("actions[#{index}][file_path] is required") if action[:file_path].blank?
 
@@ -194,6 +222,9 @@ module API
           type: String,
           desc: 'The file path',
           documentation: { example: 'README.md' }
+        optional :follow,
+          type: Boolean,
+          desc: 'Follow file renames when filtering by path'
         optional :author,
           type: String,
           desc: 'Search commits by commit author',
@@ -235,7 +266,8 @@ module API
           first_parent: first_parent,
           order: order,
           author: author,
-          trailers: params[:trailers])
+          trailers: params[:trailers],
+          follow: params[:follow])
 
         serializer = with_stats ? Entities::CommitWithStats : Entities::Commit
 
@@ -288,6 +320,9 @@ module API
 
         attrs = file_params_from_body_upload
 
+        # Validate branch type before using it in authorize_push_to_branch!
+        validate_string_param!(attrs, :branch)
+
         authorize_push_to_branch!(attrs[:branch])
 
         validate_commits_attrs!(attrs)
@@ -295,7 +330,8 @@ module API
         if attrs[:start_project]
           start_project = find_project!(attrs[:start_project])
 
-          unless can?(current_user, :read_code, start_project) && user_project.forked_from?(start_project)
+          unless can?(current_user, :read_code, start_project) &&
+              (start_project == user_project || user_project.forked_from?(start_project))
             forbidden!("Project is not included in the fork network for #{start_project.full_name}")
           end
         end
@@ -311,7 +347,7 @@ module API
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
 
-          track_web_ide_commit_events
+          track_web_ide_commit_events(attrs)
 
           present commit_detail, with: Entities::CommitDetail, include_stats: attrs[:stats], current_user: current_user
         else
@@ -403,7 +439,7 @@ module API
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
-        count = user_project.repository.count_commits(ref: params[:sha], first_parent: params[:first_parent])
+        count = user_project.repository.count_commits(revisions: params[:sha], first_parent: params[:first_parent])
         count_hash = { count: count }
 
         present count_hash, with: Entities::CommitSequence

@@ -1,7 +1,7 @@
 import { GlFormFields, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
-import htmlSessionsNew from 'test_fixtures/sessions/new_vue.html';
+import htmlSessionsNew from 'test_fixtures/sessions/new.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { parseRailsFormFields } from '~/lib/utils/forms';

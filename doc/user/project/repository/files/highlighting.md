@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Syntax highlighting helps you read files in your GitLab project and identify what files contain.
 title: Syntax highlighting
 ---
@@ -81,7 +81,6 @@ The following file size limits apply to the syntax highlighters:
 
 - Rouge (server-side): 512 KB by default (configurable)
   - Files larger than this limit render in plain text without syntax highlighting.
-
 - Highlight.js (client-side): 2 MB (not configurable)
   - Falls back to Rouge highlighting if a language is not supported.
   - Files larger than this limit cannot be highlighted in the frontend and must be viewed as raw content.

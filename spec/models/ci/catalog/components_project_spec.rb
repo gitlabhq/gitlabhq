@@ -111,46 +111,6 @@ RSpec.describe Ci::Catalog::ComponentsProject, feature_category: :pipeline_compo
     end
   end
 
-  describe '#find_catalog_component' do
-    let_it_be(:version) do
-      release = create(:release, project: project, tag: '2.0.0', sha: project.commit.sha)
-      create(:ci_catalog_resource_version, catalog_resource: catalog_resource, release: release, semver: release.tag)
-    end
-
-    let_it_be(:dast_component) { create(:ci_catalog_resource_component, version: version, name: 'dast') }
-    let(:component_name) { 'dast' }
-
-    subject(:catalog_component) { components_project.find_catalog_component(component_name) }
-
-    context 'when the component exists in the CI catalog' do
-      it 'returns the catalog resource component' do
-        expect(catalog_component).to eq(dast_component)
-      end
-
-      context 'when there is more than one catalog resource version with the given sha' do
-        before_all do
-          old_release = create(:release, project: project, tag: '1.0.0', sha: project.commit.sha)
-          old_version = create(:ci_catalog_resource_version, catalog_resource: catalog_resource,
-            release: old_release, semver: old_release.tag)
-
-          create(:ci_catalog_resource_component, version: old_version, name: 'dast')
-        end
-
-        it 'returns the catalog resource component of the latest version' do
-          expect(catalog_component).to eq(dast_component)
-        end
-      end
-    end
-
-    context 'when the component does not exist in the CI catalog' do
-      let(:component_name) { 'secret-detection' }
-
-      it 'returns nil' do
-        expect(catalog_component).to be_nil
-      end
-    end
-  end
-
   describe '#find_catalog_components' do
     let_it_be(:version) do
       release = create(:release, project: project, tag: '2.0.0', sha: project.commit.sha)

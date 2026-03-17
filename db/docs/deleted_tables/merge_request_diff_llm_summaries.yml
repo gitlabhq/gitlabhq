@@ -9,12 +9,9 @@ description: This is the table that stores information about the diff summaries 
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118671
 milestone: '16.0'
 gitlab_schema: gitlab_main_org
-allow_cross_joins:
-- gitlab_main_clusterwide
-allow_cross_transactions:
-- gitlab_main_clusterwide
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide
+allow_cross_joins: []
+allow_cross_transactions: []
+allow_cross_foreign_keys: []
 desired_sharding_key:
   project_id:
     references: projects

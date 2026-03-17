@@ -3,6 +3,7 @@
 module Gitlab
   module Import
     class ImportFailureService
+      # rubocop:disable Metrics/ParameterLists -- all arguments needed
       def self.track(
         exception:,
         import_state: nil,
@@ -10,7 +11,9 @@ module Gitlab
         error_source: nil,
         fail_import: false,
         metrics: false,
-        external_identifiers: {}
+        external_identifiers: {},
+        message: 'importer failed',
+        extra_attributes: {}
       )
         new(
           exception: exception,
@@ -19,7 +22,9 @@ module Gitlab
           error_source: error_source,
           fail_import: fail_import,
           metrics: metrics,
-          external_identifiers: external_identifiers
+          external_identifiers: external_identifiers,
+          message: message,
+          extra_attributes: extra_attributes
         ).execute
       end
 
@@ -30,7 +35,9 @@ module Gitlab
         error_source: nil,
         fail_import: false,
         metrics: false,
-        external_identifiers: {}
+        external_identifiers: {},
+        message: 'importer failed',
+        extra_attributes: {}
       )
 
         if import_state.blank? && project_id.blank?
@@ -50,7 +57,10 @@ module Gitlab
         @fail_import = fail_import
         @metrics = metrics
         @external_identifiers = external_identifiers
+        @message = message
+        @extra_attributes = extra_attributes
       end
+      # rubocop:enable Metrics/ParameterLists -- all arguments needed
 
       def execute
         track_exception
@@ -62,7 +72,8 @@ module Gitlab
 
       private
 
-      attr_reader :exception, :import_state, :project, :error_source, :fail_import, :metrics, :external_identifiers
+      attr_reader :exception, :import_state, :project, :error_source, :fail_import, :metrics,
+        :external_identifiers, :message, :extra_attributes
 
       def track_exception
         attributes = {
@@ -70,11 +81,11 @@ module Gitlab
           project_id: project.id,
           source: error_source,
           external_identifiers: external_identifiers
-        }
+        }.merge(extra_attributes)
 
         ::Import::Framework::Logger.error(
           attributes.merge(
-            message: 'importer failed',
+            message: message,
             'exception.message': exception.message
           )
         )

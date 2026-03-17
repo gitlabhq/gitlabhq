@@ -262,11 +262,10 @@ module Ci
     after_save :stick_build_if_status_changed
 
     after_create unless: :importing? do |build|
+      next if Gitlab::SafeRequestStore[:ci_triggering_build_hooks_via_chain]
+
       run_after_commit { build.execute_hooks }
     end
-
-    after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
-    after_commit :track_ci_build_created_event, on: :create
 
     # Builds no longer use the p_ci_build_tags table for tag storage.
     # Tags are stored in ci_job_definitions and accessed via job_definition.tag_list.
@@ -507,7 +506,7 @@ module Ci
     def self.tag_names_array_query
       <<~SQL.squish
         (
-          SELECT COALESCE(array_agg(tag_name ORDER BY tag_name), '{}')
+          SELECT COALESCE(array_agg(tag_name ORDER BY tag_name), ARRAY[]::text[])::text[]
             FROM jsonb_array_elements_text(
               #{Ci::JobDefinition.quoted_table_name}.config->'tag_list'
             ) AS tag_name
@@ -628,7 +627,7 @@ module Ci
     end
 
     def degenerated?
-      super && execution_config_id.nil?
+      super && execution_config_id.nil? && run_steps.blank?
     end
 
     def degenerate!
@@ -915,8 +914,6 @@ module Ci
 
     override :run_steps
     def run_steps
-      return execution_config&.run_steps || [] if Feature.disabled?(:read_from_ci_job_definition_run_steps, project)
-
       read_job_definition_attribute(:run_steps) || execution_config&.run_steps || []
     end
 
@@ -1243,6 +1240,26 @@ module Ci
       options.dig(:allow_failure_criteria, :exit_codes).present? || options.dig(:retry, :exit_codes).present?
     end
 
+    attr_reader :pending_build_args
+
+    # Override save to pre-compute pending build args outside the database
+    # transaction. The state_machines-activerecord gem wraps ALL callbacks
+    # (before_transition, after_transition) inside a transaction, so there
+    # is no callback that runs outside it. However, the gem sets
+    # `status_event_transition` on the object *before* calling save (see
+    # TransitionCollection#perform), so we can detect a pending transition
+    # here and pre-compute the expensive args (tag lookups, CI minutes
+    # checks, plan lookups) before `super` enters the transaction. The
+    # args are then read by UpdateBuildQueueService#push inside the
+    # transaction via `build.pending_build_args`.
+    def save(...)
+      with_pending_build_args { super }
+    end
+
+    def save!(...)
+      with_pending_build_args { super }
+    end
+
     def create_queuing_entry!
       ::Ci::PendingBuild.upsert_from_build!(self)
     end
@@ -1357,6 +1374,21 @@ module Ci
     end
 
     private
+
+    def with_pending_build_args
+      prepare_pending_build_args
+      yield
+    ensure
+      @pending_build_args = nil
+    end
+
+    def prepare_pending_build_args
+      return unless project
+      return unless status_event_transition&.to == 'pending'
+      return unless Feature.enabled?(:precompute_pending_build_args, project, type: :gitlab_com_derisk)
+
+      @pending_build_args = ::Ci::PendingBuild.args_from_build(self)
+    end
 
     def apply_jobs_cache_index(cache)
       return cache unless project.jobs_cache_index
@@ -1500,32 +1532,6 @@ module Ci
           .build_completed_report_type_counter(report_type)
           .increment(status: status)
       end
-    end
-
-    def track_ci_secrets_management_id_tokens_usage
-      ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event('i_ci_secrets_management_id_tokens_build_created', values: user_id)
-
-      Gitlab::Tracking.event(
-        self.class.to_s,
-        'create_id_tokens',
-        namespace: namespace,
-        user: user,
-        label: 'redis_hll_counters.ci_secrets_management.i_ci_secrets_management_id_tokens_build_created_monthly',
-        ultimate_namespace_id: namespace.root_ancestor.id,
-        context: [Gitlab::Tracking::ServicePingContext.new(
-          data_source: :redis_hll,
-          event: 'i_ci_secrets_management_id_tokens_build_created'
-        ).to_context]
-      )
-    end
-
-    def track_ci_build_created_event
-      Gitlab::InternalEvents.track_event(
-        'create_ci_build',
-        project: project,
-        user: user,
-        property: name
-      )
     end
 
     def prefix_and_partition_for_token

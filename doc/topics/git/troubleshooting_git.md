@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Debugging tips for fixing problems in Git.
 title: Troubleshooting Git
 description: Tips to resolve Git issues.
@@ -88,10 +88,10 @@ To resolve this issue:
   1. Open a terminal or command prompt.
   1. Increase the `http.postBuffer` value:
 
-      ```shell
-      # Set the http.postBuffer size in bytes
-      git config http.postBuffer 524288000
-      ```
+     ```shell
+     # Set the http.postBuffer size in bytes
+     git config http.postBuffer 524288000
+     ```
 
 If the local configuration doesn't resolve the issue, you may need to modify the server configuration.
 This should be done cautiously and only if you have server access.
@@ -100,26 +100,26 @@ This should be done cautiously and only if you have server access.
 
   1. Open a terminal or command prompt.
   1. Modify the GitLab instance's
-    [`gitlab.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/13.5.1+ee.0/files/gitlab-config-template/gitlab.rb.template#L1435-1455) file:
+     [`gitlab.rb`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/13.5.1+ee.0/files/gitlab-config-template/gitlab.rb.template#L1435-1455) file:
 
-      ```ruby
-      gitaly['configuration'] = {
-        # ...
-        git: {
-          # ...
-          config: [
-            # Set the http.postBuffer size, in bytes
-            {key: "http.postBuffer", value: "524288000"},
-          ],
-        },
-      }
-      ```
+     ```ruby
+     gitaly['configuration'] = {
+       # ...
+       git: {
+         # ...
+         config: [
+           # Set the http.postBuffer size, in bytes
+           {key: "http.postBuffer", value: "524288000"},
+         ],
+       },
+     }
+     ```
 
   1. Apply the configuration change:
 
-      ```shell
-      sudo gitlab-ctl reconfigure
-      ```
+     ```shell
+     sudo gitlab-ctl reconfigure
+     ```
 
 ### Error: `stream 0 was not closed cleanly`
 
@@ -184,7 +184,7 @@ git push
 ### Upgrade your Git client
 
 In case you're running an older version of Git (< 2.9), consider upgrading
-to >= 2.9 (see [Broken pipe when pushing to Git repository](https://stackoverflow.com/questions/19120120/broken-pipe-when-pushing-to-git-repository/36971469#36971469)).
+to >= 2.9. For more information, see [broken pipe when pushing to Git repository](https://stackoverflow.com/questions/19120120/broken-pipe-when-pushing-to-git-repository/36971469#36971469).
 
 ## `ssh_exchange_identification` error
 
@@ -289,8 +289,8 @@ To help identify the underlying issue:
 - Connect through a different network (for example, switch from Wi-Fi to cellular data) to rule out
   local network or firewall issues.
 - Run this bash command to gather `traceroute` and `ping` information: `mtr -T -P 22 <gitlab_server>.com`.
-  To learn about MTR and how to read its output, see the Cloudflare article
-  [What is My Traceroute (MTR)?](https://www.cloudflare.com/en-gb/learning/network-layer/what-is-mtr/).
+  To learn about MTR and how to read its output, see the Cloudflare article about
+  [My Traceroute (MTR)](https://www.cloudflare.com/en-gb/learning/network-layer/what-is-mtr/).
 
 ## Error: `transfer closed with outstanding read data remaining`
 
@@ -364,7 +364,7 @@ To resolve this issue, you can update the password expiration by either:
   UPDATE users SET password_expires_at = null WHERE username='<USERNAME>';
   ```
 
-The bug was reported [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/332455).
+The bug was reported in [issue 332455](https://gitlab.com/gitlab-org/gitlab/-/issues/332455).
 
 ## Error on Git fetch: `HTTP Basic: Access Denied`
 
@@ -441,7 +441,7 @@ may show an initial status of `401` (unauthorized), quickly followed by a `200`.
 ```
 
 You should expect this initial `401` log entry for each Git operation performed over HTTP,
-due to how [HTTP Basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) works.
+due to how [HTTP basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication) works.
 
 When the Git client initiates a clone, the initial request sent to GitLab does not provide
 any authentication details. GitLab returns a `401 Unauthorized` result for that request.

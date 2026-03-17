@@ -12,7 +12,6 @@ RSpec.describe Subscriptions::Ci::Pipelines::StatusesUpdated, feature_category: 
     let_it_be(:unauthorized_user) { create(:user) }
     let_it_be(:project) { create(:project) }
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-    let_it_be(:other_project_pipeline) { create(:ci_pipeline) }
 
     let(:current_user) { project.owners.first }
     let(:project_id) { project.to_gid }
@@ -53,9 +52,8 @@ RSpec.describe Subscriptions::Ci::Pipelines::StatusesUpdated, feature_category: 
       end
 
       context 'when pipeline belongs to a different project' do
-        let(:resolver) do
-          resolver_instance(described_class, obj: other_project_pipeline, ctx: query_context, subscription_update: true)
-        end
+        let(:other_project) { create(:project, developers: [current_user]) }
+        let(:project_id) { other_project.to_gid }
 
         it 'unsubscribes the user' do
           expect(subscription).to be_an(GraphQL::Execution::Skip)

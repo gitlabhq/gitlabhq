@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to manage GitLab issues including editing, moving, closing, bulk operations, and using various issue features like assignees, health status, and automation.
 title: Manage issues
 ---
@@ -38,9 +38,9 @@ Prerequisites:
 
 To edit an issue:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**, then select the title of your issue to view it.
-1. To the right of the title, select **Edit** ({{< icon name="pencil" >}}).
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
+1. To the right of the title, select **Edit**.
 1. Edit the available fields.
 1. Select **Save changes**.
 
@@ -114,8 +114,8 @@ Prerequisites:
 
 To edit multiple issues at the same time:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 1. Select **Bulk edit**. On the right, a sidebar with editable fields appears.
 1. Select the checkboxes next to each issue you want to edit.
 1. From the sidebar, edit the available fields.
@@ -155,8 +155,8 @@ Prerequisites:
 
 To move an issue:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**, then select your issue to view it.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Move**.
 1. Search for a project to move the issue to.
 1. Select **Move**.
@@ -193,7 +193,7 @@ copied to the target project.
 
 {{< /history >}}
 
-#### From the Issues page
+#### From the Work items list
 
 {{< history >}}
 
@@ -210,8 +210,8 @@ Prerequisites:
 
 To move multiple issues at the same time:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 1. Select **Bulk edit**. On the right, a sidebar with editable fields appears.
 1. Select the checkboxes next to each issue you want to move.
 1. From the **Move** dropdown list, select the destination project.
@@ -315,8 +315,8 @@ To close an issue, you can either:
 
 - In an [issue board](../issue_board.md), drag an issue card from its list into the **Closed** list.
 - From any other page in the GitLab UI:
-  1. On the top bar, select **Search or go to** and find your project.
-  1. Select **Plan** > **Issues**, then select your issue to view it.
+  1. In the top bar, select **Search or go to** and find your project.
+  1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
   1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) and then **Close issue**.
 
 You can also use the [`/close` quick action](../quick_actions.md#close) in a comment or description.
@@ -445,7 +445,7 @@ Prerequisites:
 
 To disable automatic issue closing:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch defaults**.
 1. Clear the **Auto-close referenced issues on default branch** checkbox.
@@ -528,8 +528,8 @@ Prerequisites:
 
 To delete an issue:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**, then select your issue to view it.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Delete issue**.
 
@@ -548,21 +548,21 @@ Prerequisites:
 
 To change issue type:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**, then select your issue to view it.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
-1. Select **Change type**
+1. Select **Change type**.
 1. From the **Type** dropdown list select the new type:
 
    - Key result
    - Objective
    - Task
    - Epic (moves issue to the parent group)
-     For more information, see [Promote an issue to an epic](#promote-an-issue-to-an-epic).
+     For more information, see [promote an issue to an epic](#promote-an-issue-to-an-epic).
 
 1. Select **Change type**.
 
-To promote an issue to an incident, see [Promote an issue to an incident](#promote-an-issue-to-an-incident)
+To promote an issue to an incident, see [promote an issue to an incident](#promote-an-issue-to-an-incident)
 
 ### Promote an issue to an epic
 
@@ -609,8 +609,8 @@ Prerequisites:
 
 To promote an issue to an epic:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**, then select your issue to view it.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**, and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Change type**
 1. From the **Type** dropdown list select **Epic**.
@@ -633,8 +633,8 @@ You can use the [`/promote_to Incident` quick action](../quick_actions.md#promot
 
 To add an issue to an [iteration](../../group/iterations/_index.md):
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**, then select your issue to view it.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to add this issue to.
 1. Select any area outside the dropdown list.
@@ -643,19 +643,50 @@ To add an issue to an iteration, you can also:
 
 - Use the [`/iteration` quick action](../quick_actions.md#iteration).
 - Drag an issue into an iteration list in a board.
-- Bulk edit issues from the issues list.
+- Bulk edit issues from the **Work items** list.
 
 ## View all issues assigned to you
 
 To view all issues assigned to you:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. From the dropdown list, select **Issues assigned to me**.
 
 Or:
 
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd>+<kbd>i</kbd>.
 - In the upper-right corner, select **Assigned issues** ({{< icon name="issues" >}}).
+
+## Configure child item display preferences
+
+{{< history >}}
+
+- Display options for child items [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/551231) in GitLab 18.10.
+
+{{< /history >}}
+
+You can configure what information is displayed in the **Child items** section, so that you can focus on what matters most for your workflow.
+
+> [!note]
+> When you change the information displayed in one issue, you change it for all work items in your groups and projects.
+
+1. At the top-right corner of the **Child items** section header, select **Display options** ({{< icon name="preferences" >}}).
+
+   By default, all options and fields are visible.
+1. To change the displayed information, turn the following toggles on or off:
+
+   - For display options:
+     - **Show closed items**
+   - For fields displayed:
+     - **Status**
+     - **Assignee**
+     - **Labels**
+     - **Weight**
+     - **Milestone**
+     - **Iteration**
+     - **Dates**
+     - **Health**
+     - **Blocked/Blocking**
 
 ## Issue list
 
@@ -664,10 +695,10 @@ You can use it to view, sort, and manage issues.
 
 To view the issue list:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 
-To set which attributes are shown for epics on the issue list, [configure display preferences](../../work_items/_index.md#configure-list-display-preferences).
+To set which attributes are shown in the **Work items** list, [configure display preferences](../../work_items/_index.md#configure-list-display-preferences).
 
 From the issue list, you can:
 
@@ -692,10 +723,9 @@ The following sections describe how to work with the issue list.
 
 To filter the list of issues:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**.
-1. Above the list of issues, select **Search or filter results**.
-1. From the dropdown list that appears, select the attribute you want to filter by.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. Select additional filters, operators, and values as needed.
    The following filters are available:
    - Assignee
    - Author
@@ -709,7 +739,7 @@ To filter the list of issues:
    - [Organization](../../crm/_index.md)
    - [Parent](../../group/epics/_index.md)
    - Release
-   - Search within (titles or descriptions)
+   - Search in (titles or descriptions)
    - Status
    - Subscribed
    - Type
@@ -733,10 +763,10 @@ To filter the list of issues:
 
 To filter the list issues for text in a title or description:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**.
-1. Above the list of issues, in the **Search or filter results** text box, enter the searched phrase.
-1. In the dropdown list that appears, select **Search within**, and then either **Titles** or **Descriptions**.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. In the filter bar, type your search phrase.
+1. In the dropdown list that appears, select **Search for this text**.
 1. Press <kbd>Enter</kbd> or select the search icon ({{< icon name="search" >}}).
 
 Filtering issues uses [PostgreSQL full text search](https://www.postgresql.org/docs/16/textsearch-intro.html)
@@ -751,9 +781,9 @@ It's a limitation of PostgreSQL full text search.
 
 #### Filter issues by ID
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**.
-1. Above the list of issues, in the **Search or filter results** text box, type `#` followed by the issue ID.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+1. In the filter bar, type `#` followed by the issue ID.
    For example, enter `#362255` to return only issue 362255.
 1. Select **Search for this text**.
 1. Press <kbd>Enter</kbd> or select the search icon ({{< icon name="search" >}}).
@@ -769,13 +799,13 @@ It's a limitation of PostgreSQL full text search.
 
 When you select an issue from the list or issue board, it opens in a details panel.
 
-You can then view and edit its details without losing context of the epic list or board.
+You can then view and edit its details without losing context of the list or board.
 
 When using the panel:
 
-- Select an epic from the list to open it in the panel.
+- Select an issue from the list to open it in the panel.
 - The panel appears on the right side of the screen.
-- You can edit the epic directly in the panel.
+- You can edit the issue directly in the panel.
 - To close the panel, select the close icon ({{< icon name="close" >}}) or press **Escape**.
 
 #### Open an issue in full page view
@@ -789,7 +819,7 @@ To open the issue in full view:
   - In the upper-left corner, select the issue reference, for example `my_project#123`.
   - In the upper-right corner, select **Open in full page** ({{< icon name="maximize" >}}).
 
-To always open issues in full page view, see [Set preference whether to open items in a drawer](../../work_items/_index.md#configure-list-display-preferences).
+To always open issues in full page view, [configure your list display preferences](../../work_items/_index.md#configure-list-display-preferences).
 
 ## Copy issue reference
 
@@ -798,13 +828,13 @@ To refer to an issue elsewhere in GitLab, you can use its full URL or a short re
 
 To copy the issue reference to your clipboard:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**, then select your issue to view it.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Copy Reference**.
 
 You can now paste the reference into another description or comment.
 
-Read more about issue references in [GitLab-Flavored Markdown](../../markdown.md#gitlab-specific-references).
+For more information, see [GitLab-specific references](../../markdown.md#gitlab-specific-references).
 
 ## Copy issue email address
 
@@ -812,12 +842,12 @@ You can create a comment in an issue by sending an email.
 Sending an email to this address creates a comment that contains the email body.
 
 For more information about creating comments by sending an email and the necessary configuration, see
-[Reply to a comment by sending email](../../discussions/_index.md#reply-to-a-comment-by-sending-email).
+[reply to a comment by sending email](../../discussions/_index.md#reply-to-a-comment-by-sending-email).
 
 To copy the issue's email address:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**, then select your issue to view it.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the upper-right corner, select **More actions** ({{< icon name="ellipsis_v" >}}) > **Copy issue email address**.
 
 ## Assignees
@@ -845,8 +875,8 @@ Prerequisites:
 
 To change the assignee on an issue:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**, then select your issue to view it.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the right sidebar, in the **Assignees** section, select **Edit**.
 1. From the dropdown list, select the user to add as an assignee.
 1. Select any area outside the dropdown list.
@@ -891,8 +921,8 @@ Prerequisites:
 
 To edit health status of an issue:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**, then select your issue to view it.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the right sidebar, in the **Health status** section, select **Edit**.
 1. From the dropdown list, select the status to add to this issue:
 
@@ -902,7 +932,7 @@ To edit health status of an issue:
 
 You can see the issue's health status in:
 
-- The **Issues** page
+- The **Work items** list
 - Epic's **Child items** section
 - Issue cards in issue boards
 
@@ -935,7 +965,7 @@ You can assign a status to issues to track their progress through your workflow.
 Status provides more granular tracking than the basic open/closed states, so you can use specific
 stages like **In progress**, **Done**, or **Won't do**.
 
-For more information about status, including how to configure custom statuses, see [Status](../../work_items/status.md).
+For more information about how to configure custom statuses, see the [status section](../../work_items/status.md).
 
 <!-- vale gitlab_base.FutureTense = YES -->
 
@@ -947,8 +977,8 @@ Prerequisites:
 
 To change the status of an issue:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**, then select your issue to view it.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. In the right sidebar, in the **Status** section, select **Edit**.
 1. From the dropdown list, select the status.
 
@@ -956,7 +986,7 @@ The issue's status updates immediately.
 
 You can view the issue's status in:
 
-- The **Issues** page
+- The **Work items** list
 - An epic's **Child items** section
 - Cards on issue boards
 

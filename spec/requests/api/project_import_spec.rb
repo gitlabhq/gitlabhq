@@ -674,6 +674,82 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     end
   end
 
+  describe 'POST /projects/:id/import/git' do
+    let(:project) do
+      project = create(:project, maintainers: user)
+      project.update!(import_type: 'git', import_url: 'https://example.com/old.git')
+      project
+    end
+
+    let(:path) { api("/projects/#{project.id}/import/git", user) }
+    let(:params) { { import_url: 'https://github.com/vim/vim.git' } }
+
+    it_behaves_like 'requires authentication' do
+      subject { post api("/projects/#{project.id}/import/git", nil), params: params }
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :create_project_import do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/import/git", personal_access_token: pat), params: params
+      end
+    end
+
+    it 'resets import state and schedules the import' do
+      project.import_state.update!(status: :failed)
+      expect(RepositoryImportWorker).to receive(:perform_async).with(project.id).and_return('job-id')
+
+      post path, params: params
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(project.reload.import_type).to eq('git')
+      expect(json_response).to include('import_status' => 'scheduled')
+    end
+
+    it 'returns conflict when import is already in progress' do
+      project.import_state.update!(status: :scheduled)
+
+      post path, params: params
+
+      expect(response).to have_gitlab_http_status(:conflict)
+      expect(json_response['message']).to eq('Import already in progress')
+    end
+
+    it 'returns conflict when repository already exists' do
+      project.import_state.update!(status: :failed)
+      project.repository.create_if_not_exists
+
+      post path, params: params
+
+      expect(response).to have_gitlab_http_status(:conflict)
+      expect(json_response['message']).to eq('Project already has a repository')
+    end
+
+    it 'returns 422 for invalid import_url' do
+      allow_next_instance_of(Import::ValidateRemoteGitEndpointService) do |service|
+        allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Invalid URL'))
+      end
+
+      post path, params: { import_url: 'https://invalid-url' }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['message']).to eq('Invalid URL')
+    end
+
+    it 'builds the import URL with credentials' do
+      expect(RepositoryImportWorker).to receive(:perform_async).with(project.id).and_return('job-id')
+
+      post path, params: {
+        import_url: 'https://github.com/vim/vim.git',
+        import_url_user: 'user',
+        import_url_password: 'password'
+      }
+
+      expect(response).to have_gitlab_http_status(:created)
+      expect(project.reload.unsafe_import_url).to eq('https://user:password@github.com/vim/vim.git')
+    end
+  end
+
   describe 'POST /projects/:id/import-relation' do
     subject(:perform_relation_import) { upload_relation_archive(file_upload, workhorse_headers, params) }
 

@@ -38,13 +38,15 @@ describe('NewLineDiscussionForm', () => {
     },
   });
 
+  let store;
+
   const createComponent = (props = {}, provide = {}) => {
     const { discussion = createDiscussion() } = props;
-    useDiffDiscussions().discussions = [discussion];
+    store.discussionForms = [discussion];
     wrapper = shallowMount(NewLineDiscussionForm, {
       pinia,
       propsData: merge({ discussion }, props),
-      provide: merge(defaultProvisions, provide),
+      provide: merge({ store }, defaultProvisions, provide),
     });
   };
 
@@ -53,12 +55,13 @@ describe('NewLineDiscussionForm', () => {
   beforeEach(() => {
     mockAdapter = new MockAdapter(axios);
     pinia = createTestingPinia({ stubActions: false });
+    store = useDiffDiscussions();
   });
 
   it('has data-discussion-id attribute', () => {
     createComponent();
     expect(wrapper.find('[data-discussion-id]').element.dataset.discussionId).toBe(
-      useDiffDiscussions().discussions[0].id,
+      useDiffDiscussions().discussionForms[0].id,
     );
   });
 
@@ -68,8 +71,8 @@ describe('NewLineDiscussionForm', () => {
     expect(findNoteForm().exists()).toBe(true);
     expect(findNoteForm().props()).toMatchObject({
       autosaveKey,
-      autofocus: useDiffDiscussions().discussions[0].shouldFocus,
-      noteBody: useDiffDiscussions().discussions[0].noteBody,
+      autofocus: useDiffDiscussions().discussionForms[0].shouldFocus,
+      noteBody: useDiffDiscussions().discussionForms[0].noteBody,
       saveNote: expect.any(Function),
       saveButtonTitle: 'Comment',
       restoreFromAutosave: true,
@@ -94,7 +97,7 @@ describe('NewLineDiscussionForm', () => {
     createComponent();
     await findNoteForm().vm.$emit('cancel');
     expect(clearDraft).toHaveBeenCalled();
-    expect(useDiffDiscussions().discussions).toHaveLength(0);
+    expect(useDiffDiscussions().discussionForms).toHaveLength(0);
   });
 
   it('prevents reply cancel when has changed text and dismissed confirm', async () => {
@@ -102,7 +105,7 @@ describe('NewLineDiscussionForm', () => {
     createComponent({ discussion: { ...createDiscussion(), noteBody: 'has text' } });
     await findNoteForm().vm.$emit('cancel');
     expect(clearDraft).not.toHaveBeenCalled();
-    expect(useDiffDiscussions().discussions).toHaveLength(1);
+    expect(useDiffDiscussions().discussionForms).toHaveLength(1);
   });
 
   describe('saving note', () => {
@@ -123,7 +126,7 @@ describe('NewLineDiscussionForm', () => {
 
       await findNoteForm().props('saveNote')(noteBody);
 
-      expect(useDiffDiscussions().replaceDiscussion).toHaveBeenCalledWith(
+      expect(useDiffDiscussions().replaceDiscussionForm).toHaveBeenCalledWith(
         oldDiscussion,
         newDiscussion,
       );
@@ -137,7 +140,7 @@ describe('NewLineDiscussionForm', () => {
 
       await expect(findNoteForm().props('saveNote')(noteBody)).rejects.toThrow();
 
-      expect(useDiffDiscussions().replaceDiscussion).not.toHaveBeenCalled();
+      expect(useDiffDiscussions().replaceDiscussionForm).not.toHaveBeenCalled();
     });
   });
 });

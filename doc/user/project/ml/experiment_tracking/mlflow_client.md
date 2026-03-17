@@ -1,7 +1,7 @@
 ---
 stage: ModelOps
 group: MLOps
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: MLflow client compatibility
 ---
 
@@ -32,7 +32,7 @@ Prerequisites:
   - Another option is the MLflow client version. The MLflow client is [compatible with GitLab](https://gitlab.com/gitlab-org/modelops/mlops/mlflow-compatibility-qa).
 - A [personal](../../../profile/personal_access_tokens.md), [project](../../settings/project_access_tokens.md), or [group](../../../group/settings/group_access_tokens.md) access token with the Developer, Maintainer, or Owner role and the `api` scope.
 - The project ID. To find the project ID:
-  1. On the top bar, select **Search or go to** and find your project.
+  1. In the top bar, select **Search or go to** and find your project.
   1. Select **Settings** > **General**.
 
 To use MLflow client compatibility from a local environment:

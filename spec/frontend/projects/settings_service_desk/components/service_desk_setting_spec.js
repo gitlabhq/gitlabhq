@@ -35,9 +35,6 @@ describe('ServiceDeskSetting', () => {
         ...props,
       },
       provide: {
-        glFeatures: {
-          issueEmailParticipants: true,
-        },
         ...provide,
       },
     });
@@ -305,13 +302,6 @@ describe('ServiceDeskSetting', () => {
     it('forwards the initial value to the checkbox', () => {
       wrapper = createComponent({ props: { initialAddExternalParticipantsFromCc: true } });
       expect(findAddExternalParticipantsFromCcCheckbox().element.checked).toBe(true);
-    });
-
-    describe('when feature flag issue_email_participants is disabled', () => {
-      it('is not rendered', () => {
-        wrapper = createComponent({ provide: { glFeatures: { issueEmailParticipants: false } } });
-        expect(findAddExternalParticipantsFromCcCheckbox().exists()).toBe(false);
-      });
     });
   });
 

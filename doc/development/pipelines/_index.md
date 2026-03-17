@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Engineering Productivity
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Pipelines for the GitLab project
 ---
 
@@ -580,7 +580,6 @@ We have separate projects for a several reasons.
   keep the repository up-to-date with all the default branches so that when
   we push changes from the merge request, we only need to push changes from
   the merge request, which can be more efficient.
-
 - Separation of concerns:
   - Validation project only has the following branches:
     - `master` and `main-jh` to keep changes up-to-date.
@@ -733,8 +732,6 @@ For detailed documentation on coverage collection, data flow, and ClickHouse sto
 
 Backend tests that fail are automatically retried once in a separate RSpec process. This helps detect flaky tests, defined as tests that fail then pass with the same commit SHA.
 
-On our CI, we use [`RSpec::Retry`](https://github.com/NoRedInk/rspec-retry) to automatically retry a failing example a few times (see [`spec/spec_helper.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/spec_helper.rb) for the precise retries count).
-
 The "retrying failed tests in a new RSpec process" can be disabled by setting the `$RETRY_FAILED_TESTS_IN_NEW_PROCESS` variable to `false`.
 
 ### Quarantined tests
@@ -776,7 +773,9 @@ Our test suite runs against PostgreSQL 16 as GitLab.com runs on PostgreSQL 16 an
 
 We run our test suite against PostgreSQL 16, 17 and 18 on nightly scheduled pipelines.
 
-NOTE: With the addition of PG17, we are close to the limit of nightly jobs, with 1946 out of 2000 jobs per pipeline. Adding new job families could cause the nightly pipeline to fail.
+> [!note]
+> With the addition of PG17, we are close to the limit of nightly jobs, with 1946 out of 2000 jobs per pipeline.
+> Adding new job families could cause the nightly pipeline to fail.
 
 #### Current versions testing
 
@@ -794,14 +793,56 @@ maintenance scheduled pipelines every 2 hours on the `ruby-next` branch.
 `ruby-next` must not have any changes. The branch is only there to run
 pipelines with another Ruby version in the scheduled maintenance pipelines.
 
-Additionally, we have scheduled pipelines running on `ruby-sync` branch also
-every 2 hours, updating all next branches to be up-to-date with
-the default branch `master`. No pipelines will be triggered by this push.
+#### The `ruby-sync` branch
 
-The `gitlab` job in the `ruby-sync` branch uses a `gitlab-org/gitlab` project
-token named `RUBY_SYNC` with `write_repository` scope and `Maintainer` role,
-expiring on 2025-12-02. The token is stored in the `RUBY_SYNC_TOKEN` variable
-in the pipeline schedule for `ruby-sync` branch.
+The [`ruby-sync`](https://gitlab.com/gitlab-org/gitlab/-/tree/ruby-sync) branch
+keeps the `ruby-next` and `rails-next` branches up-to-date with `master`.
+It is an **orphan branch** (not derived from `master`) that contains only its own
+`.gitlab-ci.yml`, a `scripts/slack` helper, and a `README.md`.
+
+A [scheduled pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules)
+runs on `ruby-sync` every 2 hours. The `gitlab` job:
+
+1. Clones the full `gitlab-org/gitlab` repository.
+1. For each of `ruby-next` and `rails-next`:
+   checks out the branch, merges `origin/master`, and pushes the result.
+
+No downstream pipelines are triggered by these pushes. The `ruby-next` and
+`rails-next` branches run their own scheduled maintenance pipelines independently.
+
+##### Authentication
+
+The `gitlab` job authenticates with a project token (`RUBY_SYNC_TOKEN`)
+that has `write_repository` scope and `Maintainer` role. The token is
+stored in the pipeline schedule variables for the `ruby-sync` branch.
+
+##### Retry and failure notifications
+
+The `gitlab` job retries once on script failure to handle transient errors.
+If it still fails, a `notify` job sends a message to the `#backend` Slack
+channel (username `ruby-sync`) through `CI_SLACK_WEBHOOK_URL`:
+
+```plaintext
+☠️ ruby-sync failed to merge master into the ruby-next/rails-next branches
+in gitlab-org/gitlab. Pipeline: <pipeline_url> — Docs: <docs_url>
+```
+
+##### Troubleshoot `ruby-sync` failures
+
+Common causes of failure:
+
+- **Transient GitLab load errors**: The job clones the full repository, which
+  can fail during high-load periods. Retry the failed pipeline.
+- **Merge conflicts**: If `ruby-next` or `rails-next` has diverged from
+  `master` in a way that causes conflicts, the `git merge` step fails.
+  Manually resolve the conflict on the affected branch and retry.
+- **Authentication errors**: Verify that the `RUBY_SYNC_TOKEN` project token
+  has not expired. Check the pipeline schedule configuration.
+
+To retry, go to the
+[pipeline schedules](https://gitlab.com/gitlab-org/gitlab/-/pipeline_schedules)
+page and run the `ruby-sync` schedule, or retry the failed job from the
+pipeline page.
 
 ### Redis versions testing
 

@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Dependency list
 description: Vulnerabilities, licenses, filtering, and exporting.
 ---
@@ -55,9 +55,13 @@ You can use the [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-t
 
 {{< /history >}}
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project or group.
+
 To view the dependencies of a project or all projects in a group:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Dependency list**.
 1. Optional. If there are transitive dependencies, you can also view all of the dependency paths:
    - For a project, in the **Location** column, select **View dependency paths**.
@@ -104,9 +108,13 @@ For projects, you can filter by:
 
 To filter by component version, you must filter by exactly one component first.
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project or group.
+
 To filter the dependency list:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Dependency list**.
 1. Select the filter bar.
 1. Select a filter, then from the dropdown list select one or more criteria.
@@ -181,9 +189,13 @@ You can export the dependency list in:
 - CSV
 - CycloneDX format (for projects only)
 
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project or group.
+
 To export the dependency list:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Dependency list**.
 1. Select **Export** and then select the file format.
 

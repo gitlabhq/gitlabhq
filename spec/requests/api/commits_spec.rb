@@ -330,6 +330,63 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
             end
           end
 
+          context 'follow optional parameter' do
+            let(:get_commits) { get api("/projects/#{project_id}/repository/commits", user), params: params }
+            let(:params) { { path: path, follow: follow } }
+            let(:path) { 'files/ruby/popen.rb' }
+
+            context 'when follow is false' do
+              let(:follow) { false }
+
+              it 'passes follow: false to the repository' do
+                expect_next_instance_of(Repository) do |repo|
+                  expect(repo).to receive(:commits).with(
+                    anything,
+                    hash_including(follow: false, path: path)
+                  ).and_call_original
+                end
+
+                get_commits
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+
+            context 'when follow is true' do
+              let(:follow) { true }
+
+              it 'passes follow: true to the repository' do
+                expect_next_instance_of(Repository) do |repo|
+                  expect(repo).to receive(:commits).with(
+                    anything,
+                    hash_including(follow: true, path: path)
+                  ).and_call_original
+                end
+
+                get_commits
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+
+            context 'when follow is not set' do
+              let(:params) { { path: path } }
+
+              it 'passes follow: nil to the repository' do
+                expect_next_instance_of(Repository) do |repo|
+                  expect(repo).to receive(:commits).with(
+                    anything,
+                    hash_including(follow: nil, path: path)
+                  ).and_call_original
+                end
+
+                get_commits
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+          end
+
           context 'with_stats optional parameter' do
             let(:project) { create(:project, :public, :repository) }
 
@@ -796,6 +853,62 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           it_behaves_like 'returns bad request - validation error', "actions[0][execute_filemode] must be a boolean"
         end
       end
+
+      context 'with non-string parameter types' do
+        using RSpec::Parameterized::TableSyntax
+
+        context 'for top-level parameters' do
+          where(:param_name, :param_value) do
+            :branch         | { nested: 'object' }
+            :commit_message | { nested: 'object' }
+            :start_branch   | { nested: 'object' }
+            :start_sha      | { nested: 'object' }
+            :author_email   | { nested: 'object' }
+            :author_name    | { nested: 'object' }
+            :branch         | ['array']
+            :commit_message | ['array']
+            :start_branch   | ['array']
+            :start_sha      | ['array']
+            :author_email   | ['array']
+            :author_name    | ['array']
+          end
+
+          with_them do
+            let(:params) { super().merge(param_name => param_value) }
+
+            it 'returns bad request with type validation error' do
+              workhorse_body_upload(url, params)
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['message']).to eq("400 Bad request - #{param_name} must be a string")
+            end
+          end
+        end
+
+        context 'for action parameters' do
+          where(:param_name, :param_value) do
+            :file_path      | { nested: 'object' }
+            :previous_path  | { nested: 'object' }
+            :last_commit_id | { nested: 'object' }
+            :file_path      | ['array']
+            :previous_path  | ['array']
+            :last_commit_id | ['array']
+          end
+
+          with_them do
+            let(:params) do
+              super().merge(actions: [{ action: 'create', file_path: '/test.rb', content: 'puts 8', param_name => param_value }])
+            end
+
+            it 'returns bad request with type validation error' do
+              workhorse_body_upload(url, params)
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['message']).to eq("400 Bad request - actions[0][#{param_name}] must be a string")
+            end
+          end
+        end
+      end
     end
 
     shared_examples 'create actions' do
@@ -880,6 +993,132 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           it_behaves_like 'internal event tracking' do
             let(:event) { 'g_edit_by_web_ide' }
             let(:namespace) { project.namespace.reload }
+          end
+
+          describe 'CI config file creation tracking' do
+            let_it_be_with_reload(:project) { create(:project, :repository) }
+            let!(:url) { api("/projects/#{project.id}/repository/commits", user, oauth_access_token: oauth_token) }
+            let(:event) { 'create_ci_config_file_from_web_ide' }
+
+            before do
+              project.add_maintainer(user)
+            end
+
+            context 'when creating CI config file on default branch' do
+              let(:valid_c_params) do
+                {
+                  branch: project.default_branch,
+                  commit_message: message,
+                  actions: [{ action: 'create', file_path: project.ci_config_path_or_default, content: 'image: ruby:3.0' }]
+                }
+              end
+
+              it 'tracks create_ci_config_file_from_web_ide event' do
+                expect { request }
+                  .to trigger_internal_events(event)
+                  .with(user: user, project: project, namespace: project.namespace, category: 'InternalEventTracking')
+              end
+            end
+
+            context 'when creating CI config file on feature branch' do
+              let_it_be(:feature_branch_project) { create(:project, :repository) }
+              let!(:url) { api("/projects/#{feature_branch_project.id}/repository/commits", user, oauth_access_token: oauth_token) }
+
+              let(:valid_c_params) do
+                {
+                  branch: 'feature-branch',
+                  start_branch: feature_branch_project.default_branch,
+                  commit_message: message,
+                  actions: [{ action: 'create', file_path: feature_branch_project.ci_config_path_or_default, content: 'image: ruby:3.0' }]
+                }
+              end
+
+              before do
+                feature_branch_project.add_maintainer(user)
+              end
+
+              it 'tracks create_ci_config_file_from_web_ide event' do
+                expect { request }
+                  .to trigger_internal_events(event)
+                  .with(user: user, project: feature_branch_project, namespace: feature_branch_project.namespace, category: 'InternalEventTracking')
+              end
+            end
+
+            context 'when updating CI config file' do
+              let(:valid_c_params) do
+                {
+                  branch: project.default_branch,
+                  commit_message: message,
+                  actions: [{ action: 'update', file_path: project.ci_config_path_or_default, content: 'image: ruby:3.1' }]
+                }
+              end
+
+              before do
+                Files::CreateService.new(
+                  project, user,
+                  start_branch: project.default_branch,
+                  branch_name: project.default_branch,
+                  commit_message: 'Add CI config',
+                  file_path: project.ci_config_path_or_default,
+                  file_content: 'image: ruby:3.0'
+                ).execute
+              end
+
+              it_behaves_like 'internal event not tracked'
+            end
+
+            context 'when creating non-CI config file' do
+              let(:valid_c_params) do
+                {
+                  branch: project.default_branch,
+                  commit_message: message,
+                  actions: [{ action: 'create', file_path: 'README.md', content: '# Hello' }]
+                }
+              end
+
+              it_behaves_like 'internal event not tracked'
+            end
+
+            context 'when project has custom CI config path' do
+              let_it_be(:custom_project) { create(:project, :repository, ci_config_path: 'custom/ci.yml') }
+              let!(:url) { api("/projects/#{custom_project.id}/repository/commits", user, oauth_access_token: oauth_token) }
+
+              let(:valid_c_params) do
+                {
+                  branch: custom_project.default_branch,
+                  commit_message: message,
+                  actions: [{ action: 'create', file_path: 'custom/ci.yml', content: 'image: ruby:3.0' }]
+                }
+              end
+
+              before do
+                custom_project.add_maintainer(user)
+              end
+
+              it 'tracks create_ci_config_file_from_web_ide event' do
+                expect { request }
+                  .to trigger_internal_events(event)
+                  .with(user: user, project: custom_project, namespace: custom_project.namespace, category: 'InternalEventTracking')
+              end
+            end
+
+            context 'when commit fails' do
+              let(:valid_c_params) do
+                {
+                  branch: project.default_branch,
+                  commit_message: message,
+                  actions: [{ action: 'create', file_path: project.ci_config_path_or_default, content: 'image: ruby:3.0' }]
+                }
+              end
+
+              before do
+                allow_next_instance_of(Files::MultiService) do |service|
+                  allow(service).to receive(:execute).and_return({ status: :error, message: 'Commit failed' })
+                end
+              end
+
+              it_behaves_like 'internal event not tracked'
+            end
           end
         end
 
@@ -1401,6 +1640,20 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
               expect(response).to have_gitlab_http_status(:forbidden)
             end
+          end
+        end
+
+        context 'when start_project is the same as the current project' do
+          before do
+            valid_c_params[:start_project] = project.id
+            valid_c_params[:start_branch] = 'master'
+            valid_c_params[:branch] = "#{new_branch_name}-same-project"
+          end
+
+          it 'allows the commit and returns a 201', :sidekiq_might_not_need_inline do
+            expect_request_with_status(201) { workhorse_body_upload(url, valid_c_params) }
+              .to change { last_commit_id(project, valid_c_params[:branch]) }
+              .and not_change { last_commit_id(project, valid_c_params[:start_branch]) }
           end
         end
 
@@ -2761,7 +3014,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
     context 'when commit exists' do
       it 'returns correct JSON' do
-        expected_count = project.repository.count_commits(ref: commit_id, first_parent: false)
+        expected_count = project.repository.count_commits(revisions: commit_id, first_parent: false)
 
         get api(route, current_user)
 
@@ -2774,7 +3027,7 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
       let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/sequence?first_parent=true" }
 
       it 'returns correct JSON' do
-        expected_count = project.repository.count_commits(ref: commit_id, first_parent: true)
+        expected_count = project.repository.count_commits(revisions: commit_id, first_parent: true)
 
         get api(route, current_user)
 

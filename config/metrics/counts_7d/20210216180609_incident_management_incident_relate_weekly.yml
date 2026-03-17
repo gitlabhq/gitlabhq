@@ -4,6 +4,8 @@ key_path: redis_hll_counters.incident_management.incident_management_incident_re
 description: Count of unique users adding issues per that are related to an incident
   week
 product_group: platform_insights
+product_categories:
+- incident_management
 value_type: number
 status: active
 time_frame: 7d

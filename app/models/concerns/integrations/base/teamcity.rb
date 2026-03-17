@@ -27,7 +27,7 @@ module Integrations
         end
 
         def help
-          s_('To run CI/CD pipelines with JetBrains TeamCity, input the GitLab project ' \
+          _('To run CI/CD pipelines with JetBrains TeamCity, input the GitLab project ' \
             'details in the TeamCity project Version Control Settings.')
         end
 

@@ -26,6 +26,17 @@ module Gitlab
         Sidekiq.logger.info payload
       end
 
+      def batch_resumed_log(worker_name, job_count)
+        payload = parse_job({
+          'class' => worker_name
+        })
+        payload['job_status'] = 'resumed'
+        payload['resumed_job_count'] = job_count
+        payload['message'] = "#{base_message(payload)}: concurrency_limit: resumed #{job_count} jobs"
+
+        Sidekiq.logger.info payload
+      end
+
       def worker_stats_log(worker_name, limit, queue_size, current)
         payload = parse_job({
           'class' => worker_name

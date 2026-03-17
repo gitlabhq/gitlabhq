@@ -107,6 +107,9 @@ export default {
     authorId() {
       return getIdFromGraphQLId(this.mergeRequest.author.id);
     },
+    milestoneNumericId() {
+      return getIdFromGraphQLId(this.mergeRequest.milestone?.id);
+    },
   },
   methods: {
     isScopedLabel,
@@ -148,8 +151,16 @@ export default {
           </template>
           <template #milestone>
             <template v-if="mergeRequest.milestone">
-              <gl-icon :size="16" name="milestone" />
-              {{ mergeRequest.milestone.title }}
+              <gl-link
+                class="has-popover gl-text-subtle hover:gl-text-subtle hover:gl-no-underline"
+                data-reference-type="milestone"
+                data-placement="top"
+                :data-milestone="milestoneNumericId"
+                :href="mergeRequest.milestone.webPath"
+              >
+                <gl-icon :size="16" name="milestone" />
+                {{ mergeRequest.milestone.title }}
+              </gl-link>
             </template>
           </template>
           <template #stats>

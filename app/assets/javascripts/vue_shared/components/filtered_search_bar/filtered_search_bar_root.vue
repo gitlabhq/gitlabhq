@@ -291,8 +291,10 @@ export default {
       if (this.recentSearchesStorageKey) {
         this.recentSearchesPromise
           .then(() => {
-            if (filterTokens.length) {
-              const resultantSearches = this.recentSearchesStore.addRecentSearch(filterTokens);
+            const nonEmptyFilterTokens = filterTokens.filter((token) => token.value?.data?.trim());
+            if (nonEmptyFilterTokens.length) {
+              const resultantSearches =
+                this.recentSearchesStore.addRecentSearch(nonEmptyFilterTokens);
               this.recentSearchesService.save(resultantSearches);
               this.recentSearches = resultantSearches;
             }

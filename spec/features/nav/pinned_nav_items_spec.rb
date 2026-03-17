@@ -143,13 +143,27 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
     end
 
     it 'allows to pin and unpin items with keyboard' do
-      within '#super-sidebar' do
-        find(:button, id: 'menu-section-button-manage').base.send_keys(:enter)
-        send_keys :tab, :tab
-        send_keys :enter
-        send_keys :tab, :tab
-        send_keys :enter
-      end
+      # --- Pin Activity and Members via keyboard ---
+      # Open the Manage section with Enter and wait for aria-expanded to confirm
+      # the collapse panel is open before tabbing into its items. Without this
+      # guard the GlCollapse transition may still be running when the first :tab
+      # fires, causing focus to land outside the section entirely.
+      manage_button = find(:button, id: 'menu-section-button-manage')
+      manage_button.base.send_keys(:enter)
+      expect(manage_button['aria-expanded']).to eq('true')
+
+      # Manage section item order: Activity, Members, Labels.
+      # Tab 1: Activity nav link, Tab 2: Activity pin button.
+      manage_button.base.send_keys(:tab, :tab)
+      expect(page.find(':focus')['aria-label']).to eq('Pin Activity')
+      page.find(':focus').send_keys(:enter)
+      wait_for_requests
+
+      # Tab 1: Members nav link, Tab 2: Members pin button.
+      page.find(':focus').send_keys(:tab, :tab)
+      expect(page.find(':focus')['aria-label']).to eq('Pin Members')
+      page.find(':focus').send_keys(:enter)
+      wait_for_requests
 
       within_testid 'pinned-nav-items' do
         expect(page).to have_link 'Work items'
@@ -157,15 +171,27 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
         expect(page).to have_link 'Members'
       end
 
-      within '#super-sidebar' do
-        find(:button, id: 'menu-section-button-pinned').base
-        send_keys :tab, :tab
-        send_keys :space
-        send_keys :tab, :tab
-        send_keys :space
-      end
+      # --- Unpin Work items and Activity via keyboard ---
+      # Explicitly focus the Pinned section button.
+      # Pinned section item order: Work items, Activity, Members.
+      # Tab 1: Work items nav link, Tab 2: Work items unpin button.
+      pinned_button = find(:button, id: 'menu-section-button-pinned')
+      expect(pinned_button['aria-expanded']).to eq('true')
+
+      pinned_button.base.send_keys(:tab, :tab)
+      expect(page.find(':focus')['aria-label']).to eq('Unpin Work items')
+      page.find(':focus').send_keys(:space)
+      wait_for_requests
+
+      # Tab 1: Activity nav link, Tab 2: Activity unpin button.
+      page.find(':focus').send_keys(:tab, :tab)
+      expect(page.find(':focus')['aria-label']).to eq('Unpin Activity')
+      page.find(':focus').send_keys(:space)
+      wait_for_requests
 
       within_testid 'pinned-nav-items' do
+        expect(page).not_to have_link 'Work items'
+        expect(page).not_to have_link 'Activity'
         expect(page).to have_link 'Members'
       end
     end
@@ -204,51 +230,70 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
     end
 
     it 'pins item from flyout menu using Enter key' do
-      find(:button, id: 'menu-section-button-operate')
-        .base
-        .send_keys(:enter)
-      send_keys :tab
-      send_keys :tab
-      send_keys :enter
-      wait_for_requests
-      send_keys(:escape)
+      # Open the Operate flyout with Enter and wait for it to be visible before
+      # tabbing into it. In icon-only mode, Enter toggles isMouseOverSection which
+      # renders the flyout - we need it fully mounted before sending tabs.
+      operate_button = find(:button, id: 'menu-section-button-operate')
+      operate_button.base.send_keys(:enter)
+      expect(page).to have_css('#menu-section-button-operate-flyout', visible: :visible)
 
-      # Verify item is pinned
-      find(:button, id: 'menu-section-button-pinned').base.send_keys(:enter)
+      # Operate flyout item order: Environments, Kubernetes, Terraform states, ...
+      # Tab 1: Environments nav link, Tab 2: Environments pin button.
+      operate_button.base.send_keys(:tab, :tab)
+      expect(page.find(':focus')['aria-label']).to eq('Pin Environments')
+      page.find(':focus').send_keys(:enter)
+      wait_for_requests
+
+      # Escape closes the flyout and returns focus to the Operate button.
+      page.find(':focus').send_keys(:escape)
+      expect(page).not_to have_css('#menu-section-button-operate-flyout', visible: :visible)
+
+      # Open the Pinned flyout and verify Environments was pinned.
+      pinned_button = find(:button, id: 'menu-section-button-pinned')
+      pinned_button.base.send_keys(:enter)
+      expect(page).to have_css('#menu-section-button-pinned-flyout', visible: :visible)
+
       within '#menu-section-button-pinned-flyout' do
         expect(page).to have_link 'Environments'
       end
     end
 
     it 'removes pinned item from pinned section using Space key' do
-      find(:button, id: 'menu-section-button-operate')
-        .base
-        .send_keys(:enter)
-      send_keys :tab
-      send_keys :tab
-      send_keys :enter
-      wait_for_requests
-      send_keys(:escape)
+      # --- Setup: pin Environments via keyboard ---
+      operate_button = find(:button, id: 'menu-section-button-operate')
+      operate_button.base.send_keys(:enter)
+      expect(page).to have_css('#menu-section-button-operate-flyout', visible: :visible)
 
-      # Verify item is pinned
-      find(:button, id: 'menu-section-button-pinned').base.send_keys(:enter)
+      operate_button.base.send_keys(:tab, :tab)
+      expect(page.find(':focus')['aria-label']).to eq('Pin Environments')
+      page.find(':focus').send_keys(:enter)
+      wait_for_requests
+
+      page.find(':focus').send_keys(:escape)
+      expect(page).not_to have_css('#menu-section-button-operate-flyout', visible: :visible)
+
+      # --- Verify Environments is pinned ---
+      pinned_button = find(:button, id: 'menu-section-button-pinned')
+      pinned_button.base.send_keys(:enter)
+      expect(page).to have_css('#menu-section-button-pinned-flyout', visible: :visible)
+
       within '#menu-section-button-pinned-flyout' do
         expect(page).to have_link 'Environments'
       end
 
-      # Now remove it from the pinned section using keyboard
-      find(:button, id: 'menu-section-button-pinned').base
-      # live_debug
-      send_keys :tab
-      send_keys :tab
-      send_keys :tab
-      send_keys :tab
-      send_keys :enter
+      # --- Unpin Environments from the pinned flyout via keyboard ---
+      # The flyout is still open. Pinned flyout item order: Work items, Environments.
+      # Tab 1: Work items nav link, Tab 2: Work items unpin button,
+      # Tab 3: Environments nav link, Tab 4: Environments unpin button.
+      tabs_to_unpin_environments = 4
+      pinned_button.base.send_keys(*Array.new(tabs_to_unpin_environments, :tab))
+      expect(page.find(':focus')['aria-label']).to eq('Unpin Environments')
+      page.find(':focus').send_keys(:space)
       wait_for_requests
 
-      # Verify item is pinned
       within '#menu-section-button-pinned-flyout' do
         expect(page).not_to have_link 'Environments'
+        expect(page).to have_link 'Work items'
       end
     end
   end
@@ -277,6 +322,12 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
         wait_for_requests
       end
 
+      # After a pin action, flyout_menu.vue emits a mouseleave via $nextTick to
+      # close the flyout (Safari fix). Wait for it to fully unmount before
+      # hovering the next section, otherwise the deferred mouseleave can fire
+      # after the new hover and prevent the next flyout from opening.
+      expect(page).not_to have_css('#menu-section-button-operate-flyout', visible: :visible)
+
       # Verify item is pinned by checking the pinned section flyout
       pinned_button = find(:button, id: 'menu-section-button-pinned')
       pinned_button.hover
@@ -300,6 +351,8 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
         wait_for_requests
       end
 
+      expect(page).not_to have_css('#menu-section-button-operate-flyout', visible: :visible)
+
       # Now unpin it from the pinned section
       pinned_button = find(:button, id: 'menu-section-button-pinned')
       pinned_button.hover
@@ -311,6 +364,8 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
         find_by_testid('nav-item-unpin', context: nav_item).click
         wait_for_requests
       end
+
+      expect(page).not_to have_css('#menu-section-button-pinned-flyout', visible: :visible)
 
       # Verify item is no longer pinned
       pinned_button.hover
@@ -333,6 +388,8 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
         wait_for_requests
       end
 
+      expect(page).not_to have_css('#menu-section-button-operate-flyout', visible: :visible)
+
       # Verify it's pinned
       pinned_button = find(:button, id: 'menu-section-button-pinned')
       pinned_button.hover
@@ -341,6 +398,13 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       within pinned_flyout do
         expect(page).to have_link 'Environments'
       end
+
+      # Move the mouse away from the pinned section to trigger its mouseleave,
+      # then wait for the flyout to fully close before hovering the operate section.
+      # Without this, the deferred $nextTick mouseleave from the pinned flyout can
+      # fire after the operate hover and prevent it from opening.
+      section_button.hover
+      expect(page).not_to have_css('#menu-section-button-pinned-flyout', visible: :visible)
 
       # Now unpin it from the original section
       section_button.hover
@@ -351,6 +415,8 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
         find_by_testid('nav-item-unpin', context: nav_item).click
         wait_for_requests
       end
+
+      expect(page).not_to have_css('#menu-section-button-operate-flyout', visible: :visible)
 
       # Verify item is no longer pinned
       pinned_button.hover

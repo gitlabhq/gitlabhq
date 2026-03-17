@@ -26,6 +26,20 @@
       ],
       "description": "Data for rendering the project grades summary in PDF reports"
     },
+    "total_risk_score": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Data for rendering the total risk score in PDF reports"
+    },
+    "open_vulnerabilities_over_time": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Data for rendering vulnerabilities over time in PDF reports"
+    },
     "dashboard_type": {
       "type": [
         "string",

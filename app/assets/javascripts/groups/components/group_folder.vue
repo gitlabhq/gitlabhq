@@ -1,7 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { n__ } from '~/locale';
-import { MAX_CHILDREN_COUNT } from '../constants';
 
 export default {
   components: {
@@ -24,14 +23,20 @@ export default {
     },
   },
   computed: {
+    totalChildrenCount() {
+      return this.parentGroup.childrenCount ?? 0;
+    },
+    currentChildrenCount() {
+      return this.parentGroup.children?.length ?? 0;
+    },
     hasMoreChildren() {
-      return this.parentGroup.childrenCount > MAX_CHILDREN_COUNT;
+      return this.totalChildrenCount > this.currentChildrenCount;
     },
     moreChildrenStats() {
       return n__(
         'One more item',
         '%d more items',
-        this.parentGroup.childrenCount - this.parentGroup.children.length,
+        this.totalChildrenCount - this.currentChildrenCount,
       );
     },
   },

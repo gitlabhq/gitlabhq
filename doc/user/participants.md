@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: "Users who interacted with GitLab work items and merge requests including authors, assignees, and users who commented, added reactions, or were mentioned."
 title: Participants
 ---
@@ -26,9 +26,7 @@ Participants are available for work items (such as issues, tasks, epics) and mer
 To view participants of a work item:
 
 1. In the top bar, select **Search or go to** and find your project or group.
-1. Go to your work item:
-   - For issues and tasks: Select **Plan** > **Issues**, then select your work item.
-   - For epics: Select **Plan** > **Epics**, then select your epic.
+1. Select **Plan** > **Work items**, then select your work item.
 1. In the right sidebar, in the **Participants** section, view all users who
    participated in the work item.
 

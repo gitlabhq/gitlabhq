@@ -1,12 +1,12 @@
 ---
 stage: none
 group: Tutorials
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Where to find GitLab Duo Chat and how to use it to work with issues.
-title: "Tutorial: Manage issues with GitLab Duo Chat" 
+title: "Tutorial: Manage issues with GitLab Duo Chat"
 ---
 
-GitLab Duo Chat (Agentic) uses AI assistants called agents to help you accomplish specific tasks and answer complex questions.
+GitLab Duo Chat (agentic) uses AI assistants called agents to help you accomplish specific tasks and answer complex questions.
 In this tutorial, you'll complete the following tasks to help you get to know the GitLab Duo Chat interface:
 
 - Ask the default GitLab Duo agent to answer a general question.
@@ -88,12 +88,10 @@ You're going to use Chat to see a list of issues assigned to you, and analyze on
    ```
 
 1. Press <kbd>Enter</kbd> or select **Send**.
-
 1. Choose one of the issues. Now you will use the Planner Agent to create child items
    to break the work down into more manageable steps.
 
    Don't worry if you don't need the child items, you can always close them later.
-
 1. In the chat text box, type:
 
    ```plaintext
@@ -101,7 +99,6 @@ You're going to use Chat to see a list of issues assigned to you, and analyze on
    ```
 
 1. Press <kbd>Enter</kbd> or select **Send**.
-
 1. Review the suggested child items, and if you agree with them, type:
 
    ```plaintext
@@ -109,9 +106,7 @@ You're going to use Chat to see a list of issues assigned to you, and analyze on
    ```
 
    Alternatively, use follow-up prompts to request more refinements until you're satisfied.
-
 1. Press <kbd>Enter</kbd> or select **Send**.
-
 1. GitLab Duo prepares the work items for final review. Read the descriptions and view the JSON request parameters,
    then select **Approve**.
 

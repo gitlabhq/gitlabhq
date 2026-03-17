@@ -105,6 +105,15 @@ RSpec.describe Groups::DependencyProxyAuthController, feature_category: :contain
 
           it { is_expected.to have_gitlab_http_status(:unauthorized) }
         end
+
+        context 'with virtual_registry service_type' do
+          let_it_be(:user) { create(:user) }
+          let(:jwt) do
+            build_jwt(user, service_type: ::Auth::ContainerProxyAuthenticationService::SERVICE_TYPE_VIRTUAL_REGISTRY)
+          end
+
+          it { is_expected.to have_gitlab_http_status(:unauthorized) }
+        end
       end
     end
   end

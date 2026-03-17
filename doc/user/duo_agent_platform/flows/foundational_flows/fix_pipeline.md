@@ -1,13 +1,13 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Fix CI/CD Pipeline Flow
 ---
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
@@ -18,6 +18,7 @@ title: Fix CI/CD Pipeline Flow
 - Enabled on GitLab.com and GitLab Self-Managed in GitLab 18.5.
 - Feature flag `ai_duo_agent_fix_pipeline_button` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205086) in GitLab 18.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8. Feature flag `ai_duo_agent_fix_pipeline_button` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/216681). Feature flag `duo_workflow_in_ci` was removed in GitLab 18.9.
+- Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 
 {{< /history >}}
 
@@ -45,15 +46,15 @@ To use this flow, you must:
 
 - Have an existing failed pipeline.
 - Have the Developer, Maintainer, or Owner role in the project.
-- Meet [the other prerequisites](../../../duo_agent_platform/_index.md#prerequisites).
+- Meet [the other prerequisites](../../_index.md#prerequisites).
 - [Ensure the GitLab Duo service account can create commits and branches](../../troubleshooting.md#session-is-stuck-in-created-state).
-- Ensure that the Fix CI/CD Pipeline Flow is [turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
+- Ensure **Allow foundational flows** and **Fix CI/CD Pipeline** are [turned on](_index.md#turn-foundational-flows-on-or-off) for the top-level group.
 
 ## Fix the pipeline in a merge request
 
 To fix the CI/CD pipeline in a merge request:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and open your merge request.
 1. To fix the pipeline, you can either:
    - Select the **Overview** tab and under the failing pipeline, select **Fix pipeline with Duo**.

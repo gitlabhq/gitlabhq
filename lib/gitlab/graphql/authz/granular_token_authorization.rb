@@ -57,7 +57,7 @@ module Gitlab
         def permissions(directive)
           return unless directive
 
-          directive.arguments[:permissions].map(&:downcase)
+          directive.arguments[:permissions]
         end
       end
     end

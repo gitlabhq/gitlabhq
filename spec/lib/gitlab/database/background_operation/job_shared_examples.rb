@@ -80,13 +80,31 @@ RSpec.shared_examples 'background operation job functionality' do |job_factory, 
       end
     end
 
-    describe '.retriable' do
-      before do
-        job_3.update!(attempts: 2)
+    describe '.stale', :freeze_time do
+      it 'returns running jobs older than STUCK_JOBS_TIMEOUT' do
+        job_2.update!(started_at: (described_class::STUCK_JOBS_TIMEOUT + 1.minute).ago)
+
+        expect(described_class.stale).to contain_exactly(job_2)
       end
 
-      it 'returns jobs that are retriable' do
-        expect(described_class.retriable).to contain_exactly(job_3)
+      it 'excludes running jobs within STUCK_JOBS_TIMEOUT' do
+        job_2.update!(started_at: (described_class::STUCK_JOBS_TIMEOUT - 1.minute).ago)
+
+        expect(described_class.stale).to be_empty
+      end
+    end
+
+    describe '.retriable', :freeze_time do
+      let!(:retriable_job) { create(job_factory, :failed, attempts: 2) }
+
+      it 'returns failed jobs below max attempts' do
+        expect(described_class.retriable).to include(retriable_job)
+      end
+
+      it 'includes stale running jobs' do
+        job_2.update!(started_at: (described_class::STUCK_JOBS_TIMEOUT + 1.minute).ago)
+
+        expect(described_class.retriable).to include(retriable_job, job_2)
       end
     end
 

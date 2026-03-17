@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: To remove unwanted large files from a Git repository and reduce its storage size, use the filter-repo command.
 title: Reduce repository size
 ---
@@ -30,7 +30,7 @@ Use this method to remove large files from the entire Git history.
 It is not suitable for removing sensitive data like passwords or keys from your repository.
 Information about commits, including file content, is cached in the database, and remain visible
 even after they have been removed from the repository. To remove sensitive data, use the method
-described in [Remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
+described in [remove blobs](../../user/project/repository/repository_size.md#remove-blobs).
 
 Prerequisites:
 
@@ -129,7 +129,6 @@ To purge files from a GitLab repository:
    > [!note]
    > This step fails for [protected branches](../../user/project/repository/branches/protected.md) and
    > [protected tags](../../user/project/protected_tags.md). To proceed, temporarily remove protections.
-
 1. Wait at least 30 minutes before the next step.
 1. Run the [clean up repository](../../user/project/repository/repository_size.md#clean-up-repository) process.
    This process only cleans up objects that are more than 30 minutes old.

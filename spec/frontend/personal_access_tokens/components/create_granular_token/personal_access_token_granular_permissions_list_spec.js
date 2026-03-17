@@ -4,9 +4,9 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import PersonalAccessTokenGranularPermissionsList from '~/personal_access_tokens/components/create_granular_token/personal_access_token_granular_permissions_list.vue';
 import {
-  mockGroupPermissions,
+  mockGroupPermissionsByResource,
   mockGroupResources,
-  mockUserPermissions,
+  mockUserPermissionsByResource,
   mockUserResources,
 } from '../../mock_data';
 
@@ -16,8 +16,8 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
   const createComponent = ({ props = {}, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(PersonalAccessTokenGranularPermissionsList, {
       propsData: {
-        targetBoundaries: ['GROUP', 'PROJECT'],
-        permissions: mockGroupPermissions,
+        scope: 'namespace',
+        permissionsByResource: mockGroupPermissionsByResource,
         selectedResources: mockGroupResources,
         ...props,
       },
@@ -37,6 +37,17 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
 
   beforeEach(() => {
     createComponent();
+  });
+
+  describe('props validation', () => {
+    it('validates `scope` prop correctly', () => {
+      const { validator } = PersonalAccessTokenGranularPermissionsList.props.scope;
+
+      expect(validator('namespace')).toBe(true);
+      expect(validator('user')).toBe(true);
+      expect(validator('invalid')).toBe(false);
+      expect(validator('')).toBe(false);
+    });
   });
 
   describe('rendering', () => {
@@ -72,10 +83,11 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
     });
 
     it('renders a listbox for each selected resource', () => {
-      expect(findListboxes()).toHaveLength(2);
+      expect(findListboxes()).toHaveLength(3);
 
       expect(findListbox(0).props('multiple')).toBe(true);
       expect(findListbox(1).props('multiple')).toBe(true);
+      expect(findListbox(2).props('multiple')).toBe(true);
     });
 
     it('renders correct list of permissions for each resource', () => {
@@ -85,6 +97,10 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
       ]);
 
       expect(findListbox(1).props('items')).toMatchObject([
+        { value: 'read_contributed_project', text: 'Read' },
+      ]);
+
+      expect(findListbox(2).props('items')).toMatchObject([
         { value: 'read_repository', text: 'Read' },
       ]);
     });
@@ -112,7 +128,7 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
     });
 
     it('renders button to remove resource', () => {
-      expect(findButtons()).toHaveLength(2);
+      expect(findButtons()).toHaveLength(3);
       expect(findButton(0).props('icon')).toBe('close');
     });
 
@@ -120,8 +136,8 @@ describe('PersonalAccessTokenGranularPermissionsList', () => {
       beforeEach(() => {
         createComponent({
           props: {
-            targetBoundaries: ['USER'],
-            permissions: mockUserPermissions,
+            scope: 'user',
+            permissionsByResource: mockUserPermissionsByResource,
             selectedResources: mockUserResources,
           },
           mountFn: mountExtended,

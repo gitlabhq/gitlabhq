@@ -110,7 +110,7 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
     expect(csv[1]['Time Spent']).to be_nil
   end
 
-  it 'preloads fields to avoid N+1 queries' do
+  it 'preloads fields to avoid N+1 queries', :request_store do
     control = ActiveRecord::QueryRecorder.new { subject.csv_data }
 
     create(:work_item, :task, project: project)

@@ -5,6 +5,8 @@ require 'yaml'
 module Backup
   module Targets
     class Database < Target
+      include ::Gitlab::Utils::StrongMemoize
+
       extend ::Gitlab::Utils::Override
       include Backup::Helper
 
@@ -35,7 +37,7 @@ module Backup
       def dump(destination_dir, _)
         FileUtils.mkdir_p(destination_dir)
 
-        each_database(destination_dir) do |backup_connection|
+        each_database(destination_dir, additional_connections: additional_connections_config) do |backup_connection|
           pg_env = backup_connection.database_configuration.pg_env_variables
           active_record_config = backup_connection.database_configuration.activerecord_variables
           pg_database_name = active_record_config[:database]
@@ -94,54 +96,72 @@ module Backup
           config = backup_connection.database_configuration.activerecord_variables
 
           db_file_name = file_name(destination_dir, database_name)
-          database = config[:database]
-
-          unless File.exist?(db_file_name)
-            raise(Backup::Error, "Source database file does not exist #{db_file_name}") if main_database?(database_name)
-
-            logger.info "Source backup for the database #{database_name} doesn't exist. Skipping the task"
-            return false
-          end
-
-          unless force
-            logger.info 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'
-            sleep(5)
-          end
-
-          # Drop all tables Load the schema to ensure we don't have any newer tables
-          # hanging out from a failed upgrade
-          drop_tables(database_name)
-
-          tracked_errors = []
-          pg_env = backup_connection.database_configuration.pg_env_variables
-          success = with_transient_pg_env(pg_env) do
-            decompress_rd, decompress_wr = IO.pipe
-            decompress_pid = spawn(decompress_cmd, out: decompress_wr, in: db_file_name)
-            decompress_wr.close
-
-            status, tracked_errors =
-              case config[:adapter]
-              when "postgresql" then
-                logger.info "Restoring PostgreSQL database #{database} ... "
-                execute_and_track_errors(pg_restore_cmd(database), decompress_rd)
-              end
-            decompress_rd.close
-
-            Process.waitpid(decompress_pid)
-            $?.success? && status.success?
-          end
-
-          unless tracked_errors.empty?
-            logger.error "------ BEGIN ERRORS -----\n"
-            logger.error tracked_errors.join
-            logger.error "------ END ERRORS -------\n"
-
-            @errors += tracked_errors
-          end
-
-          report_success(success)
-          raise Backup::Error, 'Restore failed' unless success
+          do_restore(backup_connection, config, db_file_name)
         end
+
+        additional_connections_config.each do |connection|
+          do_restore(connection, connection.database_configuration.activerecord_variables,
+            file_name(destination_dir, connection.connection_name))
+        end
+      end
+
+      def do_restore(backup_connection, config, db_file_name)
+        database = config[:database]
+        database_name = backup_connection.connection_name
+
+        unless File.exist?(db_file_name)
+          raise(Backup::Error, "Source database file does not exist #{db_file_name}") if main_database?(database_name)
+
+          logger.info "Source backup for the database #{database_name} doesn't exist. Skipping the task"
+          return false
+        end
+
+        logger.info "Restoring PostgreSQL database #{database_name} ... "
+
+        unless force
+          logger.info 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'
+          sleep(5)
+        end
+
+        # Drop all tables Load the schema to ensure we don't have any newer tables
+        # hanging out from a failed upgrade
+        #
+        begin
+          drop_tables(database_name, backup_connection)
+        rescue ActiveRecord::StatementInvalid => asi
+          raise unless asi.message.include?('PG::InsufficientPrivilege')
+
+          logger.error "Not enough database permissions for the #{database_name} database."
+          logger.error "Please check the user credentials"
+          report_success(false)
+          return
+        end
+
+        tracked_errors = []
+        pg_env = backup_connection.database_configuration.pg_env_variables
+        success = with_transient_pg_env(pg_env) do
+          decompress_rd, decompress_wr = IO.pipe
+          decompress_pid = spawn(decompress_cmd, out: decompress_wr, in: db_file_name)
+          decompress_wr.close
+
+          logger.info "Restoring the database ..."
+          status, tracked_errors = execute_and_track_errors(pg_restore_cmd(database), decompress_rd)
+          decompress_rd.close
+
+          Process.waitpid(decompress_pid)
+          $?.success? && status.success?
+        end
+
+        unless tracked_errors.empty?
+          logger.error "------ BEGIN ERRORS -----\n"
+          logger.error tracked_errors.join
+          logger.error "------ END ERRORS -------\n"
+
+          @errors += tracked_errors
+        end
+
+        report_success(success)
+        raise Backup::Error, 'Restore failed' unless success
       end
 
       protected
@@ -199,17 +219,56 @@ module Backup
 
       private
 
-      def drop_tables(database_name)
+      def include_additional_connections?
+        include_registry_db?
+      end
+
+      def registry_db_base_keys
+        %w[HOST PORT NAME SSLMODE CONNECT_TIMEOUT USER].map { |x| "REGISTRY_DATABASE_#{x}" }
+      end
+
+      # Registry backup is enabled when credentials (PASSWORD, SSL certs) are provided,
+      # in addition to basic connection info (HOST, PORT, NAME, USER).
+      # The presence of ONLY base connection keys means backup is not fully configured.
+      def include_registry_db?
+        (ENV.keys.select { |x| x.start_with?('REGISTRY_DATABASE_') } - registry_db_base_keys).present?
+      end
+
+      def drop_tables(database_name, connection)
         logger.info 'Cleaning the database ... '
 
         if Rake::Task.task_defined? "gitlab:db:drop_tables:#{database_name}"
           Rake::Task["gitlab:db:drop_tables:#{database_name}"].invoke
+        elsif !additional_connections_config.select { |x| x.connection_name == database_name }.empty?
+          drop_tables_for_additional_connection(connection)
         else
           # In single database (single or two connections)
           Rake::Task["gitlab:db:drop_tables"].invoke
         end
 
         logger.info 'done'
+      end
+
+      def drop_tables_for_additional_connection(backup_connection)
+        logger.info "Cleaning the database #{backup_connection.connection_name} ... "
+
+        connection = backup_connection.connection
+        # Get all tables in the public schema
+        # Drop all tables
+        backup_connection.tables.each do |table|
+          connection.execute("DROP TABLE IF EXISTS #{connection.quote_table_name(table)} CASCADE")
+        end
+
+        ## Triggers/functions
+        backup_connection.functions.each do |function|
+          connection.execute("DROP FUNCTION IF EXISTS #{connection.quote_table_name(function)}")
+        end
+
+        logger.info 'done'
+      rescue ActiveRecord::StatementInvalid => asi
+        raise unless asi.cause.is_a?(PG::ServerError)
+
+        logger.warn "There was an error dropping objects in #{backup_connection.connection_name}: #{asi.message}"
       end
 
       # @deprecated This will be removed when restore operation is refactored to use extended_env directly
@@ -225,7 +284,46 @@ module Backup
         ['psql', database]
       end
 
-      def each_database(destination_dir, &block)
+      def registry_database_env(field)
+        ENV.fetch("REGISTRY_DATABASE_#{field.upcase}", nil)
+      end
+
+      def registry_db_connection
+        registry_db_config = {
+          adapter: 'postgresql',
+          database: registry_database_env('name'),
+          username: registry_database_env('user'),
+          password: registry_database_env('password'),
+          host: registry_database_env('host'),
+          port: registry_database_env('port'),
+          sslmode: registry_database_env('sslmode'),
+          sslcert: registry_database_env('sslcert'),
+          sslkey: registry_database_env('sslkey'),
+          sslrootcert: registry_database_env('rootcert'),
+          connect_timeout: registry_database_env('connect_timeout')
+        }
+
+        db_connection = Backup::DatabaseConnection.new(
+          'registry',
+          custom_config: registry_db_config
+        )
+        begin
+          db_connection.connection.postgresql_version
+        rescue ActiveRecord::DatabaseConnectionError => dce
+          raise Backup::Error,
+            "Unable to connect to the registry database with the provided information: #{dce.message}"
+        end
+        db_connection
+      end
+
+      def additional_connections_config
+        return [] unless include_additional_connections?
+
+        [registry_db_connection]
+      end
+      strong_memoize_attr :additional_connections_config
+
+      def each_database(destination_dir, additional_connections: [], &block)
         databases = []
 
         # each connection will loop through all database connections defined in `database.yml`
@@ -249,6 +347,15 @@ module Backup
               file_name(destination_dir, database_connection_name)
             )
           end
+        end
+
+        # Add arbitrary database connections that are not configured via Rails
+        # Note: We don't export snapshots for custom connections because:
+        # 1. They are typically on different database clusters
+        # 2. Snapshots are only valid within the same PostgreSQL cluster
+        # 3. Cross-database snapshot consistency is not needed for external databases
+        additional_connections.each do |connection|
+          databases << connection
         end
 
         databases.each(&block)

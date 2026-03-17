@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Set up and use review apps to create temporary environments for testing changes before merging.
 title: Review apps
 ---
@@ -90,7 +90,7 @@ Prerequisites:
 
 To configure review apps in your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline editor**.
 1. In your `.gitlab-ci.yml` file, add a job that creates a [dynamic environment](../environments/_index.md#create-a-dynamic-environment).
    You can use a [predefined CI/CD variable](../variables/predefined_variables.md) to differentiate
@@ -119,7 +119,7 @@ GitLab provides a built-in template that's configured for merge request pipeline
 
 To use and customize this template:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Environments**.
 1. Select **Enable review apps**.
 1. From the **Enable Review Apps** dialog that appears, copy the YAML template:

@@ -24,10 +24,10 @@ module Search
 
     def projects
       return Project.none unless group
-      return @projects if defined? @projects
 
-      @projects = super.inside_path(group.full_path)
+      super.for_group_and_its_subgroups(group)
     end
+    strong_memoize_attr :projects
 
     private
 

@@ -27,7 +27,13 @@ module Gitlab
       def create_migration_file
         set_local_assigns!
         validate_file_name!
-        migration_template "migration.rb.template", File.join(db_migrate_path, "#{file_name}.rb")
+        migration_template template, File.join(db_migrate_path, "#{file_name}.rb")
+      end
+
+      private
+
+      def template
+        'migration.rb.template'
       end
     end
   end

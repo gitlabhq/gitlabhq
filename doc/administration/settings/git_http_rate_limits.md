@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure rate limits on Git HTTP requests to GitLab Self-Managed.
 title: Rate limits on Git HTTP
 ---
@@ -49,7 +49,7 @@ parameters, enable and configure these limits:
 
 {{< history >}}
 
-- Authenticated Git HTTP rate limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `git_authenticated_http_limit`. Disabled by default.
+- Authenticated Git HTTP rate limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552) in GitLab 18.1 [with a flag](../feature_flags/_index.md) named `git_authenticated_http_limit`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543768) in GitLab 18.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/561577) in GitLab 18.4. Feature flag `git_authenticated_http_limit` removed.
 

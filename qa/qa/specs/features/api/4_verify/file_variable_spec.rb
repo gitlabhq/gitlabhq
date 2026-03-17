@@ -59,8 +59,12 @@ module QA
       end
 
       it(
-        'does not expose file variable content with echo', :smoke,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370791'
+        'does not expose file variable content with echo',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370791',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/593602',
+          type: :investigating
+        }
       ) do
         job = create(:job, project: project, id: project.job_by_name('job_echo')[:id])
 

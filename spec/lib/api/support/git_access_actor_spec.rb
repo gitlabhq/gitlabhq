@@ -81,6 +81,33 @@ RSpec.describe API::Support::GitAccessActor do
         expect(actor.key).to eq(key)
       end
     end
+
+    context 'when identifier is for a deploy token' do
+      let_it_be(:deploy_token) { create(:deploy_token) }
+
+      it 'finds the deploy token based on an identifier' do
+        actor = described_class.from_params(identifier: "deploy-token-#{deploy_token.id}")
+
+        expect(actor.deploy_token).to eq(deploy_token)
+        expect(actor.user).to be_nil
+        expect(actor.key).to be_nil
+      end
+    end
+
+    context 'when both identifier and username are provided' do
+      it 'prioritizes identifier over username' do
+        user = create(:user)
+        deploy_token = create(:deploy_token)
+
+        actor = described_class.from_params(
+          identifier: "deploy-token-#{deploy_token.id}",
+          username: user.username
+        )
+
+        expect(actor.deploy_token).to eq(deploy_token)
+        expect(actor.user).to be_nil
+      end
+    end
   end
 
   describe 'attributes' do
@@ -131,35 +158,57 @@ RSpec.describe API::Support::GitAccessActor do
         expect(described_class.from_params(params).key_or_user).to eq(user)
       end
     end
+
+    context 'when initialized with a deploy token' do
+      it 'returns the deploy token' do
+        deploy_token = create(:deploy_token)
+        actor = described_class.new(deploy_token: deploy_token)
+
+        expect(actor.key_or_user).to eq(deploy_token)
+      end
+    end
   end
 
-  describe '#deploy_key_or_user' do
+  describe '#resolved_identity' do
     it 'returns a deploy key when the params contains deploy key' do
       key = create(:deploy_key)
       params = { key_id: key.id }
 
-      expect(described_class.from_params(params).deploy_key_or_user).to eq(key)
+      expect(described_class.from_params(params).resolved_identity).to eq(key)
     end
 
     it 'returns a user when the params contains personal key' do
       key = create(:key)
       params = { key_id: key.id }
 
-      expect(described_class.from_params(params).deploy_key_or_user).to eq(key.user)
+      expect(described_class.from_params(params).resolved_identity).to eq(key.user)
     end
 
     it 'returns a user when the params contains user id' do
       user = create(:user)
       params = { user_id: user.id }
 
-      expect(described_class.from_params(params).deploy_key_or_user).to eq(user)
+      expect(described_class.from_params(params).resolved_identity).to eq(user)
     end
 
     it 'returns a user when the params contains user name' do
       user = create(:user)
       params = { username: user.username }
 
-      expect(described_class.from_params(params).deploy_key_or_user).to eq(user)
+      expect(described_class.from_params(params).resolved_identity).to eq(user)
+    end
+
+    it 'returns a deploy token when initialized with a deploy token' do
+      deploy_token = create(:deploy_token)
+      actor = described_class.from_params(identifier: "deploy-token-#{deploy_token.id}")
+
+      expect(actor.resolved_identity).to eq(deploy_token)
+    end
+
+    it 'returns nil when no actor is set' do
+      actor = described_class.new
+
+      expect(actor.resolved_identity).to be_nil
     end
   end
 

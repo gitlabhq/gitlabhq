@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { s__ } from '~/locale';
 import { hasContent } from '~/lib/utils/text_utility';
 import { getDuplicateItemsFromArray } from '~/lib/utils/array_utility';

@@ -13,7 +13,7 @@ module Ci
         sync_available_partitions_statuses!
 
         next_ci_partition = next_available_partition
-        return unless next_ci_partition.present? && above_threshold?
+        return unless next_ci_partition.present? && partition.exceed_time_window?
 
         next_ci_partition.switch_writes!
       end
@@ -21,10 +21,6 @@ module Ci
       private
 
       attr_reader :partition
-
-      def above_threshold?
-        partition.above_threshold?
-      end
 
       def sync_available_partitions_statuses!
         Ci::Partition.id_after(partition.id).with_status(:preparing).each do |record|

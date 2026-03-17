@@ -1,6 +1,6 @@
 <script>
 import { GlForm, GlFormInputGroup, GlFormGroup, GlModal } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';

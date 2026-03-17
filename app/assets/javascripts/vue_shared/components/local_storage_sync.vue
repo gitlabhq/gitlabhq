@@ -1,5 +1,5 @@
 <script>
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { getStorageValue, saveStorageValue, removeStorageValue } from '~/lib/utils/local_storage';
 import { normalizeRender } from '~/lib/utils/vue3compat/normalize_render';
 

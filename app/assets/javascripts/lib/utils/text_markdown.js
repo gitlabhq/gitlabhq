@@ -989,6 +989,9 @@ export function updateTextForToolbarBtn($toolbarBtn) {
 }
 
 export function addMarkdownListeners(form) {
+  // Accept both jQuery and DOM elements
+  form = form.jquery ? form : $(form);
+
   $('.markdown-area', form)
     .on('keydown', keypressNoteText)
     .on('compositionstart', compositionStartNoteText)
@@ -1029,6 +1032,9 @@ export function addEditorMarkdownListeners(editor) {
 }
 
 export function removeMarkdownListeners(form) {
+  // Accept both jQuery and DOM elements
+  form = form.jquery ? form : $(form);
+
   $('.markdown-area', form)
     .off('keydown', keypressNoteText)
     .off('compositionstart', compositionStartNoteText)

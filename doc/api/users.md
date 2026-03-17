@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Users API
 description: The GitLab Users API can create, modify, search and delete user accounts. It also supports admin operations and SCIM provisioning.
 ---
@@ -1421,6 +1421,8 @@ Supported attributes:
 | `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected`. |
 | `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs. |
 | `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters). |
+| `token_expires_at` | datetime     | no       | The expiration time for the runner authentication token in ISO 8601 format. Must be between 5 minutes and 15 days in the future. Cannot exceed instance, group, or project-level limits if configured. Only applies to the initial token. Rotated tokens use the computed expiry from settings. **(PREMIUM ALL)** |
+| `token_rotation_deadline` | datetime | no | The deadline after which token rotation requests are rejected. Requires `token_expires_at`. Must be less than or equal to `token_expires_at`. Setting both to the same value disables token rotation. Cleared on successful rotation. **(PREMIUM ALL)** |
 
 Example request:
 

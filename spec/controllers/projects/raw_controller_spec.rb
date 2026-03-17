@@ -119,6 +119,43 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
       end
     end
 
+    context 'when the unauthenticated project-level rate limit is exceeded' do
+      let(:file_path) { 'master/README.md' }
+      let(:path_without_ref) { 'README.md' }
+
+      before do
+        allow(::Gitlab::ApplicationRateLimiter).to(
+          receive(:throttled?).with(:raw_blob, scope: [project, path_without_ref]).and_return(false)
+        )
+        allow(::Gitlab::ApplicationRateLimiter).to(
+          receive(:throttled?).with(:raw_blob_unauthenticated, scope: project).and_return(true)
+        )
+      end
+
+      it 'prevents from accessing the raw file' do
+        expect { get_show }.not_to change { Gitlab::GitalyClient.get_request_count }
+
+        message = _('You cannot access the raw file. Please wait a minute or authenticate and try again.')
+        expect(response.body).to eq(message)
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+      end
+
+      context 'when the user is authenticated' do
+        let_it_be(:user) { create(:user) }
+
+        before do
+          sign_in(user)
+        end
+
+        it 'does not apply the unauthenticated rate limit' do
+          expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?).with(:raw_blob_unauthenticated,
+            scope: project)
+
+          get_show
+        end
+      end
+    end
+
     context 'as a sessionless user' do
       let_it_be(:project) { create(:project, :private, :repository) }
       let_it_be(:user) { create(:user, static_object_token: 'very-secure-token') }

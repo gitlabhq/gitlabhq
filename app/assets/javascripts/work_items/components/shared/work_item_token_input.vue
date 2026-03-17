@@ -1,6 +1,6 @@
 <script>
 import { GlTokenSelector, GlAlert } from '@gitlab/ui';
-import { debounce, escape } from 'lodash';
+import { debounce, escape } from 'lodash-es';
 
 import { isNumeric } from '~/lib/utils/number_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';

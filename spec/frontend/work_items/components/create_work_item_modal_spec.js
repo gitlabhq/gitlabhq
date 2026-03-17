@@ -121,12 +121,12 @@ describe('CreateWorkItemModal', () => {
     expect(findForm().props('preselectedWorkItemType')).toBe(WORK_ITEM_TYPE_NAME_ISSUE);
   });
 
-  it('shows toast on workItemCreated', async () => {
+  it('shows toast on work-item-created', async () => {
     createComponent();
 
     await waitForPromises();
     const workItem = { webUrl: '/full-path/-/issues/22' };
-    findForm().vm.$emit('workItemCreated', {
+    findForm().vm.$emit('work-item-created', {
       webUrl: '/',
       workItem,
       workItemType: { name: 'Epic' },
@@ -282,7 +282,7 @@ describe('CreateWorkItemModal', () => {
 
       findForm().vm.$emit('changeType', WORK_ITEM_TYPE_NAME_KEY_RESULT);
       await nextTick();
-      findForm().vm.$emit('workItemCreated', { webUrl: '/', workItem: {} });
+      findForm().vm.$emit('work-item-created', { webUrl: '/', workItem: {} });
 
       expect(wrapper.find('h2').text()).toBe('New key result');
       expect(findTrigger().text()).toBe('New key result');

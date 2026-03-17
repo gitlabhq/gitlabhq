@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Integrity check Rake task
 ---
 
@@ -214,12 +214,12 @@ sudo -u git -H bundle exec rake gitlab:uploads:check RAILS_ENV=production
 These tasks also accept some environment variables which you can use to override
 certain values:
 
-Variable  | Type    | Description
---------- | ------- | -----------
-`BATCH`   | integer | Specifies the size of the batch. Defaults to 200.
-`ID_FROM` | integer | Specifies the ID to start from, inclusive of the value.
-`ID_TO`   | integer | Specifies the ID value to end at, inclusive of the value.
-`VERBOSE` | boolean | Causes failures to be listed individually, rather than being summarized.
+| Variable  | Type    | Description |
+|-----------|---------|-------------|
+| `BATCH`   | integer | Specifies the size of the batch. Defaults to 200. |
+| `ID_FROM` | integer | Specifies the ID to start from, inclusive of the value. |
+| `ID_TO`   | integer | Specifies the ID value to end at, inclusive of the value. |
+| `VERBOSE` | boolean | Causes failures to be listed individually, rather than being summarized. |
 
 ```shell
 sudo gitlab-rake gitlab:artifacts:check BATCH=100 ID_FROM=50 ID_TO=250

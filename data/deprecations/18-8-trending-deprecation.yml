@@ -7,7 +7,7 @@
   window:  # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com
   reporter: lohrc
   stage: tenant scale
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/583607
+  issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/18493
   impact: low
   impact_details: https://gitlab-com.gitlab.io/gl-infra/breaking-change-impact-calculator/?usage=edge_case&migration_complexity=minor_manual&scope=project&identification_complexity=single&additional_complexity=no&base_impact=minor&pipeline_impact=none&compliance_impact=none&availability_impact=none&authorization_impact=none&API_impact=major_API
   impact_offering: [GitLab.com, Dedicated, self-managed]

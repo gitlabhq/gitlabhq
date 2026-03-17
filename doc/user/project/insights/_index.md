@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Insights
 ---
 
@@ -29,7 +29,7 @@ Prerequisites:
 
 To view insights for a project or group:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Analyze** > **Insights**.
 1. To view a report, from the **Select report** dropdown list, select the report you want to view.
    To view annotations, hover over each bar in the chart.
@@ -526,7 +526,7 @@ To configure project insights, create a file `.gitlab/insights.yml` either:
 
 - Locally, in the root directory of your project, and push your changes.
 - From the UI:
-  1. On the top bar, select **Search or go to** and find your project.
+  1. In the top bar, select **Search or go to** and find your project.
   1. Above the file list, select the branch you want to commit to, select the plus icon, then select **New file**.
   1. For the **Filename**, enter `.gitlab/insights.yml`.
   1. In the file editor, enter the configuration.
@@ -541,7 +541,7 @@ Prerequisites:
 
 To configure group insights:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Analytics**.
 1. In the **Insights** section, select a project that contains the `.gitlab/insights.yml` configuration file.
 1. Select **Save changes**.

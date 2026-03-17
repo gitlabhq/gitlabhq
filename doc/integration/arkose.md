@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authorization
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Arkose Protect
 ---
 
@@ -81,7 +81,6 @@ It is important to note that disabling Arkose also disables phone number and cre
 You can triage and debug issues raised by ArkoseLabs with:
 
 - ArkoseLabs and GitLab collaboration channel on Slack: [`#ext-gitlab-arkose`](https://gitlab.slack.com/archives/C02SGF6RLPQ)
-
 - The [GitLab production logs](https://log.gprd.gitlab.net).
 - The [Arkose logging service](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/arkose/logger.rb)
 - The [Arkose Labs Portal](https://portal.arkoselabs.com) (users can request access through the Okta portal)

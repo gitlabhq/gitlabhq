@@ -10,17 +10,24 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
   let(:diff_options) { { ignore_whitespace_changes: true } }
   let(:diffs_count) { 20 }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/merge_requests/#{merge_request.to_param}" }
+  let(:merge_request_diff) { instance_double(MergeRequestDiff, id: 999, merge_head?: false) }
+  let(:resolved_diff_id) { merge_request_diff.id }
   let(:request_params) { {} }
+  let(:current_user) { build_stubbed(:user) }
   let(:resource) { merge_request }
 
   subject(:presenter) do
     described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
-      request_params: request_params)
+      request_params: request_params, current_user: current_user)
   end
 
   before do
     allow(merge_request).to receive_message_chain(:diffs_for_streaming, :diff_files, :count).and_return(diffs_count)
-    allow(merge_request).to receive(:diff_stats).and_return(nil)
+    allow(merge_request).to receive_messages(
+      diff_stats: nil,
+      merge_request_diff: merge_request_diff,
+      diffable_merge_ref?: false
+    )
   end
 
   describe '#diffs_resource' do
@@ -35,39 +42,80 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
 
   describe '#diffs_slice' do
     let(:offset) { presenter.send(:offset) }
+    let(:diff_collection) { instance_double(Gitlab::Git::DiffCollection) }
 
     it 'calls first_diffs_slice on the merge_request with the correct arguments' do
-      expect(merge_request).to receive(:first_diffs_slice).with(offset, diff_options)
+      allow(diff_collection).to receive(:decorate!).and_return(diff_collection)
+      expect(merge_request).to receive(:first_diffs_slice).with(offset, diff_options).and_return(diff_collection)
 
       presenter.diffs_slice
     end
   end
 
   it_behaves_like 'rapid diffs presenter diffs methods', sorted: true
+  it_behaves_like 'rapid diffs presenter syntax highlighting'
+
+  shared_examples_for 'endpoint method with diff version support' do
+    context 'when diff_id is set' do
+      let(:request_params) { { diff_id: 1 } }
+
+      it { is_expected.to end_with('?diff_id=1') }
+
+      context 'when start_sha is set' do
+        let(:request_params) { { diff_id: 1, start_sha: 'abc123' } }
+
+        it { is_expected.to end_with('?diff_id=1&start_sha=abc123') }
+      end
+    end
+
+    context 'when commit_id is set' do
+      let(:request_params) { { commit_id: 'abc123' } }
+
+      it { is_expected.to end_with('?commit_id=abc123') }
+    end
+
+    context 'when resolved diff is a merge head' do
+      let(:merge_request_diff) { instance_double(MergeRequestDiff, id: 999, merge_head?: true) }
+
+      it { is_expected.not_to include('diff_id') }
+    end
+
+    context 'when resolved diff is nil' do
+      let(:merge_request_diff) { nil }
+
+      it { is_expected.not_to include('diff_id') }
+    end
+  end
 
   describe '#diffs_stats_endpoint' do
     subject(:url) { presenter.diffs_stats_endpoint }
 
-    it { is_expected.to eq("#{base_path}/diffs_stats") }
+    it { is_expected.to eq("#{base_path}/diffs_stats?diff_id=#{resolved_diff_id}") }
+
+    it_behaves_like 'endpoint method with diff version support'
   end
 
   describe '#diff_files_endpoint' do
     subject(:url) { presenter.diff_files_endpoint }
 
-    it { is_expected.to eq("#{base_path}/diff_files_metadata") }
+    it { is_expected.to eq("#{base_path}/diff_files_metadata?diff_id=#{resolved_diff_id}") }
+
+    it_behaves_like 'endpoint method with diff version support'
   end
 
   describe '#diff_file_endpoint' do
     subject(:url) { presenter.diff_file_endpoint }
 
-    it { is_expected.to eq("#{base_path}/diff_file") }
+    it { is_expected.to eq("#{base_path}/diff_file?diff_id=#{resolved_diff_id}") }
+
+    it_behaves_like 'endpoint method with diff version support'
   end
 
   describe 'stream urls' do
     describe '#diffs_stream_url' do
       subject(:url) { presenter.diffs_stream_url }
 
-      it { is_expected.to eq("#{base_path}/diffs_stream?offset=5&view=inline") }
+      it { is_expected.to eq("#{base_path}/diffs_stream?diff_id=#{resolved_diff_id}&offset=5&view=inline") }
 
       context 'when diffs count is the same as streaming offset' do
         let(:diffs_count) { 5 }
@@ -84,7 +132,11 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
           allow(merge_request).to receive(:diffs).and_return(diff_files)
         end
 
-        it { is_expected.to eq("#{base_path}/diffs_stream?skip_new_path=test.txt&skip_old_path=test.txt&view=inline") }
+        it 'includes diff_id and skip params' do
+          expected = "#{base_path}/diffs_stream?diff_id=#{resolved_diff_id}" \
+            "&skip_new_path=test.txt&skip_old_path=test.txt&view=inline"
+          is_expected.to eq(expected)
+        end
       end
 
       context 'when linked file is the only file' do
@@ -110,7 +162,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
         it 'uses stats count without calling diffs_for_streaming' do
           expect(merge_request).not_to receive(:diffs_for_streaming)
 
-          expect(url).to eq("#{base_path}/diffs_stream?offset=5&view=inline")
+          expect(url).to eq("#{base_path}/diffs_stream?diff_id=#{resolved_diff_id}&offset=5&view=inline")
         end
       end
 
@@ -124,7 +176,7 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
         it 'falls back to diffs_for_streaming' do
           expect(merge_request).to receive(:diffs_for_streaming)
 
-          expect(url).to eq("#{base_path}/diffs_stream?offset=5&view=inline")
+          expect(url).to eq("#{base_path}/diffs_stream?diff_id=#{resolved_diff_id}&offset=5&view=inline")
         end
       end
     end
@@ -132,7 +184,9 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     describe '#reload_stream_url' do
       subject(:url) { presenter.reload_stream_url }
 
-      it { is_expected.to eq("#{base_path}/diffs_stream") }
+      it { is_expected.to eq("#{base_path}/diffs_stream?diff_id=#{resolved_diff_id}") }
+
+      it_behaves_like 'endpoint method with diff version support'
     end
   end
 
@@ -148,11 +202,96 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
     it { is_expected.to be(true) }
   end
 
+  describe '#discussions_endpoint' do
+    subject(:url) { presenter.discussions_endpoint }
+
+    it { is_expected.to eq("#{base_path}/discussions") }
+  end
+
+  describe '#user_permissions' do
+    let(:current_user) { build_stubbed(:user) }
+    let(:can_create_note) { false }
+    let(:presenter_with_user) do
+      described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+        request_params: request_params, current_user: current_user)
+    end
+
+    subject(:method) { presenter_with_user.user_permissions }
+
+    before do
+      allow(presenter_with_user).to receive(:can?).with(current_user, :create_note,
+        merge_request).and_return(can_create_note)
+    end
+
+    it { is_expected.to eq({ can_create_note: false }) }
+
+    context 'when user can create notes' do
+      let(:can_create_note) { true }
+
+      it { is_expected.to eq({ can_create_note: true }) }
+    end
+  end
+
+  describe '#noteable_type' do
+    subject(:method) { presenter.noteable_type }
+
+    it { is_expected.to eq('MergeRequest') }
+  end
+
+  describe '#preview_markdown_endpoint' do
+    subject(:method) { presenter.preview_markdown_endpoint }
+
+    it { is_expected.to eq("/#{namespace.to_param}/#{project.to_param}/-/preview_markdown") }
+  end
+
+  describe '#markdown_docs_path' do
+    subject(:method) { presenter.markdown_docs_path }
+
+    it { is_expected.to eq('/help/user/markdown.md') }
+  end
+
+  describe '#register_path' do
+    subject(:method) { presenter.register_path }
+
+    it { is_expected.to eq('/users/sign_up?redirect_to_referer=yes') }
+  end
+
+  describe '#sign_in_path' do
+    subject(:method) { presenter.sign_in_path }
+
+    it { is_expected.to eq('/users/sign_in?redirect_to_referer=yes') }
+  end
+
+  describe '#report_abuse_path' do
+    subject(:method) { presenter.report_abuse_path }
+
+    it { is_expected.to eq('/-/abuse_reports/add_category') }
+  end
+
+  describe '#versions' do
+    let(:request_params) { { diff_id: '10', start_sha: 'abc123' } }
+
+    it 'delegates to DiffCompareVersionsEntity' do
+      entity = instance_double(RapidDiffs::DiffCompareVersionsEntity)
+      expect(RapidDiffs::DiffCompareVersionsEntity).to receive(:represent).with(
+        merge_request,
+        diff_id: '10',
+        start_sha: 'abc123'
+      ).and_return(entity)
+      expect(entity).to receive(:as_json).and_return({ 'source_versions' => [], 'target_versions' => [] })
+
+      expect(presenter.versions).to eq({ 'source_versions' => [], 'target_versions' => [] })
+    end
+  end
+
   describe 'stream urls with skip parameters' do
     describe '#reload_stream_url' do
       subject(:url) { presenter.reload_stream_url(skip_old_path: 'old.txt', skip_new_path: 'new.txt') }
 
-      it { is_expected.to eq("#{base_path}/diffs_stream?skip_new_path=new.txt&skip_old_path=old.txt") }
+      it 'includes diff_id and skip params' do
+        expected = "#{base_path}/diffs_stream?diff_id=#{resolved_diff_id}&skip_new_path=new.txt&skip_old_path=old.txt"
+        is_expected.to eq(expected)
+      end
     end
   end
 
@@ -169,6 +308,153 @@ RSpec.describe ::RapidDiffs::MergeRequestPresenter, feature_category: :code_revi
       result = presenter.linked_file
       expect(result).to eq(diff_file)
       expect(result.linked).to be(true)
+    end
+  end
+
+  describe '#mr_path' do
+    subject(:url) { presenter.mr_path }
+
+    it { is_expected.to eq(base_path) }
+  end
+
+  describe '#current_user' do
+    let(:user) { build_stubbed(:user) }
+
+    subject(:presenter) do
+      described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+        request_params: request_params, current_user: user)
+    end
+
+    it 'returns the current_user' do
+      expect(presenter.current_user).to eq(user)
+    end
+  end
+
+  describe 'diff files with conflicts' do
+    let(:diff_file) { build(:diff_file) }
+    let(:diff_files_array) { [diff_file] }
+    let(:diff_files_collection) do
+      instance_double(Gitlab::Git::DiffCollection).tap do |collection|
+        allow(collection).to receive(:decorate!) do |&block|
+          diff_files_array.map!(&block)
+        end
+        allow(collection).to receive(:first) { diff_files_array.first }
+      end
+    end
+
+    let(:diffs_resource) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: diff_files_collection) }
+    let(:conflicts) do
+      {
+        diff_file.new_path => {
+          conflict_type: :both_modified,
+          conflict_type_when_renamed: :renamed_same_file
+        }
+      }
+    end
+
+    subject(:presenter) do
+      described_class.new(merge_request, diff_view: diff_view, diff_options: diff_options,
+        request_params: request_params, conflicts: conflicts)
+    end
+
+    before do
+      allow(merge_request).to receive_messages(
+        latest_diffs: diffs_resource,
+        first_diffs_slice: diff_files_collection,
+        diffs_for_streaming: diffs_resource
+      )
+    end
+
+    describe '#diff_files' do
+      it 'returns diff files wrapped in presenter with conflict info' do
+        result = presenter.diff_files
+
+        expect(result.first).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+        expect(result.first.conflict).to eq(:both_modified)
+      end
+
+      context 'when conflicts is nil' do
+        let(:conflicts) { nil }
+
+        it 'returns diff files wrapped in presenter without conflict info' do
+          result = presenter.diff_files
+
+          expect(result.first).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+          expect(result.first.conflict).to be_nil
+        end
+      end
+
+      context 'when diff file is already wrapped in presenter' do
+        let(:wrapped_file) { RapidDiffs::MergeRequest::DiffFilePresenter.new(diff_file, conflicts: conflicts) }
+        let(:diff_files_array) { [wrapped_file] }
+
+        it 'does not re-wrap the file' do
+          result = presenter.diff_files
+
+          expect(result.first).to be(wrapped_file)
+        end
+      end
+    end
+
+    describe '#diffs_slice' do
+      it 'returns diff files wrapped in presenter with conflict info' do
+        result = presenter.diffs_slice
+
+        expect(result.first).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+        expect(result.first.conflict).to eq(:both_modified)
+      end
+    end
+
+    describe '#diff_files_for_streaming' do
+      it 'returns diff files wrapped in presenter with conflict info' do
+        result = presenter.diff_files_for_streaming
+
+        expect(result.first).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+        expect(result.first.conflict).to eq(:both_modified)
+      end
+    end
+
+    describe '#linked_file' do
+      let(:linked_file) { build(:diff_file) }
+      let(:diff_files_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [linked_file]) }
+      let(:conflicts) do
+        {
+          linked_file.file_path => {
+            conflict_type: :both_modified,
+            conflict_type_when_renamed: :renamed_same_file
+          }
+        }
+      end
+
+      let(:request_params) { { file_path: linked_file.file_path } }
+
+      before do
+        allow(merge_request).to receive(:diffs).and_return(diff_files_collection)
+      end
+
+      it 'returns linked file wrapped in presenter with conflict info' do
+        result = presenter.linked_file
+
+        expect(result).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+        expect(result.conflict).to eq(:both_modified)
+      end
+    end
+
+    describe '#diff_files_for_streaming_by_changed_paths' do
+      before do
+        allow(merge_request).to receive(:diffs_for_streaming_by_changed_paths).and_yield([diff_file])
+      end
+
+      it 'yields diff files wrapped in presenter with conflict info' do
+        yielded_files = nil
+
+        presenter.diff_files_for_streaming_by_changed_paths({}) do |files|
+          yielded_files = files
+        end
+
+        expect(yielded_files.first).to be_a(RapidDiffs::MergeRequest::DiffFilePresenter)
+        expect(yielded_files.first.conflict).to eq(:both_modified)
+      end
     end
   end
 end

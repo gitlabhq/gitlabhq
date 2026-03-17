@@ -1,0 +1,67 @@
+diff --git a/node_modules/vue-loader/lib/descriptorCache.js b/node_modules/vue-loader/lib/descriptorCache.js
+index 105914a..2e49d0f 100644
+--- a/node_modules/vue-loader/lib/descriptorCache.js
++++ b/node_modules/vue-loader/lib/descriptorCache.js
+@@ -30,9 +30,14 @@ exports.getDescriptor = function getDescriptor(
+   const { compiler, templateCompiler } = resolveCompiler(
+     loaderContext.rootContext
+   )
++  // Support string path for compiler option (needed for thread-loader compatibility)
++  let resolvedCompiler = options.compiler || templateCompiler
++  if (typeof resolvedCompiler === 'string') {
++    resolvedCompiler = require(resolvedCompiler)
++  }
+   const descriptor = compiler.parse({
+     source,
+-    compiler: options.compiler || templateCompiler,
++    compiler: resolvedCompiler,
+     filename,
+     sourceRoot,
+     needMap: loaderContext.sourceMap
+diff --git a/node_modules/vue-loader/lib/index.js b/node_modules/vue-loader/lib/index.js
+index a65a73a..2f5f1c3 100644
+--- a/node_modules/vue-loader/lib/index.js
++++ b/node_modules/vue-loader/lib/index.js
+@@ -66,9 +66,15 @@ module.exports = function (source) {
+ 
+   const { compiler, templateCompiler } = resolveCompiler(context, loaderContext)
+ 
++  // Support string path for compiler option (needed for thread-loader compatibility)
++  let resolvedCompiler = options.compiler || templateCompiler
++  if (typeof resolvedCompiler === 'string') {
++    resolvedCompiler = require(resolvedCompiler)
++  }
++
+   const descriptor = compiler.parse({
+     source,
+-    compiler: options.compiler || templateCompiler,
++    compiler: resolvedCompiler,
+     filename,
+     sourceRoot,
+     needMap: sourceMap
+diff --git a/node_modules/vue-loader/lib/loaders/templateLoader.js b/node_modules/vue-loader/lib/loaders/templateLoader.js
+index b66c842..3d96494 100644
+--- a/node_modules/vue-loader/lib/loaders/templateLoader.js
++++ b/node_modules/vue-loader/lib/loaders/templateLoader.js
+@@ -38,6 +38,12 @@ module.exports = function (source) {
+ 
+   const { compiler, templateCompiler } = resolveCompiler(ctx, loaderContext)
+ 
++  // Support string path for compiler option (needed for thread-loader compatibility)
++  let resolvedCompiler = options.compiler || templateCompiler
++  if (typeof resolvedCompiler === 'string') {
++    resolvedCompiler = require(resolvedCompiler)
++  }
++
+   const descriptor = getDescriptor(filename, options, loaderContext)
+   const script = resolveScript(descriptor, id, options, loaderContext)
+ 
+@@ -56,7 +62,7 @@ module.exports = function (source) {
+   const finalOptions = {
+     source,
+     filename: this.resourcePath,
+-    compiler: options.compiler || templateCompiler,
++    compiler: resolvedCompiler,
+     compilerOptions,
+     // allow customizing behavior of vue-template-es2015-compiler
+     transpileOptions: options.transpileOptions,

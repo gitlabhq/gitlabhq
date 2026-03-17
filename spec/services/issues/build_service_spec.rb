@@ -138,6 +138,24 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
   end
 
   describe '#execute' do
+    context 'about its container' do
+      let_it_be(:group) { build_stubbed(:group) }
+
+      where(:container, :namespace_id) do
+        ref(:project) | lazy { project.namespace.id }
+        ref(:group) | lazy { group.id }
+      end
+
+      with_them do
+        let(:service) { described_class.new(container: container, current_user: user, params: {}) }
+
+        it 'ensures the proper namespace' do
+          issue = service.execute
+          expect(issue.namespace_id).to eq(namespace_id)
+        end
+      end
+    end
+
     describe 'setting milestone' do
       context 'when developer' do
         it 'builds a new issues with given params' do
@@ -168,7 +186,7 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
     end
 
     describe 'setting issue type' do
-      context 'with a corresponding WorkItems::Type' do
+      context 'with a corresponding WorkItem Type' do
         let_it_be(:type_task) { build(:work_item_system_defined_type, :task) }
         let_it_be(:type_task_id) { type_task.id }
         let_it_be(:type_issue_id) { build(:work_item_system_defined_type, :issue).id }
@@ -211,7 +229,7 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
       let(:user) { create(:user) }
 
       before do
-        ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, user)
+        ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, user, context: :authentication)
       end
 
       it 'attributes the change to the service account' do

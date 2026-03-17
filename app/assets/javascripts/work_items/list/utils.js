@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { camelCase } from 'lodash';
+import { camelCase, capitalize } from 'lodash-es';
 import { TYPENAME_ITERATIONS_CADENCE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -60,6 +60,7 @@ import {
   filtersMap,
   HEALTH_STATUS_ASC,
   HEALTH_STATUS_DESC,
+  HIERARCHY_FILTERS,
   STATUS_ASC,
   STATUS_DESC,
   LABEL_PRIORITY_ASC,
@@ -89,13 +90,15 @@ import {
   START_DATE_DESC,
   savedViewFilters,
   NEW_SAVED_VIEWS_GID,
+  SAVED_VIEW_SEARCH_DELIMITER,
 } from '~/work_items/list/constants';
-import createSavedViewMutation from '~/work_items/graphql/create_saved_view.mutation.graphql';
-import updateSavedViewMutation from '~/work_items/graphql/update_saved_view.mutation.graphql';
+import createSavedViewMutation from '~/work_items/list/graphql/create_saved_view.mutation.graphql';
+import updateSavedViewMutation from '~/work_items/list/graphql/update_saved_view.mutation.graphql';
 import subscribeToSavedViewMutation from '~/work_items/graphql/subscribe_to_saved_view.mutation.graphql';
 import getSubscribedSavedViewsQuery from '~/work_items/list/graphql/work_item_saved_views_namespace.query.graphql';
-import namespaceSavedViewQuery from '~/work_items/graphql/namespace_saved_view.query.graphql';
+import namespaceSavedViewQuery from '~/work_items/list/graphql/namespace_saved_view.query.graphql';
 import workItemSavedViewUnsubscribe from '~/work_items/list/graphql/unsubscribe_from_saved_view.mutation.graphql';
+import workItemSavedViewReorder from '~/work_items/graphql/reorder_saved_view.mutation.graphql';
 
 /**
  * Get the types of work items that should be displayed on issues lists.
@@ -386,6 +389,24 @@ const trueYesFalseNo = (value) => {
   return 'no';
 };
 
+const wildcardTokens = [
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_EPIC,
+  TOKEN_TYPE_HEALTH,
+  TOKEN_TYPE_ITERATION,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_REVIEWER,
+  TOKEN_TYPE_WEIGHT,
+  TOKEN_TYPE_PARENT,
+];
+
+const isWildcardValue = (tokenType, value) =>
+  wildcardTokens.includes(tokenType) && wildcardFilterValues.includes(value);
+
+const requiresUpperCaseValue = (tokenType, value) =>
+  tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);
+
 const convertToTokenValue = (token, baseValue) => {
   switch (token) {
     case TOKEN_TYPE_CONFIDENTIAL:
@@ -394,10 +415,16 @@ const convertToTokenValue = (token, baseValue) => {
     case TOKEN_TYPE_TYPE:
       return baseValue.toUpperCase();
     case TOKEN_TYPE_HEALTH:
+      if (requiresUpperCaseValue(token, capitalize(baseValue))) {
+        return baseValue.toUpperCase();
+      }
       return camelCase(baseValue);
     case TOKEN_TYPE_STATUS:
       return baseValue.name;
     default:
+      if (isWildcardValue(token, capitalize(baseValue))) {
+        return capitalize(baseValue);
+      }
       return baseValue;
   }
 };
@@ -410,23 +437,42 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
   const tokens = Object.entries(filterObject)
     .filter(
       ([key]) =>
-        (apiParamKeys.includes(key) || ['not', 'or'].includes(key)) &&
+        (apiParamKeys.includes(key) || ['not', 'or', 'in', HIERARCHY_FILTERS].includes(key)) &&
         (options.includeStateToken || key !== TOKEN_TYPE_STATE),
     )
     .reduce((acc, [key, value]) => {
-      if (key === 'in') {
+      // Here the delimited search values are again formatted into array for filter tokens
+      if (key === 'search' && value.includes(SAVED_VIEW_SEARCH_DELIMITER)) {
+        const { operator, type } = savedViewFilters[key];
+        const searchTokens = value.split(SAVED_VIEW_SEARCH_DELIMITER);
+        searchTokens.forEach((data) => {
+          acc.push({ type, data, operator });
+        });
+
         return acc;
       }
+      if (key === 'in') {
+        const { operator, type } = savedViewFilters[key];
+        // TITLE or DESCRIPTION
+        const data = Array.isArray(value) ? value[0] : value;
+
+        acc.push({ type, data: data?.toUpperCase(), operator });
+
+        return acc;
+      }
+
       if (key === 'not') {
         /**
          * 'not' filters are a sub-object of the main filters
          * object, so they need to be mapped separately.
          */
+
         Object.entries(value).forEach(([apiParamKey, data]) => {
           const type = getTokenTypeFromApiParamKey(apiParamKey);
-          if (type) {
-            acc.push({ type, data, operator: OPERATOR_NOT });
-          }
+          if (!type) return;
+          const notData =
+            type === TOKEN_TYPE_PARENT ? getIdFromGraphQLId(data?.[0])?.toString() : data;
+          acc.push({ type, data: notData, operator: OPERATOR_NOT });
         });
         return acc;
       }
@@ -441,6 +487,26 @@ export const getSavedViewFilterTokens = (filterObject, options = {}) => {
             acc.push({ type, data, operator: OPERATOR_OR });
           }
         });
+        return acc;
+      }
+
+      if (key === HIERARCHY_FILTERS) {
+        const normalFilter = filtersMap[TOKEN_TYPE_PARENT][API_PARAM][NORMAL_FILTER];
+        const wildcardFilter = filtersMap[TOKEN_TYPE_PARENT][API_PARAM][WILDCARD_FILTER];
+        const parentValue = value[normalFilter] || value[wildcardFilter];
+        if (isWildcardValue(TOKEN_TYPE_PARENT, capitalize(parentValue))) {
+          acc.push({
+            type: TOKEN_TYPE_PARENT,
+            data: parentValue,
+            operator: OPERATOR_IS,
+          });
+        } else if (parentValue?.length) {
+          acc.push({
+            type: TOKEN_TYPE_PARENT,
+            data: getIdFromGraphQLId(parentValue[0])?.toString(),
+            operator: OPERATOR_IS,
+          });
+        }
         return acc;
       }
       const { operator, type } = savedViewFilters[key];
@@ -563,23 +629,6 @@ const getFilterType = ({ type, value: { data, operator } }) => {
   return NORMAL_FILTER;
 };
 
-const wildcardTokens = [
-  TOKEN_TYPE_ASSIGNEE,
-  TOKEN_TYPE_EPIC,
-  TOKEN_TYPE_HEALTH,
-  TOKEN_TYPE_ITERATION,
-  TOKEN_TYPE_MILESTONE,
-  TOKEN_TYPE_RELEASE,
-  TOKEN_TYPE_REVIEWER,
-  TOKEN_TYPE_WEIGHT,
-];
-
-const isWildcardValue = (tokenType, value) =>
-  wildcardTokens.includes(tokenType) && wildcardFilterValues.includes(value);
-
-const requiresUpperCaseValue = (tokenType, value) =>
-  tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);
-
 const formatData = (token) => {
   const { data } = token.value;
 
@@ -655,8 +704,8 @@ export const convertToApiParams = (filterTokens) => {
       if (token.value.operator === OPERATOR_NOT) {
         obj.set(apiField, [convertToGraphQLId(TYPENAME_WORK_ITEM, data)]);
       } else {
-        obj.set('hierarchyFilters', {
-          [apiField]: wildcardFilterValues.includes(data)
+        obj.set(HIERARCHY_FILTERS, {
+          [apiField]: wildcardFilterValues.includes(capitalize(data))
             ? data.toUpperCase()
             : [convertToGraphQLId(TYPENAME_WORK_ITEM, data)],
           includeDescendantWorkItems: true,
@@ -665,7 +714,7 @@ export const convertToApiParams = (filterTokens) => {
     } else if (isSubscribedParam(token.type)) {
       obj.set(apiField, data.toUpperCase());
     } else if (isHealthStatusParam(token.type)) {
-      obj.set(apiField, ['NONE', 'ANY'].includes(data) ? data : camelCase(data));
+      obj.set(apiField, isWildcardValue(token.type, capitalize(data)) ? data : camelCase(data));
     } else {
       obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
     }
@@ -888,6 +937,40 @@ const updateSavedViewsCache = ({ cache, responseData, mutationKey, namespacePath
   });
 };
 
+export const updateCacheAfterViewRemoval = ({ cache, view, action, fullPath }) => {
+  const variants = [true, false];
+
+  variants.forEach((subscribedOnly) => {
+    const query = {
+      query: getSubscribedSavedViewsQuery,
+      variables: {
+        fullPath,
+        subscribedOnly,
+        sort: subscribedOnly ? 'RELATIVE_POSITION' : undefined,
+      },
+    };
+
+    const sourceData = cache.readQuery(query);
+    if (!sourceData) return;
+
+    const newData = produce(sourceData, (draftState) => {
+      const savedViews = draftState.namespace.savedViews.nodes;
+
+      if (subscribedOnly || (!subscribedOnly && action === 'delete')) {
+        const index = savedViews.findIndex((v) => v.id === view.id);
+        if (index !== -1) {
+          savedViews.splice(index, 1);
+        }
+      } else if (!subscribedOnly && action === 'unsubscribe') {
+        const unsubscribedView = savedViews.find((v) => v.id === view.id);
+        if (unsubscribedView) unsubscribedView.subscribed = false;
+      }
+    });
+
+    cache.writeQuery({ ...query, data: newData });
+  });
+};
+
 export const handleEnforceSubscriptionLimit = async ({
   subscribedSavedViewLimit,
   apolloClient,
@@ -933,17 +1016,11 @@ export const handleEnforceSubscriptionLimit = async ({
         },
       },
       update: (cache) => {
-        updateSavedViewsQueryCache({
+        updateCacheAfterViewRemoval({
           cache,
-          responseData: {
-            workItemSavedViewUnsubscribe: {
-              savedView: viewToUnsubscribe,
-            },
-          },
-          mutationKey: 'workItemSavedViewUnsubscribe',
-          namespacePath,
-          action: 'remove',
-          subscribedOnly: true,
+          view: viewToUnsubscribe,
+          action: 'unsubscribe',
+          fullPath: namespacePath,
         });
       },
     });
@@ -973,6 +1050,17 @@ export const saveSavedView = async ({
 }) => {
   const mutation = isEdit ? updateSavedViewMutation : createSavedViewMutation;
 
+  // Filter tokens are kept as an array when multiple values are present for search field.
+  // However, saved view filters do not support persisting arrays.
+  // Therefore, we serialize the array into a single string using a delimiter.
+  // A space cannot be used as the delimiter since search terms may contain spaces.
+  const updatedSavedViewFilters = {
+    ...filters,
+    search: Array.isArray(filters.search)
+      ? filters.search.join(SAVED_VIEW_SEARCH_DELIMITER)
+      : filters.search,
+  };
+
   const commonInput =
     isEdit && isForm
       ? {
@@ -984,7 +1072,7 @@ export const saveSavedView = async ({
           name,
           description,
           private: isPrivate,
-          filters,
+          filters: updatedSavedViewFilters,
           displaySettings,
           sort,
         };
@@ -1000,13 +1088,15 @@ export const saveSavedView = async ({
     name,
     description,
     isPrivate,
-    filters,
+    filters: updatedSavedViewFilters,
     displaySettings,
     sort,
+    __typename: 'WorkItemSavedViewType',
   };
 
   const optimisticResponse = {
     [mutationKey]: {
+      __typename: isEdit ? 'WorkItemSavedViewUpdatePayload' : 'WorkItemSavedViewCreatePayload',
       errors: [],
       savedView: isEdit
         ? {
@@ -1019,7 +1109,12 @@ export const saveSavedView = async ({
             id: NEW_SAVED_VIEWS_GID,
             ...commonSavedViewResponse,
             subscribed: true,
-            userPermissions: { updateSavedView: true, deleteSavedView: true },
+            userPermissions: {
+              updateSavedView: true,
+              deleteSavedView: true,
+              updateSavedViewVisibility: true,
+              __typename: 'SavedViewPermissions',
+            },
           },
     },
   };
@@ -1029,7 +1124,7 @@ export const saveSavedView = async ({
     variables: { input: inputVariables },
     optimisticResponse,
     update: (cache, { data: responseData }) => {
-      if (!responseData) return;
+      if (!responseData || responseData[mutationKey].errors?.length) return;
 
       if (!isEdit) {
         updateSavedViewsCache({
@@ -1117,7 +1212,27 @@ export const subscribeToSavedView = async ({ view, cache, fullPath }) => {
   return result;
 };
 
-export const updateCacheAfterViewRemoval = ({ cache, view, action, fullPath }) => {
+export const subscribeWithLimitEnforce = async ({
+  view,
+  apolloClient,
+  namespacePath,
+  subscribedSavedViewLimit,
+}) => {
+  await handleEnforceSubscriptionLimit({ apolloClient, namespacePath, subscribedSavedViewLimit });
+  return subscribeToSavedView({
+    view,
+    cache: apolloClient,
+    fullPath: namespacePath,
+  });
+};
+
+export const updateCacheAfterViewReorder = ({
+  cache,
+  movedView,
+  referenceView,
+  position,
+  fullPath,
+}) => {
   const variants = [true, false];
 
   variants.forEach((subscribedOnly) => {
@@ -1136,31 +1251,53 @@ export const updateCacheAfterViewRemoval = ({ cache, view, action, fullPath }) =
     const newData = produce(sourceData, (draftState) => {
       const savedViews = draftState.namespace.savedViews.nodes;
 
-      if (subscribedOnly || (!subscribedOnly && action === 'delete')) {
-        const index = savedViews.findIndex((v) => v.id === view.id);
-        if (index !== -1) {
-          savedViews.splice(index, 1);
-        }
-      } else if (!subscribedOnly && action === 'unsubscribe') {
-        const unsubscribedView = savedViews.find((v) => v.id === view.id);
-        if (unsubscribedView) unsubscribedView.subscribed = false;
+      // Remove the moved view from its current position
+      const movedIndex = savedViews.findIndex((v) => v.id === movedView.id);
+      if (movedIndex === -1) return;
+
+      const [removed] = savedViews.splice(movedIndex, 1);
+
+      // Find the reference view and insert relative to it
+      const referenceIndex = savedViews.findIndex((v) => v.id === referenceView.id);
+      if (referenceIndex === -1) {
+        // If reference not found, append at end
+        savedViews.push(removed);
+        return;
       }
+
+      const insertIndex = position === 'before' ? referenceIndex : referenceIndex + 1;
+      savedViews.splice(insertIndex, 0, removed);
     });
 
     cache.writeQuery({ ...query, data: newData });
   });
 };
 
-export const subscribeWithLimitEnforce = async ({
-  view,
+export const reorderSavedView = async ({
   apolloClient,
-  namespacePath,
-  subscribedSavedViewLimit,
+  movedView,
+  referenceView,
+  position,
+  fullPath,
 }) => {
-  await handleEnforceSubscriptionLimit({ apolloClient, namespacePath, subscribedSavedViewLimit });
-  return subscribeToSavedView({
-    view,
-    cache: apolloClient,
-    fullPath: namespacePath,
+  const input = { id: movedView.id };
+
+  if (position === 'before') {
+    input.moveBeforeId = referenceView.id;
+  } else {
+    input.moveAfterId = referenceView.id;
+  }
+
+  await apolloClient.mutate({
+    mutation: workItemSavedViewReorder,
+    variables: { input },
+    update: (cache) =>
+      updateCacheAfterViewReorder({
+        cache,
+        movedView,
+        referenceView,
+        position,
+        fullPath,
+      }),
   });
 };

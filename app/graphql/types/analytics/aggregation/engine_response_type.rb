@@ -13,6 +13,7 @@ module Types
               include BaseResponseType
               graphql_name "#{types_prefix}AggregationResponse"
               description "Response for #{types_prefix} aggregation engine"
+              connection_type_class Types::Analytics::Aggregation::EngineResponseConnectionType
 
               field :dimensions,
                 Types::Analytics::Aggregation::EngineResponseDimensionsType.build(engine, **graphql_context),

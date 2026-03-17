@@ -22,7 +22,7 @@ module Gitlab
           return unless ref
 
           @commits_count ||= @project.repository.count_commits(
-            ref: ref,
+            revisions: ref,
             after: @options[:from],
             before: @options[:to]
           )

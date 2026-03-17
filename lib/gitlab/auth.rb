@@ -17,6 +17,7 @@ module Gitlab
     CREATE_RUNNER_SCOPE = :create_runner
     MANAGE_RUNNER_SCOPE = :manage_runner
     MCP_SCOPE = :mcp
+    MCP_ORBIT_SCOPE = :mcp_orbit
     GRANULAR_SCOPE = :granular
     API_SCOPES = [
       API_SCOPE, READ_API_SCOPE,
@@ -25,6 +26,7 @@ module Gitlab
       K8S_PROXY_SCOPE,
       SELF_ROTATE_SCOPE,
       MCP_SCOPE,
+      MCP_ORBIT_SCOPE,
       GRANULAR_SCOPE
     ].freeze
 
@@ -348,7 +350,8 @@ module Gitlab
           create_runner: %i[create_instance_runners create_runners],
           manage_runner: %i[assign_runner update_runner delete_runner],
           ai_workflows: %i[push_code download_code],
-          mcp: %i[execute_mcp_tool] # This ability doesn't exist yet
+          mcp: %i[execute_mcp_tool], # This ability doesn't exist yet
+          mcp_orbit: %i[execute_mcp_tool]
         }
 
         scopes.flat_map do |scope|
@@ -533,7 +536,7 @@ module Gitlab
       end
 
       def unavailable_ai_features_scopes
-        AI_WORKFLOW_SCOPES + [MCP_SCOPE]
+        AI_WORKFLOW_SCOPES + [MCP_SCOPE, MCP_ORBIT_SCOPE]
       end
 
       def unavailable_observability_scopes_for_resource(resource)

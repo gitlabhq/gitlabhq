@@ -311,6 +311,7 @@ merge_requests:
 - policy_dismissals
 - security_scan_profiles
 - security_scan_profiles_projects
+- duo_workflows
 external_pull_requests:
 - project
 merge_data:
@@ -350,7 +351,6 @@ ci_pipelines: &pipeline_definition
 - stages
 - statuses
 - statuses_order_id_desc
-- latest_statuses_ordered_by_stage
 - latest_statuses
 - all_jobs
 - current_jobs
@@ -531,6 +531,7 @@ builds:
 - job_artifacts_annotations
 - project_mirror
 - job_source
+- supply_chain_attestation
 bridges:
 - user
 - pipeline
@@ -551,6 +552,7 @@ bridges:
 - downstream_pipeline
 - upstream_pipeline
 - job_source
+- supply_chain_attestation
 generic_commit_statuses:
 - user
 - pipeline
@@ -651,6 +653,7 @@ project:
 - value_streams
 - group
 - namespace
+- namespace_details
 - project_namespace
 - management_clusters
 - boards
@@ -828,6 +831,7 @@ project:
 - protected_environments
 - mirror_user
 - push_rule
+- project_push_rule
 - jenkins_integration
 - index_status
 - feature_usage
@@ -932,6 +936,7 @@ project:
 - error_tracking_client_keys
 - pending_builds
 - security_scans
+- security_ascp_scans
 - ci_feature_usages
 - bulk_import_exports
 - ci_project_mirror
@@ -976,7 +981,7 @@ project:
 - approval_policy_rules
 - security_pipeline_execution_config_links
 - secrets_manager
-- secret_rotation_infos
+- project_secret_rotation_infos
 - observability_metrics
 - observability_traces
 - observability_logs
@@ -992,6 +997,7 @@ project:
 - security_project_tracked_contexts
 - security_attributes
 - project_to_security_attributes
+- security_scan_profile_triggers
 - policy_dismissals
 - security_scan_profiles
 - security_scan_profiles_projects
@@ -1198,6 +1204,8 @@ issuable_sla:
 push_rule:
   - group
   - organization
+project_push_rule:
+  - project
 bulk_import_export:
   - group
 service_desk_setting:

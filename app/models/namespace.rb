@@ -29,11 +29,11 @@ class Namespace < ApplicationRecord
 
   cells_claims_attribute :id, type: CLAIMS_BUCKET_TYPE::NAMESPACE_IDS, feature_flag: :cells_claims_namespaces
 
-  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::NAMESPACE, subject_key: :id
+  cells_claims_metadata subject_type: CLAIMS_SUBJECT_TYPE::ORGANIZATION, subject_key: :organization_id
 
   ignore_columns :description, :description_html, :cached_markdown_version, remove_with: '18.3', remove_after: '2025-07-17'
 
-  columns_changing_default :organization_id
+  columns_changing_default :organization_id, :state
 
   # Tells ActiveRecord not to store the full class name, in order to save some space
   # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69794
@@ -180,8 +180,19 @@ class Namespace < ApplicationRecord
     :npm_package_requests_forwarding,
     to: :package_settings
 
-  delegate :creator, :creator=, :description, :description=, :description_html,
-    :state_metadata, :state_metadata=,
+  delegate :creator,
+    :creator=,
+    :deletion_error,
+    :deletion_error=,
+    :description,
+    :description=,
+    :description_html,
+    :last_error,
+    :last_error=,
+    :state_metadata,
+    :state_metadata=,
+    :deletion_scheduled_at,
+    :deletion_scheduled_at=,
     to: :namespace_details, allow_nil: true
 
   with_options to: :namespace_settings do

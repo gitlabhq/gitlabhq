@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Environments
 description: Environments, variables, dashboards, and review apps.
 ---
@@ -474,8 +474,7 @@ the environment.
 
 - When the [**Pipelines must succeed**](../../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge) setting is turned on,
   you can configure the [`allow_failure: true`](../yaml/_index.md#allow_failure)
-keyword on the `stop_review` job to prevent it from
-  blocking your pipelines and merge requests.
+  keyword on the `stop_review` job to prevent it from blocking your pipelines and merge requests.
 
 ```yaml
 deploy_review:

@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Secret Detection
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Test your application and resolve vulnerabilities.
 title: Get started securing your application
 ---
@@ -73,7 +73,7 @@ For more information, see:
 
 - [Enable secret detection](secret_detection/pipeline/_index.md#getting-started)
 - [Secret detection settings](secret_detection/pipeline/configure.md)
-- [Enable dependency scanning](dependency_scanning/_index.md#getting-started)
+- [Turn on dependency scanning](dependency_scanning/_index.md#turn-on-dependency-scanning)
 - [Dependency scanning settings](dependency_scanning/_index.md#available-cicd-variables)
 
 ## Step 4: Review scan results

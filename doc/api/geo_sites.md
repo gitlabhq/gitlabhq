@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Geo sites API
 ---
 
@@ -25,6 +25,12 @@ Prerequisites:
 - You must be an administrator.
 
 ## Create a Geo site
+
+{{< history >}}
+
+- `blob_download_timeout` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/569919) in GitLab 18.10.
+
+{{< /history >}}
 
 Creates a Geo site.
 
@@ -55,6 +61,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/
 | `selective_sync_shards`               | array   | no       | The repository storage for the projects synced if `selective_sync_type` == `shards`.                                                                   |
 | `selective_sync_namespace_ids`        | array   | no       | The IDs of groups that should be synced, if `selective_sync_type` == `namespaces`.                                                                     |
 | `minimum_reverification_interval`     | integer | no       | The interval (in days) in which the repository verification is valid. Once expired, it is reverified. This has no effect when set on a secondary site. |
+| `blob_download_timeout`               | integer | no       | The timeout (in seconds) for blob replication. Defaults to 28800. Maximum is 86400.                                                                    |
 
 Example response:
 
@@ -76,6 +83,7 @@ Example response:
   "selective_sync_namespace_ids": [1, 25],
   "minimum_reverification_interval": 7,
   "sync_object_storage": false,
+  "blob_download_timeout": 28800,
   "web_edit_url": "https://primary.example.com/admin/geo/sites/3/edit",
   "web_geo_replication_details_url": "https://secondary.example.com/admin/geo/sites/3/replication/lfs_objects",
   "_links": {
@@ -118,6 +126,7 @@ Example response:
     "selective_sync_shards": [],
     "selective_sync_namespace_ids": [1, 25],
     "minimum_reverification_interval": 7,
+    "blob_download_timeout": 28800,
     "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
     "_links": {
       "self": "https://primary.example.com/api/v4/geo_sites/1",
@@ -142,6 +151,7 @@ Example response:
     "selective_sync_namespace_ids": [1, 25],
     "minimum_reverification_interval": 7,
     "sync_object_storage": true,
+    "blob_download_timeout": 28800,
     "web_edit_url": "https://primary.example.com/admin/geo/sites/2/edit",
     "web_geo_replication_details_url": "https://secondary.example.com/admin/geo/sites/2/replication/lfs_objects",
     "_links": {
@@ -184,6 +194,7 @@ Example response:
   "selective_sync_shards": [],
   "selective_sync_namespace_ids": [1, 25],
   "minimum_reverification_interval": 7,
+  "blob_download_timeout": 28800,
   "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
   "_links": {
     "self": "https://primary.example.com/api/v4/geo_sites/1",
@@ -194,6 +205,12 @@ Example response:
 ```
 
 ## Update a Geo site
+
+{{< history >}}
+
+- `blob_download_timeout` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/569919) in GitLab 18.10.
+
+{{< /history >}}
 
 Updates a specified Geo site.
 
@@ -216,6 +233,7 @@ PUT /geo_sites/:id
 | `selective_sync_shards`               | array   | no       | The repository storage for the projects synced if `selective_sync_type` == `shards`.                                                                   |
 | `selective_sync_namespace_ids`        | array   | no       | The IDs of groups that should be synced, if `selective_sync_type` == `namespaces`.                                                                     |
 | `minimum_reverification_interval`     | integer | no       | The interval (in days) in which the repository verification is valid. Once expired, it is reverified. This has no effect when set on a secondary site. |
+| `blob_download_timeout`               | integer | no       | The timeout (in seconds) for blob replication. Defaults to 28800. Maximum is 86400.                                                                    |
 
 Example response:
 
@@ -236,6 +254,7 @@ Example response:
   "selective_sync_shards": [],
   "selective_sync_namespace_ids": [1, 25],
   "minimum_reverification_interval": 7,
+  "blob_download_timeout": 28800,
   "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
   "_links": {
     "self": "https://primary.example.com/api/v4/geo_sites/1",
@@ -287,6 +306,7 @@ Example response:
   "repos_max_capacity": 25,
   "verification_max_capacity": 100,
   "container_repositories_max_capacity": 10,
+  "blob_download_timeout": 28800,
   "web_edit_url": "https://primary.example.com/admin/geo/sites/1/edit",
   "_links": {
     "self": "https://primary.example.com/api/v4/geo_sites/1",
@@ -486,6 +506,30 @@ Example response:
     "uploads_verification_total_count": null,
     "uploads_verified_count": null,
     "uploads_verification_failed_count": null,
+    "abuse_report_uploads_count": 0,
+    "abuse_report_uploads_checksum_total_count": 0,
+    "abuse_report_uploads_checksummed_count": 0,
+    "abuse_report_uploads_checksum_failed_count": 0,
+    "abuse_report_uploads_synced_count": null,
+    "abuse_report_uploads_failed_count": null,
+    "abuse_report_uploads_registry_count": null,
+    "abuse_report_uploads_verification_total_count": null,
+    "abuse_report_uploads_verified_count": null,
+    "abuse_report_uploads_verification_failed_count": null,
+    "abuse_report_uploads_synced_in_percentage": "0.00%",
+    "abuse_report_uploads_verified_in_percentage": "0.00%",
+    "project_uploads_count": 0,
+    "project_uploads_checksum_total_count": 0,
+    "project_uploads_checksummed_count": 0,
+    "project_uploads_checksum_failed_count": 0,
+    "project_uploads_synced_count": null,
+    "project_uploads_failed_count": null,
+    "project_uploads_registry_count": null,
+    "project_uploads_verification_total_count": null,
+    "project_uploads_verified_count": null,
+    "project_uploads_verification_failed_count": null,
+    "project_uploads_synced_in_percentage": "0.00%",
+    "project_uploads_verified_in_percentage": "0.00%",
     "git_fetch_event_count_weekly": null,
     "git_push_event_count_weekly": null,
     "proxy_remote_requests_event_count_weekly": null,
@@ -727,6 +771,30 @@ Example response:
     "uploads_verification_total_count": 55,
     "uploads_verified_count": 55,
     "uploads_verification_failed_count": 0,
+    "abuse_report_uploads_count": 0,
+    "abuse_report_uploads_checksum_total_count": 0,
+    "abuse_report_uploads_checksummed_count": 0,
+    "abuse_report_uploads_checksum_failed_count": 0,
+    "abuse_report_uploads_synced_count": null,
+    "abuse_report_uploads_failed_count": null,
+    "abuse_report_uploads_registry_count": null,
+    "abuse_report_uploads_verification_total_count": null,
+    "abuse_report_uploads_verified_count": null,
+    "abuse_report_uploads_verification_failed_count": null,
+    "abuse_report_uploads_synced_in_percentage": "0.00%",
+    "abuse_report_uploads_verified_in_percentage": "0.00%",
+    "project_uploads_count": 0,
+    "project_uploads_checksum_total_count": 0,
+    "project_uploads_checksummed_count": 0,
+    "project_uploads_checksum_failed_count": 0,
+    "project_uploads_synced_count": null,
+    "project_uploads_failed_count": null,
+    "project_uploads_registry_count": null,
+    "project_uploads_verification_total_count": null,
+    "project_uploads_verified_count": null,
+    "project_uploads_verification_failed_count": null,
+    "project_uploads_synced_in_percentage": "0.00%",
+    "project_uploads_verified_in_percentage": "0.00%",
     "git_fetch_event_count_weekly": 0,
     "git_push_event_count_weekly": 0,
     "proxy_remote_requests_event_count_weekly": 0,
@@ -986,6 +1054,30 @@ Example response:
     "uploads_verification_total_count": 55,
     "uploads_verified_count": 55,
     "uploads_verification_failed_count": 0,
+    "abuse_report_uploads_count": 0,
+    "abuse_report_uploads_checksum_total_count": 0,
+    "abuse_report_uploads_checksummed_count": 0,
+    "abuse_report_uploads_checksum_failed_count": 0,
+    "abuse_report_uploads_synced_count": null,
+    "abuse_report_uploads_failed_count": null,
+    "abuse_report_uploads_registry_count": null,
+    "abuse_report_uploads_verification_total_count": null,
+    "abuse_report_uploads_verified_count": null,
+    "abuse_report_uploads_verification_failed_count": null,
+    "abuse_report_uploads_synced_in_percentage": "0.00%",
+    "abuse_report_uploads_verified_in_percentage": "0.00%",
+    "project_uploads_count": 0,
+    "project_uploads_checksum_total_count": 0,
+    "project_uploads_checksummed_count": 0,
+    "project_uploads_checksum_failed_count": 0,
+    "project_uploads_synced_count": null,
+    "project_uploads_failed_count": null,
+    "project_uploads_registry_count": null,
+    "project_uploads_verification_total_count": null,
+    "project_uploads_verified_count": null,
+    "project_uploads_verification_failed_count": null,
+    "project_uploads_synced_in_percentage": "0.00%",
+    "project_uploads_verified_in_percentage": "0.00%",
     "git_fetch_event_count_weekly": 0,
     "git_push_event_count_weekly": 0,
     "proxy_remote_requests_event_count_weekly": 0,

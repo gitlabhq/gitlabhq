@@ -174,7 +174,7 @@ RSpec.describe Issues::ExportCsvService, :with_license, feature_category: :team_
       context 'with label links' do
         let(:labeled_issues) { create_list(:labeled_issue, 2, project: project, author: user, labels: [feature_label, idea_label]) }
 
-        it 'does not run a query for each label link' do
+        it 'does not run a query for each label link', :request_store do
           control = ActiveRecord::QueryRecorder.new { csv }
 
           labeled_issues

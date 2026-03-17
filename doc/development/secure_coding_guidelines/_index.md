@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Secure coding development guidelines
 ---
 
@@ -94,13 +94,7 @@ The HTTP status code returned when an authorization check fails should generally
 about whether or not the requested resource exists. `403 Forbidden` may be appropriate if you need to display a specific message to the user
 about why they cannot access the resource. If you are displaying a generic message such as "access denied", consider returning `404 Not Found` instead.
 
-Some example of well implemented access controls and tests:
-
-1. [example1](https://dev.gitlab.org/gitlab/gitlab-ee/-/merge_requests/710/diffs?diff_id=13750#af40ef0eaae3c1e018809e1d88086e32bccaca40_43_43)
-1. [example2](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/2511/diffs#ed3aaab1510f43b032ce345909a887e5b167e196_142_155)
-1. [example3](https://dev.gitlab.org/gitlab/gitlabhq/-/merge_requests/3170/diffs?diff_id=17494)
-
-**NB**: any input from development team is welcome, for example, about RuboCop rules.
+For a well-implemented example of access controls and authorization checks, see the [drafts controller](https://gitlab.com/gitlab-org/gitlab/-/blob/c382857fbd896b4aeb35930644e896580abcf437/app/controllers/projects/merge_requests/drafts_controller.rb#L10-L90), which enforces permission checks before allowing users to publish draft notes.
 
 ## CI/CD development
 
@@ -710,7 +704,8 @@ And the following cipher suites (according to the [RFC 8446](https://datatracker
 - `TLS_AES_128_GCM_SHA256`
 - `TLS_AES_256_GCM_SHA384`
 
-*Note*: **Go** does [not support](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676) all cipher suites with TLS 1.3.
+> [!note]
+> **Go** does [not support](https://github.com/golang/go/blob/go1.17/src/crypto/tls/cipher_suites.go#L676) all cipher suites with TLS 1.3.
 
 ##### Implementation examples
 
@@ -1029,31 +1024,22 @@ Understanding these top 10 vulnerabilities is crucial for teams working with LLM
 
 - **LLM01: Prompt Injection**
   - Mitigation: Implement robust input validation and sanitization
-
 - **LLM02: Insecure Output Handling**
   - Mitigation: Validate and sanitize LLM outputs before use
-
 - **LLM03: Training Data Poisoning**
   - Mitigation: Verify training data integrity, implement data quality checks
-
 - **LLM04: Model Denial of Service**
   - Mitigation: Implement rate limiting, resource allocation controls
-
 - **LLM05: Supply Chain Vulnerabilities**
   - Mitigation: Conduct thorough vendor assessments, implement component verification
-
 - **LLM06: Sensitive Information Disclosure**
   - Mitigation: Implement strong data access controls, output filtering
-
 - **LLM07: Insecure Plugin Design**
   - Mitigation: Implement strict access controls, thorough plugin vetting
-
 - **LLM08: Excessive Agency**
   - Mitigation: Implement human oversight, limit LLM autonomy
-
 - **LLM09: Overreliance**
   - Mitigation: Implement human-in-the-loop processes, cross-validation of outputs
-
 - **LLM10: Model Theft**
   - Mitigation: Implement strong access controls, encryption for model storage and transfer
 
@@ -1137,7 +1123,7 @@ Logging helps track events for debugging. Logging also allows the application to
 ### Related topics
 
 - [Log system in GitLab](../../administration/logs/_index.md)
-- [Audit event development guidelines](../audit_event_guide/_index.md))
+- [Audit event development guidelines](../audit_event_guide/_index.md)
 - [Security logging overview](https://handbook.gitlab.com/handbook/security/security-operations/security-logging/)
 - [OWASP logging cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
 

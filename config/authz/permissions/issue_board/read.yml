@@ -1,6 +1,3 @@
 ---
 name: read_issue_board
 description: Grants the ability to read issue boards
-boundaries:
-  - project
-  - group

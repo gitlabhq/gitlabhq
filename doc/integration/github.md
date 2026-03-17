@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Use GitHub as an OAuth 2.0 authentication provider
 ---
 
@@ -44,7 +44,6 @@ your website could enable the covert redirect attack.
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `github` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
-
 1. Edit the GitLab configuration file using the following information:
 
    | GitHub setting | Value in the GitLab configuration file | Description             |
@@ -121,7 +120,6 @@ your website could enable the covert redirect attack.
 
 1. Refresh the GitLab sign-in page. A GitHub icon should display below the
    sign-in form.
-
 1. Select the icon. Sign in to GitHub and authorize the GitLab application.
 
 ## Troubleshooting

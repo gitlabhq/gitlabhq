@@ -1,4 +1,5 @@
-import { rectUnion } from '~/content_editor/services/utils';
+import { rectUnion, getColumnHeaderText } from '~/content_editor/services/utils';
+import { builders, doc } from '../serialization_utils';
 
 describe('rectUnion', () => {
   const verifyRect = (actual, expected) => {
@@ -128,5 +129,67 @@ describe('rectUnion', () => {
       width: 40, // right - left
       height: 20, // bottom - top
     });
+  });
+});
+
+describe('getColumnHeaderText', () => {
+  const { paragraph, table, tableRow, tableCell, tableHeader, taskList, taskItem } = builders;
+
+  const taskItemCell = () => tableCell(taskList(taskItem(paragraph())));
+
+  const findTaskItemPos = (document, n = 0) => {
+    let count = 0;
+    let pos = null;
+    document.descendants((node, p) => {
+      if (pos !== null) return false;
+      if (node.type.name === 'taskItem') {
+        if (count === n) {
+          pos = p;
+          return false;
+        }
+        count += 1;
+      }
+      return true;
+    });
+    return pos;
+  };
+
+  it('returns the header text for the first column', () => {
+    const d = doc(
+      table(
+        tableRow(tableHeader(paragraph('Name')), tableHeader(paragraph('Status'))),
+        tableRow(taskItemCell(), tableCell(paragraph('b'))),
+      ),
+    );
+
+    expect(getColumnHeaderText(d, findTaskItemPos(d))).toBe('Name');
+  });
+
+  it('returns the header text for a later column', () => {
+    const d = doc(
+      table(
+        tableRow(tableHeader(paragraph('Name')), tableHeader(paragraph('Status'))),
+        tableRow(tableCell(paragraph('a')), taskItemCell()),
+      ),
+    );
+
+    expect(getColumnHeaderText(d, findTaskItemPos(d))).toBe('Status');
+  });
+
+  it('returns empty string when header cell has an empty paragraph', () => {
+    const d = doc(table(tableRow(tableHeader(paragraph())), tableRow(taskItemCell())));
+
+    expect(getColumnHeaderText(d, findTaskItemPos(d))).toBe('');
+  });
+
+  it('returns null when header cell does not exist for the column index', () => {
+    const d = doc(
+      table(
+        tableRow(tableHeader(paragraph('H1'))),
+        tableRow(tableCell(paragraph('a')), taskItemCell()),
+      ),
+    );
+
+    expect(getColumnHeaderText(d, findTaskItemPos(d))).toBeNull();
   });
 });

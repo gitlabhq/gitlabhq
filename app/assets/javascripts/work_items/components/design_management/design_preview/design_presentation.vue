@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import DesignImage from './image.vue';
 import DesignOverlay from './design_overlay.vue';

@@ -172,6 +172,8 @@ class IssuableFinder
       return Project.none unless group
 
       if params[:include_subgroups]
+        return projects_in_group_hierarchy_by_traversal_join if mr_lookup_by_checking_traversal_ids_on_join?
+
         Project.where(namespace_id: group.self_and_descendant_ids) # rubocop: disable CodeReuse/ActiveRecord
       else
         group.projects
@@ -230,6 +232,24 @@ class IssuableFinder
 
     def respond_to_missing?(method_name, include_private = false)
       method_name[-1] == '?'
+    end
+
+    def mr_lookup_by_checking_traversal_ids_on_join?
+      strong_memoize(:mr_lookup_by_checking_traversal_ids_on_join) do
+        next false unless klass == MergeRequest
+
+        Feature.enabled?(:mr_lookup_by_checking_traversal_ids_on_join, group)
+      end
+    end
+
+    def projects_in_group_hierarchy_by_traversal_join
+      sql = Project.sanitize_sql([
+        "INNER JOIN namespaces ns ON ns.type = 'Project' AND ns.id = projects.project_namespace_id " \
+          "AND ns.traversal_ids @> ARRAY[?]::bigint[]",
+        group.id
+      ])
+
+      Project.joins(sql) # rubocop: disable CodeReuse/ActiveRecord -- Cleanup/make it a scope, when gitlab-org/gitlab#585222 is completed
     end
   end
 end

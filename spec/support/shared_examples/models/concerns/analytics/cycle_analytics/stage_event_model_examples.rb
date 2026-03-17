@@ -47,7 +47,9 @@ RSpec.shared_examples 'StageEventModel' do
       ]
     end
 
-    subject(:upsert_data) { described_class.upsert_data(input_data) }
+    def upsert_data
+      described_class.upsert_data(input_data)
+    end
 
     it 'inserts the data' do
       upsert_data
@@ -75,6 +77,19 @@ RSpec.shared_examples 'StageEventModel' do
       end.sort
 
       expect(input_data.map(&:values).sort).to eq(output_data)
+    end
+
+    it 'upserts the data correctly' do
+      upsert_data
+
+      input_data.each do |entry|
+        entry[:milestone_id] = 111
+      end
+
+      upsert_data
+
+      updated_data = described_class.pluck(:milestone_id)
+      expect(updated_data).to eq([111, 111])
     end
   end
 

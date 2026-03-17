@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Remediate
 description: Root cause determination and analysis.
 ---
@@ -49,7 +49,7 @@ For some vulnerabilities detected by SAST, GitLab can:
 
 - [Explain the vulnerability](../analyze/duo.md) by using GitLab Duo Chat.
 - Resolve the vulnerability by using:
-  - [Classic vulnerability resolution](duo.md)
+  - [Non-agentic vulnerability resolution](duo.md)
   - [Agentic vulnerability resolution](../vulnerabilities/agentic_vulnerability_resolution.md)
 - Provide the complete data path from input to the vulnerable line of code, if you're using
   GitLab Advanced SAST.

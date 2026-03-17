@@ -93,6 +93,7 @@ describe('Homepage index', () => {
             duoCodeReviewBotUsername: 'GitLabDuo',
             mergeRequestsReviewRequestedTitle: 'Review Requested',
             mergeRequestsYourMergeRequestsTitle: 'Your Merge Requests',
+            workItemPlanningViewEnabled: false,
           },
           apolloProvider: expect.objectContaining({ mockVueApolloInstance: true }),
           render: expect.any(Function),

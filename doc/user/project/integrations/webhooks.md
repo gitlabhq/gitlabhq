@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Webhooks
 description: "Configure and manage project and group webhooks in GitLab."
 ---
@@ -100,7 +100,7 @@ Prerequisites:
 
 To create a webhook:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Webhooks**.
 1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.
@@ -122,7 +122,7 @@ are encrypted at rest in the database.
 
 To mask sensitive portions of a webhook URL:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Webhooks**.
 1. In **URL**, enter the full URL of the webhook.
 1. To define masked portions, select **Add URL masking**.
@@ -166,6 +166,8 @@ Custom headers show in **Recent events** with masked values.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `custom_webhook_template`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439610) in GitLab 17.0. Feature flag `custom_webhook_template` removed.
 - JSON serialization of interpolated field values [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197992) in GitLab 18.4 [with a flag](../../../administration/feature_flags/_index.md) named `custom_webhook_template_serialization`. Disabled by default.
+- JSON serialization of interpolated field values made [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212407) in GitLab 18.6. Feature flag `custom_webhook_template_serialization` enabled by default.
+- Feature flag `custom_webhook_template_serialization` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/580460) in GitLab 18.10.
 
 {{< /history >}}
 
@@ -367,7 +369,7 @@ Prerequisites:
 
 To view the request history for a webhook:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Webhooks**.
 1. Select **Edit** for the webhook.
 1. Go to the **Recent events** section.
@@ -400,7 +402,7 @@ This page contains the body and headers of:
 
 To inspect the request and response details of a webhook event:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Webhooks**.
 1. Select **Edit** for the webhook.
 1. Go to the **Recent events** section.
@@ -422,7 +424,7 @@ Prerequisites:
 
 To test a webhook:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Webhooks** to see all webhooks for this project.
 1. To test a webhook directly from the list of configured webhooks:
    1. Locate the webhook you want to test.
@@ -487,7 +489,7 @@ GitLab automatically disables project or group webhooks that fail four consecuti
 
 To view auto-disabled webhooks:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Webhooks**.
 
 In the webhook list, auto-disabled webhooks display as:

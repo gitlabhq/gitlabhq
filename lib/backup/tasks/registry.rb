@@ -5,11 +5,17 @@ module Backup
     class Registry < Task
       def self.id = 'registry'
 
-      def enabled = Gitlab.config.registry.enabled
+      def enabled
+        Gitlab.config.registry.enabled
+      end
 
-      def human_name = _('container registry images')
+      def human_name
+        _('container registry images')
+      end
 
-      def destination_path = 'registry.tar.gz'
+      def destination_path
+        'registry.tar.gz'
+      end
 
       private
 

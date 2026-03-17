@@ -1,0 +1,19 @@
+# frozen_string_literal: true
+
+# This migration is generated.
+# Command: `rails generate gitlab:click_house:materialized_view:change <%= @view_name %>`
+class <%= migration_class_name %> < ClickHouse::Migration
+  def up
+    execute <<~SQL
+      ALTER TABLE <%= @view_name %> MODIFY QUERY
+      <%= @old_query.join("\n      ") %>
+    SQL
+  end
+
+  def down
+    execute <<~SQL
+      ALTER TABLE <%= @view_name %> MODIFY QUERY
+      <%= @old_query.join("\n      ") %>
+    SQL
+  end
+end

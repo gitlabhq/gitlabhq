@@ -1,4 +1,4 @@
-import { GlBadge, GlDisclosureDropdown, GlIcon, GlModal, GlTable } from '@gitlab/ui';
+import { GlBadge, GlDisclosureDropdown, GlIcon, GlModal } from '@gitlab/ui';
 import { createTestingPinia } from '@pinia/testing';
 import Vue from 'vue';
 import { PiniaVuePlugin } from 'pinia';
@@ -42,37 +42,6 @@ describe('AccessTokenTable', () => {
     findDisclosure().findAll('button.gl-new-dropdown-item-content').at(index);
   const findModal = () => wrapper.findComponent(GlModal);
   const findIcon = (component) => component.findComponent(GlIcon);
-  const findTable = () => wrapper.findComponent(GlTable);
-
-  describe('busy state', () => {
-    describe('when it is `true`', () => {
-      beforeEach(() => {
-        createComponent({ busy: true });
-      });
-
-      it('has aria-busy `true` in the table', () => {
-        expect(findTable().attributes('aria-busy')).toBe('true');
-      });
-
-      it('disables the dropdown', () => {
-        expect(findDisclosure().props('disabled')).toBe(true);
-      });
-    });
-
-    describe('when it is `false`', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('has aria-busy `false` in the table', () => {
-        expect(findTable().attributes('aria-busy')).toBe('false');
-      });
-
-      it('enables the dropdown', () => {
-        expect(findDisclosure().props('disabled')).toBe(false);
-      });
-    });
-  });
 
   describe('table headers', () => {
     it('usage header should contain a link and an assistive message', () => {

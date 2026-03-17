@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Use Auth0 as an OAuth 2.0 authentication provider
 ---
 
@@ -51,7 +51,6 @@ application.
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `auth0` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
-
 1. Add the provider configuration:
 
    For Linux package installations:

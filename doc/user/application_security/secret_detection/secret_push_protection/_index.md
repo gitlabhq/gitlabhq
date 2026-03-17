@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Secret Detection
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Secret push protection
 ---
 
@@ -104,8 +104,8 @@ Prerequisites:
 
 To enable secret push protection in a project:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Secure** > **Security configuration**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. Turn on the **Secret push protection** toggle.
 
 You can also enable secret push protection for all projects in a group [with the API](../../../../api/group_security_settings.md#update-group-security-settings).
@@ -179,7 +179,6 @@ Not all detections require immediate action. Consider the following when evaluat
   - Production database credentials
   - Private cryptographic keys
   - Any credentials that could grant unauthorized access
-
 - False positives: Detected patterns that aren't actual secrets. For example:
   - Test data that resembles secrets but has no real-world value
   - Placeholder values in configuration templates

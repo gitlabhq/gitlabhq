@@ -1,5 +1,3 @@
 ---
 name: read_group_transfer_location
 description: Grants the ability to read transfer locations for a group
-boundaries:
-  - group

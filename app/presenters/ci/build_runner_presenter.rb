@@ -65,7 +65,11 @@ module Ci
 
     def refspecs
       specs = []
-      specs << refspec_for_persistent_ref
+      specs << if Feature.enabled?(:runner_refspec_use_sha_instead_of_persistent_ref, project)
+                 sha
+               else
+                 refspec_for_persistent_ref
+               end
 
       if git_depth > 0
         specs << refspec_for_branch(ref) if branch? || legacy_detached_merge_request_pipeline?

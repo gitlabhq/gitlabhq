@@ -1,5 +1,3 @@
 ---
 name: read_dependency
 description: Grants the ability to read dependencies
-boundaries:
-  - project

@@ -29,8 +29,10 @@ test-coverage:export-rspec-and-e2e:
       optional: true
     - job: update-tests-metadata
       optional: true
+  variables:
+    JOB_NAME: 'process-e2e-coverage'
   script:
-    - ruby scripts/coverage/download_e2e_artifacts_from_child_pipeline.rb
+    - ruby scripts/coverage/download_artifacts_from_child_pipeline.rb
     - ruby scripts/coverage/merge_backend_coverage.rb
     - echo "Merging E2E test mappings with Crystalball mappings..."
     - ruby scripts/coverage/merge_e2e_backend_test_mapping.rb
@@ -62,8 +64,10 @@ test-coverage:export-jest-and-e2e:
     - eval "bundle install ${BUNDLE_INSTALL_FLAGS}"
     - source scripts/utils.sh
     - yarn_install_script
+  variables:
+    JOB_NAME: 'process-e2e-coverage'
   script:
-    - ruby scripts/coverage/download_e2e_artifacts_from_child_pipeline.rb
+    - ruby scripts/coverage/download_artifacts_from_child_pipeline.rb
     - echo "Merging Jest + E2E coverage..."
     - node scripts/frontend/merge_coverage_frontend.js
     - echo "Merging E2E test mappings with Jest mappings..."

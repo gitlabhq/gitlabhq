@@ -17,6 +17,7 @@ module API
       expose :milestone_events, documentation: { type: 'Boolean' }
       expose :emoji_events, documentation: { type: 'Boolean' }
       expose :resource_access_token_events, documentation: { type: 'Boolean' }
+      expose :resource_deploy_token_events, documentation: { type: 'Boolean' }
       expose :vulnerability_events, documentation: { type: 'Boolean' }
     end
   end

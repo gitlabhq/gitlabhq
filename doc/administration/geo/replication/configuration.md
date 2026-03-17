@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Finalize your secondary Geo site setup by replicating secrets, SSH keys, and adding the new site to the primary to begin data synchronization.
 title: Configure a new **secondary** site
 ---
@@ -226,7 +226,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
 
 1. Go to the primary node GitLab instance:
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Geo** > **Sites**.
+   1. In the left sidebar, select **Geo** > **Sites**.
    1. Select **Add site**.
       ![Adding a secondary site in Geo configuration interface](img/adding_a_secondary_v15_8.png)
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in

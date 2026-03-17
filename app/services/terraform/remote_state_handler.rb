@@ -2,8 +2,6 @@
 
 module Terraform
   class RemoteStateHandler < BaseService
-    include Gitlab::OptimisticLocking
-
     StateLockedError = Class.new(StandardError)
     StateDeletedError = Class.new(StandardError)
     UnauthorizedError = Class.new(StandardError)
@@ -62,7 +60,9 @@ module Terraform
 
     def retrieve_with_lock(find_only: false)
       create_or_find!(find_only: find_only).tap do |state|
-        retry_lock(state, name: "Terraform state: #{state.id}") { yield state }
+        Gitlab::OptimisticLocking.retry_lock_with_transaction(state, name: "Terraform state: #{state.id}") do
+          yield state
+        end
       end
     end
 

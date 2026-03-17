@@ -12,15 +12,14 @@ import (
 	"slices"
 	"strings"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
+
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
-
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-
 	"github.com/modelcontextprotocol/go-sdk/mcp"
-
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
+	"google.golang.org/protobuf/proto"
 )
 
 const gitlabServerName = "gitlab"
@@ -278,6 +277,21 @@ func (m *manager) CallTool(ctx context.Context, action *pb.Action) (*pb.ClientEv
 		return nil, fmt.Errorf("CallTool: failed to call MCP tool: %v", err)
 	}
 
+	event := m.buildClientEvent(ctx, action, mcpTool, res)
+
+	log.WithContextFields(ctx, log.Fields{
+		"request_id":           action.GetRequestID(),
+		"name":                 mcpTool.Name,
+		"args_size":            len(action.GetRunMCPTool().Args),
+		"payload_size":         proto.Size(event),
+		"event_type":           fmt.Sprintf("%T", event.Response),
+		"action_response_type": fmt.Sprintf("%T", event.GetActionResponse().GetResponseType()),
+	}).Info("Sending MCP tool response")
+
+	return event, nil
+}
+
+func (m *manager) buildClientEvent(ctx context.Context, action *pb.Action, mcpTool *pb.RunMCPTool, res *mcp.CallToolResult) *pb.ClientEvent {
 	var content string
 	if len(res.Content) == 0 {
 		content = "MCP tool response is empty"
@@ -310,7 +324,7 @@ func (m *manager) CallTool(ctx context.Context, action *pb.Action) (*pb.ClientEv
 				},
 			},
 		},
-	}, nil
+	}
 }
 
 func (m *manager) Close() error {

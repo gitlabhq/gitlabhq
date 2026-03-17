@@ -241,6 +241,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             snippet_size_limit: 5,
             issues_create_limit: 300,
             raw_blob_request_limit: 300,
+            raw_blob_request_limit_unauthenticated: 400,
             spam_check_endpoint_enabled: true,
             spam_check_endpoint_url: 'grpc://example.com/spam_check',
             spam_check_api_key: 'SPAM_CHECK_API_KEY',
@@ -341,6 +342,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['snippet_size_limit']).to eq(5)
         expect(json_response['issues_create_limit']).to eq(300)
         expect(json_response['raw_blob_request_limit']).to eq(300)
+        expect(json_response['raw_blob_request_limit_unauthenticated']).to eq(400)
         expect(json_response['spam_check_endpoint_enabled']).to be_truthy
         expect(json_response['spam_check_endpoint_url']).to eq('grpc://example.com/spam_check')
         expect(json_response['spam_check_api_key']).to eq('SPAM_CHECK_API_KEY')
@@ -540,11 +542,11 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
       it 'does not allow unrestricted key lengths' do
         types = %w[dsa_key_restriction
-                   ecdsa_key_restriction
-                   ecdsa_sk_key_restriction
-                   ed25519_key_restriction
-                   ed25519_sk_key_restriction
-                   rsa_key_restriction]
+          ecdsa_key_restriction
+          ecdsa_sk_key_restriction
+          ed25519_key_restriction
+          ed25519_sk_key_restriction
+          rsa_key_restriction]
 
         types.each do |type|
           put api("/application/settings", admin), params: { type => 0 }
@@ -1336,7 +1338,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['vscode_extension_marketplace_enabled']).to eq(true)
         expect(json_response['vscode_extension_marketplace'])
-          .to eq({ "enabled" => true, "extension_host_domain" => "cdn.web-ide.gitlab-static.net" })
+          .to eq({ "enabled" => true, "extension_host_domain" => "cdn.web-ide.gitlab-static.net", "single_origin_fallback_enabled" => true })
       end
     end
   end

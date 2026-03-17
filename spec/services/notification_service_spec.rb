@@ -1586,6 +1586,65 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
           end
         end
       end
+
+      describe '#new_mentions_in_note' do
+        let(:note) { create(:note_on_issue, author: author, noteable: issue, project_id: issue.project_id, note: "Hello @#{@u_mentioned.to_reference}") }
+
+        it 'sends email to newly mentioned users' do
+          notification.new_mentions_in_note(note, [@u_mentioned], author)
+
+          should_only_email(@u_mentioned)
+        end
+
+        it 'does not send email when there are no new mentions' do
+          notification.new_mentions_in_note(note, [], author)
+
+          should_not_email_anyone
+        end
+
+        it 'does not send email to users not in the new mentions list' do
+          notification.new_mentions_in_note(note, [@u_mentioned], author)
+
+          should_not_email(@u_disabled)
+        end
+
+        it 'filters out "mentioned in" system notes' do
+          mentioned_note = SystemNoteService.cross_reference(mentioned_issue, issue, issue.author)
+
+          notification.new_mentions_in_note(mentioned_note, [@u_mentioned], author)
+
+          should_not_email_anyone
+        end
+
+        context 'when the author is blocked' do
+          let(:blocked_author) { create(:user, :blocked) }
+
+          it 'does not send any notification' do
+            notification.new_mentions_in_note(note, [@u_mentioned], blocked_author)
+
+            should_not_email_anyone
+          end
+        end
+
+        context 'when the author is a ghost' do
+          let(:ghost_author) { create(:user, :ghost) }
+
+          it 'does not send any notification' do
+            notification.new_mentions_in_note(note, [@u_mentioned], ghost_author)
+
+            should_not_email_anyone
+          end
+        end
+
+        context 'when the note has no noteable_type' do
+          it 'returns true without sending notifications' do
+            allow(note).to receive(:noteable_type).and_return(nil)
+
+            expect(notification.new_mentions_in_note(note, [@u_mentioned], author)).to be(true)
+            should_not_email_anyone
+          end
+        end
+      end
     end
 
     context 'project snippet note', :deliver_mails_inline do
@@ -3204,104 +3263,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       it_behaves_like 'project emails are disabled' do
         let(:notification_target)  { merge_request }
         let(:notification_trigger) { notification.change_in_merge_request_draft_status(merge_request, @u_disabled) }
-      end
-    end
-
-    describe '#push_to_merge_request' do
-      before do
-        update_custom_notification(:push_to_merge_request, @u_guest_custom, resource: project)
-        update_custom_notification(:push_to_merge_request, @u_custom_global)
-      end
-
-      it do
-        notification.push_to_merge_request(merge_request, @u_disabled)
-
-        merge_request.assignees.each { |assignee| should_email(assignee) }
-        should_email(@u_guest_custom)
-        should_email(@u_custom_global)
-        should_email(@u_participant_mentioned)
-        should_email(@subscriber)
-        should_email(@watcher_and_subscriber)
-        should_not_email(@u_watcher)
-        should_not_email(@u_guest_watcher)
-        should_not_email(@unsubscriber)
-        should_not_email(@u_participating)
-        should_not_email(@u_disabled)
-        should_not_email(@u_lazy_participant)
-      end
-
-      describe 'triggers push_to_merge_request_email with corresponding email' do
-        let_it_be(:merge_request) { create(:merge_request, author: author, source_project: project) }
-        let(:existing_commits) { mock_commits(50) }
-        let(:expected_existing_commits) { [commit_to_hash(existing_commits.first), commit_to_hash(existing_commits.last)] }
-
-        def mock_commits(length)
-          Array.new(length) { |i| double(:commit, short_id: SecureRandom.hex(4), title: "This is commit #{i}") }
-        end
-
-        def commit_to_hash(commit)
-          { short_id: commit.short_id, title: commit.title }
-        end
-
-        before do
-          allow(::Notify).to receive(:push_to_merge_request_email).and_call_original
-        end
-
-        where(:number_of_new_commits, :number_of_new_commits_displayed) do
-          limit = described_class::NEW_COMMIT_EMAIL_DISPLAY_LIMIT
-          [
-            [0, 0],
-            [limit - 2, limit - 2],
-            [limit - 1, limit - 1],
-            [limit, limit],
-            [limit + 1, limit],
-            [limit + 2, limit]
-          ]
-        end
-
-        with_them do
-          let(:new_commits) { mock_commits(number_of_new_commits) }
-          let(:expected_new_commits) { new_commits.first(number_of_new_commits_displayed).map(&method(:commit_to_hash)) }
-
-          it 'triggers the corresponding mailer method with list of stripped commits' do
-            notification.push_to_merge_request(
-              merge_request, merge_request.author,
-              new_commits: new_commits, existing_commits: existing_commits
-            )
-
-            expect(Notify).to have_received(:push_to_merge_request_email).at_least(:once).with(
-              @subscriber.id, merge_request.id, merge_request.author.id, "subscribed",
-              new_commits: expected_new_commits, total_new_commits_count: number_of_new_commits,
-              existing_commits: expected_existing_commits, total_existing_commits_count: 50
-            )
-          end
-        end
-
-        context 'there is only one existing commit' do
-          let(:new_commits) { mock_commits(10) }
-          let(:expected_new_commits) { new_commits.map(&method(:commit_to_hash)) }
-
-          it 'triggers corresponding mailer method with only one existing commit' do
-            notification.push_to_merge_request(merge_request, merge_request.author, new_commits: new_commits, existing_commits: existing_commits.first(1))
-
-            expect(Notify).to have_received(:push_to_merge_request_email).at_least(:once).with(
-              @subscriber.id, merge_request.id, merge_request.author.id, "subscribed",
-              new_commits: expected_new_commits, total_new_commits_count: 10,
-              existing_commits: expected_existing_commits.first(1), total_existing_commits_count: 1
-            )
-          end
-        end
-      end
-
-      it_behaves_like 'participating notifications' do
-        let(:participant) { create(:user, username: 'user-participant') }
-        let(:issuable) { merge_request }
-        let(:notification_trigger) { notification.push_to_merge_request(merge_request, @u_disabled) }
-      end
-
-      it_behaves_like 'project emails are disabled' do
-        let(:notification_target)  { merge_request }
-        let(:notification_trigger) { notification.push_to_merge_request(merge_request, @u_disabled) }
       end
     end
 

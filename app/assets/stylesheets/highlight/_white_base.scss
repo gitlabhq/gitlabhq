@@ -76,7 +76,7 @@ $white-gc-bg: #eaf2f5;
 
 
 @mixin match-line {
-  color: $gl-color-alpha-dark-24;
+  color: $gl-text-color-subtle;
   background-color: $gl-color-neutral-10;
 }
 
@@ -96,7 +96,7 @@ $white-gc-bg: #eaf2f5;
   --code-old-inline-diff-background-color: #fac5cd;
   --code-new-inline-diff-background-color: #c7f0d2;
   --code-meta-diff-background-color: #{$gl-color-neutral-10};
-  --code-meta-diff-color: #{$gl-color-alpha-dark-24};
+  --code-meta-diff-color: #{$gl-text-color-subtle};
 
   --code-highlighted-line-background-color: #{$gl-color-blue-50};
   --code-highlighted-line-border-color: #{$gl-color-blue-300};
@@ -159,7 +159,7 @@ $white-gc-bg: #eaf2f5;
     }
 
     &.diff-grid-row.expansion.match .diff-td {
-      color: $gl-color-neutral-400;
+      color: $gl-text-color-subtle;
       background-color: $gl-color-neutral-50;
     }
 

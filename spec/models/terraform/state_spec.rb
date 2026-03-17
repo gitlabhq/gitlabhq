@@ -130,7 +130,6 @@ RSpec.describe Terraform::State, feature_category: :infrastructure_as_code do
       let(:terraform_state) { create(:terraform_state) }
 
       before do
-        stub_feature_flags(skip_encrypting_terraform_state_file: true)
         allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
         stub_application_setting(terraform_state_encryption_enabled: false)
       end

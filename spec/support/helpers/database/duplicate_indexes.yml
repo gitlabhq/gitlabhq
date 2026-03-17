@@ -19,6 +19,9 @@ design_management_designs_versions:
 duo_workflows_workflows:
   index_duo_workflows_workflows_project_environment_created_at:
   - index_duo_workflows_workflows_on_project_id
+duo_workflows_workflows:
+  index_duo_workflows_on_user_id_and_updated_at:
+  - index_duo_workflows_workflows_on_user_id
 error_tracking_errors:
   index_et_errors_on_project_id_and_status_and_id:
   - index_error_tracking_errors_on_project_id
@@ -61,9 +64,6 @@ ml_model_versions:
 ml_models:
   index_ml_models_on_project_id_and_name:
   - index_ml_models_on_project_id
-namespaces:
-  index_namespaces_on_organization_id_and_id_for_groups:
-  - index_namespaces_on_organization_id_for_groups
 pages_domains:
   index_pages_domains_on_project_id_and_enabled_until:
   - index_pages_domains_on_project_id

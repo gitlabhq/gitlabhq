@@ -87,6 +87,14 @@ mapping:
   - source: '(?<prefix>ee/)?app/graphql/mutations/(?<rest>.+)\.rb'
     test: '%{prefix}spec/requests/api/graphql/mutations/%{rest}_spec.rb'
 
+  # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/22561
+  - source:
+      - '(ee/)?app/assets/javascripts/.+\.graphql'
+      - '(ee/)?app/graphql/queries/.+\.graphql'
+    test:
+      - 'spec/graphql/all_queries_spec.rb'
+      - 'ee/spec/graphql/all_queries_spec.rb'
+
   # EE/FOSS spec code should map to itself
   - source: '(?<rest>.+_spec\.rb)'
     test: '%{rest}'
@@ -114,7 +122,6 @@ mapping:
   # Whats New should map to its respective spec
   - source: 'data/whats_new/\w*\.yml'
     test: 'spec/lib/release_highlights/validator_spec.rb'
-
 
   - source: '(?<prefix>ee/)?app/models/.+\.rb'
     test: 'spec/models/every_model_spec.rb'
@@ -373,29 +380,29 @@ mapping:
   #
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1939569462
   - source:
-    - '(?<prefix>ee/)?lib/api/hooks/(?<rest>.+)\.rb'
-    - '(?<prefix>ee/)?lib/api/(?<rest>.+hook.+)\.rb'
+      - '(?<prefix>ee/)?lib/api/hooks/(?<rest>.+)\.rb'
+      - '(?<prefix>ee/)?lib/api/(?<rest>.+hook.+)\.rb'
     test:
       - '{ee/,}spec/requests/api/**/*hook*_spec.rb'
 
   # Registration/Onboarding
   - source:
-    - 'ee/app/(controllers|services)/registrations/.*'
-    - 'ee/app/presenters/ee/onboarding/status_presenter\.rb'
-    - 'app/presenters/onboarding/status_presenter\.rb'
-    - 'ee/app/models/onboarding/.*_registration\.rb'
-    - 'ee/app/models/onboarding/user_status\.rb'
+      - 'ee/app/(controllers|services)/registrations/.*'
+      - 'ee/app/presenters/ee/onboarding/status_presenter\.rb'
+      - 'app/presenters/onboarding/status_presenter\.rb'
+      - 'ee/app/models/onboarding/.*_registration\.rb'
+      - 'ee/app/models/onboarding/user_status\.rb'
     test:
-    - 'ee/spec/features/registrations/saas/*_spec.rb'
-    - ee/spec/features/registrations/email_opt_in_registration_spec.rb
-    - ee/spec/features/registrations/one_trust_spec.rb
+      - 'ee/spec/features/registrations/saas/*_spec.rb'
+      - ee/spec/features/registrations/email_opt_in_registration_spec.rb
+      - ee/spec/features/registrations/one_trust_spec.rb
 
   # ultimate trials
   - source: 'ee/app/controllers/gitlab_subscriptions/trials_controller\.rb'
     test:
-    - 'ee/spec/features/gitlab_subscriptions/trials/creation_*_spec.rb'
-    - ee/spec/features/gitlab_subscriptions/trials/access_denied_spec.rb
-    - ee/spec/features/trials/lead_creation_form_validation_spec.rb
+      - 'ee/spec/features/gitlab_subscriptions/trials/creation_*_spec.rb'
+      - ee/spec/features/gitlab_subscriptions/trials/access_denied_spec.rb
+      - ee/spec/features/trials/lead_creation_form_validation_spec.rb
 
   # duo pro trials
   - source: 'ee/app/controllers/gitlab_subscriptions/trials/duo_pro_controller\.rb'
@@ -407,10 +414,10 @@ mapping:
 
   # trial status widget
   - source:
-    - 'ee/app/presenters/gitlab_subscriptions/trials/status_widget_presenter\.rb'
+      - 'ee/app/presenters/gitlab_subscriptions/trials/status_widget_presenter\.rb'
     test:
-    - ee/spec/helpers/sidebars_helper_spec.rb
-    - ee/app/presenters/gitlab_subscriptions/trials/status_widget_presenter.rb
+      - ee/spec/helpers/sidebars_helper_spec.rb
+      - ee/app/presenters/gitlab_subscriptions/trials/status_widget_presenter.rb
 
   # Import/Export checks
   - source:
@@ -430,14 +437,14 @@ mapping:
 
   # Cells claims related specs
   - source:
-    - 'app/models/cells/transaction_record\.rb'
-    - 'app/models/cells/outstanding_lease\.rb'
-    - 'app/models/concerns/cells/claimable\.rb'
-    - 'config/initializers/active_record_connection_adapters_transaction\.rb'
-    - 'spec/support/shared_examples/cells/claims_shared_examples\.rb'
+      - 'app/models/cells/transaction_record\.rb'
+      - 'app/models/cells/outstanding_lease\.rb'
+      - 'app/models/concerns/cells/claimable\.rb'
+      - 'config/initializers/active_record_connection_adapters_transaction\.rb'
+      - 'spec/support/shared_examples/cells/claims_shared_examples\.rb'
     test: 'spec/cells/claims/**/*_spec.rb'
 
   # For individual models
   - source:
-    - 'app/models/(?<model>.+)\.rb'
+      - 'app/models/(?<model>.+)\.rb'
     test: 'spec/cells/claims/**/%{model}_spec.rb'

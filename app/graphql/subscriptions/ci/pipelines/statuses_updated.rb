@@ -14,23 +14,14 @@ module Subscriptions
         payload_type Types::Ci::PipelineType
 
         def authorized?(project_id:)
-          project = force(GitlabSchema.find_by_gid(project_id))
-
-          unauthorized! unless project
-          unauthorized! unless Ability.allowed?(current_user, :read_pipeline, project)
-
-          true
+          authorize_object_or_gid!(:read_pipeline, gid: project_id)
         end
 
         def update(project_id:)
           updated_pipeline = object
 
           return NO_UPDATE unless updated_pipeline
-
-          project = force(GitlabSchema.find_by_gid(project_id))
-
-          return NO_UPDATE unless project && updated_pipeline.project_id == project.id
-          return NO_UPDATE unless Ability.allowed?(current_user, :read_pipeline, updated_pipeline)
+          return NO_UPDATE unless updated_pipeline.project_id == project_id.model_id.to_i
 
           updated_pipeline
         end

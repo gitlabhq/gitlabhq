@@ -1,7 +1,7 @@
 ---
 stage: Developer Experience
 group: API Platform
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Backend GraphQL API guide
 ---
 
@@ -2256,9 +2256,12 @@ This class runs during the initial subscription request and subsequent updates. 
 
 You should implement the `#authorized?` method of the subscription class so that the initial subscription and subsequent updates are authorized.
 
-When a user is not authorized, you should call the `unauthorized!` helper so that execution is halted and the user is unsubscribed. Returning `false`
-results in redaction of the response, but we leak information that some updates are happening. This leakage is due to a
-[bug in the GraphQL gem](https://github.com/rmosolgo/graphql-ruby/issues/3390).
+When a user is not authorized, you should call the `unauthorized!` helper so that execution is halted and the user is unsubscribed.
+
+Use the `#authorize_object_or_gid!` helper for the typical case where we check permissions based on the Global ID or the object being subscribed to.
+For the initial subscription, the object will not be present, so this fetches the object using the given Global ID. But for subsequent updates, it uses the
+object we are returning to the user so that we do not fetch another instance of the same object. The `object` argument can also be used to specify
+the object to authorize.
 
 ### Triggering subscriptions
 
@@ -2280,6 +2283,13 @@ argument :my_arg, GraphQL::Types::String,
          required: true,
          description: "A description of the argument."
 ```
+
+### Do not use `loads:`
+
+Do not use the `loads:` option in argument definitions. It leaks information about resource existence by returning
+different errors for "not found" and "not authorized." Instead, accept the Global ID and load the object manually
+with `authorized_find!`. See [Do not use `loads:` in argument definitions](graphql_guide/authorization.md#do-not-use-loads-in-argument-definitions)
+for details and examples.
 
 ### Nullability
 
@@ -2615,7 +2625,6 @@ end
 
 - Become familiar with the methods in the `GraphqlHelpers` support module.
   Many of these methods make writing GraphQL tests easier.
-
 - Use traversal helpers like `GraphqlHelpers#graphql_data_at` and
   `GraphqlHelpers#graphql_dig_at` to access result fields. For example:
 
@@ -2660,6 +2669,17 @@ end
 
   # bad
   let(:query) { double('Query', schema: GitlabSchema) }
+  ```
+
+- Use `GraphqlHelpers#get_graphql_query_as_string` to test a query used by the frontend. For example:
+
+  ```ruby
+  let(:query) { get_graphql_query_as_string('work_items/graphql/project_work_items.query.graphql') }
+  let(:variables) { { 'fullPath' => project.full_path } }
+
+  ...
+
+  post_graphql(query, variables: variables)
   ```
 
 - Avoid false positives:

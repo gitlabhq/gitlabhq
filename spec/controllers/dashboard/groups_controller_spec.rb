@@ -8,6 +8,8 @@ RSpec.describe Dashboard::GroupsController do
   let_it_be(:user) { create(:user) }
   let_it_be(:current_organization) { user.organization }
 
+  render_views
+
   before do
     sign_in(user)
   end
@@ -70,5 +72,13 @@ RSpec.describe Dashboard::GroupsController do
     end
 
     it_behaves_like 'groups controller with active parameter'
+  end
+
+  it 'pushes groups_list_keyset_pagination feature flag' do
+    stub_feature_flags(groups_list_keyset_pagination: true)
+
+    get :index
+
+    expect(response.body).to have_pushed_frontend_feature_flags(groupsListKeysetPagination: true)
   end
 end

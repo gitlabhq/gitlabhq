@@ -167,10 +167,10 @@ describe('RegistrationDropdown', () => {
         positioningstrategy: 'absolute',
         size: 'small',
         textsronly: 'true',
-        toggleid: 'dropdown-toggle-btn-29',
         toggletext: 'Register an instance runner',
         variant: 'default',
       });
+      expect(findDropdown().attributes('toggleid')).toMatch(/^dropdown-toggle-btn-\d+$/);
     });
 
     describe('Instructions dropdown item', () => {
@@ -327,10 +327,10 @@ describe('RegistrationDropdown', () => {
           positioningstrategy: 'absolute',
           size: 'small',
           textsronly: 'true',
-          toggleid: 'dropdown-toggle-btn-83',
           toggletext: 'Register an instance runner',
           variant: 'default',
         });
+        expect(findDropdown().attributes('toggleid')).toMatch(/^dropdown-toggle-btn-\d+$/);
       });
 
       it.each`

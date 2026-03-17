@@ -1,0 +1,8 @@
+---
+name: create_ci_minute
+description: Grants the ability to create CI minutes
+boundaries:
+  - group
+  - user
+permissions:
+  - create_ci_minute

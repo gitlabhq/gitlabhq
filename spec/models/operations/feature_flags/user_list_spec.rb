@@ -14,9 +14,9 @@ RSpec.describe Operations::FeatureFlags::UserList do
     describe 'user_xids' do
       where(:valid_value) do
         ["", "sam", "1", "a", "uuid-of-some-kind", "sam,fred,tom,jane,joe,mike",
-         "gitlab@example.com", "123,4", "UPPER,Case,charActeRS", "0",
-         "$valid$email#2345#$%..{}+=-)?\\/@example.com", "spaces allowed",
-         "a" * 256, "a,#{'b' * 256},ccc", "many    spaces"]
+          "gitlab@example.com", "123,4", "UPPER,Case,charActeRS", "0",
+          "$valid$email#2345#$%..{}+=-)?\\/@example.com", "spaces allowed",
+          "a" * 256, "a,#{'b' * 256},ccc", "many    spaces"]
       end
       with_them do
         it 'is valid with a string of comma separated values' do
@@ -41,8 +41,8 @@ RSpec.describe Operations::FeatureFlags::UserList do
 
       where(:invalid_value) do
         [nil, "123\n456", "1,2,3,12\t3", "\n", "\n\r",
-         "joe\r,sam", "1,2,2", "1,,2", "1,2,,,,", "b" * 257, "1, ,2", "tim,    ,7", " ",
-         "    ", " ,1", "1,  ", " leading,1", "1,trailing  ", "1, both ,2"]
+          "joe\r,sam", "1,2,2", "1,,2", "1,2,,,,", "b" * 257, "1, ,2", "tim,    ,7", " ",
+          "    ", " ,1", "1,  ", " leading,1", "1,trailing  ", "1, both ,2"]
       end
       with_them do
         it 'is invalid' do

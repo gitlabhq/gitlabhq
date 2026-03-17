@@ -8,6 +8,7 @@ module AccessTokensActions
     before_action -> { check_permission(:destroy_resource_access_tokens) }, only: [:revoke]
     before_action -> { check_permission(:manage_resource_access_tokens) }, only: [:rotate]
     before_action -> { check_permission(:create_resource_access_tokens) }, only: [:create]
+    before_action :validate_scopes_presence, only: [:create]
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -41,7 +42,7 @@ module AccessTokensActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def revoke
-    @resource_access_token = finder.find(params[:id])
+    @resource_access_token = finder.find(revoke_params[:id])
     revoked_response = ResourceAccessTokens::RevokeService.new(current_user, resource, @resource_access_token).execute
 
     if revoked_response.success?
@@ -79,6 +80,13 @@ module AccessTokensActions
 
   private
 
+  def validate_scopes_presence
+    return if create_params[:scopes].present?
+
+    render json: { errors: [s_('AccessTokens|Select at least one scope.')] },
+      status: :unprocessable_entity
+  end
+
   def check_permission(action)
     render_404 unless can?(current_user, action, resource)
   end
@@ -88,6 +96,10 @@ module AccessTokensActions
   end
 
   def rotate_params
+    params.permit(:id)
+  end
+
+  def revoke_params
     params.permit(:id)
   end
 

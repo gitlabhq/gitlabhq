@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Customer relations management (CRM)
 description: Customer management, organizations, contacts, and permissions.
 ---
@@ -26,7 +26,7 @@ description: Customer management, organizations, contacts, and permissions.
 > [!note]
 > This feature is not under active development, but
 > [community contributions](https://about.gitlab.com/community/contribute/) are welcome.
-> To determine if the feature meets your needs, see the open issues in the [Managing and billing Clients Epic](https://gitlab.com/groups/gitlab-org/-/epics/5323).
+> To determine if the feature meets your needs, see the open issues in [epic 5323](https://gitlab.com/groups/gitlab-org/-/epics/5323).
 
 With customer relations management (CRM) you can create a record of contacts
 (individuals) and organizations (companies) and relate them to issues.
@@ -60,7 +60,7 @@ CRM features must also be enabled for the subgroup.
 
 To enable customer relations management in a group or subgroup:
 
-1. On the top bar, select **Search or go to** and find your group or subgroup.
+1. In the top bar, select **Search or go to** and find your group or subgroup.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Customer relations is enabled**.
@@ -81,7 +81,7 @@ unless they have a contact source configured.
 
 To configure the contact source for a group or subgroup:
 
-1. On the top bar, select **Search or go to** and find your group or subgroup.
+1. In the top bar, select **Search or go to** and find your group or subgroup.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Contact source** > **Search for a group**.
@@ -98,7 +98,7 @@ Prerequisites:
 
 To view a group's contacts:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
 
 ![Contacts list](crm_contacts_v14_10.png)
@@ -111,7 +111,7 @@ Prerequisites:
 
 To create a contact:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
 1. Select **New contact**.
 1. Complete all required fields.
@@ -128,7 +128,7 @@ Prerequisites:
 
 To edit an existing contact:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
 1. Next to the contact you wish to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Edit the required fields.
@@ -146,7 +146,7 @@ Each contact can be in one of two states:
 
 To change the state of a contact:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
 1. Next to the contact you wish to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Select or clear the **Active** checkbox.
@@ -162,7 +162,7 @@ Prerequisites:
 
 To view a group's organizations:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
 1. In the upper right, select **Organizations**.
 
@@ -176,7 +176,7 @@ Prerequisites:
 
 To create an organization:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
 1. In the upper right, select **Organizations**.
 1. Select **New organization**.
@@ -194,7 +194,7 @@ Prerequisites:
 
 To edit an existing organization:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
 1. In the upper right, select **Organizations**.
 1. Next to the organization you wish to edit, select **Edit** ({{< icon name="pencil" >}}).
@@ -217,7 +217,7 @@ Prerequisites:
 
 To view a contact's issues, select a contact from the issue sidebar, or:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
 1. Next to the contact whose issues you wish to view, select **View issues** ({{< icon name="issues" >}}).
 
@@ -229,7 +229,7 @@ Prerequisites:
 
 To view an organization's issues:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Customer relations**.
 1. In the upper right, select **Organizations**.
 1. Next to the organization whose issues you wish to view, select **View issues** ({{< icon name="issues" >}}).

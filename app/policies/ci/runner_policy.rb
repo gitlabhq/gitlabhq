@@ -60,13 +60,13 @@ module Ci
     end
 
     with_score 20
-    condition(:maintainer_in_any_associated_projects) do
+    condition(:read_runners_in_any_associated_projects) do
       next true if maintainer_in_owner_scope?
 
-      # Check if runner is associated to any projects where user is a maintainer+
+      # Check if runner is associated to any projects where user has read_runners permission
       DeclarativePolicy.user_scope do
         @subject.projects.any? do |project|
-          can?(:maintainer_access, project)
+          can?(:read_runners, project)
         end
       end
     end
@@ -78,9 +78,9 @@ module Ci
     end
 
     with_score 20
-    condition(:maintainer_in_any_associated_groups) do
+    condition(:read_runners_in_any_associated_groups) do
       @subject.groups.any? do |group|
-        can?(:maintainer_access, group)
+        can?(:read_runners, group)
       end
     end
 
@@ -107,7 +107,7 @@ module Ci
 
     # doc/ci/runners/runners_scope.md#view-group-runners
     # doc/user/permissions.md#cicd-group-permissions
-    rule { is_group_runner & maintainer_in_any_associated_groups }.policy do
+    rule { is_group_runner & read_runners_in_any_associated_groups }.policy do
       enable :read_builds
       enable :read_runner
     end
@@ -118,12 +118,22 @@ module Ci
 
     # doc/ci/runners/runners_scope.md#project-runners
     # doc/user/permissions.md#cicd
-    rule { is_project_runner & maintainer_in_any_associated_projects }.policy do
+    rule { is_project_runner & read_runners_in_any_associated_projects }.policy do
       enable :read_runner
     end
 
     rule { is_project_runner & maintainer_in_owner_scope }.policy do
       enable :update_runner
+    end
+
+    # Admins or users with a custom admin role that grants the ability to read CI/CD
+    condition(:can_read_admin_cicd, scope: :user) do
+      can?(:read_admin_cicd, :global)
+    end
+
+    rule { can_read_admin_cicd }.policy do
+      enable :read_runner
+      enable :read_builds
     end
 
     # NOTE: The `is_project_runner & belongs_to_multiple_projects & ` part is an optimization to avoid the

@@ -34,6 +34,76 @@ RSpec.describe Integrations::ExecuteWorker, '#perform', feature_category: :integ
     worker.perform(integration.id, {})
   end
 
+  context 'when integration filters are configured' do
+    let(:data) { { object_kind: 'push' } }
+    let(:scoped_filter) do
+      {
+        'rules' => [
+          { 'field' => 'object_kind', 'operator' => 'eq', 'value' => 'push' }
+        ]
+      }
+    end
+
+    it 'executes when there are no filters' do
+      expect(Gitlab::FilterEvaluator).not_to receive(:evaluate)
+
+      expect_next_found_instance_of(integration.class) do |integration|
+        allow(integration).to receive(:filter).and_return({})
+        expect(integration).to receive(:execute).with(hash_including('object_kind' => 'push'))
+      end
+
+      worker.perform(integration.id, data)
+    end
+
+    it 'executes when a scoped filter matches' do
+      expect(Gitlab::FilterEvaluator).to receive(:evaluate).with(scoped_filter, kind_of(Hash)).and_return(true)
+
+      expect_next_found_instance_of(integration.class) do |integration|
+        allow(integration).to receive(:filter).and_return({ 'push' => scoped_filter, 'global' => { 'rules' => [] } })
+        expect(integration).to receive(:execute).with(hash_including('object_kind' => 'push'))
+      end
+
+      worker.perform(integration.id, data)
+    end
+
+    it 'executes when only a non-matching scoped filter exists' do
+      expect(Gitlab::FilterEvaluator).not_to receive(:evaluate)
+
+      expect_next_found_instance_of(integration.class) do |integration|
+        allow(integration).to receive(:filter).and_return({ 'merge_request' => scoped_filter })
+        expect(integration).to receive(:execute).with(hash_including('object_kind' => 'push'))
+      end
+
+      worker.perform(integration.id, data)
+    end
+
+    it 'skips execution when a global filter does not match' do
+      global_filter = { 'rules' => [{ 'field' => 'object_kind', 'operator' => 'eq', 'value' => 'merge_request' }] }
+
+      expect(Gitlab::FilterEvaluator).to receive(:evaluate).with(global_filter, kind_of(Hash)).and_return(false)
+
+      expect_next_found_instance_of(integration.class) do |integration|
+        allow(integration).to receive(:filter).and_return({ 'global' => global_filter })
+        expect(integration).not_to receive(:execute)
+      end
+
+      worker.perform(integration.id, data)
+    end
+
+    it 'prefers scoped filter over global filter' do
+      global_filter = { 'rules' => [{ 'field' => 'object_kind', 'operator' => 'eq', 'value' => 'merge_request' }] }
+
+      expect(Gitlab::FilterEvaluator).to receive(:evaluate).with(scoped_filter, kind_of(Hash)).and_return(true)
+
+      expect_next_found_instance_of(integration.class) do |integration|
+        allow(integration).to receive(:filter).and_return({ 'push' => scoped_filter, 'global' => global_filter })
+        expect(integration).to receive(:execute).with(hash_including('object_kind' => 'push'))
+      end
+
+      worker.perform(integration.id, data)
+    end
+  end
+
   context 'when integration cannot be found' do
     it 'completes silently and does not log an error' do
       expect(Gitlab::IntegrationsLogger).not_to receive(:error)

@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Seat Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Manage users and seats associated with your GitLab subscription.
 title: Manage users and seats
 ---
@@ -15,32 +15,26 @@ title: Manage users and seats
 
 ## Billable users
 
-Billable users are users with access to a namespace in a subscription, such as direct [members](../user/project/members/_index.md#membership-types),
-inherited members, and invited users, with one of the following roles:
+Billable users are users who occupy seats in a subscription and count toward the number of seats purchased in your subscription.
 
-- Guest (billable on Premium, non-billable on Free and Ultimate)
-- Planner
-- Reporter
-- Developer
-- Maintainer
-- Owner
+The following users count as billable:
 
-On GitLab Self-Managed on the Premium tier, users who don't have access to a namespace are also billable.
+- Users with access to a namespace or top-level group in a subscription, such as direct [members](../user/project/members/_index.md#membership-types), inherited members, and invited users with one of these roles:
+  - Guest (billable on Premium, non-billable on Free and Ultimate)
+  - Planner
+  - Reporter
+  - Developer
+  - Maintainer
+  - Owner
+  - [Custom role](../user/custom_roles/_index.md), except custom Guest member role with only the `read_code` permission
+- [Auditor users](../administration/auditor_users.md)
+- Administrators (on GitLab Self-Managed on the Premium and Ultimate tiers)
+- Users without namespace access (on GitLab Self-Managed on the Premium tier)
 
-Billable users count toward the number of seats purchased in your subscription.
-The number of billable users changes when you block, deactivate, or add
-users to your instance or group during your current subscription period.
+The number of billable users changes when you block, deactivate, or add users to your instance or group during your current subscription period.
 If a user is in multiple groups or projects that belong to the same top-level group that holds the subscription, they are counted only once.
 
 Seat usage is reviewed [quarterly or annually](quarterly_reconciliation.md).
-On GitLab Self-Managed, the amount of **Billable users** is reported once a day in the **Admin** area.
-
-On GitLab.com, subscription features apply only within the top-level group the subscription applies to. If
-a user views or selects a different top-level group (one they have created themselves, for example)
-and that group does not have a paid subscription, the user does not see any of the paid features.
-
-A user can belong to two different top-level groups with different subscriptions.
-In this case, the user sees only the features available to that subscription.
 
 To prevent unexpectedly adding new billable users, which may result in overage fees, you should:
 
@@ -114,7 +108,7 @@ The user must not be assigned any other role, anywhere in the instance for GitLa
 On GitLab Self-Managed in the **Premium** tier, if a Guest user has a higher role in any project or group (including their personal namespace),
 when you upgrade to the **Ultimate** tier that higher role takes precedence and they will consume a seat.
 To ensure that Guest users on GitLab Self-Managed Ultimate will not consume a seat,
-confirm that they have no other role assignments in the instance or namespace before upgrading. 
+confirm that they have no other role assignments in the instance or namespace before upgrading.
 
 - If your project is:
   - Private or internal, a user with the Guest role has [a set of permissions](../user/permissions.md#project-permissions).
@@ -193,63 +187,8 @@ This number remains the same throughout your subscription period unless you purc
 
 The number of maximum users reflects the highest number of billable users on your system for the current license period.
 
-You can view and export your [license usage](../administration/license_usage.md).
-
-### View users
-
-Prerequisites:
-
-- Administrator access.
-
-View the lists of users in your instance:
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Users**.
-
-Select a user to view their account information.
-
-#### Check daily and historical billable users
-
-Prerequisites:
-
-- You must be an administrator.
-
-You can get a list of daily and historical billable users in your GitLab instance:
-
-1. [Start a Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Count the number of users in the instance:
-
-   ```ruby
-   User.billable.count
-   ```
-
-1. Get the historical maximum number of users on the instance from the past year:
-
-   ```ruby
-   ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
-   ```
-
-#### Update daily and historical billable users
-
-Prerequisites:
-
-- You must be an administrator.
-
-You can trigger a manual update of the daily and historical billable users in your GitLab instance.
-
-1. [Start a Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Force an update of the daily billable users:
-
-   ```ruby
-   identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
-   ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
-   ```
-
-1. Force an update of the historical max billable users:
-
-   ```ruby
-   ::HistoricalDataWorker.new.perform
-   ```
+You can view and manage your [billable users](../administration/moderate_users.md#billable-users)
+and [license usage](../administration/license_usage.md).
 
 ### Manage users and subscription seats
 
@@ -433,7 +372,7 @@ executive dashboards to drive organizational visibility.
 For more information about Enterprise Agile Planning seats and how to purchase them,
 contact your [GitLab sales representative](https://customers.gitlab.com/contact_us).
 
-### Using Enterprise Agile Planning seats 
+### Using Enterprise Agile Planning seats
 
 A user occupies an Enterprise Agile Planning seat if:
 

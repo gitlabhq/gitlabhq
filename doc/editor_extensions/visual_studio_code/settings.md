@@ -1,12 +1,12 @@
 ---
 stage: AI-powered
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Settings and commands in the GitLab Workflow extension for VS Code.
-title: GitLab Workflow extension settings and commands
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Settings and commands in the GitLab for VS Code extension.
+title: GitLab for VS Code extension settings and commands
 ---
 
-The GitLab Workflow extension for VS Code integrates with the VS Code Command Palette, extends existing
+The GitLab for VS Code extension integrates with the VS Code Command Palette, extends existing
 VS Code integrations with Git, and provides configuration options.
 
 ## Command Palette commands
@@ -17,7 +17,7 @@ This extension provides several sets of commands that you can trigger in the
 ### Manage projects and code
 
 - `GitLab: Authenticate`
-- [`GitLab: Compare Current Branch with Default Branch`](_index.md#compare-with-default-branch):
+- [`GitLab: Compare Current Branch with Default Branch`](projects.md#compare-with-default-branch):
   Compare your branch with the repository's default branch and view changes on GitLab.
 - `GitLab: Open Current Project on GitLab`
 - [`GitLab: Open Remote Repository`](remote_urls.md): Browse a remote GitLab repository.
@@ -27,15 +27,15 @@ This extension provides several sets of commands that you can trigger in the
 
 ### Manage issues and merge requests
 
-- [`GitLab: Advanced Search (Issues, Merge Requests, Commits, Comments...)`](_index.md#search-issues-and-merge-requests)
+- [`GitLab: Advanced Search (Issues, Merge Requests, Commits, Comments...)`](projects.md#search-issues-and-merge-requests)
 - `GitLab: Copy Link to Active File on GitLab`
 - `GitLab: Create New Issue on Current Project`
 - `GitLab: Create New Merge Request on Current Project`: Open the merge request page to create a merge request.
-- [`GitLab: Open Active File on GitLab`](_index.md#open-current-file-in-gitlab-ui): View active file
+- [`GitLab: Open Active File on GitLab`](projects.md#open-current-file-in-gitlab-ui): View active file
   on GitLab with highlighting active line number and selected text block.
 - `GitLab: Open Merge Request for Current Branch`
-- [`GitLab: Search Project Issues (Supports Filters)`](_index.md#search-issues-and-merge-requests).
-- [`GitLab: Search Project Merge Requests (Supports Filters)`](_index.md#search-issues-and-merge-requests).
+- [`GitLab: Search Project Issues (Supports Filters)`](projects.md#search-issues-and-merge-requests).
+- [`GitLab: Search Project Merge Requests (Supports Filters)`](projects.md#search-issues-and-merge-requests).
 - `GitLab: Show Issues Assigned to Me`: Open issues assigned to you on GitLab.
 - `GitLab: Show Merge Requests Assigned to Me`: Open merge requests assigned to you on GitLab.
 
@@ -57,17 +57,17 @@ This extension provides several sets of commands that you can trigger in the
 
 - `GitLab: Apply Snippet Patch`
 - `GitLab: Clone Wiki`
-- [`GitLab: Create Snippet`](_index.md#create-a-snippet): Create a public, internal, or private snippet
+- [`GitLab: Create Snippet`](projects.md#create-a-snippet): Create a public, internal, or private snippet
   from an entire file or selection.
-- [`GitLab: Create Snippet Patch`](_index.md#create-a-patch-file): Create a `.patch` file from the entire file, or a selection.
-- [`GitLab: Insert Snippet`](_index.md#insert-a-snippet): Insert a single-file or multi-file project snippet.
+- [`GitLab: Create Snippet Patch`](projects.md#create-a-patch-file): Create a `.patch` file from the entire file, or a selection.
+- [`GitLab: Insert Snippet`](projects.md#insert-a-snippet): Insert a single-file or multi-file project snippet.
 - `GitLab: Publish Workspace to GitLab`
 - `GitLab: Refresh Sidebar`
 - `GitLab: Show Extension Logs`
 - `GitLab: View Security Finding Details`
-- `GitLab Workflow: Focus on For current branch View`
-- `GitLab Workflow: Focus on Issues and Merge Requests View`
-- `GitLab: Diagnostics`: Open a detailed settings page for the GitLab Workflow extension.
+- `GitLab: Focus on For current branch View`
+- `GitLab: Focus on Issues and Merge Requests View`
+- `GitLab: Diagnostics`: Open a detailed settings page for the GitLab for VS Code extension.
 
 ## Command integrations
 
@@ -110,8 +110,3 @@ The `duoFeaturesEnabledForProject` setting is unavailable if:
 - The project is not set up in the extension.
 - The project is on a different GitLab instance than your current account.
 - The file or folder you are working with isn't part of any GitLab project you have access to.
-
-## Related topics
-
-- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/_index.md)
-- [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/_index.md)

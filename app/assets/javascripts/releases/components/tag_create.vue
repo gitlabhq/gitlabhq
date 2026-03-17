@@ -2,7 +2,7 @@
 import { GlButton, GlFormGroup, GlFormInput, GlFormTextarea } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { __, s__ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 

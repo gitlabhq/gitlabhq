@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import { debounce } from 'lodash';
 import axios from './lib/utils/axios_utils';
 
@@ -23,8 +22,7 @@ export default class FilterableList {
 
   getPagePath() {
     const action = this.filterForm.getAttribute('action');
-    // eslint-disable-next-line no-jquery/no-serialize
-    const params = $(this.filterForm).serialize();
+    const params = new URLSearchParams(new FormData(this.filterForm)).toString();
     return `${action}${action.indexOf('?') > 0 ? '&' : '?'}${params}`;
   }
 
@@ -37,9 +35,10 @@ export default class FilterableList {
   }
 
   onFilterInput() {
-    const $form = $(this.filterForm);
     const queryData = {};
-    const filterGroupsParam = $form.find(`[name="${this.filterInputField}"]`).val();
+    const filterGroupsParam = this.filterForm.querySelector(
+      `[name="${this.filterInputField}"]`,
+    )?.value;
 
     if (filterGroupsParam) {
       queryData[this.filterInputField] = filterGroupsParam;
@@ -65,7 +64,7 @@ export default class FilterableList {
       return false;
     }
 
-    $(this.listHolderElement).addClass('gl-opacity-5');
+    this.listHolderElement.classList.add('gl-opacity-5');
 
     this.isBusy = true;
 
@@ -100,6 +99,6 @@ export default class FilterableList {
 
   onFilterComplete() {
     this.isBusy = false;
-    $(this.listHolderElement).removeClass('gl-opacity-5');
+    this.listHolderElement.classList.remove('gl-opacity-5');
   }
 }

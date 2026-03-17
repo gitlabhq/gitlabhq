@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting the GitLab container registry
 description: Tips for troubleshooting common errors with the GitLab container registry.
 ---
@@ -91,7 +91,7 @@ The following procedure uses these sample project names:
    There may be a delay while the images are queued and deleted.
 1. Change the path or transfer the project:
 
-   1. On the top bar, select **Search or go to** and find your project.
+   1. In the top bar, select **Search or go to** and find your project.
    1. Select **Settings** > **General**.
    1. Expand the **Advanced** section.
    1. In the **Change path** text box, edit the path.

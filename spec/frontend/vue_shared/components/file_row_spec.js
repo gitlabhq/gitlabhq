@@ -200,6 +200,22 @@ describe('File row component', () => {
     });
   });
 
+  describe('Skeleton loader', () => {
+    it('renders skeleton loader when file.isSkeleton is true', () => {
+      createComponent({ file: { isSkeleton: true, level: 0 }, level: 0 });
+
+      const container = findFileRowContainer();
+      expect(container.exists()).toBe(true);
+      expect(container.find('.gl-animate-skeleton-loader').exists()).toBe(true);
+    });
+
+    it('does not render file row content when file.isSkeleton is true', () => {
+      createComponent({ file: { isSkeleton: true, level: 0 }, level: 0 });
+
+      expect(findFileButton().exists()).toBe(false);
+    });
+  });
+
   describe('rovingTabindex prop', () => {
     it('sets tabindex to 0 by default', () => {
       createComponent({

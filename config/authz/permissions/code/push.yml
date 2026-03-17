@@ -1,5 +1,3 @@
 ---
 name: push_code
 description: Grants the ability to push code to a repository
-boundaries:
-  - project

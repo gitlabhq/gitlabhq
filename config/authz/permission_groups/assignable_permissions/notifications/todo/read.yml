@@ -1,0 +1,7 @@
+---
+name: read_todo
+description: Grants the ability to read todos
+boundaries:
+  - user
+permissions:
+  - read_todo

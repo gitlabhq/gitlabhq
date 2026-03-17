@@ -49,7 +49,8 @@ RSpec.describe Projects::MergeRequests::ContentController, feature_category: :co
       it 'checks whether the MR can be merged' do
         controller.instance_variable_set(:@merge_request, merge_request)
 
-        expect(merge_request).to receive(:check_mergeability)
+        # Auto strategies and mergeable? method calls
+        expect(merge_request).to receive(:check_mergeability).twice
 
         do_request(:widget)
 

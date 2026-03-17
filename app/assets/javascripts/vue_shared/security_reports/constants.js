@@ -1,4 +1,4 @@
-import { invert } from 'lodash';
+import { invert } from 'lodash-es';
 
 export const FEEDBACK_TYPE_DISMISSAL = 'dismissal';
 export const FEEDBACK_TYPE_ISSUE = 'issue';

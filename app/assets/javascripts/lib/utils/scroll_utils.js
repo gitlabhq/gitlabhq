@@ -136,3 +136,65 @@ export const preventScrollToFragment = (event) => {
   window.location.hash = hash;
   scrollTo({ top: scrollTop, left: scrollLeft }, target);
 };
+
+/**
+ * Resolves the scrolling container for a list of section items.
+ *
+ * Strategy:
+ * - Find the first existing section element by id from the provided items.
+ * - Use `getScrollingElement(target)` to determine the appropriate scrollable container,
+ *   which may be a panel container or `document.scrollingElement` depending on context.
+ *
+ * @param {Array<{id: string}>} [items=[]] List of navigation items with element ids.
+ * @returns {HTMLElement|null} The scrolling container element or null if no target element is found.
+ */
+export const resolveScrollContainer = (items = []) => {
+  const target = items.map((i) => document.getElementById(i.id)).find(Boolean);
+  if (!target) return null;
+  return getScrollingElement(target) || null;
+};
+
+/**
+ * Determines the active section based on the current scroll position within a container.
+ *
+ * Strategy:
+ * - If scrolled to bottom: return the last item id.
+ * - Otherwise: iterate items in order and return the first section whose top edge has not yet
+ *   scrolled above the container's top edge (rect.top >= cRect.top + 1).
+ * - Fallback: return null if all sections are above the viewport.
+ *
+ * @param {Array<{id: string}>} [items=[]] List of sections in visual order.
+ * @param {HTMLElement} container The scrolling container being observed.
+ * @returns {string|null} The id of the active section or null if no change is needed.
+ */
+export const computeActiveSection = (items = [], container) => {
+  if (!items.length || !container) return null;
+
+  const cRect = container.getBoundingClientRect
+    ? container.getBoundingClientRect()
+    : { top: 0, bottom: window.innerHeight || 0 };
+
+  const hasScrollMetrics =
+    typeof container.scrollTop === 'number' &&
+    typeof container.clientHeight === 'number' &&
+    typeof container.scrollHeight === 'number';
+
+  if (hasScrollMetrics) {
+    const atBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 1;
+    if (atBottom) {
+      return items[items.length - 1]?.id || null;
+    }
+  }
+
+  for (const item of items) {
+    const el = document.getElementById(item.id);
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      if (rect.top >= cRect.top + 1) {
+        return item.id;
+      }
+    }
+  }
+
+  return null;
+};

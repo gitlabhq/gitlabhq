@@ -24,9 +24,11 @@ module WorkItems
         web_url: { namespace: :route, project: [:project_namespace, {
           namespace: [:route, :namespace_settings_with_ancestors_inherited_settings]
         }] },
+        features: { work_item_type: :enabled_widget_definitions },
         widgets: { work_item_type: :enabled_widget_definitions },
         work_item_type: :work_item_type
       }.merge!(widget_preloads)
+       .merge!(feature_preloads)
     end
 
     def widget_preloads
@@ -48,6 +50,26 @@ module WorkItems
       }
     end
 
+    def feature_preloads
+      {
+        [:features, :assignees, :assignees] => :assignees_by_name_and_id,
+        [:features, :award_emoji, :award_emoji] => { award_emoji: :awardable },
+        [:features, :description, :last_edited_by] => :last_edited_by,
+        [:features, :development, :closing_merge_requests] => {
+          merge_requests_closing_issues: { merge_request: [:target_project, :author] }
+        },
+        [:features, :hierarchy, :children] => {
+          work_item_children_by_relative_position: [:author, { project: :project_feature }]
+        },
+        [:features, :hierarchy, :has_parent] => :work_item_parent,
+        [:features, :hierarchy, :parent] => :work_item_parent,
+        [:features, :milestone, :milestone] => { milestone: [:project, :group] },
+        [:features, :notifications, :subscribed] => [:assignees, :award_emoji, { notes: [:author, :award_emoji] }],
+        [:features, :participants, :participants] => WorkItem.participant_includes,
+        [:features, :start_and_due_date] => :dates_source
+      }
+    end
+
     def unconditional_includes
       [
         {
@@ -55,6 +77,7 @@ module WorkItems
         },
         :author,
         :work_item_type,
+        :namespace,
         *super
       ]
     end

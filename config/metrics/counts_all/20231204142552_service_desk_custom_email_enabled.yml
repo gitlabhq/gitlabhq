@@ -2,6 +2,8 @@
 key_path: counts.service_desk_custom_email_enabled
 description: "Number of projects that have Service Desk custom email enabled"
 product_group: project_management
+product_categories:
+- service_desk
 value_type: number
 status: active
 milestone: "16.7"

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Performance
 ---
 
@@ -364,7 +364,6 @@ Alternatively, you can opt to use Webpack instead. Follow these [instructions fo
   instantiation and dependency injection of classes and methods that live in
   modules outside of the entry point script. Just import, read the DOM,
   instantiate, and nothing else.
-
 - **`DOMContentLoaded` should not be used**:
   All GitLab JavaScript files are added with the `defer` attribute.
   According to the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-defer),
@@ -372,7 +371,6 @@ Alternatively, you can opt to use Webpack instead. Follow these [instructions fo
   been parsed, but before firing `DOMContentLoaded`". Because the document is already
   parsed, `DOMContentLoaded` is not needed to bootstrap applications because all
   the DOM nodes are already at our disposal.
-
 - **Supporting Module Placement**:
   - If a class or a module is _specific to a particular route_, try to locate
     it close to the entry point in which it is used. For instance, if
@@ -385,7 +383,6 @@ Alternatively, you can opt to use Webpack instead. Follow these [instructions fo
     both `pages/widget/show/index.js` and `pages/widget/run/index.js`, then
     place the module at `pages/widget/shared/my_widget.js` and import it with
     a relative path if possible (for example, `../shared/my_widget`).
-
 - **Enterprise Edition Caveats**:
   For GitLab Enterprise Edition, page-specific entry points override their
   Community Edition counterparts with the same name, so if

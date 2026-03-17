@@ -99,9 +99,24 @@ module ActiveJob
       end
     end
 
+    # Rails 7.2 introduced `enqueue_after_transaction_commit`, which defers
+    # job enqueuing until after the transaction commits. While this prevents
+    # jobs from running before the transaction is committed, it silently
+    # masks the problem instead of forcing developers to fix the root cause
+    # (e.g. using `after_commit` callbacks). We disable this behavior so that
+    # our `NoEnqueueingFromTransactions` guard can detect and raise errors in
+    # development and test environments, ensuring developers properly
+    # restructure their code.
+    module DisableEnqueueAfterTransactionCommit
+      def enqueue_after_transaction_commit?
+        false
+      end
+    end
+
     # This adapter is used in development & production environments.
     class SidekiqAdapter
       prepend NoEnqueueingFromTransactions
+      prepend DisableEnqueueAfterTransactionCommit
     end
 
     # This adapter is used in test environment.
@@ -110,6 +125,7 @@ module ActiveJob
     # even if we enqueue mailers from within a transaction.
     class TestAdapter
       prepend NoEnqueueingFromTransactions
+      prepend DisableEnqueueAfterTransactionCommit
     end
   end
 end

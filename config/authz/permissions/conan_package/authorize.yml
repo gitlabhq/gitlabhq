@@ -1,5 +1,3 @@
 ---
 name: authorize_conan_package
 description: Grants the ability to authorize Conan package file uploads
-boundaries:
-  - project

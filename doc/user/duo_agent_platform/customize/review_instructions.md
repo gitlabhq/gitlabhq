@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Coding
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Customize instructions for AI to use in merge request reviews.
 title: Customize review instructions for the Agent Platform
 ---
@@ -38,7 +38,7 @@ To configure custom merge request review instructions:
 
 1. In the root of your repository, create a `.gitlab/duo` directory if one doesn't already exist.
 1. In the `.gitlab/duo` directory, create a file named `mr-review-instructions.yaml`.
-1. Optional. Ask [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md)
+1. Optional. Ask [GitLab Duo Chat (agentic)](../../gitlab_duo_chat/agentic_chat.md)
    to analyze the codebase and documentation, and generate custom review instructions.
 
    Example prompt:
@@ -208,7 +208,7 @@ apply to Ruby files anywhere in the project structure, not just the root directo
 ## Use case examples
 
 <!-- 2025-11-12 Use case examples are maintained by DevRel, @dnsmichi
-Inspired by the reference in https://gitlab.com/gitlab-da/use-cases/ai/gitlab-duo-agent-platform/demo-environments/tanuki-iot-platform/-/blob/main/.gitlab/duo/mr-review-instructions.yaml?ref_type=heads
+Inspired by the reference in <https://gitlab.com/gitlab-da/use-cases/ai/gitlab-duo-agent-platform/demo-environments/tanuki-iot-platform/-/blob/main/.gitlab/duo/mr-review-instructions.yaml?ref_type=heads>
 -->
 
 {{< tabs >}}
@@ -712,4 +712,4 @@ For more custom review instructions use cases, see the following production exam
 ## Related topics
 
 - [GitLab Duo in merge requests](../../project/merge_requests/duo_in_merge_requests.md)
-- [Code Review Flow](../../duo_agent_platform/flows/foundational_flows/code_review.md)
+- [Code Review Flow](../flows/foundational_flows/code_review.md)

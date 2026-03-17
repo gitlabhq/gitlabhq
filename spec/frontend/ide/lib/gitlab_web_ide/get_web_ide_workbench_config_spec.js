@@ -16,6 +16,7 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
   const GITLAB_URL = 'https://gitlab.example.com';
   const DEFAULT_PARAMETERS = {
     extensionHostDomain: 'web-ide-example.net',
+    isSingleOriginFallbackEnabled: true,
     extensionHostDomainChanged: false,
     workbenchSecret: 'test-workbench-secret',
   };
@@ -101,20 +102,38 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
         pingWorkbench.mockRejectedValueOnce();
       });
 
-      it('return workbenchConfiguration based on gitlabUrl', async () => {
-        const result = await getWebIDEWorkbenchConfig(DEFAULT_PARAMETERS);
+      describe('when single origin fallback is enabled', () => {
+        it('return workbenchConfiguration based on gitlabUrl', async () => {
+          const result = await getWebIDEWorkbenchConfig({
+            ...DEFAULT_PARAMETERS,
+            isSingleOriginFallbackEnabled: true,
+          });
 
-        expect(pingWorkbench).toHaveBeenCalledWith({
-          el: document.body,
-          config: {
-            workbenchBaseUrl: `https://workbench-8add8b75fc742d5750d43812940476.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
-            gitlabUrl: 'https://gitlab.example.com',
-          },
+          expect(pingWorkbench).toHaveBeenCalledWith({
+            el: document.body,
+            config: {
+              workbenchBaseUrl: `https://workbench-8add8b75fc742d5750d43812940476.${DEFAULT_PARAMETERS.extensionHostDomain}/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
+              gitlabUrl: 'https://gitlab.example.com',
+            },
+          });
+          expect(getGitLabUrl).toHaveBeenCalledWith(TEST_GITLAB_WEB_IDE_PUBLIC_PATH);
+          expect(result).toEqual({
+            crossOriginExtensionHost: false,
+            workbenchBaseUrl: GITLAB_URL,
+          });
         });
-        expect(getGitLabUrl).toHaveBeenCalledWith(TEST_GITLAB_WEB_IDE_PUBLIC_PATH);
-        expect(result).toEqual({
-          crossOriginExtensionHost: false,
-          workbenchBaseUrl: GITLAB_URL,
+      });
+
+      describe('when single origin fallback is disabled', () => {
+        it('throws an error', async () => {
+          const result = getWebIDEWorkbenchConfig({
+            ...DEFAULT_PARAMETERS,
+            isSingleOriginFallbackEnabled: false,
+          });
+
+          await expect(result).rejects.toThrow(
+            'The Web IDE could not load because the extension host domain is unreachable.',
+          );
         });
       });
     });

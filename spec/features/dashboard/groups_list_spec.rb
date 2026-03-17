@@ -9,7 +9,7 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
   let_it_be(:user) { create(:user) }
   let_it_be(:current_organization) { user.organization }
 
-  let_it_be(:group) { create(:group, owners: [user]) }
+  let_it_be(:group) { create(:group, name: 'gitlab-org', owners: [user]) }
   let_it_be(:nested_group) { create(:group, :nested, owners: [user]) }
   let_it_be(:another_group) { create(:group) }
 

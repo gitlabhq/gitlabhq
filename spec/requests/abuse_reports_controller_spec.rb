@@ -146,6 +146,19 @@ RSpec.describe AbuseReportsController, feature_category: :insider_threat do
       end
     end
 
+    context 'when the message exceeds the allowable limit' do
+      let(:max_message_size) { ::AbuseReport::MAX_MESSAGE_SIZE }
+
+      it 'renders an error' do
+        post abuse_reports_path(abuse_report: attrs.merge(
+          message: "X" * (max_message_size + 1)
+        ))
+
+        expect(response).to render_template(:new)
+        expect(response.body).to include("Message is too long")
+      end
+    end
+
     context 'with invalid attributes' do
       before do
         attrs.delete(:user_id)

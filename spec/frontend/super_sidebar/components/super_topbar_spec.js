@@ -31,6 +31,7 @@ describe('SuperTopbar', () => {
   const findNextBadge = () => wrapper.findComponent(GlBadge);
   const findOrganizationSwitcher = () => wrapper.findComponent(OrganizationSwitcherStub);
   const findSearchButton = () => wrapper.findByTestId('super-topbar-search-button');
+  const findSmallSearchButton = () => wrapper.findByTestId('super-topbar-search-button-xs');
   const findSearchModal = () => wrapper.findComponent(SearchModal);
   const findUserCounts = () => wrapper.findComponent(UserCounts);
   const findUserMenu = () => wrapper.findComponent(UserMenu);
@@ -141,6 +142,18 @@ describe('SuperTopbar', () => {
 
       it('should render search button', () => {
         expect(findSearchButton().exists()).toBe(true);
+      });
+
+      it('should hide the full search button below sm breakpoint', () => {
+        expect(findSearchButton().classes()).toContain('!gl-hidden');
+        expect(findSearchButton().classes()).toContain('sm:!gl-flex');
+      });
+
+      it('should render a small search button for small screens', () => {
+        expect(findSmallSearchButton().exists()).toBe(true);
+        expect(findSmallSearchButton().classes()).toContain('sm:!gl-hidden');
+        expect(findSmallSearchButton().attributes('icon')).toBe('search');
+        expect(findSmallSearchButton().attributes('size')).toBe('small');
       });
 
       it('should render search modal', () => {

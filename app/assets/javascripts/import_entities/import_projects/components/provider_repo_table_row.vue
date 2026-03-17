@@ -281,7 +281,7 @@ export default {
       >
         <p>
           {{ personalNamespaceWarning }}
-          <help-page-link href="/user/import/mapping">{{ __('Learn more') }}</help-page-link
+          <help-page-link href="/user/import/mapping/_index">{{ __('Learn more') }}</help-page-link
           >.
         </p>
       </gl-modal>
@@ -293,7 +293,7 @@ export default {
           data-testid="memberships-warning"
         >
           {{ personalNamespaceWarning }}
-          <help-page-link href="/user/import/mapping">{{ __('Learn more') }}</help-page-link
+          <help-page-link href="/user/import/mapping/_index">{{ __('Learn more') }}</help-page-link
           >.
         </help-popover>
 

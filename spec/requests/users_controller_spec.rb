@@ -210,6 +210,16 @@ RSpec.describe UsersController, feature_category: :user_management do
           expect(response.media_type).to eq('application/json')
           expect(Gitlab::Json.parse(response.body)['count']).to eq(0)
         end
+
+        it 'hides events with a deleted target' do
+          user = create(:user, include_private_contributions: true)
+          create(:event, :for_issue, author: user, target: nil, target_id: non_existing_record_id)
+
+          get user_activity_url user.username, format: :json
+
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body)['html']).to be_blank
+        end
       end
 
       context 'when profile_tabs_vue feature flag is turned ON' do
@@ -263,6 +273,16 @@ RSpec.describe UsersController, feature_category: :user_management do
           expect(event).to include('created_at', 'author', 'action')
           expect(event['action']).to eq('private')
           expect(event).not_to include('ref', 'commit', 'target', 'resource_parent')
+        end
+
+        it 'hides events with a deleted target' do
+          user = create(:user, include_private_contributions: true)
+          create(:event, :for_issue, author: user, target: nil, target_id: non_existing_record_id)
+
+          get user_activity_url user.username, format: :json
+
+          expect(response.media_type).to eq('application/json')
+          expect(Gitlab::Json.parse(response.body).count).to eq(0)
         end
       end
 

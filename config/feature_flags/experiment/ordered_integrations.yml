@@ -1,0 +1,10 @@
+---
+name: ordered_integrations
+description: order integrations by popularity
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/584797
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/217732
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/585129
+milestone: '18.9'
+group: group::acquisition
+type: experiment
+default_enabled: false

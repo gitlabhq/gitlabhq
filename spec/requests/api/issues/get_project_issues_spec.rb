@@ -1000,20 +1000,6 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           participant_ids = json_response.map { |el| el['id'] }
           expect(participant_ids).to match_array([issue.author_id, note.author_id])
         end
-
-        context 'with remove_per_source_permission_from_participants disabled' do
-          before do
-            stub_feature_flags(remove_per_source_permission_from_participants: false)
-          end
-
-          it 'returns a limited list of participants', :aggregate_failures do
-            get api("/projects/#{project.id}/issues/#{issue.iid}/participants", create(:user))
-
-            expect(response).to have_gitlab_http_status(:ok)
-            participant_ids = json_response.map { |el| el['id'] }
-            expect(participant_ids).to match_array([issue.author_id])
-          end
-        end
       end
     end
   end

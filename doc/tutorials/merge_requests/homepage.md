@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: How the GitLab UI helps you track merge requests from creation to merging.
 title: 'Tutorial: Understand your merge requests on the Merge requests homepage'
 ---
@@ -129,7 +129,7 @@ The **Role** view groups merge requests you are an assignee or reviewer for:
 - **Your merge requests (Active)**
 - **Your merge requests (Inactive)**
 
-Merge requests in the **Active** lists count toward the total shown on the left sidebar.
+Merge requests in the **Active** lists count toward the total shown in the left sidebar.
 
 ## Understand the Workflow view
 
@@ -161,7 +161,7 @@ This review flow assumes:
 1. Reviewers use the [**Start a review**](../../user/project/merge_requests/reviews/_index.md#start-a-review) and
    [**Submit a review**](../../user/project/merge_requests/reviews/_index.md#submit-a-review) features.
 
-Merge requests in one of the **Active** statuses count toward the total shown on the left sidebar:
+Merge requests in one of the **Active** statuses count toward the total shown in the left sidebar:
 
 - Active statuses: **Returned to you**, **Review requested**, **Your merge requests**
 - Inactive statuses: **Waiting for assignee**, **Waiting for approvals**, **Approved by you**, **Approved by others**

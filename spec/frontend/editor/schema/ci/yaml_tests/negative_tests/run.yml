@@ -10,6 +10,12 @@ run_without_name:
   run:
     step: some reference
 
+run_with_nested_run_sequence:
+  run:
+    - run:
+      - name: my_step
+        func: namespace/function-name
+
 run_without_name_script:
   run:
     script: rspec
@@ -102,3 +108,22 @@ run_with_missing_oci_tag:
         oci:
           registry: registry.gitlab.com
           repository: my-project/image
+
+step_using_action:
+  run:
+    - name: github_action_step
+      action: mikefarah/yq@master
+      inputs:
+        cmd: yq .name some.yaml
+      env:
+        env1: value1
+
+step_with_both_step_and_func:
+  run:
+    - name: file_system_step
+      step: ./steps/my-step
+      func: github-actions/yq@master
+      inputs:
+        cmd: yq .name some.yaml
+      env:
+        env1: value1

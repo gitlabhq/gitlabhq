@@ -237,6 +237,24 @@ RSpec.describe Gitlab::Database::BackgroundOperation::Runner, feature_category: 
         end
       end
 
+      context 'when operation has a stale running job', :freeze_time do
+        before do
+          previous_job.update!(
+            status: 1,
+            started_at: (Gitlab::Database::BackgroundOperation::Job::STUCK_JOBS_TIMEOUT + 1.minute).ago,
+            finished_at: nil
+          )
+        end
+
+        it 'retries the stale job' do
+          expect(executor).to receive(:perform) do |job_record|
+            expect(job_record).to eq(previous_job)
+          end
+
+          expect { runner.run_operation_job(worker) }.not_to change { operation_jobs.count }
+        end
+      end
+
       context 'when the operation has batches to process and failed jobs' do
         before do
           worker.update!(max_cursor: [event3.id])

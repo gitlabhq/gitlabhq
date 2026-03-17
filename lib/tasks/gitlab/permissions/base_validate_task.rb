@@ -115,6 +115,38 @@ module Tasks
             subdirs.empty? && File.exist?("#{dir}_metadata.yml")
           end
         end
+
+        def implementation_guide_link(anchor: nil)
+          doc_url = Rails.application.routes.url_helpers.help_page_url(
+            'development/permissions/granular_access/rest_api_implementation_guide.md',
+            anchor: anchor
+          )
+          "Learn more: #{doc_url}"
+        end
+
+        def conventions_link(anchor: nil)
+          doc_url = Rails.application.routes.url_helpers.help_page_url(
+            'development/permissions/conventions.md',
+            anchor: anchor
+          )
+          "Learn more: #{doc_url}"
+        end
+
+        def permission_definitions_link(anchor: nil)
+          doc_url = Rails.application.routes.url_helpers.help_page_url(
+            'development/permissions/granular_access/permission_definitions.md',
+            anchor: anchor
+          )
+          "Learn more: #{doc_url}"
+        end
+
+        def assignable_permissions_link(anchor: nil)
+          doc_url = Rails.application.routes.url_helpers.help_page_url(
+            'development/permissions/granular_access/assignable_permissions.md',
+            anchor: anchor
+          )
+          "Learn more: #{doc_url}"
+        end
       end
     end
   end

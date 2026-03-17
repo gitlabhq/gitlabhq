@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Create a push mirror to passively receive changes from an upstream repository.
 title: Push mirroring
 ---
@@ -39,19 +39,19 @@ and pulling from, remote mirrors.
 ## Push mirror limits
 
 Each project can have a maximum of 10 enabled push mirrors.
-For more information, see [Maximum number of project push mirrors](../../../../administration/instance_limits.md#maximum-number-of-project-push-mirrors).
+For more information, see [maximum number of project push mirrors](../../../../administration/instance_limits.md#maximum-number-of-project-push-mirrors).
 
 ## Configure push mirroring
 
 To set up push mirroring for an existing project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Mirroring repositories**.
 1. Enter a repository URL.
 1. In the **Mirror direction** dropdown list, select **Push**.
 1. Select an **Authentication method**. For more information, see
-   [Authentication methods for mirrors](_index.md#authentication-methods-for-mirrors).
+   [authentication methods for mirrors](_index.md#authentication-methods-for-mirrors).
 1. Select **Only mirror protected branches**, if necessary.
 1. Select **Keep divergent refs**, if desired.
 1. To save the configuration, select **Mirror repository**.
@@ -135,9 +135,6 @@ these tools to create a deployment:
 
 - GitLab CI/CD pipelines.
 - The AWS CLI in the final job in `.gitlab-ci.yml` to deploy to CodeDeploy.
-
-> [!note]
-> GitLab-to-AWS-CodeCommit push mirroring cannot use SSH authentication until [GitLab issue 34014](https://gitlab.com/gitlab-org/gitlab/-/issues/34014) is resolved.
 
 To set up a mirror from GitLab to AWS CodeCommit:
 

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 description: Writing styles, markup, formatting, and other standards for GitLab Documentation.
 title: Documentation Style Guide
 ---
@@ -91,7 +91,7 @@ Also, keep the following guidance in mind:
 - Be consistent with [feature names](#feature-names) and how to interact with them.
 - Break up noun strings. For example, instead of **project integration custom settings**,
   use **custom settings for project integrations**.
-- Format [dates and times](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/date-time-terms)
+- Format [dates and times](#dates-and-times)
   consistently and for an international audience.
 - Use [illustrations](#illustrations), including screenshots, sparingly.
 - For [UI text](#ui-text), allow for up to 30% expansion and contraction in translation.
@@ -158,7 +158,8 @@ Term 1
 : Definition of Term 1
 
 Term 2
-: Definition of Term 2
+: Definition of Term 2 is much longer, but we can use
+  multiple lines.
 ```
 
 These lists render like this:
@@ -167,27 +168,24 @@ Term 1
 : Definition of Term 1
 
 Term 2
-: Definition of Term 2
+: Definition of Term 2 is much longer, but we can use
+  multiple lines.
 
 ### Shortcodes
 
-[Shortcodes](https://gohugo.io/content-management/shortcodes/) are snippets of template code that we can include in our Markdown content to display non-standard elements on a page, such as alert boxes or tabs.
+[Shortcodes](https://gohugo.io/content-management/shortcodes/) are snippets of template code
+that we can include in our Markdown content to display non-standard elements on a page,
+such as availability details or tabs.
 
 GitLab documentation uses the following shortcodes:
 
-- [Alert boxes](#alert-boxes)
-  - Note
-  - Warning
-  - Flag
-  - Disclaimer
-  - Details
 - [Availability details](availability_details.md)
+- [Collapsible panels](#collapsible-panels)
 - [Version history](availability_details.md#history)
 - [Icons](#gitlab-svg-icons)
 - [Tabs](#tabs)
 - [Cards](#cards)
 - [Maintained versions](#maintained-versions)
-- [Collapsible panels](#collapsible-panels)
 - [Guide](#guide)
 - [Feature tables](#feature-tables)
   - Yes
@@ -295,7 +293,7 @@ Feature names should be lowercase.
 
 However, in a few rare cases, features can be title case. These exceptions are:
 
-- Added as a proper name to [markdownlint](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint.yml),
+- Added as a proper name to [markdownlint](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.markdownlint-cli2.yaml),
   so they can be consistently applied across all documentation.
 - Added to the [word list](word_list.md).
 
@@ -424,6 +422,21 @@ If you use an acronym, spell it out on first use on a page. Do not spell it out 
 
 For numbers in text, spell out zero through nine and use numbers for 10 and greater. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/numbers).
 
+For numbers in the UI, see [Pajamas](https://design.gitlab.com/content/punctuation#numbers).
+
+### Dates and times
+
+Use the `month day, year` format for dates, and use `AM` and `PM` for times.
+For example:
+
+```plaintext
+January 3, 2026 at 10:30 AM
+```
+
+For additional details, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/date-time-terms).
+
+For dates and times in the UI, see [Pajamas](https://design.gitlab.com/content/date-and-time).
+
 ## Text
 
 - [Write in Markdown](#markdown).
@@ -465,6 +478,8 @@ Do not use HTML comments to hide documentation. For details see, [Delete instead
 ### Punctuation
 
 Follow these guidelines for punctuation.
+
+For punctuation in the UI, see [Pajamas](https://design.gitlab.com/content/punctuation).
 
 <!-- vale gitlab_base.Repetition = NO -->
 
@@ -676,7 +691,6 @@ Use lists to present information in a format that is easier to scan.
 
   For keywords and concepts, consider a [reference topic](../topic_types/reference.md) or
   [description list](#description-lists-in-markdown) for alternative formatting.
-
 - Avoid using list items to complete an introductory phrase. This format can be difficult to localize
   into languages that use different sentence structures.
   For example, use:
@@ -803,7 +817,6 @@ To create a guide, follow this example:
 1. Guide item with text.
 
    An item with text only.
-
 1. Guide item with alert.
 
    This is an item with an alert.
@@ -821,7 +834,6 @@ This code renders on the GitLab documentation site as:
 1. Guide item with text.
 
    An item with text only.
-
 1. Guide item with alert.
 
    An item with an alert.
@@ -882,8 +894,6 @@ To make tables easier to maintain:
 ### Options for large tables
 
 You can use [Hugo class attributes](https://gohugo.io/content-management/markdown-attributes/) to make a table condensed or expandable.
-To use a Hugo attribute with a table, you must [disable Markdown rules](../testing/markdownlint.md#disable-markdownlint-tests) `055` and `056`.
-Add a space between the Markdown comment and the top of the table so the table renders correctly.
 To avoid introducing linting errors in a table, test the table locally with all rules enabled.
 
 Hugo class attributes only render on the GitLab documentation site (`https://docs.gitlab.com`).
@@ -895,9 +905,6 @@ By default, wide tables that do not fit on the page are condensed. Long tables a
 the `condensed` class attribute to reduce the space the table takes up on a page.
 
 ```markdown
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
-
 | Parameter | Default      | Requirements |
 |-----------|--------------|--------------|
 | `param1`  | `true`       | A and B.     |
@@ -908,8 +915,6 @@ the `condensed` class attribute to reduce the space the table takes up on a page
 or
 
 ```markdown
-<!-- markdownlint-disable MD055 -->
-<!-- markdownlint-disable MD056 -->
 
 | Parameter | Default      | Requirements |
 |-----------|--------------|--------------|
@@ -1140,6 +1145,8 @@ to prevent failing pipelines.
 
 Follow these guidelines for link text.
 
+For writing link text in the UI, see [Pajamas](https://design.gitlab.com/patterns/contextual-help#link-text).
+
 #### Standard text
 
 Use text that follows one of these patterns:
@@ -1188,6 +1195,16 @@ When linking to an issue, include the issue number in the link. For example:
 - `For more information, see [issue 12345](link.md).`
 
 Do not use the pound sign (`issue #12345`).
+
+#### Links to APIs
+
+When linking to API documentation, use lowercase. For example:
+
+- `To import your GitHub repository, see the [import API](link.md).`
+
+Do not capitalize the first letter to match the page title. For example, do not use:
+
+- `To import your GitHub repository, see the [Import API](link.md).`
 
 ### Links to external documentation
 
@@ -1772,7 +1789,6 @@ To create accessible and maintainable diagrams, follow these guidelines:
   - Solid lines for direct relationships between elements.
   - Dotted lines for indirect relationship between elements.
   - Arrows for flow or direction in a process.
-
 - Shapes that represent the same element should have the same shape and size.
 - Add clear labels and brief descriptions to diagram elements.
 - For elements that have text, ensure adequate white space exists between the text and the
@@ -1796,7 +1812,7 @@ To create a diagram for GitLab documentation with Mermaid:
 1. Copy the content of the **Code** pane and paste it in the Markdown file, wrapped in a `mermaid` code block. For more
    details, see [GitLab Flavored Markdown for Mermaid](../../../user/markdown.md#mermaid).
 1. On the next line after declaring the type of diagram
-  (like `flowchart` or `sequenceDiagram`), add the following lines for accessibility:
+   (like `flowchart` or `sequenceDiagram`), add the following lines for accessibility:
 
    ```yaml
    accTitle: your diagram title here
@@ -1920,12 +1936,13 @@ Do not upload videos to the product repositories. [Add a link](#link-to-video) o
 ### Link to video
 
 To link to a video, include a YouTube icon so that readers can scan the page
-for videos before reading. Include the video's publication date after the link, to help identify
+for videos before reading. For the link text, follow the [general guidelines](#text-for-links).
+Include the video's publication date after the link, to help identify
 videos that might be out-of-date.
 
 ```markdown
 <i class="fa-youtube-play" aria-hidden="true"></i>
-For an overview, see [Video Title](https://link-to-video).
+For an overview, see [merge requests](https://link-to-video).
 <!-- Video published on YYYY-MM-DD -->
 ```
 
@@ -2216,29 +2233,20 @@ documentation site (`https://docs.gitlab.com`). In all other cases and in
 
 ## Glossary tooltip
 
-Use the `glossary-tooltip` shortcode to provide a short definition that appears as a tooltip on hover. For example:
+Use the shortcode for a glossary tooltip to provide a short definition that appears as a tooltip on
+hover. For example:
 
 ```markdown
-To do this thing, use {{</* glossary-tooltip text="my term" */>}}.
+To do this thing, use {{</* glossary-tooltip text="the term" */>}}.
 ```
 
-When the user hovers on `my term`, a tooltip is displayed.
+When the user hovers on {{< glossary-tooltip text="the term" >}}, a tooltip is displayed.
 
-If the user selects the tooltip, a related glossary page opens.
-
-### Create a glossary term
-
-A [`glossary.yaml` file](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/glossary-tooltips/glossary.yaml)
-exists in the `docs-gitlab-com` repo.
-
-- Add definitions to this file. Each definition should be short and not contain links.
-- If the term specified in the `text` field matches a value in `glossary.yaml`,
-  the definition is displayed on hover.
-- If no value matches, no definition or underline is displayed.
-  Values are case insensitive.
-- If a related glossary page is not specified, the tooltip is displayed but does not change when selected.
+If a glossary page is configured for the tooltip and the user selects the anchor text, a related glossary page opens.
 
 ### Usage guidance
+
+Use a glossary tooltip if the definition is a single, concise sentence, and try to use no more than 60 characters. For longer definitions, use a glossary page.
 
 Do not use more than five to ten tooltips on a page. Each tooltip slows down the reader. Be careful not to overload users with definitions.
 
@@ -2252,6 +2260,70 @@ Do not use glossary tooltips in these cases:
 - For common terms like repository, branch, or commit.
 - For every instance of a term.
 - As a replacement for acronyms. If you can spell out the acronym on first use, and it's an industry standard, do not use a glossary tooltip.
+
+### Create a glossary term
+
+Add glossary definitions to the
+[`glossary.yaml` file](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/data/en-us/glossary-tooltips/glossary.yaml)
+in the `docs-gitlab-com` repository. Each definition should be short and not contain links.
+
+Glossary terms are defined in the `terms` block with the following fields:
+
+`term_id`
+
+: Unique ID for the glossary term. To link to the glossary section, the `term_id` must match the
+  anchor on the glossary page for that term.
+
+`display_name`
+
+: Text that displays in the documentation. The `display_name` field is case insensitive. For
+  example, a `text` parameter in the shortcode of "attack surface" matches the term "Attack Surface"
+  in the `glossary.yaml` file.
+
+`glossary`
+
+: Optional. Link to the glossary definition for the term. If included, the `term_id` is
+  appended to the end of the `glossary_url`. For example,
+  `/user/application_security/terminology#attack-surface`.
+
+`short_description`
+
+: The text that appears when the user hovers over the tooltip.
+
+Example glossary term definition in `glossary.yaml` file:
+
+```yaml
+terms:
+  - term_id: attack-surface
+    display_name: Attack Surface
+    glossary: *security_glossary
+    short_description: The different places in an application that are vulnerable to attack
+```
+
+Glossaries are defined at the top of the `glossary.yaml` file.
+
+The first line consists of two unique IDs:
+
+1. Short name for the glossary.
+1. Longer identifier of the glossary. For glossary terms that link to this glossary their `glossary` field must match this value.
+
+`glossary_url`
+
+: Root URL of the glossary page that the term is defined in.
+
+Example glossary definition in `glossary.yaml` file:
+
+```yaml
+# Glossary files
+security: &security_glossary
+  glossary_url: "/user/application_security/terminology"
+```
+
+Combining these examples results in the following:
+
+- The phrase "Attack Surface" is shown in the documentation as a link.
+- When the user hovers over the link, the content of the `short_description` field is shown in a tooltip.
+- When the user selects the link, the glossary page opens at the anchor `attack-surface`.
 
 ## Plagiarism
 

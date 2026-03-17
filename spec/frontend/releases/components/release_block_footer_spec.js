@@ -1,6 +1,6 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { nextTick } from 'vue';
 import originalOneReleaseQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release.query.graphql.json';
 import { DATE_ONLY_FORMAT, localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';

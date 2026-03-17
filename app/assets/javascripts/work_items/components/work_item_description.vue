@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlForm, GlFormGroup, GlFormTextarea } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { generateDescriptionAction } from 'ee_else_ce/ai/editor_actions/generate_description';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -12,6 +12,7 @@ import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   findDescriptionWidget,
   newWorkItemId,
@@ -27,6 +28,7 @@ import {
   NEW_WORK_ITEM_IID,
   DEFAULT_DESCRIPTION_TEMPLATE_NAME,
   TRACKING_CATEGORY_SHOW,
+  VIEW_CONTEXT,
   CREATION_CONTEXT_LIST_ROUTE,
   ROUTES,
   WIDGET_TYPE_DESCRIPTION,
@@ -49,7 +51,10 @@ export default {
     WorkItemDescriptionRendered,
     WorkItemDescriptionTemplateListbox,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [glFeatureFlagsMixin(), Tracking.mixin()],
+  inject: {
+    viewContext: { default: VIEW_CONTEXT.fullScreen },
+  },
   props: {
     description: {
       type: String,
@@ -162,6 +167,7 @@ export default {
         return {
           fullPath: this.workItemFullPath,
           iid: this.workItemIid,
+          useWorkItemFeatures: this.useWorkItemFeaturesField,
         };
       },
       update(data) {
@@ -282,10 +288,16 @@ export default {
         category: TRACKING_CATEGORY_SHOW,
         label: 'item_description',
         property: `type_${this.workItemType}`,
+        extra: { viewContext: this.viewContext },
       };
     },
+    useWorkItemFeaturesField() {
+      return Boolean(this.glFeatures.workItemFeaturesField);
+    },
     workItemDescription() {
-      const descriptionWidget = findDescriptionWidget(this.workItem);
+      const descriptionWidget = this.useWorkItemFeaturesField
+        ? this.workItem?.features?.description
+        : findDescriptionWidget(this.workItem);
       return {
         ...descriptionWidget,
         description: descriptionWidget?.description || '',

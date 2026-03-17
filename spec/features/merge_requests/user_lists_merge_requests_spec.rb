@@ -107,7 +107,7 @@ RSpec.describe 'Merge requests > User lists merge requests', :js, feature_catego
   it 'filters on no assignee' do
     visit_merge_requests(project, assignee_id: 'None')
 
-    expect(page).to have_current_path(project_merge_requests_path(project), ignore_query: true)
+    expect(page).to have_current_path_ignoring_trailing_slash(project_merge_requests_path(project), ignore_query: true)
     expect(page).to have_content 'merge-test'
     expect(page).not_to have_content 'fix'
     expect(page).not_to have_content 'markdown'

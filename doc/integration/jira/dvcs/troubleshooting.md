@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting Jira DVCS connector
 ---
 
@@ -59,7 +59,6 @@ For more information about setting up Jira, see the Atlassian documentation and 
     also trust public certificate authorities.
   - If the integration stops working after upgrading Jira Java runtime, the
     `cacerts` Truststore may have been replaced during the upgrade.
-
 - Troubleshoot connectivity [up to and including TLS handshaking](https://confluence.atlassian.com/kb/unable-to-connect-to-ssl-services-due-to-pkix-path-building-failed-error-779355358.html),
   using the `SSLPoke` Java class.
 - Download the class from the Atlassian knowledge base to a directory on Jira Server, such as `/tmp`.
@@ -127,7 +126,7 @@ In the previous example, the merge requests feature is disabled.
 
 To resolve the issue, enable the relevant feature:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Use the toggles to enable the features as needed.
@@ -136,7 +135,7 @@ To resolve the issue, enable the relevant feature:
 
 To find webhook logs in a DVCS-linked project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Webhooks**.
 1. Scroll down to **Project hooks**.
 1. Next to the log that points to your Jira instance, select **Edit**.

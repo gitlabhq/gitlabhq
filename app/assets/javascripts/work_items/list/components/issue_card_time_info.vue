@@ -41,7 +41,11 @@ export default {
   },
   computed: {
     milestone() {
-      return this.issue.milestone || findMilestoneWidget(this.issue)?.milestone;
+      return (
+        this.issue.milestone ||
+        this.issue?.features?.milestone?.milestone ||
+        findMilestoneWidget(this.issue)?.milestone
+      );
     },
     dueDate() {
       return this.issue.dueDate || findStartAndDueDateWidget(this.issue)?.dueDate;

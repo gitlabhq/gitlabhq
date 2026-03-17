@@ -42,55 +42,7 @@ module JavaScriptFixturesHelpers
     project.repository.remove
   end
 
-  # Public: Reads a GraphQL query from the filesystem as a string
-  #
-  # query_path - file path to the GraphQL query, relative to `app/assets/javascripts`.
-  # ee - boolean, when true `query_path` will be looked up in `/ee`.
-  def get_graphql_query_as_string(query_path, ee: false, with_base_path: true, relative_url_root: nil)
-    base = (ee ? 'ee/' : '') + (with_base_path ? 'app/assets/javascripts' : '')
-    path = Rails.root / base / query_path
-    queries = Gitlab::Graphql::Queries.find(path)
-    if queries.length == 1
-      query = queries.first.text
-      query = inflate_query_with_typenames(query)
-
-      # If a relative_url_root is provided and a block is given,
-      # temporarily set the script_name so url helpers include the relative root
-      if relative_url_root && block_given?
-        original = Rails.application.routes.default_url_options[:script_name]
-        begin
-          Rails.application.routes.default_url_options[:script_name] = relative_url_root
-          yield(query)
-        ensure
-          Rails.application.routes.default_url_options[:script_name] = original
-        end
-      else
-        query
-      end
-    else
-      raise "Could not find query file at #{path}, please check your query_path"
-    end
-  end
-
   private
-
-  # Private: Parse a GraphQL query and inflate the fields with a __typename
-  #
-  # query - the GraqhQL query to parse
-  def inflate_query_with_typenames(query, doc: Graphlyte.parse(query))
-    typename_editor.edit(doc)
-
-    doc.to_s
-  end
-
-  def typename_editor
-    typename = Graphlyte::Syntax::Field.new(name: '__typename')
-
-    @editor ||= Graphlyte::Editor.new.on_field do |field|
-      is_typename = field.selection.respond_to?(:name) && field.selection.map(&:name).include?('__typename')
-      field.selection << typename unless field.selection.empty? || is_typename
-    end
-  end
 
   # Private: Store a response object as fixture file
   #

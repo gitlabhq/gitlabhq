@@ -33,7 +33,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
       within_testid('work-item-tree') do
         expect(page).not_to have_selector('[data-testid="add-tree-form"]')
 
-        click_button 'Add'
+        find_by_testid('add-tree-child-button').click
         click_button 'New task'
 
         expect(page).to have_selector('[data-testid="add-tree-form"]')
@@ -51,7 +51,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
         it 'adds an existing child task', :aggregate_failures do
           within_testid('work-item-tree') do
-            click_button 'Add'
+            find_by_testid('add-tree-child-button').click
             click_button 'Existing task'
 
             expect(page).to have_button('Add task', disabled: true)
@@ -95,7 +95,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
 
       it 'displays labels, milestone and assignee for work item children', :aggregate_failures do
         within_testid('work-item-tree') do
-          click_button 'Add'
+          find_by_testid('add-tree-child-button').click
           click_button 'Existing task'
 
           find_by_testid('work-item-token-select-input').set(task.title)

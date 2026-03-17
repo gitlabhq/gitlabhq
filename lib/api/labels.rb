@@ -34,8 +34,7 @@ module API
         optional :search, type: String,
           desc: 'Keyword to filter labels by. This feature was added in GitLab 13.6'
         optional :archived, type: Boolean,
-          desc: 'Filter by archived status. This feature is gated by the :labels_archive feature flag',
-          documentation: false
+          desc: 'Filter by archived status. This feature was added in GitLab 18.10'
 
         use :pagination
       end

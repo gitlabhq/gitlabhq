@@ -50,7 +50,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
     end
 
     it 'updates the merge ref' do
-      expect { subject }.to change(merge_request, :merge_ref_head).from(nil)
+      expect { subject }.to change { merge_request.merge_ref_head }.from(nil)
     end
 
     it 'returns ServiceResponse.success' do
@@ -331,7 +331,7 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
         end
 
         it 'does not change the merge status' do
-          expect { subject }.not_to change(merge_request, :merge_status).from('can_be_merged')
+          expect { subject }.not_to change { merge_request.merge_status }.from('can_be_merged')
         end
       end
 

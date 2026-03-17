@@ -1,5 +1,5 @@
 <script>
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { historyPushState, parseBoolean } from '~/lib/utils/common_utils';
 import { queryToObject, mergeUrlParams, removeParams } from '~/lib/utils/url_utility';

@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Roll back to earlier GitLab versions
 description: Roll back Linux package or Docker instances to earlier versions.
 ---
@@ -92,7 +92,6 @@ To roll back GitLab shortly after an upgrade:
 
 1. Follow the upgrade procedure, by [specifying an earlier version](../../install/docker/installation.md#find-the-gitlab-version-and-edition-to-use)
    than you have installed.
-
 1. Restore the [database backup you made](../../install/docker/backup.md#create-a-database-backup) before the upgrade.
 
    - [Follow the restore steps for Docker images](../../administration/backup_restore/restore_gitlab.md#restore-for-docker-image-and-gitlab-helm-chart-installations), including

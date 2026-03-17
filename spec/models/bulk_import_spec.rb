@@ -16,6 +16,7 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
     it { is_expected.to belong_to(:user).required }
     it { is_expected.to belong_to(:organization) }
     it { is_expected.to have_one(:configuration) }
+    it { is_expected.to have_one(:offline_configuration) }
     it { is_expected.to have_many(:entities) }
   end
 

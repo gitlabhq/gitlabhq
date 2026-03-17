@@ -1,6 +1,6 @@
 <script>
 import $ from 'jquery';
-import { GlAvatar, GlAvatarLink, GlButton, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlLink, GlSprintf } from '@gitlab/ui';
 import { loadCSSFile } from '~/lib/utils/css_utils';
 import SafeHtmlDirective from '~/vue_shared/directives/safe_html';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
@@ -11,7 +11,6 @@ export default {
   name: 'EditProfileUserAvatar',
   components: {
     GlAvatar,
-    GlAvatarLink,
     GlButton,
     GlLink,
     GlSprintf,
@@ -88,15 +87,13 @@ export default {
     </div>
     <div class="gl-flex">
       <div class="avatar-image">
-        <gl-avatar-link :href="avatarUrl" target="blank">
-          <gl-avatar
-            class="gl-mr-5"
-            :src="avatarUrl"
-            :size="96"
-            shape="circle"
-            :alt="s__(`Profiles|User's avatar`)"
-          />
-        </gl-avatar-link>
+        <gl-avatar
+          class="gl-mr-5"
+          :src="avatarUrl"
+          :size="96"
+          shape="circle"
+          :alt="s__(`Profiles|User's avatar`)"
+        />
       </div>
       <div class="gl-grow">
         <h5 class="gl-mt-0">

@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Composite identity
 ---
 
@@ -9,17 +9,16 @@ title: Composite identity
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554156) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `duo_workflow_use_composite_identity`.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
+- Composite identity automatically included in GitLab Duo Agent Platform and setting to turn composite identity on or off [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/588629) in GitLab 18.9.
 
 {{< /history >}}
-
-> [!flag]
-> The availability of this feature is controlled by a feature flag.
-> For more information, see the history.
 
 Composite identity is an authentication and authorization mechanism that combines two identities into a single token:
 
 - A service account. The machine user that performs the actual actions.
 - A human user. The person who initiated the request.
+
+Composite identity is automatically included in GitLab Duo Agent Platform.
 
 This dual-identity approach solves a critical challenge:
 agents need to act with access that does not exceed the access of the user who triggered them, or the access that the service account was granted,
@@ -49,19 +48,19 @@ Composite identity is used when flows and agents execute on runners. This list i
 - External agents.
 - Any flow started through the endpoint `api/v4/ai/duo_workflows/workflows`.
 
-Composite identity does not apply to GitLab Duo Chat (Agentic) in the UI and IDE.
+Composite identity does not apply to GitLab Duo Chat (agentic) in the UI and IDE.
 
 ## How composite identity works
 
 The token that authenticates requests is a composite of two identities:
 
-- Primary author: A [service account](../profile/service_accounts.md),
-  which is the owner of the token and has the Developer role.
-- Secondary author: The human user who started the agent or flow.
+- Primary author: The human user who started the agent or flow.
   The human user's `id` is included in the scopes of the token by using a [dynamic scope](https://github.com/doorkeeper-gem/doorkeeper/pull/1739).
+- Secondary author: A [service account](../profile/service_accounts.md),
+  which is the owner of the token and has the Developer role.
 
 This composite identity ensures that any activities authored by the GitLab Duo Agent Platform are
-correctly attributed to the service account, while preventing
+attributed to the human user, while preventing
 [privilege escalation](https://en.wikipedia.org/wiki/Privilege_escalation) by either the human user or the service account.
 
 ## Composite identity workflow
@@ -70,12 +69,8 @@ The composite identity is part of the workflow.
 
 1. Create a flow in the AI Catalog.
    - No composite identity-related changes occur.
-1. Enable the flow for the top-level group.
-   - You must be an Owner to enable it.
+1. Enable the flow for a project.
    - A service account is created in the top-level group. (The name is similar to `ai-flowname-groupname`.)
-1. Enable the flow for your project.
-   - The flow must be enabled in the top-level group.
-   - You must be a Maintainer to enable it in the project.
    - The service account is added to the project with the Developer role.
 1. A user executes the flow.
    - The flow is executed by a one-time composite identity.

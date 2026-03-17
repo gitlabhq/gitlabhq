@@ -5,8 +5,8 @@ class Issue::Email < ApplicationRecord
 
   belongs_to :issue
 
-  validates :email_message_id, uniqueness: true, presence: true, length: { maximum: 1000 }
-  validates :issue, presence: true, uniqueness: true
+  validates :email_message_id, uniqueness: { scope: :namespace_id }, presence: true, length: { maximum: 1000 }
+  validates :issue, presence: true, uniqueness: { scope: :namespace_id }
 
   def work_item
     return unless issue_id.present?

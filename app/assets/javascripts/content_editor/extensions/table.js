@@ -1,5 +1,5 @@
 import { Table } from '@tiptap/extension-table';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { VARIANT_WARNING } from '~/alert';
 import { __ } from '~/locale';
 import { ALERT_EVENT } from '../constants';

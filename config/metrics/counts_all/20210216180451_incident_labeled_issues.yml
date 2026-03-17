@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.incident_labeled_issues
 description: Count of all issues with the label=incident
 product_group: platform_insights
+product_categories:
+- incident_management
 value_type: number
 status: removed
 time_frame: all

@@ -18,6 +18,47 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
     it_behaves_like 'request_accessable'
   end
 
+  describe 'DELETE /groups/*group_id/-/group_members/leave' do
+    let_it_be(:group) { create(:group, :public) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when user is a direct member' do
+      before_all do
+        group.add_developer(user)
+      end
+
+      it 'removes the member and sub memberships', :aggregate_failures do
+        subgroup = create(:group, parent: group)
+        subgroup.add_developer(user)
+
+        expect do
+          delete leave_group_group_members_path(group_id: group)
+        end.to change { group.members.count }.by(-1)
+          .and change { subgroup.members.count }.by(-1)
+      end
+    end
+
+    context 'when user is a requester' do
+      before do
+        group.request_access(user)
+      end
+
+      it 'removes the access request without removing project memberships', :aggregate_failures do
+        project = create(:project, group: group)
+        project.add_developer(user)
+
+        expect do
+          delete leave_group_group_members_path(group_id: group)
+        end.to change { group.requesters.count }.by(-1)
+
+        expect(project.members.with_user(user)).to be_present
+      end
+    end
+  end
+
   describe 'GET /groups/*group_id/-/group_members/invite_search.json' do
     subject(:request) do
       get invite_search_group_group_members_path(membershipable, params: params, format: :json)
@@ -33,7 +74,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
     let_it_be(:external_user) { create(:user, :external) }
     let_it_be(:unconfirmed_user) { create(:user, confirmed_at: nil) }
     let_it_be(:omniauth_user) { create(:omniauth_user) }
-    let_it_be(:internal_user) { Users::Internal.alert_bot }
+    let_it_be(:internal_user) { Users::Internal.in_organization(membershipable.organization).alert_bot }
     let_it_be(:project_bot_user) { create(:user, :project_bot) }
     let_it_be(:service_account_user) { create(:user, :service_account) }
     let_it_be(:other_organization) { create(:organization) }

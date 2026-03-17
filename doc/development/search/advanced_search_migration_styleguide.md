@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Global Search
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Advanced search migration style guide
 ---
 
@@ -183,6 +183,17 @@ Returns a random delay between 0 and `Search::ElasticGroupAssociationDeletionWor
 #### `items_in_index`
 
 Returns an array of `id` that exist in the provided index name.
+
+### Choosing a backfill helper
+
+Use the following table to decide which helper to use when backfilling a field:
+
+| | `MigrationBackfillHelper` | `MigrationProjectScopedUpdateByQueryHelper` |
+|---|---|---|
+| **Mechanism** | Search for documents missing the field, build references, track them through the bookkeeping pipeline for re-indexing. | Search for projects with documents missing the field, issue async `update_by_query` tasks with a Painless script per project. |
+| **Best for** | Indices backed by an ActiveRecord model (`DOCUMENT_TYPE`) where the indexer populates the field on re-index. | Project-scoped indices (commits, blobs, wikis) where the field value is derived from the project/namespace and the index is populated by the Go-based indexer. |
+| **Batch limit** | 10,000 documents per search (Elasticsearch default). | Configurable `batch_size` per `update_by_query` task, multiple projects processed concurrently. |
+| **Concurrency** | Sequential. | Concurrent — up to `max_projects_to_process` projects at a time (tunable at runtime via migration state). |
 
 ### Migration helpers
 
@@ -572,6 +583,146 @@ include_examples 'migration reindexes all data' do
 end
 ```
 
+#### `Search::Elastic::MigrationProjectScopedUpdateByQueryHelper`
+
+Backfills a field on a project-scoped index (commits, blobs, wikis) using asynchronous
+`update_by_query` tasks grouped by project. Unlike `MigrationBackfillHelper`, which
+re-indexes documents through the bookkeeping pipeline, this helper updates documents
+in-place with a Painless script directly in Elasticsearch.
+
+> [!warning]
+> This helper is intended for indices that are populated by the Go-based indexer
+> (`gitlab-elasticsearch-indexer`) rather than the Rails bookkeeping pipeline
+> (`Elastic::ProcessBookkeepingService`). For indices backed by an ActiveRecord model,
+> use [`MigrationBackfillHelper`](#searchelasticmigrationbackfillhelper) or
+> [`MigrationReindexBasedOnSchemaVersion`](#searchelasticmigrationreindexbasedonschemaversion) instead.
+
+Requires three methods and supports one optional override:
+
+```ruby
+# Required:
+def index_name               # The Elasticsearch index to operate on
+def query_missing_field(exclude_project_ids = nil)  # ES query matching docs that need the update
+def update_script(project)   # Returns { source: "painless…", params: { … } }
+
+# Optional override (default: Project.includes(:namespace)):
+def project_relation
+```
+
+The number of projects processed concurrently defaults to 10 and can be
+increased at runtime without a code change by updating the migration state.
+
+Using a Rails console:
+
+```ruby
+migration = Elastic::DataMigrationService[20260216153009].send(:migration)
+migration.set_migration_state(migration.migration_state.merge(max_projects_to_process: 30))
+```
+
+Alternatively, you can update the migration state directly in Elasticsearch.
+Migration state is stored in the `#{target_name}-migrations` index
+(for example, `gitlab-production-migrations`). Each migration document is indexed
+by its version number, and the state is in the `state` field. Use the
+[Update API](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/docs-update.html)
+with the migration version as the document ID:
+
+```shell
+# Update max_projects_to_process for migration 20260216153009
+curl --request POST "localhost:9200/gitlab-production-migrations/_update/20260216153009" \
+  --header 'Content-Type: application/json' --data'
+{
+  "script": {
+    "source": "ctx._source.state.max_projects_to_process = params.value",
+    "params": { "value": 50 }
+  }
+}'
+```
+
+Example migration:
+
+```ruby
+class BackfillTraversalIdsOnCommits < Elastic::Migration
+  include ::Search::Elastic::MigrationProjectScopedUpdateByQueryHelper
+
+  batched!
+  batch_size 10_000
+  throttle_delay 5.seconds
+  retry_on_failure
+
+  def index_name
+    ::Elastic::Latest::CommitConfig.index_name
+  end
+
+  private
+
+  def query_missing_field(exclude_project_ids = nil)
+    {
+      bool: {
+        must_not: [{ exists: { field: 'traversal_ids' } }]
+      }
+    }.tap do |query|
+      query[:bool][:must_not] << { terms: { rid: exclude_project_ids } } if exclude_project_ids.present?
+    end
+  end
+
+  def update_script(project)
+    {
+      source: "ctx._source.traversal_ids = params.traversal_ids",
+      params: {
+        traversal_ids: project.elastic_namespace_ancestry
+      }
+    }
+  end
+end
+```
+
+You can test this migration with the
+`'migration backfills a field using project-scoped update_by_query'` shared examples.
+The consuming spec must define two methods inside the `it_behaves_like` block:
+
+- `index_documents_for_projects(projects)` — indexes documents for the given projects.
+- `remove_field_from_indexed_documents(project_ids)` — removes the target field
+  from indexed documents (project IDs are strings because `rid` is a keyword field).
+
+```ruby
+RSpec.describe BackfillTraversalIdsOnCommits, :elastic, :sidekiq_inline, feature_category: :global_search do
+  let(:version) { 20260216153009 }
+  let(:version_mapping_migration) { 20260216152309 }
+  let(:expected_batch_size) { 10_000 }
+  let(:expected_throttle_delay) { 5.seconds }
+
+  let_it_be_with_reload(:projects) { create_list(:project, 3, :repository) }
+
+  it_behaves_like 'migration backfills a field using project-scoped update_by_query' do
+    def index_documents_for_projects(projects)
+      projects.each { |p| p.repository.index_commits_and_blobs }
+    end
+
+    def remove_field_from_indexed_documents(project_ids)
+      client = Gitlab::Search::Client.new
+
+      client.update_by_query({
+        index: index_name,
+        wait_for_completion: true,
+        refresh: true,
+        body: {
+          script: {
+            source: "ctx._source.remove('traversal_ids');",
+            lang: "painless"
+          },
+          query: {
+            bool: {
+              must: [{ exists: { field: 'traversal_ids' } }],
+              filter: [{ terms: { rid: project_ids } }]
+            }
+          }
+        }
+      })
+    end
+  end
+end
+```
+
 #### `Search::Elastic::MigrationHelper`
 
 Contains methods you can use when a migration doesn't fit the previous examples.
@@ -597,24 +748,19 @@ end
 - `batched!` - Allow the migration to run in batches. If set, [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic/migration_worker.rb)
   re-enqueues itself with a delay which is set using the `throttle_delay` option described below. The batching
   must be handled in the `migrate` method. This setting controls the re-enqueuing only.
-
 - `batch_size` - Sets the number of documents modified during a `batched!` migration run. This size should be set to a value which allows the updates
   enough time to finish. This can be tuned in combination with the `throttle_delay` option described below. The batching
   must be handled in a custom `migrate` method or by using the [`Search::Elastic::MigrationBackfillHelper`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/concerns/elastic/migration_backfill_helper.rb)
   `migrate` method which uses this setting. Default value is 1000 documents.
-
 - `throttle_delay` - Sets the wait time in between batch runs. This time should be set high enough to allow each migration batch
   enough time to finish. Additionally, the time should be less than 5 minutes because that is how often the
   [`Elastic::MigrationWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic/migration_worker.rb)
   cron worker runs. The default value is 3 minutes.
-
 - `pause_indexing!` - Pause indexing while the migration runs. This setting records the indexing setting before
   the migration runs and set it back to that value when the migration is completed.
-
 - `space_requirements!` - Verify that enough free space is available in the cluster when the migration runs. This setting
   halts the migration if the storage required is not available when the migration runs. The migration must provide
   the space required in bytes by defining a `space_required_bytes` method.
-
 - `retry_on_failure` - Enable the retry on failure feature. By default, it retries
   the migration 30 times. After it runs out of retries, the migration is marked as halted.
   To customize the number of retries, pass the `max_attempts` argument:

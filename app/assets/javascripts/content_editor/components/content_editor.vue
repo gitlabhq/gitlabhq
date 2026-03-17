@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { EditorContent as TiptapEditorContent } from '@tiptap/vue-2';
-import { isEqual } from 'lodash';
+import { isEqual } from 'lodash-es';
 import { markRaw } from 'vue';
 import { __ } from '~/locale';
 import { VARIANT_DANGER } from '~/alert';
@@ -333,7 +333,8 @@ export default {
       <gl-loading-icon
         v-if="isLoading"
         size="lg"
-        class="gl-absolute gl-bottom-0 gl-top-0 gl-z-1 gl-flex gl-w-full gl-items-center gl-justify-center gl-bg-alpha-light-36 dark:gl-bg-alpha-dark-40"
+        :class="{ 'gl-bg-alpha-light-36 dark:gl-bg-alpha-dark-40': !immersive }"
+        class="gl-absolute gl-bottom-0 gl-top-0 gl-z-1 gl-flex gl-w-full gl-items-center gl-justify-center"
       />
       <editor-state-observer
         @docUpdate="notifyChange"
@@ -342,7 +343,7 @@ export default {
         @keydown="$emit('keydown', $event)"
       />
       <content-editor-alert />
-      <div data-testid="content-editor" :class="{ 'is-focused': focused }">
+      <div data-testid="content-editor" :class="{ 'is-focused': focused }" class="gl-relative">
         <div
           data-testid="content-editor-header"
           :class="{
@@ -369,8 +370,10 @@ export default {
             </template>
           </formatting-toolbar>
         </div>
-        <div v-if="showPlaceholder" class="gl-absolute gl-px-5 gl-pt-4 gl-text-disabled">
-          {{ placeholder }}
+        <div v-if="showPlaceholder" class="gl-absolute gl-w-full">
+          <div class="placeholder gl-pt-4 gl-text-disabled" :class="{ 'gl-px-5': !immersive }">
+            {{ placeholder }}
+          </div>
         </div>
         <tiptap-editor-content
           class="md !gl-static"

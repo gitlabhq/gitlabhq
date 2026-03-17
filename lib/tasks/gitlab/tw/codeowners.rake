@@ -20,7 +20,7 @@ module TwCodeowners
   CODE_OWNER_RULES = [
     # CodeOwnerRule.new('Activation', ''),
     # CodeOwnerRule.new('Acquisition', ''),
-    CodeOwnerRule.new('Agent Foundations', '@sselhorn'),
+    CodeOwnerRule.new('Agent Foundations', '@fneill'),
     CodeOwnerRule.new('AI Coding', '@uchandran'),
     CodeOwnerRule.new('AI Framework', '@ashrafkhamis'),
     # CodeOwnerRule.new('Analytics Instrumentation', ''),
@@ -64,8 +64,8 @@ module TwCodeowners
     CodeOwnerRule.new('Pipeline Execution', '@lyspin'),
     CodeOwnerRule.new('Pipeline Security', '@marcel.amirault'),
     # CodeOwnerRule.new('Platform Insights', ''),
-    CodeOwnerRule.new('Product Planning', '@msedlakjakubowski'),
-    CodeOwnerRule.new('Project Management', '@msedlakjakubowski'),
+    # CodeOwnerRule.new('Product Planning', ''),
+    # CodeOwnerRule.new('Project Management', ''),
     CodeOwnerRule.new('Provision', '@lciutacu'),
     CodeOwnerRule.new('Redirect', 'Redirect'),
     # CodeOwnerRule.new('Respond', ''),
@@ -88,8 +88,10 @@ module TwCodeowners
     CodeOwnerRule.new('Testing', '@eread'),
     CodeOwnerRule.new('Tutorials', '@gl-docsteam'),
     CodeOwnerRule.new('US Public Sector Services', '@lyspin'),
-    CodeOwnerRule.new('Utilization', '@lciutacu')
+    CodeOwnerRule.new('Utilization', '@lciutacu'),
     # CodeOwnerRule.new('Vulnerability Research', '')
+    CodeOwnerRule.new('Workflow Catalog', '@jglassman1'),
+    CodeOwnerRule.new('Knowledge Graph', '@phillipwells')
   ].freeze
 
   CONTRIBUTOR_DOCS_PATH = '/doc/development/'
@@ -113,7 +115,7 @@ module TwCodeowners
     CodeOwnerRule.new('Engineering Productivity', '@gl-dx/pipeline-maintainers'),
     CodeOwnerRule.new('Engagement', '@gitlab-org/growth'),
     CodeOwnerRule.new('Gitaly', '@proglottis @toon'),
-    CodeOwnerRule.new('Global Search', '@gitlab-org/search-team/migration-maintainers'),
+    CodeOwnerRule.new('Global Search', '@gitlab-org/search-team/maintainers/advanced-framework'),
     CodeOwnerRule.new('Remote Development',
       '@gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend'),
     CodeOwnerRule.new('Pipeline Authoring', '@gitlab-org/maintainers/cicd-verify'),

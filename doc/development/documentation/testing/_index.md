@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 description: Learn how to contribute to GitLab Documentation.
 title: Documentation testing
 ---
@@ -333,7 +333,6 @@ synchronized to the other projects. In each of the [supported projects](#support
 1. Commit the changes to the new branch. Some projects require
    [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) so check the contributing information for the
    project before committing.
-
 1. Submit a merge request for review.
 
 ## Update linting images
@@ -449,10 +448,10 @@ We also run some documentation tests in these projects:
 - GitLab Docs website: <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>
 - Gitaly: <https://gitlab.com/gitlab-org/gitaly/-/blob/master/.gitlab-ci.yml>
 - GitLab Duo Plugin for JetBrains: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/blob/main/.gitlab-ci.yml>
-- GitLab Workflow extension for VS Code: <https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/.gitlab-ci.yml>
+- GitLab for VS Code extension: <https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/blob/main/.gitlab-ci.yml>
 - GitLab Plugin for Neovim: <https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/blob/main/.gitlab-ci.yml>
 - GitLab Language Server: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/.gitlab-ci.yml>
-- GitLab Extension for Visual Studio: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/blob/main/.gitlab-ci.yml>
+- GitLab for Visual Studio extension: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/blob/main/.gitlab-ci.yml>
 - AI Gateway: <https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>
 - Centralized Evaluation Framework: <https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/.gitlab-ci.yml>
 - GitLab Container Registry: <https://gitlab.com/gitlab-org/container-registry/-/blob/master/.gitlab/ci/validate.yml>

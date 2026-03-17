@@ -38,7 +38,7 @@ describe('ProjectStorageDetail', () => {
 
   const defaultProps = { storageTypes };
 
-  const createComponent = (props = {}, features = {}) => {
+  const createComponent = (props = {}) => {
     wrapper = extendedWrapper(
       mount(ProjectStorageDetail, {
         propsData: {
@@ -47,10 +47,6 @@ describe('ProjectStorageDetail', () => {
         },
         provide: {
           containerRegistryPopoverContent: 'Sample popover message',
-          glFeatures: {
-            projectRepositoriesHealthUi: false,
-            ...features,
-          },
         },
       }),
     );
@@ -104,30 +100,15 @@ describe('ProjectStorageDetail', () => {
   });
 
   describe('storage types with details components', () => {
-    describe('when feature flag is enabled', () => {
+    describe('template', () => {
       beforeEach(() => {
-        createComponent(
-          { storageTypes: [STORAGE_TYPE_WITH_DETAILS, STORAGE_TYPE_WITHOUT_DETAILS] },
-          { projectRepositoriesHealthUi: true },
-        );
+        createComponent({
+          storageTypes: [STORAGE_TYPE_WITH_DETAILS, STORAGE_TYPE_WITHOUT_DETAILS],
+        });
       });
 
       it('renders show details button only for storage type with details component', () => {
         expect(findShowDetailsButton(STORAGE_TYPE_WITH_DETAILS.id).exists()).toBe(true);
-        expect(findShowDetailsButton(STORAGE_TYPE_WITHOUT_DETAILS.id).exists()).toBe(false);
-      });
-    });
-
-    describe('when feature flag is disabled', () => {
-      beforeEach(() => {
-        createComponent(
-          { storageTypes: [STORAGE_TYPE_WITH_DETAILS, STORAGE_TYPE_WITHOUT_DETAILS] },
-          { projectRepositoriesHealthUi: false },
-        );
-      });
-
-      it('does not render show details button for any storage types', () => {
-        expect(findShowDetailsButton(STORAGE_TYPE_WITH_DETAILS.id).exists()).toBe(false);
         expect(findShowDetailsButton(STORAGE_TYPE_WITHOUT_DETAILS.id).exists()).toBe(false);
       });
     });
@@ -139,10 +120,7 @@ describe('ProjectStorageDetail', () => {
       };
 
       beforeEach(() => {
-        createComponent(
-          { storageTypes: [STORAGE_TYPE_WITH_DETAILS] },
-          { projectRepositoriesHealthUi: true },
-        );
+        createComponent({ storageTypes: [STORAGE_TYPE_WITH_DETAILS] });
       });
 
       it('toggles the details component when the button is clicked', async () => {

@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Manage and visualize group epics in GitLab with Epic Boards. Create, organize, filter, and track progress using labels and weights.
 title: Epic boards
 ---
@@ -35,7 +35,7 @@ On the top of each list, you can see the number of epics in the list ({{< icon n
 
 To view an epic board:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epic boards**.
 
 ![GitLab epic board - Premium](img/epic_board_v15_10.png)
@@ -44,11 +44,11 @@ To view an epic board:
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 
 To create a new epic board:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epic boards**.
 1. In the upper-left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -67,7 +67,7 @@ To change these options later, [edit the board](#edit-the-scope-of-an-epic-board
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 - A minimum of two boards present in a group.
 
 To delete the active epic board:
@@ -97,11 +97,11 @@ To delete the active epic board:
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 
 To create a new list:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Plan** > **Epic boards**.
 1. In the upper-right corner, select **New list**.
 1. Hover or move keyboard focus between two lists.
@@ -127,7 +127,7 @@ list view that's removed. You can always create it again later if you need.
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 
 To remove a list from an epic board:
 
@@ -140,7 +140,7 @@ To remove a list from an epic board:
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 - You must have [created a list](#create-a-new-list) first.
 
 To create an epic from a list in epic board:
@@ -180,7 +180,7 @@ You can move epics and lists by dragging them.
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 
 To move an epic, select the epic card and drag it to another position in its current list or
 into another list. Learn about possible effects in [Dragging epics between lists](#dragging-epics-between-lists).
@@ -247,7 +247,7 @@ and the target list.
 
 Prerequisites:
 
-- You must have at least the Planner role for a group.
+- You must have the Planner, Reporter, Developer, Maintainer, or Owner role for a group.
 
 To edit the scope of an epic board:
 

@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Use Microsoft Azure as an OAuth 2.0 authentication provider
 ---
 
@@ -82,7 +82,6 @@ Alternatively, add the `User.Read.All` application permission.
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `azure_activedirectory_v2` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
-
 1. Add the provider configuration. Replace `<client_id>`, `<client_secret>`, and `<tenant_id>`
    with the values you got when you registered the Azure application.
 
@@ -148,14 +147,11 @@ Alternatively, add the `User.Read.All` application permission.
    You can also optionally add the `scope` for [OAuth 2.0 scopes](https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow) parameter to the `args` section. The default is `openid profile email`.
 
 1. Save the configuration file.
-
 1. [Reconfigure GitLab](../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
    if you installed using the Linux package, or [restart GitLab](../administration/restart_gitlab.md#self-compiled-installations)
    if you self-compiled your installation.
-
 1. Refresh the GitLab sign-in page. A Microsoft icon should display below the
    sign-in form.
-
 1. Select the icon. Sign in to Microsoft and authorize the GitLab application.
 
 Read [Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user)

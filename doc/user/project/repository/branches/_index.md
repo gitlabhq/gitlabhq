@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Understand how to name, manage, and protect Git branches.
 title: Branches
 ---
@@ -42,8 +42,8 @@ The development workflow for branches is:
 
 To view and manage your branches in the GitLab user interface:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Code** > **Branches**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Code** > **Branches**.
 
 On this page, you can:
 
@@ -69,7 +69,7 @@ Prerequisites:
 
 To create a new branch from the GitLab UI:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Branches**.
 1. In the upper-right corner, select **New branch**.
 1. Enter a **Branch name**.
@@ -92,7 +92,7 @@ Prerequisites:
 
 To add a [default branch](default.md) to a blank project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Scroll to **The repository for this project is empty** and select the type of
    file you want to add.
 1. In the Web IDE, make any desired changes to this file, then select **Create commit**.
@@ -113,8 +113,8 @@ Prerequisites:
 
 To create a branch from an issue:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues** and find your issue.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. Below the issue description, select **Create merge request** {{< icon name="chevron-down" >}} to display the dropdown list.
 1. Select **Create branch**.
 1. In the dialog, from the **Source (branch or tag)** dropdown list, select a source branch or tag.
@@ -124,7 +124,7 @@ To create a branch from an issue:
 1. Select **Create branch**.
 
 For information about creating branches in empty repositories,
-see [Empty repository behavior](#empty-repository-behavior).
+see [empty repository behavior](#empty-repository-behavior).
 
 If the name of the created branch is
 [prefixed with the issue number](#prefix-branch-names-with-a-number), GitLab cross-links
@@ -138,9 +138,8 @@ Prerequisites:
 
 To create a branch directly from a task:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**.
-1. In the issue list, find your task.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Task** and select your task.
 1. Below the task description, select **Create merge request** {{< icon name="chevron-down" >}} to display the dropdown list.
 1. Select **Create branch**.
 1. In the dialog, from the **Source branch or tag** dropdown list, select a source branch or tag.
@@ -150,7 +149,7 @@ To create a branch directly from a task:
 1. Select **Create branch**.
 
 For information about creating branches in empty repositories,
-see [Empty repository behavior](#empty-repository-behavior).
+see [empty repository behavior](#empty-repository-behavior).
 
 If the name of the created branch is
 [prefixed with the task number](#prefix-branch-names-with-a-number), GitLab cross-links
@@ -179,6 +178,16 @@ GitLab enforces these additional rules on all branches:
 - Branch names with 40 hexadecimal characters are prohibited, because they are similar to Git commit hashes.
 - Branch names are case-sensitive.
 
+Branch names with specific formatting provide:
+
+- Streamlined merge request workflow when you
+  [prefix branch names with issue numbers](#prefix-branch-names-with-a-number).
+- Automated [branch protections](protected.md) based on branch name.
+- [Push rules](../push_rules.md) to test branch names before they are pushed to GitLab.
+- Control over which [CI/CD jobs](../../../../ci/jobs/_index.md) run on merge requests.
+
+### Software packages
+
 Common software packages, like Docker, can enforce
 [additional branch naming restrictions](../../../../administration/packages/container_registry_troubleshooting.md#docker-connection-error).
 
@@ -189,16 +198,21 @@ For the best compatibility with other software packages, use only:
 - Underscores (`_`)
 - Lowercase letters from the ASCII standard table
 
-You can use forward slashes (`/`) and emoji in branch names, but compatibility with other
-software packages cannot be guaranteed.
+### Characters to avoid in branch names
 
-Branch names with specific formatting offer extra benefits:
+While Git technically allows many characters in branch names, certain characters can cause issues with GitLab Runner and other tools and are not recommended:
 
-- Streamline your merge request workflow by
-  [prefixing branch names with issue numbers](#prefix-branch-names-with-a-number).
-- Automate [branch protections](protected.md) based on branch name.
-- Test branch names with [push rules](../push_rules.md) before branches are pushed up to GitLab.
-- Define which [CI/CD jobs](../../../../ci/jobs/_index.md) to run on merge requests.
+- Spaces and whitespace
+- Special path or glob (wildcard) characters: `~`, `^`, `:`, `?`, `*`, `[`, `\`, `'`, `"`
+- Double dot: `..`
+- Special Git syntax: `@{`
+- Consecutive slashes: `//`
+- emoji
+- Trailing `.` or `.lock` suffix
+- Starting with `-` or `.`
+- ASCII control characters (including Delete)
+
+For maximum compatibility with GitLab Runner and other tools, use only alphanumeric characters, hyphens, and underscores.
 
 ### Configure default pattern for branch names from issues
 
@@ -211,7 +225,7 @@ Prerequisites:
 
 To change the default pattern for branches created from issues:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
 1. Expand **Branch defaults**.
 1. Scroll to **Branch name template** and enter a value. The field supports these variables:
@@ -233,7 +247,7 @@ GitLab uses this number to import data into the merge request:
 - The branch is connected to the issue or task.
 - If your project is configured with a
   [default closing pattern](../../issues/managing_issues.md#default-closing-pattern),
-  merging the merge request [also closes](../../issues/managing_issues.md#closing-issues-automatically)
+  merging the merge request also [automatically closes](../../issues/managing_issues.md#closing-issues-automatically)
   the related issue.
 - If the merge request is in the same project, and not a fork, the issue milestone
   and labels are copied to the merge request.
@@ -241,7 +255,7 @@ GitLab uses this number to import data into the merge request:
 ## Manage and protect branches
 
 GitLab provides multiple methods to protect individual branches. These methods
-ensure your branches receive oversight and quality checks from their creation to their deletion. To view and edit branch protections, see [Branch rules](branch_rules.md).
+ensure your branches receive oversight and quality checks from their creation to their deletion. To view and edit branch protections, see [branch rules](branch_rules.md).
 
 ### Download branch comparisons
 
@@ -321,7 +335,7 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Branches**.
 1. In the upper-right corner of the page, select **More** {{< icon name="ellipsis_v" >}}.
 1. Select **Delete merged branches**.
@@ -330,7 +344,7 @@ To do this:
 > [!note]
 > Deleting a branch does not completely erase all related data.
 > Some information persists to maintain project history and to support recovery processes.
-> For more information, see [Handle sensitive information](../../../../topics/git/undo.md#handle-sensitive-information).
+> For more information, see [handle sensitive information](../../../../topics/git/undo.md#handle-sensitive-information).
 
 ## Configure workflows for target branches
 
@@ -365,7 +379,7 @@ Prerequisites:
 
 To create a target branch workflow:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. Scroll down to **Merge request branch workflow**
 1. Select **Add branch target**.
@@ -404,7 +418,7 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. Select **Delete** on the branch target you want to delete.
 
@@ -416,7 +430,7 @@ To do this:
 - [Compare changes in merge requests](../../merge_requests/changes.md)
 - [Download merge request changes](../../merge_requests/changes.md#download-merge-request-changes)
 - [Branches API](../../../../api/branches.md)
-- [Protected Branches API](../../../../api/protected_branches.md)
+- [Protected branches API](../../../../api/protected_branches.md)
 - [Getting started with Git](../../../../topics/git/_index.md)
 - [Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
 
@@ -470,7 +484,7 @@ Error: Could not set the default branch. Do you have a branch named 'HEAD' in yo
 
 To fix this problem:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Branches**.
 1. Search for a branch named `HEAD`.
 1. Make sure the branch has no uncommitted changes.

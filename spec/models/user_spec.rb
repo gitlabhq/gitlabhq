@@ -50,8 +50,8 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
   it_behaves_like 'having unique enum values'
 
   it_behaves_like 'cells claimable model',
-    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::USER,
-    subject_key: :id,
+    subject_type: Cells::Claimable::CLAIMS_SUBJECT_TYPE::ORGANIZATION,
+    subject_key: :organization_id,
     source_type: Cells::Claimable::CLAIMS_SOURCE_TYPE::RAILS_TABLE_USERS,
     claiming_attributes: [:id, :username]
 
@@ -207,6 +207,9 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
     it { is_expected.to delegate_method(:organization).to(:user_detail).with_prefix.allow_nil }
     it { is_expected.to delegate_method(:organization=).to(:user_detail).with_arguments(:args).with_prefix.allow_nil }
+
+    it { is_expected.to delegate_method(:company).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:company=).to(:user_detail).with_arguments(:args).allow_nil }
 
     it { is_expected.to delegate_method(:project_authorizations_recalculated_at).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:project_authorizations_recalculated_at=).to(:user_detail).with_arguments(:args).allow_nil }
@@ -1012,6 +1015,31 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
 
           expect(user).to be_invalid
           expect(user.errors.messages[:username].first).to eq(_('cannot be changed if a personal project has container registry tags.'))
+        end
+      end
+
+      context 'with an enforced composite_identity' do
+        let_it_be_with_reload(:user) { create(:user, :service_account, composite_identity_enforced: true) }
+
+        context 'when attempting to update the username' do
+          it 'returns a validation error' do
+            user.username = 'new_username'
+
+            expect(user).to be_invalid
+            expect(user.errors.messages[:base]).to include(
+              'You cannot update the username of a service account associated with a composite identity.'
+            )
+          end
+        end
+
+        context 'when updating other fields' do
+          it 'updates the user' do
+            user.name = 'new_name'
+            user.email = 'new_email@example.com'
+
+            expect(user).to be_valid
+            expect(user.errors.messages[:base]).to be_empty
+          end
         end
       end
     end
@@ -3641,12 +3669,80 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       is_expected.to eq(true)
     end
 
-    context 'when :email_based_mfa feature flag is disabled' do
-      it 'returns false' do
-        stub_feature_flags(email_based_mfa: false)
+    it 'returns true when email_otp_required_after is the current time' do
+      user.email_otp_required_after = Time.current
 
+      is_expected.to eq(true)
+    end
+
+    context 'when :email_based_mfa feature flag is disabled' do
+      before do
+        stub_feature_flags(email_based_mfa: false)
+      end
+
+      it 'returns false despite email_otp_required_after is in the past' do
         user.email_otp_required_after = 1.second.ago
 
+        is_expected.to eq(false)
+      end
+    end
+
+    # Ensuring the valid state of `email_otp_required_after`, by
+    # `set_email_otp_required_after_based_on_restrictions` method, is
+    # tested in depth in spec/models/concerns/users/email_otp_enrollment_spec.rb
+    it 'ensures that `email_otp_required_after` is set to a valid state' do
+      stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+
+      expect(user).to receive(:set_email_otp_required_after_based_on_restrictions)
+        .with(save: true).and_call_original
+
+      is_expected.to eq(true)
+    end
+  end
+
+  describe '#work_items_consolidated_list_enabled?' do
+    subject { user.work_items_consolidated_list_enabled? }
+
+    let_it_be_with_reload(:user) { create(:user) }
+
+    context 'when work_items_consolidated_list_user feature flag is enabled' do
+      before do
+        stub_feature_flags(work_items_consolidated_list_user: true)
+      end
+
+      it 'returns true' do
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'when work_items_consolidated_list_user feature flag is disabled' do
+      before do
+        stub_feature_flags(work_items_consolidated_list_user: false)
+      end
+
+      it 'returns false' do
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'when work_items_consolidated_list_user feature flag is enabled for specific user' do
+      before do
+        stub_feature_flags(work_items_consolidated_list_user: user)
+      end
+
+      it 'returns true' do
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'when work_items_consolidated_list_user feature flag is enabled for different user' do
+      let(:other_user) { create(:user) }
+
+      before do
+        stub_feature_flags(work_items_consolidated_list_user: other_user)
+      end
+
+      it 'returns false' do
         is_expected.to eq(false)
       end
     end
@@ -6986,6 +7082,42 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#can_access_organization_admin_area?' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:organization_owner) { create(:organization_owner, organization: organization).user }
+    let_it_be(:regular_user) { create(:user) }
+
+    subject { user.can_access_organization_admin_area?(organization) }
+
+    context 'when user is an organization owner' do
+      let(:user) { organization_owner }
+
+      it { is_expected.to be_truthy }
+
+      context 'when org_admin_area feature flag is disabled' do
+        before do
+          stub_feature_flags(org_admin_area: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when user is a regular user' do
+      let(:user) { regular_user }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when organization is nil' do
+      let(:user) { organization_owner }
+
+      subject { user.can_access_organization_admin_area?(nil) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#free_or_trial_owned_group_ids' do
     let(:user) { build_stubbed(:user) }
     let(:group_ids) { [1, 2, 3] }
@@ -6999,7 +7131,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
   end
 
   shared_examples 'organization owner' do
-    let!(:org_user) { create(:organization_user, organization: organization, user: user, access_level: access_level) }
+    let!(:organization_user) { create(:organization_user, organization: organization, user: user, access_level: access_level) }
 
     context 'when user is the owner of the organization' do
       let(:access_level) { Gitlab::Access::OWNER }
@@ -7317,25 +7449,30 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     subject { user.assigned_open_merge_requests_count(force: true, cached_only: cached_only) }
 
     let_it_be_with_refind(:user) { create(:user) }
-    let_it_be_with_refind(:project) { create(:project, :public) }
-    let_it_be_with_refind(:archived_project) { create(:project, :public, :archived) }
+    let_it_be_with_refind(:project) { create(:project, :public, organization: user.organization) }
+    let_it_be_with_refind(:archived_project) { create(:project, :public, :archived, organization: user.organization) }
     let(:cached_only) { false }
 
     before do
+      # Included
       create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
       create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
       create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
+
+      # Exclude because project is archived
       create(:merge_request, source_project: archived_project, author: user, assignees: [user])
 
+      # Excluded because already reviewed
       mr = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
-      mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
-
       mr.merge_request_reviewers.update_all(state: :reviewed)
+
+      # Excluded because already requested changes
+      mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
       mr2.merge_request_reviewers.update_all(state: :requested_changes)
     end
 
     it 'returns number of open merge requests from non-archived projects where there are no reviewers' do
-      is_expected.to eq 4
+      is_expected.to eq(3)
     end
 
     context 'when merge_request_dashboard_list_type is role_based' do
@@ -8062,7 +8199,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     shared_examples 'max member access for projects' do
       let(:projects) do
         [owner_project, maintainer_project, reporter_project,
-         developer_project, planner_project, guest_project, no_access_project].map(&:id)
+          developer_project, planner_project, guest_project, no_access_project].map(&:id)
       end
 
       let(:expected) do
@@ -8142,7 +8279,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     shared_examples 'max member access for groups' do
       let(:groups) do
         [owner_group, maintainer_group, reporter_group, developer_group,
-         planner_group, guest_group, no_access_group, planner_group].map(&:id)
+          planner_group, guest_group, no_access_group, planner_group].map(&:id)
       end
 
       let(:expected_access_levels) do
@@ -8324,6 +8461,16 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#lock_access!' do
+    context 'with service_account' do
+      it 'is unable to lock it' do
+        service_account_user = create(:user, :service_account)
+
+        expect { service_account_user.lock_access! }.not_to change { service_account_user.access_locked? }.from(false)
+      end
+    end
+  end
+
   describe '#increment_failed_attempts!' do
     let_it_be_with_reload(:user) { create(:user, failed_attempts: 0) }
 
@@ -8335,6 +8482,14 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
       allow(Gitlab::Database).to receive(:read_only?) { true }
 
       expect { user.increment_failed_attempts! }.not_to change(user, :failed_attempts)
+    end
+
+    context 'with service_accounts' do
+      it 'does not increment a failed login_attempt' do
+        service_account_user = create(:user, :service_account)
+
+        expect { service_account_user.increment_failed_attempts! }.not_to change { service_account_user.failed_attempts }
+      end
     end
   end
 
@@ -9770,7 +9925,7 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     let_it_be(:external_user) { create(:user, :external) }
     let_it_be(:unconfirmed_user) { create(:user, confirmed_at: nil) }
     let_it_be(:omniauth_user) { create(:omniauth_user, provider: 'twitter', extern_uid: '123456') }
-    let_it_be(:internal_user) { Users::Internal.alert_bot.tap { |u| u.confirm } }
+    let_it_be(:internal_user) { Users::Internal.in_organization(normal_user.organization).alert_bot.tap { |u| u.confirm } }
 
     it 'does not return blocked or banned users' do
       is_expected.to contain_exactly(

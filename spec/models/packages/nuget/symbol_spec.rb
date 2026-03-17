@@ -29,6 +29,11 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
     it { is_expected.to validate_uniqueness_of(:object_storage_key).scoped_to(:project_id).case_insensitive }
     it { is_expected.to validate_presence_of(:project) }
 
+    describe 'bytesize validations' do
+      it { is_expected.to allow_value('A' * described_class::FILE_SHA256_MAX_LENGTH).for(:file_sha256) }
+      it { is_expected.not_to allow_value('A' * (described_class::FILE_SHA256_MAX_LENGTH + 1)).for(:file_sha256) }
+    end
+
     context 'for signature & file_path uniqueness' do
       let(:package) { build_stubbed(:nuget_package) }
 

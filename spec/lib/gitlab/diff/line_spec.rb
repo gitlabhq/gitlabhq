@@ -123,14 +123,6 @@ RSpec.describe Gitlab::Diff::Line do
 
     context 'when type is "match"' do
       it { is_expected.to be_truthy }
-
-      context 'when feature flag "diff_line_match" is disabled' do
-        before do
-          stub_feature_flags(diff_line_match: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
     end
 
     context 'when type is :match' do

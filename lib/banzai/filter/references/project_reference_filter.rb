@@ -44,7 +44,7 @@ module Banzai
         # if no replacements were made. All links have `gfm` and `gfm-project` class names attached for styling.
         def object_link_filter(text, pattern, link_content_html: nil, link_reference: false)
           references_in(text) do |match_text, project_path|
-            cached_call(:banzai_url_for_object, match_text, path: [Project, project_path]) do
+            cached_call(:banzai_url_for_object, link_content_html ? nil : match_text, path: [Project, project_path]) do
               if project = projects_hash[project_path.downcase]
                 link_to_project(project, match_text:, link_content_html:)
               end

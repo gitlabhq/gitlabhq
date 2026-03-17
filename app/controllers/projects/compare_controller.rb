@@ -97,6 +97,7 @@ class Projects::CompareController < Projects::ApplicationController
       compare,
       diff_view: diff_view,
       diff_options: diff_options,
+      current_user: current_user,
       request_params: compare_params
     )
   end

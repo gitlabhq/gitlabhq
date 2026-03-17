@@ -1,5 +1,5 @@
 <script>
-import { debounce, isObject } from 'lodash';
+import { debounce, isObject } from 'lodash-es';
 import { GlFormGroup, GlCollapsibleListbox, GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';

@@ -1,5 +1,3 @@
 ---
 name: delete_artifact
 description: Grants the ability to delete all artifacts from a project
-boundaries:
-  - project

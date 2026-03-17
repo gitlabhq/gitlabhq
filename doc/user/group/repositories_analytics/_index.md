@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Repository analytics for groups
 ---
 
@@ -30,7 +30,7 @@ Prerequisites:
 
 To view repository analytics for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **Repository analytics**.
 
 ## Coverage metrics
@@ -41,9 +41,7 @@ The group **Repository analytics** page displays:
   - Number of projects with coverage reports.
   - Average coverage percentage across all projects.
   - Total number of pipeline jobs that produce coverage reports.
-
 - **Average test coverage**: A graph that shows the average test coverage across all projects in your group for the last 30 days.
-
 - **Latest test coverage results**: A list of the most recent coverage data for each project in your group. Select projects from the dropdown list to filter the results.
 
 ## Download coverage data

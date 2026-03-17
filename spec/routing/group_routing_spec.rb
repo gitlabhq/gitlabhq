@@ -171,6 +171,23 @@ RSpec.describe "Groups", "routing", feature_category: :groups_and_projects do
           .to route_to('groups/dependency_proxy_for_containers#blob', group_id: 'gitlabhq', image: 'foo/bar', sha: 'abc12345')
       end
     end
+
+    context 'referrers endpoint' do
+      it 'routes GET to #referrers_not_found' do
+        expect(get('/v2/gitlabhq/dependency_proxy/containers/alpine/referrers/latest'))
+          .to route_to('groups/dependency_proxy_for_containers#referrers_not_found', group_id: 'gitlabhq', image: 'alpine', tag: 'latest')
+      end
+
+      it 'routes POST to #referrers_not_found' do
+        expect(post('/v2/gitlabhq/dependency_proxy/containers/alpine/referrers/latest'))
+          .to route_to('groups/dependency_proxy_for_containers#referrers_not_found', group_id: 'gitlabhq', image: 'alpine', tag: 'latest')
+      end
+
+      it 'routes to #referrers_not_found with a namespaced image' do
+        expect(get('/v2/gitlabhq/dependency_proxy/containers/foo/bar/referrers/latest'))
+          .to route_to('groups/dependency_proxy_for_containers#referrers_not_found', group_id: 'gitlabhq', image: 'foo/bar', tag: 'latest')
+      end
+    end
   end
 
   describe Groups::RedirectController, 'routing' do

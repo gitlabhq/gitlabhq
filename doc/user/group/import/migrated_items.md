@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Items migrated when using direct transfer
 description: "Project and group items included or excluded when using direct transfer."
 ---
@@ -133,7 +133,8 @@ Project items that are migrated to the destination GitLab instance include:
 - Pipeline schedules
 - Projects
 - Project features
-- Push rules
+- Push rules. During an import, [group push rules](../../project/repository/push_rules.md#group-push-rules) take precedence over project push rules.
+  If the source instance has any group push rules, no project push rules are imported.
 - Releases
 - Release evidences
 - Repositories

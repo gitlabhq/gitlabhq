@@ -54,6 +54,83 @@ RSpec.describe Gitlab::Database::Batch::EfficiencyCalculator, feature_category: 
   describe '#should_optimize?' do
     subject(:should_optimize) { calculator.should_optimize? }
 
+    context 'when there are not enough jobs' do
+      let(:jobs) { build_list(:background_operation_job, described_class::DEFAULT_NUMBER_OF_JOBS - 1, :succeeded) }
+
+      before do
+        allow(calculator).to receive(:job_records).and_return(jobs)
+      end
+
+      it 'returns false' do
+        expect(should_optimize).to be_falsey
+      end
+    end
+
+    context 'when all time efficiencies are nil' do
+      let(:jobs) { build_list(:background_operation_job, described_class::DEFAULT_NUMBER_OF_JOBS, :succeeded) }
+
+      before do
+        jobs.each { |job| allow(job).to receive(:time_efficiency).and_return(nil) }
+        allow(calculator).to receive(:job_records).and_return(jobs)
+      end
+
+      it 'returns false' do
+        expect(should_optimize).to be_falsey
+      end
+    end
+
+    context 'when there are enough jobs with valid efficiencies' do
+      let(:jobs) { build_list(:background_operation_job, described_class::DEFAULT_NUMBER_OF_JOBS, :succeeded) }
+
+      before do
+        allow(calculator).to receive(:job_records).and_return(jobs)
+      end
+
+      context 'with efficiency outside target range' do
+        let(:efficiency) { 0.54 }
+
+        before do
+          jobs.each { |job| allow(job).to receive(:time_efficiency).and_return(efficiency) }
+        end
+
+        it { expect(should_optimize).to be true }
+      end
+
+      context 'with efficiency within target range' do
+        let(:efficiency) { 0.93 }
+
+        before do
+          jobs.each { |job| allow(job).to receive(:time_efficiency).and_return(efficiency) }
+        end
+
+        it { expect(should_optimize).to be false }
+      end
+
+      context 'with recent jobs being slower' do
+        let(:efficiencies) { Array.new(10, 0.8) + Array.new(10, 1.1) }
+
+        before do
+          efficiencies.each_with_index do |efficiency, i|
+            allow(jobs[i]).to receive(:time_efficiency).and_return(efficiency)
+          end
+        end
+
+        it { expect(should_optimize).to be true }
+      end
+
+      context 'with recent jobs being within target' do
+        let(:efficiencies) { Array.new(10, 0.92) + Array.new(10, 0.7) }
+
+        before do
+          efficiencies.each_with_index do |efficiency, i|
+            allow(jobs[i]).to receive(:time_efficiency).and_return(efficiency)
+          end
+        end
+
+        it { expect(should_optimize).to be false }
+      end
+    end
+
     context 'when efficiency is nil' do
       before do
         allow(calculator).to receive(:smoothed_time_efficiency).and_return(nil)

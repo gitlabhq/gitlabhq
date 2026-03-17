@@ -1,5 +1,3 @@
 ---
 name: read_share_location
 description: Grants the ability to view a list of groups a project can be shared with
-boundaries:
-  - project

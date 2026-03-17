@@ -153,12 +153,6 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
       end
     end
 
-    context 'when issuable is a group level work item of type epic' do
-      let(:work_item) { create(:work_item, :epic, namespace: group, description: 'work item description') }
-
-      it_behaves_like 'work item hook data'
-    end
-
     context 'when issuable is a group level work item of type issue' do
       let(:work_item) { create(:work_item, :issue, namespace: group, description: 'work item description') }
 
@@ -242,6 +236,28 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
       it 'returns correct hook data' do
         expect(data).not_to have_key(:assignees)
         expect(data).not_to have_key(:reviewers)
+      end
+    end
+
+    context 'with actioned_at' do
+      let(:issuable) { create(:merge_request, source_project: reusable_project) }
+      let(:builder) { described_class.new(issuable) }
+
+      context 'when provided' do
+        let(:actioned_time) { Time.current }
+        let(:data) { builder.build(user: user, action: 'updated', actioned_at: actioned_time) }
+
+        it 'includes actioned_at in object_attributes' do
+          expect(data[:object_attributes][:actioned_at]).to eq(actioned_time)
+        end
+      end
+
+      context 'when not provided' do
+        let(:data) { builder.build(user: user, action: 'updated', actioned_at: nil) }
+
+        it 'does not include actioned_at in object_attributes' do
+          expect(data[:object_attributes]).not_to have_key(:actioned_at)
+        end
       end
     end
   end

@@ -1,5 +1,3 @@
 ---
 name: upload_npm_package
 description: Grants the ability to upload NPM packages
-boundaries:
-  - project

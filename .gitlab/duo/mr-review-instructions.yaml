@@ -9,6 +9,7 @@
 # - Contributing Guide: https://docs.gitlab.com/development/contributing/
 # - Documentation Guide: https://docs.gitlab.com/development/documentation/styleguide/
 # - Field Standardisation in Observability: https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_field_standardisation/
+# - Pajamas Design System: https://design.gitlab.com/
 
 
 # This file defines custom review criteria that will be applied to specific files
@@ -186,6 +187,33 @@ instructions:
       9. Tests cover experiment variants and tracking behavior
       10. Temporary assets (icons/illustrations) are in `/ee/app/assets/images` or `/app/assets/images` not Pajamas library
       11. When both control and variants are being toggled in Vue components layer, we prefer to use the `<gitlab-experiment>` component.
+
+  - name: Pajamas Design System Components
+    fileFilters:
+      - "**/*.vue"
+      - "app/assets/javascripts/**/*.js"
+      - "ee/app/assets/javascripts/**/*.js"
+    instructions: |
+      For GitLab UI (Pajamas) component usage, verify:
+      1. Component selection:
+         - Flag component usage that appears inconsistent with Pajamas "when to use" and "when not to use" guidelines
+         - Remind: "Each Pajamas component has specific usage guidelines. Review the component's guidelines at https://design.gitlab.com/components/"
+      2. Component overrides:
+         - Flag excessive CSS overrides on Pajamas components (multiple class overrides changing borders, backgrounds, padding, or other default styling)
+         - Ask: "Multiple style overrides on this component suggest it may not be the right fit. Would utility classes or a different component be more appropriate?"
+         - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/fe_guide/style/scss.md#utility-classes
+      3. Utility classes vs components:
+         - Flag usage of container components purely for simple visual separation (borders, padding, rounded corners) without using the component's structural features (header, footer, etc.)
+         - Remind: "For simple visual separation without structured content, prefer utility classes (e.g., `gl-border gl-rounded-lg gl-p-5`) over container components. See https://design.gitlab.com/components/ for each component's intended use cases."
+      4. Design tokens and typography:
+         - Flag hardcoded color values, spacing values, or typography that should use design tokens
+         - Flag fixed type scales (e.g., `gl-text-700-fixed`) used outside of Markdown contexts
+         - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/fe_guide/design_tokens.md
+      5. When uncertain about component choice:
+         - Ask: "Has a Product Designer reviewed this component usage?"
+         - Remind: "Check the Pajamas guidelines for this component's 'when to use' and 'when not to use' sections at https://design.gitlab.com/components/"
+         - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/fe_guide/_index.md
+         - Reference: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/development/contributing/design.md
 
   - name: Schema Migrations
     fileFilters:

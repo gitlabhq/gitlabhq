@@ -59,6 +59,16 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
       expect(restore_relations).to eq(true)
     end
 
+    context 'when imported state attribute is nil' do
+      let(:attributes) { relation_reader.consume_attributes(importable_name).merge('state' => nil) }
+
+      it 'defaults state to ancestor_inherited' do
+        expect(restore_relations).to eq(true)
+        expect(importable.reload.state).to eq('ancestor_inherited')
+        expect(importable.read_attribute_before_type_cast(:state)).to eq(0)
+      end
+    end
+
     it 'logs top-level relation creation' do
       expect(shared.logger)
         .to receive(:info)

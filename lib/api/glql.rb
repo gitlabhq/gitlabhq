@@ -26,7 +26,7 @@ module API
         context = {
           fields: fields,
           featureFlags: {
-            glqlWorkItems: Feature.enabled?(:glql_work_items, user)
+            glqlWorkItems: true
           }
         }
 

@@ -36,6 +36,7 @@ module Pajamas
       @empty_state_options = empty_state_options
     end
 
+    renders_one :title
     renders_one :description
   end
 end

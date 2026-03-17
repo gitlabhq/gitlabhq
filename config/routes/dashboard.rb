@@ -4,6 +4,8 @@ resource :dashboard, controller: 'dashboard', only: [] do
   get :home
   get :issues, action: :issues_calendar, constraints: ->(req) { req.format == :ics }
   get :issues
+  get :work_items, action: :work_items_calendar, constraints: ->(req) { req.format == :ics }
+  get :work_items
   get :merge_requests
   get :activity
   get 'merge_requests/following', to: 'dashboard#merge_requests'

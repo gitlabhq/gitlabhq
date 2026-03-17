@@ -157,4 +157,21 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
       it { is_expected.to be(result) }
     end
   end
+
+  describe '#type_label' do
+    subject { described_class.for(boundary).type_label }
+
+    where(:boundary, :result) do
+      ref(:group)      | 'group'
+      ref(:project)    | 'project'
+      ref(:user)       | 'personal projects'
+      :all_memberships | 'all memberships'
+      :user            | 'user'
+      :instance        | 'instance'
+    end
+
+    with_them do
+      it { is_expected.to eq(result) }
+    end
+  end
 end

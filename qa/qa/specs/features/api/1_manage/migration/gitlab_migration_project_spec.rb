@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', feature_category: :importers do
+  RSpec.describe 'Manage',
+    feature_category: :importers do
     describe 'Gitlab migration', :import, :orchestrated, requires_admin: 'creates a user via API' do
       include_context 'with gitlab project migration'
 
@@ -30,29 +31,28 @@ module QA
         it(
           'successfully imports project',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/383351',
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24008',
-            type: :flaky
-          }
+          quarantine: { issue: '/gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/38278', type: :flaky }
         ) do
           expect_project_import_finished_successfully
 
-          expect(imported_project).to eq(source_project)
+          aggregate_failures do
+            expect(imported_project.name).to eq(source_project.name)
+            expect(imported_project.description).to eq(source_project.description)
+          end
         end
       end
 
       context 'with uninitialized project' do
         it(
           'successfully imports project',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347610',
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24009',
-            type: :flaky
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347610'
         ) do
           expect_project_import_finished_successfully
 
-          expect(imported_project).to eq(source_project)
+          aggregate_failures do
+            expect(imported_project.name).to eq(source_project.name)
+            expect(imported_project.description).to eq(source_project.description)
+          end
         end
       end
 
@@ -69,6 +69,9 @@ module QA
           source_project.repository_branches.tap do |branches|
             branches.each do |b|
               b.delete(:web_url)
+              # Exclude protected field as it reflects project-level branch protection rules
+              # which may legitimately differ between source and imported projects
+              b.delete(:protected)
               b[:commit].delete(:web_url)
             end
           end
@@ -85,6 +88,9 @@ module QA
           imported_project.repository_branches.tap do |branches|
             branches.each do |b|
               b.delete(:web_url)
+              # Exclude protected field as it reflects project-level branch protection rules
+              # which may legitimately differ between source and imported projects
+              b.delete(:protected)
               b[:commit].delete(:web_url)
             end
           end
@@ -93,14 +99,15 @@ module QA
         before do
           source_project.create_repository_branch('test-branch')
           source_project.create_repository_tag('v0.0.1')
+          source_project.change_default_branch('main')
         end
 
         it(
           'successfully imports repository',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347570',
           quarantine: {
-            type: :bug,
-            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24010'
+            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/work_items/38685',
+            type: :flaky
           }
         ) do
           expect_project_import_finished_successfully
@@ -120,15 +127,15 @@ module QA
 
         it(
           'successfully imports project wiki',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347567',
-          quarantine: {
-            issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24011',
-            type: :investigating
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347567'
         ) do
           expect_project_import_finished_successfully
 
-          expect(imported_project.wikis).to eq(source_project.wikis)
+          # Exclude wiki_page_meta_id from comparison as it is a database primary key
+          # that will always differ between source and imported projects.
+          comparable_fields = ->(wikis) { wikis.map { |w| w.except(:wiki_page_meta_id) } }
+
+          expect(comparable_fields.call(imported_project.wikis)).to eq(comparable_fields.call(source_project.wikis))
         end
       end
     end

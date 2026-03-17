@@ -30,6 +30,10 @@ class Group < Namespace
 
   README_PROJECT_PATH = 'gitlab-profile'
 
+  # TODO: Needs to be renamed for semantic accuracy or removed once we shift to LocalStorage
+  #  under https://gitlab.com/gitlab-org/gitlab/-/work_items/591706
+  SORTING_PREFERENCE_FIELD = :projects_sort
+
   def self.sti_name
     'Group'
   end
@@ -151,17 +155,18 @@ class Group < Namespace
   scope :with_deletion_schedule, -> { preload(deletion_schedule: :deleting_user) }
   scope :with_deletion_schedule_only, -> { preload(:deletion_schedule) }
 
-  scope :marked_for_deletion_before, ->(date) do
-    joins(:deletion_schedule)
-      .where('group_deletion_schedules.marked_for_deletion_on <= ?', date)
-  end
-
   scope :marked_for_deletion_on, ->(date) do
     joins(:deletion_schedule)
       .where(group_deletion_schedules: { marked_for_deletion_on: date })
   end
 
   scope :with_integrations, -> { joins(:integrations) }
+  scope :excluding_self_and_ancestors_archived, -> {
+    where(
+      "NOT (namespaces.traversal_ids::bigint[] && ARRAY(?)::bigint[])",
+      NamespaceSetting.where(archived: true).select(:namespace_id)
+    )
+  }
 
   has_one :harbor_integration, class_name: 'Integrations::Harbor'
   has_one :jira_integration, class_name: 'Integrations::Jira'
@@ -740,6 +745,12 @@ class Group < Namespace
     max_member_access_for_user(user) >= min_access_level
   end
 
+  def member_of_self_or_descendant?(user)
+    return false unless user
+
+    members_with_descendants.exists?(user_id: user)
+  end
+
   def has_owner?(user)
     return false unless user
 
@@ -1153,15 +1164,9 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:allow_iframes_in_markdown, type: :wip)
   end
 
-  def work_items_saved_views_enabled?(user = nil)
-    return true if feature_flag_enabled_for_self_or_ancestor?(:work_items_saved_views, type: :wip)
-
-    user.present? && Feature.enabled?(:work_items_saved_views_user, user)
-  end
-
   def work_items_consolidated_list_enabled?(user = nil)
     # work_item_planning_view is the feature flag used to determine whether the consolidated list is enabled or not
-    return true if feature_flag_enabled_for_self_or_ancestor?(:work_item_planning_view, type: :wip)
+    return true if feature_flag_enabled_for_self_or_ancestor?(:work_item_planning_view, type: :beta)
 
     user.present? && Feature.enabled?(:work_items_consolidated_list_user, user)
   end
@@ -1292,8 +1297,7 @@ class Group < Namespace
 
   def unarchive_descendants!
     NamespaceSetting.where(namespace_id: descendant_ids, archived: true).update_all(archived: false)
-    Namespace.where(id: descendant_ids, state: Namespaces::Stateful::STATES[:archived])
-             .update_all(state: Namespaces::Stateful::STATES[:ancestor_inherited])
+    Namespace.where(id: descendant_ids, state: :archived).update_all(state: :ancestor_inherited)
   end
 
   def unarchive_all_projects!
@@ -1302,8 +1306,7 @@ class Group < Namespace
       .where("namespaces.traversal_ids @> '{?}'", id)
 
     archived_projects.where(archived: true).update_all(archived: false)
-    Namespace.where(id: archived_projects.select(:project_namespace_id), state: Namespaces::Stateful::STATES[:archived])
-             .update_all(state: Namespaces::Stateful::STATES[:ancestor_inherited])
+    Namespace.where(id: archived_projects.select(:project_namespace_id), state: :archived).update_all(state: :ancestor_inherited)
   end
 
   private

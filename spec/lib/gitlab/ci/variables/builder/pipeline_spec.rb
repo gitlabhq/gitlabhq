@@ -37,6 +37,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
           CI_COMMIT_REF_PROTECTED
           CI_COMMIT_TIMESTAMP
           CI_COMMIT_AUTHOR
+          CI_COMMIT_USER_LOGIN
         ])
       end
     end
@@ -172,6 +173,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
           CI_COMMIT_REF_PROTECTED
           CI_COMMIT_TIMESTAMP
           CI_COMMIT_AUTHOR
+          CI_COMMIT_USER_LOGIN
           CI_COMMIT_TAG
           CI_COMMIT_TAG_MESSAGE
         ])
@@ -579,7 +581,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipe
             'CI_COMMIT_DESCRIPTION',
             'CI_COMMIT_REF_PROTECTED',
             'CI_COMMIT_TIMESTAMP',
-            'CI_COMMIT_AUTHOR')
+            'CI_COMMIT_AUTHOR',
+            'CI_COMMIT_USER_LOGIN')
       end
     end
   end

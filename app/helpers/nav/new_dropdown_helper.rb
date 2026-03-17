@@ -73,6 +73,7 @@ module Nav
       end
 
       menu_items.push(create_epic_menu_item(group))
+      menu_items.push(create_group_wiki_menu_item(group))
 
       if can?(current_user, :admin_group_member, group)
         menu_items.push(invite_members_menu_item(partial: 'groups/invite_members_top_nav_link'))
@@ -129,6 +130,21 @@ module Nav
             href: project_new_merge_request_path(merge_project),
             data: {
               track_action: 'click_link_new_mr',
+              track_label: 'plus_menu_dropdown',
+              track_property: 'navigation_top'
+            }
+          )
+        )
+      end
+
+      if can?(current_user, :create_wiki, project)
+        menu_items.push(
+          ::Gitlab::Nav::TopNavMenuItem.build(
+            id: 'new_wiki_page',
+            title: _('New wiki page'),
+            href: project_wikis_new_path(project),
+            data: {
+              track_action: 'click_link_new_project_wiki_page',
               track_label: 'plus_menu_dropdown',
               track_property: 'navigation_top'
             }
@@ -252,6 +268,11 @@ module Nav
 
     # Overridden in EE
     def create_epic_menu_item(group)
+      nil
+    end
+
+    # Overridden in EE
+    def create_group_wiki_menu_item(group)
       nil
     end
   end

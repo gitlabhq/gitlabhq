@@ -89,7 +89,13 @@ module Resolvers
       argument :updated_before, Types::TimeType,
         required: false,
         description: 'Issues updated before the date.'
+      argument :work_item_type_ids,
+        [::Types::GlobalIDType[::WorkItems::Type]],
+        required: false,
+        description: 'Filter issues by work item type global IDs.',
+        prepare: ->(global_ids, _ctx) { global_ids.map(&:model_id) }
 
+      validates mutually_exclusive: [:issue_types, :work_item_type_ids]
       validates mutually_exclusive: [:assignee_usernames, :assignee_username, :assignee_wildcard_id]
       validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
       validates mutually_exclusive: [:release_tag, :release_tag_wildcard_id]
@@ -115,7 +121,7 @@ module Resolvers
       private
 
       def prepare_finder_params(args)
-        params = super(args)
+        params = super
         params[:not] = params[:not].to_h if params[:not]
         params[:or] = params[:or].to_h if params[:or]
         params[:iids] ||= [params.delete(:iid)].compact if params[:iid]

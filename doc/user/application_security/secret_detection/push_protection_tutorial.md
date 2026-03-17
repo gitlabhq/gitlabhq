@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Secret Detection
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Protect your project with secret push protection'
 ---
 
@@ -22,11 +22,11 @@ You'll also learn how to skip secret push protection, in case you need to bypass
 This tutorial is adapted from the following GitLab Unfiltered videos:
 
 - [Introduction to Secret Push Protection](https://www.youtube.com/watch?v=SFVuKx3hwNI)
-<!-- Video published on 2024-06-21 -->
+  <!-- Video published on 2024-06-21 -->
 - [Configuration - Enabling Secret Push Protection for your project](https://www.youtube.com/watch?v=t1DJN6Vsmp0)
-<!-- Video published on 2024-06-23 -->
+  <!-- Video published on 2024-06-23 -->
 - [Skip Secret Push Protection](https://www.youtube.com/watch?v=wBAhe_d2DkQ)
-<!-- Video published on 2024-06-04 -->
+  <!-- Video published on 2024-06-04 -->
 
 ## Before you begin
 
@@ -44,8 +44,8 @@ Additionally, on GitLab Self-Managed only, ensure secret push protection is
 To use secret push protection, you need to enable it for each project you want to protect.
 Let's start by enabling it in a test project.
 
-1. On the top bar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Secure** > **Security configuration**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Secure** > **Security configuration**.
 1. Turn on the **Secret push protection** toggle.
 
 Next, you'll test secret push protection.
@@ -82,7 +82,6 @@ Let's test this feature by adding the fake secret `glpat-12345678901234567890` t
    ```
 
    The secret is now entered into the commit history. Secret push protection doesn't stop you from committing a secret; it only alerts you when you push.
-
 1. Push the changes to GitLab. You should see something like this:
 
    ```shell

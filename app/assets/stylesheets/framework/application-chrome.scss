@@ -39,13 +39,6 @@
     @apply gl-gap-2-5; //= 6px
   }
 
-  // Disable global bootstrap modal backdrop when using panels
-  .modal-open:has(.panel-content .modal.show) {
-    .modal-backdrop {
-      display: none;
-    }
-  }
-
   // When using panels, remove top padding
   &.page-with-panels .layout-page {
     @apply gl-pt-0 #{!important};

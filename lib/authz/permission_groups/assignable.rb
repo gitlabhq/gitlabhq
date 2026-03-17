@@ -2,10 +2,7 @@
 
 module Authz
   module PermissionGroups
-    class Assignable
-      include Authz::Concerns::YamlPermission
-      include Gitlab::Utils::StrongMemoize
-
+    class Assignable < Base
       BASE_PATH = 'config/authz/permission_groups/assignable_permissions'
 
       class << self
@@ -24,10 +21,14 @@ module Authz
         def definitions
           all.values
         end
+
+        def available_definitions
+          definitions.reject(&:deprecated?)
+        end
       end
 
-      def permissions
-        Array(definition[:permissions]).map(&:to_sym).uniq
+      def deprecated?
+        definition[:deprecated] == true
       end
 
       def category

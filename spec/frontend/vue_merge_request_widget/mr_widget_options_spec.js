@@ -337,7 +337,6 @@ describe('MrWidgetOptions', () => {
               human_access: null,
               merge_request_add_ci_config_path: 'test',
               has_ci: false,
-              is_dismissed_suggest_pipeline: false,
             },
           });
           expect(findSuggestPipeline().props('humanAccess')).toBe('');
@@ -348,7 +347,6 @@ describe('MrWidgetOptions', () => {
               human_access: 'Owner',
               merge_request_add_ci_config_path: 'test',
               has_ci: false,
-              is_dismissed_suggest_pipeline: false,
             },
           });
           expect(findSuggestPipeline().props('humanAccess')).toBe('owner');
@@ -770,22 +768,14 @@ describe('MrWidgetOptions', () => {
         expect(findSuggestPipeline().exists()).toBe(true);
       });
 
-      it.each([
-        { is_dismissed_suggest_pipeline: true },
-        { merge_request_add_ci_config_path: null },
-        { has_ci: true },
-      ])('with %s, should not suggest pipeline', async (obj) => {
-        await createComponent({ updatedMrData: { has_ci: false, ...obj } });
+      it.each([{ merge_request_add_ci_config_path: null }, { has_ci: true }])(
+        'with %s, should not suggest pipeline',
+        async (obj) => {
+          await createComponent({ updatedMrData: { has_ci: false, ...obj } });
 
-        expect(findSuggestPipeline().exists()).toBe(false);
-      });
-
-      it('should allow dismiss of the suggest pipeline message', async () => {
-        await createComponent({ updatedMrData: { has_ci: false } });
-        await findSuggestPipeline().vm.$emit('dismiss');
-
-        expect(findSuggestPipeline().exists()).toBe(false);
-      });
+          expect(findSuggestPipeline().exists()).toBe(false);
+        },
+      );
     });
   });
 

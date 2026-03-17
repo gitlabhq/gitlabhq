@@ -469,6 +469,7 @@ export default {
       role="search"
       :aria-label="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
       class="gl-relative gl-w-full gl-rounded-lg gl-pb-0"
+      @submit.prevent="submitSearch"
     >
       <div class="gl-relative">
         <div

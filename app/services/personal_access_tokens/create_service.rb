@@ -64,7 +64,7 @@ module PersonalAccessTokens
     end
 
     def creation_permitted?
-      Ability.allowed?(current_user, :create_user_personal_access_token, target_user)
+      Ability.allowed?(current_user, :create_personal_access_token, target_user)
     end
 
     def log_event(token)

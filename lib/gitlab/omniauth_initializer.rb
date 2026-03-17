@@ -133,7 +133,7 @@ module Gitlab
 
     # We override this in EE
     def build_omniauth_customized_providers
-      %i[bitbucket jwt]
+      %i[bitbucket jwt cells_aware_openid_connect]
     end
 
     def setup_provider(provider)

@@ -169,6 +169,24 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
           expect(batch.reload).to be_failed
         end
       end
+
+      context 'when batch is not found' do
+        let(:non_existent_batch_id) { non_existing_record_id }
+
+        it 'logs a warning and does not execute any side effects' do
+          expect_next_instance_of(BulkImports::Logger) do |logger|
+            expect(logger).to receive(:warn).with(
+              class: described_class.name,
+              batch_id: non_existent_batch_id,
+              message: 'BulkImports::BatchTracker not found'
+            )
+          end
+
+          expect(BulkImports::FinishBatchedPipelineWorker).not_to receive(:perform_async)
+
+          described_class.new.perform(non_existent_batch_id)
+        end
+      end
     end
 
     context 'when exclusive lease cannot be obtained' do
@@ -208,6 +226,29 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
 
           expect(batch.reload).to be_started
         end
+      end
+    end
+  end
+
+  describe '#perform_failure' do
+    context 'when batch is not found' do
+      let(:non_existent_batch_id) { non_existing_record_id }
+
+      it 'logs a warning and returns early' do
+        exception = StandardError.new('Test error')
+
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:warn).with(
+            class: described_class.name,
+            batch_id: non_existent_batch_id,
+            message: 'BulkImports::BatchTracker not found'
+          )
+        end
+
+        expect(BulkImports::Failure).not_to receive(:create)
+        expect(BulkImports::FinishBatchedPipelineWorker).not_to receive(:perform_async)
+
+        worker.perform_failure(non_existent_batch_id, exception)
       end
     end
   end
@@ -297,6 +338,27 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
 
       expect(schema).to eq(:gitlab_main_org)
       expect(table).to eq(['labels'])
+    end
+
+    context 'when batch is not found' do
+      let(:non_existent_batch_id) { non_existing_record_id }
+
+      it 'logs a warning and returns default schema and tables' do
+        block = described_class.database_health_check_attrs[:block]
+
+        expect_next_instance_of(BulkImports::Logger) do |logger|
+          expect(logger).to receive(:warn).with(
+            class: described_class.name,
+            batch_id: non_existent_batch_id,
+            message: 'BulkImports::BatchTracker not found'
+          )
+        end
+
+        schema, table = block.call([[non_existent_batch_id]])
+
+        expect(schema).to be_nil
+        expect(table).to be_nil
+      end
     end
 
     context 'when `bulk_import_deferred_workers` feature flag is disabled' do

@@ -7,7 +7,7 @@ class CleanupInvalidWebHookLogsDailyAsyncIndex < Gitlab::Database::Migration[2.3
 
   TABLE_NAME = :web_hook_logs_daily
   COLUMN_NAMES = %i[web_hook_id response_status created_at]
-  OLD_INDEX_NAME = 'index_web_hook_logs_daily_on_web_hook_id_response_status_created_at'
+  OLD_INDEX_NAME = 'idx_web_hook_logs_daily_on_hook_id_resp_status_created_at'
 
   def up
     # Remove async index with invalid name (68 chars, exceeds PostgreSQL's 63 char limit)

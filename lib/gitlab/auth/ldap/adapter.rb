@@ -6,6 +6,13 @@ module Gitlab
       class Adapter
         SEARCH_RETRY_FACTOR = [1, 1, 2, 3].freeze
         MAX_SEARCH_RETRIES = Rails.env.test? ? 1 : SEARCH_RETRY_FACTOR.size
+        NON_ERROR_LDAP_RESPONSE_CODES = [
+          0,  # SUCCESS
+          3,  # TIMELIMIT_EXCEEDED
+          4,  # SIZELIMIT_EXCEEDED
+          10, # REFERRAL
+          32  # NO_SUCH_OBJECT
+        ].freeze
 
         attr_reader :provider, :ldap
 
@@ -138,9 +145,12 @@ module Gitlab
             raise Net::LDAP::Error, "Got empty results with response code: #{response.code}, message: #{response.message}"
           end
 
-          unless response.code == 0
-            Gitlab::AppLogger.warn("LDAP search error: #{response.message}")
-          end
+          return if NON_ERROR_LDAP_RESPONSE_CODES.include?(response.code)
+
+          error_message = "LDAP search error code: #{response.code}, message: #{response.message}"
+          Gitlab::AppLogger.warn(error_message)
+
+          raise Net::LDAP::Error, error_message if Feature.enabled?(:ldap_raise_on_search_error, :instance)
         end
       end
     end

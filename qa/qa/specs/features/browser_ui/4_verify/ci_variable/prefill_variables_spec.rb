@@ -53,18 +53,18 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378977' do
         Page::Project::Pipeline::New.perform do |new|
           aggregate_failures do
-            expect(new).to have_field('Input variable key', with: 'TEST1')
-            expect(new).to have_field('Input variable value', with: prefill_variable_value1)
+            expect(new).to have_field('Variable key', with: 'TEST1')
+            expect(new).to have_field('Variable value', with: prefill_variable_value1)
             expect(new).to have_content(prefill_variable_description1)
 
-            expect(new).to have_field('Input variable key', with: 'TEST2')
-            expect(new).to have_field('Input variable value', with: '')
+            expect(new).to have_field('Variable key', with: 'TEST2')
+            expect(new).to have_field('Variable value', with: '')
             expect(new).to have_content(prefill_variable_description2)
 
-            expect(new).not_to have_field('Input variable key', with: 'TEST3')
-            expect(new).not_to have_field('Input variable key', with: 'TEST4')
+            expect(new).not_to have_field('Variable key', with: 'TEST3')
+            expect(new).not_to have_field('Variable key', with: 'TEST4')
 
-            expect(new).to have_field('Input variable key', with: 'TEST5')
+            expect(new).to have_field('Variable key', with: 'TEST5')
             expect(new).to have_content(prefill_variable_description5)
           end
         end

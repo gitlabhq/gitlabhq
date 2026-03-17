@@ -72,7 +72,10 @@ export default {
         v-for="rolledUpCount in filteredRollUpCountsByType"
         :key="rolledUpCount.workItemType.name"
       >
-        <work-item-type-icon :work-item-type="rolledUpCount.workItemType.name" />
+        <work-item-type-icon
+          :work-item-type="rolledUpCount.workItemType.name"
+          :type-icon-name="rolledUpCount.workItemType.iconName"
+        />
         {{ rolledUpCount.countsByState.all }}
       </span>
     </span>

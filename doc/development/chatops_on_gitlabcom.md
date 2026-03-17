@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: ChatOps on GitLab.com
 ---
 
@@ -27,7 +27,6 @@ To request access to ChatOps on GitLab.com:
 1. Confirm that your username in [Internal GitLab for Operations](https://ops.gitlab.net/)
    is the same as your username in [GitLab.com](https://gitlab.com). If the usernames
    don't match, update the username in [User Settings/Account for the Ops instance](https://ops.gitlab.net/-/profile/account). Matching usernames are required to reduce the administrative effort of running multiple platforms. Matching usernames also help with tasks like managing access requests and offboarding.
-
 1. Reach out to your onboarding buddy or manager and request they add you to the `ops` ChatOps project by running the following command in the `#chat-ops-test` Slack channel, replacing `<username>` with your GitLab.com username (if they don't have access, you can ask in the #infrastructure-lounge Slack channel ):
    `/chatops run member add <username> gitlab-com/chatops --ops`
 
@@ -47,7 +46,6 @@ To request access to ChatOps on GitLab.com:
 
    The bot guides you through the process of allowing your user to execute
    commands in the `#chat-ops-test` Slack channel.
-
 1. If you had to change your username for GitLab.com on the first step, make sure
    [to reflect this information](https://gitlab.com/gitlab-com/www-gitlab-com#adding-yourself-to-the-team-page)
    on [the team page](https://about.gitlab.com/company/team/).

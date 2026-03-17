@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Web API fuzz testing
 description: Testing, security, vulnerabilities, automation, and errors.
 ---
@@ -63,8 +63,8 @@ To enable API fuzzing:
 
 To view the output of a security scan:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build** > **Pipelines**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. Select a vulnerability to view its details, including:

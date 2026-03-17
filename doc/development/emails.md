@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Working with email in development
 ---
 
@@ -47,7 +47,6 @@ See the [Rails guides](https://guides.rubyonrails.org/action_mailer_basics.html#
 ## Incoming email
 
 1. Go to the GitLab installation directory.
-
 1. Find the `incoming_email` section in `config/gitlab.yml`, enable the
    feature and fill in the details for your specific IMAP server and email
    account:
@@ -92,9 +91,7 @@ See the [Rails guides](https://guides.rubyonrails.org/action_mailer_basics.html#
    ```
 
    As mentioned, the part after `+` is ignored, and this message is sent to the mailbox for `gitlab-incoming@gmail.com`.
-
 1. Read the [MailRoom Gem updates](#mailroom-gem-updates) section for more details before you proceed to make sure you have the right version of MailRoom installed. In summary, you need to update the `gitlab-mail_room` version in the `Gemfile` to the latest `gitlab-mail_room` temporarily and run `bundle install`. **Do not commit** this change as it's a temporary workaround.
-
 1. Run this command in the GitLab root directory to launch `mail_room`:
 
    ```shell

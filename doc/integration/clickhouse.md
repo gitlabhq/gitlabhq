@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: ClickHouse
 ---
@@ -172,7 +172,6 @@ Before configuring the database, verify ClickHouse is installed and accessible:
    ```
 
    If ClickHouse is running, you see the version number (for example, `24.3.1.12`).
-
 1. Verify you can connect with credentials:
 
    ```shell
@@ -633,7 +632,6 @@ To ensure the security of your data and ensure audit ability, use the following 
 - TLS Encryption: Configure ClickHouse servers to [use TLS encryption](#network-security) to validate connections.
 
   When configuring the connection URL in GitLab, you should use the `https://` protocol (for example, `https://clickhouse.example.com:8443`) to specify this.
-
 - IP Allow lists: Restrict access to the ClickHouse port (default `8443` or `9440`) to only the GitLab application nodes and other authorized networks.
 
 ### Audit logging
@@ -706,7 +704,8 @@ Alternative recommendation for ClickHouse for GitLab Self-Managed deployment:
 - Azure: Standard_D8ps_v6 (8 vCPU, 32 GB)
 - Storage: 100 GB with medium performance tier
 
-Note: HA deployments not cost-effective at this scale.
+> [!note]
+> HA deployments are not cost-effective at this scale.
 
 ### 5K Users
 
@@ -743,13 +742,11 @@ Recommendations for ClickHouse for GitLab Self-Managed deployment:
   - AWS: m8g.8xlarge (32 vCPU, 128 GB)
   - GCP: c4a-standard-32 or n4-standard-32 (32 vCPU, 128 GB)
   - Azure: Standard_D32ps_v6 (32 vCPU, 128 GB)
-
 - HA Deployment:
 
   - AWS: 3 × m8g.4xlarge (16 vCPU, 64 GB each)
   - GCP: 3 × c4a-standard-16 or 3 × n4-standard-16 (16 vCPU, 64 GB each)
   - Azure: 3 x Standard_D16ps_v6 (16 vCPU, 64 GB each)
-
 - Storage: 400 GB per node with high performance tier.
 
 ### 50K Users
@@ -763,13 +760,11 @@ Recommendations for ClickHouse for GitLab Self-Managed deployment:
   - AWS: m8g.8xlarge (32 vCPU, 128 GB)
   - GCP: c4a-standard-32 or n4-standard-32 (32 vCPU, 128 GB)
   - Azure: Standard_D32ps_v6 (32 vCPU, 128 GB)
-
 - HA Deployment (Preferred):
 
   - AWS: 3 × m8g.4xlarge (16 vCPU, 64 GB each)
   - GCP: 3 × c4a-standard-16 or 3 × n4-standard-16 (16 vCPU, 64 GB each)
   - Azure: 3 x Standard_D16ps_v6 (16 vCPU, 64 GB each)
-
 - Storage: 1000 GB per node with high performance tier.
 
 #### HA considerations for ClickHouse for GitLab Self-Managed deployment

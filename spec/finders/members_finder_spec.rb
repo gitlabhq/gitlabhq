@@ -300,6 +300,23 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
         expect(members.max_by(&:access_level).access_level).to eq(Gitlab::Access::REPORTER)
       end
     end
+
+    context 'when user has access request in ancestor of invited group' do
+      it 'excludes access request records and returns valid membership' do
+        create(:project_group_link, project: project, group: nested_linked_group)
+        linked_group.request_access(user3)
+
+        expect(members).to contain_exactly(linked_group_member, nested_linked_group_member)
+      end
+
+      it 'returns valid membership when user has both membership in invited group and access request in ancestor' do
+        create(:project_group_link, project: project, group: nested_linked_group)
+        nested_linked_group.add_developer(user3)
+        linked_group.request_access(user3)
+
+        expect(members.map(&:user)).to include(user3)
+      end
+    end
   end
 
   context 'when filtering by max role' do

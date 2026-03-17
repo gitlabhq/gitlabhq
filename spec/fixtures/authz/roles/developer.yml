@@ -1,0 +1,15 @@
+---
+name: developer
+description: Test developer role
+inherits_from:
+  - reporter
+project:
+  permissions: []
+  raw_permissions:
+    - push_code
+    - create_pipeline
+group:
+  permissions: []
+  raw_permissions:
+    - create_package
+    - read_cluster_agent

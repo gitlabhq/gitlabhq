@@ -94,6 +94,10 @@
               margin-left: $note-spacing-reply-left;
             }
           }
+
+          &:last-of-type .timeline-entry-inner {
+            @apply gl-rounded-b-lg;
+          }
         }
       }
 

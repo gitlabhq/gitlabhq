@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Configure Service Desk
 ---
 
@@ -28,7 +28,7 @@ Prerequisites:
 
 To enable Service Desk in your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Turn on the **Activate Service Desk** toggle.
@@ -174,7 +174,7 @@ Prerequisites:
 
 To use a custom description template with Service Desk:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. From the dropdown list **Template to append to all Service Desk issues**, search or select your template.
@@ -197,7 +197,7 @@ this name in the `From` header. The default display name is `GitLab Support Bot`
 
 To edit the custom email display name:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Below **Email display name**, enter a new name.
@@ -224,7 +224,7 @@ Prerequisites:
 
 To disable this setting:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Clear the **New tickets are confidential by default** checkbox.
@@ -252,7 +252,7 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Select the **Reopen issues on a new note from an external participant** checkbox.
@@ -314,7 +314,7 @@ The custom email address you want to use must meet all of the following requirem
 
 Configure and verify a custom email address when you want to send Service Desk emails using your own email address.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk** and find the **Configure a custom email address** section.
 1. Note the presented Service Desk address of this project, and with your email provider
@@ -412,7 +412,7 @@ After the custom email address has been verified, administrators can enable or d
 
 To **enable** the custom email address:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Turn on the **Enable custom email** toggle.
@@ -420,7 +420,7 @@ To **enable** the custom email address:
 
 To **disable** the custom email address:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Turn off the **Enable custom email** toggle.
@@ -479,7 +479,7 @@ The following steps require moving between GitLab and Google Workspace.
 
 In GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**
 1. Expand **Service Desk**.
 1. Note the email address below **Service Desk email address to forward emails to**.
@@ -495,10 +495,10 @@ In Google Workspace:
 
 In GitLab:
 
-1. Go to **Issues** of the project and wait for a new issue to be created from the confirmation
-   email from Google.
-1. Open the issue and note the confirmation code.
-1. (Optional) Delete the issue.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
+   Wait for a new issue to be created from the confirmation email from Google.
+1. Select the issue and note the confirmation code.
+1. Optional. Delete the issue.
 
 In Google Workspace:
 
@@ -514,7 +514,7 @@ to use with Service Desk.
 
 In GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**
 1. Expand **Service Desk** and find the custom email settings.
 1. Complete the fields:
@@ -619,7 +619,7 @@ The following steps require moving between GitLab and Microsoft 365 admin center
 
 In GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**
 1. Expand **Service Desk**.
 1. Note the email address below **Service Desk email address to forward emails to** without the
@@ -652,7 +652,7 @@ to use with Service Desk.
 
 In GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**
 1. Expand **Service Desk** and find the custom email settings.
 1. Complete the fields:
@@ -920,34 +920,34 @@ Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
 1. Edit `/etc/gitlab/gitlab.rb` and add the following lines, substituting
    the values you want:
 
-  ```ruby
-  gitlab_rails['service_desk_email_enabled'] = true
-  gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@example.onmicrosoft.com"
-  gitlab_rails['service_desk_email_email'] = "project_contact@example.onmicrosoft.com"
-  gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
-  gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
-  gitlab_rails['service_desk_email_inbox_method'] = 'microsoft_graph'
-  gitlab_rails['service_desk_email_inbox_options'] = {
-    'tenant_id': '<YOUR-TENANT-ID>',
-    'client_id': '<YOUR-CLIENT-ID>',
-    'client_secret': '<YOUR-CLIENT-SECRET>',
-    'poll_interval': 60  # Optional
-  }
-  ```
+   ```ruby
+   gitlab_rails['service_desk_email_enabled'] = true
+   gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@example.onmicrosoft.com"
+   gitlab_rails['service_desk_email_email'] = "project_contact@example.onmicrosoft.com"
+   gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
+   gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
+   gitlab_rails['service_desk_email_inbox_method'] = 'microsoft_graph'
+   gitlab_rails['service_desk_email_inbox_options'] = {
+      'tenant_id': '<YOUR-TENANT-ID>',
+      'client_id': '<YOUR-CLIENT-ID>',
+      'client_secret': '<YOUR-CLIENT-SECRET>',
+      'poll_interval': 60  # Optional
+   }
+   ```
 
-  For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
-  configure the `azure_ad_endpoint` and `graph_endpoint` settings. For example:
+   For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
+   configure the `azure_ad_endpoint` and `graph_endpoint` settings. For example:
 
-  ```ruby
-  gitlab_rails['service_desk_email_inbox_options'] = {
-    'azure_ad_endpoint': 'https://login.microsoftonline.us',
-    'graph_endpoint': 'https://graph.microsoft.us',
-    'tenant_id': '<YOUR-TENANT-ID>',
-    'client_id': '<YOUR-CLIENT-ID>',
-    'client_secret': '<YOUR-CLIENT-SECRET>',
-    'poll_interval': 60  # Optional
-  }
-  ```
+   ```ruby
+   gitlab_rails['service_desk_email_inbox_options'] = {
+      'azure_ad_endpoint': 'https://login.microsoftonline.us',
+      'graph_endpoint': 'https://graph.microsoft.us',
+      'tenant_id': '<YOUR-TENANT-ID>',
+      'client_id': '<YOUR-CLIENT-ID>',
+      'client_secret': '<YOUR-CLIENT-SECRET>',
+      'poll_interval': 60  # Optional
+   }
+   ```
 
 {{< /tab >}}
 
@@ -996,8 +996,8 @@ Graph API instead of IMAP. Set up an OAuth 2.0 application for Microsoft Graph
          key: authToken
    ```
 
-    For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
-configure the `azureAdEndpoint` and `graphEndpoint` settings. These fields are case-sensitive:
+   For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
+   configure the `azureAdEndpoint` and `graphEndpoint` settings. These fields are case-sensitive:
 
    ```yaml
    global:
@@ -1103,8 +1103,8 @@ configure the `azure_ad_endpoint` and `graph_endpoint` settings:
          poll_interval: 60  # Optional
    ```
 
-  For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
-  configure the `azure_ad_endpoint` and `graph_endpoint` settings. For example:
+   For Microsoft Cloud for US Government or [other Azure deployments](https://learn.microsoft.com/en-us/graph/deployments),
+   configure the `azure_ad_endpoint` and `graph_endpoint` settings. For example:
 
    ```yaml
      service_desk_email:
@@ -1142,7 +1142,7 @@ Prerequisites:
 
 - You must have configured a [Service Desk alias email](#configure-service-desk-alias-email).
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Service Desk**.
 1. Below **Email address suffix**, enter the suffix to use.

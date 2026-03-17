@@ -17,7 +17,8 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :authorize_read_code!
   before_action :authorize_read_pipeline!, only: [:pipelines]
   before_action :commit
-  before_action :verify_commit, only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]
+  before_action :verify_commit,
+    only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests, :discussions, :create_discussions]
   before_action :define_commit_vars, only: [:diff_for_path, :diff_files, :pipelines, :merge_requests]
   before_action :define_environment,
     only: [:show, :diff_for_path, :diff_files, :pipelines, :merge_requests]

@@ -563,15 +563,4 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
       it { expect(default_organization.full_path).to eq('') }
     end
   end
-
-  describe 'Feature flagged #scoped_paths?' do
-    # The FF enabled cases are above.
-    context 'when organization_scoped_paths feature flag is disabled' do
-      before do
-        stub_feature_flags(organization_scoped_paths: false)
-      end
-
-      it { expect(organization.scoped_paths?).to eq(false) }
-    end
-  end
 end

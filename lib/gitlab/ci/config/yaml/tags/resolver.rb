@@ -21,24 +21,13 @@ module Gitlab
             end
 
             def deep_resolve(object)
-              if ::Feature.enabled?(:ci_deep_resolve_reference_array_and_hash, ::Feature.current_request)
-                case object
-                when Array
-                  object.map(&method(:deep_resolve))
-                when Hash
-                  object.transform_values(&method(:deep_resolve))
-                else
-                  resolve_wrapper(object)
-                end
+              case object
+              when Array
+                object.map(&method(:deep_resolve))
+              when Hash
+                object.transform_values(&method(:deep_resolve))
               else
-                case object
-                when Array
-                  object.map(&method(:resolve_wrapper))
-                when Hash
-                  object.deep_transform_values(&method(:resolve_wrapper))
-                else
-                  resolve_wrapper(object)
-                end
+                resolve_wrapper(object)
               end
             end
 

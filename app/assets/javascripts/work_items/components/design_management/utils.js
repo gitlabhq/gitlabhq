@@ -1,4 +1,4 @@
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { findDesignsWidget } from '../../utils';
 
 export const findVersionId = (id) => (id.match('::Version/(.+$)') || [])[1];

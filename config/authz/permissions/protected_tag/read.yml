@@ -1,5 +1,3 @@
 ---
 name: read_protected_tag
 description: Grants the ability to read protected tags
-boundaries:
-  - project

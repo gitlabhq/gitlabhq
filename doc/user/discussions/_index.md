@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use comments to discuss work, mention users, and suggest changes.
 title: Comments and threads
 description: Mentions, locked discussions, internal notes, and thread resolution.
@@ -66,6 +66,7 @@ When you mention someone, in a work item or merge request, they become a [partic
 {{< history >}}
 
 - [Flag](../../administration/feature_flags/_index.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
+- [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/415280) in GitLab 18.8.5.
 
 {{< /history >}}
 
@@ -91,9 +92,10 @@ Notifications and mentions can be disabled in
 When you mention a group in a comment, every member of the group gets a to-do item
 added to their to-do list.
 
-1. On the top bar, select **Search or go to** and find your project.
-1. For merge requests, select **Code** > **Merge requests**, and find your merge request.
-1. For issues, select **Plan** > **Issues**, and find your issue.
+1. In the top bar, select **Search or go to** and find your project.
+1. Go to your merge request or issue:
+   - For merge requests, select **Code** > **Merge requests**, and find your merge request.
+   - For issues, select **Plan** > **Work items**, and find your issue.
 1. In a comment, type `@` followed by the user, group, or subgroup namespace.
    For example, `@alex`, `@alex-team`, or `@alex-team/marketing`.
 1. Select **Comment**.
@@ -111,15 +113,15 @@ When you add comments to a merge request diff, these comments persist, even when
 
 To add a commit diff comment:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests**, and find your merge request.
 1. Select the **Commits** tab, then select the commit message.
 1. Start a comment:
    - To comment on an entire file, find the file you want to comment on and,
      in the file header, select **Comment on this file** ({{< icon name="comment" >}}).
    - To comment on specific lines, find the line number you want to comment on. Hover over the line number,
-   then select **Comment** ({{< icon name="comment" >}}). To select more lines, drag the
-   **Comment** ({{< icon name="comment" >}}) icon.
+     then select **Comment** ({{< icon name="comment" >}}). To select more lines,
+     drag the **Comment** ({{< icon name="comment" >}}) icon.
 1. Enter your comment.
 1. Submit your comment:
    - To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
@@ -169,13 +171,23 @@ To edit a comment:
 
 ### Edit a comment to add a mention
 
+{{< history >}}
+
+- Sending notification emails [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224837) in GitLab 18.10 [with a flag](../../administration/feature_flags/_index.md) named `email_on_added_mentions`. Disabled by default.
+
+{{< /history >}}
+
+> [!flag]
+> The availability of this feature is controlled by a feature flag.
+> For more information, see the history.
+
 By default, when you mention a user, GitLab [creates a to-do item](../todos.md#actions-that-create-to-do-items)
 for them, and sends them a [notification email](../profile/notifications.md).
 
 If you edit an existing comment to add a user mention that wasn't there before, GitLab:
 
 - Creates a to-do item for the mentioned user.
-- Does not send a notification email.
+- When the `email_on_added_mentions` feature flag is enabled, sends a notification email to the mentioned user.
 
 ## Prevent comments by locking the discussion
 
@@ -189,9 +201,10 @@ Prerequisites:
 
 To lock an issue or merge request:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. For merge requests, select **Code** > **Merge requests**, and find your merge request.
-1. For issues, select **Plan** > **Issues**, and find your issue.
+1. In the top bar, select **Search or go to** and find your project.
+1. Go to your merge request or issue:
+   - For merge requests, select **Code** > **Merge requests**, and find your merge request.
+   - For issues, select **Plan** > **Work items**, and find your issue.
 1. In the upper-right corner, select **Merge request actions** or **Issue actions**
    ({{< icon name="ellipsis_v" >}}), then select **Lock discussion**.
 

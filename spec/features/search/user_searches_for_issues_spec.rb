@@ -17,6 +17,7 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
 
   context 'when signed in' do
     before do
+      stub_feature_flags(search_scope_work_item: false)
       project.add_maintainer(user)
       sign_in(user)
 
@@ -130,24 +131,98 @@ RSpec.describe 'User searches for issues', :js, :clean_gitlab_redis_rate_limitin
     end
   end
 
+  context 'when signed in with work_items scope enabled' do
+    before do
+      stub_feature_flags(search_scope_work_item: true)
+      project.add_maintainer(user)
+      sign_in(user)
+
+      visit(search_path)
+    end
+
+    def search_for_work_items(search)
+      submit_dashboard_search(search)
+      select_search_scope('Work items')
+    end
+
+    it 'finds an issue as work item' do
+      search_for_work_items(issue1.title)
+
+      page.within('.results') do
+        expect(page).to have_link(issue1.title)
+        expect(page).not_to have_link(issue2.title)
+      end
+    end
+
+    it 'shows confidential icon for confidential work items' do
+      search_for_work_items(issue2.title)
+
+      page.within('.results') do
+        expect(page).to have_css('[data-testid="eye-slash-icon"]')
+      end
+    end
+
+    it 'shows correct badge for open work items' do
+      search_for_work_items(issue1.title)
+
+      page.within('.results') do
+        expect(page).to have_css('.badge-success')
+        expect(page).not_to have_css('.badge-info')
+      end
+    end
+
+    it 'shows correct badge for closed work items' do
+      search_for_work_items(issue2.title)
+
+      page.within('.results') do
+        expect(page).not_to have_css('.badge-success')
+        expect(page).to have_css('.badge-info')
+      end
+    end
+  end
+
   context 'when signed out' do
     context 'when global_search_block_anonymous_searches_enabled is disabled' do
       let_it_be(:project) { create(:project, :public) }
 
-      before do
-        stub_application_setting(global_search_block_anonymous_searches_enabled: false)
+      context 'when search_scope_work_item feature flag is disabled' do
+        before do
+          stub_feature_flags(search_scope_work_item: false)
+          stub_application_setting(global_search_block_anonymous_searches_enabled: false)
 
-        visit(search_path)
+          visit(search_path)
+        end
+
+        include_examples 'top right search form'
+
+        it 'finds an issue' do
+          search_for_issue(issue1.title)
+
+          page.within('.results') do
+            expect(page).to have_link(issue1.title)
+            expect(page).not_to have_link(issue2.title)
+          end
+        end
       end
 
-      include_examples 'top right search form'
+      context 'when search_scope_work_item feature flag is enabled' do
+        before do
+          stub_feature_flags(search_scope_work_item: true)
+          stub_application_setting(global_search_block_anonymous_searches_enabled: false)
 
-      it 'finds an issue' do
-        search_for_issue(issue1.title)
+          visit(search_path)
+        end
 
-        page.within('.results') do
-          expect(page).to have_link(issue1.title)
-          expect(page).not_to have_link(issue2.title)
+        include_examples 'top right search form'
+
+        it 'finds a work item' do
+          submit_dashboard_search(issue1.title)
+          select_search_scope('Work items')
+
+          page.within('.results') do
+            expect(page).to have_link(issue1.title)
+            expect(page).not_to have_link(issue2.title)
+          end
         end
       end
     end

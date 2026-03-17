@@ -66,8 +66,11 @@ RSpec.describe Exportable, feature_category: :importers do
             end
           end
 
-          it 'returns string containing all records',
-            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/450510' do
+          it 'returns string including all records' do
+            json = Gitlab::Json.safe_parse(record_json)
+
+            expect(json['notes'].pluck('note'))
+              .to contain_exactly(note1.note, note2.note)
             expect(record_json)
               .to include("\"notes\":[{\"note\":\"#{note1.note}\"},{\"note\":\"#{note2.note}\"}]")
           end

@@ -97,7 +97,6 @@ To automatically create GitLab issues when Jira issues are created, we'll use [J
     | Content-Type | `application/json` |
 
    Set the Authorization header to "Hidden" for security.
-
 1. In the **Custom data** field, enter:
 
    ```json
@@ -108,7 +107,6 @@ To automatically create GitLab issues when Jira issues are created, we'll use [J
    ```
 
    Replace `"VSA-"` with your Jira project prefix (e.g., if your Jira issues are numbered `PROJ-123`, use `"PROJ-"`). The `1000` is a base number that gets added to ensure no conflict with issues that may have been created directly within GitLab itself via the UI - you can adjust this value as needed.
-
 1. Click **Save**, give your automation a descriptive name (e.g., `Jira to GitLab Issue Creation`), and click **Turn it on**.
 
 ### Jira Issue Resolution Workflow

@@ -46,7 +46,8 @@ describe('Copy Code Button', () => {
 
       beforeEach(() => {
         mockObserve = jest.fn();
-        jest.spyOn(window, 'MutationObserver').mockImplementation(() => {
+        jest.spyOn(window, 'MutationObserver').mockImplementation((callback) => {
+          observerCallback = callback;
           return { observe: mockObserve };
         });
       });
@@ -76,6 +77,32 @@ describe('Copy Code Button', () => {
           childList: true,
           subtree: true,
         });
+      });
+
+      it('does not add duplicate buttons when mutations trigger rapidly', () => {
+        global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = 1;
+
+        setHTMLFixture(`
+          <div id="content-body">
+            <pre class="code js-syntax-highlight" lang="javascript">
+              <code>console.log('test');</code>
+            </pre>
+          </div>
+        `);
+
+        const spy = jest.spyOn(document, 'querySelectorAll');
+
+        initCopyCodeButton();
+
+        observerCallback();
+        observerCallback();
+        observerCallback();
+
+        jest.runAllTimers();
+
+        expect(spy).toHaveBeenCalledTimes(1);
+
+        global.JEST_DEBOUNCE_THROTTLE_TIMEOUT = undefined;
       });
     });
 
@@ -137,7 +164,7 @@ describe('Copy Code Button', () => {
       );
       expect(findButton().getAttribute('aria-label')).toEqual('Copy to clipboard');
       expect(findButton().dataset.title).toEqual('Copy to clipboard');
-      expect(findButton().dataset.clipboardTarget).toEqual('pre#code-2');
+      expect(findButton().dataset.clipboardTarget).toMatch(/^pre#code-\d+$/);
 
       expect(document.querySelector(findButton().dataset.clipboardTarget).innerText.trim()).toBe(
         "console.log('test');",

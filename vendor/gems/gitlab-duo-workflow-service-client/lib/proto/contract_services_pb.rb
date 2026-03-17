@@ -18,6 +18,7 @@ module DuoWorkflowService
       rpc :GenerateToken, ::DuoWorkflowService::GenerateTokenRequest, ::DuoWorkflowService::GenerateTokenResponse
       rpc :ListTools, ::DuoWorkflowService::ListToolsRequest, ::DuoWorkflowService::ListToolsResponse
       rpc :ListFlows, ::DuoWorkflowService::ListFlowsRequest, ::DuoWorkflowService::ListFlowsResponse
+      rpc :TrackSelfHostedExecuteWorkflow, stream(::DuoWorkflowService::TrackSelfHostedClientEvent), stream(::DuoWorkflowService::TrackSelfHostedAction)
     end
 
     Stub = Service.rpc_stub_class

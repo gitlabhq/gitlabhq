@@ -91,6 +91,52 @@ RSpec.describe 'OAuth tokens', feature_category: :system_access do
       end
     end
 
+    # Ensuring the valid state of `email_otp_required_after`, by
+    # `set_email_otp_required_after_based_on_restrictions` method, is
+    # tested in depth in spec/models/concerns/users/email_otp_enrollment_spec.rb
+    context 'for ensuring the valid state of `email_otp_required_after`' do
+      context 'when email_otp_required_after is unset despite instance requirement' do
+        let_it_be_with_reload(:user) do
+          create(:user, email_otp_required_after: nil)
+        end
+
+        before do
+          stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+        end
+
+        it 'does not create an access token' do
+          request_oauth_token(user, client_basic_auth_header(client))
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq('invalid_grant')
+        end
+
+        it 'calls set_email_otp_required_after_based_on_restrictions' do
+          allow_next_instance_of(User) do |instance|
+            expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+              .with(save: true).and_call_original
+          end
+
+          request_oauth_token(user, client_basic_auth_header(client))
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        context 'when :email_based_mfa feature flag disabled' do
+          before do
+            stub_feature_flags(email_based_mfa: false)
+          end
+
+          it 'creates an access token' do
+            request_oauth_token(user, client_basic_auth_header(client))
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['access_token']).not_to be_nil
+          end
+        end
+      end
+    end
+
     context 'when user does not have 2FA enabled' do
       context 'when no client credentials provided' do
         context 'with valid credentials' do

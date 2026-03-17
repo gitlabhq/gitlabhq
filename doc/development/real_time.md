@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Build and deploy real-time view components
 ---
 
@@ -259,11 +259,7 @@ module Subscriptions
               description: 'ID of the issue.'
 
     def authorized?(issue_id:)
-      issue = force(GitlabSchema.find_by_gid(issue_id))
-
-      unauthorized! unless issue && Ability.allowed?(current_user, :read_issue, issue)
-
-      true
+      authorize_object_or_gid!(:read_issue, gid: issue_id)
     end
   end
 end

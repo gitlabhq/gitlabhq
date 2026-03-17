@@ -309,48 +309,6 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
     end
   end
 
-  describe 'is_dismissed_suggest_pipeline' do
-    context 'when user is logged in' do
-      context 'when the suggest pipeline feature is enabled' do
-        before do
-          allow(Gitlab::CurrentSettings).to receive(:suggest_pipeline_enabled?).and_return(true)
-        end
-
-        it 'is false' do
-          expect(subject[:is_dismissed_suggest_pipeline]).to be(false)
-        end
-
-        context 'when suggest pipeline has been dismissed' do
-          before do
-            create(:callout, user: user, feature_name: described_class::SUGGEST_PIPELINE)
-          end
-
-          it 'is true' do
-            expect(subject[:is_dismissed_suggest_pipeline]).to be(true)
-          end
-        end
-      end
-
-      context 'when the suggest pipeline feature is disabled' do
-        before do
-          allow(Gitlab::CurrentSettings).to receive(:suggest_pipeline_enabled?).and_return(false)
-        end
-
-        it 'is true' do
-          expect(subject[:is_dismissed_suggest_pipeline]).to be(true)
-        end
-      end
-    end
-
-    context 'when user is not logged in' do
-      let(:request) { double('request', current_user: nil, project: project) }
-
-      it 'is true' do
-        expect(subject[:is_dismissed_suggest_pipeline]).to be(true)
-      end
-    end
-  end
-
   describe 'merge_request_path' do
     it 'exposes the merge request URL' do
       expected_path = "/#{resource.project.full_path}/-/merge_requests/#{resource.iid}"

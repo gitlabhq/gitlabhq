@@ -1,5 +1,3 @@
 ---
 name: read_issue_note
 description: Grants the ability to read issue notes
-boundaries:
-  - project

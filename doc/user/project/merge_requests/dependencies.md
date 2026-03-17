@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Set a merge request dependency to control the merge order of merge requests with related or dependent content.
 title: Merge request dependencies
 ---
@@ -100,7 +100,7 @@ information about the dependency:
 
 To view dependency information on a merge request:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and identify your merge request.
 1. Scroll to the merge request reports area. Dependent merge requests display information
    about the total number of dependencies set, such as
@@ -145,7 +145,7 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and identify your merge request.
 1. Select **Edit**.
 1. In **Merge request dependencies**, paste either the reference or the full URL
@@ -160,7 +160,7 @@ Prerequisites:
 
 - You must have a role for the project that allows you to edit merge requests.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and identify your merge request.
 1. Select **Edit**.
 1. Scroll to **Merge request dependencies** and select **Remove** next to the reference

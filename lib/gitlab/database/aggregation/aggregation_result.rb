@@ -33,6 +33,10 @@ module Gitlab
 
         delegate :to_a, :[], :each, to: :loaded_results
 
+        def count
+          load_count
+        end
+
         private
 
         attr_reader :engine, :plan, :query, :options
@@ -42,6 +46,10 @@ module Gitlab
         end
 
         def load_data
+          raise NoMethodError
+        end
+
+        def load_count
           raise NoMethodError
         end
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_repository_cache, feature_category: :source_code_management do
   let_it_be(:project) { create(:project) }
   let(:repository) { project.repository }
-  let(:namespace) { "#{repository.full_path}:#{project.id}" }
+  let(:namespace) { "#{repository.full_path}:{#{project.id}}" }
   let(:gitlab_cache_namespace) { Gitlab::Redis::Cache::CACHE_NAMESPACE }
   let(:cache) { described_class.new(repository) }
 
@@ -114,6 +114,205 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
     end
   end
 
+  describe '#handle_ref_change' do
+    let(:branch_ref) { 'refs/heads/feature-branch' }
+
+    context 'when cache exists and no rebuild in progress' do
+      before do
+        cache.write(:branch_names, %w[main develop])
+      end
+
+      it 'adds a new branch to the cache' do
+        cache.handle_ref_change(:branch_names, branch_ref, false)
+
+        expect(cache.read(:branch_names)).to contain_exactly('main', 'develop', 'feature-branch')
+      end
+
+      it 'removes a deleted branch from the cache' do
+        cache.write(:branch_names, %w[main develop feature-branch])
+
+        cache.handle_ref_change(:branch_names, branch_ref, true)
+
+        expect(cache.read(:branch_names)).to contain_exactly('main', 'develop')
+      end
+
+      it 'handles branch names with slashes' do
+        cache.handle_ref_change(:branch_names, 'refs/heads/feature/foo/bar', false)
+
+        expect(cache.read(:branch_names)).to include('feature/foo/bar')
+      end
+    end
+
+    context 'when cache does not exist' do
+      it 'does not create the cache' do
+        cache.handle_ref_change(:branch_names, branch_ref, false)
+
+        expect(cache.exist?(:branch_names)).to be false
+      end
+    end
+
+    context 'when rebuild is in progress but cache does not exist' do
+      before do
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.rebuild_flag_key(:branch_names), '1', ex: 60)
+          redis.del(cache.cache_key(:branch_names))
+        end
+      end
+
+      it 'does not create cache key' do
+        cache.handle_ref_change(:branch_names, 'refs/heads/feature', false)
+
+        expect(cache.exist?(:branch_names)).to be false
+      end
+
+      it 'still queues event to pending list' do
+        cache.handle_ref_change(:branch_names, 'refs/heads/feature', false)
+
+        pending_events = Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.lrange(cache.pending_key(:branch_names), 0, -1)
+        end
+
+        expect(pending_events).to contain_exactly('+feature')
+      end
+
+      it 'queues deletion event even when cache does not exist' do
+        cache.handle_ref_change(:branch_names, 'refs/heads/old-branch', true)
+
+        pending_events = Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.lrange(cache.pending_key(:branch_names), 0, -1)
+        end
+
+        expect(pending_events).to contain_exactly('-old-branch')
+      end
+    end
+
+    context 'when rebuild is in progress' do
+      before do
+        cache.write(:branch_names, %w[main])
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.rebuild_flag_key(:branch_names), "1")
+        end
+      end
+
+      it 'updates the cache and enqueues event' do
+        cache.handle_ref_change(:branch_names, branch_ref, false)
+
+        # Cache is updated immediately
+        expect(cache.read(:branch_names)).to contain_exactly('main', 'feature-branch')
+
+        # Event is enqueued for rebuild reconciliation
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          events = redis.lrange(cache.pending_key(:branch_names), 0, -1)
+          expect(events).to contain_exactly('+feature-branch')
+        end
+      end
+
+      it 'enqueues delete events with minus prefix' do
+        cache.write(:branch_names, %w[main feature-branch])
+
+        cache.handle_ref_change(:branch_names, branch_ref, true)
+
+        expect(cache.read(:branch_names)).to contain_exactly('main')
+
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          events = redis.lrange(cache.pending_key(:branch_names), 0, -1)
+          expect(events).to contain_exactly('-feature-branch')
+        end
+      end
+
+      it 'sets TTL on pending queue' do
+        cache.handle_ref_change(:branch_names, branch_ref, false)
+
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          ttl = redis.ttl(cache.pending_key(:branch_names))
+          expect(ttl).to be_within(10).of(1.hour.to_i)
+        end
+      end
+
+      it 'accumulates multiple events in order' do
+        cache.handle_ref_change(:branch_names, 'refs/heads/branch-1', false)
+        cache.handle_ref_change(:branch_names, 'refs/heads/branch-2', false)
+        cache.handle_ref_change(:branch_names, 'refs/heads/branch-1', true)
+
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          # LPUSH adds to head, so order is reversed when reading
+          events = redis.lrange(cache.pending_key(:branch_names), 0, -1)
+          expect(events).to eq(['-branch-1', '+branch-2', '+branch-1'])
+        end
+      end
+    end
+
+    context 'when Redis error occurs during simple_update' do
+      before do
+        cache.write(:branch_names, %w[main])
+
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.trust_key(:branch_names), '1')
+        end
+      end
+
+      it 'marks cache as untrusted and logs error' do
+        call_count = 0
+        allow(Gitlab::Redis::RepositoryCache).to receive(:with).and_wrap_original do |original, &block|
+          original.call do |redis|
+            call_count += 1
+            # Only stub the first with call (the one inside simple_update)
+            allow(redis).to receive(:eval).and_raise(::Redis::ConnectionError, 'Connection refused') if call_count == 1
+
+            block.call(redis)
+          end
+        end
+
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            message: 'RebuildableSetCache error',
+            event: :simple_update_failed,
+            cache_key: :branch_names
+          )
+        )
+
+        expect(cache.trusted?(:branch_names)).to be true
+
+        expect { cache.handle_ref_change(:branch_names, branch_ref, false) }.to raise_error(::Redis::ConnectionError)
+
+        expect(cache.trusted?(:branch_names)).to be false
+      end
+    end
+
+    context 'when Redis error occurs during dual_write' do
+      before do
+        cache.write(:branch_names, %w[main])
+        Gitlab::Redis::RepositoryCache.with do |redis|
+          redis.set(cache.rebuild_flag_key(:branch_names), "1")
+          redis.set(cache.trust_key(:branch_names), '1')
+        end
+      end
+
+      it 'marks cache as untrusted and logs error' do
+        allow(Gitlab::Redis::RepositoryCache).to receive(:with).and_wrap_original do |original, &block|
+          original.call do |redis|
+            allow(redis).to receive(:pipelined).and_raise(::Redis::ConnectionError, 'Connection refused')
+            block.call(redis)
+          end
+        end
+
+        expect(Gitlab::AppLogger).to receive(:error).with(
+          hash_including(
+            message: 'RebuildableSetCache error',
+            event: :dual_write_failed,
+            cache_key: :branch_names
+          )
+        )
+
+        expect(cache.trusted?(:branch_names)).to be true
+
+        expect { cache.handle_ref_change(:branch_names, branch_ref, false) }.to raise_error(::Redis::ConnectionError)
+
+        expect(cache.trusted?(:branch_names)).to be false
+      end
+    end
+  end
+
   describe '#write' do
     subject(:write_cache) { cache.write(:branch_names, %w[main feature]) }
 
@@ -127,6 +326,20 @@ RSpec.describe Gitlab::Repositories::RebuildableSetCache, :clean_gitlab_redis_re
       write_cache
 
       expect(cache.ttl(:branch_names)).to be_within(10).of(2.weeks.to_i)
+    end
+
+    it 'marks the cache as trusted' do
+      expect(cache.trusted?(:branch_names)).to be false
+
+      write_cache
+
+      expect(cache.trusted?(:branch_names)).to be true
+
+      ttl = Gitlab::Redis::RepositoryCache.with do |redis|
+        redis.ttl(cache.trust_key(:branch_names))
+      end
+
+      expect(ttl).to be_within(5).of(described_class::TRUST_TTL.to_i)
     end
 
     context 'with large value sets' do

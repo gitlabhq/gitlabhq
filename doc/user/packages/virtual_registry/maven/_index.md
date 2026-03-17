@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Maven virtual registry
 description: Use the Maven virtual registry to configure and manage multiple private and public upstream registries.
 ---
@@ -42,7 +42,7 @@ This approach provides better package performance over time,
 and makes it easier to manage your Maven packages.
 
 For general information about managing virtual registries and upstream registries, see
-[Virtual registry](../../virtual_registry/_index.md).
+[Virtual registry](../_index.md).
 
 ## Prerequisites
 
@@ -67,23 +67,25 @@ When using the Maven virtual registry, remember the following restrictions:
 
 {{< /history >}}
 
-Manage virtual registries for your group.
+Manage Maven virtual registries for your group.
 
-You can also [use the API](../../../../api/maven_virtual_registries.md#manage-virtual-registries).
+You can also [use the API](../../../../api/maven_virtual_registries.md#manage-maven-virtual-registries).
 
 ### Create a Maven virtual registry
 
 To create a Maven virtual registry:
 
-1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
-1. Select **Create registry**.
+1. If you:
+   - Have an existing registry, select **Create registry**. From the dropdown list, select **Maven**.
+   - Do not have an existing registry, from the dropdown list, select **Maven**. Then, select **Create registry**.
 1. Enter a **Name** and optional **Description**.
-1. Select **Create Maven registry**.
+1. Select **Create registry**.
 
 ## Manage upstream registries
 
-Manage upstream registries in a virtual registry.
+Manage upstream Maven registries in a virtual registry.
 
 ### Create a Maven upstream registry
 
@@ -91,11 +93,11 @@ Create a Maven upstream registry to connect to the virtual registry.
 
 Prerequisites:
 
-- You must have a virtual registry. For more information, see [Create a virtual registry](#create-a-maven-virtual-registry).
+- You must have a Maven virtual registry. For more information, see [Create a virtual registry](#create-a-maven-virtual-registry).
 
 To create a Maven upstream registry:
 
-1. On the top bar, select **Search or go to** and find your group. This group must be at the top level.
+1. In the top bar, select **Search or go to** and find your group. This group must be at the top level.
 1. Select **Deploy** > **Virtual registry**.
 1. Under **Registry types**, select **View registries**.
 1. Under the **Registries** tab, select a registry.
@@ -118,7 +120,7 @@ To create a Maven upstream registry:
 
 1. Select **Create upstream**.
 
-For more information about cache validity settings, see [Set the cache validity period](../../virtual_registry/_index.md#set-the-cache-validity-period).
+For more information about cache validity settings, see [Set the cache validity period](../_index.md#set-the-cache-validity-period).
 
 ## Use the Maven virtual registry
 

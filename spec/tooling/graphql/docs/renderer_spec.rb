@@ -89,7 +89,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="arraytestfoo"></a>`foo` | [`#{type_name}`](##{inner_type}) | A description. |
+          | <a id="arraytest-foo"></a>`foo` | [`#{type_name}`](##{inner_type}) | A description. |
         DOC
 
         is_expected.to include(expectation)
@@ -108,7 +108,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
             | Name | Type | Description |
             | ---- | ---- | ----------- |
-            | <a id="queryfooid"></a>`id` | [`ID`](#id) | ID of the object. |
+            | <a id="query-foo-id"></a>`id` | [`ID`](#id) | ID of the object. |
           DOC
         end
 
@@ -144,8 +144,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="orderingtestbar"></a>`bar` | [`String!`](#string) | A description of bar field. |
-          | <a id="orderingtestfoo"></a>`foo` | [`String!`](#string) | A description of foo field. |
+          | <a id="orderingtest-bar"></a>`bar` | [`String!`](#string) | A description of bar field. |
+          | <a id="orderingtest-foo"></a>`foo` | [`String!`](#string) | A description of foo field. |
         DOC
 
         is_expected.to include(expectation)
@@ -193,8 +193,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="docrefspecfoo"></a>`foo` | [`String!`](#string) | The foo. See [A list of foos](https://example.com/foos). |
-          | <a id="docrefspecwibbles"></a>`wibbles` | [`WibbleConnection`](#wibbleconnection) | The wibbles. See [wibblance](https://example.com/wibbles). (see [Connections](#connections)) |
+          | <a id="docrefspec-foo"></a>`foo` | [`String!`](#string) | The foo. See [A list of foos](https://example.com/foos). |
+          | <a id="docrefspec-wibbles"></a>`wibbles` | [`WibbleConnection`](#wibbleconnection) | The wibbles. See [wibblance](https://example.com/wibbles). (see [Connections](#connections)) |
 
           #### Fields with arguments
 
@@ -208,7 +208,60 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="docrefspecbarbarity"></a>`barity` | [`Int`](#int) | ?. |
+          | <a id="docrefspec-bar-barity"></a>`barity` | [`Int`](#int) | ?. |
+        DOC
+      end
+
+      it_behaves_like 'renders correctly as GraphQL documentation'
+    end
+
+    context 'when an interface has a field with arguments' do
+      let(:type) do
+        interface = Module.new
+        interface.include(::Types::BaseInterface)
+        interface.graphql_name 'Searchable'
+        interface.description 'Something that can be searched.'
+        interface.field :search_results, GraphQL::Types::String, null: true, description: 'The results.' do
+          argument :query, GraphQL::Types::String, required: true, description: 'The search query.'
+        end
+
+        implementor = Class.new(::Types::BaseObject)
+        implementor.graphql_name 'SearchableItem'
+        implementor.description 'An item that is searchable.'
+        implementor.implements interface
+        interface.orphan_types implementor
+
+        Class.new(::Types::BaseObject) do
+          graphql_name 'InterfaceArgTest'
+          description 'A test for interface fields with arguments.'
+
+          field :searchable, interface, null: true, description: 'A searchable thing.'
+        end
+      end
+
+      let(:section) do
+        <<~DOC
+          #### `Searchable`
+
+          Something that can be searched.
+
+          Implementations:
+
+          - [`SearchableItem`](#searchableitem)
+
+          ##### Fields with arguments
+
+          ###### `Searchable.searchResults`
+
+          The results.
+
+          Returns [`String`](#string).
+
+          Arguments:
+
+          | Name | Type | Description |
+          | ---- | ---- | ----------- |
+          | <a id="searchable-searchresults-query"></a>`query` | [`String!`](#string) | The search query. |
         DOC
       end
 
@@ -245,7 +298,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
          | Name | Type | Description |
          | ---- | ---- | ----------- |
-         | <a id="deprecatedtestfoofooarg"></a>`fooArg` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 101.2. Bad argument. |
+         | <a id="deprecatedtest-foo-fooarg"></a>`fooArg` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 101.2. Bad argument. |
         DOC
       end
 
@@ -292,8 +345,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="deprecatedtestbar"></a>`bar` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Deprecated** in GitLab 1.10. This was renamed. Use: [`Query.boom`](#queryboom). |
-          | <a id="deprecatedtestfoo"></a>`foo` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Deprecated** in GitLab 1.10. This is deprecated. |
+          | <a id="deprecatedtest-bar"></a>`bar` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Deprecated** in GitLab 1.10. This was renamed. Use: [`Query.boom`](#query-boom). |
+          | <a id="deprecatedtest-foo"></a>`foo` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Deprecated** in GitLab 1.10. This is deprecated. |
 
           #### Fields with arguments
 
@@ -302,7 +355,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           {{< details >}}
           **Deprecated** in GitLab 1.10.
           Do not use.
-          Use: [`X.y`](#xy).
+          Use: [`X.y`](#x-y).
           {{< /details >}}
 
           A description.
@@ -313,7 +366,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="deprecatedtestfoowithargsarg"></a>`arg` | [`Int`](#int) | Argity. |
+          | <a id="deprecatedtest-foowithargs-arg"></a>`arg` | [`Int`](#int) | Argity. |
         DOC
       end
 
@@ -339,7 +392,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           {{< details >}}
           **Deprecated** in GitLab 10.11.
           This was renamed.
-          Use: [`Query.foo`](#queryfoo).
+          Use: [`Query.foo`](#query-foo).
           {{< /details >}}
 
           A bar.
@@ -381,7 +434,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
          | Name | Type | Description |
          | ---- | ---- | ----------- |
-         | <a id="alphatestfoofooarg"></a>`fooArg` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 101.2. **Status**: Experiment. Argument description. |
+         | <a id="alphatest-foo-fooarg"></a>`fooArg` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 101.2. **Status**: Experiment. Argument description. |
         DOC
       end
 
@@ -419,7 +472,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="alphatestfoo"></a>`foo` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 1.10. **Status**: Experiment. A description. |
+          | <a id="alphatest-foo"></a>`foo` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 1.10. **Status**: Experiment. A description. |
 
           #### Fields with arguments
 
@@ -438,7 +491,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="alphatestfoowithargsarg"></a>`arg` | [`Int`](#int) | Argity. |
+          | <a id="alphatest-foowithargs-arg"></a>`arg` | [`Int`](#int) | Argity. |
         DOC
       end
 
@@ -506,9 +559,9 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Value | Description |
           | ----- | ----------- |
-          | <a id="myenumbar"></a>`BAR` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 1.10. This is deprecated. |
-          | <a id="myenumbaz"></a>`BAZ` | A description of BAZ. |
-          | <a id="myenumboop"></a>`BOOP` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 1.10. This was renamed. Use: [`MyEnum.BAR`](#myenumbar). |
+          | <a id="myenum-bar"></a>`BAR` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 1.10. This is deprecated. |
+          | <a id="myenum-baz"></a>`BAZ` | A description of BAZ. |
+          | <a id="myenum-boop"></a>`BOOP` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 1.10. This was renamed. Use: [`MyEnum.BAR`](#myenum-bar). |
         DOC
       end
 
@@ -536,7 +589,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
             | Name | Type | Description |
             | ---- | ---- | ----------- |
-            | <a id="idtestfoo"></a>`foo` | [`UserID`](#userid) | A user foo. |
+            | <a id="idtest-foo"></a>`foo` | [`UserID`](#userid) | A user foo. |
           DOC
         end
 
@@ -615,18 +668,18 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
             | Name | Type | Description |
             | ---- | ---- | ----------- |
-            | <a id="mutationmakeitprettyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-            | <a id="mutationmakeitprettyprettinessfactor"></a>`prettinessFactor` | [`Float!`](#float) | How much prettier?. |
-            | <a id="mutationmakeitprettypulchritude"></a>`pulchritude` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated**: This was renamed. Please use `prettinessFactor`. Deprecated in GitLab 72.34. |
+            | <a id="mutation-makeitpretty-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+            | <a id="mutation-makeitpretty-prettinessfactor"></a>`prettinessFactor` | [`Float!`](#float) | How much prettier?. |
+            | <a id="mutation-makeitpretty-pulchritude"></a>`pulchritude` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated**: This was renamed. Please use `prettinessFactor`. Deprecated in GitLab 72.34. |
 
             #### Fields
 
             | Name | Type | Description |
             | ---- | ---- | ----------- |
-            | <a id="mutationmakeitprettyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-            | <a id="mutationmakeitprettyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-            | <a id="mutationmakeitprettyeverything"></a>`everything` | [`String`](#string) | What we made prettier. |
-            | <a id="mutationmakeitprettyomnis"></a>`omnis` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: This was renamed. Please use `everything`. Deprecated in GitLab 72.34. |
+            | <a id="mutation-makeitpretty-clientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+            | <a id="mutation-makeitpretty-errors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+            | <a id="mutation-makeitpretty-everything"></a>`everything` | [`String`](#string) | What we made prettier. |
+            | <a id="mutation-makeitpretty-omnis"></a>`omnis` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: This was renamed. Please use `everything`. Deprecated in GitLab 72.34. |
           DOC
         end
       end
@@ -663,8 +716,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="timeframeend"></a>`end` | [`Date!`](#date) | End of the range. |
-          | <a id="timeframestart"></a>`start` | [`Date!`](#date) | Start of the range. |
+          | <a id="timeframe-end"></a>`end` | [`Date!`](#date) | End of the range. |
+          | <a id="timeframe-start"></a>`start` | [`Date!`](#date) | Start of the range. |
         DOC
       end
 
@@ -716,8 +769,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="abstracttypetestflying"></a>`flying` | [`Flying`](#flying) | A flying thing. |
-          | <a id="abstracttypetestfoo"></a>`foo` | [`UserOrGroup`](#userorgroup) | The foo. |
+          | <a id="abstracttypetest-flying"></a>`flying` | [`Flying`](#flying) | A flying thing. |
+          | <a id="abstracttypetest-foo"></a>`foo` | [`UserOrGroup`](#userorgroup) | The foo. |
         DOC
 
         union_section = <<~DOC
@@ -744,7 +797,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="flyingflightspeed"></a>`flightSpeed` | [`Int`](#int) | Speed in mph. |
+          | <a id="flying-flightspeed"></a>`flightSpeed` | [`Int`](#int) | Speed in mph. |
         DOC
 
         implementation_section = <<~DOC
@@ -756,7 +809,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="africanswallowflightspeed"></a>`flightSpeed` | [`Int`](#int) | Speed in mph. |
+          | <a id="africanswallow-flightspeed"></a>`flightSpeed` | [`Int`](#int) | Speed in mph. |
         DOC
 
         is_expected.to include(

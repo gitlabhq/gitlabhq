@@ -45,6 +45,8 @@ module Gitlab
               deadline = MAX_PROCESSING_TIME.from_now
               total_resumed_jobs = 0
               while deadline.future?
+                break unless renew_lease!
+
                 resumed_jobs_count = resume_processing_once!(redis)
                 break if resumed_jobs_count == 0
 
@@ -117,7 +119,7 @@ module Gitlab
           return if worker_klass.nil?
 
           args_list = prepare_and_store_metadata(jobs)
-          Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.resumed_log(worker_name, args_list)
+          Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.batch_resumed_log(worker_name, args_list.length)
           worker_klass.bulk_perform_async(args_list) # rubocop:disable Scalability/BulkPerformWithContext -- context is set separately in SidekiqMiddleware::ConcurrencyLimit::Resume
         end
 

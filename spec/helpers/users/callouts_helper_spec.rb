@@ -318,4 +318,34 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       it { is_expected.to be false }
     end
   end
+
+  describe 'show_single_origin_fallback_callout?', :do_not_mock_admin_mode_setting do
+    let_it_be(:admin) { create(:user, :admin) }
+    let_it_be(:user) { create(:user) }
+
+    subject { helper.show_single_origin_fallback_callout? }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:current_user, :single_origin_fallback_enabled, :dismissed, :controller_path, :expected_result) do
+      ref(:admin) | true  | false | 'admin/users'     | true
+      ref(:admin) | false | false | 'admin/users'     | false
+      ref(:admin) | true  | false | 'projects'        | false
+      ref(:user)  | true  | false | 'admin/users'     | false
+      ref(:admin) | true  | true  | 'admin/users'     | false
+    end
+
+    with_them do
+      before do
+        allow(helper).to receive_messages(
+          current_user: current_user,
+          user_dismissed?: dismissed
+        )
+        stub_application_setting(vscode_extension_marketplace_single_origin_fallback_enabled: single_origin_fallback_enabled)
+        allow(helper.controller).to receive(:controller_path).and_return(controller_path)
+      end
+
+      it { is_expected.to be expected_result }
+    end
+  end
 end

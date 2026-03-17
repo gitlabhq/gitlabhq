@@ -20,7 +20,6 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
   # should be added as a comment along with the name of the column.
   let!(:allowed_cross_database_foreign_keys) do
     keys = [
-      'lfs_objects_projects.lfs_object_id',
       'p_ci_build_tags.tag_id',                                     # https://gitlab.com/gitlab-org/gitlab/-/issues/470872
       'targeted_message_dismissals.targeted_message_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/531357
       'user_broadcast_message_dismissals.broadcast_message_id',     # https://gitlab.com/gitlab-org/gitlab/-/issues/531358
@@ -32,6 +31,7 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       'appearance_uploads.organization_id',                         # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
       'application_settings.workspaces_oauth_application_id',       # https://gitlab.com/gitlab-org/gitlab/-/issues/574704
       'application_settings.web_ide_oauth_application_id',          # https://gitlab.com/gitlab-org/gitlab/-/issues/574704
+      'analytics_language_trend_repository_languages.programming_language_id', # https://gitlab.com/gitlab-org/gitlab/-/work_items/519895
 
       # https://gitlab.com/gitlab-org/gitlab/-/issues/560435
       'dingtalk_tracker_data.integration_id',
@@ -41,7 +41,16 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       'audit_events_streaming_http_instance_namespace_filters.namespace_id',
 
       # https://gitlab.com/gitlab-org/gitlab/-/issues/592220
-      'ai_instance_accessible_entity_rules.through_namespace_id'
+      'ai_instance_accessible_entity_rules.through_namespace_id',
+
+      # Subscription add-ons are static/deprecated tables to be removed
+      # https://gitlab.com/groups/gitlab-org/-/work_items/19981
+      'subscription_add_on_purchases.subscription_add_on_id',
+
+      # Plans are static/deprecated tables to be removed
+      # https://gitlab.com/groups/gitlab-org/-/work_items/19409
+      'gitlab_subscriptions.hosted_plan_id',
+      'plan_limits.plan_id'
     ]
 
     keys

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Vault authentication with GitLab OpenID Connect
 ---
 
@@ -34,7 +34,7 @@ for authenticating into Vault. To do this, sign in to GitLab and follow these st
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Applications**.
+1. In the left sidebar, select **Access** > **Applications**.
 1. Fill out the application **Name** and [**Redirect URI**](https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris).
 1. Select the **OpenID** scope.
 1. Select **Save application**.
@@ -122,12 +122,11 @@ example creates a `demo` role.
 
 ## Sign in to Vault
 
-1. Go to your Vault UI. For example: [http://127.0.0.1:8200/ui/vault/auth?with=oidc](http://127.0.0.1:8200/ui/vault/auth?with=oidc).
+1. Go to your Vault UI. For example: <http://127.0.0.1:8200/ui/vault/auth?with=oidc>.
 1. If the `OIDC` method is not selected, open the dropdown list and select it.
 1. Select **Sign in With GitLab**, which opens a dialog:
 
    ![Sign in to Vault with GitLab](img/sign_into_vault_with_gitlab_v12_6.png)
-
 1. To allow Vault to sign in through GitLab, select **Authorize**. This redirects you back to your Vault UI as an authenticated user.
 
    ![Authorize Vault to connect with GitLab](img/authorize_vault_with_gitlab_v12_6.png)
@@ -152,7 +151,6 @@ You can also sign in to Vault using the [Vault CLI](https://developer.hashicorp.
      [Redirect URIs](https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris).
 
    After running this command, you should see a link in the terminal.
-
 1. Open this link in a web browser:
 
    ![Signed into Vault via OIDC](img/signed_into_vault_via_oidc_v12_6.png)

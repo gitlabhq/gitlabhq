@@ -469,6 +469,15 @@ describe('GlobalSearchModal', () => {
             submitSearch();
             expect(visitUrl).toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
           });
+
+          it('will submit a search when the form is submitted without a keydown event', () => {
+            createComponent();
+            findGlobalSearchInput().vm.$emit('input', MOCK_SEARCH);
+
+            wrapper.find('form').trigger('submit');
+
+            expect(visitUrl).toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
+          });
         });
       });
     });

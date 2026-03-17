@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Audit events
 ---
 
@@ -52,7 +52,8 @@ Audit events can be viewed at the group, project, instance, and sign-in level. E
 Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
 
 1. In the upper-right corner, select your avatar.
-1. Select **Edit profile** > **Authentication log**.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Access** > **Authentication log**.
 
 After upgrading to a paid tier, you can also see successful sign-in events on audit event pages.
 
@@ -67,7 +68,7 @@ After upgrading to a paid tier, you can also see successful sign-in events on au
 
 To view a group's audit events:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
@@ -82,7 +83,7 @@ Group audit events can also be accessed using the [group audit events API](../..
 
 {{< /details >}}
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 

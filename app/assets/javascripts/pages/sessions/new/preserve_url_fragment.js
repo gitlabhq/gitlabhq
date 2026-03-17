@@ -12,7 +12,10 @@ export function appendUrlFragment(fragment = document.location.hash) {
   }
 
   const normalFragment = fragment.replace(/^#/, '');
-  const forms = document.querySelectorAll('.js-non-oauth-login form');
+  // The <form id='sign-in-form'> is rendered via the SignInForm Vue component,
+  // which has its own mechanism for appending the URL fragment. That's the
+  // reason we exclude it in the CSS selector.
+  const forms = document.querySelectorAll('.js-non-oauth-login form:not([id=sign-in-form])');
   forms.forEach((form) => {
     const actionWithFragment = setUrlFragment(form.getAttribute('action'), `#${normalFragment}`);
     form.setAttribute('action', actionWithFragment);
@@ -69,23 +72,4 @@ export function toggleRememberMeQuery() {
       oauthForm.setAttribute('action', newHref);
     });
   });
-}
-
-/**
- * Toggling the non-OAuthn `remember_me` checkbox toggles the value of the hidden `remember_me`
- * input field.
- */
-export function toggleRememberMePasskey() {
-  const checkbox = document.querySelector('.js-remember-me-passkey');
-  const hiddenField = document.getElementById('js-remember-me-passkey-hidden-field');
-
-  if (checkbox && hiddenField) {
-    checkbox.addEventListener('change', ({ currentTarget }) => {
-      if (currentTarget.checked) {
-        hiddenField.value = '1';
-      } else {
-        hiddenField.value = '0';
-      }
-    });
-  }
 }

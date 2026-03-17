@@ -41,7 +41,7 @@ RSpec.describe Todos::Destroy::DestroyedIssuableService, feature_category: :team
       # rubocop: enable Cop/AvoidBecomes
 
       it 'deletes todos' do
-        expect { subject }.to change(Todo, :count).by(-4)
+        expect { subject }.to change { Todo.count }.by(-4)
       end
     end
   end

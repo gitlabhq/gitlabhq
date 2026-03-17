@@ -105,7 +105,6 @@ Sidekiq/EnforceDatabaseHealthSignalDeferral:
     - 'app/workers/remove_unaccepted_member_invites_worker.rb'
     - 'app/workers/terraform/states/destroy_worker.rb'
     - 'app/workers/update_container_registry_info_worker.rb'
-    - 'app/workers/virtual_registries/packages/cache/destroy_orphan_entries_worker.rb'
     - 'app/workers/web_hook_worker.rb'
     - 'app/workers/web_hooks/log_execution_worker.rb'
     - 'app/workers/work_items/user_preferences/destroy_worker.rb'

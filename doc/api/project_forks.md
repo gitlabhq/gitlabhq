@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Project forks API
 ---
 
@@ -46,7 +46,7 @@ POST /projects/:id/fork
 > [!note]
 > When using a service account to fork a project, you must provide either `namespace_id` or `namespace_path`.
 > Service accounts cannot fork projects to their personal namespace. For more information, see
-> [service account access to groups and projects](../user/profile/service_accounts.md#service-account-access-to-groups-and-projects).
+> [add a service account to a group or project](../user/profile/service_accounts.md#add-a-service-account-to-a-group-or-project).
 
 ## List forks of a project
 

@@ -1,6 +1,6 @@
 <script>
 import { GlModal, GlSprintf, GlButton } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import deleteKubernetesPodMutation from '../../../graphql/mutations/delete_kubernetes_pod.mutation.graphql';

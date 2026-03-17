@@ -8,6 +8,9 @@ import (
 	"sync/atomic"
 	"testing"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/testutil"
+	redis "github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -568,6 +571,265 @@ func TestConfigureRedisWithTLS(t *testing.T) {
 					opt := rdb.Options()
 					require.NotNil(t, opt.TLSConfig)
 				}
+			}
+		})
+	}
+}
+
+func TestProcessHookIncrementsTotalRequests(t *testing.T) {
+	before := testutil.ToFloat64(TotalRequests)
+
+	process := noopProcessHook()
+
+	err := process(context.Background(), redis.NewCmd(context.Background(), "get", "key"))
+	require.NoError(t, err)
+
+	after := testutil.ToFloat64(TotalRequests)
+	require.InDelta(t, before+1, after, 0.001)
+}
+
+func TestProcessHookObservesDurationForRegularCommands(t *testing.T) {
+	before := histogramSampleCount(t, TotalRequestDuration)
+
+	process := noopProcessHook()
+
+	err := process(context.Background(), redis.NewCmd(context.Background(), "get", "key"))
+	require.NoError(t, err)
+
+	after := histogramSampleCount(t, TotalRequestDuration)
+	require.Equal(t, before+1, after, "regular command should observe duration")
+}
+
+func TestProcessHookSkipsDurationForBlockingCommands(t *testing.T) {
+	before := histogramSampleCount(t, TotalRequestDuration)
+
+	process := noopProcessHook()
+
+	err := process(context.Background(), redis.NewCmd(context.Background(), "brpop", "key", "0"))
+	require.NoError(t, err)
+
+	after := histogramSampleCount(t, TotalRequestDuration)
+	require.Equal(t, before, after, "blocking command should not observe duration")
+}
+
+func TestProcessPipelineHookCountsAllCommands(t *testing.T) {
+	before := testutil.ToFloat64(TotalRequests)
+
+	pipeline := noopProcessPipelineHook()
+
+	cmds := []redis.Cmder{
+		redis.NewCmd(context.Background(), "get", "a"),
+		redis.NewCmd(context.Background(), "set", "b", "1"),
+		redis.NewCmd(context.Background(), "get", "c"),
+	}
+
+	err := pipeline(context.Background(), cmds)
+	require.NoError(t, err)
+
+	after := testutil.ToFloat64(TotalRequests)
+	require.InDelta(t, before+3, after, 0.001)
+}
+
+func TestProcessPipelineHookObservesDurationPerCommand(t *testing.T) {
+	before := histogramSampleCount(t, TotalRequestDuration)
+
+	pipeline := noopProcessPipelineHook()
+
+	cmds := []redis.Cmder{
+		redis.NewCmd(context.Background(), "get", "a"),
+		redis.NewCmd(context.Background(), "set", "b", "1"),
+		redis.NewCmd(context.Background(), "get", "c"),
+	}
+
+	err := pipeline(context.Background(), cmds)
+	require.NoError(t, err)
+
+	after := histogramSampleCount(t, TotalRequestDuration)
+	require.Equal(t, before+3, after, "should observe duration once per command in pipeline")
+}
+
+func TestProcessPipelineHookSkipsDurationWhenBlockingCommandPresent(t *testing.T) {
+	before := histogramSampleCount(t, TotalRequestDuration)
+
+	pipeline := noopProcessPipelineHook()
+
+	cmds := []redis.Cmder{
+		redis.NewCmd(context.Background(), "get", "a"),
+		redis.NewCmd(context.Background(), "blpop", "queue", "0"),
+	}
+
+	err := pipeline(context.Background(), cmds)
+	require.NoError(t, err)
+
+	after := histogramSampleCount(t, TotalRequestDuration)
+	require.Equal(t, before, after, "pipeline with blocking command should not observe duration")
+}
+
+func noopProcessHook() redis.ProcessHook {
+	hook := instrumentationHook{isSentinel: false}
+	return hook.ProcessHook(func(_ context.Context, _ redis.Cmder) error {
+		return nil
+	})
+}
+
+func noopProcessPipelineHook() redis.ProcessPipelineHook {
+	hook := instrumentationHook{isSentinel: false}
+	return hook.ProcessPipelineHook(func(_ context.Context, _ []redis.Cmder) error {
+		return nil
+	})
+}
+
+// histogramSampleCount returns the current sample count from a Prometheus histogram.
+func histogramSampleCount(t *testing.T, h prometheus.Histogram) uint64 {
+	t.Helper()
+
+	reg := prometheus.NewRegistry()
+	require.NoError(t, reg.Register(h))
+
+	families, err := reg.Gather()
+	require.NoError(t, err)
+	require.Len(t, families, 1)
+
+	metrics := families[0].GetMetric()
+	require.NotEmpty(t, metrics)
+
+	return metrics[0].GetHistogram().GetSampleCount()
+}
+
+func TestDialHookIncrementsSentinelMasterErrorCounter(t *testing.T) {
+	testCases := []struct {
+		name        string
+		isSentinel  bool
+		dialErr     error
+		expectedInc float64
+		description string
+	}{
+		{
+			name:        "sentinel hook with sentinel master addr error increments counter",
+			isSentinel:  true,
+			dialErr:     errSentinelMasterAddr,
+			expectedInc: 1,
+		},
+		{
+			name:        "sentinel hook with different error does not increment counter",
+			isSentinel:  true,
+			dialErr:     fmt.Errorf("some other error"),
+			expectedInc: 0,
+		},
+		{
+			name:        "sentinel hook with nil error does not increment counter",
+			isSentinel:  true,
+			dialErr:     nil,
+			expectedInc: 0,
+		},
+		{
+			name:        "non-sentinel hook with sentinel master addr error does not increment counter",
+			isSentinel:  false,
+			dialErr:     errSentinelMasterAddr,
+			expectedInc: 0,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			before := testutil.ToFloat64(ErrorCounter.WithLabelValues("master", "sentinel"))
+
+			hook := instrumentationHook{isSentinel: tc.isSentinel}
+			dial := hook.DialHook(func(_ context.Context, _, _ string) (net.Conn, error) {
+				return nil, tc.dialErr
+			})
+
+			conn, err := dial(context.Background(), "tcp", "127.0.0.1:6379")
+
+			if tc.dialErr != nil {
+				require.Error(t, err)
+				require.Nil(t, conn)
+			} else {
+				require.NoError(t, err)
+			}
+
+			after := testutil.ToFloat64(ErrorCounter.WithLabelValues("master", "sentinel"))
+			require.InDelta(t, tc.expectedInc, after-before, 0.001)
+		})
+	}
+}
+
+func TestConfigureSentinelWithRedisTLS(t *testing.T) {
+	testCases := []struct {
+		description    string
+		redisTLSCfg    *config.TLSConfig
+		sentinelTLSCfg *config.TLSConfig
+		expectError    bool
+	}{
+		{
+			description:    "Sentinel without TLS, Redis without TLS",
+			redisTLSCfg:    nil,
+			sentinelTLSCfg: nil,
+			expectError:    false,
+		},
+		{
+			description:    "Sentinel without TLS, Redis with TLS",
+			redisTLSCfg:    &config.TLSConfig{Certificate: certFile, Key: keyFile},
+			sentinelTLSCfg: nil,
+			expectError:    false,
+		},
+		{
+			description:    "Sentinel with TLS, Redis with TLS",
+			redisTLSCfg:    &config.TLSConfig{Certificate: certFile, Key: keyFile},
+			sentinelTLSCfg: &config.TLSConfig{Certificate: certFile, Key: keyFile},
+			expectError:    false,
+		},
+		{
+			description:    "Sentinel with TLS, Redis without TLS",
+			redisTLSCfg:    nil,
+			sentinelTLSCfg: &config.TLSConfig{Certificate: certFile, Key: keyFile},
+			expectError:    false,
+		},
+		{
+			description:    "Redis with invalid TLS config",
+			redisTLSCfg:    &config.TLSConfig{Certificate: certFile},
+			sentinelTLSCfg: nil,
+			expectError:    true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.description, func(t *testing.T) {
+			a := mockRedisServer(t, &atomic.Value{})
+
+			scheme := "redis://"
+			if tc.sentinelTLSCfg != nil {
+				scheme = "rediss://"
+			}
+			sentinelURL := helper.URLMustParse(scheme + a)
+			redisCfg := &config.RedisConfig{
+				Sentinel:       []config.TomlURL{{URL: *sentinelURL}},
+				SentinelMaster: "mymaster",
+				TLS:            tc.redisTLSCfg,
+			}
+
+			sentinelCfg := &config.SentinelConfig{
+				TLS: tc.sentinelTLSCfg,
+			}
+
+			cfg := &config.Config{
+				Redis:    redisCfg,
+				Sentinel: sentinelCfg,
+			}
+
+			rdb, err := Configure(cfg)
+
+			if tc.expectError {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+				require.NotNil(t, rdb)
+				defer rdb.Close()
+
+				// TLS configs are passed to the dialer, not stored in options.
+				// The best we can do is ensure the Configure worked without errors.
+				opt := rdb.Options()
+				require.NotNil(t, opt.Dialer)
 			}
 		})
 	}

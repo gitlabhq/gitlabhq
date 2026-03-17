@@ -11,7 +11,10 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
 import { REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY } from '~/vue_shared/security_reports/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { logError } from '~/lib/logger';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import ScanProfileConfiguration from 'ee_else_ce/security_configuration/components/scan_profiles/scan_profile_configuration.vue';
+import projectMergeRequestsEnabledQuery from '../graphql/project_merge_requests_enabled.query.graphql';
 import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
   TAB_VULNERABILITY_MANAGEMENT_INDEX,
@@ -23,6 +26,7 @@ import {
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
 import FeatureCard from './feature_card.vue';
+import MergeRequestsDisabledAlert from './merge_requests_disabled_alert.vue';
 import PipelineSecretDetectionFeatureCard from './pipeline_secret_detection_feature_card.vue';
 import SecretPushProtectionFeatureCard from './secret_push_protection_feature_card.vue';
 import TrainingSection from './training_section.vue';
@@ -38,6 +42,7 @@ export default {
     AutoDevOpsAlert,
     AutoDevOpsEnabledAlert,
     FeatureCard,
+    MergeRequestsDisabledAlert,
     SecretPushProtectionFeatureCard,
     PipelineSecretDetectionFeatureCard,
     GlAlert,
@@ -107,10 +112,30 @@ export default {
       required: true,
     },
   },
+  apollo: {
+    mergeRequestsEnabled: {
+      query: projectMergeRequestsEnabledQuery,
+      variables() {
+        return {
+          projectFullPath: this.projectFullPath,
+        };
+      },
+      update: (data) => data.project?.mergeRequestsEnabled ?? true,
+      skip() {
+        return !this.projectFullPath;
+      },
+      error(error) {
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        logError('Failed to fetch merge requests enabled status', error);
+        captureException(error);
+      },
+    },
+  },
   data() {
     return {
       autoDevopsEnabledAlertDismissedProjects: [],
       errorMessage: '',
+      mergeRequestsEnabled: true,
     };
   },
   computed: {
@@ -137,6 +162,9 @@ export default {
     },
     shouldShowScannerProfiles() {
       return this.glFeatures?.securityScanProfilesFeature;
+    },
+    shouldShowMergeRequestsDisabledAlert() {
+      return !this.mergeRequestsEnabled;
     },
     trackedRefsHelpPagePath() {
       // Once the help page content is available, we can use the anchor to link to the specific section
@@ -254,6 +282,11 @@ export default {
 
         <section-layout stacked class="gl-border-b-0" :heading="$options.i18n.securityTesting">
           <template #description>
+            <merge-requests-disabled-alert
+              v-if="shouldShowMergeRequestsDisabledAlert"
+              class="gl-my-4"
+            />
+
             <p>
               <span>
                 <gl-sprintf

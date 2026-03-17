@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Composition Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to configure dependency scanning, detect vulnerabilities in your project dependencies, and resolve them through practical step-by-step guidance.
 title: 'Tutorial: Set up dependency scanning'
 ---
@@ -42,7 +42,6 @@ First, in a new project, create files to configure your pipeline, and add depend
 scanned for vulnerabilities.
 
 1. Create a blank project, using the default values.
-
 1. Create the following files in the `main` branch.
 
    Filename: `.gitlab-ci.yml`
@@ -110,7 +109,6 @@ scanned for vulnerabilities.
    Filename `yarn.lock`
 
    Use the content shown in the [Yarn lockfile](#yarn-lock-file-content) section.
-
 1. Go to **Build** > **Pipelines** and confirm that the latest pipeline completed successfully.
 
 In the pipeline, dependency scanning runs and the vulnerabilities are detected automatically.
@@ -130,12 +128,10 @@ To triage the vulnerabilities:
 
    The medium severity vulnerabilities are filtered out of the view, leaving only the high
    severity vulnerability remaining.
-
 1. Select the **High** vulnerability's description.
 
    The recommended solution is to upgrade the `fastify` package. You would usually investigate
    this further, but for this tutorial, you can consider this vulnerability confirmed.
-
 1. From the **Status** dropdown list select **Confirm**, then select **Change status**.
 
 ## Resolve the high severity vulnerability
@@ -145,7 +141,7 @@ need to upgrade the `fastify` package.
 
 To fix the vulnerability:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the upper right, select **Code** > **Gitpod** and open
    Gitpod in a new tab.
 1. If you are prompted to, select **Continue with GitLab**, then select **Authorize**.
@@ -179,7 +175,6 @@ To fix the vulnerability:
    A banner confirms that the vulnerability has been resolved in the `main` branch. You would
    usually confirm that manually by verifying the version of the `fastify` package specified in the
    `yarn.lock` file. For this tutorial, you can skip the verification step.
-
 1. In the **Status** dropdown list, select **Resolve**, then select **Change status**.
 1. Go to **Secure** > **Vulnerability report**.
 

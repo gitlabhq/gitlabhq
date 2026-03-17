@@ -15,9 +15,11 @@ Gitlab::Experiment.configure do |config|
   #
   config.default_rollout = Gitlab::Experiment::Rollout.resolve('Gitlab::ExperimentFeatureRollout')
 
-  # Avoid using secure cookies in test since our feature specs do not run
-  # over HTTPS.
-  config.secure_cookie = !Rails.env.test?
+  # Follow gitlab config usage for other cookies
+  config.secure_cookie = Gitlab.config.gitlab.https
+
+  # Allow forced variant assignment via the glex_force query parameter.
+  config.allow_forced_assignment = true
 
   # Mount the engine and middleware at a gitlab friendly style path.
   #

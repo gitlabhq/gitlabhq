@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: no
 description: Configure a faster SSH authorization method for GitLab instances with many users.
 title: Fast lookup of SSH keys
@@ -97,12 +97,12 @@ To set up fast lookup with OpenSSH:
    - Linux package installations: `/etc/ssh/sshd_config`
    - Docker installations: `/assets/sshd_config`
    - Self-compiled installations: If you followed the instructions for
-   [installing GitLab Shell from source](../../install/self_compiled/_index.md#install-gitlab-shell), the command should be
-   located at `/home/git/gitlab-shell/bin/gitlab-shell-authorized-keys-check`.
-   Consider creating a wrapper script somewhere else because this command must be owned by `root`,
-   and not be writable by a group or others.
-   Also consider changing the ownership of this command as needed, but this might require temporary
-   ownership changes during `gitlab-shell` upgrades.
+     [installing GitLab Shell from source](../../install/self_compiled/_index.md#install-gitlab-shell), the command should be
+     located at `/home/git/gitlab-shell/bin/gitlab-shell-authorized-keys-check`.
+     Consider creating a wrapper script somewhere else because this command must be owned by `root`,
+     and not be writable by a group or others.
+     Also consider changing the ownership of this command as needed, but this might require temporary
+     ownership changes during `gitlab-shell` upgrades.
 
 1. Reload OpenSSH:
 
@@ -156,7 +156,7 @@ This overview is brief. Refer to the previous instructions for more context.
 
 1. Enable writes to the `authorized_keys` file.
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Settings** > **Network**.
+   1. In the left sidebar, select **Settings** > **Network**.
    1. Expand **Performance optimization**.
    1. Select the **Use `authorized_keys` file to authenticate SSH keys** checkbox.
 1. [Rebuild the `authorized_keys` file](../raketasks/maintenance.md#rebuild-authorized_keys-file).

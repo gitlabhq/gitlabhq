@@ -4,8 +4,13 @@ module API
   class ProjectMilestones < ::API::Base
     include PaginationParams
     include MilestoneResponses
+    include APIGuard
 
     before { authenticate! }
+
+    allow_access_with_scope :ai_workflows, if: ->(request) {
+      request.get? || request.head?
+    }
 
     feature_category :team_planning
     urgency :low

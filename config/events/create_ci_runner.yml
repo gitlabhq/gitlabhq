@@ -11,6 +11,10 @@ additional_properties:
     description: The runner type, which can be `project_type`, `group_type`, or `instance_type`
   property:
     description: Registration type, which can be `registration_token` or `authenticated_user`
+  has_token_expiration:
+    description: Whether token_expires_at was explicitly set (`true` or `false`)
+  has_rotation_deadline:
+    description: Whether token_rotation_deadline was set (`true` or `false`)
 product_group: runner
 product_categories:
 - runner_core

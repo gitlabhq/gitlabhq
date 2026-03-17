@@ -50,7 +50,10 @@ export default {
       :key="rolledUpCount.workItemType.name"
       data-testid="rolled-up-type-info"
     >
-      <work-item-type-icon :work-item-type="rolledUpCount.workItemType.name" />
+      <work-item-type-icon
+        :work-item-type="rolledUpCount.workItemType.name"
+        :type-icon-name="rolledUpCount.workItemType.iconName"
+      />
       <gl-sprintf :message="$options.closedCountsMap[rolledUpCount.workItemType.name]">
         <template #count>
           <span class="gl-font-bold">

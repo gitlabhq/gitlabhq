@@ -25,6 +25,16 @@ export const DATE_WITH_TIME_FORMAT = 'asDateTime';
 export const DATE_TIME_FULL_FORMAT = 'asDateTimeFull';
 
 /**
+ * Format a Date with the help of {@link DateTimeFormat.asDateTimeFullWithWeekday}
+ *
+ * Note: In case you can use localeDateFormat.asDateTimeFullWithWeekday directly, please do that.
+ *
+ * @example
+ * localeDateFormat[DATE_TIME_FULL_WITH_WEEKDAY_FORMAT].format(date) // returns 'Sunday, July 6, 2020 at 2:43:12 PM GMT'
+ */
+export const DATE_TIME_FULL_WITH_WEEKDAY_FORMAT = 'asDateTimeFullWithWeekday';
+
+/**
  * Format a Date with the help of {@link DateTimeFormat.asDate}
  *
  * Note: In case you can use localeDateFormat.asDate directly, please do that.
@@ -72,6 +82,7 @@ export const DEFAULT_DATE_TIME_FORMAT = DATE_WITH_TIME_FORMAT;
 export const DATE_TIME_FORMATS = [
   DATE_WITH_TIME_FORMAT,
   DATE_TIME_FULL_FORMAT,
+  DATE_TIME_FULL_WITH_WEEKDAY_FORMAT,
   DATE_ONLY_FORMAT,
   DATE_WITHOUT_YEAR_FORMAT,
   TIME_ONLY_FORMAT,
@@ -145,6 +156,36 @@ class DateTimeFormat {
       this.#createFormatter(DATE_TIME_FULL_FORMAT, {
         dateStyle: 'long',
         timeStyle: 'long',
+        hourCycle: DateTimeFormat.#hourCycle,
+      })
+    );
+  }
+
+  /**
+   * Locale aware formatter to a complete date time, including the day of the week.
+   *
+   * Use this formatter for tooltips where the day of week adds useful context.
+   * Use {@link DateTimeFormat.asDateTimeFull} if you don't need to show the day of the week.
+   *
+   * @example
+   * // en-US: returns something like Friday, July 6, 2020, 2:43:12 PM GMT
+   * // en-GB: returns something like Friday, 6 July 2020, 14:43:12 GMT
+   * localeDateFormat.asDateTimeFullWithWeekday.format(date)
+   *
+   * @returns {DateTimeFormatter}
+   */
+  get asDateTimeFullWithWeekday() {
+    return (
+      this.#formatters[DATE_TIME_FULL_WITH_WEEKDAY_FORMAT] ||
+      this.#createFormatter(DATE_TIME_FULL_WITH_WEEKDAY_FORMAT, {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        timeZoneName: 'short',
         hourCycle: DateTimeFormat.#hourCycle,
       })
     );

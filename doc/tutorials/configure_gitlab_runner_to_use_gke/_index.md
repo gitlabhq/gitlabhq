@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Configure GitLab Runner to use the Google Kubernetes Engine'
 ---
 
@@ -37,7 +37,6 @@ Install the tools to configure and use GitLab Runner in the GKE.
 This step describes how to create a cluster and connect to it. After you connect to the cluster, you use kubectl to interact with it.
 
 1. In the Google Cloud Platform, create a [standard](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-zonal-cluster) cluster.
-
 1. Install the kubectl authentication plugin:
 
    ```shell
@@ -230,6 +229,6 @@ To check if runners are running in the GKE cluster, you can either:
   ```
 
 - Check the job log in GitLab:
-  1. On the top bar, select **Search or go to** and find your project.
+  1. In the top bar, select **Search or go to** and find your project.
   1. Select **Build** > **Jobs** and find the job.
   1. To view the job log, select the job status.

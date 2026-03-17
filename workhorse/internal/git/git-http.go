@@ -116,6 +116,7 @@ func sendGitAuditEvent(action string) func(*api.API, *http.Request, *api.Respons
 			Protocol:      "http",
 			Repo:          response.GL_REPOSITORY,
 			Username:      response.GL_USERNAME,
+			Identifier:    response.GL_ID,
 			PackfileStats: stats,
 			Changes:       "_any",
 		})

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Predefined CI/CD variables reference
 ---
 
@@ -60,6 +60,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_COMMIT_TAG_MESSAGE`                         | Pre-pipeline | The commit tag message. Available only in pipelines for tags. Introduced in GitLab 15.5. |
 | `CI_COMMIT_TIMESTAMP`                           | Pre-pipeline | The timestamp of the commit in the [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. For example, `2022-01-31T16:47:55Z`. [UTC by default](../../administration/timezone.md). |
 | `CI_COMMIT_TITLE`                               | Pre-pipeline | The title of the commit. The full first line of the message. |
+| `CI_COMMIT_USER_LOGIN`                          | Pre-pipeline | The GitLab username of the commit author if the author's profile and email are public and match the commit email, otherwise an empty string. Introduced in GitLab 18.10. |
 | `CI_CONCURRENT_ID`                              | Job-only     | The unique ID of build execution in a single executor. |
 | `CI_CONCURRENT_PROJECT_ID`                      | Job-only     | The unique ID of build execution in a single executor and project. |
 | `CI_CONFIG_PATH`                                | Pre-pipeline | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. |

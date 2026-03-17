@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Pages parallel deployments
 ---
 
@@ -100,7 +100,7 @@ For example, if your main deployment has content at `/index.html`, a parallel de
 `staging` can access that same content at `/staging/index.html`.
 
 To prevent path clashes, avoid using path prefixes that match the names of existing folders in your site.
-For more information, see [Path clash](#path-clash).
+For more information, see [path clash](#path-clash).
 
 ## Example configuration
 
@@ -121,17 +121,17 @@ branch named `username/testing_feature`, this parallel Pages deployment would be
 The number of parallel deployments is limited by the root-level namespace. For
 specific limits for:
 
-- GitLab.com, see [Other limits](../../gitlab_com/_index.md#other-limits).
+- GitLab.com, see [other limits](../../gitlab_com/_index.md#other-limits).
 - GitLab Self-Managed, see
-  [Number of parallel Pages deployments](../../../administration/instance_limits.md#number-of-parallel-pages-deployments).
+  [number of parallel Pages deployments](../../../administration/instance_limits.md#number-of-parallel-pages-deployments).
 
 To immediately reduce the number of active deployments in your namespace,
 delete some deployments. For more information, see
-[Delete a deployment](_index.md#delete-a-deployment).
+[delete a deployment](_index.md#delete-a-deployment).
 
 To configure an expiry time to automatically
 delete older deployments, see
-[Expiring deployments](_index.md#expiring-deployments).
+[expiring deployments](_index.md#expiring-deployments).
 
 ## Expiration
 

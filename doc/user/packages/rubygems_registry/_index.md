@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Ruby gems in the package registry
 ---
 
@@ -136,7 +136,7 @@ Both are visible and accessible in the UI.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 Before you delete a package, make sure you understand
 the [associated security risks](../package_registry/supported_functionality.md#deleting-packages).
@@ -152,7 +152,7 @@ You can't install Ruby gems from the GitLab package registry. However, you can d
 
 To do this:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Package registry**.
 1. Select the package name and version.
 1. Under **Assets**, select the Ruby gem you want to download.

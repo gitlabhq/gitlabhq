@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Releases
 description: Releases, versioning, assets, tags, milestones, and evidence.
 ---
@@ -40,8 +40,7 @@ When you create a release, or after, you can:
 
 To view a list of releases:
 
-- On the left sidebar, select **Deploy** > **Releases**, or
-
+- In the left sidebar, select **Deploy** > **Releases**, or
 - On the project's overview page, if at least one release exists, select the number of releases.
 
   ![Number of Releases](img/releases_count_v13_2.png "Incremental counter of Releases")
@@ -115,7 +114,7 @@ Prerequisites:
 
 To create a release in the Releases page:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Releases** and select **New release**.
 1. From the [**Tag name**](release_fields.md#tag-name) dropdown list, either:
    - Select an existing Git tag. Selecting an existing tag that is already associated with a release
@@ -258,7 +257,7 @@ Prerequisites:
 
 In the UI:
 
-1. On the left sidebar, select **Deploy** > **Releases**.
+1. In the left sidebar, select **Deploy** > **Releases**.
 1. In the upper-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
 1. On the **Edit Release** page, change the release's details.
 1. Select **Save changes**.
@@ -284,7 +283,7 @@ To delete a release, use either the
 
 In the UI:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Releases**.
 1. In the upper-right corner of the release you want to delete, select **Edit this release**
    ({{< icon name="pencil" >}}).
@@ -302,7 +301,7 @@ the [Releases API](../../../api/releases/_index.md#create-a-release).
 
 In the user interface, to associate milestones to a release:
 
-1. On the left sidebar, select **Deploy** > **Releases**.
+1. In the left sidebar, select **Deploy** > **Releases**.
 1. In the upper-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
 1. From the **Milestones** list, select each milestone you want to associate. You can select multiple milestones.
 1. Select **Save changes**.
@@ -330,7 +329,7 @@ You can be notified by email when a new release is created for your project.
 
 To subscribe to notifications for releases:
 
-1. On the left sidebar, select **Project overview**.
+1. In the left sidebar, select **Project overview**.
 1. Select **Notification setting** (the bell icon).
 1. In the list, select **Custom**.
 1. Select the **New release** checkbox.
@@ -381,7 +380,7 @@ This approach offers deployment control during critical maintenance, and ensures
 To set a deploy freeze window in the UI, complete these steps:
 
 1. Sign in to GitLab as a user with the Maintainer role.
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Scroll to **Deploy freezes**.
 1. Select **Expand** to see the deploy freeze table.

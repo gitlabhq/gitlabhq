@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Global Search
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Advanced search
 description: "Use advanced search to find code, commits, issues, and merge requests across your entire GitLab instance."
 ---
@@ -48,7 +48,7 @@ Prerequisites:
 
 To use advanced search:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. In the search box, enter your search term.
 
 You can also use advanced search in a project or group.
@@ -76,7 +76,7 @@ The following scopes are available for advanced search:
 | Epics                       | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
 | Issues <sup>3</sup>         | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Merge requests <sup>3</sup> | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
-| Milestones                  | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
+| Milestones <sup>4</sup>     | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Projects                    | {{< yes >}}                      | {{< yes >}} | {{< no >}}  |
 | Users                       | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
 | Wikis                       | {{< yes >}}                      | {{< yes >}} | {{< yes >}} |
@@ -89,6 +89,9 @@ The following scopes are available for advanced search:
 1. On GitLab.com, global search is not enabled for code, commits, and wikis.
 1. When you search issues and merge requests, results
    include comments that match your search term.
+1. Advanced search returns only project milestones because group milestones are not indexed
+   in Elasticsearch. For more information, see
+   [issue 428589](https://gitlab.com/gitlab-org/gitlab/-/issues/428589).
 
 ## Syntax
 

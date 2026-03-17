@@ -25,7 +25,17 @@ module BulkImports
     end
 
     defer_on_database_health_signal(:gitlab_main, [], DEFER_ON_HEALTH_DELAY) do |job_args, schema, tables|
-      batch = ::BulkImports::BatchTracker.find(job_args.first)
+      batch = ::BulkImports::BatchTracker.find_by_id(job_args.first)
+
+      unless batch
+        ::BulkImports::Logger.build.warn(
+          class: 'BulkImports::PipelineBatchWorker',
+          batch_id: job_args.first,
+          message: 'BulkImports::BatchTracker not found'
+        )
+        next [schema, tables]
+      end
+
       pipeline_tracker = batch.tracker
       pipeline_schema = ::BulkImports::PipelineSchemaInfo.new(
         pipeline_tracker.pipeline_class,
@@ -45,7 +55,15 @@ module BulkImports
     end
 
     def perform(batch_id)
-      @batch = ::BulkImports::BatchTracker.find(batch_id)
+      @batch = ::BulkImports::BatchTracker.find_by_id(batch_id)
+      unless @batch
+        logger.warn(
+          class: self.class.name,
+          batch_id: batch_id,
+          message: 'BulkImports::BatchTracker not found'
+        )
+        return
+      end
 
       @tracker = @batch.tracker
       @entity = @tracker.entity
@@ -57,7 +75,7 @@ module BulkImports
 
       try_obtain_lease { run }
     ensure
-      unless pending_retry
+      if tracker && !pending_retry
         with_context(bulk_import_entity_id: entity.id) do
           ::BulkImports::FinishBatchedPipelineWorker.perform_async(tracker.id)
         end
@@ -65,7 +83,16 @@ module BulkImports
     end
 
     def perform_failure(batch_id, exception)
-      @batch = ::BulkImports::BatchTracker.find(batch_id)
+      @batch = ::BulkImports::BatchTracker.find_by_id(batch_id)
+      unless @batch
+        logger.warn(
+          class: self.class.name,
+          batch_id: batch_id,
+          message: 'BulkImports::BatchTracker not found'
+        )
+        return
+      end
+
       @tracker = @batch.tracker
 
       fail_batch(exception)

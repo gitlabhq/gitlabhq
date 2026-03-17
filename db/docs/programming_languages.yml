@@ -7,7 +7,6 @@ feature_categories:
 description: Contains known programming languages and their assigned colors
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19480
 milestone: '11.2'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell_local
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553468
-notes: static and deprecated table, to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/584338
+notes: static and deprecated table, to be removed in https://gitlab.com/gitlab-org/gitlab/-/work_items/519895

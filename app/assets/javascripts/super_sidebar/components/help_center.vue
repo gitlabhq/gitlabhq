@@ -56,6 +56,9 @@ export default {
     };
   },
   computed: {
+    showWhatsNewTopMenu() {
+      return !this.sidebarData.display_upgrade_subscription && this.showWhatsNewNotification;
+    },
     itemGroups() {
       const groups = {
         helpLinks: {
@@ -147,9 +150,10 @@ export default {
               shortcut: '?',
             },
             this.sidebarData.display_whats_new &&
-              !this.showWhatsNewNotification && {
+              !this.showWhatsNewTopMenu && {
                 text: this.$options.i18n.whatsnew,
                 action: this.showWhatsNew,
+                count: this.whatsNewMostRecentReleaseUnreadCount,
                 extraAttrs: {
                   'data-track-action': 'click_button',
                   'data-track-label': 'whats_new',
@@ -224,7 +228,10 @@ export default {
     hideWhatsNewNotification() {
       if (this.showWhatsNewNotification && this.whatsNewMostRecentReleaseUnreadCount === 0) {
         this.showWhatsNewNotification = false;
-        this.$toast.show(this.$options.i18n.whatsnewToast);
+
+        if (!this.sidebarData.display_upgrade_subscription) {
+          this.$toast.show(this.$options.i18n.whatsnewToast);
+        }
       }
     },
 
@@ -252,7 +259,7 @@ export default {
 <template>
   <div class="gl-flex gl-flex-col gl-gap-2">
     <gl-button
-      v-if="showWhatsNewNotification"
+      v-if="showWhatsNewTopMenu"
       v-gl-tooltip.right="isIconOnly ? $options.i18n.whatsnew : ''"
       class="super-sidebar-whats-new super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-2-5"
       category="tertiary"
@@ -294,11 +301,17 @@ export default {
           v-gl-tooltip.right="isIconOnly ? $options.i18n.help : ''"
           category="tertiary"
           icon="question-o"
-          class="super-sidebar-help-center-toggle super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-2-5 !gl-py-2"
+          class="super-sidebar-help-center-toggle super-sidebar-nav-item btn-with-notification gl-w-full !gl-justify-start gl-gap-3 !gl-px-2-5 !gl-py-2"
           :button-text-classes="{ '!gl-text-default': !isIconOnly, 'gl-hidden': isIconOnly }"
           :aria-label="$options.i18n.help"
           data-testid="sidebar-help-button"
         >
+          <span
+            v-if="sidebarData.display_upgrade_subscription && showWhatsNewNotification"
+            data-testid="notification-dot"
+            class="notification-dot-info"
+          ></span>
+
           {{ $options.i18n.help }}
         </gl-button>
       </template>
@@ -330,7 +343,15 @@ export default {
         <template #list-item="{ item }">
           <span class="-gl-my-1 gl-flex gl-items-center gl-justify-between">
             {{ item.text }}
-            <kbd v-if="item.shortcut" aria-hidden="true" class="flat">?</kbd>
+            <gl-badge
+              v-if="item.count"
+              pill
+              class="!gl-bg-strong !gl-text-subtle"
+              aria-hidden="true"
+              >{{ item.count }}</gl-badge
+            >
+
+            <kbd v-else-if="item.shortcut" aria-hidden="true" class="flat">?</kbd>
           </span>
         </template>
       </gl-disclosure-dropdown-group>

@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon, GlButton, GlEmptyState } from '@gitlab/ui';
+import EMPTY_SVG from '@gitlab/svgs/dist/illustrations/status/status-nothing-md.svg';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { getProjectRepositoryHealth } from '~/rest_api';
@@ -72,6 +73,7 @@ export default {
       }
     },
   },
+  EMPTY_SVG,
 };
 </script>
 
@@ -87,7 +89,7 @@ export default {
       :description="
         s__('UsageQuota|You can generate a new report at any time by clicking the button below.')
       "
-      illustration-name="status-nothing-md"
+      :svg-path="$options.EMPTY_SVG"
     >
       <template #actions>
         <gl-button variant="confirm" @click="fetchRepositoryHealth({ generate: true })">{{

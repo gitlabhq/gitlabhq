@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: Sign-up restrictions
 ---
@@ -109,15 +109,15 @@ The following settings are available:
 
 {{< /history >}}
 
-When you turn on restricted access, instances cannot add new billable users when no licensed seats
-are left in the subscription.
-
-Restrictive access is a more restrictive setting than user cap,
-as it prevents additions rather than requiring approval of new users.
-
 Use restricted access to prevent overage fees.
 Overage fees occur when you exceed the number of licensed users in your subscription,
 and must be paid at the next [quarterly reconciliation](../../subscriptions/quarterly_reconciliation.md).
+
+When you turn on restricted access, instances cannot add new billable users when no licensed seats
+are left in the subscription.
+
+> [!note]
+> If user cap is enabled for an instance or a group that has pending members, when you enable restricted access all pending members are automatically removed from the group.
 
 ### Turn on restricted access
 
@@ -128,7 +128,7 @@ Prerequisites:
 
 To turn on restricted access:
 
-1. On the left sidebar, select **Settings** > **General**.
+1. In the left sidebar, select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Under **Seat control**, select **Restricted access**.
 
@@ -136,18 +136,36 @@ When you turn on restricted access, the setting to [prevent inviting groups outs
 
 You can still independently configure [project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
+### Provisioning behavior with SAML, SCIM, and LDAP
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206932) in GitLab 18.6 [with a flag](../feature_flags/_index.md) named `bso_minimal_access_fallback`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225777) in GitLab 18.10.
+
+{{< /history >}}
+
+When restricted access is enabled and no subscription seats are available, users provisioned through SAML, SCIM, or LDAP are assigned the Minimal Access role instead of their configured access level.
+This behavior ensures that synchronization can continue without consuming billable seats on GitLab.com and GitLab Self-Managed Ultimate.
+
+Users with the Minimal Access role can authenticate and access the group, but have [limited permissions](../../user/permissions.md#users-with-minimal-access).
+When seats become available, the users can be promoted to their intended access level.
+Existing users with billable roles are not affected by this behavior.
+
+You can [view seat usage](../../subscriptions/manage_users_and_seats.md#view-seat-usage) and manage users with Minimal Access.
+
 ### Known issues
 
 When you turn on restricted access, the following known issues might occur and result in overages:
 
 - The number of billable users can still be exceeded if:
-  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription.
+  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription. When the Minimal Access fallback feature is enabled, users are assigned Minimal Access instead of being blocked.
   - Multiple users with administrator access add members simultaneously.
   - New billable users delay accepting an invitation. When you invite a user, they don't consume a billable seat until they accept the invitation. If an invited user delays accepting, you can invite and add other users during that time. When the delayed user finally accepts, they consume a billable seat, which might cause an overage if you've already reached your seat limit.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current
   subscription, you will incur an overage fee. To avoid this fee, remove additional users before your
   renewal starts. For example, if you have 20 users and renew your subscription for 15 users,
-you will be charged overages for the five additional users.
+  you will be charged overages for the five additional users.
 
 Additionally, restricted access might block the standard non-overage flows:
 
@@ -173,10 +191,6 @@ If an administrator increases or removes the user cap, users pending approval ar
 The number of [billable users](../../subscriptions/manage_users_and_seats.md#billable-users) is updated once a day.
 The user cap might apply only retrospectively after the cap has already been exceeded.
 If the cap is set to a value below the current number of billable users (for example, `1`), the cap is enabled immediately.
-
-When you turn on restricted access, the setting to [prevent inviting groups outside the group hierarchy](../../user/project/members/sharing_projects_groups.md#prevent-inviting-groups-outside-the-group-hierarchy) is automatically turned on.
-
-You can still independently configure [project sharing for the group and its subgroups](../../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) as needed.
 
 You can also set up [user caps for individual groups](../../user/group/manage.md#user-cap-for-groups).
 
@@ -280,9 +294,9 @@ To create an email domain allowlist or denylist:
    manually or upload a `.txt` file that contains list entries.
 
    Both the allowlist and denylist accept wildcards. For example, you can use
-`*.company.com` to accept every `company.com` subdomain, or `*.io` to block all
-domains ending in `.io`. Domains must be separated by a whitespace,
-semicolon, comma, or a new line.
+   `*.company.com` to accept every `company.com` subdomain, or `*.io` to block all
+   domains ending in `.io`. Domains must be separated by a whitespace,
+   semicolon, comma, or a new line.
 
    ![The domain denylist settings with the options to upload a file or enter the denylist manually.](img/domain_denylist_v14_1.png)
 
@@ -315,13 +329,11 @@ that are [pending administrator approval](../moderate_users.md#view-users-pendin
 
 - If an administrator adds a user to a group or project:
   - If the new user role is [billable](../../subscriptions/manage_users_and_seats.md#billable-users),
-  all other membership requests for that user are automatically approved.
-  - If the new user role is not billable, other requests for that user remain pending until administrator
-  approval.
-
+    all other membership requests for that user are automatically approved.
+  - If the new user role is not billable, other requests for that user remain pending until administrator approval.
 - If a user who isn't an administrator adds a user to a group or project:
   - If the user does not have any billable role in any group or project, and is added or promoted to a billable role,
-  their request remains [pending until administrator approval](../moderate_users.md#view-users-pending-role-promotion).
+    their request remains [pending until administrator approval](../moderate_users.md#view-users-pending-role-promotion).
   - If the user already has a billable role, administrator approval is not required.
 
 Prerequisites:

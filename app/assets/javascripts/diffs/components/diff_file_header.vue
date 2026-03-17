@@ -11,7 +11,7 @@ import {
   GlLoadingIcon,
   GlAnimatedChevronRightDownIcon,
 } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { mapActions, mapState } from 'pinia';
 import { keysFor, MR_TOGGLE_REVIEW } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
@@ -470,6 +470,7 @@ export default {
           right
           toggle-class="btn-icon js-diff-more-actions"
           data-testid="options-dropdown-button"
+          :text-sr-only="$options.i18n.optionsDropdownTitle"
         >
           <gl-disclosure-dropdown-item ref="viewButton" :item="viewFileDropdownItem" />
           <template v-if="showEditButton">

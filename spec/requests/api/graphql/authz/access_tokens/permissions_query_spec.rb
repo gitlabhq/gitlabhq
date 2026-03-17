@@ -72,6 +72,36 @@ RSpec.describe 'Query.accessTokenPermissions', feature_category: :permissions do
     end
   end
 
+  context 'when a permission is deprecated' do
+    let(:deprecated_permission) do
+      ::Authz::PermissionGroups::Assignable.new(
+        {
+          name: 'deprecated_permission',
+          description: 'A deprecated permission',
+          permissions: %w[deprecated_action],
+          boundaries: %w[project],
+          deprecated: true
+        },
+        "#{::Authz::PermissionGroups::Assignable::BASE_PATH}/category/resource/deprecated.yml"
+      )
+    end
+
+    before do
+      allow(::Authz::PermissionGroups::Assignable).to receive(:all).and_return(
+        target_permission.name => target_permission,
+        deprecated_permission.name => deprecated_permission
+      )
+    end
+
+    it 'excludes deprecated permissions from results' do
+      post_graphql(query, current_user: current_user)
+
+      permission_names = permissions_data.pluck('name')
+      expect(permission_names).to include('update_wiki')
+      expect(permission_names).not_to include('deprecated_permission')
+    end
+  end
+
   context 'when feature-flag `granular_personal_access_tokens` is disabled' do
     before do
       stub_feature_flags(granular_personal_access_tokens: false)

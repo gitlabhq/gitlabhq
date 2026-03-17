@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Build, test, and deploy your Hugo site with GitLab'
 ---
 
@@ -100,7 +100,7 @@ You specify your configuration options in a special file called `.gitlab-ci.yml`
 
 To create a `.gitlab-ci.yml` file using the Hugo template:
 
-1. On the left sidebar, select **Code** > **Repository**.
+1. In the left sidebar, select **Code** > **Repository**.
 1. Above the file list, select the plus icon ( + ), then select **New file** from the dropdown list.
 1. For the filename, enter `.gitlab-ci.yml`. Don't omit the period at the beginning.
 1. Select the **Apply a template** dropdown list, then enter "Hugo" in the filter box.

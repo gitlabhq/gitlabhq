@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Deploying Python repositories
 ---
 
@@ -37,7 +37,6 @@ To configure deployment of the PyPI package:
    ```
 
    To configure deployment with CI, set the `POETRY_PYPI_TOKEN_PYPI` to the token created. Alternatively, define a [trusted publisher](https://docs.pypi.org/trusted-publishers/) for the project, in which case no token is needed.
-
 1. Use [Poetry to publish](https://python-poetry.org/docs/cli/#publish) your package:
 
    ```shell

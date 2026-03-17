@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Engagement
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Matrix
 ---
 
@@ -32,7 +32,7 @@ After you join to a Matrix room, you can configure GitLab to send notifications:
 
 1. To enable the integration:
    - **For your group or project**:
-     1. On the top bar, select **Search or go to** and find your project or group.
+     1. In the top bar, select **Search or go to** and find your project or group.
      1. Select **Settings** > **Integrations**.
    - **For your instance**:
      1. In the upper-right corner, select **Admin**.

@@ -49,11 +49,6 @@ export default {
       required: false,
       default: false,
     },
-    scrollToCommitForm: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   emits: ['showError', 'commit', 'updateCommitSha'],
   data() {
@@ -171,7 +166,6 @@ export default {
     :has-unsaved-changes="hasUnsavedChanges"
     :is-new-ci-config-file="isNewCiConfigFile"
     :is-saving="isSaving"
-    :scroll-to-commit-form="scrollToCommitForm"
     v-on="$listeners"
     @submit="onCommitSubmit"
   />

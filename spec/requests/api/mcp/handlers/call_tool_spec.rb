@@ -234,5 +234,174 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
     end
   end
+
+  describe '#manage_pipeline' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: :running) }
+    let_it_be(:cancelable_build) { create(:ci_build, :running, pipeline: pipeline) }
+
+    context 'when creating a pipeline' do
+      let(:tool_params) do
+        {
+          name: 'manage_pipeline',
+          arguments: {
+            id: project.full_path,
+            ref: project.default_branch
+          }
+        }
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(test: { script: 'echo test' }))
+      end
+
+      it 'creates a new pipeline' do
+        expect do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+        end.to change { project.ci_pipelines.count }.by(1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['structuredContent']['ref']).to eq(project.default_branch)
+      end
+    end
+
+    context 'when canceling a pipeline' do
+      let(:tool_params) do
+        {
+          name: 'manage_pipeline',
+          arguments: {
+            id: project.full_path,
+            pipeline_id: pipeline.id,
+            cancel: true
+          }
+        }
+      end
+
+      it 'cancels the pipeline', :sidekiq_inline do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(pipeline.reload.status).to be_in(%w[canceling canceled])
+      end
+    end
+
+    context 'when retrying a pipeline' do
+      let(:failed_pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: :failed) }
+      let!(:failed_build) { create(:ci_build, :failed, :retryable, pipeline: failed_pipeline) }
+
+      let(:tool_params) do
+        {
+          name: 'manage_pipeline',
+          arguments: {
+            id: project.full_path,
+            pipeline_id: failed_pipeline.id,
+            retry: true
+          }
+        }
+      end
+
+      it 'retries the failed pipeline' do
+        post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['result']['isError']).to be_falsey
+        expect(json_response['result']['content'].first['text']).to include('Pipeline retried successfully')
+      end
+    end
+
+    context 'when deleting a pipeline' do
+      let_it_be(:owner) { create(:user) }
+      let_it_be(:owner_access_token) { create(:oauth_access_token, user: owner, scopes: [:mcp]) }
+      let_it_be(:deletable_pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: :success) }
+
+      let(:tool_params) do
+        {
+          name: 'manage_pipeline',
+          arguments: {
+            id: project.full_path,
+            pipeline_id: deletable_pipeline.id
+          }
+        }
+      end
+
+      before_all do
+        project.add_owner(owner)
+      end
+
+      it 'deletes the pipeline' do
+        expect do
+          post api('/mcp', owner, oauth_access_token: owner_access_token), params: params, as: :json
+        end.to change { project.ci_pipelines.count }.by(-1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when user does not have permission to delete' do
+        let_it_be(:developer) { create(:user) }
+        let_it_be(:developer_access_token) { create(:oauth_access_token, user: developer, scopes: [:mcp]) }
+
+        let(:tool_params) do
+          {
+            name: 'manage_pipeline',
+            arguments: {
+              id: project.full_path,
+              pipeline_id: deletable_pipeline.id
+            }
+          }
+        end
+
+        before_all do
+          project.add_developer(developer)
+        end
+
+        it 'returns an error' do
+          expect do
+            post api('/mcp', developer, oauth_access_token: developer_access_token), params: params, as: :json
+          end.not_to change { project.ci_pipelines.count }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_truthy
+          expect(json_response['result']['content'].first['text']).to include('403')
+        end
+      end
+    end
+
+    context 'with error handling' do
+      context 'with ambiguous parameters' do
+        let(:tool_params) do
+          { name: 'manage_pipeline', arguments: { id: project.full_path } }
+        end
+
+        it 'returns clear error message' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_truthy
+          expect(json_response['result']['content'].first['text']).to include('Cannot determine operation')
+        end
+      end
+
+      context 'with non-existent ref' do
+        let(:tool_params) do
+          {
+            name: 'manage_pipeline',
+            arguments: {
+              id: project.full_path,
+              ref: 'non-existent-branch'
+            }
+          }
+        end
+
+        it 'returns error for invalid reference' do
+          post api('/mcp', user, oauth_access_token: access_token), params: params, as: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['result']['isError']).to be_truthy
+          expect(json_response['result']['content'].first['text']).to include('Reference not found')
+        end
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/SpecFilePathFormat

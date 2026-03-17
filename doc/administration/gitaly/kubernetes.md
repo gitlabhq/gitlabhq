@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Gitaly on Kubernetes
 ---
 
@@ -21,7 +21,7 @@ title: Gitaly on Kubernetes
 
 {{< /history >}}
 
-{{< alert type="disclaimer" />}}
+> [!disclaimer]
 
 Running Gitaly on Kubernetes has availability trade-offs, so consider these trade-offs when planing a production environment and set expectations accordingly.
 This document describes and provides guidance on how to minimize, and plan for existing limitations.

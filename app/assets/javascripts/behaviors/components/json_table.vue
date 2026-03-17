@@ -51,13 +51,15 @@ export default {
         if (typeof field === 'string') {
           return field;
         }
+
+        // Documented properties of field: key, label & sortable.
+        const { key, label, sortable } = field;
+
         return {
-          key: field.key,
-          label: field.label,
-          sortable: field.sortable || false,
-          sortByFormatted: field.sortable && this.isHtmlSafe ? this.getSortableFieldValue : false,
-          class: field.class || [],
-          markdown: field.markdown || false,
+          key,
+          label,
+          sortable: sortable || false,
+          sortByFormatted: sortable && this.isHtmlSafe ? this.getSortableFieldValue : false,
         };
       });
     },

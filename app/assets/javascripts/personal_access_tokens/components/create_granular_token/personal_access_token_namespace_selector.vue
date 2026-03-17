@@ -191,10 +191,10 @@ export default {
 
       <ul
         v-if="selectedIds.length"
-        class="gl-flex gl-list-none gl-flex-col gl-gap-3 gl-pl-2"
+        class="gl-mb-2 gl-flex gl-list-none gl-flex-col gl-gap-3 gl-pl-2"
         data-testid="selected-namespaces"
       >
-        <li v-for="item in selectedItems" :key="item.id" class="gl-mb-2 gl-flex gl-items-center">
+        <li v-for="item in selectedItems" :key="item.id" class="gl-mt-2 gl-flex gl-items-center">
           <gl-icon :name="namespaceIcon(item)" />
           <div class="gl-ml-3">
             {{ item.fullPath }}

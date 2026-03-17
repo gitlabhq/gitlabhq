@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Test Setup For Amazon Q with GitLab
 ---
 
@@ -24,7 +24,7 @@ title: Test Setup For Amazon Q with GitLab
 - Confirm the OS version using a command such as `cat /etc/os-release`
 - Allow access to ports 443 and 80 using the commands
 
-  ``` sh
+  ```shell
   gcloud compute firewall-rules create default-allow-https \
     --project=<project_name> \
     --direction=INGRESS \
@@ -42,7 +42,7 @@ title: Test Setup For Amazon Q with GitLab
     --action=ALLOW \
     --rules=tcp:80 \
     --source-ranges=0.0.0.0/0
-    ```
+  ```
 
 ## 3. Configure DNS
 
@@ -58,7 +58,7 @@ title: Test Setup For Amazon Q with GitLab
 - Complete the [pre-installation steps](../../install/package/debian.md#enable-ssh-and-open-firewall-ports)
 - Install required packages
 
-  ``` sh
+  ```shell
   sudo apt-get update
   sudo apt-get install -y curl openssh-server ca-certificates perl
   ```
@@ -75,7 +75,7 @@ title: Test Setup For Amazon Q with GitLab
 - Transfer the updated package using the command `gcloud compute scp <full_path_to_package_file>:/home/<user_name>  --zone <zone_name> --project <project_name>`
 - Run the following commands:
 
-  ``` sh
+  ```shell
   sudo touch /etc/gitlab/skip-auto-backup
   sudo apt update
   sudo dpkg -i <package_name>

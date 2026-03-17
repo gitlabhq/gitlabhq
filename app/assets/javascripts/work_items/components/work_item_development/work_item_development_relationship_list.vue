@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { unionBy, uniqueId, map } from 'lodash';
+import { unionBy, uniqueId, map } from 'lodash-es';
 import {
   TYPENAME_FEATURE_FLAG,
   TYPENAME_MERGE_REQUEST,

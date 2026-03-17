@@ -1,0 +1,7 @@
+---
+name: create_license
+description: Grants the ability to create licenses
+permissions:
+  - create_license
+boundaries:
+  - instance

@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: パーソナルアクセストークンAPI
 ---
 
@@ -22,7 +22,7 @@ title: パーソナルアクセストークンAPI
 
 {{< /history >}}
 
-認証を受けているユーザーがアクセスできる、すべてのパーソナルアクセストークンのリストを取得します。管理者の場合は、インスタンス内のすべてのパーソナルアクセストークンのリストが返されます。管理者以外の場合は、自分のパーソナルアクセストークンのすべてのリストが返されます。
+認証済みユーザーがアクセス可能なすべてのパーソナルアクセストークンをリスト表示します。管理者の場合は、インスタンス内のすべてのパーソナルアクセストークンを返します。管理者ではないユーザーの場合は、自分のすべてのパーソナルアクセストークンを返します。
 
 ```plaintext
 GET /personal_access_tokens
@@ -36,7 +36,7 @@ GET /personal_access_tokens?state=inactive
 GET /personal_access_tokens?user_id=1
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性          | 型                | 必須 | 説明 |
 | ------------------ | ------------------- | -------- | ----------- |
@@ -47,12 +47,12 @@ GET /personal_access_tokens?user_id=1
 | `last_used_after`  | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より後に最終使用されたトークンを返します。 |
 | `last_used_before` | 日時（ISO 8601） | いいえ       | 定義されている場合、指定された時刻より前に最終使用されたトークンを返します。 |
 | `revoked`          | ブール値             | いいえ       | `true`の場合、失効したトークンのみを返します。 |
-| `search`           | 文字列              | いいえ       | 定義されている場合、指定された値が名前に含まれるトークンを返します。 |
-| `sort`             | 文字列              | いいえ       | 定義されている場合、指定された値で結果をソートします。使用できる値は、`created_asc`、`created_desc`、`expires_asc`、`expires_desc`、`last_used_asc`、`last_used_desc`、`name_asc`、`name_desc`です。 |
+| `search`           | 文字列              | いいえ       | 定義されている場合、指定された値が名前に含まれたトークンを返します。 |
+| `sort`             | 文字列              | いいえ       | 定義されている場合、指定された値で結果を並べ替えます。使用できる値は、`created_asc`、`created_desc`、`expires_asc`、`expires_desc`、`last_used_asc`、`last_used_desc`、`name_asc`、`name_desc`です。 |
 | `state`            | 文字列              | いいえ       | 定義されている場合、指定された状態のトークンを返します。使用できる値は、`active`と`inactive`です。 |
 | `user_id`          | 整数または文字列   | いいえ       | 定義されている場合、指定されたユーザーが所有しているトークンを返します。管理者以外のユーザーは、自分のトークンのみをフィルターできます。 |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -60,7 +60,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/personal_access_tokens?user_id=3&created_before=2022-01-01"
 ```
 
-応答の例:
+レスポンス例: 
 
 ```json
 [
@@ -87,7 +87,7 @@ curl --request GET \
 
 - 管理者以外のユーザーが`user_id`属性を使用して他のユーザーをフィルターした場合は`401: Unauthorized`。
 
-## パーソナルアクセストークンの詳細を取得する {#get-details-on-a-personal-access-token}
+## パーソナルアクセストークンを取得する {#retrieve-a-personal-access-token}
 
 {{< history >}}
 
@@ -96,7 +96,7 @@ curl --request GET \
 
 {{< /history >}}
 
-指定されたパーソナルアクセストークンの詳細を取得します。管理者は、任意のトークンの詳細を取得できます。管理者以外のユーザーは、自分のトークンの詳細のみを取得できます。
+指定されたパーソナルアクセストークンの詳細を取得する。管理者は任意のトークンの詳細を取得することができます。管理者ではないユーザーは、自分のトークンの詳細のみを取得することができます。
 
 ```plaintext
 GET /personal_access_tokens/:id
@@ -168,7 +168,7 @@ POST /personal_access_tokens/:id/rotate
 | 属性 | 型      | 必須 | 説明         |
 |-----------|-----------|----------|---------------------|
 | `id` | 整数または文字列 | はい      | パーソナルアクセストークン、またはキーワード`self`のID。 |
-| `expires_at` | 日付   | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。トークンに有効期限が必要な場合、デフォルトは1週間です。不要な場合、デフォルトは[最大許容ライフタイムの制限](../user/profile/personal_access_tokens.md#access-token-expiration)です。 |
+| `expires_at` | 日付   | いいえ       | ISO形式（`YYYY-MM-DD`）のアクセストークンの有効期限。トークンに有効期限が必要な場合、デフォルトは1週間です。不要な場合、デフォルトは[最大許容ライフタイム制限](../user/profile/personal_access_tokens.md#access-token-expiration)になります。 |
 
 ```shell
 curl --request POST \
@@ -176,7 +176,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/personal_access_tokens/<personal_access_token_id>/rotate"
 ```
 
-応答の例:
+レスポンス例: 
 
 ```json
 {
@@ -300,15 +300,15 @@ GET /personal_access_tokens/self/associations?page=2
 GET /personal_access_tokens/self/associations?min_access_level=40
 ```
 
-サポートされている属性:
+サポートされている属性は以下のとおりです: 
 
 | 属性           | 型     | 必須 | 説明                                                              |
 |---------------------|----------|----------|--------------------------------------------------------------------------|
-| `min_access_level`  | 整数  | いいえ       | 現在のユーザーの最小[ロール（`access_level`）](members.md#roles)で制限します。 |
+| `min_access_level`  | 整数  | いいえ       | トークンが少なくとも指定されたアクセスレベルを持つグループとプロジェクトに制限します。使用可能な値: `5` (最小アクセス)、`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー)。 |
 | `page`              | 整数  | いいえ       | 取得するページ。`1`がデフォルトです。                                       |
 | `per_page`          | 整数  | いいえ       | ページごとに返すレコード数。`20`がデフォルトです。                  |
 
-リクエストの例:
+リクエスト例: 
 
 ```shell
 curl --request GET \
@@ -316,7 +316,7 @@ curl --request GET \
   --url "https://gitlab.example.com/api/v4/personal_access_tokens/self/associations"
 ```
 
-応答の例:
+レスポンス例: 
 
 ```json
 {

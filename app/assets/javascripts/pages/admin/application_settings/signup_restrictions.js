@@ -24,6 +24,8 @@ export default function initSignupRestrictions(elementSelector = '#js-signup-for
       'promotionManagementAvailable',
       'enableMemberPromotionManagement',
       'canDisableMemberPromotionManagement',
+      'ldapSyncConfigured',
+      'samlScimConfigured',
     ],
   });
 

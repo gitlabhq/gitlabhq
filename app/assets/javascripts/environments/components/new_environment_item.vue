@@ -21,6 +21,7 @@ import Deployment from './deployment.vue';
 import DeployBoardWrapper from './deploy_board_wrapper.vue';
 
 export default {
+  name: 'EnvironmentItem',
   components: {
     GlDisclosureDropdown,
     GlBadge,
@@ -53,8 +54,12 @@ export default {
       type: Boolean,
     },
   },
+  data() {
+    return {
+      isLastDeployment: true,
+    };
+  },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     isLastDeployment: {
       query: isLastDeployment,
       variables() {

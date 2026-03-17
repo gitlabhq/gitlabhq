@@ -1,0 +1,7 @@
+---
+name: read_saml_user
+description: Grants the ability to read SAML users
+boundaries:
+  - group
+permissions:
+  - read_saml_user

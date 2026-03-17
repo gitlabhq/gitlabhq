@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Remote Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure the GitLab agent for Kubernetes to support workspaces.
 title: Workspace settings
 ---
@@ -79,9 +79,9 @@ remote_development:
 > [!note]
 > If `enabled` is set to `false` for an agent that has active or stopped workspaces,
 > those workspaces become orphaned and unusable.
-> 
+>
 > Before you disable remote development on an agent:
-> 
+>
 > - Ensure all associated workspaces are no longer needed.
 > - Manually delete any running workspaces to remove them from the Kubernetes cluster.
 

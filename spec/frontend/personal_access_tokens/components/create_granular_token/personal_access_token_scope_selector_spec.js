@@ -36,7 +36,7 @@ describe('PersonalAccessTokenScopeSelector', () => {
   it('renders the scope selector with title', () => {
     expect(wrapper.text()).toContain('Define scope');
     expect(wrapper.text()).toContain(
-      'Add only the minimum resource and permissions  needed for your token. Permissions that exceed your assigned role will have no effect.',
+      'Add only the minimum resource and permissions  needed for your token. Permissions that exceed your assigned role have no effect.',
     );
   });
 

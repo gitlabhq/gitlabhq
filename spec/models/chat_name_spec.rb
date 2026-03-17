@@ -24,6 +24,25 @@ RSpec.describe ChatName, feature_category: :integrations do
     let(:record) { chat_name }
   end
 
+  describe '.for_team_and_chat_ids' do
+    let_it_be(:team_id) { 'T0123TEAM' }
+    let_it_be(:user_a) { create(:user) }
+    let_it_be(:user_b) { create(:user) }
+    let_it_be(:cn_a) { create(:chat_name, user: user_a, team_id: team_id, chat_id: 'U0001') }
+    let_it_be(:cn_b) { create(:chat_name, user: user_b, team_id: team_id, chat_id: 'U0002') }
+    let_it_be(:cn_other_team) { create(:chat_name, team_id: 'T_OTHER', chat_id: 'U0001') }
+
+    it 'returns only records matching the team and given chat IDs' do
+      expect(described_class.for_team_and_chat_ids(team_id, %w[U0001 U0002]))
+        .to contain_exactly(cn_a, cn_b)
+    end
+
+    it 'excludes chat IDs not in the given list' do
+      expect(described_class.for_team_and_chat_ids(team_id, ['U0001']))
+        .to contain_exactly(cn_a)
+    end
+  end
+
   describe '#update_last_used_at', :clean_gitlab_redis_shared_state do
     it 'updates the last_used_at timestamp' do
       expect(subject.last_used_at).to be_nil

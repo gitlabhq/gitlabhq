@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Code coverage
 ---
 
@@ -59,8 +59,8 @@ Test the regex patterns carefully. Tool output formats can change over time, and
 <!--
 Verify regex patterns carefully, especially patterns containing the pipe (`|`) character.
 To use `|` in the text of a table cell (not as cell delimiters), you must escape it with a backslash (`\|`).
-Verify all tables render as expected both in GitLab and on docs.gitlab.com.
-See: https://docs.gitlab.com/user/markdown/#tables
+Verify all tables render as expected both in GitLab and on `docs.gitlab.com`.
+See: <https://docs.gitlab.com/user/markdown/#tables>
 -->
 
 {{< tabs >}}

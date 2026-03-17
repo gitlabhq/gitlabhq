@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authorization
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Custom role development guidelines
 ---
 
@@ -191,6 +191,8 @@ before in a separate merge request, before completing the below.
 | `enabled_for_project_access_levels` | if `project_ability = true` | The array of access levels that already have access to this custom ability in a project. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. This is for information only and has no impact on how custom roles operate.  |
 | `requirements` | no | The list of custom permissions this ability is dependent on. For instance `admin_vulnerability` is dependent on `read_vulnerability`. If none, then enter `[]`  |
 | `available_from_access_level` | no | The access level of the predefined role from which this ability is available, if applicable. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. This is for information only and has no impact on how custom roles operate. |
+| `project_permissions` | if `project_ability = true` | List of permissions to enable when this custom ability is granted at the project level. These permissions are automatically applied in `ProjectPolicy` without needing to manually add policy rules. |
+| `group_permissions` | if `group_ability = true` | List of permissions to enable when this custom ability is granted at the group level. These permissions are automatically applied in `GroupPolicy` without needing to manually add policy rules. |
 
 ### Step 2: Create a spec file and update validation schema
 
@@ -200,23 +202,44 @@ before in a separate merge request, before completing the below.
 
 - If the ability is to be implemented in multiple MRs a `wip` [feature flag](../feature_flags/_index.md) should be used. The feature flag name should be in the format `custom_ability_<name>`. For example, if the new ability name is `read_code`, the feature flag will be `custom_ability_read_code`. The feature flag uses an `instance` actor on the backend check and when disabled, the custom ability will be treated as any other unknown ability. Once development is complete, the feature flag should be enabled globally and cleaned up. Due to the potential for inconsistent behavior with user access the feature flag should not be toggled on and off. If testing is needed, it should be completed in the staging environment before enabling in production.
 
-### Step 4: Update policies
+### Step 4: Define permissions in the YAML configuration file
 
-- If the ability is checked on a group level, add rule(s) to GroupPolicy to enable the ability.
-- For example: if the ability we would like to add is `read_dependency`, then an update to `ee/app/policies/ee/group_policy.rb` would look like as follows:
+Permissions are defined declaratively in the YAML configuration file using the `project_permissions` and `group_permissions` fields. The system automatically generates policy rules from these definitions — you do not need to manually update `ProjectPolicy` or `GroupPolicy`.
 
-```ruby
-rule { custom_role_enables_read_dependency }.enable(:read_dependency)
+For example, if you are adding a `read_dependency` custom ability, your YAML file should include:
+
+```yaml
+# ee/config/custom_abilities/read_dependency.yml
+---
+name: read_dependency
+group_ability: true
+project_ability: true
+project_permissions:
+  - read_dependency
+group_permissions:
+  - read_dependency
+# ... other fields
 ```
 
-- Similarly, If the ability is checked on a project level, add rule(s) to ProjectPolicy to enable the ability.
-- For example: if the ability we would like to add is `read_dependency`, then an update to `ee/app/policies/ee/project_policy.rb` would look like as follows:
+At startup, the system reads these YAML files and dynamically generates a `custom_role_enables_<ability>` condition and corresponding rule for each ability in both `GroupPolicy` and `ProjectPolicy`. When a user with a custom role that includes `read_dependency` accesses a project or group, the system automatically enables the permissions listed in `project_permissions` or `group_permissions` respectively.
 
-```ruby
-rule { custom_role_enables_read_dependency }.enable(:read_dependency)
+A custom ability can enable multiple permissions. For example, an ability that manages deploy tokens enables different permissions at the group and project levels:
+
+```yaml
+# ee/config/custom_abilities/manage_deploy_tokens.yml
+group_permissions:
+  - manage_deploy_tokens
+  - read_deploy_token
+  - create_deploy_token
+  - destroy_deploy_token
+project_permissions:
+  - manage_deploy_tokens
+  - read_deploy_token
+  - create_deploy_token
+  - destroy_deploy_token
 ```
 
-- Not all abilities need to be enabled on both levels, for instance `admin_terraform_state` allows users to manage a project's terraform state. It only needs to be enabled on the project level and not the group level, and thus only needs to be configured in `ee/app/policies/ee/project_policy.rb`.
+Not all abilities need to be enabled on both levels. For instance, `admin_terraform_state` allows users to manage a project's Terraform state. It only needs `project_permissions` defined, not `group_permissions`.
 
 ### Step 5: Verify role access
 

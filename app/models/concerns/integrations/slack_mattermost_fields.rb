@@ -47,7 +47,7 @@ module Integrations
         section: Integration::SECTION_TYPE_CONFIGURATION,
         description: -> { _('Labels to send notifications for. Leave blank to receive notifications for all events.') },
         placeholder: '~backend,~frontend',
-        help: 'Send notifications for issue, merge request, and comment events with the listed labels only. ' \
+        help: 'Send notifications for work item, merge request, and comment events with the listed labels only. ' \
               'Leave blank to receive notifications for all events.'
 
       field :labels_to_be_notified_behavior,

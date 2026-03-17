@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: Workflows
 ---
 
@@ -17,7 +17,6 @@ The process for creating and maintaining GitLab product documentation depends on
 
 - A new feature or feature enhancement: Delivered for a specific milestone and associated with specific code changes.
   This documentation has the highest priority.
-
 - [Changes outside a specific milestone](#documentation-feedback-and-improvements): Usually not associated with a specific code change, is of lower priority, and
   is open to all GitLab contributors.
 
@@ -74,7 +73,6 @@ otherwise agreed with the product manager and technical writer:
 
   If the new or changed documentation requires extensive collaboration or
   conversation, a separate, linked issue can be used for the planning process.
-
 - Use the [Documentation guidelines](_index.md),
   and other resources linked from there, including:
   - [Documentation folder structure](site_architecture/folder_structure.md).
@@ -89,6 +87,16 @@ otherwise agreed with the product manager and technical writer:
 - If you are working on documentation in a separate merge request, ensure the
   documentation is merged as close as possible to the code merge.
 - If the feature has a feature flag, [follow the policy for documenting feature-flagged issues](feature_flags.md).
+
+#### AI-generated documentation
+
+All AI-generated documentation must be reviewed by a Technical Writer. Before you submit
+your documentation for review, run a [Vale](testing/vale.md) test on the documentation file
+to identify and fix style issues.
+
+Generative AI tools are not a replacement for subject matter expertise. Authors are responsible
+for ensuring the technical accuracy of any content they create. For more information
+about output quality, see [Communicating when using generative AI tools](https://handbook.gitlab.com/handbook/communication/#communicating-when-using-generative-ai-tools).
 
 #### Review
 
@@ -634,7 +642,9 @@ We often create documentation issues for a Hackathon. These issues are typically
 
 1. Run Vale against the full docset. Go to the GitLab repo and run:
 
-   `find doc -name '*.md' | sort | xargs vale --minAlertLevel suggestion --output line > ../results.txt`
+   ```shell
+   find doc -name '*.md' | sort | xargs vale --minAlertLevel suggestion --output line > ../results.txt
+   ```
 
 1. Create issues. You have a few options:
 

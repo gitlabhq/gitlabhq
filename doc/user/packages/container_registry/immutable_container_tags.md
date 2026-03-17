@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Immutable container tags
 description: To prevent container tags from change or deletion, create immutable tag rules.
 ---
@@ -10,7 +10,6 @@ description: To prevent container tags from change or deletion, create immutable
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
@@ -18,12 +17,13 @@ description: To prevent container tags from change or deletion, create immutable
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/523276) as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `container_registry_immutable_tags`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/523276) in GitLab 18.2. Changed from experiment to beta. Feature flag `container_registry_immutable_tags` removed.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/588640) in GitLab 18.10.
 
 {{< /history >}}
 
 Use immutable tags to prevent container tags from being updated or deleted in your project.
 
-By default, users with at least the Developer role can push and delete image tags in all project container repositories.
+By default, users with the Developer, Maintainer, or Owner role can push and delete image tags in all project container repositories.
 With tag immutability rules, you can:
 
 - Prevent the modification of critical image tags and mitigate the risk of malicious or accidental changes.
@@ -63,7 +63,7 @@ graph TD
 
 For a project with these rules:
 
-- Protected tag rule: Pattern `v.*` requires at least the Maintainer role.
+- Protected tag rule: Pattern `v.*` requires the Maintainer or Owner role.
 - Immutable tag rule: Pattern `v\d+\.\d+\.\d+` protects semantic version tags.
 
 | User role | Action | Protected tag check | Immutable tag check | Result |
@@ -88,7 +88,7 @@ Prerequisites:
 
 To create an immutable rule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container tags**, select **Add protection rule**.
@@ -119,7 +119,7 @@ Prerequisites:
 
 To delete an immutable rule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container tags**, next to the immutable rule you want to delete, select **Delete** ({{< icon name="remove" >}}).

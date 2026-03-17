@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLab Advanced SAST uses cross-file, cross-function taint analysis to detect complex vulnerabilities with high accuracy.
 title: GitLab Advanced SAST
 ---
@@ -69,7 +69,7 @@ Prerequisites:
 
 Turn on GitLab Advanced SAST:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to **Build** > **Pipeline** editor.
 1. Create or edit your `.gitlab-ci.yml` file.
 1. Add the appropriate variable to enable Advanced SAST:
@@ -125,8 +125,8 @@ Prerequisites:
 
 To view vulnerabilities in your pipeline:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build** > **Pipelines**.
+1. In the top bar, select **Search or go to** and find your project.
+1. In the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. Either download results, or select a vulnerability to view its details (Ultimate only).
@@ -373,7 +373,7 @@ GitLab Advanced SAST supports the following languages:
 - Ruby
 
 GitLab Advanced SAST CPP requires additional configuration (such as a compilation database) to be
-used with GitLab Advanced SAST. For details, see [C/C++ configuration](cpp_advanced_sast.md). GitLab
+used with GitLab Advanced SAST. For details, see [C/C++ configuration](advanced_sast_cpp.md). GitLab
 Advanced SAST CPP does not exclude Semgrep for C/C++ projects; both analyzers run in parallel with
 different rule sets.
 
@@ -431,7 +431,7 @@ expected, reach out to GitLab Support for further assistance with the following 
 
 To identify the GitLab Advanced SAST analyzer version:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Jobs**.
 1. Locate the `gitlab-advanced-sast` job.
 1. In the output of the job, search for the string `GitLab GitLab Advanced SAST analyzer`.

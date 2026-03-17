@@ -10,6 +10,8 @@ module Types
     implements Types::CurrentUserTodos
     implements Types::TodoableInterface
 
+    authorize_granular_token permissions: :read_issue, boundary: :project, boundary_type: :project
+
     authorize :read_issue
 
     expose_permissions Types::PermissionTypes::Issue
@@ -131,6 +133,9 @@ module Types
     field :type, Types::IssueTypeEnum, null: true,
       method: :issue_type,
       description: 'Type of the issue.'
+
+    field :work_item_type, Types::WorkItems::TypeType, null: false,
+      description: 'Type assigned to the issue.'
 
     field :alert_management_alert,
       Types::AlertManagement::AlertType,

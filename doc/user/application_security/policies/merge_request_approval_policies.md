@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to enforce security rules in GitLab using merge request approval policies to automate scans, approvals, and compliance across your projects.
 title: Merge request approval policies
 ---
@@ -306,7 +306,7 @@ This rule enforces the defined actions for any merge request based on the commit
   - [Added](https://gitlab.com/groups/gitlab-org/-/epics/12319) in GitLab 17.7 [with a flag](../../../administration/feature_flags/_index.md) named `multiple_approval_actions`.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505374) in GitLab 17.8. Feature flag `multiple_approval_actions` removed.
 - Support for specifying custom roles as `role_approvers`:
-  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13550)  in GitLab 17.9 [with a flag](../../../administration/feature_flags/_index.md) named `security_policy_custom_roles`. Enabled by default.
+  - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13550) in GitLab 17.9 [with a flag](../../../administration/feature_flags/_index.md) named `security_policy_custom_roles`. Enabled by default.
   - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505742) in GitLab 17.10. Feature flag `security_policy_custom_roles` removed.
 
 {{< /history >}}
@@ -512,7 +512,7 @@ The settings set in the policy overwrite settings in the project.
 | `prevent_approval_by_author`        | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, merge request authors cannot approve their own MRs. This ensures code authors cannot introduce vulnerabilities and approve code to merge. |
 | `prevent_approval_by_commit_author` | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, users who have contributed code to the MR are ineligible for approval. This ensures code committers cannot introduce vulnerabilities and approve code to merge. |
 | `remove_approvals_with_new_commit`  | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required. This ensures new commits that may include vulnerabilities cannot be introduced. |
-| `require_password_to_approve`       | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, there will be password confirmation on approvals. Password confirmation adds an extra layer of security. |
+| `require_password_to_approve`       | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, approvers must authenticate again before approving. The approver can re-authenticate using their password or SAML, depending on their configured authentication method. This adds an extra layer of security to ensure the approver's identity. For more information, see [require user re-authentication to approve](../../project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve). |
 | `prevent_pushing_and_force_pushing` | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents users from pushing and force pushing to a protected branch if that branch is included in the security policy. This ensures users do not bypass the merge request process to add vulnerable code to a branch. |
 
 ## `fallback_behavior`
@@ -673,6 +673,12 @@ In busy projects, the most recent pipeline may not have completed security scans
 To customize policy enforcement, you can define a policy's scope to either include or exclude
 specified projects, groups, or compliance framework labels. For more details, see
 [Scope](_index.md#configure-the-policy-scope).
+
+> [!note]
+> Setting a `policy_scope` field to an empty collection (for example, `including: []`) is treated
+> the same as omitting the field, so the policy applies to all projects for that scope dimension.
+> To disable a policy entirely, use `enabled: false`. For more details, see
+> [Empty collections in `policy_scope`](_index.md#empty-collections-in-policy_scope).
 
 ## `bypass_settings`
 

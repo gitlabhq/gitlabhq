@@ -3,16 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Issue::Email, feature_category: :team_planning do
+  let_it_be(:issue) { create(:issue) }
+
   describe 'Associations' do
     it { is_expected.to belong_to(:issue) }
   end
 
   describe 'Validations' do
-    subject { build(:issue_email) }
+    subject { create(:issue_email, issue: issue).reload }
 
     it { is_expected.to validate_presence_of(:issue) }
-    it { is_expected.to validate_uniqueness_of(:issue) }
-    it { is_expected.to validate_uniqueness_of(:email_message_id) }
+    it { is_expected.to validate_uniqueness_of(:issue).scoped_to(:namespace_id) }
+    it { is_expected.to validate_uniqueness_of(:email_message_id).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:email_message_id).is_at_most(1000) }
     it { is_expected.to validate_presence_of(:email_message_id) }
   end

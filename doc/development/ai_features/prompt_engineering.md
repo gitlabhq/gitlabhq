@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Prompt Engineering Guide
 ---
 
@@ -18,40 +18,33 @@ Most important takeaways:
 - **Definition of a prompt:**
   - An instruction sent to a language model to solve a task
   - Forms the core of AI features in user interfaces
-
 - **Importance of prompt quality:**
   - Greatly influences the quality of the language model's response
   - Iterating on prompts is crucial for optimal results
-
 - **Key considerations when crafting prompts:**
   - Understand the task you're asking the model to perform
   - Know what kind of response you're expecting
   - Prepare a dataset to test the prompts
   - Be specific - provide lots of details and context to help the AI understand
   - Give examples of potential questions and desired answers
-
 - **Prompt universality:**
   - Prompts are not universal across different language models
   - When changing models, prompts need to be adjusted
   - Consult the language model provider's documentation for specific tips
   - Test new models before fully switching
-
 - **Tools for working with prompts:**
   - Anthropic Console: A platform for writing and testing prompts
   - Generator Prompt: A tool that creates crafted prompts based on task descriptions
-
 - **Prompt structure:**
   - Typically includes a general task description
   - Contains placeholders for input text
   - May include specific instructions and suggested output formats
   - Consider wrapping inputs in XML tags for better understanding and data extraction
-
 - **System prompts:**
   - Set the general tone and role for the AI
   - Can improve the model's performance
   - Usually placed at the beginning of the prompt
   - Set the role for the language model
-
 - **Best practices:**
   - Invest time in understanding the assignment
   - Use prompt generation tools as a starting point
@@ -70,37 +63,30 @@ Here are the key takeaways from this video:
 - **No universal "good" prompt:**
   - The effectiveness of a prompt depends on the specific task.
   - There's no one-size-fits-all approach to prompt writing.
-
 - **Characteristics of effective prompts:**
   - Clear and explanatory of the task and expected outcomes.
   - Direct and detailed.
   - Specific about the desired output.
-
 - **Key elements to consider:**
   - Understand the task, audience, and end goal.
   - Explain these elements clearly in the prompt.
-
 - **Strategies for improving prompt performance:**
   - Add instructions in sequential steps.
   - Include relevant examples.
   - Ask the model to think in steps (chain of thought).
   - Request reasoning before providing answers.
   - Guide the input - use delimiters to clearly indicate where the user's input starts and ends.
-
 - **Adapting to model preferences:**
   - Adjust prompts to suit the preferred data structure of the model.
   - For example, Anthropic models work well with XML tags.
-
 - **Importance of system prompts:**
   - Set the role for the language model.
   - Placed at the beginning of the interaction.
   - Can include awareness of tools or long context.
-
 - **Iteration is crucial:**
   - Emphasized as the most important part of working with prompts.
   - Continual refinement leads to better results.
   - Build quality control - automate testing prompts with RSpec or Rake tasks to catch differences.
-
 - **Use traditional code:**
   - If a task can be done efficiently outside of calling an LLM, use code for more reliable and deterministic outputs.
 

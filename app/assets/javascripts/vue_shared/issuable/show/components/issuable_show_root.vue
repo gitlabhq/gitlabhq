@@ -97,6 +97,11 @@ export default {
       required: false,
       default: '',
     },
+    typeIconName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   methods: {
     handleKeydownTitle(e, issuableMeta) {
@@ -122,6 +127,7 @@ export default {
       :issuable-type="issuable.type"
       :workspace-type="workspaceType"
       :show-work-item-type-icon="showWorkItemTypeIcon"
+      :type-icon-name="typeIconName"
     >
       <template #status-badge>
         <slot name="status-badge"></slot>

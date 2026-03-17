@@ -51,7 +51,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
       end
     end
 
-    let_it_be(:inactive_large_project) do
+    let_it_be_with_reload(:inactive_large_project) do
       create_project_with_statistics(with_data: true, size_multiplier: 2.gigabytes)
         .tap { |project| project.update!(last_activity_at: 2.years.ago) }
     end
@@ -157,7 +157,7 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
 
         worker.perform
 
-        expect(inactive_large_project).to be_self_deletion_scheduled
+        expect(inactive_large_project.reload).to be_self_deletion_scheduled
 
         Gitlab::Redis::SharedState.with do |redis|
           expect(

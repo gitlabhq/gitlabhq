@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Set auto-merge on a merge request when you have reviewed its content, so it can merge without intervention when all merge checks pass.
 title: Auto-merge
 ---
@@ -51,6 +51,7 @@ Merge checks include a passing CI/CD pipeline, and much more:
 - If your project
   [requires merge requests to reference a Jira issue](../../../integration/jira/issues.md#require-associated-jira-issue-for-merge-requests-to-be-merged),
   the merge request title or description contains a Jira issue link.
+- If a [title validation pattern](title_validation.md) is configured, the merge request title must match the pattern.
 - If the merge request has a **Merge after** date set, the current time must be after the configured date.
 
 For a full list of checks and their API equivalents, see
@@ -75,7 +76,7 @@ To do this when pushing from the command line, use the `merge_request.merge_when
 
 To do this from the GitLab user interface:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select the merge request to edit.
 1. Scroll to the merge request reports section.
@@ -104,7 +105,7 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select your desired merge request.
 1. Scroll to the merge request reports section.
@@ -145,7 +146,7 @@ Prerequisites:
 
 To enable this setting:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. Scroll to **Merge checks**, and select **Pipelines must succeed**.
    This setting also prevents merge requests from merging if there is no pipeline,
@@ -169,7 +170,7 @@ Prerequisites:
 
 To change this behavior:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. Under **Merge checks**:
    - Select **Pipelines must succeed**.
@@ -194,7 +195,7 @@ Prerequisites:
 
 To do this:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select the merge request to edit.
 1. Select **Edit**.

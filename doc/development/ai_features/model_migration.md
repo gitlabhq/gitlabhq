@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Model Migration Process
 ---
 
@@ -39,7 +39,6 @@ Model migrations typically follow these general timelines:
   - Example: Upgrading from Claude Sonnet 3.5 to 3.7
   - Involves model validation, testing, and staged rollout
   - Primary focus on maintaining stability and performance
-
 - **Complex Migrations**: 1-2 months (full milestone or longer)
   - Example: Adding support for a new provider like AWS Bedrock
   - Example: Major version upgrades with breaking changes (for example, Claude 2 to 3)
@@ -173,7 +172,6 @@ Before starting a model migration:
    - Review provider API documentation for breaking changes
 
 1. **Ensure access** to testing environments and monitoring tools
-
 1. **Complete model evaluation** using the [Centralized Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library)
 
 ### Additional Prerequisites for Model Deprecations
@@ -435,7 +433,6 @@ See an example in our [Claude 3.7 Model Upgrade](https://gitlab.com/gitlab-org/g
 - **Model Documentation**
   - [Anthropic Model Documentation](https://docs.anthropic.com/claude/reference/versions)
   - [Google Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs/reference)
-
 - **GitLab Resources**
   - [GitLab AI Features - Default GitLab AI Vendor Models](https://duo-feature-list-754252.gitlab.io/)
   - [AI Gateway Repository](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)

@@ -1,6 +1,6 @@
 <script>
 import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
-import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
+import DuoWorkflowAction from 'ee_component/ai/shared/widgets/duo_workflow_action.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
@@ -148,6 +148,9 @@ export default {
 
       return keepLatestDownstreamPipelines(downstream);
     },
+    getUpstreamPipeline(pipeline) {
+      return pipeline.triggered_by || pipeline.upstream;
+    },
     getProjectPath(item) {
       return cleanLeadingSeparator(item.project.full_path || item.project.fullPath);
     },
@@ -264,7 +267,7 @@ export default {
           :downstream-pipelines="getDownstreamPipelines(item)"
           :pipeline-path="item.path"
           :pipeline-stages="getStages(item)"
-          :upstream-pipeline="item.triggered_by"
+          :upstream-pipeline="getUpstreamPipeline(item)"
           @mini-graph-stage-click="trackPipelineMiniGraph"
         />
       </template>

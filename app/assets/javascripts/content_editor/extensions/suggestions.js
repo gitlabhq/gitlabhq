@@ -3,7 +3,7 @@ import { VueRenderer } from '@tiptap/vue-2';
 import tippy from 'tippy.js';
 import Suggestion from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
 import {
   prioritizeCommandsWithFrequent,
@@ -86,15 +86,16 @@ function createSuggestionPlugin({
       if (CODE_NODE_TYPES.some((type) => tiptapEditor.isActive(type))) return [];
       const slice = tiptapEditor.state.doc.slice(0, tiptapEditor.state.selection.to);
       const markdownLine = serializer.serialize({ doc: slice.content }).split('\n').pop();
+      const prefixCommand = markdownLine.match(/\/\w+/)?.[0];
 
       return autocompleteHelper
         .getDataSource(referenceType, {
-          command: markdownLine.match(/\/\w+/)?.[0],
+          command: prefixCommand,
           cache,
           limit,
           ...options,
         })
-        .search(query)
+        .search(prefixCommand, query)
         .then((data) => {
           if (!query) {
             return prioritizeCommandsWithFrequent(data);

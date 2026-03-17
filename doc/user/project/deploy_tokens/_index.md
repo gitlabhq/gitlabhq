@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Deploy tokens
 description: Repository cloning, token creation, and container registry.
 ---
@@ -144,7 +144,7 @@ Prerequisites:
 - To create a group deploy token, you must have the Owner role for the group.
 - To create a project deploy token, you must have the Maintainer or Owner role for the project.
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy tokens**.
 1. Select **Add token**.
@@ -165,7 +165,7 @@ Prerequisites:
 
 To revoke a deploy token:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Repository**.
 1. Expand **Deploy tokens**.
 1. In the **Active Deploy Tokens** section, by the token you want to revoke, select **Revoke**.

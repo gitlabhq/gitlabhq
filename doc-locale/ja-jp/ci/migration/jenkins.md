@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Jenkinsから移行する
 ---
 
@@ -12,30 +12,30 @@ title: Jenkinsから移行する
 
 {{< /details >}}
 
-JenkinsからGitLab CI/CDに移行する場合、Jenkinsのワークフローをレプリケートおよび強化するCI/パイプラインを作成できます。
+JenkinsからGitLab CI/CDへ移行する場合、Jenkinsのワークフローをレプリケートする、あるいはそれを強化するCI/CDパイプラインを作成できます。
 
 ## 主な類似点と相違点 {#key-similarities-and-differences}
 
-GitLab CI/CDとJenkinsは、いくつかの類似点があるCI/ツールです。GitLabとJenkinsの両方:
+GitLab CI/CDとJenkinsは、いくつかの類似点を持つCI/CDツールです。GitLabとJenkinsの両方で:
 
-- ジョブのコレクションにステージを使用します。
+- ジョブの集まりにはステージを使用します。
 - コンテナベースのビルドをサポートします。
 
 さらに、両者にはいくつかの重要な違いがあります:
 
-- GitLab CI/CDのパイプラインはすべて、YAML形式の設定ファイルで設定されます。Jenkinsは、Groovy形式の設定ファイル（宣言型パイプライン）またはJenkins DSL（スクリプト型パイプライン）のいずれかを使用します。
-- GitLabは、マルチテナントSaaSサービスである[GitLab.com](../../subscriptions/gitlab_com/_index.md)と、完全に分離されたシングルテナントSaaSサービスである[GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md)を提供しています。独自の[Self-Managedインスタンス](../../subscriptions/self_managed/_index.md)を実行することもできます。Jenkinsのデプロイメントは、セルフホストである必要があります。
-- GitLabは、すぐに使用できるソースコード管理（SCM）を提供します。Jenkinsでは、コードを保存するために、別のSCMソリューションが必要です。
-- GitLabは、組み込みのコンテナイメージレジストリを提供します。Jenkinsでは、コンテナイメージを保存するために、別のソリューションが必要です。
-- GitLabは、コードをスキャンするための組み込みテンプレートを提供します。Jenkinsでは、コードをスキャンするために、サードパーティのプラグインが必要です。
+- GitLab CI/CDパイプラインはすべてYAML形式の設定ファイルで設定されます。Jenkinsは、Groovy形式の設定ファイル（宣言型パイプライン）またはJenkins DSL（スクリプト型パイプライン）のいずれかを使用します。
+- GitLabは、マルチテナントのSaaSサービスである[GitLab.com](../../subscriptions/manage_users_and_seats.md#gitlabcom-billing-and-usage)と、完全に分離されたシングルテナントのSaaSサービスである[GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md)を提供しています。また、独自の[GitLab Self-Managed](../../subscriptions/manage_subscription.md)インスタンスを実行することもできます。Jenkinsのデプロイはセルフホストである必要があります。
+- GitLabは、ソースコード管理（SCM）をすぐに利用できる形で提供します。Jenkinsは、コードを保存するために別のSCMソリューションを必要とします。
+- GitLabは、組み込みのコンテナレジストリを提供します。Jenkinsは、コンテナイメージを保存するために別のソリューションを必要とします。
+- GitLabは、コードをスキャンするための組み込みテンプレートを提供します。Jenkinsは、コードをスキャンするためにサードパーティのプラグインを必要とします。
 
-## 機能とコンセプトの比較 {#comparison-of-features-and-concepts}
+## 機能と概念の比較 {#comparison-of-features-and-concepts}
 
-多くのJenkinsの機能とコンセプトには、同じ機能を提供するGitLabと同等の機能があります。
+多くのJenkinsの機能と概念は、GitLabに同様の機能を提供する同等のものがあります。
 
 ### 設定ファイル {#configuration-file}
 
-Jenkinsは[`Jenkinsfile`（Groovy形式）](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/)で設定できます。GitLab CI/CDは、デフォルトで`.gitlab-ci.yml`ファイルを使用します。
+Jenkinsは、[Groovy形式の`Jenkinsfile`で](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/)設定できます。GitLab CI/CDは、デフォルトで`.gitlab-ci.yml`ファイルを使用します。
 
 `Jenkinsfile`の例:
 
@@ -53,7 +53,7 @@ pipeline {
 }
 ```
 
-同等のGitLab CI/CD `.gitlab-ci.yml`ファイルは次のようになります:
+同等のGitLab CI/CD`.gitlab-ci.yml`ファイルは次のとおりです:
 
 ```yaml
 stages:
@@ -65,44 +65,44 @@ hello-job:
     - echo "Hello World"
 ```
 
-### Jenkinsのパイプラインの構文 {#jenkins-pipeline-syntax}
+### Jenkinsパイプライン構文 {#jenkins-pipeline-syntax}
 
-Jenkinsの設定は、セクションとディレクティブを含む`pipeline`ブロックで構成されています。GitLab CI/CDには同様の機能があり、YAMLキーワードで設定されます。
+Jenkinsの設定は、セクションとディレクティブを持つ`pipeline`ブロックで構成されます。GitLab CI/CDは、YAMLキーワードで設定される同様の機能を持っています。
 
 #### セクション {#sections}
 
 | Jenkins  | GitLab         | 説明 |
 |----------|----------------|-------------|
-| `agent`  | `image`        | Jenkinsのパイプラインはエージェント上で実行され、`agent`セクションでは、パイプラインの実行方法と使用するDockerコンテナを定義します。GitLabのジョブはRunner上で実行され、`image`キーワードは使用するコンテナを定義します。独自のRunnerをKubernetesまたは任意のホストに設定できます。 |
-| `post`   | `after_script`または`stage` | Jenkinsの`post`セクションでは、ステージまたはパイプラインの最後に実行する必要があるアクションを定義します。GitLabでは、ジョブの最後に実行するコマンドには`after_script`を使用し、ジョブ内の他のコマンドの前に実行するアクションには`before_script`を使用します。ジョブを実行する正確なステージを選択するには、`stage`を使用します。GitLabは、常に他の定義されたステージの前に、または後に実行される`.pre`と`.post`の両方のステージをサポートしています。 |
-| `stages` | `stages`       | Jenkinsのステージはジョブのグループです。GitLab CI/CDでもステージが使用されますが、より柔軟性があります。複数の独立したジョブを持つ複数のステージを持つことができます。最上位レベルでステージとその実行順序を定義するには`stages`を使用し、ジョブレベルでそのジョブのステージを定義するには`stage`を使用します。 |
-| `steps`  | `script`       | Jenkins `steps`は、実行する内容を定義します。GitLab CI/CDは、同様の`script`セクションを使用します。`script`セクションは、順番に実行する各コマンドのエントリを含むYAML配列です。 |
+| `agent`  | `image`        | Jenkinsパイプラインはエージェント上で実行され、`agent`セクションはパイプラインの実行方法と使用するDockerコンテナを定義します。GitLabのジョブはRunner上で実行され、`image`キーワードは使用するコンテナを定義します。Kubernetesまたは任意のホストで独自のRunnerを設定できます。 |
+| `post`   | `after_script`または`stage` | Jenkinsの`post`セクションは、ステージまたはパイプラインの最後に実行すべきアクションを定義します。GitLabでは、ジョブの最後に実行するコマンドには`after_script`を、ジョブ内の他のコマンドの前に実行するアクションには`before_script`を使用します。ジョブを実行する正確なステージを選択するには、`stage`を使用します。GitLabは、他のすべての定義されたステージの前後で常に実行される`.pre`と`.post`の両方のステージをサポートしています。 |
+| `stages` | `stages`       | Jenkinsのステージはジョブのグループです。GitLab CI/CDもステージを使用しますが、より柔軟です。複数のステージをそれぞれ複数の独立したジョブで持つことができます。最上位レベルで`stages`を使用してステージとその実行順序を設定し、ジョブレベルで`stage`を使用してそのジョブのステージを定義します。 |
+| `steps`  | `script`       | Jenkinsの`steps`は、実行する内容を定義します。GitLab CI/CDは、同様の`script`セクションを使用します。`script`セクションは、各コマンドを順に実行するための個別のエントリを持つYAML配列です。 |
 
 #### ディレクティブ {#directives}
 
 | Jenkins       | GitLab         | 説明 |
 |---------------|----------------|-------------|
-| `environment` | `variables`    | Jenkinsは、環境変数に`environment`を使用します。GitLab CI/CDは、ジョブの実行中に使用できるだけでなく、より動的なパイプラインの設定にも使用できるCI/CD変数を定義するために、`variables`キーワードを使用します。これらは、GitLab UIのCI/CD設定でも設定できます。 |
-| `options`     | 該当なし | Jenkinsは、タイムアウトやリトライ値などの追加の設定に`options`を使用します。GitLabにはオプション用の別のセクションは必要ありません。すべての設定は、ジョブまたはパイプラインレベルでCI/キーワードとして追加されます（例: `timeout`または`retry`）。 |
-| `parameters`  | 該当なし | Jenkinsでは、パイプラインをトリガーするときにパラメータが必要になる場合があります。パラメータはGitLabではCI/CI/CD変数で処理され、パイプラインの設定、プロジェクト設定、UIを介して手動で、またはAPIを介して、実行時に手動でなど、多くの場所で定義できます。 |
-| `triggers`    | `rules`        | Jenkinsでは、`triggers`は、cron表記などを介して、パイプラインを再度実行するタイミングを定義します。GitLab CI/CDは、Gitの変更やマージリクエストの更新など、さまざまな理由でパイプラインを自動的に実行できます。`rules`キーワードを使用して、ジョブを実行するイベントを制御します。スケジュールされたパイプラインは、プロジェクト設定で定義されています。 |
-| `tools`       | 該当なし | Jenkinsでは、`tools`は環境にインストールする追加のツールを定義します。GitLabには同様のキーワードはありません。推奨事項は、ジョブに必要な正確なツールを使用して事前にビルドされたコンテナイメージを使用することです。これらのイメージはキャッシュされ、パイプラインに必要なツールがすでに含まれるようにビルドできます。ジョブに追加のツールが必要な場合は、`before_script`セクションの一部としてインストールできます。 |
-| `input`       | 該当なし | Jenkinsでは、`input`はユーザー入力のプロンプトを追加します。`parameters`と同様に、入力はGitLabではCI/CI/CD変数を介して処理されます。 |
-| `when`        | `rules`        | Jenkinsでは、`when`はステージを実行するタイミングを定義します。GitLabには`when`キーワードもあり、ジョブが合格または失敗した場合など、以前のジョブのステータスに基づいてジョブの実行を開始するかどうかを定義します。ジョブを特定のパイプラインに追加するタイミングを制御するには、`rules`を使用します。 |
+| `environment` | `variables`    | Jenkinsは、環境変数に`environment`を使用します。GitLab CI/CDは、ジョブの実行中だけでなく、より動的なパイプラインの設定にも使用できるCI/CD変数を定義するために`variables`キーワードを使用します。これらは、GitLab UIのCI/CD設定で設定することもできます。 |
+| `options`     | 該当なし | Jenkinsは、タイムアウトやリトライ値などの追加の設定に`options`を使用します。GitLabはオプションの個別のセクションを必要とせず、すべての設定はジョブまたはパイプラインレベルで`timeout`または`retry`のようなCI/CDキーワードとして追加されます。 |
+| `parameters`  | 該当なし | Jenkinsでは、パイプラインをトリガーする際にパラメータが必要になる場合があります。パラメータは、パイプラインの設定、プロジェクトの設定、ランタイムでUIを介して手動で、またはAPIなど、多くの場所で定義できるCI/CD変数によってGitLabで処理されます。 |
+| `triggers`    | `rules`        | Jenkinsでは、`triggers`は、たとえばcron表記を通じて、パイプラインをいつ再度実行するかを定義します。GitLab CI/CDは、Gitの変更やマージリクエストの更新など、多くの理由でパイプラインを自動的に実行できます。ジョブを実行するイベントを制御するには、`rules`キーワードを使用します。スケジュールされたパイプラインは、プロジェクトの設定で定義されます。 |
+| `tools`       | 該当なし | Jenkinsでは、`tools`は環境にインストールする追加ツールを定義します。GitLabには同様のキーワードはありません。ジョブに必要な正確なツールを組み込んだコンテナイメージを使用することが推奨されるためです。これらのイメージはキャッシュされ、パイプラインに必要なツールがすでに含まれるようにビルドできます。ジョブが追加のツールを必要とする場合、それらは`before_script`セクションの一部としてインストールできます。 |
+| `input`       | 該当なし | Jenkinsでは、`input`はユーザー入力のプロンプトを追加します。`parameters`と同様に、入力はCI/CD変数を通じてGitLabで処理されます。 |
+| `when`        | `rules`        | Jenkinsでは、`when`はステージを実行すべきタイミングを定義します。GitLabには、`when`キーワードもあります。これは、たとえばジョブが合格したか失敗したかなど、以前のジョブのステータスに基づいてジョブを開始すべきかを定義します。特定のパイプラインにジョブを追加するタイミングを制御するには、`rules`を使用します。 |
 
-### 共通設定 {#common-configurations}
+### 一般的な設定 {#common-configurations}
 
-このセクションでは、一般的なCI/CI/CD設定GitLab CI/CDに変換する方法を示します。
+このセクションでは、一般的に使用されるCI/CDの設定について説明し、それらをJenkinsからGitLab CI/CDに変換する方法を示します。
 
-[Jenkinsパイプライン](https://www.jenkins.io/doc/book/pipeline/)は、新しいコミットのプッシュなど、特定のイベントが発生したときにトリガーされる自動化されたCI/ジョブを生成します。Jenkinsのパイプラインは、`Jenkinsfile`で定義されています。GitLabの同等のものは、[`.gitlab-ci.yml`設定ファイル](../yaml/_index.md)です。
+[Jenkinsパイプライン](https://www.jenkins.io/doc/book/pipeline/)は、新しいコミットがプッシュするされるなど、特定のイベントが発生したときにトリガーするされる自動化されたCI/CDジョブを生成します。Jenkinsパイプラインは、`Jenkinsfile`で定義されます。GitLabの同等物は、[`.gitlab-ci.yml`設定ファイル](../yaml/_index.md)です。
 
-Jenkinsにはソースコードを保存する場所がないため、`Jenkinsfile`は別のソースコントロールリポジトリに保存する必要があります。
+Jenkinsはコードを保存する場所を提供しないため、`Jenkinsfile`は別のソースコントロールリポジトリに保存する必要があります。
 
 #### ジョブ {#jobs}
 
-ジョブは、特定の結果を達成するために、一連のシーケンスで実行される一連のコマンドです。
+ジョブは、特定の成果を達成するために設定された順序で実行される一連のコマンドです。
 
-たとえば、コンテナをビルドしてから、本番環境にデプロイします（`Jenkinsfile`の場合）:
+たとえば、`Jenkinsfile`でコンテナをビルドするし、それを本番環境にデプロイする場合:
 
 ```groovy
 pipeline {
@@ -138,14 +138,14 @@ pipeline {
 この例では:
 
 - `golang:alpine`コンテナイメージを使用します。
-- コードをビルドするためのジョブを実行します。
+- コードをビルドするするためのジョブを実行します。
   - ビルドされた実行可能ファイルをアーティファクトとして保存します。
-- `staging`にデプロイする2番目のジョブを追加します。これは次のとおりです:
+- `staging`にデプロイするための2番目のジョブを追加します。これは:
   - コミットが`staging`ブランチをターゲットにしている場合にのみ存在します。
-  - ビルドステージが成功した後に開始します。
-  - 以前のジョブからビルドされた実行可能ファイルアーティファクトを使用します。
+  - ビルドステージが成功した後に開始されます。
+  - 以前のジョブからのビルドされた実行可能アーティファクトを使用します。
 
-同等のGitLab CI/CD `.gitlab-ci.yml`ファイルは次のようになります:
+同等のGitLab CI/CD`.gitlab-ci.yml`ファイルは次のとおりです:
 
 ```yaml
 default:
@@ -179,9 +179,9 @@ deploy-job:
 
 ##### 並列 {#parallel}
 
-Jenkinsでは、以前のジョブに依存しないジョブは、`parallel`セクションに追加すると並行して実行できます。
+Jenkinsでは、以前のジョブに依存しないジョブは、`parallel`セクションに追加すると並列で実行できます。
 
-次に、`Jenkinsfile`の例を示します:
+たとえば、`Jenkinsfile`で:
 
 ```groovy
 pipeline {
@@ -210,9 +210,9 @@ pipeline {
 }
 ```
 
-この例では、異なるコンテナイメージを使用して、PythonジョブとJavaジョブを並行して実行します。Javaジョブは、`staging`ブランチが変更された場合にのみ実行されます。
+この例では、異なるコンテナイメージを使用して、PythonとJavaのジョブを並列で実行します。Javaのジョブは、`staging`ブランチが変更された場合にのみ実行されます。
 
-同等のGitLab CI/CD `.gitlab-ci.yml`ファイルは次のようになります:
+同等のGitLab CI/CD`.gitlab-ci.yml`ファイルは次のとおりです:
 
 ```yaml
 python-version:
@@ -228,13 +228,13 @@ java-version:
     - java -version
 ```
 
-この場合、ジョブを並行して実行するために、追加の設定は必要ありません。ジョブは、デフォルトで並行して実行されます。各ジョブに十分なRunnerがある場合は、異なるRunnerで実行されます。Javaジョブは、`staging`ブランチが変更された場合にのみ実行するように設定されています。
+この場合、ジョブを並列で実行するために追加の設定は必要ありません。ジョブはデフォルトで並列実行され、すべてのジョブに対して十分な数のRunnerがあることを前提として、それぞれが異なるRunner上で実行されます。Javaのジョブは、`staging`ブランチが変更された場合にのみ実行されるように設定されています。
 
 ##### マトリックス {#matrix}
 
-GitLabでは、ジョブでを使用して、単一のパイプライン内で複数のジョブを並行して実行できます。ただし、ジョブのインスタンスごとに異なる変数の値を使用します。Jenkinsはマトリックスを順番に実行します。
+GitLabでは、マトリックスを使用して、単一のパイプラインでジョブを複数回並列で実行できますが、ジョブの各インスタンスには異なる変数値が設定されます。Jenkinsはマトリックスを順次実行します。
 
-次に、`Jenkinsfile`の例を示します:
+たとえば、`Jenkinsfile`で:
 
 ```groovy
 matrix {
@@ -262,7 +262,7 @@ matrix {
 }
 ```
 
-同等のGitLab CI/CD `.gitlab-ci.yml`ファイルは次のようになります:
+同等のGitLab CI/CD`.gitlab-ci.yml`ファイルは次のとおりです:
 
 ```yaml
 stages:
@@ -297,9 +297,9 @@ deploy-job:
 
 #### コンテナイメージ {#container-images}
 
-GitLabでは、[個別の分離されたDockerコンテナでCI/ジョブを実行](../docker/using_docker_images.md)するには、[image](../yaml/_index.md#image)キーワードを使用します。
+GitLabでは、[image](../yaml/_index.md#image)キーワードを使用して、[個別の隔離されたDockerコンテナでCI/CDジョブを実行](../docker/using_docker_images.md)できます。
 
-次に、`Jenkinsfile`の例を示します:
+たとえば、`Jenkinsfile`で:
 
 ```groovy
 stage('Version') {
@@ -311,9 +311,9 @@ stage('Version') {
 }
 ```
 
-この例は、`python:latest`コンテナで実行されているコマンドを示しています。
+この例は、`python:latest`コンテナで実行されるコマンドを示しています。
 
-同等のGitLab CI/CD `.gitlab-ci.yml`ファイルは次のようになります:
+同等のGitLab CI/CD`.gitlab-ci.yml`ファイルは次のとおりです:
 
 ```yaml
 version-job:
@@ -325,9 +325,9 @@ version-job:
 
 #### 変数 {#variables}
 
-GitLabでは、`variables`キーワードを使用して[CI/CI/CD変数](../variables/_index.md)を定義します。変数を使用すると、設定データを再利用したり、より動的な設定を行ったり、重要な値を保存したりできます。変数は、グローバルまたはジョブごとに定義できます。
+GitLabでは、[CI/CD変数](../variables/_index.md)を定義するために`variables`キーワードを使用します。変数を使用して、設定データを再利用したり、より動的な設定を行ったり、重要な値を保存したりできます。変数は、グローバルまたはジョブごとに定義できます。
 
-次に、`Jenkinsfile`の例を示します:
+たとえば、`Jenkinsfile`で:
 
 ```groovy
 pipeline {
@@ -356,9 +356,9 @@ pipeline {
 }
 ```
 
-この例は、変数を使用してジョブ内のコマンドに値を渡す方法を示しています。
+この例は、変数をジョブ内のコマンドに値を渡すために使用できる方法を示しています。
 
-同等のGitLab CI/CD `.gitlab-ci.yml`ファイルは次のようになります:
+同等のGitLab CI/CD`.gitlab-ci.yml`ファイルは次のとおりです:
 
 ```yaml
 default:
@@ -385,9 +385,9 @@ spanish:
     - echo "$GREETING $NAME"
 ```
 
-変数は、[GitLab UIのCI/設定で設定](../variables/_index.md#define-a-cicd-variable-in-the-ui)することもできます。場合によっては、[保護された](../variables/_index.md#protect-a-cicd-variable)変数と[マスクされた](../variables/_index.md#mask-a-cicd-variable)変数をシークレット値に使用できます。これらの変数は、設定ファイルで定義された変数と同じように、パイプラインジョブでアクセスできます。
+変数は、[GitLab UIのCI/CD設定で設定](../variables/_index.md#define-a-cicd-variable-in-the-ui)することもできます。場合によっては、[保護された](../variables/_index.md#protect-a-cicd-variable)および[マスクされた](../variables/_index.md#mask-a-cicd-variable)変数をシークレット値に使用できます。これらの変数は、設定ファイルで定義された変数と同じようにパイプラインジョブでアクセスできます。
 
-次に、`Jenkinsfile`の例を示します:
+たとえば、`Jenkinsfile`で:
 
 ```groovy
 pipeline {
@@ -405,7 +405,7 @@ pipeline {
 }
 ```
 
-同等のGitLab CI/CD `.gitlab-ci.yml`ファイルは次のようになります:
+同等のGitLab CI/CD`.gitlab-ci.yml`ファイルは次のとおりです:
 
 ```yaml
 login-job:
@@ -413,13 +413,13 @@ login-job:
     - my-login-script.sh $AWS_ACCESS_KEY
 ```
 
-さらに、GitLab CI/CDは、[定義済みの変数](../variables/predefined_variables.md)をすべてのパイプラインとジョブで使用できるようにします。これには、パイプラインとリポジトリに関連する値が含まれています。
+さらに、GitLab CI/CDは、パイプラインとリポジトリに関連する値を含む[定義済み変数](../variables/predefined_variables.md)をすべてのパイプラインとジョブで利用可能にします。
 
 #### 式と条件 {#expressions-and-conditionals}
 
-新しいパイプラインが開始されると、GitLabはそのパイプラインで実行するジョブをチェックします。変数の状態やパイプラインの種類などの要因に応じて、ジョブを実行するように設定できます。
+新しいパイプラインが開始されると、GitLabはそのパイプラインでどのジョブを実行すべきかを確認します。変数のステータスやパイプラインのタイプなどの要因に応じてジョブを実行するように設定できます。
 
-次に、`Jenkinsfile`の例を示します:
+たとえば、`Jenkinsfile`で:
 
 ```groovy
 stage('deploy_staging') {
@@ -433,9 +433,9 @@ stage('deploy_staging') {
 }
 ```
 
-この例では、コミット先のブランチの名前が`staging`の場合にのみ、ジョブが実行されます。
+この例では、コミットするブランチが`staging`という名前の場合にのみジョブが実行されます。
 
-同等のGitLab CI/CD `.gitlab-ci.yml`ファイルは次のようになります:
+同等のGitLab CI/CD`.gitlab-ci.yml`ファイルは次のとおりです:
 
 ```yaml
 deploy_staging:
@@ -448,17 +448,17 @@ deploy_staging:
 
 #### Runner {#runners}
 
-Jenkinsエージェントと同様に、GitLab Runnerはジョブを実行するホストです。GitLab.comを使用している場合は、独自のRunnerをプロビジョニングせずに、[インスタンスRunnerフリート](../runners/_index.md)を使用してジョブを実行できます。
+Jenkinsのエージェントと同様に、GitLabのRunnerはジョブを実行するホストです。GitLab.comを使用している場合、独自のRunnerをプロビジョニングすることなくジョブを実行するために[インスタンスRunnerフリート](../runners/_index.md)を使用できます。
 
-GitLab CI/CDで使用するためにJenkinsエージェントを変換するには、エージェントをアンインストールしてから、[Runnerをインストールして登録](../runners/_index.md)します。Runnerはそれほどオーバーヘッドを必要としないため、使用していたJenkinsエージェントと同様のプロビジョニングを使用できる場合があります。
+JenkinsのエージェントをGitLab CI/CDで使用できるように変換するには、エージェントをアンインストールしてから、[Runnerをインストールして登録](../runners/_index.md)します。Runnerは多くのオーバーヘッドを必要としないため、使用していたJenkinsのエージェントと同様のプロビジョニングを使用できる可能性があります。
 
-Runnerに関する主な詳細:
+Runnerに関するいくつかの主要な詳細:
 
-- Runnerは、インスタンス、グループ全体で共有するように、または単一のプロジェクト専用にするように[設定](../runners/runners_scope.md)できます。
-- より細かく制御するには、[`tags`キーワード](../runners/configure_runners.md#control-jobs-that-a-runner-can-run)を使用し、Runnerを特定のジョブに関連付けます。たとえば、専用の、より強力な、または特定のハードウェアを必要とするジョブにタグを使用できます。
-- GitLabには、[Runnerのオートスケール](https://docs.gitlab.com/runner/configuration/autoscale.html)があります。オートスケールを使用して、必要な場合にのみRunnerをプロビジョニングし、不要な場合はスケールダウンします。
+- Runnerは、インスタンス、グループ全体、または単一のプロジェクトに特化して[共有されるように設定](../runners/runners_scope.md)できます。
+- よりきめ細かな制御のために[`tags`キーワード](../runners/configure_runners.md#control-jobs-that-a-runner-can-run)を使用し、Runnerを特定のジョブに関連付けることができます。たとえば、専用の、より強力な、または特定のハードウェアを必要とするジョブにはタグを使用できます。
+- GitLabには、[Runnerのオートスケール](https://docs.gitlab.com/runner/configuration/autoscale/)機能があります。オートスケールを使用して、必要なときにのみRunnerをプロビジョニングするし、不要なときにスケールするダウンします。
 
-次に、`Jenkinsfile`の例を示します:
+たとえば、`Jenkinsfile`で:
 
 ```groovy
 pipeline {
@@ -484,7 +484,7 @@ pipeline {
 }
 ```
 
-同等のGitLab CI/CD `.gitlab-ci.yml`ファイルは次のようになります:
+同等のGitLab CI/CD`.gitlab-ci.yml`ファイルは次のとおりです:
 
 ```yaml
 linux_job:
@@ -504,9 +504,9 @@ windows_job:
 
 #### アーティファクト {#artifacts}
 
-GitLabでは、ジョブは[`artifacts`](../yaml/_index.md#artifacts)キーワードを使用して、ジョブの完了時に保存するアーティファクトの設定を定義できます。[アーティファクト](../jobs/job_artifacts.md)は、たとえばテストやデプロイなど、後のジョブで使用できるファイルです。
+GitLabでは、任意のジョブが[`artifacts`キーワード](../yaml/_index.md#artifacts)を使用して、ジョブの完了時に保存するアーティファクトのセットを定義できます。[アーティファクト](../jobs/job_artifacts.md)は、たとえばテストやデプロイのために、以降のジョブで使用できるファイルです。
 
-次に、`Jenkinsfile`の例を示します:
+たとえば、`Jenkinsfile`で:
 
 ```groovy
 stages {
@@ -530,7 +530,7 @@ stages {
   }
 ```
 
-同等のGitLab CI/CD `.gitlab-ci.yml`ファイルは次のようになります:
+同等のGitLab CI/CD`.gitlab-ci.yml`ファイルは次のとおりです:
 
 ```yaml
 stages:
@@ -558,9 +558,9 @@ use_cat:
 
 #### キャッシュ {#caching}
 
-[キャッシュ](../caching/_index.md)は、ジョブが1つ以上のファイルをダウンロードし、将来のアクセスを高速化するために保存するときに作成されます。同じキャッシュを使用する後続のジョブは、ファイルを再度ダウンロードする必要がないため、より高速に実行されます。キャッシュはRunnerに保存され、[分散キャッシュが有効](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching)になっている場合はS3にアップロードされます。Jenkinsコアはキャッシュを提供しません。
+ジョブが1つ以上のファイルをダウンロードして将来の高速アクセスに備えて保存すると、[キャッシュ](../caching/_index.md)が作成されます。同じキャッシュを使用する後続のジョブは、ファイルを再度ダウンロードする必要がないため、より高速に実行されます。キャッシュはRunnerに保存され、[分散キャッシュが有効](https://docs.gitlab.com/runner/configuration/autoscale/#distributed-runners-caching)な場合はS3にアップロードされます。Jenkinsコアはキャッシュ機能を提供しません。
 
-たとえば、`.gitlab-ci.yml`という名前のファイルでは、次のようになります:
+たとえば、`.gitlab-ci.yml`ファイルで:
 
 ```yaml
 cache-job:
@@ -574,95 +574,91 @@ cache-job:
 
 ### Jenkinsプラグイン {#jenkins-plugins}
 
-プラグインを介して有効になっているJenkinsの一部の機能は、同様の機能を提供するキーワードと機能を備えたGitLabでネイティブにサポートされています。例: 
+Jenkinsでプラグインを通じて有効になる一部の機能は、GitLabで同様の機能を提供するキーワードと機能によってネイティブにサポートされています。例: 
 
 | Jenkinsプラグイン                                                                    | GitLabの機能 |
 |-----------------------------------------------------------------------------------|----------------|
-| [ビルドタイムアウト](https://plugins.jenkins.io/build-timeout/)                        | [`timeout`キーワード](../yaml/_index.md#timeout) |
-| [Cobertura](https://plugins.jenkins.io/cobertura/):                                | [カバレッジ](../yaml/artifacts_reports.md#artifactsreportscoverage_report)レポートアーティファクトおよび[Code Coverage](../testing/code_coverage/_index.md) |
-| [Code coverage API](https://plugins.jenkins.io/code-coverage-api/)                | [Code Coverage](../testing/code_coverage/_index.md)と[カバレッジ](../testing/code_coverage/_index.md#coverage-visualization)の可視化 |
-| [埋め込み可能なビルドステータス](https://plugins.jenkins.io/embeddable-build-status/)    | [パイプラインステータスバッジ](../../user/project/badges.md#pipeline-status-badges) |
+| [Build Timeout](https://plugins.jenkins.io/build-timeout/)                        | [`timeout`キーワード](../yaml/_index.md#timeout) |
+| [Cobertura](https://plugins.jenkins.io/cobertura/)                                | [カバレッジレポートアーティファクト](../yaml/artifacts_reports.md#artifactsreportscoverage_report)と[コードカバレッジ](../testing/code_coverage/_index.md) |
+| [コードカバレッジAPI](https://plugins.jenkins.io/code-coverage-api/)                | [コードカバレッジ](../testing/code_coverage/_index.md)と[カバレッジの可視化](../testing/code_coverage/_index.md#coverage-visualization) |
+| [Embeddable Build Status](https://plugins.jenkins.io/embeddable-build-status/)    | [パイプラインステータスバッジ](../../user/project/badges.md#pipeline-status-badges) |
 | [JUnit](https://plugins.jenkins.io/junit/)                                        | [JUnitテストレポートアーティファクト](../yaml/artifacts_reports.md#artifactsreportsjunit)と[単体テストレポート](../testing/unit_test_reports.md) |
-| [メーラー](https://plugins.jenkins.io/mailer/)                                      | [通知メール](../../user/profile/notifications.md) |
-| [パラメータ化されたトリガープラグイン](https://plugins.jenkins.io/parameterized-trigger/) | [`trigger`キーワード](../yaml/_index.md#trigger)と[ダウンストリームパイプライン](../pipelines/downstream_pipelines.md) |
-| [ロールベースの認可戦略](https://plugins.jenkins.io/role-strategy/)    | GitLabの[権限とロール](../../user/permissions.md) |
-| [タイムスタンパー](https://plugins.jenkins.io/timestamper/)                            | [ジョブ](../jobs/_index.md)ログはデフォルトでタイムスタンプされます |
+| [Mailer](https://plugins.jenkins.io/mailer/)                                      | [通知メール](../../user/profile/notifications.md) |
+| [Parameterizedトリガープラグイン](https://plugins.jenkins.io/parameterized-trigger/) | [`trigger`キーワード](../yaml/_index.md#trigger)と[ダウンストリームパイプライン](../pipelines/downstream_pipelines.md) |
+| [ロールベース認可戦略](https://plugins.jenkins.io/role-strategy/)    | GitLabの[権限とロール](../../user/permissions.md) |
+| [Timestamper](https://plugins.jenkins.io/timestamper/)                            | [ジョブ](../jobs/_index.md)ログにはデフォルトでタイムスタンプが付けられます。 |
 
 ### セキュリティスキャン機能 {#security-scanning-features}
 
-Jenkinsで、コード品質、セキュリティ、または静的アプリケーションスキャンなどのプラグインを使用したことがあるかもしれません。GitLabには、SDLCのすべての部分の脆弱性を検出するために、すぐに使用できる[セキュリティスキャナー](../../user/application_security/_index.md)が用意されています。これらのプラグインは、テンプレートを使用してGitLabに追加できます。たとえば、パイプラインにSASTスキャンを追加するには、次の`.gitlab-ci.yml`を追加します:
+Jenkinsで、コード品質、セキュリティ、または静的アプリケーションスキャンなどのプラグインを使用したことがあるかもしれません。GitLabは、SDLCのすべての部分で脆弱性を検出するために、すぐに使用できる[セキュリティスキャナー](../../user/application_security/_index.md)を提供します。これらのプラグインは、テンプレートを使用してGitLabに追加できます。たとえば、パイプラインにSASTスキャンを追加するには、`.gitlab-ci.yml`に以下を追加します:
 
 ```yaml
 include:
   - template: Jobs/SAST.gitlab-ci.yml
 ```
 
-CI/CD変数を使用すると、[SASTスキャナー](../../user/application_security/sast/_index.md#available-cicd-variables)などを使用して、セキュリティスキャナーの動作をカスタマイズできます。
+CI/CD変数を使用することで、セキュリティスキャナーの動作をカスタマイズできます。たとえば、[SASTスキャナー](../../user/application_security/sast/_index.md#available-cicd-variables)を使用する場合などです。
 
 ### シークレット管理 {#secrets-management}
 
-特権情報、多くの場合「シークレット」と呼ばれるものは、CI/CDワークフローで必要な機密情報または認証情報です。シークレットを使用して、保護されたリソース、またはツール、アプリケーション、コンテナ、クラウドネイティブ環境内の機密情報のロックを解除できます。
+「シークレット」とよく呼ばれる特権情報は、CI/CDワークフローで必要となる機密情報または認証情報です。シークレットを使用して、ツール、アプリケーション、コンテナ、およびクラウドネイティブ環境で保護されたリソースや機密情報をアンロックすることができます。
 
-Jenkinsのシークレット管理は通常、`Secret`タイプのフィールドまたはCredentialsプラグインで処理されます。Jenkins設定に保存されている認証情報は、Credentials Bindingプラグインを使用することにより、環境変数としてジョブに公開できます。
+Jenkinsでのシークレット管理は通常、`Secret`タイプフィールドまたはCredentialsプラグインで処理されます。Jenkinsの設定に保存されている認証情報は、Credentials Bindingプラグインを使用することで、環境変数としてジョブに公開できます。
 
-GitLabのシークレット管理では、外部サービスでサポートされている[インテグレーション](../secrets/_index.md)の1つを使用できます。これらのサービスは、GitLabプロジェクトの外部にシークレットを安全に保存しますが、サービスのサブスクリプションが必要です。
+GitLabでのシークレット管理には、外部サービス向けの[サポートされているインテグレーション](../secrets/_index.md)のいずれかを使用できます。これらのサービスはGitLabプロジェクトの外部でシークレットを安全に保存しますが、そのサービスに対してサブスクリプションが必要です。
 
-GitLabは、OIDCをサポートする他のサードパーティサービスに対して、[OIDC認証](../secrets/id_token_authentication.md)もサポートしています。
+GitLabは、OIDCをサポートする他のサードパーティサービスに対しても[OIDC認証](../secrets/id_token_authentication.md)をサポートしています。
 
-さらに、CI/CD変数に保存することで、ジョブで認証情報を使用できるようにすることもできます。ただし、プレーンテキストで保存されているシークレットは、[Jenkinsと同じように](https://www.jenkins.io/doc/developer/security/secrets/#storing-secrets)、誤って公開される可能性があります。リスクを軽減するために、[マスク](../variables/_index.md#mask-a-cicd-variable)された変数と[保護された](../variables/_index.md#protect-a-cicd-variable)変数に機密情報を常に保存する必要があります。
+さらに、認証情報をCI/CD変数に保存することで、ジョブで利用可能にできますが、プレーンテキストで保存されたシークレットは、[Jenkins](https://www.jenkins.io/doc/developer/security/secrets/#storing-secrets)と同様に偶発的な漏洩の危険性があります。機密情報は、常に[マスクされた](../variables/_index.md#mask-a-cicd-variable)および[保護された](../variables/_index.md#protect-a-cicd-variable)変数に保存する必要があります。これにより、リスクの一部が軽減されます。
 
-また、`.gitlab-ci.yml`ファイルに変数をシークレットとして保存しないでください。これは、プロジェクトへのアクセス権を持つすべてのユーザーに公開されます。機密情報を変数に保存することは、[プロジェクト、グループ、またはインスタンス設定](../variables/_index.md#define-a-cicd-variable-in-the-ui)でのみ行う必要があります。
+また、プロジェクトにアクセスできるすべてのユーザーに公開されている`.gitlab-ci.yml`ファイルに、シークレットを変数として保存しないでください。機密情報を変数に保存する場合は、[プロジェクト、グループ、またはインスタンスの設定](../variables/_index.md#define-a-cicd-variable-in-the-ui)でのみ行うべきです。
 
-CI/CD変数の安全性を向上させるには、[セキュリティガイドライン](../variables/_index.md#cicd-variable-security)を確認してください。
+[セキュリティガイドライン](../variables/_index.md#cicd-variable-security)を確認して、CI/CD変数の安全性を向上させてください。
 
 ## 移行の計画と実行 {#planning-and-performing-a-migration}
 
-次に示す推奨手順のリストは、この移行を迅速に完了できた組織を観察した後に作成されました。
+以下の推奨ステップのリストは、この移行を迅速に完了できた組織を観察した後に作成されました。
 
-### 移行計画を作成する {#create-a-migration-plan}
+### 移行計画の作成 {#create-a-migration-plan}
 
-移行を開始する前に、移行の準備を行うために、[移行計画](plan_a_migration.md)を作成する必要があります。Jenkinsからの移行の場合は、準備として次の質問を自問してください:
+移行を開始する前に、移行の準備のために[移行計画](plan_a_migration.md)を作成する必要があります。Jenkinsからの移行のために、準備として以下の質問を自問してください:
 
-- 現在、Jenkinsのジョブで使用されているプラグインは何ですか？
-  - これらのプラグインが正確に何をするか知っていますか？
-  - プラグインは、一般的なビルドツールをラップしますか？たとえば、Maven、Gradle、またはNPMですか？
-- Jenkinsエージェントに何がインストールされていますか？
-- 使用中の共有ライブラリはありますか？
-- Jenkinsからどのように認証していますか？SSHキー、APIトークン、またはその他のシークレットを使用していますか？
-- パイプラインからアクセスする必要がある他のGitLabプロジェクトはありますか？
-- 外部サービスにアクセスするための認証情報がJenkinsにありますか？たとえば、Ansible Tower、Artifactory、またはその他のクラウドプロバイダーまたはデプロイターゲットですか？
+- 今日、Jenkinsのジョブでどのようなプラグインが使用されていますか？
+  - これらのプラグインが具体的に何をするかご存知ですか？
+  - いずれかのプラグインが一般的なビルドツールをラップしていますか？たとえば、Maven、Gradle、またはNPMですか？
+- Jenkinsのエージェントには何がインストールされていますか？
+- 共有ライブラリは使用されていますか？
+- Jenkinsからどのように認証していますか？SSHキー、APIトークン、または他のシークレットを使用していますか？
+- パイプラインからアクセスする必要がある他のプロジェクトはありますか？
+- 外部サービスにアクセスするためのJenkinsに認証情報はありますか？たとえば、Ansible Tower、Artifactory、または他のクラウドプロバイダーやデプロイターゲットですか？
 
-### 前提要件 {#prerequisites}
+### 前提条件 {#prerequisites}
 
-何らかの移行作業を行う前に、まず以下を行う必要があります:
+移行作業を行う前に、まず以下を実行する必要があります:
 
 1. GitLabに慣れてください。
-   - [主なGitLab CI/CD機能](../_index.md)についてお読みください。
-   - [最初のGitLabパイプラインを](../quick_start/_index.md)作成し、静的サイトをビルド、テスト、およびデプロイする[より複雑なパイプラインを](../quick_start/tutorial.md)作成するためのチュートリアルに従ってください。
+   - [主要なGitLab CI/CD機能](../_index.md)について読んでください。
+   - [最初のGitLabパイプライン](../quick_start/_index.md)と、静的サイトをビルドする、テストする、デプロイする[より複雑なパイプライン](../quick_start/tutorial.md)を作成するためのチュートリアルに従ってください。
    - [CI/CD YAML構文リファレンス](../yaml/_index.md)を確認してください。
-1. GitLabをセットアップして構成します。
+1. GitLabを設定してセットアップします。
 1. GitLabインスタンスをテストします。
-   - [GitLab Runner](../runners/_index.md)が利用可能であることを確認します。共有GitLab.com Runnerを使用するか、新しいRunnerをインストールします。
+   - 共有GitLab.com Runnerを使用するか、新しいRunnerをインストールすることで、[Runner](../runners/_index.md)が利用可能であることを確認してください。
 
-### 移行の手順 {#migration-steps}
+### 移行ステップ {#migration-steps}
 
-1. SCMソリューションからGitLabにプロジェクトを移行します。
-   - （推奨）利用可能な[インポーター](../../user/project/import/_index.md)を使用して、外部SCMプロバイダーからの大量インポートを自動化できます。
-   - [URLでリポジトリをインポートする](../../user/project/import/repo_by_url.md)ことができます。
+1. プロジェクトをSCMソリューションからGitLabへ移行する。
+   - （推奨）利用可能な[インポーター](../../user/import/_index.md)を使用して、外部SCMプロバイダーからの大量のインポートを自動化できます。
+   - あなたは[URLでリポジトリをインポート](../../user/project/import/repo_by_url.md)できます。
 1. 各プロジェクトに`.gitlab-ci.yml`ファイルを作成します。
-1. Jenkins設定をGitLab CI/CDジョブに移行し、マージリクエストに直接結果を表示するように構成します。
-1. [クラウドデプロイテンプレート](../cloud_deployment/_index.md) 、[環境](../environments/_index.md) 、および[Kubernetes向けGitLabエージェント](../../user/clusters/agent/_index.md)を使用して、デプロイメントジョブを移行します。
-1. 異なるプロジェクト間で再利用できるCI/CD設定があるかどうかを確認し、CI/CDテンプレートを作成して共有します。
-1. [パイプラインの効率性に関するドキュメント](../pipelines/pipeline_efficiency.md)を確認して、GitLab CI/CDパイプラインをより高速かつ効率的にする方法を学んでください。
+1. Jenkinsの設定をGitLab CI/CDジョブに移行するし、マージリクエストに直接結果を表示するように設定します。
+1. [クラウドデプロイテンプレート](../cloud_deployment/_index.md) 、[環境](../environments/_index.md) 、および[Kubernetes向けGitLabエージェント](../../user/clusters/agent/_index.md)を使用して、デプロイメントジョブを移行する。
+1. 異なるプロジェクト間でCI/CDの設定を再利用できるかどうかを確認し、CI/CDテンプレートを作成して共有します。
+1. [パイプライン効率性ドキュメント](../pipelines/pipeline_efficiency.md)を確認して、GitLab CI/CDパイプラインをより高速かつ高効率的にする方法を学んでください。
 
-### その他のリソース {#additional-resources}
+### 追加リソース {#additional-resources}
 
-- [JenkinsFileラッパー](https://gitlab.com/gitlab-org/jfr-container-builder/)を使用して、プラグインを含むGitLab CI/CDジョブ内で完全なJenkinsインスタンスを実行できます。このツールを使用して、緊急性の低いパイプラインの移行を遅らせることにより、GitLab CI/CDへの移行を容易にしてください。
+- [JenkinsFileラッパー](https://gitlab.com/gitlab-org/jfr-container-builder/)を使用して、プラグインを含む完全なJenkinsインスタンスをGitLab CI/CDジョブ内で実行できます。このツールを使用して、緊急性の低いパイプラインの移行を遅らせることで、GitLab CI/CDへの移行を容易にしてください。
 
-  {{< alert type="note" >}}
+  > [!note] JenkinsFileラッパーはGitLabにはパッケージ化されておらず、サポート範囲外です。詳細については、[サポートに関する声明](https://about.gitlab.com/support/statement-of-support/)を参照してください。
 
-  JenkinsFileラッパーはGitLabにパッケージ化されておらず、サポートのスコープ外です。詳細については、[サポートステートメント](https://about.gitlab.com/support/statement-of-support/)を参照してください。
-
-  {{< /alert >}}
-
-ここに記載されていない質問がある場合は、[GitLabコミュニティフォーラム](https://forum.gitlab.com/)が役立ちます。
+ここで回答されていない質問がある場合は、[GitLabコミュニティフォーラム](https://forum.gitlab.com/)が優れたリソースとなりえます。

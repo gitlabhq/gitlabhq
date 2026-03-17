@@ -1,13 +1,13 @@
 ---
 stage: AI-powered
 group: Workflow Catalog
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Custom flows
 ---
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
@@ -25,6 +25,9 @@ title: Custom flows
 - Changed to [beta](../../../policy/development_stages_support.md) in GitLab 18.7.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/569060) in GitLab 18.7.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/work_items/569060) in GitLab 18.8.
+- Pipeline events trigger [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/212797) in GitLab 18.9 as an [experiment](../../../policy/development_stages_support.md) with a [flag](../../../administration/feature_flags/_index.md) named `ai_flow_trigger_pipeline_hooks`. Disabled by default.
+- Enabling directly in projects as a maintainer [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20743) in GitLab 18.10 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_project_level_enablement`. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated by default.
+- Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 
 {{< /history >}}
 
@@ -37,6 +40,12 @@ automate complex, multi-step tasks across your GitLab projects.
 
 ## Flow visibility
 
+{{< history >}}
+
+- Roles that can view private flows [expanded](https://gitlab.com/gitlab-org/gitlab/-/work_items/582507) in GitLab 18.7.
+
+{{< /history >}}
+
 When you create a custom flow, you select a project to manage it and choose whether the flow is public or private.
 
 Public flows:
@@ -45,8 +54,12 @@ Public flows:
 
 Private flows:
 
-- Can be viewed only by members of the managing project who have the Developer, Maintainer, or Owner role, and by users with the Owner role for the top-level group.
-- Cannot be enabled in projects other than the managing project, or in groups other than the top-level group.
+- Can be viewed only by:
+  - Members of the managing project who have the Guest, Planner, Reporter, Developer,
+    Maintainer, or Owner role.
+  - Users with the Owner role for the top-level group.
+- Cannot be enabled in projects other than the managing project, or in groups
+  other than the top-level group.
 
 You cannot change a public flow to private if the flow is enabled.
 
@@ -58,7 +71,7 @@ Prerequisites:
 
 To view a list of flows associated with your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Flows**.
    - To view flows enabled in the project, select the **Enabled** tab.
    - To view flows managed by the project, select the **Managed** tab.
@@ -79,7 +92,7 @@ Prerequisites:
 
 To create a flow:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Flows**.
 1. Select **New flow**.
 1. Under **Basic information**:
@@ -118,32 +131,68 @@ The flow appears in the AI Catalog.
 ## Enable a flow
 
 Enable a flow to trigger it from an issue, merge request, or discussion.
-To enable a flow, you must:
 
-1. Enable it in a top-level group.
-1. Enable it in the project you want to use it in.
-
-### Enable in a top-level group
+When you enable a flow in a project, it is enabled in the top-level group for that project at the same time.
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Maintainer or Owner role for the project.
 
-To enable a flow in a top-level group:
+{{< tabs >}}
 
-1. On the top bar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog**, then select the **Flows** tab.
-1. Select the flow you want to enable.
-1. In the upper-right corner, select **Enable in group**.
-1. From the dropdown list, select the group you want to enable the flow in.
+{{< tab title="From the managing project" >}}
+
+To enable a flow:
+
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Automate** > **Flows**.
+1. Select the **Managed** tab, then select the flow you want to enable.
+1. In the upper-right corner, select **Enable**.
+1. Under **Project**, select the project you want to enable the flow in.
+1. For **Add triggers**, select which events trigger the flow:
+   - **Mention**: When the service account user is mentioned
+     in a comment on an issue or merge request.
+   - **Assign**: When the service account user is assigned
+     to an issue or merge request.
+   - **Assign reviewer**: When the service account user is assigned
+     as a reviewer to a merge request.
+   - **Pipeline events**: When a pipeline changes state.
+     The possible states are `created`, `started`, `succeeded`, and `failed`.
 1. Select **Enable**.
 
-The flow appears in the group's **Automate** > **Flows** page.
+{{< /tab >}}
+
+{{< tab title="From the AI Catalog" >}}
+
+To enable a flow:
+
+1. In the top bar, select **Search or go to** > **Explore**.
+1. Select **AI Catalog**, then select the **Flows** tab.
+1. Select the flow you want to enable.
+1. In the upper-right corner, select **Enable**.
+1. Under **Project**, select the project you want to enable the flow in.
+1. For **Add triggers**, select which events trigger the flow:
+   - **Mention**: When the service account user is mentioned
+     in a comment on an issue or merge request.
+   - **Assign**: When the service account user is assigned
+     to an issue or merge request.
+   - **Assign reviewer**: When the service account user is assigned
+     as a reviewer to a merge request.
+1. Select **Enable**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+The flow appears in the group and project **Automate** > **Flows** pages.
+Members of any project in the top-level group can now enable the flow in their project.
 
 A service account is created in the group. The name of the account
 follows this naming convention: `ai-<flow>-<group>`.
 
 ### Enable in a project
+
+If a flow is already enabled in a top-level group, you can enable it in the group's projects.
 
 Prerequisites:
 
@@ -152,7 +201,7 @@ Prerequisites:
 
 To enable a flow in a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Automate** > **Flows**.
 1. In the upper-right corner, select **Enable flow from group**.
 1. From the dropdown list, select the flow you want to enable.
@@ -174,12 +223,12 @@ This account is assigned the Developer role.
 
 Prerequisites:
 
-- For groups, you must have the Owner role.
+- For groups, you must have the Maintainer or Owner role.
 - For projects, you must have the Maintainer or Owner role.
 
 To disable a flow:
 
-1. On the top bar, select **Search or go to** and find your group or project.
+1. In the top bar, select **Search or go to** and find your group or project.
 1. Select **Automate** > **Flows**.
 1. Find the flow you want to remove and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Disable**.
 1. On the confirmation dialog, select **Disable**.
@@ -226,7 +275,7 @@ Prerequisites:
 
 To duplicate a flow:
 
-1. On the top bar, select **Search or go to** > **Explore**.
+1. In the top bar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**, then select the **Flows** tab.
 1. Select the flow you want to duplicate.
 1. In the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Duplicate**.

@@ -56,23 +56,6 @@ RSpec.describe ServiceDeskSettings::UpdateService, :aggregate_failures, feature_
           expect(Gitlab::AppLogger).to have_received(:info).with({ category: 'custom_email' })
         end
       end
-
-      context 'when issue_email_participants feature flag is disabled' do
-        before do
-          stub_feature_flags(issue_email_participants: false)
-        end
-
-        it 'updates service desk setting but not add_external_participants_from_cc value' do
-          response = described_class.new(settings.project, user, params).execute
-
-          expect(response).to be_success
-          expect(settings.reset).to have_attributes(
-            outgoing_name: 'some name',
-            project_key: 'foo',
-            add_external_participants_from_cc: false
-          )
-        end
-      end
     end
 
     context 'when project_key is an empty string' do

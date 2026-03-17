@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: ファイルディレクトリツリーブラウザーを使用して、リポジトリファイルとディレクトリをナビゲートします。
 title: ファイルツリーブラウザー
 ---
@@ -16,7 +16,7 @@ title: ファイルツリーブラウザー
 {{< history >}}
 
 - GitLab 18.0で`repository_file_tree_browser`[フラグ](../../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/19530)されました。デフォルトでは無効になっています。
-- GitLab 18.9で[GitLab.com、GitLab Self-Managed、およびGitLab Dedicatedで有効になりました](https://gitlab.com/gitlab-org/gitlab/-/issues/19530)。
+- GitLab 18.9の[GitLab.com、GitLab Self-Managed、GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/19530)で有効になりました。
 
 {{< /history >}}
 
@@ -26,9 +26,9 @@ title: ファイルツリーブラウザー
 
 ファイルツリーブラウザーは、以下に役立ちます:
 
-- ネストされたディレクトリ構造をナビゲートします。
-- リポジトリの階層を表示します。
-- ディレクトリ構造のコンテキストを維持しながら、ファイルを切り替えます。
+- ネストされたディレクトリ構造のナビゲート。
+- リポジトリ階層の表示。
+- ディレクトリ構造のコンテキストを維持しながら、ファイルの切り替え。
 
 ## ファイルツリーブラウザーの表示または非表示 {#show-or-hide-the-file-tree-browser}
 
@@ -86,19 +86,19 @@ title: ファイルツリーブラウザー
 
 ### ツリーナビゲーション {#tree-navigation}
 
-ファイルツリーブラウザーは、キーボードナビゲーション用に[W3C ARIA treeviewパターン](https://www.w3.org/WAI/ARIA/apg/patterns/treeview/)を実装しています:
+ファイルツリーブラウザーは、キーボードナビゲーション用に[W3C ARIAツリービューパターン](https://www.w3.org/WAI/ARIA/apg/patterns/treeview/)を実装しています:
 
 | キー                                                  | 機能 |
 |------------------------------------------------------|----------|
-| <kbd>Enter</kbd>または<kbd>Space</kbd>                 | フォーカスされたファイルまたはディレクトリを選択します |
-| <kbd>Down arrow</kbd>                                | ディレクトリを開閉せずに、次のファイルまたはディレクトリにフォーカスを移動します。フォーカスが最後の項目にある場合、何も実行しません。 |
-| <kbd>Up arrow</kbd>                                  | ディレクトリを開閉せずに、前のファイルまたはディレクトリにフォーカスを移動します。フォーカスが最初の項目にある場合、何も実行しません。 |
-| <kbd>Right arrow</kbd>                               | フォーカスが閉じられたディレクトリにある場合は、それを開きます。フォーカスが開いているディレクトリにある場合は、内部の最初の項目にフォーカスを移動します。フォーカスがファイルにある場合は、何も実行しません。 |
-| <kbd>Left arrow</kbd>                                | フォーカスが開いているディレクトリにある場合は、それを閉じます。フォーカスがファイルまたはネストされた項目にある場合は、その親ディレクトリにフォーカスを移動します。フォーカスが閉じられたルートディレクトリにある場合は、何も実行しません。 |
+| <kbd>Enter</kbd>または<kbd>スペース</kbd>                 | フォーカスされたファイルまたはディレクトリを選択します。 |
+| <kbd>↓</kbd>                                | ディレクトリを開閉せずに、次のファイルまたはディレクトリにフォーカスを移動します。最後の項目をフォーカスしている場合、何も実行しません。 |
+| <kbd>↑</kbd>                                  | ディレクトリを開閉せずに、前のファイルまたはディレクトリにフォーカスを移動します。フォーカスが最初の項目にある場合、何も実行しません。 |
+| <kbd>→</kbd>                               | 閉じられたディレクトリにフォーカスしている場合は、それを開きます。開いているディレクトリをフォーカスしている場合は、フォーカスを内部の最初の項目に移動します。ファイルをフォーカスしている場合は、何も実行しません。 |
+| <kbd>←</kbd>                                | 開いているディレクトリをフォーカスしている場合は、それを閉じます。ファイルまたはネストされた項目をフォーカスしている場合は、その親ディレクトリにフォーカスを移動します。閉じられたルートディレクトリをフォーカスしている場合は、何も実行しません。 |
 | <kbd>Home</kbd> <sup>1</sup>                                     | ディレクトリを開閉せずに、最初のファイルまたはディレクトリにフォーカスを移動します。 |
 | <kbd>End</kbd> <sup>1</sup>                                       | 閉じられたディレクトリを展開せずに、最後のファイルまたはディレクトリにフォーカスを移動します。 |
 | <kbd>a</kbd>-<kbd>z</kbd>、<kbd>A</kbd>-<kbd>Z</kbd> | 入力された文字で始まる名前の次のファイルまたはディレクトリにフォーカスを移動します。一致するものが見つからない場合、検索は最初の項目にラップされます。閉じられたディレクトリ内の項目は無視されます。 |
-| <kbd>*</kbd>（アスタリスク）                              | フォーカスされた項目と同じレベルですべての閉じられたディレクトリを展開します。フォーカスは移動しません。 |
+| <kbd>*</kbd>（アスタリスク）                              | フォーカスされている項目と同じレベルで、すべての閉じられたディレクトリを展開します。フォーカスは移動しません。 |
 
 **脚注**: 
 

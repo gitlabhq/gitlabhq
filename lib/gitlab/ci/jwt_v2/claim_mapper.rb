@@ -22,7 +22,7 @@ module Gitlab
           return @mapper.to_h if @mapper
 
           # nil `ci_config_ref_uri` causes Fulcio to crash.
-          if @pipeline && Feature.enabled?(:default_jwt_ci_config_ref_uri, @pipeline.project)
+          if @pipeline
             return {
               ci_config_ref_uri: ci_config_ref_uri,
               ci_config_sha: @pipeline.sha

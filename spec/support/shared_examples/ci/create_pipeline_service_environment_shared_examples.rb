@@ -103,9 +103,10 @@ RSpec.shared_examples 'creating a pipeline with environment keyword' do
 
   context 'when environment with duplicate names' do
     before do
-      # TEMP: To account for +1 query to ci_pipeline_artifacts.
-      # Remove with FF `ci_read_pipeline_variables_from_artifact`
-      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(101)
+      # +1 query to ci_pipeline_artifacts from Ci::Pipeline#variables
+      # reading pipeline variables from object storage
+      # +1 query for CI_COMMIT_USER_LOGIN (User.find_by_any_email in git_author_login)
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
     end
 
     let(:config) do

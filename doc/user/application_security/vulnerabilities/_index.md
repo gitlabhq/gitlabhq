@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Vulnerability details
 description: Vulnerability details, status, resolution, and linking issues.
 ---
@@ -41,6 +41,33 @@ the top of the vulnerability's page.
 For vulnerabilities detected by SAST, GitLab Duo can automatically analyze them and generate a merge
 request with context-aware code fixes. For more information, see
 [Agentic SAST vulnerability resolution](agentic_vulnerability_resolution.md).
+
+## Secret false positive detection
+
+{{< details >}}
+
+- Tier: Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- Introduced in [epic 17885](https://gitlab.com/groups/gitlab-org/-/work_items/20152) in GitLab 18.10 as a [beta](../../../policy/development_stages_support.md#beta) feature with a [feature flag](../../../administration/feature_flags/_index.md) named `duo_secret_detection_false_positive`. [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227074).
+
+{{< /history >}}
+
+GitLab Duo automatically analyzes secret detection findings to identify potential false positives. Dismissing false positives reduces noise in your vulnerability report by flagging findings that are likely not actual security risks.
+
+For each analyzed vulnerability, GitLab Duo provides the following information:
+
+- A confidence score indicating the likelihood that the assessment is correct.
+- An explanation of why the finding might or might not be correct.
+- Visual indicators that a vulnerability has been identified as a potential false positive in the vulnerability report.
+
+For more information, see [secret false positive detection](secret_false_positive_detection.md).
 
 ## Vulnerability Resolution
 
@@ -92,7 +119,7 @@ Learn more about [how to enable all GitLab Duo features](../../gitlab_duo/turn_o
 
 To resolve the vulnerability:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
@@ -217,7 +244,7 @@ resolves the vulnerability finding. By default, it is powered by the Anthropic [
 
 To resolve the vulnerability finding:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Merge requests**.
 1. Select a merge request.
    - Vulnerability findings supported by Vulnerability Resolution are indicated by the tanuki AI icon ({{< icon name="tanuki-ai" >}}).
@@ -353,7 +380,7 @@ Prerequisites:
 
 To change a vulnerability's status from its Vulnerability Page:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Change status**.
@@ -369,7 +396,7 @@ vulnerability's action log.
 You can create a GitLab issue to track any action taken to resolve or mitigate a vulnerability.
 To create a GitLab issue for a vulnerability:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create issue**.
@@ -392,7 +419,7 @@ Prerequisites:
 
 To link a vulnerability to existing GitLab issues:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. In the **Linked issues** section, select the plus icon ({{< icon name="plus" >}}).
@@ -466,7 +493,7 @@ To resolve a vulnerability, you can either:
 
 To resolve the vulnerability with a merge request:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Resolve with merge request**.
@@ -478,7 +505,7 @@ Process the merge request according to your standard workflow.
 
 To manually apply the patch that GitLab generated for a vulnerability:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Download patch to resolve**.
@@ -499,7 +526,7 @@ Security training helps your developers learn how to fix vulnerabilities. Develo
 
 To enable security training for vulnerabilities in your project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. On the tab bar, select **Vulnerability Management**.
 1. To enable a security training provider, turn on the toggle.
@@ -517,7 +544,7 @@ Vulnerabilities with a CWE are most likely to return a training result.
 
 To view the security training for a vulnerability:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability for which you want to view security training.
 1. Select **View training**.

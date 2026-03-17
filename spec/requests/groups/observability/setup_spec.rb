@@ -77,6 +77,10 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
         context 'when provisioning parameter is true' do
           let(:params) { { provisioning: 'true' } }
 
+          before do
+            allow(Gitlab).to receive(:com?).and_return(true)
+          end
+
           it 'builds observability setting with group id as service name' do
             get_setup_page
 
@@ -91,6 +95,34 @@ RSpec.describe "Groups::Observability::Setup", feature_category: :observability 
             get_setup_page
 
             expect(assigns(:group).observability_group_o11y_setting).to be_nil
+          end
+        end
+
+        context 'when on GitLab.com' do
+          before do
+            allow(Gitlab).to receive(:com?).and_return(true)
+          end
+
+          it 'renders the Enable Observability button' do
+            get_setup_page
+
+            expect(response.body).to include('Enable Observability')
+            expect(response.body).to include(group_observability_access_requests_path(group))
+          end
+        end
+
+        context 'when not on GitLab.com' do
+          before do
+            allow(Gitlab).to receive(:com?).and_return(false)
+          end
+
+          it 'renders the administrator message instead of the button' do
+            get_setup_page
+
+            expect(response.body)
+              .to include('please ask your <strong>GitLab administrator</strong> ' \
+                'to enable it for this group')
+            expect(response.body).not_to include(group_observability_access_requests_path(group))
           end
         end
       end

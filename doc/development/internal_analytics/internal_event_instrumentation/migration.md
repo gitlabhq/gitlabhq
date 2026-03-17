@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Analytics Instrumentation
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Migrating existing tracking to internal event tracking
 ---
 
@@ -15,7 +15,7 @@ This page describes how you can switch from one of the previous methods to using
 
 ## Migrating from existing Snowplow tracking
 
-If you are already tracking events in Snowplow, you can also start collecting metrics from GitLab Self-Managed instances by switching to Internal Events Tracking.
+If you are already tracking events in Snowplow, you can also start collecting metrics from GitLab Self-Managed instances by switching to Internal Events Tracking. Note that starting with GitLab 18.0, Self-Managed instances collect event data by default, providing more detailed insights than the aggregated metrics collected in previous versions.
 
 The event triggered by Internal Events has some special properties compared to previously tracking with Snowplow directly:
 
@@ -185,10 +185,8 @@ To start using Internal Events Tracking, follow these steps:
    ```
 
 1. Update your test to use the `internal event tracking` shared example.
-
-1. Remove the event's name from [hll_redis_legacy_events](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/usage_data_counters/hll_redis_legacy_events.yml)
-
-1. Add the event to [hll_redis_key_overrides](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/usage_data_counters/hll_redis_key_overrides.yml) file. The format used in this file is: `project_created-user: 'project_created'`, where `project_created` is the event's name and `user` is the unique value that has been specified in the metric definition files.
+1. Remove the event's name from [`hll_redis_legacy_events.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/usage_data_counters/hll_redis_legacy_events.yml)
+1. Add the event to [`hll_redis_key_overrides.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/usage_data_counters/hll_redis_key_overrides.yml) file. The format used in this file is: `project_created-user: 'project_created'`, where `project_created` is the event's name and `user` is the unique value that has been specified in the metric definition files.
 
 ### Frontend
 

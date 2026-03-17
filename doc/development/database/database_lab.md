@@ -2,7 +2,7 @@
 type: reference, howto
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: Database access for engineers and related parties.
 title: Database Lab and Postgres.ai
 ---
@@ -12,6 +12,7 @@ Internal users at GitLab have access to the Database Lab Engine (DLE) and
 on replicated production data. Unlike a typical read-only production replica, in the DLE you can
 also create, update, and delete rows. You can also test the performance of
 schema changes, like additional indexes or columns, in an isolated copy of production data.
+A new snapshot of the database is typically created every 4 hours.
 
 ## Database Lab quick start
 
@@ -175,11 +176,11 @@ To connect to a clone using `psql`:
 1. In the **Clone details** page of the Postgres.ai web interface, copy and run
    the command to start SSH port forwarding for the clone.
     1. You may notice that it's suggested to run the command with the `-N` flag, meaning no shell will be started,
-    so you should not expect any output if it runs successfully.
+       so you should not expect any output if it runs successfully.
     1. Optionally, you can add `LogLevel DEBUG3` to your `~/.ssh/config`
-    to output detailed debugging information.
+       to output detailed debugging information.
     1. After running the command, leave it running to keep the port forwarding active,
-    and then you can open a new terminal tab to do the next step.
+       and then you can open a new terminal tab to do the next step.
 1. In the **Clone details** page of the Postgres.ai web interface, copy and run the `psql` connection string.
    Use the password provided at setup and set the `dbname` to `gitlabhq_dblab` (or check what databases are available by using `psql -l` with the same query string but `dbname=postgres`).
 

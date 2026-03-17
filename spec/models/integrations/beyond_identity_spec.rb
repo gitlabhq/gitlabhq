@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::BeyondIdentity, feature_category: :integrations,
-  quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/25434' do
+RSpec.describe Integrations::BeyondIdentity, feature_category: :source_code_management do
   subject(:integration) { create(:beyond_identity_integration, :instance) }
 
   describe 'validations' do
@@ -67,7 +66,8 @@ RSpec.describe Integrations::BeyondIdentity, feature_category: :integrations,
 
   describe '.activated_for_instance?' do
     let!(:integration) do
-      create(:beyond_identity_integration, instance: instance, active: active, group: group, organization: organization)
+      create(:beyond_identity_integration, project: nil, instance: instance, active: active, group: group,
+        organization: organization)
     end
 
     let_it_be(:group_for_integration) { create(:group) }

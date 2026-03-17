@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import Draggable from '~/lib/utils/vue3compat/draggable_compat.vue';
 
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { removeParams, updateHistory } from '~/lib/utils/url_utility';
@@ -35,10 +35,12 @@ describe('BoardContent', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
   let wrapper;
   let mockApollo;
+  let resolveMutation;
+  let rejectMutation;
 
   const updateListHandler = jest.fn().mockResolvedValue(updateBoardListResponse);
   const errorMessage = 'Failed to update list';
-  const updateListHandlerFailure = jest.fn().mockRejectedValue(new Error(errorMessage));
+  const updateListHandlerFailure = jest.fn().mockResolvedValue(updateBoardListResponse);
   const mockUpdateCache = jest.fn();
 
   const createComponent = ({
@@ -49,7 +51,11 @@ describe('BoardContent', () => {
     isEpicBoard = false,
     handler = updateListHandler,
   } = {}) => {
-    mockApollo = createMockApollo([[updateBoardListMutation, handler]]);
+    ({
+      apolloProvider: mockApollo,
+      resolveMutation,
+      rejectMutation,
+    } = createControlledMockApollo([[updateBoardListMutation, handler]]));
     mockApollo.clients.defaultClient.cache.updateQuery = mockUpdateCache;
     const listQueryVariables = { isProject: true };
 
@@ -151,7 +157,7 @@ describe('BoardContent', () => {
 
     it('reorders lists', async () => {
       moveList();
-      await waitForPromises();
+      await resolveMutation(updateBoardListMutation);
 
       expect(updateListHandler).toHaveBeenCalled();
     });
@@ -160,7 +166,7 @@ describe('BoardContent', () => {
       createComponent({ handler: updateListHandlerFailure });
 
       moveList();
-      await waitForPromises();
+      await rejectMutation(updateBoardListMutation, new Error(errorMessage));
 
       expect(cacheUpdates.setError).toHaveBeenCalled();
     });

@@ -1,5 +1,5 @@
 - :absolute_file_path
-- :active_context
+- :active_context_integration
 - :aggregate_failures
 - :allow_forgery_protection
 - :allow_rich_text_editor_for_new_users
@@ -105,6 +105,7 @@
 - :path
 - :pending
 - :permit_dns
+- :postgres_adapter
 - :praefect
 - :prometheus
 - :quarantine
@@ -167,6 +168,7 @@
 - :use_sql_query_cache
 - :use_sql_query_cache_for_tracking_db
 - :uses_fast_spec_helper_but_runs_slow
+- :with_active_context_adapter_reset
 - :with_clean_rails_cache
 - :with_cloud_connector
 - :with_current_organization

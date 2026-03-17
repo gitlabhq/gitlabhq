@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Install and secure a single node GitLab instance'
 ---
 
@@ -250,7 +250,6 @@ Now that your server is set up, install GitLab:
    ```
 
    To see the contents of the script, visit <https://packages.gitlab.com/gitlab/gitlab-ee/install>.
-
 1. Install the GitLab package. Provide a strong password with
    `GITLAB_ROOT_PASSWORD` and replace the `EXTERNAL_URL`
    with your own. Don't forget to include `https` in the URL, so that a Let's Encrypt
@@ -265,7 +264,6 @@ Now that your server is set up, install GitLab:
 
    If the password you set wasn't picked up, read more about
    [resetting the root account password](../../security/reset_user_password.md#reset-the-root-password).
-
 1. After a few minutes, GitLab is installed. Sign in
    using the URL you set up in `EXTERNAL_URL`. Use `root` as the username and
    the password you set up in `GITLAB_ROOT_PASSWORD`.
@@ -320,7 +318,6 @@ credentials, and then configure SMTP for the Linux package:
 
    By default, the encrypted file is stored under
    `/var/opt/gitlab/gitlab-rails/shared/encrypted_settings/smtp.yaml.enc`.
-
 1. Remove the YAML file:
 
    ```shell

@@ -14,6 +14,7 @@ import {
   SCOPE_COMMITS,
   SCOPE_MILESTONES,
   SCOPE_WIKI_BLOBS,
+  SCOPE_WORK_ITEMS,
   SEARCH_TYPE_ADVANCED,
   SEARCH_TYPE_ZOEKT,
 } from '../constants';
@@ -58,7 +59,7 @@ export default {
       return this.searchType === SEARCH_TYPE_ZOEKT;
     },
     showIssuesFilters() {
-      return this.currentScope === SCOPE_ISSUES;
+      return this.currentScope === SCOPE_ISSUES || this.currentScope === SCOPE_WORK_ITEMS;
     },
     showMergeRequestFilters() {
       return this.currentScope === SCOPE_MERGE_REQUESTS;

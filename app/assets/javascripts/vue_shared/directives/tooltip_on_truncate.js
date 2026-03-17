@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { GlTooltipDirective, GlResizeObserverDirective } from '@gitlab/ui';
 import { hasHorizontalOverflow } from '~/lib/utils/dom_utils';
 

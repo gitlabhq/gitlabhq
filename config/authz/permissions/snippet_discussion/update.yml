@@ -1,5 +1,3 @@
 ---
 name: update_snippet_discussion
 description: Grants the ability to update snippet discussions and notes
-boundaries:
-  - project

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GroupChildSerializer do
   let(:request) { double('request') }
+  let(:response) { double('response') }
   let(:user) { create(:user) }
 
   subject(:serializer) { described_class.new(current_user: user) }
@@ -107,6 +108,25 @@ RSpec.describe GroupChildSerializer do
           expect(json).to be_kind_of(Array)
           expect(json.size).to eq(1)
         end
+      end
+    end
+
+    context 'with pagination_resource option' do
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: parent_group) }
+
+      let(:serializer_with_hierarchy) { described_class.new(current_user: user).expand_hierarchy }
+      let(:pagination_resource) { Group.where(id: subgroup.id) }
+      let(:display_resource) { Group.all }
+
+      it 'uses pagination_resource for pagination' do
+        expect_next_instance_of(Gitlab::Serializer::Pagination) do |paginator|
+          expect(paginator).to receive(:paginate).with(pagination_resource)
+        end
+
+        serializer_with_hierarchy
+          .with_pagination(request, response)
+          .represent(display_resource, pagination_resource: pagination_resource)
       end
     end
   end

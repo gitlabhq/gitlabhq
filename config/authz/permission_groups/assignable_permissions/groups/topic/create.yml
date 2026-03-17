@@ -1,0 +1,7 @@
+---
+name: create_topic
+description: Grants the ability to create topics
+boundaries:
+  - instance
+permissions:
+  - create_topic

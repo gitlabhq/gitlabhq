@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLink, GlSprintf } from '@gitlab/ui';
-import { sortBy } from 'lodash';
+import { sortBy } from 'lodash-es';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';

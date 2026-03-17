@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Pausing and resuming replication
 ---
 
@@ -15,7 +15,7 @@ title: Pausing and resuming replication
 > [!warning]
 > Pausing and resuming of replication is only supported for Geo installations using a
 > Linux package-managed database. External databases are not supported.
-> 
+>
 > **Do not pause replication** if the primary site has failed catastrophically and cannot be recovered. This can create unreachable recovery targets that prevent successful promotion of the secondary site.
 
 In some circumstances, like during [upgrades](upgrading_the_geo_sites.md) or a

@@ -1,5 +1,3 @@
 ---
 name: read_terraform_state
 description: Grants the ability to read Terraform state
-boundaries:
-  - project

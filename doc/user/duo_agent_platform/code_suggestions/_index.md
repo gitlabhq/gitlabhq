@@ -1,14 +1,14 @@
 ---
 stage: AI-powered
 group: AI Coding
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Code Suggestions helps you write code in GitLab more efficiently by using AI to suggest code as you type.
 title: Code Suggestions
 ---
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: [Free](../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -31,9 +31,9 @@ title: Code Suggestions
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187397) support for Qwen2.5 code completion model in GitLab 17.11.
 - Enabled Fireworks hosted `Codestral` by default via the feature flag `use_fireworks_codestral_code_completion` in GitLab 17.11.
 - Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1.
-- To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/545489) the default model for code generation to Claude Sonnet 4 in GitLab 18.2.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) feature flag `code_suggestions_context` in GitLab 18.6.
+- Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 
 {{< /history >}}
 
@@ -48,7 +48,7 @@ Use GitLab Duo Code Suggestions to write code more efficiently by using generati
 
 To use Code Suggestions:
 
-- If you have the GitLab Duo Core add-on, [turn on IDE features](../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+- If you have GitLab Duo Core, [turn on IDE features](../turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - [Set up Code Suggestions](set_up.md).
 
 > [!note]
@@ -187,7 +187,7 @@ Different language models can be the source for Code Suggestions.
 - On GitLab Self-Managed, two options exist:
   - GitLab can [host the models and connects to them through the cloud-based AI Gateway](set_up.md).
   - Your organization can [use GitLab Duo Self-Hosted](../../../administration/gitlab_duo_self_hosted/_index.md),
-    which means you host the AI Gateway and language models. You can use GitLab AI vendor models,
+    which means you host the AI Gateway and language models. You can use GitLab-managed models,
     other supported language models, or to bring your own compatible model.
 
 ## How the prompt is built
@@ -209,12 +209,19 @@ To learn about the code that builds the prompt, see these files:
 
 {{< /history >}}
 
-Prompt caching is enabled by default to improve Code Suggestions latency. When prompt caching is enabled, code completion prompt data is temporarily stored in memory by the model vendor. Prompt caching significantly improves latency by avoiding the re-processing of cached prompt and input data. The cached data is never logged to any persistent storage.
+Prompt caching is enabled by default on all Fireworks-hosted models to improve
+Code Suggestions latency.
+
+When prompt caching is enabled, code completion prompt data is temporarily stored
+in memory by the model vendor.
+
+Prompt caching significantly improves latency by avoiding the re-processing of
+cached prompt and input data. The cached data is never logged to any persistent storage.
 
 ### Turn off prompt caching
 
 You can turn off prompt caching for top-level groups in the GitLab Duo settings.
-This also turns off prompt caching for [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
+This also turns off prompt caching for [GitLab Duo Chat (agentic)](../../gitlab_duo_chat/agentic_chat.md#prompt-caching).
 
 Prerequisites:
 
@@ -222,7 +229,7 @@ Prerequisites:
 
 On GitLab.com:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Disable the **Prompt caching** toggle.
@@ -231,7 +238,7 @@ On GitLab.com:
 On GitLab Self-Managed:
 
 1. In the upper-right corner, select **Admin**.
-1. On the left sidebar, select **GitLab Duo**.
+1. In the left sidebar, select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Prompt cache**, clear the **Turn on prompt caching** checkbox.
 1. Select **Save changes**.

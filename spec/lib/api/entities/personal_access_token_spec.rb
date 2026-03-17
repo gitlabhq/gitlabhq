@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::PersonalAccessToken do
+RSpec.describe API::Entities::PersonalAccessToken, feature_category: :system_access do
   describe '#as_json' do
     let_it_be(:user) { create(:user) }
     let_it_be(:token) { create(:personal_access_token, user: user, description: "Test") }

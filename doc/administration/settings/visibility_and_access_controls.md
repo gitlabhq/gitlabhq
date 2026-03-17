@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 description: Control project visibility, creation, retention, and deletion.
 title: Control access and visibility
@@ -121,8 +121,8 @@ To configure deletion protection for groups and projects:
 To override the delay, and permanently delete a project marked for removal:
 
 1. [Restore the project](../../user/project/working_with_projects.md#restore-a-project).
-1. Delete the project as described in the
-   [Administering Projects page](../admin_area.md#administering-projects).
+1. Delete the project as described in
+   [administering projects](../admin_area.md#administering-projects).
 
 ## Configure project visibility defaults
 
@@ -179,7 +179,7 @@ Prerequisites:
 1. Select **Save changes**.
 
 For more details on group visibility, see
-[Group visibility](../../user/group/_index.md#group-visibility).
+[group visibility](../../user/group/_index.md#group-visibility).
 
 ## Restrict visibility levels
 
@@ -388,6 +388,7 @@ To prevent invitations:
 - Instance setting to allow the display of user data
   [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/214538) in GitLab 18.7
   [with a flag](../feature_flags/_index.md) named `usage_billing_dev`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/215714).
+- Feature flag `usage_billing_dev` [removed](https://gitlab.com/gitlab-org/gitlab/-/work_items/566581) in GitLab 18.10.
 
 {{< /history >}}
 

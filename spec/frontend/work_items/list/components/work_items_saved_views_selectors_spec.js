@@ -1,4 +1,8 @@
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { nextTick } from 'vue';
+import { GlDisclosureDropdownItem } from '@gitlab/ui';
+import VueDraggable from '~/lib/utils/vue3compat/draggable_compat.vue';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import WorkItemsSavedViewsSelectors from '~/work_items/list/components/work_items_saved_views_selectors.vue';
 import WorkItemsCreateSavedViewDropdown from '~/work_items/list/components/work_items_create_saved_view_dropdown.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -25,6 +29,8 @@ describe('WorkItemsSavedViewsSelectors', () => {
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
+        updateSavedViewVisibility: true,
+        __typename: 'SavedViewPermissions',
       },
     },
     {
@@ -40,6 +46,8 @@ describe('WorkItemsSavedViewsSelectors', () => {
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
+        updateSavedViewVisibility: true,
+        __typename: 'SavedViewPermissions',
       },
     },
     {
@@ -55,13 +63,15 @@ describe('WorkItemsSavedViewsSelectors', () => {
       userPermissions: {
         updateSavedView: true,
         deleteSavedView: true,
+        updateSavedViewVisibility: true,
+        __typename: 'SavedViewPermissions',
       },
     },
   ];
 
   const mockUnsubscribeResponse = {
     data: {
-      unsubscribeFromSavedView: {
+      workItemSavedViewUnsubscribe: {
         errors: [],
         savedView: {
           id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
@@ -81,6 +91,17 @@ describe('WorkItemsSavedViewsSelectors', () => {
     },
   };
 
+  const mockReorderResponse = {
+    data: {
+      workItemSavedViewReorder: {
+        errors: [],
+        savedView: {
+          id: 'gid://gitlab/WorkItems::SavedViews::SavedView/1',
+        },
+      },
+    },
+  };
+
   const createComponent = ({
     props,
     mockSavedViews = mockSavedViewsData,
@@ -89,12 +110,13 @@ describe('WorkItemsSavedViewsSelectors', () => {
     routeMock = { params: { view_id: '1' } },
     mutateResult = mockUnsubscribeResponse,
     subscribedSavedViewLimit = null,
+    mountFn = shallowMountExtended,
   } = {}) => {
     routerPushMock = jest.fn();
     toastShowMock = jest.fn();
     mutateMock = jest.fn().mockResolvedValue(mutateResult);
 
-    wrapper = shallowMountExtended(WorkItemsSavedViewsSelectors, {
+    wrapper = mountFn(WorkItemsSavedViewsSelectors, {
       propsData: {
         fullPath: 'test-project-path',
         savedViews: mockSavedViews,
@@ -128,6 +150,8 @@ describe('WorkItemsSavedViewsSelectors', () => {
         },
       },
       stubs: {
+        VueDraggable: stubComponent(VueDraggable),
+        WorkItemsCreateSavedViewDropdown: true,
         WorkItemsSavedViewSelector: {
           props: ['savedView'],
           template: `
@@ -150,6 +174,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
   const findDeleteBtnAt = (index) =>
     findVisibleViewSelectors().at(index).find('[data-testid="delete-btn"]');
   const findCreateSavedViewDropdown = () => wrapper.findComponent(WorkItemsCreateSavedViewDropdown);
+  const findVueDraggable = () => wrapper.findComponent(VueDraggable);
 
   describe('default view selector', () => {
     it('renders the default view selector title', () => {
@@ -158,12 +183,12 @@ describe('WorkItemsSavedViewsSelectors', () => {
       expect(findDefaultViewSelector().text()).toBe('All items');
     });
 
-    it('emits reset-to-default-view when clicked', async () => {
+    it('emits navigate-to-all-items when clicked', async () => {
       createComponent();
 
       await findDefaultViewSelector().trigger('click');
 
-      expect(wrapper.emitted('reset-to-default-view')).toHaveLength(1);
+      expect(wrapper.emitted('navigate-to-all-items')).toHaveLength(1);
     });
   });
 
@@ -194,12 +219,15 @@ describe('WorkItemsSavedViewsSelectors', () => {
     });
 
     describe('overflow view click', () => {
-      it('navigates to clicked overflow view', () => {
-        createComponent();
+      const clickFirstOverflowItem = async () => {
+        const firstOption = findOverflowDropdown().findComponent(GlDisclosureDropdownItem);
+        await firstOption.find('button').trigger('click');
+      };
 
-        const overflowItems = findOverflowDropdown().props('items');
-
-        overflowItems[0].action();
+      it('navigates to clicked overflow view', async () => {
+        createComponent({ mountFn: mountExtended });
+        await clickFirstOverflowItem();
+        await nextTick();
 
         expect(routerPushMock).toHaveBeenCalledWith({
           name: ROUTES.savedView,
@@ -207,6 +235,109 @@ describe('WorkItemsSavedViewsSelectors', () => {
           query: undefined,
         });
       });
+
+      it('calls reorder mutation after overflow view click', async () => {
+        createComponent({ mutateResult: mockReorderResponse, mountFn: mountExtended });
+        await clickFirstOverflowItem();
+        await waitForPromises();
+
+        expect(mutateMock).toHaveBeenCalled();
+      });
+
+      it('emits error when reorder fails', async () => {
+        const reorderError = new Error('Reorder failed');
+        createComponent({ mountFn: mountExtended });
+        mutateMock.mockRejectedValueOnce(reorderError);
+        await clickFirstOverflowItem();
+        await waitForPromises();
+
+        expect(wrapper.emitted('error')).toHaveLength(1);
+        expect(wrapper.emitted('error')[0]).toEqual([
+          reorderError,
+          'An error occurred while reordering work items.',
+        ]);
+      });
+    });
+  });
+
+  describe('drag and drop reordering', () => {
+    it('renders VueDraggable component', () => {
+      createComponent();
+
+      expect(findVueDraggable().exists()).toBe(true);
+    });
+
+    it('disables dragging when only one visible view', () => {
+      createComponent({
+        visibleViews: [mockSavedViewsData[0]],
+        overflowedViews: [],
+      });
+
+      expect(findVueDraggable().attributes('disabled')).toBe('disabled');
+    });
+
+    it('updates visible views order on drag input', async () => {
+      jest
+        .spyOn(WorkItemsSavedViewsSelectors.methods, 'detectViewsOverflow')
+        .mockImplementation(() => {});
+      createComponent();
+
+      const reorderedViews = [mockSavedViewsData[1], mockSavedViewsData[0]];
+      findVueDraggable().vm.$emit('input', reorderedViews);
+      await nextTick();
+
+      const selectors = findVisibleViewSelectors();
+      expect(selectors.at(0).text()).toContain(mockSavedViewsData[1].name);
+      expect(selectors.at(1).text()).toContain(mockSavedViewsData[0].name);
+    });
+
+    it('calls reorder mutation on drag change', async () => {
+      createComponent({ mutateResult: mockReorderResponse });
+
+      findVueDraggable().vm.$emit('input', [mockSavedViewsData[1], mockSavedViewsData[0]]);
+      findVueDraggable().vm.$emit('change', {
+        moved: { newIndex: 1, element: mockSavedViewsData[0] },
+      });
+
+      await waitForPromises();
+
+      expect(mutateMock).toHaveBeenCalled();
+    });
+
+    it('does not navigate to dragged view on drag change', async () => {
+      createComponent({ mutateResult: mockReorderResponse });
+
+      findVueDraggable().vm.$emit('input', [mockSavedViewsData[1], mockSavedViewsData[0]]);
+      findVueDraggable().vm.$emit('change', {
+        moved: { newIndex: 1, element: mockSavedViewsData[0] },
+      });
+
+      await waitForPromises();
+
+      expect(routerPushMock).not.toHaveBeenCalled();
+    });
+
+    it('does not reorder when change event has no moved data', async () => {
+      createComponent();
+
+      findVueDraggable().vm.$emit('change', {});
+      await waitForPromises();
+
+      expect(mutateMock).not.toHaveBeenCalled();
+    });
+
+    it('emits error when drag reorder fails', async () => {
+      const reorderError = new Error('Reorder failed');
+      createComponent();
+      mutateMock.mockRejectedValueOnce(reorderError);
+
+      findVueDraggable().vm.$emit('change', {
+        moved: { newIndex: 1, element: mockSavedViewsData[0] },
+      });
+
+      await waitForPromises();
+
+      expect(wrapper.emitted('error')).toHaveLength(1);
     });
   });
 
@@ -249,7 +380,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
       expect(toastShowMock).toHaveBeenCalledWith('View removed from your list');
     });
 
-    it('emits reset-to-default-view when unsubscribing from the last view', async () => {
+    it('emits navigate-to-all-items when unsubscribing from the last view', async () => {
       createComponent({
         mockSavedViews: [mockSavedViewsData[0]],
         visibleViews: [mockSavedViewsData[0]],
@@ -259,7 +390,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
       await findUnsubscribeBtnAt(0).trigger('click');
       await waitForPromises();
 
-      expect(wrapper.emitted('reset-to-default-view')).toHaveLength(1);
+      expect(wrapper.emitted('navigate-to-all-items')).toHaveLength(1);
     });
 
     it('emits error event when unsubscribe mutation fails', async () => {
@@ -334,7 +465,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
       expect(toastShowMock).toHaveBeenCalledWith('View has been deleted');
     });
 
-    it('emits reset-to-default-view when deleting the last view', async () => {
+    it('emits navigate-to-all-items when deleting the last view', async () => {
       createComponent({
         mockSavedViews: [mockSavedViewsData[0]],
         visibleViews: [mockSavedViewsData[0]],
@@ -345,7 +476,7 @@ describe('WorkItemsSavedViewsSelectors', () => {
       await findDeleteBtnAt(0).trigger('click');
       await waitForPromises();
 
-      expect(wrapper.emitted('reset-to-default-view')).toHaveLength(1);
+      expect(wrapper.emitted('navigate-to-all-items')).toHaveLength(1);
     });
 
     it('emits error event when delete mutation fails', async () => {

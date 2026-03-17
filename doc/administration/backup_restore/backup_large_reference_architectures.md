@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Back up and restore large reference architectures
 ---
 
@@ -28,7 +28,7 @@ databases and object storage.
 
 > [!note]
 > This document is intended for environments using:
-> 
+>
 > - [Linux package (Omnibus) and cloud-native hybrid reference architectures 60 RPS / 3,000 users and up](../reference_architectures/_index.md)
 > - [Amazon RDS](https://aws.amazon.com/rds/) for PostgreSQL data
 > - [Amazon S3](https://aws.amazon.com/s3/) for object storage

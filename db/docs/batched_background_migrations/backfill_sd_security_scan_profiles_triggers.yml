@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillSdSecurityScanProfilesTriggers
+description: Adds additional triggers to existing secret detection security scan profiles
+feature_category: security_asset_inventories
+introduced_by_url:  https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224532
+milestone: '18.10'
+queued_migration_version: 20260220225802
+finalized_by: # version of the migration that finalized this BBM

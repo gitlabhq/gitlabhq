@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use diff versions to compare pushes contained in a single merge request.
 title: Merge request diff versions
 ---
@@ -38,7 +38,7 @@ Prerequisites:
 
 To compare diff versions:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select a merge request.
 1. To view the current diff version for this merge request, select **Changes**.

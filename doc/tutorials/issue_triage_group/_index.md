@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Set up a group with multiple projects for issue triage'
 ---
 
@@ -124,7 +124,7 @@ previous one is removed.
 
 To create each label:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `type::bug`.
@@ -154,7 +154,7 @@ Doing this ensures that the most important issues show on top
 of the issue list if you sort by priority or label priority.
 
 To learn what happens when you sort by priority or label priority, see
-[Sorting and ordering issue lists](../../user/project/issues/sorting_issue_lists.md).
+[sorting and ordering issue lists](../../user/project/issues/sorting_issue_lists.md).
 
 To prioritize labels:
 
@@ -177,7 +177,7 @@ To set up your issue board:
 1. Decide on the scope of the board.
    For example, [create a group issue board](../../user/project/issue_board.md#group-issue-boards) that you'll use to assign
    severity to issues.
-1. On the top bar, select **Search or go to** and find your **triage-tutorial** group.
+1. In the top bar, select **Search or go to** and find your **triage-tutorial** group.
 1. Select **Plan** > **Issue boards**.
 1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -258,5 +258,5 @@ Next, you can:
 
   ![Diagonal heatmap for issues with "priority" and "severity" labels](img/triage_report_v16_3.png)
 
-To learn more about issue triage at GitLab, see [Issue Triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
-and [Triage Operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).
+To learn more about issue triage at GitLab, see [issue triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
+and [triage operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).

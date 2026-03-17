@@ -262,12 +262,12 @@ describe('StageTable', () => {
     });
 
     it('clicking next will emit an event', async () => {
-      expect(wrapper.emitted('handleUpdatePagination')).toBeUndefined();
+      expect(wrapper.emitted('handle-update-pagination')).toBeUndefined();
 
       findPagination().vm.$emit('next');
       await nextTick();
 
-      expect(wrapper.emitted('handleUpdatePagination')[0]).toEqual([
+      expect(wrapper.emitted('handle-update-pagination')[0]).toEqual([
         { page: 2, sort: undefined, direction: undefined },
       ]);
     });
@@ -275,12 +275,12 @@ describe('StageTable', () => {
     it('clicking prev will emit an event', async () => {
       wrapper = createComponent({ pagination: { page: 2, hasNextPage: true } });
 
-      expect(wrapper.emitted('handleUpdatePagination')).toBeUndefined();
+      expect(wrapper.emitted('handle-update-pagination')).toBeUndefined();
 
       findPagination().vm.$emit('prev');
       await nextTick();
 
-      expect(wrapper.emitted('handleUpdatePagination')[0]).toEqual([
+      expect(wrapper.emitted('handle-update-pagination')[0]).toEqual([
         { page: 1, sort: undefined, direction: undefined },
       ]);
     });
@@ -343,10 +343,10 @@ describe('StageTable', () => {
     });
 
     it('clicking a table column will update the sort field', () => {
-      expect(wrapper.emitted('handleUpdatePagination')).toBeUndefined();
+      expect(wrapper.emitted('handle-update-pagination')).toBeUndefined();
       triggerTableSort();
 
-      expect(wrapper.emitted('handleUpdatePagination')[0]).toEqual([
+      expect(wrapper.emitted('handle-update-pagination')[0]).toEqual([
         {
           direction: 'desc',
           sort: 'duration',
@@ -355,10 +355,10 @@ describe('StageTable', () => {
     });
 
     it('with sortDesc=false will toggle the direction field', () => {
-      expect(wrapper.emitted('handleUpdatePagination')).toBeUndefined();
+      expect(wrapper.emitted('handle-update-pagination')).toBeUndefined();
       triggerTableSort(false);
 
-      expect(wrapper.emitted('handleUpdatePagination')[0]).toEqual([
+      expect(wrapper.emitted('handle-update-pagination')[0]).toEqual([
         {
           direction: 'asc',
           sort: 'duration',

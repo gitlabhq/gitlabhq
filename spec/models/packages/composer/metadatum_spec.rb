@@ -10,6 +10,13 @@ RSpec.describe Packages::Composer::Metadatum, type: :model, feature_category: :p
     it { is_expected.to validate_presence_of(:package) }
     it { is_expected.to validate_presence_of(:target_sha) }
     it { is_expected.to validate_presence_of(:composer_json) }
+
+    describe 'bytesize validations' do
+      it { is_expected.to allow_value('A' * described_class::TARGET_SHA_MAX_LENGTH).for(:target_sha) }
+      it { is_expected.not_to allow_value('A' * (described_class::TARGET_SHA_MAX_LENGTH + 1)).for(:target_sha) }
+      it { is_expected.to allow_value('A' * described_class::VERSION_CACHE_SHA_MAX_LENGTH).for(:version_cache_sha) }
+      it { is_expected.not_to allow_value('A' * (described_class::VERSION_CACHE_SHA_MAX_LENGTH + 1)).for(:version_cache_sha) }
+    end
   end
 
   describe 'scopes' do

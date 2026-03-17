@@ -223,7 +223,8 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
         stub_feature_flags(disable_all_mention: true)
       end
 
-      it 'shows suggestions for members with descriptions' do
+      it 'shows suggestions for members with descriptions',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/449030' do
         type_in_content_editor '@a'
 
         expect(find(suggestions_dropdown)).to have_text('abc123')

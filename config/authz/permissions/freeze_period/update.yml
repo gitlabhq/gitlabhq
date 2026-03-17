@@ -1,5 +1,3 @@
 ---
 name: update_freeze_period
 description: Grants the ability to update freeze periods
-boundaries:
-  - project

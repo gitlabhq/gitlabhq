@@ -51,7 +51,7 @@ class ChildPipelineArtifactDownloader
     bridge = bridges.find { |b| b['name'] == @bridge_name }
 
     if bridge.nil? || bridge.dig('downstream_pipeline', 'id').nil?
-      puts "Could not find child pipeline ID. Skipping E2E #{@coverage_type} coverage export."
+      puts "Could not find child pipeline ID. Skipping #{@coverage_type} coverage export."
       return
     end
 

@@ -363,7 +363,8 @@ module Types
     field :autocomplete_users,
       null: true,
       resolver: Resolvers::AutocompleteUsersResolver,
-      description: 'Search users for autocompletion'
+      description: 'Search users for autocompletion',
+      extras: [:lookahead]
 
     field :lock_math_rendering_limits_enabled,
       GraphQL::Types::Boolean,
@@ -392,12 +393,10 @@ module Types
 
     field :archived, GraphQL::Types::Boolean,
       description: 'Indicates if the group or any ancestor is archived.',
-      experiment: { milestone: '18.3' },
       method: :self_or_ancestors_archived?
 
     field :is_self_archived, GraphQL::Types::Boolean,
       description: 'Indicates if the group is archived.',
-      experiment: { milestone: '18.6' },
       method: :self_archived?
 
     field :marked_for_deletion, GraphQL::Types::Boolean,

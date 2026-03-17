@@ -869,14 +869,14 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   it 'denies pulls' do
                     download(path, **env) do |response|
                       expect(response).to have_gitlab_http_status(:forbidden)
-                      expect(response.body).to eq("Access denied: Your Personal Access Token lacks the required permissions: [download_code] for \"#{project.full_path}\".")
+                      expect(response.body).to eq("Access denied: This operation requires a fine-grained personal access token with the following project permissions: [Code: Download].")
                     end
                   end
 
                   it 'denies pushes' do
                     upload(path, **env) do |response|
                       expect(response).to have_gitlab_http_status(:forbidden)
-                      expect(response.body).to eq("Access denied: Your Personal Access Token lacks the required permissions: [push_code] for \"#{project.full_path}\".")
+                      expect(response.body).to eq("Access denied: This operation requires a fine-grained personal access token with the following project permissions: [Code: Push].")
                     end
                   end
                 end
@@ -889,7 +889,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   it 'denies pushes' do
                     upload(path, **env) do |response|
                       expect(response).to have_gitlab_http_status(:forbidden)
-                      expect(response.body).to eq("Access denied: Your Personal Access Token lacks the required permissions: [push_code] for \"#{project.full_path}\".")
+                      expect(response.body).to eq("Access denied: This operation requires a fine-grained personal access token with the following project permissions: [Code: Push].")
                     end
                   end
                 end
@@ -902,7 +902,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   it 'denies pulls' do
                     download(path, **env) do |response|
                       expect(response).to have_gitlab_http_status(:forbidden)
-                      expect(response.body).to eq("Access denied: Your Personal Access Token lacks the required permissions: [download_code] for \"#{project.full_path}\".")
+                      expect(response.body).to eq("Access denied: This operation requires a fine-grained personal access token with the following project permissions: [Code: Download].")
                     end
                   end
                 end
@@ -917,14 +917,14 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   it 'denies pulls' do
                     download(path, **env) do |response|
                       expect(response).to have_gitlab_http_status(:forbidden)
-                      expect(response.body).to eq('Granular tokens are not yet supported')
+                      expect(response.body).to eq('Access denied: Fine-grained personal access tokens are not yet supported.')
                     end
                   end
 
                   it 'denies pushes' do
                     upload(path, **env) do |response|
                       expect(response).to have_gitlab_http_status(:forbidden)
-                      expect(response.body).to eq('Granular tokens are not yet supported')
+                      expect(response.body).to eq('Access denied: Fine-grained personal access tokens are not yet supported.')
                     end
                   end
                 end
@@ -957,6 +957,69 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                   end
 
                   context 'when username and password are provided' do
+                    it_behaves_like 'pulls are allowed'
+                    it_behaves_like 'pushes are allowed'
+                  end
+                end
+              end
+
+              # Ensuring the valid state of `email_otp_required_after`, by
+              # `set_email_otp_required_after_based_on_restrictions` method, is
+              # tested in depth in spec/models/concerns/users/email_otp_enrollment_spec.rb
+              context 'for ensuring the valid state of `email_otp_required_after`' do
+                context 'when email_otp_required_after is unset despite instance requirement' do
+                  let_it_be_with_reload(:user) do
+                    create(:user, email_otp_required_after: nil)
+                  end
+
+                  let_it_be(:access_token) { create(:personal_access_token, user: user) }
+                  let(:path) { "#{project.full_path}.git" }
+
+                  before do
+                    project.add_maintainer(user)
+
+                    stub_application_setting(require_minimum_email_based_otp_for_users_with_passwords: true)
+                  end
+
+                  context 'when username and password are provided' do
+                    it_behaves_like 'pulls are disallowed'
+                    it_behaves_like 'pushes are disallowed'
+
+                    it 'calls set_email_otp_required_after_based_on_restrictions on pull' do
+                      allow_next_instance_of(User) do |instance|
+                        expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+                          .with(save: true).and_call_original
+                      end
+
+                      download(path, **env) do |response|
+                        expect(response).to have_gitlab_http_status(:unauthorized)
+                      end
+                    end
+
+                    it 'calls set_email_otp_required_after_based_on_restrictions on push' do
+                      allow_next_instance_of(User) do |instance|
+                        expect(instance).to receive(:set_email_otp_required_after_based_on_restrictions)
+                          .with(save: true).and_call_original
+                      end
+
+                      upload(path, **env) do |response|
+                        expect(response).to have_gitlab_http_status(:unauthorized)
+                      end
+                    end
+
+                    context 'when :email_based_mfa feature flag disabled' do
+                      before do
+                        stub_feature_flags(email_based_mfa: false)
+                      end
+
+                      it_behaves_like 'pulls are allowed'
+                      it_behaves_like 'pushes are allowed'
+                    end
+                  end
+
+                  context 'when username and personal access token are provided' do
+                    let(:env) { { user: user.username, password: access_token.token } }
+
                     it_behaves_like 'pulls are allowed'
                     it_behaves_like 'pushes are allowed'
                   end

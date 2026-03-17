@@ -2,6 +2,8 @@
 #   scripts/lint/unused_methods.rb, however subsequent research shows
 #   them to be false positives, and should be ignored when running that script.
 #
+app/models/project_setting.rb:
+  - code_owner_reviewer_auto_assignment_enabled?: Will be used in follow-up MR for code owner reviewer assignment
 app/models/commit_signatures/x509_commit_signature.rb:
   - x509_commit: Accessed from lib/tasks/gitlab/x509/update.rake
 app/models/concerns/transactions.rb:
@@ -10,6 +12,12 @@ app/models/event.rb:
 - find_sti_class: Override of an ActiveRecord internal method
 app/models/jira_import_state.rb:
   - owner_class_attribute_default: Used internally by state_machine
+app/models/project_statistics.rb:
+  - update_wiki_size: Called dynamically, and cannot be removed unless column is removed
+  - update_snippets_size: Called dynamically, and cannot be removed unless column is removed
+  - update_lfs_objects_size: Called dynamically, and cannot be removed unless column is removed
+  - update_uploads_size: Called dynamically, and cannot be removed unless column is removed
+  - update_container_registry_size: Called dynamically, and cannot be removed unless column is removed
 app/models/service_desk/custom_email_verification.rb:
   - owner_class_attribute_default: Used internally by state_machine
 app/models/user.rb:
@@ -38,3 +46,7 @@ ee/app/models/ci/secrets/integration.rb:
   - hashicorp_vault?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
   - aws?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
   - gitlab_secrets_manager?: Dynamically accessed via Ci::Secrets::Integration#secrets_provider?
+app/models/work_items/types_framework/provider.rb:
+  - by_ids_with_widget_definition_preload: Deprecated method for old WorkItems::Type model; scheduled for removal in https://gitlab.com/gitlab-org/gitlab/-/issues/581931
+ee/app/helpers/ee/projects_helper.rb:
+  - show_duo_otel_button?: Will be used in follow-up MR for OTel generation with duo

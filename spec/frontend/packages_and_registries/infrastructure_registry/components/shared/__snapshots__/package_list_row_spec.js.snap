@@ -64,7 +64,7 @@ exports[`packages_list_row renders 1`] = `
           <span>
             Created
             <span
-              title="December 10, 2015 at 12:00:00 AM GMT"
+              title="Thursday, December 10, 2015 at 12:00:00 AM GMT"
             >
               Dec 10, 2015
             </span>

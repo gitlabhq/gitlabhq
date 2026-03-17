@@ -123,7 +123,7 @@ describe('Work items router', () => {
   });
 
   it('includes groups in path for groups', () => {
-    const router = createRouter({ fullPath: '/work_item', workspaceType: 'group' });
+    const router = createRouter({ fullPath: '/work_item', namespaceType: 'group' });
 
     // options.history only exists in Vue 3 router
     const basePath = router.options.history?.base || router.options.base;

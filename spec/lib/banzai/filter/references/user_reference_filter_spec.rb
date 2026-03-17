@@ -358,6 +358,42 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
     end
   end
 
+  describe 'redaction of link references to private groups' do
+    let(:private_group) { create(:group, :private) }
+    let(:current_user) { create(:user) }
+    let(:group_ref) { private_group.to_reference }
+
+    it 'restores the original link when a reference inside a link href is redacted' do
+      markdown = "[my text](#{group_ref})"
+      doc = reference_pipeline(redact: true, current_user: current_user).to_document(markdown)
+
+      expect(doc.css('a').length).to eq(1)
+      link = doc.css('a').first
+      expect(link.inner_html).to eq('my text')
+      expect(link.attr('href')).to eq(group_ref)
+    end
+
+    it 'replaces a plain text reference with the original text' do
+      markdown = "Hey #{group_ref}"
+      doc = reference_pipeline(redact: true, current_user: current_user).to_document(markdown)
+
+      expect(doc.css('a').length).to eq(0)
+      expect(doc.text).to include(group_ref)
+    end
+  end
+
+  context 'when a user reference with custom link text is cached in the request store', :request_store do
+    it 'does not reuse custom link text for plain-text references' do
+      reference_filter("[target](#{reference})")
+
+      doc = reference_filter("assigned to #{reference}")
+      link = doc.css('a').first
+
+      # Text content should be the reference text, and not "target".
+      expect(link.content).to eq(reference)
+    end
+  end
+
   it_behaves_like 'limits the number of filtered items' do
     let(:text) { "#{reference} #{reference} #{reference}" }
     let(:ends_with) { "</a> #{reference}" }

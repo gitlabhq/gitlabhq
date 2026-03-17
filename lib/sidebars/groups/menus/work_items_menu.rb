@@ -87,7 +87,7 @@ module Sidebars
           end
 
           title = if context.is_super_sidebar
-                    context.group.multiple_issue_boards_available? ? s_('Issue boards') : s_('Issue board')
+                    context.group.multiple_issue_boards_available? ? _('Issue boards') : _('Issue board')
                   else
                     context.group.multiple_issue_boards_available? ? s_('Boards|Boards') : s_('Boards|Board')
                   end

@@ -1,10 +1,5 @@
-- dropdown_data = groups_projects_more_actions_dropdown_data(source)
+%span.gl-sr-only{ itemprop: 'identifier', data: { testid: 'group-id-content' } }
+  = s_('GroupPage|Group ID: %{id}') % { id: @group.id }
 
-- if dropdown_data[:is_group] && can?(current_user, :read_group, @group)
-  - id = @group.id
-
-  %span.gl-sr-only{ itemprop: 'identifier', data: { testid: 'group-id-content' } }
-    = s_('GroupPage|Group ID: %{id}') % { id: id }
-
-- if id || current_user
-  .js-groups-projects-more-actions-dropdown{ data: dropdown_data }
+- if current_user
+  #js-group-more-actions-dropdown{ data: group_more_action_data(@group) }

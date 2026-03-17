@@ -39,6 +39,7 @@ export default {
     ProjectsListItemLeaveModal,
   },
   mixins: [InternalEvents.mixin()],
+  inject: ['triggerRestoreLocation'],
   i18n: {
     project: __('Project'),
   },
@@ -48,6 +49,7 @@ export default {
       required: true,
     },
   },
+  emits: ['action'],
   data() {
     return {
       actionsLoading: false,
@@ -146,12 +148,9 @@ export default {
     },
   },
   methods: {
-    refetch() {
-      this.$emit('refetch');
-    },
     async archive() {
       await archiveProject(this.project.id);
-      this.refetch();
+      this.$emit('action', ACTION_ARCHIVE);
       renderArchiveSuccessToast(this.project);
 
       this.trackEvent('archive_namespace_in_quick_action', {
@@ -161,7 +160,7 @@ export default {
     },
     async unarchive() {
       await unarchiveProject(this.project.id);
-      this.refetch();
+      this.$emit('action', ACTION_UNARCHIVE);
       renderUnarchiveSuccessToast(this.project);
 
       this.trackEvent('archive_namespace_in_quick_action', {
@@ -171,8 +170,12 @@ export default {
     },
     async restore() {
       await restoreProject(this.project.id);
-      this.refetch();
+      this.$emit('action', ACTION_RESTORE);
       renderRestoreSuccessToast(this.project);
+
+      this.trackEvent('trigger_restore_on_project', {
+        label: this.triggerRestoreLocation,
+      });
     },
     async onActionWithLoading({ action, errorMessage }) {
       this.actionsLoading = true;
@@ -203,7 +206,11 @@ export default {
 
       try {
         await deleteProject(this.project.id, deleteParams(this.project));
-        this.refetch();
+
+        this.$emit(
+          'action',
+          this.project.markedForDeletion ? ACTION_DELETE_IMMEDIATELY : ACTION_DELETE,
+        );
         renderDeleteSuccessToast(this.project);
       } catch (error) {
         createAlert({
@@ -219,6 +226,9 @@ export default {
     },
     onActionLeave() {
       this.isLeaveModalVisible = true;
+    },
+    onLeaveSuccess() {
+      this.$emit('action', ACTION_LEAVE);
     },
   },
 };
@@ -252,7 +262,7 @@ export default {
       v-if="hasActionLeave"
       v-model="isLeaveModalVisible"
       :project="project"
-      @success="refetch"
+      @success="onLeaveSuccess"
     />
   </div>
 </template>

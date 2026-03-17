@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Pivotal Tracker
 ---
 
@@ -31,11 +31,10 @@ You can use any of these words:
 - `finishes`
 - `delivers`
 
-Read more about the
-[Source Commits endpoint](https://www.pivotaltracker.com/help/api/rest/v5#Source_Commits) in
-the Pivotal Tracker API documentation.
+For more information about the source commits endpoint, see the
+[pivotal tracker API](https://www.pivotaltracker.com/help/api/rest/v5#Source_Commits).
 
-See also the [Pivotal Tracker integration API documentation](../../../api/project_integrations.md#pivotal-tracker).
+For more information about pivotal tracker integration, see the [project integrations API](../../../api/project_integrations.md#pivotal-tracker).
 
 ## Set up Pivotal Tracker
 
@@ -43,7 +42,7 @@ In Pivotal Tracker, [create an API token](https://www.pivotaltracker.com/help/ar
 
 Complete these steps in GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Pivotal Tracker**.
 1. Ensure that the **Active** toggle is enabled.

@@ -3,6 +3,7 @@ import { __ } from '~/locale';
 import {
   SCOPE_ISSUES,
   SCOPE_MERGE_REQUESTS,
+  SCOPE_WORK_ITEMS,
   STATE_FILTER_PARAM,
   STATE_FILTERS,
 } from '~/search/sidebar/constants';
@@ -20,6 +21,7 @@ export default {
     filtersArray() {
       return {
         [SCOPE_ISSUES]: [STATE_FILTERS.ANY, STATE_FILTERS.OPEN, STATE_FILTERS.CLOSED],
+        [SCOPE_WORK_ITEMS]: [STATE_FILTERS.ANY, STATE_FILTERS.OPEN, STATE_FILTERS.CLOSED],
         [SCOPE_MERGE_REQUESTS]: [
           STATE_FILTERS.ANY,
           STATE_FILTERS.OPEN,

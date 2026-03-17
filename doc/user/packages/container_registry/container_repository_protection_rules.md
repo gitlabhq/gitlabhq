@@ -1,7 +1,7 @@
 ---
 stage: Container
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: Protected container repositories
 description: Protected container repositories in GitLab limit which user roles can push or delete images.
@@ -22,7 +22,7 @@ description: Protected container repositories in GitLab limit which user roles c
 
 {{< /history >}}
 
-By default, any user with at least the Developer role can push and delete
+By default, any user with the Developer, Maintainer, or Owner role can push and delete
 container images to or from container repositories. Protect a container repository to restrict
 which users can make changes to container images in your container repository.
 
@@ -59,11 +59,11 @@ A container repository is protected if at least one protection rule matches.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To create a protection rule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container repositories**, select **Add protection rule**.
@@ -86,11 +86,11 @@ The protection rule is created and the container repository is now protected.
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Maintainer or Owner role.
 
 To delete a protection rule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container repositories**, next to the protection rule you want to delete, select **Delete** ({{< icon name="remove" >}}).

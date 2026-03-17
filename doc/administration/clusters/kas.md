@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Install the GitLab agent server for Kubernetes (KAS)
 description: Manage the GitLab agent for Kubernetes.
 ---
@@ -216,6 +216,56 @@ gitlab_kas['env'] = {
 }
 ```
 
+##### Use a load balancer or reverse proxy with multiple KAS instances
+
+> [!warning]
+> When you place a load balancer or reverse proxy in front of KAS, configure separate endpoints for external and internal traffic
+> to prevent exposing the internal API.
+
+KAS serves traffic on different ports:
+
+- Port 8150 (`listen_address`): Agent connections (WebSocket/gRPC)
+- Port 8153 (`internal_api_listen_address`): GitLab Rails API (gRPC)
+
+  > [!warning]
+  > Do not expose port 8153 publicly. Though the port gets authenticated, it should only be accessible to GitLab Rails instances.
+
+To secure KAS when you use a load balancer or reverse proxy, configure two separate endpoints:
+
+- External endpoint: Port 8150 (for agents)
+- Internal endpoint: Port 8153 (for GitLab Rails only, restricted by network or firewall)
+
+This separation ensures that the internal API remains isolated from public access.
+
+For example, configure an internal endpoint with network restrictions in NGINX:
+
+```nginx
+# Internal endpoint (network-restricted)
+server {
+  listen 8443 ssl http2;
+  server_name kas-internal.example.com;
+
+  # Optional: allow 10.0.1.0/24; deny all;
+
+  location /gitlab.agent. {
+    grpc_pass grpc://kas-backend:8153;
+  }
+}
+```
+
+Configure GitLab to use the separate endpoints (`/etc/gitlab/gitlab.rb`):
+
+```ruby
+gitlab_rails['gitlab_kas_external_url'] = 'wss://kas-external.example.com'
+gitlab_rails['gitlab_kas_internal_url'] = 'grpcs://kas-internal.example.com:8443'
+gitlab_rails['gitlab_kas_external_k8s_proxy_url'] = 'https://kas-external.example.com/k8s-proxy/'
+```
+
+Key configuration points:
+
+- Use separate domains, ports, or IP restrictions for internal traffic.
+- For cloud load balancers, configure separate target groups for ports 8150 and 8153.
+
 ##### Agent server node settings
 
 | Setting                                             | Description |
@@ -242,6 +292,67 @@ gitlab_kas['env'] = {
 1. TLS for outbound connections is enabled when `OWN_PRIVATE_API_URL` or `OWN_PRIVATE_API_SCHEME` starts with `grpcs`.
 1. For example, `wss://kas.gitlab.example.com/`.
 1. For example, `wss://gitlab.example.com/-/kubernetes-agent/`.
+
+#### Configure a standalone KAS node
+
+Configure Omnibus to run KAS separately from other components.
+
+On each Rails node:
+
+```ruby
+## KAS Config
+gitlab_kas['enable'] = false
+
+gitlab_rails['gitlab_kas_enabled'] = true
+gitlab_rails['gitlab_kas_external_url'] = 'wss://kas.example.com/-/kubernetes-agent/'
+gitlab_rails['gitlab_kas_internal_url'] = 'grpc://<KAS_NODE_IP_OR_DOMAIN>:8153' # If you want to configure multiple KAS nodes that are behind an internal LB, then use 'grpc://<LB_IP_OR_DOMAIN>:<port>'
+gitlab_rails['gitlab_kas_external_k8s_proxy_url'] = 'https://kas.example.com/-/kubernetes-agent/k8s-proxy/'
+```
+
+On each KAS node:
+
+```ruby
+### External URL
+external_url 'https://kas.example.com'
+
+### Avoid running unnecessary services ###
+gitaly['enable'] = false
+gitlab_workhorse['enable'] = false
+nginx['enable'] = true
+postgresql['enable'] = false
+prometheus['enable'] = false
+puma['enable'] = false
+redis['enable'] = false
+sidekiq['enable'] = false
+
+### Prevent database connections during 'gitlab-ctl reconfigure' ###
+gitlab_rails['rake_cache_clear'] = false
+gitlab_rails['auto_migrate'] = false
+
+gitlab_kas['redis_password'] = '<redis_password>'
+
+# Uncomment below if using Redis high availability with Sentinel
+# gitlab_kas['redis_sentinels'] = [
+#  {host: '<REDIS_IP>', port: 26379},
+#  {host: '<REDIS_IP>', port: 26379},
+#  {host: '<REDIS_IP>', port: 26379},
+# ]
+# gitlab_kas['redis_sentinels_master_name'] = 'gitlab-redis'
+# gitlab_kas['redis_sentinels_password'] = '<redis_sentinels_password>'
+
+### Kubernetes Agent Service ###
+gitlab_kas['enable'] = true
+gitlab_kas_external_url 'wss://kas.example.com/-/kubernetes-agent/'
+gitlab_kas['api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
+gitlab_kas['private_api_secret_key'] = '<32_bytes_long_base64_encoded_value>'
+gitlab_kas['private_api_listen_address'] = '<KAS_NODE_PRIVATE_IP>:8155'
+
+gitlab_kas['listen_address'] = '<KAS_NODE_PRIVATE_IP>:8150'
+gitlab_kas['observability_listen_address'] = '<KAS_NODE_PRIVATE_IP>:8151'
+gitlab_kas['internal_api_listen_address'] = '<KAS_NODE_PRIVATE_IP>:8153'
+gitlab_kas['kubernetes_api_listen_address'] = '<KAS_NODE_PRIVATE_IP>:8154'
+
+```
 
 ### For GitLab Helm Chart
 
@@ -301,7 +412,7 @@ To enable receptive agents:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/642) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `kas_k8s_api_proxy_response_header_allowlist`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/642) in GitLab 18.3 [with a flag](../feature_flags/_index.md) named `kas_k8s_api_proxy_response_header_allowlist`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/642) in GitLab 18.7. Feature flag `kas_k8s_api_proxy_response_header_allowlist` removed.
 
 {{< /history >}}

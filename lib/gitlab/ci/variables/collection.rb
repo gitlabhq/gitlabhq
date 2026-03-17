@@ -23,6 +23,12 @@ module Gitlab
           end
         end
 
+        def self.ci_optimization_enabled?
+          Gitlab::SafeRequestStore.fetch(:ci_variables_optimization_enabled) do
+            Feature.enabled?(:ci_optimize_variables_collection_and_item, Feature.current_request)
+          end
+        end
+
         def initialize(variables = [], errors = nil)
           @variables = []
           @variables_by_key = Hash.new { |h, k| h[k] = [] }

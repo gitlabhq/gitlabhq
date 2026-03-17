@@ -12,7 +12,7 @@ RSpec.describe Users::ActivityService, feature_category: :user_profile do
   describe '#execute', :clean_gitlab_redis_shared_state do
     shared_examples 'does not update last_activity_on' do
       it 'does not update user attribute' do
-        expect { subject.execute }.not_to change(user, :last_activity_on)
+        expect { subject.execute }.not_to change { user.last_activity_on }
       end
 
       it 'does not track Snowplow event' do
@@ -27,7 +27,7 @@ RSpec.describe Users::ActivityService, feature_category: :user_profile do
 
       it 'updates last_activity_on for the user' do
         expect { subject.execute }
-          .to change(user, :last_activity_on).from(last_activity_on).to(Date.today)
+          .to change { user.last_activity_on }.from(last_activity_on).to(Date.today)
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Users::ActivityService, feature_category: :user_profile do
 
       it 'updates last_activity_on for the user' do
         expect { subject.execute }
-          .to change(user, :last_activity_on)
+          .to change { user.last_activity_on }
                 .from(last_activity_on)
                 .to(Date.today)
       end

@@ -1,7 +1,7 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 import { sprintf } from '@gitlab/ui/src/utils/i18n';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { renderLeaveSuccessToast } from '~/vue_shared/components/projects_list/utils';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';

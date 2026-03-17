@@ -1,28 +1,25 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlSkeletonLoader, GlButton } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { createItemVisibilityObserver, observeElementsByIds } from '~/lib/utils/lazy_render_utils';
 import getRefMixin from '../../mixins/get_ref';
 import projectPathQuery from '../../queries/project_path.query.graphql';
 import TableHeader from './header.vue';
 import ParentRow from './parent_row.vue';
 import TableRow from './row.vue';
+import SkeletonLoader from './skeleton_loader.vue';
 
 export default {
   components: {
-    GlSkeletonLoader,
+    SkeletonLoader,
     TableHeader,
     TableRow,
     ParentRow,
     GlButton,
   },
   mixins: [getRefMixin],
-  apollo: {
-    projectPath: {
-      query: projectPathQuery,
-    },
-  },
   props: {
     commits: {
       type: Array,
@@ -52,11 +49,19 @@ export default {
       required: true,
     },
   },
+  emits: ['showMore'],
+  apollo: {
+    projectPath: {
+      query: projectPathQuery,
+    },
+  },
   data() {
     return {
       projectPath: '',
       rowNumbers: {},
       isProcessingShowMore: false,
+      appearedItems: {},
+      itemObserver: null,
     };
   },
   computed: {
@@ -81,8 +86,47 @@ export default {
     showParentRow() {
       return ['', '/'].indexOf(this.path) === -1;
     },
+    commitMap() {
+      return new Map(this.commits.map((c) => [c.filePath, c]));
+    },
+  },
+  watch: {
+    totalEntries(newCount, oldCount) {
+      if (newCount > oldCount) {
+        this.$nextTick(() =>
+          observeElementsByIds(this.$el, this.itemObserver, this.syncAppearedItems()),
+        );
+      }
+    },
+  },
+  mounted() {
+    this.itemObserver = createItemVisibilityObserver(
+      (itemId) => {
+        // Direct property mutation works here because syncAppearedItems() pre-initializes
+        // all keys with false, so Vue 2 has already made them reactive.
+        if (itemId && itemId in this.appearedItems) this.appearedItems[itemId] = true;
+      },
+      { once: true, rootElement: document.querySelector('.js-static-panel-inner') },
+    );
+    this.$nextTick(() =>
+      observeElementsByIds(this.$el, this.itemObserver, this.syncAppearedItems()),
+    );
+  },
+  beforeDestroy() {
+    this.itemObserver?.disconnect();
   },
   methods: {
+    syncAppearedItems() {
+      const newIds = Object.values(this.entries)
+        .flatMap((group) => group.map((entry, index) => [this.itemId(entry, index), false]))
+        .filter(([id]) => !(id in this.appearedItems));
+      if (newIds.length)
+        this.appearedItems = { ...this.appearedItems, ...Object.fromEntries(newIds) };
+      return newIds.map(([id]) => id);
+    },
+    itemId(entry, index) {
+      return `${entry.flatPath}-${entry.id}-${index}`;
+    },
     showMore() {
       this.isProcessingShowMore = true;
       // Defer heavy rendering to improve INP (Interaction to Next Paint)
@@ -115,9 +159,7 @@ export default {
       return this.rowNumbers[key];
     },
     getCommit(fileName) {
-      return this.commits.find(
-        (commitEntry) => commitEntry.filePath === joinPaths(this.path, fileName),
-      );
+      return this.commitMap.get(joinPaths(this.path, fileName));
     },
   },
 };
@@ -142,36 +184,50 @@ export default {
             :loading-path="loadingPath"
           />
           <template v-for="val in entries">
-            <table-row
-              v-for="(entry, index) in val"
-              :id="entry.id"
-              :key="`${entry.flatPath}-${entry.id}-${index}`"
-              :sha="entry.sha"
-              :project-path="projectPath"
-              :current-path="path"
-              :name="entry.name"
-              :path="entry.flatPath"
-              :type="entry.type"
-              :url="entry.webUrl || entry.webPath"
-              :mode="entry.mode"
-              :submodule-tree-url="entry.treeUrl"
-              :lfs-oid="entry.lfsOid"
-              :loading-path="loadingPath"
-              :total-entries="totalEntries"
-              :row-number="generateRowNumber(entry, index)"
-              :commit-info="getCommit(entry.name)"
-              v-on="$listeners"
-            />
+            <template v-for="(entry, index) in val">
+              <table-row
+                v-if="appearedItems[itemId(entry, index)]"
+                :id="entry.id"
+                :key="`${itemId(entry, index)}-row`"
+                :data-item-id="itemId(entry, index)"
+                :sha="entry.sha"
+                :project-path="projectPath"
+                :current-path="path"
+                :name="entry.name"
+                :path="entry.flatPath"
+                :type="entry.type"
+                :url="entry.webUrl || entry.webPath"
+                :mode="entry.mode"
+                :submodule-tree-url="entry.treeUrl"
+                :lfs-oid="entry.lfsOid"
+                :loading-path="loadingPath"
+                :total-entries="totalEntries"
+                :row-number="generateRowNumber(entry, index)"
+                :commit-info="getCommit(entry.name)"
+                v-on="$listeners"
+              />
+              <tr
+                v-else
+                :key="`${itemId(entry, index)}-placeholder`"
+                :data-item-id="itemId(entry, index)"
+                class="tree-item"
+                aria-hidden="true"
+              >
+                <td class="tree-item-file-name gl-text-transparent">{{ entry.name }}</td>
+                <td class="gl-hidden @sm/panel:gl-table-cell"></td>
+                <td></td>
+              </tr>
+            </template>
           </template>
           <template v-if="isLoading">
             <tr v-for="i in 3" :key="i" aria-hidden="true" data-testid="loader">
-              <td><gl-skeleton-loader :lines="1" /></td>
+              <td><skeleton-loader /></td>
               <td class="gl-hidden @sm/panel:gl-block">
-                <gl-skeleton-loader :lines="1" />
+                <skeleton-loader />
               </td>
               <td>
                 <div class="gl-flex @lg/panel:gl-justify-end">
-                  <gl-skeleton-loader :equal-width-lines="true" :lines="1" />
+                  <skeleton-loader />
                 </div>
               </td>
             </tr>

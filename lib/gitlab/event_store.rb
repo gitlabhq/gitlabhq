@@ -12,6 +12,14 @@ module Gitlab
     Error = Class.new(StandardError)
     InvalidEvent = Class.new(Error)
     InvalidSubscriber = Class.new(Error)
+    SUBSCRIPTION_GROUPS = [
+      Subscriptions::MergeRequestsSubscriptions,
+      Subscriptions::CiSubscriptions,
+      Subscriptions::NamespacesSubscriptions,
+      Subscriptions::MlSubscriptions,
+      Subscriptions::PagesSubscriptions,
+      Subscriptions::WorkItemsSubscriptions
+    ].freeze
 
     class << self
       def publish(event)
@@ -28,67 +36,18 @@ module Gitlab
 
       private
 
-      # Define all event subscriptions using:
-      #
-      #   store.subscribe(DomainA::SomeWorker, to: DomainB::SomeEvent)
-      #
-      # It is possible to subscribe to a subset of events matching a condition:
-      #
-      #   store.subscribe(DomainA::SomeWorker, to: DomainB::SomeEvent), if: ->(event) { event.data == :some_value }
-      #
+      # Define all event subscriptions using a domain-specific subscription group
       def configure!(store)
-        ###
-        # Add subscriptions here:
-
-        store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
-        store.subscribe ::Ci::TrackPipelineTriggerEventsWorker, to: ::Ci::PipelineCreatedEvent
-        # Currently it is used only for DuoWorkflows::Workflow. DuoWorkflows::Workflow, pipeline can never be in manual.
-        # That's why a constraint on manual is added. In future if this needs to be used at other places where manual
-        # needs to be considered, then remove the if block and just verify that DuoWorkflows::Workflow is working fine.
-        # Mostly it will be fine.
-        store.subscribe ::Ci::Workloads::UpdateWorkloadStatusEventWorker, to: ::Ci::PipelineFinishedEvent,
-          if: ->(event) { event.data[:status] != 'manual' }
-        store.subscribe ::Namespaces::UpdateRootStatisticsWorker, to: ::Projects::ProjectDeletedEvent
-
-        store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker,
-          to: ::MergeRequests::AutoMerge::TitleDescriptionUpdateEvent
-        store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker, to: ::MergeRequests::DraftStateChangeEvent
-        store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker, to: ::MergeRequests::DiscussionsResolvedEvent
-        store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker, to: ::MergeRequests::MergeableEvent
-        store.subscribe ::MergeRequests::CreateApprovalEventWorker, to: ::MergeRequests::ApprovedEvent
-        store.subscribe ::MergeRequests::CreateApprovalNoteWorker, to: ::MergeRequests::ApprovedEvent
-        store.subscribe ::MergeRequests::ResolveTodosAfterApprovalWorker, to: ::MergeRequests::ApprovedEvent
-        store.subscribe ::MergeRequests::ExecuteApprovalHooksWorker, to: ::MergeRequests::ApprovedEvent
-        store.subscribe ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker,
-          to: ::Packages::PackageCreatedEvent,
-          if: ->(event) { ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker.handles_event?(event) }
-        store.subscribe ::Ci::InitializePipelinesIidSequenceWorker, to: ::Projects::ProjectCreatedEvent
-        store.subscribe ::Pages::DeletePagesDeploymentWorker, to: ::Projects::ProjectArchivedEvent
-        store.subscribe ::Pages::DeleteGroupPagesDeploymentsWorker, to: ::Namespaces::Groups::GroupArchivedEvent
-        store.subscribe ::Pages::ResetPagesDefaultDomainRedirectWorker, to: ::Pages::Domains::PagesDomainDeletedEvent
-        store.subscribe ::MergeRequests::ProcessDraftNotePublishedWorker, to: ::MergeRequests::DraftNotePublishedEvent
-
-        store.subscribe ::Ci::PipelineSchedules::DeactivateSchedulesWorker,
-          to: ::ProjectAuthorizations::AuthorizationsRemovedEvent
-        store.subscribe ::Ci::PipelineSchedules::DeactivateSchedulesWorker,
-          to: ::ProjectAuthorizations::AuthorizationsAddedEvent
-
-        subscribe_to_member_destroyed_events(store)
-        subscribe_to_namespace_transfered_events(store)
+        register_subscriptions(store)
       end
 
-      def subscribe_to_member_destroyed_events(store)
-        store.subscribe ::WorkItems::UserPreferences::DestroyWorker, to: ::Members::DestroyedEvent
+      def register_subscriptions(store)
+        subscription_groups.each { |subscription_group| subscription_group.new(store).register }
       end
 
-      def subscribe_to_namespace_transfered_events(store)
-        store.subscribe ::WorkItems::ProcessProjectTransferEventsWorker,
-          to: ::Projects::ProjectTransferedEvent,
-          if: ->(event) { ::WorkItems::ProcessProjectTransferEventsWorker.handles_event?(event) }
-
-        store.subscribe ::WorkItems::ProcessGroupTransferEventsWorker,
-          to: ::Groups::GroupTransferedEvent,
-          if: ->(event) { ::WorkItems::ProcessGroupTransferEventsWorker.handles_event?(event) }
+      # overridden in EE
+      def subscription_groups
+        SUBSCRIPTION_GROUPS
       end
     end
   end

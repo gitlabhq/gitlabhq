@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab container registry
 description: Use the GitLab Container Registry to store container images for your GitLab project.
 ---
@@ -20,14 +20,14 @@ see [GitLab container registry administration](../../../administration/packages/
 
 > [!note]
 > If you pull container images from Docker Hub, you can use the
-> [GitLab Dependency Proxy](../dependency_proxy/_index.md#use-the-dependency-proxy-for-docker-images) to avoid
+> [GitLab dependency proxy](../dependency_proxy/_index.md#use-the-dependency-proxy-for-docker-images) to avoid
 > rate limits and speed up your pipelines.
 
 ## View the container registry
 
 You can view the container registry for a project or group.
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Deploy** > **Container Registry**.
 
 You can search, sort, filter, and [delete](delete_container_registry_images.md#use-the-gitlab-ui)
@@ -37,7 +37,7 @@ your container images. You can share a filtered view by copying the URL from you
 
 You can use the container registry **Tag Details** page to view a list of tags associated with a given container image:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Deploy** > **Container Registry**.
 1. Select your container image.
 
@@ -51,16 +51,15 @@ You can share a filtered view by copying the URL from your browser.
 
 View container registry storage usage to track and manage the size of your container repositories across projects and groups.
 
-For more information, see [View container registry usage](reduce_container_registry_storage.md#view-container-registry-usage).
+For more information, see [view container registry usage](reduce_container_registry_storage.md#view-container-registry-usage).
 
 ## Use container images from the container registry
 
 To download and run a container image hosted in the container registry:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Deploy** > **Container Registry**.
 1. Find the container image you want to work with and select **Copy image path** （{{< icon name="copy-to-clipboard" >}}）.
-
 1. Use `docker run` with the copied link:
 
    ```shell
@@ -126,7 +125,7 @@ The container registry is enabled by default.
 
 You can, however, remove the container registry for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section
    and disable **Container registry**.
@@ -140,9 +139,9 @@ By default, the container registry is visible to everyone with access to the pro
 You can, however, change the visibility of the container registry for a project.
 
 For more information about the permissions that this setting grants to users,
-see [Container registry visibility permissions](#container-registry-visibility-permissions).
+see the [container registry visibility permissions](#container-registry-visibility-permissions).
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand the section **Visibility, project features, permissions**.
 1. Under **Container registry**, select an option from the dropdown list:
@@ -152,7 +151,7 @@ see [Container registry visibility permissions](#container-registry-visibility-p
      is internal or private, the container registry is also internal or private.
 
    - **Only Project Members**: The container registry is visible only to project members with
-     at least the Reporter role. This visibility is similar to the behavior of a private project with Container
+     the Reporter, Developer, Maintainer, or Owner role. This visibility is similar to the behavior of a private project with Container
      Registry visibility set to **Everyone With Access**.
 
 1. Select **Save changes**.
@@ -165,7 +164,7 @@ or the [API](../../../api/container_registry.md#change-the-visibility-of-the-con
 
 Other permissions, such as updating the container registry and pushing or deleting container images, are not affected by
 this setting. However, disabling the container registry disables all container registry operations. For more information,
-see [Roles and permissions](../../permissions.md).
+see [roles and permissions](../../permissions.md).
 
 |                                                                                                                   |                                               | Anonymous<br/>(Everyone on internet) | Guest | Reporter, Developer, Maintainer, Owner |
 |-------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|--------------------------------------|-------|----------------------------------------|

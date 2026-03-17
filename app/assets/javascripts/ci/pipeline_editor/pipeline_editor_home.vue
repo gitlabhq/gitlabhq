@@ -74,7 +74,6 @@ export default {
     return {
       currentDrawer: EDITOR_APP_DRAWER_NONE,
       currentTab: CREATE_TAB,
-      scrollToCommitForm: false,
       shouldLoadNewBranch: false,
       currentDrawerIndex: DRAWER_Z_INDEX,
       drawerIndex: {
@@ -128,9 +127,6 @@ export default {
     setCurrentTab(tabName) {
       this.currentTab = tabName;
     },
-    setScrollToCommitForm(newValue = true) {
-      this.scrollToCommitForm = newValue;
-    },
   },
 };
 </script>
@@ -176,14 +172,11 @@ export default {
           :ci-config-data="ciConfigData"
           :ci-file-content="ciFileContent"
           :commit-sha="commitSha"
-          :current-tab="currentTab"
-          :is-new-ci-config-file="isNewCiConfigFile"
           :show-help-drawer="showHelpDrawer"
           :show-job-assistant-drawer="showJobAssistantDrawer"
           v-on="$listeners"
           @switch-drawer="switchDrawer"
           @set-current-tab="setCurrentTab"
-          @walkthrough-popover-cta-clicked="setScrollToCommitForm"
         />
       </div>
     </div>
@@ -194,8 +187,6 @@ export default {
       :commit-sha="commitSha"
       :has-unsaved-changes="hasUnsavedChanges"
       :is-new-ci-config-file="isNewCiConfigFile"
-      :scroll-to-commit-form="scrollToCommitForm"
-      @scrolled-to-commit-form="setScrollToCommitForm(false)"
       v-on="$listeners"
     />
     <pipeline-editor-drawer

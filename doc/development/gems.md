@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Gems development guidelines
 ---
 
@@ -44,14 +44,11 @@ Using Gems can provide several benefits for code maintenance:
 
 - Code Reusability - Gems are isolated libraries that serve single purpose. When using Gems, a common functions
   can be isolated in a simple package, that is well documented, tested, and re-used in different applications.
-
 - Modularity - Gems help to create isolation by encapsulating specific functionality within self-contained library.
   This helps to better organize code, better define who is owner of a given module, makes it easier to maintain
   or update specific gems.
-
 - Small - Gems by design due to implementing isolated set of functions are small. Small projects are much easier
   to comprehend, extend and maintain.
-
 - Testing - Using Gems since they are small makes much faster to run all tests, or be very through with testing of the gem.
   Since the gem is packaged, not changed too often, it also allows us to run those tests less frequently improving
   CI testing time.
@@ -341,7 +338,6 @@ to store them in monorepo:
       be applications dependent on those.
     - We will move those gems to `gems/`.
     - Those Gems will be referenced via `path:` in `Gemfile`.
-
 - For `vendor/gems/` that are external and vendored in monorepo:
 
   - We will maintain them in the repository if they require some fixes that cannot be or are not yet upstreamed.

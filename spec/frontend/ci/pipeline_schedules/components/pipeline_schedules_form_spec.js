@@ -193,7 +193,6 @@ describe('Pipeline schedules form', () => {
       expect(findPipelineVariables().props()).toMatchObject({
         initialVariables: [],
         editing: false,
-        userCalloutsFeatureName: 'pipeline_new_inputs_adoption_banner',
       });
     });
 

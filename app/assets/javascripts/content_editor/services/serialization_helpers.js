@@ -1,4 +1,4 @@
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },

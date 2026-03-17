@@ -1,7 +1,7 @@
 ---
 stage: Sec
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Secrets Manager (OpenBao)
 ---
 
@@ -22,6 +22,9 @@ title: GitLab Secrets Manager (OpenBao)
 The [GitLab Secrets Manager](../../ci/secrets/secrets_manager/_index.md) uses [OpenBao](https://openbao.org/),
 an open-source secrets management solution. OpenBao provides secure storage, access control, and lifecycle management
 for secrets used in your GitLab instance.
+
+GitLab CI/CD jobs using secrets from the GitLab Secrets Manager must use
+[GitLab Runner](https://docs.gitlab.com/runner/#gitlab-runner-versions) 18.6 or later.
 
 ## OpenBao architecture
 

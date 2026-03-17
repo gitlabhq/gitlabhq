@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage.plan.projects
 description: Count of users creating projects
 product_group: project_management
+product_categories:
+- groups_and_projects
 value_type: number
 status: active
 time_frame: all

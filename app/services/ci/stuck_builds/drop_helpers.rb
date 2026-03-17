@@ -43,7 +43,7 @@ module Ci
 
       def drop_build(type, build, reason)
         log_dropping_message(type, build, reason)
-        Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
+        Gitlab::OptimisticLocking.retry_lock_with_transaction(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
           b.drop!(reason)
         end
       rescue StandardError => ex
@@ -54,7 +54,7 @@ module Ci
 
       def drop_incomplete_build(type, build, reason)
         log_dropping_message(type, build, reason)
-        Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
+        Gitlab::OptimisticLocking.retry_lock_with_transaction(build, 3, name: 'stuck_ci_jobs_worker_drop_build') do |b|
           # retry_lock resets the build on retry. Builds only lock on status, so
           # if we retry then the status has changed. This saves us a rescue +
           # query below.

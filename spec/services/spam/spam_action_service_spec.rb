@@ -116,7 +116,7 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
 
   shared_examples 'allows the spammable' do
     it 'does not create a spam log' do
-      expect { subject }.not_to change(SpamLog, :count)
+      expect { subject }.not_to change { SpamLog.count }
     end
 
     it_behaves_like 'does not execute the SpamAbuseEventsWorker'
@@ -202,7 +202,7 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
         end
 
         it 'does not create a spam log' do
-          expect { subject }.not_to change(SpamLog, :count)
+          expect { subject }.not_to change { SpamLog.count }
         end
 
         it_behaves_like 'does not execute the SpamAbuseEventsWorker'

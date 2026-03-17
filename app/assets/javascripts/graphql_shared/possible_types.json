@@ -246,6 +246,7 @@
     "MergeRequest"
   ],
   "Registrable": [
+    "AbuseReportUploadRegistry",
     "CiSecureFileRegistry",
     "ContainerRepositoryRegistry",
     "DependencyProxyBlobRegistry",
@@ -256,10 +257,12 @@
     "LfsObjectRegistry",
     "MergeRequestDiffRegistry",
     "PackageFileRegistry",
+    "PackagesHelmMetadataCacheRegistry",
     "PackagesNugetSymbolRegistry",
     "PagesDeploymentRegistry",
     "PipelineArtifactRegistry",
     "ProjectRepositoryRegistry",
+    "ProjectUploadRegistry",
     "ProjectWikiRepositoryRegistry",
     "SnippetRepositoryRegistry",
     "TerraformStateVersionRegistry",
@@ -285,6 +288,9 @@
     "AdminMemberRole",
     "MemberRole",
     "StandardRole"
+  ],
+  "RuleInterface": [
+    "MavenUpstreamRule"
   ],
   "SecurityPolicySource": [
     "GroupSecurityPolicySource",

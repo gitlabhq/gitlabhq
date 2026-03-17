@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Merge request analytics help you understand the efficiency of your code review process, and the productivity of your team.
 title: Merge request analytics
 ---
@@ -42,7 +42,7 @@ Prerequisites:
 
 To view merge request analytics:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Analyze** > **Analytics Dashboards**.
 1. Select **Merge request analytics**.
 
@@ -52,7 +52,7 @@ To view merge request analytics:
 
 To view the number of merge requests merged during a specific date range:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Analyze** > **Analytics Dashboards**.
 1. Select **Merge request analytics**.
 1. Optional. Filter results:
@@ -83,7 +83,7 @@ created and when it's merged. Closed and not yet merged merge requests are not i
 
 To view **Mean time to merge**:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Analyze** > **Analytics Dashboards**.
 1. Select **Merge request analytics**. The **Mean time to merge** number
    is displayed on the dashboard.

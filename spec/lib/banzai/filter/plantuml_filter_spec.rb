@@ -80,5 +80,13 @@ RSpec.describe Banzai::Filter::PlantumlFilter, feature_category: :markdown do
     expect(doc.to_s).to eq output
   end
 
+  describe '.plantuml_img_src' do
+    it 'returns nil when plantuml URL is invalid' do
+      stub_application_setting(plantuml_enabled: true, plantuml_url: "invalid")
+
+      expect(described_class.plantuml_img_src('Bob -> Sara : Hello')).to be_nil
+    end
+  end
+
   it_behaves_like 'pipeline timing check'
 end

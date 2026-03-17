@@ -203,7 +203,10 @@ export const localTimeAgo = (elements, updateTooltip = true) => {
   function addTimeAgoTooltip() {
     elements.forEach((el) => {
       // Recreate with custom template
-      el.setAttribute('title', localeDateFormat.asDateTimeFull.format(newDate(el.dateTime)));
+      el.setAttribute(
+        'title',
+        localeDateFormat.asDateTimeFullWithWeekday.format(newDate(el.dateTime)),
+      );
     });
   }
 

@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.count_distinct_project_id_from_job_token_cross_project_auth_weekly
 description: Weekly count of unique projects receiving cross-project job token authentications while scope is disabled
 product_group: pipeline_security
+product_categories:
+- secrets_management
 performance_indicator_type: []
 value_type: number
 status: active

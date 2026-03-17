@@ -28,7 +28,7 @@ module DocsScreenshotHelpers
     after do |example|
       filename = "#{example.description}.png"
       path = File.expand_path(filename, 'doc/')
-      page.save_screenshot(path)
+      page.save_screenshot(path) # rubocop:disable Lint/Debugger -- this helper's purpose is generating doc screenshots
 
       if @crop_element
         crop_image_screenshot(path)

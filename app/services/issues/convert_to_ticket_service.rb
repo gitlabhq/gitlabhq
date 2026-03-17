@@ -41,7 +41,6 @@ module Issues
       ).execute(target)
 
       # Migrate to IssueEmailParticipants::CreateService
-      # once :issue_email_participants feature flag has been removed
       # https://gitlab.com/gitlab-org/gitlab/-/issues/440456
       IssueEmailParticipant.create!(issue_id: target.id, email: email)
     end

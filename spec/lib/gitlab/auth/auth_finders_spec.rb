@@ -182,6 +182,15 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
   end
 
+  describe 'BEARER_PATTERN' do
+    it 'matches Bearer prefix case-insensitively' do
+      expect(described_class::BEARER_PATTERN).to match('Bearer token')
+      expect(described_class::BEARER_PATTERN).to match('bearer token')
+      expect(described_class::BEARER_PATTERN).to match('BEARER token')
+      expect(described_class::BEARER_PATTERN).not_to match('token')
+    end
+  end
+
   describe '#find_user_from_bearer_token' do
     context 'with composite CI_JOB_TOKEN (JWT)', :request_store do
       let_it_be(:scoped_user) { create(:user) }
@@ -622,6 +631,33 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       end
     end
 
+    context 'when PAT with glpat- prefix is provided' do
+      before do
+        set_header('SCRIPT_NAME', '/api/endpoint')
+        set_header(described_class::PRIVATE_TOKEN_HEADER, personal_access_token.token)
+      end
+
+      context 'when optimize_pat_lookup feature flag is enabled' do
+        it 'returns user without performing OAuth token lookup' do
+          expect(self).not_to receive(:find_oauth_access_token)
+
+          expect(find_user_from_access_token).to eq(user)
+        end
+      end
+
+      context 'when optimize_pat_lookup feature flag is disabled' do
+        before do
+          stub_feature_flags(optimize_pat_lookup: false)
+        end
+
+        it 'returns user after attempting OAuth lookup first' do
+          expect(self).to receive(:find_oauth_access_token).and_call_original
+
+          expect(find_user_from_access_token).to eq(user)
+        end
+      end
+    end
+
     context 'with OAuth headers' do
       context 'with valid personal access token' do
         before do
@@ -650,7 +686,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           set_bearer_token(personal_access_token.token)
         end
 
-        it 'returns user' do
+        it 'returns user after OAuth lookup fails and falls back to PAT lookup' do
           expect(find_user_from_access_token).to eq user
         end
       end
@@ -828,6 +864,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
 
           before do
             stub_feature_flags(iam_svc_oauth: user)
+            set_header(described_class::PRIVATE_TOKEN_HEADER, nil)
             set_bearer_token(iam_jwt_token)
             set_header('SCRIPT_NAME', '/api/endpoint')
           end
@@ -1345,7 +1382,19 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         expect(::Current.token_info).not_to be_nil
       end
 
+      it 'includes auth_header_type in token info' do
+        set_header(described_class::PRIVATE_TOKEN_HEADER, personal_access_token.token)
+
+        subject
+
+        expect(::Current.token_info[:auth_header_type]).to eq('private_token_header')
+      end
+
       context 'when the token is not valid' do
+        before do
+          set_header(described_class::PRIVATE_TOKEN_HEADER, personal_access_token.token)
+        end
+
         it 'returns Gitlab::Auth::ExpiredError if token expired', :aggregate_failures do
           personal_access_token.update!(expires_at: 1.day.ago)
 
@@ -1355,6 +1404,8 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to eq("api read_api")
           expect(Gitlab::ApplicationContext.current['meta.user']).to eq(user.username)
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_type']).to eq('PersonalAccessToken')
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_auth_header_type']).to eq('private_token_header')
         end
 
         it 'returns Gitlab::Auth::RevokedError if token revoked', :aggregate_failures do
@@ -1366,6 +1417,8 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to be_nil
           expect(Gitlab::ApplicationContext.current['meta.user']).to eq(user.username)
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_type']).to eq('PersonalAccessToken')
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_auth_header_type']).to eq('private_token_header')
         end
 
         it 'returns Gitlab::Auth::InsufficientScopeError if invalid token scope', :aggregate_failures do
@@ -1375,6 +1428,30 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to eq('sudo')
           expect(Gitlab::ApplicationContext.current['meta.user']).to eq(user.username)
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_type']).to eq('PersonalAccessToken')
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_auth_header_type']).to eq('private_token_header')
+        end
+
+        context 'when token in header has CI job token prefix' do
+          before do
+            set_header(described_class::PRIVATE_TOKEN_HEADER, "#{Ci::Build::TOKEN_PREFIX}random_string")
+          end
+
+          it 'logs CiJobToken as auth_fail_token_type', :aggregate_failures do
+            expect { validate_and_save_access_token!(scopes: [:sudo]) }.to raise_error(Gitlab::Auth::InsufficientScopeError)
+            expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_type']).to eq('CiJobToken')
+          end
+        end
+
+        context 'when token is not delivered via standard auth headers' do
+          before do
+            set_header(described_class::PRIVATE_TOKEN_HEADER, nil)
+          end
+
+          it 'logs other as auth_fail_auth_header_type', :aggregate_failures do
+            expect { validate_and_save_access_token!(scopes: [:sudo]) }.to raise_error(Gitlab::Auth::InsufficientScopeError)
+            expect(Gitlab::ApplicationContext.current['meta.auth_fail_auth_header_type']).to eq('other')
+          end
         end
       end
     end
@@ -1386,6 +1463,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         before do
           stub_config_setting(impersonation_enabled: false)
           allow_any_instance_of(described_class).to receive(:access_token).and_return(personal_access_token)
+          set_header(described_class::PRIVATE_TOKEN_HEADER, personal_access_token.token)
         end
 
         it 'returns Gitlab::Auth::ImpersonationDisabled' do
@@ -1394,6 +1472,8 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
           expect(Gitlab::ApplicationContext.current['meta.auth_fail_requested_scopes']).to be_nil
           expect(Gitlab::ApplicationContext.current['meta.user']).to eq(user.username)
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_type']).to eq('PersonalAccessToken')
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_auth_header_type']).to eq('private_token_header')
         end
       end
     end
@@ -1839,6 +1919,41 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           expect(subject).to be(true)
         end
       end
+    end
+  end
+
+  describe '#pat_prefix_token?' do
+    subject { pat_prefix_token? }
+
+    context 'when token has glpat- prefix' do
+      before do
+        set_header(described_class::PRIVATE_TOKEN_HEADER, personal_access_token.token)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when token has custom PAT prefix' do
+      let(:custom_prefix) { 'myorg-pat-' }
+
+      before do
+        stub_application_setting(personal_access_token_prefix: custom_prefix)
+        set_header(described_class::PRIVATE_TOKEN_HEADER, "#{custom_prefix}abc123")
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when token does not have glpat- prefix' do
+      before do
+        set_bearer_token('some_oauth_token_without_prefix')
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when no token is present' do
+      it { is_expected.to be(false) }
     end
   end
 end

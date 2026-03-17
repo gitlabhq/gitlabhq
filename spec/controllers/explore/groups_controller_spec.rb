@@ -9,9 +9,9 @@ RSpec.describe Explore::GroupsController, feature_category: :groups_and_projects
     sign_in(user)
   end
 
-  context 'when `explore_groups_vue` flag is enabled' do
-    render_views
+  render_views
 
+  context 'when `explore_groups_vue` flag is enabled' do
     before do
       stub_feature_flags(explore_groups_vue: true)
     end
@@ -87,5 +87,13 @@ RSpec.describe Explore::GroupsController, feature_category: :groups_and_projects
 
       it_behaves_like 'explore groups'
     end
+  end
+
+  it 'pushes groups_list_keyset_pagination feature flag' do
+    stub_feature_flags(groups_list_keyset_pagination: true)
+
+    get :index
+
+    expect(response.body).to have_pushed_frontend_feature_flags(groupsListKeysetPagination: true)
   end
 end

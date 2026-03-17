@@ -264,11 +264,13 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
       let(:with_show_new_issue_link) { false }
       let(:with_merge_project) { nil }
       let(:with_can_create_snippet_in_project) { false }
+      let(:with_can_create_wiki_in_project) { false }
 
       before do
         allow(helper).to receive(:show_new_issue_link?).with(project) { with_show_new_issue_link }
         allow(helper).to receive(:merge_request_source_project_for_project).with(project) { with_merge_project }
         allow(helper).to receive(:can?).with(user, :create_snippet, project) { with_can_create_snippet_in_project }
+        allow(helper).to receive(:can?).with(user, :create_wiki, project) { with_can_create_wiki_in_project }
       end
 
       it 'has base results' do
@@ -342,6 +344,28 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
                 href: "/#{merge_project.path_with_namespace}/-/merge_requests/new",
                 data: {
                   track_action: 'click_link_new_mr',
+                  track_label: 'plus_menu_dropdown',
+                  track_property: 'navigation_top'
+                }
+              )
+            )
+          )
+        end
+      end
+
+      context 'when can create wiki page' do
+        let(:with_can_create_wiki_in_project) { true }
+
+        it 'shows new wiki page' do
+          expect(view_model[:menu_sections]).to eq(
+            expected_menu_section(
+              title: 'In this project',
+              menu_item: ::Gitlab::Nav::TopNavMenuItem.build(
+                id: 'new_wiki_page',
+                title: 'New wiki page',
+                href: "/#{project.path_with_namespace}/-/wikis/new",
+                data: {
+                  track_action: 'click_link_new_project_wiki_page',
                   track_label: 'plus_menu_dropdown',
                   track_property: 'navigation_top'
                 }

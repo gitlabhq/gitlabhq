@@ -7,6 +7,7 @@ import mockCiLintMutationResponse from 'test_fixtures/graphql/ci/pipeline_editor
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
 import { scrollTo } from '~/lib/utils/scroll_utils';
@@ -55,6 +56,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
 }));
 
 jest.mock('~/lib/utils/scroll_utils');
+
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
 const defaultProvide = {
   ciConfigPath: mockCiConfigPath,
@@ -264,6 +267,15 @@ describe('Pipeline editor app component', () => {
         expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(1);
       });
 
+      it('does not track visit_pipeline_editor_without_ci_config event', () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+        expect(trackEventSpy).not.toHaveBeenCalledWith(
+          'visit_pipeline_editor_without_ci_config',
+          expect.anything(),
+          expect.anything(),
+        );
+      });
+
       describe('when ciLint mutation succeeds', () => {
         it('transforms mutation response data before storing in ciConfigData', () => {
           const ciConfigData = findEditorHome().props('ciConfigData');
@@ -303,6 +315,15 @@ describe('Pipeline editor app component', () => {
 
       it('calls once and does not  start poll for the commit sha', () => {
         expect(mockLatestCommitShaQuery).toHaveBeenCalledTimes(1);
+      });
+
+      it('tracks visit_pipeline_editor_without_ci_config event', () => {
+        const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'visit_pipeline_editor_without_ci_config',
+          {},
+          undefined,
+        );
       });
 
       describe('because of a fetching error', () => {

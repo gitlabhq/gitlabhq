@@ -3,7 +3,6 @@
 module Ci
   # Cancel a pipelines cancelable jobs and optionally it's child pipelines cancelable jobs
   class CancelPipelineService
-    include Gitlab::OptimisticLocking
     include Gitlab::Allowable
 
     ##
@@ -96,7 +95,8 @@ module Ci
     def cancel_jobs(cancelable_jobs)
       # Small batch size to avoid reprocessing many records during retries
       cancelable_jobs.each_batch(of: 50) do |batch_relation|
-        retry_lock(batch_relation, name: 'ci_pipeline_cancel_running') do |jobs_to_cancel|
+        Gitlab::OptimisticLocking.retry_lock_with_transaction(batch_relation,
+          name: 'ci_pipeline_cancel_running') do |jobs_to_cancel|
           ::Ci::Preloaders::CommitStatusPreloader
             .new(jobs_to_cancel).execute(build_preloads)
 

@@ -1,6 +1,6 @@
 <script>
 import produce from 'immer';
-import { debounce, isEmpty, isNull } from 'lodash';
+import { debounce, isEmpty, isNull } from 'lodash-es';
 import { GlAvatarLabeled, GlButton, GlCollapsibleListbox, GlModal } from '@gitlab/ui';
 import {
   getFirstPropertyValue,

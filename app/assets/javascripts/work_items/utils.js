@@ -1,4 +1,4 @@
-import { escapeRegExp, kebabCase, isEmpty, unionBy, union } from 'lodash';
+import { escapeRegExp, kebabCase, snakeCase, isEmpty, unionBy, union } from 'lodash-es';
 import { ref } from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { joinPaths, queryToObject } from '~/lib/utils/url_utility';
@@ -11,7 +11,6 @@ import Tracking from '~/tracking';
 import {
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
   NAME_TO_ENUM_MAP,
-  NAME_TO_ICON_MAP,
   NAME_TO_ROUTE_MAP,
   NEW_WORK_ITEM_GID,
   STATE_CLOSED,
@@ -52,6 +51,7 @@ export const isNotesWidget = (widget) => widget.type === WIDGET_TYPE_NOTES;
 export const isStatusWidget = (widget) => widget.type === WIDGET_TYPE_STATUS;
 
 export const findAssigneesWidget = (workItem) =>
+  workItem?.features?.assignees ||
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEES);
 
 export const findAwardEmojiWidget = (workItem) =>
@@ -159,7 +159,7 @@ export const getDefaultHierarchyChildrenCount = () => {
 export const formatAncestors = (workItem) =>
   findHierarchyWidgetAncestors(workItem).map((ancestor) => ({
     ...ancestor,
-    icon: NAME_TO_ICON_MAP[ancestor.workItemType?.name],
+    icon: ancestor.workItemType?.iconName,
     href: ancestor.webUrl,
   }));
 
@@ -364,6 +364,21 @@ export const getNewWorkItemWidgetsAutoSaveKey = ({ fullPath, context, relatedIte
 
   const baseKey = getBaseNewWorkItemAutoSaveKey({ fullPath, context, relatedItemId });
   return `${baseKey}-widgets-draft`;
+};
+
+export const getWorkItemFeatures = (draftData) => {
+  if (!draftData?.namespace?.workItem?.features) return {};
+
+  const workItemFeatures = draftData.namespace.workItem.features;
+  const features = Object.keys(workItemFeatures).reduce((acc, featureName) => {
+    return { ...acc, [snakeCase(featureName).toUpperCase()]: workItemFeatures[featureName] };
+  }, {});
+
+  return {
+    ...features,
+    TITLE: draftData.namespace.workItem.title,
+    TYPE: draftData.namespace.workItem.workItemType,
+  };
 };
 
 export const getWorkItemWidgets = (draftData) => {
@@ -583,3 +598,62 @@ export function combineWorkItemLists(slimList, fullList, workItemFeaturesField =
     };
   });
 }
+
+export const saveHiddenMetadataKeysToLocalStorage = (key, hiddenKeys) => {
+  if (AccessorUtilities.canUseLocalStorage()) {
+    localStorage.setItem(key, JSON.stringify(hiddenKeys));
+  }
+};
+
+export const getHiddenMetadataKeysFromLocalStorage = (key) => {
+  if (!AccessorUtilities.canUseLocalStorage()) return [];
+
+  const stored = localStorage.getItem(key);
+
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return [];
+    }
+  }
+
+  return [];
+};
+
+export const isCurrentViewWorkItem = () => {
+  const page = document.body.dataset.page || '';
+  const descriptionWrapper = document.querySelector('.js-issuable-description-wrapper');
+
+  // Early return for Incident and Ticket pages as those are not work items
+  if (['ticket', 'incident'].includes(descriptionWrapper?.dataset.issuableType)) return false;
+
+  // Check page type for possible work items
+  return [
+    // Group Work Items/Epics List View
+    'groups:work_items:index',
+    'groups:epics:index',
+
+    // Group Issues List/Detail View
+    'groups:issues',
+
+    // Group Issues/Epics Board View
+    'groups:boards:index',
+    'groups:epic_boards:index',
+
+    // Project Work Items/Issues list View
+    'projects:work_items:index',
+    'projects:issues:index',
+
+    // Project Issues Board View
+    'projects:boards:index',
+
+    // Group Work Items/Epics Detail View
+    'groups:work_items:show',
+    'groups:epics:show',
+
+    // Project Work Items/Issues Detail View
+    'projects:work_items:show',
+    'projects:issues:show',
+  ].includes(page);
+};

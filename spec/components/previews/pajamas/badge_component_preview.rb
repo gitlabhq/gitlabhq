@@ -9,15 +9,13 @@ module Pajamas
     #
     # @param icon select [~, star-o, issue-closed, tanuki]
     # @param icon_only toggle
-    # @param href url
     # @param text text
     # @param variant select {{ Pajamas::BadgeComponent::VARIANT_OPTIONS }}
-    def default(icon: :tanuki, icon_only: false, href: nil, text: "Tanuki", variant: :neutral)
+    def default(icon: :tanuki, icon_only: false, text: "Tanuki", variant: :neutral)
       render Pajamas::BadgeComponent.new(
         text,
         icon: icon,
         icon_only: icon_only,
-        href: href,
         variant: variant
       )
     end
@@ -33,6 +31,24 @@ module Pajamas
       render Pajamas::BadgeComponent.new(variant: :info) do
         "!ereht olleh".reverse.capitalize
       end
+    end
+
+    # Actionable badge
+    # ---
+    #
+    # Pass a URL to the `href:` option to render an actionable badge.
+    #
+    # @param icon select [~, star-o, issue-closed, tanuki]
+    # @param icon_only toggle
+    # @param text text
+    def actionable(icon: :"star-o", icon_only: false, text: "Star", variant: :neutral)
+      render Pajamas::BadgeComponent.new(
+        text,
+        icon: icon,
+        icon_only: icon_only,
+        href: '#',
+        variant: variant
+      )
     end
 
     # Custom HTML attributes and icon classes

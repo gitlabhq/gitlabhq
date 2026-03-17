@@ -1226,7 +1226,6 @@ paths:
           - main
           - ci
           - embedding
-          - main_clusterwide
           - geo
       - name: id
         in: path
@@ -1268,7 +1267,6 @@ paths:
           - main
           - ci
           - embedding
-          - main_clusterwide
           - geo
       responses:
         200:
@@ -1312,7 +1310,6 @@ paths:
                   - main
                   - ci
                   - embedding
-                  - main_clusterwide
                   - geo
       responses:
         200:
@@ -1360,7 +1357,6 @@ paths:
                   - main
                   - ci
                   - embedding
-                  - main_clusterwide
                   - geo
       responses:
         200:
@@ -1846,7 +1842,6 @@ paths:
                   - main
                   - ci
                   - embedding
-                  - main_clusterwide
                   - geo
       responses:
         201:

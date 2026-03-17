@@ -1,0 +1,3 @@
+---
+name: delete_zoekt_namespace
+description: Grants the ability to delete Zoekt namespaces

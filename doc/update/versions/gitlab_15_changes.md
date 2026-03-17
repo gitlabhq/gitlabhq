@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab 15 upgrade notes
 ---
 
@@ -31,7 +31,6 @@ For additional information for Helm chart installations, see
 ## 15.11.0
 
 - **Upgrade to patch release 15.11.3 or later**. This avoids [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) when upgrading from 15.5.0 and earlier.
-
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
   **Affected releases**:
@@ -847,7 +846,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 ## 15.3.3
 
 - In GitLab 15.3.3, [SAML Group Links](../../api/saml.md#saml-group-links) API `access_level` attribute type changed to `integer`. See
-  [the API documentation](../../api/members.md).
+  [the API documentation](../../api/group_members.md).
 - A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
 
   - Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
@@ -1127,15 +1126,12 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
      sudo gitlab-ctl reconfigure
      ```
 
-  {{< alert type="note" >}}
-
-  It is mandatory to restart PostgreSQL when underlying version changes, to avoid
-  errors like the [one related to loading necessary libraries](https://docs.gitlab.com/omnibus/settings/database/#could-not-load-library-plpgsqlso)
-  that can cause downtime. So, if you skip the automatic restarts using the previous
-  method, ensure that you restart the services manually before upgrading to GitLab
-  15.0.
-
-  {{< /alert >}}
+  > [!note]
+  > It is mandatory to restart PostgreSQL when underlying version changes, to avoid
+  > errors like the [one related to loading necessary libraries](https://docs.gitlab.com/omnibus/settings/database/#could-not-load-library-plpgsqlso)
+  > that can cause downtime. So, if you skip the automatic restarts using the previous
+  > method, ensure that you restart the services manually before upgrading to GitLab
+  > 15.0.
 
 - Starting with GitLab 15.0, the `AES256-GCM-SHA384` SSL cipher will not be allowed by
   NGINX by default. If you use the

@@ -15,7 +15,7 @@ module Packages
       end
 
       def execute
-        parsed_package_json = Gitlab::Json.parse(package_json_entry.read)
+        parsed_package_json = Gitlab::Json.safe_parse(package_json_entry.read)
 
         raise MismatchError, MANIFEST_NOT_COHERENT_ERROR unless coherent?(parsed_package_json)
 

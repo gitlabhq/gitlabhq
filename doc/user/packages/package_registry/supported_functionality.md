@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Package Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Supported package managers and functionality
 ---
 
@@ -25,12 +25,12 @@ The package registry supports the following package manager types:
 | Package type                                      | Status |
 |---------------------------------------------------|--------|
 | [Composer](../composer_repository/_index.md)      | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6817) |
-| [Conan 1](../conan_1_repository/_index.md)            | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6816) |
-| [Conan 2](../conan_2_repository/_index.md)            | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/8258) |
+| [Conan 1](../conan_1_repository/_index.md)            | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6816) |
+| [Conan 2](../conan_2_repository/_index.md)            | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/8258) |
 | [Debian](../debian_repository/_index.md)          | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6057) |
 | [Generic packages](../generic_packages/_index.md) | Generally available     |
 | [Go](../go_proxy/_index.md)                       | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
-| [Helm](../helm_repository/_index.md)              | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6366) |
+| [Helm](../helm_repository/_index.md)              | Generally available      |
 | [Maven](../maven_repository/_index.md)            | Generally available      |
 | [npm](../npm_registry/_index.md)                  | Generally available      |
 | [NuGet](../nuget_repository/_index.md)            | Generally available      |
@@ -127,8 +127,8 @@ To reduce the associated security risks:
 
 To turn off request forwarding for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings** > **Packages and registries**.
+1. In the top bar, select **Search or go to** and find your group.
+1. In the left sidebar, select **Settings** > **Packages and registries**.
 1. Under **Package forwarding**, clear either of the following checkboxes:
    - **Forward npm package requests**
    - **Forward PyPI package requests**
@@ -264,7 +264,7 @@ for a given package manager:
 
 > [!note]
 > When you configure authentication to the package registry:
-> 
+>
 > - If the **Package registry** project setting is [turned off](_index.md#turn-off-the-package-registry), you receive a `403 Forbidden` error when you interact with the package registry, even if you have the Owner role.
 > - If [external authorization](../../../administration/settings/external_authorization.md) is turned on, you can't access the package registry with a deploy token.
 > - If your organization uses two-factor authentication (2FA), you must use a personal access token with the scope set to `api`.

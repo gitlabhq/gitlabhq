@@ -13,11 +13,30 @@ RSpec.describe 'Issues shortcut', :js, feature_category: :team_planning do
         visit project_path(project)
       end
 
-      it 'takes user to the new issue page' do
-        send_keys('i')
+      context 'when work_item_planning_view: true' do
+        before do
+          stub_feature_flags(work_item_planning_view: true)
+        end
 
-        expect(page).to have_css('h1', text: 'New issue')
-        expect(page).to have_current_path(new_project_issue_path(project))
+        it 'takes user to the new issue page' do
+          send_keys('i')
+
+          expect(page).to have_css('h1', text: 'New issue')
+          expect(page).to have_current_path(new_project_work_item_path(project))
+        end
+      end
+
+      context 'when work_item_planning_view: false' do
+        before do
+          stub_feature_flags(work_item_planning_view: false)
+        end
+
+        it 'takes user to the new issue page' do
+          send_keys('i')
+
+          expect(page).to have_css('h1', text: 'New issue')
+          expect(page).to have_current_path(new_project_issue_path(project))
+        end
       end
     end
 

@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Protected container tags
 description: Control who can push or delete container tags with role-based protection rules using regex patterns.
 ---
@@ -23,7 +23,7 @@ description: Control who can push or delete container tags with role-based prote
 
 Control who can push and delete container tags in your project.
 
-By default, users with at least the Developer role can push and delete image tags in all project container repositories.
+By default, users with the Developer, Maintainer, or Owner role can push and delete image tags in all project container repositories.
 With tag protection rules, you can:
 
 - Restrict pushing and deleting tags to specific user roles.
@@ -46,11 +46,11 @@ Before you can use protected container tags:
 
 Prerequisites:
 
-- You must have at least the Maintainer role
+- You must have the Maintainer or Owner role
 
 To create a protection rule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container tags**, select **Add protection rule**.
@@ -79,11 +79,11 @@ Example patterns you can use to protect container tags:
 
 Prerequisites:
 
-- You must have at least the Maintainer role
+- You must have the Maintainer or Owner role
 
 To delete a protection rule:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Packages and registries**.
 1. Expand **Container registry**.
 1. Under **Protected container tags**, next to the protection rule you want to delete, select **Delete** ({{< icon name="remove" >}}).

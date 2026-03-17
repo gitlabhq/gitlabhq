@@ -6,6 +6,7 @@ import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import SuggestionDiff from './suggestion_diff.vue';
 
+// eslint-disable-next-line vue/one-component-per-file
 export default {
   directives: {
     SafeHtml,
@@ -39,11 +40,13 @@ export default {
       type: String,
       required: true,
     },
+    // eslint-disable-next-line vue/no-unused-properties -- false positive
     defaultCommitMessage: {
       type: String,
       required: false,
       default: null,
     },
+    // eslint-disable-next-line vue/no-unused-properties -- false positive
     suggestionsCount: {
       type: Number,
       required: false,
@@ -73,15 +76,6 @@ export default {
   },
   mounted() {
     this.renderSuggestions();
-  },
-  beforeDestroy() {
-    if (this.suggestionsWatch) {
-      this.suggestionsWatch();
-    }
-
-    if (this.defaultCommitMessageWatch) {
-      this.defaultCommitMessageWatch();
-    }
   },
   methods: {
     renderSuggestions() {
@@ -113,52 +107,42 @@ export default {
         disabled,
         batchSuggestionsInfo,
         helpPagePath,
-        defaultCommitMessage,
-        suggestionsCount,
         failedToLoadMetadata,
+        $el,
       } = this;
       const suggestion =
         suggestions && suggestions[suggestionIndex] ? suggestions[suggestionIndex] : {};
-      const SuggestionDiffComponent = Vue.extend(SuggestionDiff);
-      const suggestionDiff = new SuggestionDiffComponent({
-        propsData: {
-          disabled,
-          suggestion,
-          batchSuggestionsInfo,
-          helpPagePath,
-          defaultCommitMessage: defaultCommitMessage || '',
-          suggestionsCount,
-          failedToLoadMetadata,
+
+      const emitOnRoot = (...args) => this.$emit(...args);
+      // eslint-disable-next-line vue/one-component-per-file
+      const SuggestionDiffComponent = Vue.extend({
+        computed: {
+          suggestionsCount: () => this.suggestionsCount,
+          defaultCommitMessage: () => this.defaultCommitMessage || '',
+        },
+        render(h) {
+          return h(SuggestionDiff, {
+            props: {
+              disabled,
+              suggestion,
+              batchSuggestionsInfo,
+              helpPagePath,
+              failedToLoadMetadata,
+              suggestionsCount: this.suggestionsCount,
+              defaultCommitMessage: this.defaultCommitMessage,
+            },
+            on: {
+              apply: ({ suggestionId, callback, message }) =>
+                emitOnRoot('apply', { suggestionId, callback, flashContainer: $el, message }),
+              applyBatch: (message) => emitOnRoot('applyBatch', { message, flashContainer: $el }),
+              addToBatch: (suggestionId) => emitOnRoot('addToBatch', suggestionId),
+              removeFromBatch: (suggestionId) => emitOnRoot('removeFromBatch', suggestionId),
+            },
+          });
         },
       });
 
-      // We're using `$watch` as `suggestionsCount` updates do not
-      // propagate to this component for some unknown reason while
-      // using a traditional prop watcher.
-      this.suggestionsWatch = this.$watch('suggestionsCount', () => {
-        suggestionDiff.suggestionsCount = this.suggestionsCount;
-      });
-
-      this.defaultCommitMessageWatch = this.$watch('defaultCommitMessage', () => {
-        suggestionDiff.defaultCommitMessage = this.defaultCommitMessage;
-      });
-
-      suggestionDiff.$on('apply', ({ suggestionId, callback, message }) => {
-        this.$emit('apply', { suggestionId, callback, flashContainer: this.$el, message });
-      });
-
-      suggestionDiff.$on('applyBatch', (message) => {
-        this.$emit('applyBatch', { message, flashContainer: this.$el });
-      });
-
-      suggestionDiff.$on('addToBatch', (suggestionId) => {
-        this.$emit('addToBatch', suggestionId);
-      });
-
-      suggestionDiff.$on('removeFromBatch', (suggestionId) => {
-        this.$emit('removeFromBatch', suggestionId);
-      });
-
+      const suggestionDiff = new SuggestionDiffComponent();
       return suggestionDiff;
     },
     reset() {

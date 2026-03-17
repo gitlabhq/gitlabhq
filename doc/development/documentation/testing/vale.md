@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 description: Learn how to contribute to GitLab Documentation.
 title: Vale documentation tests
 ---
@@ -63,9 +63,7 @@ To configure Vale in your editor, install one of the following as appropriate:
 
 - [LSP for Sublime Text](https://lsp.sublimetext.io) package [`LSP-vale-ls`](https://packagecontrol.io/packages/LSP-vale-ls).
 - Vim [ALE plugin](https://github.com/dense-analysis/ale).
-- JetBrains IDEs - No plugin exists, but
-  [this issue comment](https://github.com/errata-ai/vale-server/issues/39#issuecomment-751714451)
-  contains tips for configuring an external tool.
+- [JetBrains plugin](https://plugins.jetbrains.com/plugin/19613-vale-cli/docs).
 - Emacs [Flycheck extension](https://github.com/flycheck/flycheck). A minimal configuration
   for Flycheck to work with Vale could look like:
 
@@ -117,7 +115,6 @@ In general, follow these guidelines:
   If there are too many issues to fix in a single merge request, add the rule at a
   `warning` level. Then, fix the existing issues in follow-up merge requests.
   When the issues are fixed, promote the rule to an `error`.
-
 - If you add a warning-level or suggestion-level rule, consider:
 
   - How many more warnings or suggestions it creates in the Vale output. If the

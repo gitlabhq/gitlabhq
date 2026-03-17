@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab remote URL format
 ---
 
@@ -40,7 +40,7 @@ gitlab-remote://gitlab.com/<label>?project=278964&ref=master
 
 ## Clone a Git project
 
-GitLab Workflow extends the `Git: Clone` command. For GitLab projects, it supports cloning with either
+GitLab for VS Code extends the `Git: Clone` command. For GitLab projects, it supports cloning with either
 HTTPS or Git URLs.
 
 Prerequisites:

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Update Git commit messages'
 ---
 
@@ -144,7 +144,6 @@ Now you're ready to rewrite the commit messages using an interactive rebase.
    ```
 
    In this example, Git selects the four most recent commits in the branch to update.
-
 1. Mark which commits to reword.
 
    Git launches a text editor and lists the selected commits.
@@ -186,7 +185,6 @@ Now you're ready to rewrite the commit messages using an interactive rebase.
 
    Press <kbd>Escape</kbd> to exit `INSERT` mode,
    then type `:wq` and <kbd>Enter</kbd> to save and exit.
-
 1. Update each commit message.
 
    Git now goes through each commit one at a time. Any commits with `pick` are added back to
@@ -238,7 +236,6 @@ Finally, push your updated commits back to GitLab.
 
    Your terminal might prompt you for your username and password before overwriting
    the commit messages in GitLab.
-
 1. Verify the changes in GitLab.
 
    In your project in GitLab, confirm that the commits have been updated:

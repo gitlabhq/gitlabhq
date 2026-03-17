@@ -1,8 +1,8 @@
 ---
 stage: AI-powered
 group: AI Coding
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Duo Code Review (Classic)
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: GitLab Duo Code Review
 ---
 
 {{< details >}}
@@ -34,15 +34,17 @@ title: GitLab Duo Code Review (Classic)
 
 {{< /history >}}
 
-When your merge request is ready to be reviewed, use GitLab Duo Code Review (Classic) to perform an initial review:
+> [!note]
+> Depending on your add-on, you might have access to Code Review Flow instead.
+> Learn how [the two features compare](../project/merge_requests/duo_in_merge_requests.md#use-gitlab-duo-to-review-your-code).
 
-1. On the top bar, select **Search or go to** and find your project.
+When your merge request is ready to be reviewed, use GitLab Duo Code Review to perform an initial review:
+
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. In a comment box, enter the quick action `/assign_reviewer @GitLabDuo`, or assign GitLab Duo as reviewer.
 
 <i class="fa-youtube-play" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=SG3bhD1YjeY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW&index=2)
-
-Learn about the new agentic [Code Review Flow](../duo_agent_platform/flows/foundational_flows/code_review.md).
 
 Data usage: When you use this feature, the following data is sent to the large language model:
 
@@ -72,7 +74,7 @@ There is a feature request to add this functionality, see [issue 560116](https:/
 You can create custom MR review instructions to ensure consistent and specific
 code review standards in your project.
 
-For more information, see [customize review instructions for GitLab Duo](../../user/gitlab_duo/customize_duo/review_instructions.md).
+For more information, see [customize review instructions for GitLab Duo](customize_duo/review_instructions.md).
 
 ## Automatic reviews from GitLab Duo for a project
 
@@ -94,7 +96,7 @@ Prerequisites:
 
 To enable `@GitLabDuo` to automatically review merge requests:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
@@ -117,7 +119,7 @@ Prerequisites:
 
 To enable automatic reviews for groups:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Merge requests** section.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
@@ -134,4 +136,4 @@ Settings cascade from application to group to project. More specific settings ov
 
 ## Related topics
 
-- [GitLab Duo in merge requests](../../user/project/merge_requests/duo_in_merge_requests.md)
+- [GitLab Duo in merge requests](../project/merge_requests/duo_in_merge_requests.md)

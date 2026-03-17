@@ -1,4 +1,6 @@
 import { joinPaths } from '~/lib/utils/url_utility';
+import { n__ } from '~/locale';
+import { accessLevelsConfig } from '~/projects/settings/branch_rules/components/constants';
 
 export const generateRefDestinationPath = (selectedRef) => {
   const namespace = '-/settings/ci_cd';
@@ -21,14 +23,11 @@ export const generateRefDestinationPath = (selectedRef) => {
 
 export const getAccessLevels = (accessLevels = {}) => {
   const total = accessLevels.edges?.length;
-  const accessLevelTypes = { total, users: [], groups: [], roles: [] };
+  const accessLevelTypes = { total, roles: [], deployKeys: [] };
 
   (accessLevels.edges || []).forEach(({ node }) => {
-    if (node.user) {
-      const src = node.user.avatarUrl;
-      accessLevelTypes.users.push({ src, ...node.user });
-    } else if (node.group) {
-      accessLevelTypes.groups.push(node.group);
+    if (node.deployKey) {
+      accessLevelTypes.deployKeys.push(node.deployKey);
     } else {
       accessLevelTypes.roles.push(node.accessLevel);
     }
@@ -45,16 +44,30 @@ export const getAccessLevelInputFromEdges = (edges) => {
       result.accessLevel = node.accessLevel;
     }
 
-    if (node.group?.id !== undefined) {
-      result.groupId = node.group.id;
-      delete result.accessLevel; // backend only expects groupId
-    }
-
-    if (node.user?.id !== undefined) {
-      result.userId = node.user.id;
-      delete result.accessLevel; // backend only expects userId
+    if (node.deployKey?.id !== undefined) {
+      result.deployKeyId = node.deployKey.id;
+      delete result.accessLevel; // backend only expects deployKeyId
     }
 
     return Object.keys(result).length > 0 ? [result] : [];
   });
+};
+
+export const getAccessLevelsRolesText = (accessLevels) => {
+  if (!accessLevels.roles?.length) {
+    return [];
+  }
+
+  const roles = accessLevels.roles.map(
+    (roleInteger) => accessLevelsConfig[roleInteger].accessLevelLabel,
+  );
+  return [roles.join(', ')];
+};
+
+export const getAccessLevelsDeployKeysText = (accessLevels) => {
+  if (!accessLevels.deployKeys?.length) {
+    return [];
+  }
+
+  return [n__('1 deploy key', '%d deploy keys', accessLevels.deployKeys.length)];
 };

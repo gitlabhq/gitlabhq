@@ -1,13 +1,13 @@
 ---
 stage: AI-powered
 group: Agent Foundations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Developer Flow
 ---
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: [Free](../../../../subscriptions/gitlab_credits.md#for-the-free-tier-on-gitlabcom), Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
@@ -18,6 +18,7 @@ title: Developer Flow
 - Renamed from `Issue to MR` to the `Developer Flow` with a flag named `duo_developer_button` in GitLab 18.6. Disabled by default, but can be enabled for the instance or a user. Feature flag `duo_workflow` must also be enabled, but it is enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/work_items/585273) in GitLab 18.8.
 - Feature flags `duo_workflow_in_ci`, `duo_developer_button`, and `duo_workflow` removed in GitLab 18.9.
+- Available on the Free tier on GitLab.com with GitLab Credits in GitLab 18.10.
 
 {{< /history >}}
 
@@ -40,16 +41,16 @@ To create a merge request from an issue, you must:
 
 - Have an existing GitLab issue with clear requirements.
 - Have the Developer, Maintainer, or Owner role in the project.
-- Meet [the other prerequisites](../../../duo_agent_platform/_index.md#prerequisites).
+- Meet [the other prerequisites](../../_index.md#prerequisites).
 - [Ensure the GitLab Duo service account can create commits and branches](../../troubleshooting.md#session-is-stuck-in-created-state).
-- Ensure that the Developer Flow is [turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-on-or-off).
+- Ensure **Allow foundational flows** and **Developer** are [turned on](_index.md#turn-foundational-flows-on-or-off) for the top-level group.
 
 ## Use the flow
 
 To convert your issue to a merge request:
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues**.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue**.
 1. Select the issue you want to create a merge request for.
 1. Below the issue header, select **Generate MR with GitLab Duo**.
 1. Monitor progress by selecting **Automate** > **Sessions**.

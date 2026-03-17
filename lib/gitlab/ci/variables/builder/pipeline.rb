@@ -74,6 +74,7 @@ module Gitlab
               variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!pipeline.protected_ref?).to_s)
               variables.append(key: 'CI_COMMIT_TIMESTAMP', value: pipeline.git_commit_timestamp.to_s)
               variables.append(key: 'CI_COMMIT_AUTHOR', value: pipeline.git_author_full_text.to_s)
+              variables.append(key: 'CI_COMMIT_USER_LOGIN', value: pipeline.git_author_login.to_s)
             end
           end
           strong_memoize_attr :predefined_commit_variables

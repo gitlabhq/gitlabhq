@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: CI/CD settings
 ---
@@ -107,7 +107,7 @@ Control how [job artifacts](../cicd/job_artifacts.md) are stored and managed acr
 Set size limits for job artifacts to control storage use.
 Each artifact file in a job has a default maximum size of 100 MB.
 
-Job artifacts defined with `artifacts:reports` can have [different limits](../../administration/instance_limits.md#maximum-file-size-per-type-of-artifact).
+Job artifacts defined with `artifacts:reports` can have [different limits](../instance_limits.md#maximum-file-size-per-type-of-artifact).
 When different limits apply, the smaller value is used.
 
 > [!note]
@@ -449,7 +449,7 @@ To turn off package forwarding:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Overview** > **Groups**.
-1. On the left sidebar, select **Settings** > **CI/CD**.
+1. In the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Package registry**.
 1. Clear either of the following checkboxes:
    - **Forward npm package requests**
@@ -494,7 +494,7 @@ Control who can register runners and whether to allow registration tokens.
 > Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#register-with-a-runner-authentication-token)
 > to generate an authentication token to register runners. This process provides full
 > traceability of runner ownership and enhances your runner fleet's security.
-> 
+>
 > For more information, see
 > [Migrating to the new runner registration workflow](../../ci/runners/new_creation_workflow.md).
 
@@ -575,7 +575,7 @@ To access these settings:
 
 {{< history >}}
 
-- Instance setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186182) in GitLab 17.11, replacing the `ci_enable_live_trace` [feature flag](../../administration/feature_flags/_index.md).
+- Instance setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186182) in GitLab 17.11, replacing the `ci_enable_live_trace` [feature flag](../feature_flags/_index.md).
 - `ci_enable_live_trace` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189232) in GitLab 18.0.
 
 {{< /history >}}
@@ -661,7 +661,7 @@ Projects not in the allowlist receive a `not authorized to publish` error when a
 
 - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 17.0.
-- [Re-added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165111) in GitLab 17.4 [with a flag](../../administration/feature_flags/_index.md) named `required_pipelines`. Disabled by default.
+- [Re-added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165111) in GitLab 17.4 [with a flag](../feature_flags/_index.md) named `required_pipelines`. Disabled by default.
 
 {{< /history >}}
 
@@ -691,7 +691,7 @@ in the pipeline editor.
 
 To select a CI/CD template for the required pipeline configuration:
 
-1. On the left sidebar, at the bottom, select **Admin**.
+1. In the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **CI/CD**.
 1. Expand the **Required pipeline configuration** section.
 1. Select a CI/CD template from the dropdown list.

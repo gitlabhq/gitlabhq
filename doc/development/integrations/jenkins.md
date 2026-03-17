@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: How to run Jenkins in development environment (on macOS)
 ---
 
@@ -30,13 +30,14 @@ GitLab does not allow requests to localhost or the local network by default. Whe
    - **Allow requests to the local network from webhooks and integrations**
    - **Allow requests to the local network from system hooks**
 
-  For more details about GitLab webhooks, see [Webhooks and insecure internal web services](../../security/webhooks.md).
+   For more details about GitLab webhooks, see [Webhooks and insecure internal web services](../../security/webhooks.md).
 
 Jenkins uses the GitLab API and needs an access token.
 
 1. Sign in to your GitLab instance.
-1. Select your profile picture, then select **Settings**.
-1. Select **Personal access tokens**.
+1. In the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Access** > **Personal access tokens**.
 1. Create a new Access Token with the **API** scope enabled. Note the value of the token.
 
 ## Configure Jenkins

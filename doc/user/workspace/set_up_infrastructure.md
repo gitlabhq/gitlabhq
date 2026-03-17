@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Remote Development
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Create the infrastructure needed to support GitLab Workspaces for on-demand, cloud-based development environments.
 title: 'Tutorial: Set up workspaces infrastructure on AWS'
 ---
@@ -152,7 +152,7 @@ The GitLab agent for Kubernetes connects your AWS Kubernetes cluster to GitLab.
 To create a token for the agent:
 
 1. Go to your group.
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Operate** > **Kubernetes clusters**.
 1. Select **Connect a cluster**.
 1. Enter a name for your agent and save for later use. For example, `gitlab-workspaces-agentk-eks`.
@@ -166,9 +166,9 @@ Next, set up OAuth authentication to securely access workspaces.
 
 To configure GitLab OAuth:
 
-1. Go to **User settings**:
-   1. Select your profile picture, then select **Preferences**.
-1. On the left sidebar, select **Applications**.
+1. In the upper-right corner, select your avatar.
+1. Select **Edit profile**.
+1. In the left sidebar, select **Access** > **Applications**.
 1. Scroll down to **OAuth applications**.
 1. Select **Add new application**.
 1. Update the following settings:
@@ -190,7 +190,7 @@ pipeline can run.
 
 To configure CI/CD variables:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. In the **Project variables** section, add the following required variables:
@@ -265,7 +265,7 @@ resources in AWS.
 To run the pipeline:
 
 1. Create a new pipeline in your GitLab project:
-   1. On the left sidebar, select **Build** > **Pipelines**.
+   1. In the left sidebar, select **Build** > **Pipelines**.
    1. Select **New pipeline** and select **New pipeline** again to confirm.
 1. Verify the `plan` job succeeds, then manually trigger the `apply` job.
 
@@ -302,7 +302,7 @@ Next, you'll authorize the GitLab agent for Kubernetes to connect to your GitLab
 
 To authorize the agent:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Workspaces**.
 1. In the **Group agents** section, select the **All agents** tab.
 1. From the list of available agents, find the agent with status **Blocked**, and select **Allow**.

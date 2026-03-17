@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: Environment Automation
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Authenticated user rate limits for GitLab Dedicated, default limits by reference architecture, and handling strategies.
 title: Authenticated user rate limits
 ---
@@ -58,7 +58,7 @@ GitLab includes rate limit information in response headers for all requests.
 You can use these headers to monitor your current usage and remaining quota.
 
 For more information about which rate limits include response headers and the available headers, see
-[multiple rate limiting systems](../../administration/settings/user_and_ip_rate_limits.md#multiple-rate-limiting-systems).
+[multiple rate limiting systems](../settings/user_and_ip_rate_limits.md#multiple-rate-limiting-systems).
 
 ## Improve request efficiency
 

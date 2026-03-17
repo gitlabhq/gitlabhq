@@ -3,7 +3,7 @@ table_name: ci_job_token_project_scope_links
 classes:
 - Ci::JobToken::ProjectScopeLink
 feature_categories:
-- continuous_integration
+- system_access
 description: Links a source project and target project, allowing a project's job token
   to give access to another project. Using the outbound direction, the source project's
   job token can access target projects. Using the inbound direction, the source project

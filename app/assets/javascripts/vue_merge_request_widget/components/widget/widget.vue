@@ -1,22 +1,19 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import {
+  GlAnimatedChevronLgDownUpIcon,
   GlButton,
   GlLink,
-  GlTooltipDirective,
   GlLoadingIcon,
-  GlAnimatedChevronLgDownUpIcon,
+  GlTooltipDirective,
 } from '@gitlab/ui';
-import { kebabCase } from 'lodash';
 import { markRaw } from 'vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { sprintf, __ } from '~/locale';
+import { __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
-import { joinPaths } from '~/lib/utils/url_utility';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { EXTENSION_ICONS } from '../../constants';
@@ -53,14 +50,12 @@ export default {
     DynamicScroller,
     DynamicScrollerItem,
     HelpPopover,
-    ReportListItem: () => import('~/merge_requests/reports/components/report_list_item.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
-  inject: { reportsTabContent: { default: false }, reportsTabSidebar: { default: false } },
+
   props: {
     loadingText: {
       type: String,
@@ -126,9 +121,22 @@ export default {
       default: 'neutral',
       validator: (value) => Object.keys(EXTENSION_ICONS).indexOf(value) > -1,
     },
+    /**
+     * When isCollapsible is true, expandButtonLabel and collapseButtonLabel should also be passed.
+     */
     isCollapsible: {
       type: Boolean,
       required: true,
+    },
+    expandButtonLabel: {
+      type: String,
+      required: false,
+      default: __('Show details'),
+    },
+    collapseButtonLabel: {
+      type: String,
+      required: false,
+      default: __('Hide details'),
     },
     /**
      * A button is composed of the following properties:
@@ -182,21 +190,11 @@ export default {
       required: false,
       default: false,
     },
-    label: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    path: {
-      type: String,
-      required: false,
-      default: null,
-    },
   },
   data() {
     return {
       isExpandedForTheFirstTime: true,
-      isCollapsed: !this.reportsTabContent,
+      isCollapsed: true,
       isLoadingCollapsedContent: true,
       isLoadingExpandedContent: false,
       summaryError: null,
@@ -218,8 +216,8 @@ export default {
     generatedSubSummary() {
       return generateText(this.summary?.subtitle || '');
     },
-    collapseButtonLabel() {
-      return sprintf(this.isCollapsed ? __('Show details') : __('Hide details'));
+    toggleButtonLabel() {
+      return this.isCollapsed ? this.expandButtonLabel : this.collapseButtonLabel;
     },
     summaryStatusIcon() {
       return this.summaryError ? this.$options.failedStatusIcon : this.statusIconName;
@@ -229,31 +227,6 @@ export default {
     },
     contentWithKeyField() {
       return this.content?.map((item, index) => ({ ...item, id: item.id || index }));
-    },
-    reportsTabActionButtons() {
-      return [
-        {
-          text: __('View report'),
-          href: joinPaths(
-            window.gl?.mrWidgetData?.reportsTabPath || '',
-            kebabCase(this.widgetName.replace(WIDGET_PREFIX, '')),
-          ),
-          onClick(action, e) {
-            e.preventDefault();
-
-            window.history.replaceState(null, null, action.href);
-            window.mrTabs.tabShown('reports');
-          },
-        },
-      ];
-    },
-    routeParams() {
-      if (!this.path) return {};
-
-      return { report: this.path };
-    },
-    routeName() {
-      return this.path || 'report';
     },
   },
   watch: {
@@ -274,10 +247,6 @@ export default {
   },
   async mounted() {
     this.telemetryHub?.viewed();
-
-    if (this.reportsTabContent) {
-      this.fetchExpandedContent();
-    }
 
     try {
       if (this.fetchCollapsedData) {
@@ -378,26 +347,9 @@ export default {
 </script>
 
 <template>
-  <report-list-item
-    v-if="reportsTabSidebar"
-    :to="routeName"
-    :params="routeParams"
-    :status-icon="summaryStatusIcon"
-    :is-loading="shouldShowLoadingIcon"
-    class="gl-mb-3"
-  >
-    {{ label }}
-  </report-list-item>
-  <section v-else class="media-section" data-testid="widget-extension">
-    <div
-      v-if="!reportsTabContent"
-      :class="{
-        'gl-pl-9': glFeatures.mrReportsTab,
-        'gl-flex gl-px-5 gl-py-4 gl-pr-4': !reportsTabContent,
-      }"
-    >
+  <section class="media-section" data-testid="widget-extension">
+    <div class="gl-flex gl-px-5 gl-py-4 gl-pr-4">
       <status-icon
-        :level="glFeatures.mrReportsTab ? 2 : 1"
         :name="widgetName"
         :is-loading="shouldShowLoadingIcon"
         :icon-name="summaryStatusIcon"
@@ -439,10 +391,7 @@ export default {
               >
             </template>
           </help-popover>
-          <div v-if="glFeatures.mrReportsTab">
-            <action-buttons :tertiary-buttons="reportsTabActionButtons" />
-          </div>
-          <slot v-else name="action-buttons">
+          <slot name="action-buttons">
             <action-buttons
               v-if="actionButtons.length > 0"
               :tertiary-buttons="actionButtons"
@@ -451,14 +400,14 @@ export default {
           </slot>
         </div>
         <div
-          v-if="!glFeatures.mrReportsTab && isCollapsible && !isSummaryLoading"
+          v-if="isCollapsible && !isSummaryLoading"
           class="gl-border-l gl-ml-3 gl-h-6 gl-border-l-section gl-pl-3"
         >
           <gl-button
             v-gl-tooltip
-            :title="collapseButtonLabel"
+            :title="toggleButtonLabel"
             :aria-expanded="`${!isCollapsed}`"
-            :aria-label="collapseButtonLabel"
+            :aria-label="toggleButtonLabel"
             category="tertiary"
             data-testid="toggle-button"
             size="small"
@@ -472,14 +421,10 @@ export default {
     </div>
     <div
       v-if="!isCollapsed || contentError"
-      :class="{ 'gl-border-t gl-relative gl-border-t-section gl-bg-subtle': !reportsTabContent }"
+      class="gl-border-t gl-relative gl-border-t-section gl-bg-subtle"
       data-testid="widget-extension-collapsed-section"
     >
-      <div
-        v-if="isLoadingExpandedContent"
-        class="gl-text-center"
-        :class="{ 'report-block-container': !reportsTabContent, 'gl-py-5': reportsTabContent }"
-      >
+      <div v-if="isLoadingExpandedContent" class="report-block-container gl-text-center">
         <gl-loading-icon size="sm" inline /> {{ loadingText }}
       </div>
       <div v-else class="gl-flex gl-pl-5" :class="{ 'gl-pr-5': $scopedSlots.content }">
@@ -499,8 +444,7 @@ export default {
               v-if="contentWithKeyField"
               :items="contentWithKeyField"
               :min-item-size="32"
-              :style="{ maxHeight: reportsTabContent ? null : '170px' }"
-              :page-mode="glFeatures.mrReportsTab && reportsTabContent"
+              style="max-height: 170px"
               data-testid="dynamic-content-scroller"
               class="gl-pr-5"
             >

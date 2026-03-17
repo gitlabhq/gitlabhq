@@ -67,6 +67,10 @@
   - 1
 - - analytics_devops_adoption_create_snapshot
   - 1
+- - analytics_knowledge_graph_code_indexing
+  - 1
+- - analytics_knowledge_graph_expire_traversal_id_cache
+  - 1
 - - analytics_usage_trends_counter_job
   - 1
 - - anti_abuse_ban_duplicate_users
@@ -238,6 +242,8 @@
 - - ci_destroy_old_pipelines
   - 1
 - - ci_execute_build_hooks
+  - 1
+- - ci_execute_pipeline_build_hooks
   - 1
 - - ci_initialize_pipelines_iid_sequence
   - 1
@@ -569,6 +575,8 @@
   - 1
 - - import_offline_configuration_purge
   - 1
+- - import_offline_export
+  - 1
 - - import_reassign_placeholder_user_records
   - 1
 - - import_refresh_import_jid
@@ -679,6 +687,8 @@
   - 1
 - - merge_requests_handle_assignees_change
   - 1
+- - merge_requests_keep_around_refs
+  - 1
 - - merge_requests_mergeability_check_batch
   - 1
 - - merge_requests_notify_approvers
@@ -728,6 +738,8 @@
 - - namespaces_cascade_web_based_commit_signing_enabled
   - 1
 - - namespaces_free_user_cap_group_over_limit_notification
+  - 1
+- - namespaces_groups_transfer
   - 1
 - - namespaces_process_sync_events
   - 1
@@ -855,6 +867,8 @@
   - 1
 - - projects_schedule_bulk_repository_shard_moves
   - 1
+- - projects_transfer
+  - 1
 - - projects_update_repository_storage
   - 1
 - - propagate_integration
@@ -884,6 +898,8 @@
 - - remote_mirror_notification
   - 2
 - - repositories_cache_tag_signatures
+  - 1
+- - repositories_leave_pool_repository
   - 1
 - - repositories_post_receive
   - 5
@@ -1067,6 +1083,8 @@
   - 1
 - - security_pipeline_execution_policies_run_schedule
   - 1
+- - security_pipeline_execution_schedule_policies_test_run_completion
+  - 1
 - - security_policies_dismissal_preserve
   - 1
 - - security_policies_failed_pipelines_audit
@@ -1080,6 +1098,10 @@
 - - security_policies_scheduled_scans_not_enforced_audit
   - 1
 - - security_policies_skip_pipelines_audit
+  - 1
+- - security_process_tracked_context_project_transfer_events
+  - 1
+- - security_project_tracked_contexts_create_or_update_default_tracked_context
   - 1
 - - security_project_tracked_contexts_update_default_context
   - 1
@@ -1113,13 +1135,9 @@
   - 1
 - - security_scan_result_policies_cleanup_merge_request_violations
   - 1
-- - security_scan_result_policies_create_project_warn_mode_audit_events
-  - 1
 - - security_scan_result_policies_create_project_warn_mode_push_settings_audit_events
   - 1
 - - security_scan_result_policies_create_warn_mode_approval_audit_events
-  - 1
-- - security_scan_result_policies_create_warn_mode_audit_events
   - 1
 - - security_scan_result_policies_delete_scan_result_policy_reads
   - 1
@@ -1127,13 +1145,13 @@
   - 1
 - - security_scan_result_policies_process_pipeline_completion
   - 1
-- - security_scan_result_policies_recreate_project_warn_mode_audit_events
-  - 1
 - - security_scan_result_policies_sync_any_merge_request_approval_rules
   - 1
 - - security_scan_result_policies_sync_merge_request_approvals
   - 1
 - - security_scan_result_policies_sync_project
+  - 1
+- - security_scan_result_policies_sync_project_finding_enrichments
   - 1
 - - security_scan_result_policies_unblock_fail_open_approval_rules
   - 1
@@ -1149,7 +1167,11 @@
   - 1
 - - security_secret_detection_partner_token_verification
   - 1
+- - security_sync_finding_enrichment
+  - 1
 - - security_sync_linked_pipeline_execution_policy_configs
+  - 1
+- - security_sync_merge_requests
   - 1
 - - security_sync_pipeline_execution_policy_metadata
   - 1
@@ -1164,6 +1186,8 @@
 - - security_sync_project_policy
   - 1
 - - security_sync_scan_policies
+  - 1
+- - security_sync_tracked_context_traversal_ids
   - 1
 - - security_unassign_policy_configurations_for_expired_namespace
   - 1
@@ -1232,6 +1256,8 @@
 - - vulnerabilities_archival_export_purge
   - 1
 - - vulnerabilities_auto_dismiss
+  - 1
+- - vulnerabilities_consistency_check
   - 1
 - - vulnerabilities_mark_dropped_as_resolved
   - 1

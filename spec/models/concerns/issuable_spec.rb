@@ -193,16 +193,6 @@ RSpec.describe Issuable, feature_category: :team_planning do
     it 'returns participant associations' do
       expect(issuable_class.participant_includes).to contain_exactly(:assignees, :author, :award_emoji, { notes: [:author, :award_emoji] })
     end
-
-    context 'with remove_per_source_permission_from_participants disabled' do
-      before do
-        stub_feature_flags(remove_per_source_permission_from_participants: false)
-      end
-
-      it 'includes system_note_metadata association' do
-        expect(issuable_class.participant_includes).to contain_exactly(:assignees, :author, :award_emoji, { notes: [:author, :award_emoji, :system_note_metadata] })
-      end
-    end
   end
 
   describe ".search" do
@@ -525,7 +515,9 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_not_including(:total_time_spent, :labels, :assignees),
-          action: 'open')
+          action: 'open',
+          actioned_at: nil
+        )
 
         # In some cases, old_associations is empty, e.g. on a close event
         issue.to_hook_data(user, action: 'open')
@@ -545,6 +537,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
+          actioned_at: nil,
           changes: hash_including(
             'labels' => [[labels[0].hook_attrs], [labels[1].hook_attrs]]
           ))
@@ -565,6 +558,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
+          actioned_at: nil,
           changes: hash_including(
             'total_time_spent' => [1, 2]
           ))
@@ -586,6 +580,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
+          actioned_at: nil,
           changes: hash_including(
             'assignees' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
           ))
@@ -609,6 +604,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
+          actioned_at: nil,
           changes: hash_including(
             'assignees' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
           ))
@@ -632,6 +628,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
+          actioned_at: nil,
           changes: hash_including(
             'reviewers' => [
               [hash_including(user.hook_attrs.merge(state: 'unreviewed', re_requested: false))],
@@ -661,6 +658,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
+          actioned_at: nil,
           changes: hash_including(
             'reviewers' => [
               [hash_including(reviewer.hook_attrs.merge(state: 'unreviewed', re_requested: false))],
@@ -695,6 +693,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
+          actioned_at: nil,
           changes: hash_excluding('reviewers')
         )
 
@@ -723,6 +722,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
+          actioned_at: nil,
           changes: hash_including(
             'severity' => %w[unknown low]
           ))
@@ -745,6 +745,7 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
+          actioned_at: nil,
           changes: hash_including(
             'escalation_status' => %i[triggered acknowledged]
           ))
@@ -768,11 +769,32 @@ RSpec.describe Issuable, feature_category: :team_planning do
         expect(builder).to receive(:build).with(
           user: user,
           action: 'update',
+          actioned_at: nil,
           changes: hash_including(
             'title' => ["initial title", "final title"],
             'target_branch' => %w[initial-branch final-branch]
           ))
         merge_request.to_hook_data(user, action: 'update')
+      end
+    end
+
+    context 'when actioned_at is provided' do
+      let(:merge_request) { create(:merge_request) }
+      let(:actioned_at) { Time.current }
+
+      before do
+        expect(Gitlab::DataBuilder::Issuable)
+          .to receive(:new).with(merge_request).and_return(builder)
+      end
+
+      it 'passes actioned_at to the builder' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: anything,
+          action: 'update',
+          actioned_at: actioned_at)
+
+        merge_request.to_hook_data(user, action: 'update', actioned_at: actioned_at)
       end
     end
   end
@@ -1031,36 +1053,6 @@ RSpec.describe Issuable, feature_category: :team_planning do
 
     it 'returns notes with associations' do
       expect(issue.notes_with_associations.includes_values).to contain_exactly(:author, :award_emoji)
-    end
-
-    context 'with remove_per_source_permission_from_participants disabled' do
-      before do
-        stub_feature_flags(remove_per_source_permission_from_participants: false)
-      end
-
-      it 'includes project and system_note_metadata associations' do
-        expect(issue.notes_with_associations.includes_values).to contain_exactly(:author, :award_emoji, :project, :system_note_metadata)
-      end
-
-      context 'when notes already have projects loaded' do
-        before do
-          allow(issue.notes).to receive(:projects_loaded?).and_return(true)
-        end
-
-        it 'does not include project in includes' do
-          expect(issue.notes_with_associations.includes_values).to contain_exactly(:author, :award_emoji, :system_note_metadata)
-        end
-      end
-
-      context 'when notes already have system_note_metadata loaded' do
-        before do
-          allow(issue.notes).to receive(:system_note_metadata_loaded?).and_return(true)
-        end
-
-        it 'does not include system_note_metadata in includes' do
-          expect(issue.notes_with_associations.includes_values).to contain_exactly(:author, :award_emoji, :project)
-        end
-      end
     end
   end
 

@@ -61,6 +61,8 @@ module Gitlab
             page_counter.expire!
 
             mark_merge_request_processed(merge_request)
+          rescue JSON::NestingError => e
+            track_import_failure!(project, exception: e)
           end
         end
 

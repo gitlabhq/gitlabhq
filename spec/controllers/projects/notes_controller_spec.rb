@@ -60,6 +60,14 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
       get :index, params: request_params
     end
 
+    it 'passes organization_id to NotesFinder' do
+      expect(NotesFinder).to receive(:new)
+        .with(anything, hash_including(organization_id: current_organization.id))
+        .and_call_original
+
+      get :index, params: request_params
+    end
+
     it 'returns status 400 when last_fetched_at is not present' do
       request.headers['X-Last-Fetched-At'] = nil
 

@@ -255,9 +255,10 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
             filter(link, context)
           end
 
+          # +1 from configurable work item types cache (custom_types lookup)
           expect do
             filter("#{link} #{link2}", context)
-          end.not_to exceed_all_query_limit(control)
+          end.not_to exceed_all_query_limit(control).with_threshold(1)
         end
       end
     end
@@ -415,9 +416,10 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
 
           expect(control.count).to eq 10
 
+          # +1 from configurable work item types cache (custom_types lookup)
           expect do
             filter("#{link} #{link2}", context)
-          end.not_to exceed_all_query_limit(control)
+          end.not_to exceed_all_query_limit(control).with_threshold(1)
         end
       end
     end

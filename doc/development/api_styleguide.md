@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: API style guide
 ---
 
@@ -150,7 +150,11 @@ The `detail` should describe any additional details not covered by the `desc` su
 
 - The GitLab version when the endpoint was added.
 - If it is behind a feature flag, mention that instead: `This feature is gated by the :feature\_flag\_symbol feature flag.`
-- If the endpoint is deprecated, and if so, its planned removal date
+- If the endpoint is deprecated, and if so, its planned removal date.
+
+Do not include lifecycle terms like "experiment", "experimental", "general availability", "GA", or "beta" in the
+`detail` or `desc` summary strings. Use `route_setting :lifecycle` instead.
+For more information, see [Marking endpoint lifecycle](#marking-endpoint-lifecycle).
 
 ### Defining endpoint success
 
@@ -182,6 +186,45 @@ end
 ```
 
 Together, these make the deprecation programmatically discoverable in the OpenAPI specification.
+
+### Marking endpoint lifecycle
+
+When an endpoint is not yet generally available, use `route_setting :lifecycle` to
+indicate its development stage. Valid values are `:experiment` and `:beta`.
+
+Do not put lifecycle information in the `desc` summary or `detail` strings.
+The `API/LifecycleInDescription` RuboCop cop enforces this rule.
+
+For generally available endpoints, omit `route_setting :lifecycle`.
+
+```ruby
+# bad -- Specifies "experimental" in "detail"
+desc 'Get all widgets' do
+  detail 'This feature is experimental.'
+  tags %w[widgets]
+end
+
+# good -- Specifies "experiment" in as route_setting
+route_setting :lifecycle, :experiment
+desc 'Get all widgets' do
+  detail 'Introduced in GitLab 18.10.'
+  tags %w[widgets]
+end
+
+# good -- Specifies "experiment" in as route_setting
+route_setting :lifecycle, :beta
+desc 'Get all widgets' do
+  detail 'Introduced in GitLab 18.10.'
+  tags %w[widgets]
+end
+```
+
+The `route_setting :lifecycle` value is included in the generated OpenAPI specification
+as the `x-gitlab-lifecycle` vendor extension. This makes the lifecycle status
+programmatically discoverable.
+
+For more information about development stages, see
+[development stages and support](../policy/development_stages_support.md).
 
 ### Choosing a tag
 
@@ -231,18 +274,29 @@ For example, we renamed the merge request _WIP_ feature to _Draft_. To accomplis
 
 Customers did not experience any disruption to their existing API integrations.
 
-#### Maintain API backwards-compatibility for feature removals
+#### What to do with feature removals
 
-Even when a feature that an endpoint interfaced with is [removed](deprecation_guidelines/_index.md) in a major GitLab version, we must still maintain API backwards-compatibility.
+When a feature that an endpoint interfaced with is [removed](deprecation_guidelines/_index.md) in a major GitLab version, we must maintain a balance
+between API backwards-compatibility and returning a result the user can rely on.
 
-Acceptable solutions for maintaining API backwards-compatibility include:
+Choose the appropriate approach based on the context:
+
+**Silent degradation** - Use when an error would disrupt broader functionality:
 
 - Return a sensible static value from a field, or an empty response (for example,
   `null` or `[]`).
 - Turn an argument into a no-op by continuing to accept the argument but having it
   no longer be operational.
+- Best suited for endpoints like Application Settings where removing one setting
+  should not cause the entire endpoint to fail.
 
-The key principle is that existing customer API integrations must not experience errors.
+**Error response** - Use when a feature has been fully removed:
+
+- Return a `404 Not Found` when the removed feature was the primary purpose of the endpoint.
+- This clearly communicates to users that the feature no longer exists.
+
+The key principle is that existing customer API integrations should degrade gracefully
+where possible, while providing clear feedback when a feature is no longer available.
 The endpoints continue to respond with the same fields and accept the same
 arguments, although the underlying feature interaction is no longer operational.
 
@@ -285,6 +339,7 @@ and can be changed or removed at any time without prior notice.
 
 While in the [experiment status](../policy/development_stages_support.md#experiment):
 
+- Add `route_setting :lifecycle, :experiment` before the endpoint. For more information, see [Marking endpoint lifecycle](#marking-endpoint-lifecycle).
 - Use a feature flag that is [off by default](feature_flags/_index.md#beta-type).
 - When the flag is off:
   - Any added endpoints must return `404 Not Found`.
@@ -295,6 +350,7 @@ While in the [experiment status](../policy/development_stages_support.md#experim
 
 While in the [beta status](../policy/development_stages_support.md#beta):
 
+- Add `route_setting :lifecycle, :beta` before the endpoint. For more information, see [Marking endpoint lifecycle](#marking-endpoint-lifecycle).
 - Use a feature flag that is [on by default](feature_flags/_index.md#beta-type).
 - The [API documentation](../api/api_resources.md) must [document the beta status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
 - The [OpenAPI documentation](../api/openapi/openapi_interactive.md) must not describe the changes.
@@ -302,6 +358,7 @@ While in the [beta status](../policy/development_stages_support.md#beta):
 When the feature becomes [generally available](../policy/development_stages_support.md#generally-available):
 
 - [Remove](feature_flags/controls.md#cleaning-up) the feature flag.
+- Remove `route_setting :lifecycle` from the endpoint.
 - Remove the [experiment or beta status](documentation/experiment_beta.md) from the [API documentation](../api/api_resources.md).
 - Add the [OpenAPI documentation](../api/openapi/openapi_interactive.md) to make the changes programmatically discoverable.
 
@@ -461,30 +518,25 @@ guide on how you can add a new custom validator.
   `File::Separator` or not, and whether the path is absolute, for example
   `/etc/passwd/`. By default, absolute paths are not allowed. However, you can optionally pass in an allowlist for allowed absolute paths in the following way:
   `requires :file_path, type: String, file_path: { allowlist: ['/foo/bar/', '/home/foo/', '/app/home'] }`
-
 - `Git SHA`:
 
   The [`Git SHA` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/git_sha.rb)
   checks whether the Git SHA parameter is a valid SHA.
   It checks by using the regex mentioned in [`commit.rb`](https://gitlab.com/gitlab-org/gitlab/-/commit/b9857d8b662a2dbbf54f46ecdcecb44702affe55#d1c10892daedb4d4dd3d4b12b6d071091eea83df_30_30) file.
-
 - `Absence`:
 
   The [`Absence` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/absence.rb)
   checks whether a particular parameter is absent in a given parameters hash.
-
 - `IntegerNoneAny`:
 
   The [`IntegerNoneAny` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/integer_none_any.rb)
   checks if the value of the given parameter is either an `Integer`, `None`, or `Any`.
   It allows only either of these mentioned values to move forward in the request.
-
 - `ArrayNoneAny`:
 
   The [`ArrayNoneAny` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/array_none_any.rb)
   checks if the value of the given parameter is either an `Array`, `None`, or `Any`.
   It allows only either of these mentioned values to move forward in the request.
-
 - `EmailOrEmailList`:
 
   The [`EmailOrEmailList` validator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/validations/validators/email_or_email_list.rb)

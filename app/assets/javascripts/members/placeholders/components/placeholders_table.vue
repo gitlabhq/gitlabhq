@@ -188,7 +188,7 @@ export default {
       return localeDateFormat.asDateTime.format(new Date(dateString));
     },
   },
-  placeholderUsersHelpPath: helpPagePath('user/import/mapping', {
+  placeholderUsersHelpPath: helpPagePath('user/import/mapping/_index', {
     anchor: 'placeholder-users',
   }),
 };

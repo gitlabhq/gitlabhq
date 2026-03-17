@@ -1,6 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
@@ -13,7 +13,7 @@ import { updateCacheAfterCreatingNote } from '../../graphql/cache_utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import workItemNotesByIidQuery from '../../graphql/notes/work_item_notes_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
-import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
+import { TRACKING_CATEGORY_SHOW, VIEW_CONTEXT, i18n } from '../../constants';
 import { findEmailParticipantsWidget } from '../../utils';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
 import WorkItemCommentLocked from './work_item_comment_locked.vue';
@@ -32,6 +32,9 @@ export default {
     ResolveDiscussionButton,
   },
   mixins: [Tracking.mixin()],
+  inject: {
+    viewContext: { default: VIEW_CONTEXT.fullScreen },
+  },
   props: {
     fullPath: {
       type: String,
@@ -190,6 +193,7 @@ export default {
         category: TRACKING_CATEGORY_SHOW,
         label: 'item_comment',
         property: `type_${this.workItemType}`,
+        extra: { viewContext: this.viewContext },
       };
     },
     timelineEntryInnerClass() {

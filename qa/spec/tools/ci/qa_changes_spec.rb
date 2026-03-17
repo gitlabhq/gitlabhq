@@ -108,8 +108,8 @@ RSpec.describe QA::Tools::Ci::QaChanges, feature_category: :tooling do
     context "with from_code_path_mapping option for #qa_tests" do
       let(:code_paths_mapping_data) do
         {
-          "./qa/specs/features/test_spec.rb:23" => %w[./lib/model.rb ./lib/second.rb],
-          "./qa/specs/features/test_spec_2.rb:11" => ['./app/controller.rb']
+          "./qa/specs/features/test_spec.rb:23" => %w[lib/model.rb lib/second.rb],
+          "./qa/specs/features/test_spec_2.rb:11" => ['app/controller.rb']
         }
       end
 
@@ -173,8 +173,8 @@ RSpec.describe QA::Tools::Ci::QaChanges, feature_category: :tooling do
 
         let(:backend_code_paths_mapping_data) do
           {
-            "./qa/specs/features/api/test_spec.rb:23" => ["./lib/model.rb"],
-            "./qa/specs/features/ui/test_spec_2.rb:11" => ["./app/controller.rb"]
+            "./qa/specs/features/api/test_spec.rb:23" => ["lib/model.rb"],
+            "./qa/specs/features/ui/test_spec_2.rb:11" => ["app/controller.rb"]
           }
         end
 

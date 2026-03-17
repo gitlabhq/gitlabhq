@@ -61,7 +61,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def destroy
-    Groups::DestroyService.new(@group, current_user).async_execute
+    Groups::DestroyService.new(@group, current_user).async_execute # rubocop:disable Gitlab/HardDeleteCalls -- hard delete by admin is intentional
 
     flash[:toast] = format(_("Group '%{group_name}' is being deleted."), group_name: @group.full_name)
 

@@ -5,13 +5,14 @@ RSpec.describe ActiveContext::Databases::Concerns::Executor do
   let(:full_name) { 'prefixed_test_collection' }
   let(:number_of_partitions) { 5 }
   let(:fields) { [{ name: 'field1', type: 'string' }] }
+  let(:mock_builder) { double('CollectionBuilder', fields: fields) }
 
   # Create a test class that includes the executor module
   let(:test_class) do
     Class.new do
       include ActiveContext::Databases::Concerns::Executor
 
-      def do_create_collection(name:, number_of_partitions:, fields:)
+      def do_create_collection(name:, number_of_partitions:, fields:, options: {})
         # Mock implementation for testing
       end
     end
@@ -32,6 +33,11 @@ RSpec.describe ActiveContext::Databases::Concerns::Executor do
 
   subject(:executor) { test_class.new(adapter) }
 
+  before do
+    allow(ActiveContext::Databases::CollectionBuilder).to receive(:new).and_return(mock_builder)
+    allow(adapter).to receive(:full_collection_name).with(name).and_return(full_name)
+  end
+
   describe '#initialize' do
     it 'sets the adapter attribute' do
       expect(executor.adapter).to eq(adapter)
@@ -39,13 +45,7 @@ RSpec.describe ActiveContext::Databases::Concerns::Executor do
   end
 
   describe '#create_collection' do
-    let(:mock_builder) { double('CollectionBuilder', fields: fields) }
-
     before do
-      stub_const('ActiveContext::Databases::CollectionBuilder', Class.new)
-      allow(ActiveContext::Databases::CollectionBuilder).to receive(:new).and_return(mock_builder)
-
-      allow(adapter).to receive(:full_collection_name).with(name).and_return(full_name)
       allow(executor).to receive(:do_create_collection)
       allow(executor).to receive(:create_collection_record)
     end
@@ -66,37 +66,52 @@ RSpec.describe ActiveContext::Databases::Concerns::Executor do
     it 'yields the builder if a block is given' do
       expect(mock_builder).to receive(:add_field).with('name', 'string')
 
-      executor.create_collection(name, number_of_partitions: number_of_partitions) do |b|
-        b.add_field('name', 'string')
+      executor.create_collection(name, number_of_partitions: number_of_partitions) do |builder|
+        builder.add_field('name', 'string')
+      end
+    end
+
+    context 'when not implemented in a subclass' do
+      let(:executor) { incomplete_class.new(adapter) }
+
+      before do
+        allow(executor).to receive(:do_create_collection).and_call_original
+        allow(executor).to receive(:create_collection_record).and_call_original
+      end
+
+      it 'raises NotImplementedError' do
+        expect { executor.create_collection(name, number_of_partitions: number_of_partitions) }
+          .to raise_error(NotImplementedError)
+      end
+    end
+
+    context 'when persisting the collection record' do
+      before do
+        allow(executor).to receive(:create_collection_record).and_call_original
+      end
+
+      it 'creates or updates a collection record with the correct attributes' do
+        expect(collections).to receive(:find_or_initialize_by).with(name: full_name).and_return(collection)
+        expect(collection).to receive(:update)
+          .with(number_of_partitions: number_of_partitions, include_ref_fields: true)
+        expect(collection).to receive(:save!)
+
+        executor.create_collection(name, number_of_partitions: number_of_partitions)
+      end
+
+      it 'sets include_ref_fields if passed in options' do
+        expect(collections).to receive(:find_or_initialize_by).with(name: full_name).and_return(collection)
+        expect(collection).to receive(:update)
+          .with(number_of_partitions: number_of_partitions, include_ref_fields: false)
+        expect(collection).to receive(:save!)
+
+        executor.create_collection(name, number_of_partitions: number_of_partitions,
+          options: { include_ref_fields: false })
       end
     end
   end
 
-  describe '#create_collection_record' do
-    it 'creates or updates a collection record with the correct attributes' do
-      expect(collections).to receive(:find_or_initialize_by).with(name: name).and_return(collection)
-      expect(collection).to receive(:update)
-        .with(number_of_partitions: number_of_partitions, include_ref_fields: true)
-      expect(collection).to receive(:save!)
-
-      executor.send(:create_collection_record, name, number_of_partitions, {})
-    end
-
-    it 'sets include_ref_fields if passed in' do
-      expect(collections).to receive(:find_or_initialize_by).with(name: name).and_return(collection)
-      expect(collection).to receive(:update)
-        .with(number_of_partitions: number_of_partitions, include_ref_fields: false)
-      expect(collection).to receive(:save!)
-
-      executor.send(:create_collection_record, name, number_of_partitions, { include_ref_fields: false })
-    end
-  end
-
   describe '#drop_collection' do
-    before do
-      allow(adapter).to receive(:full_collection_name).with(name).and_return(full_name)
-    end
-
     context 'when collection exists' do
       before do
         allow(collections).to receive(:find_by).with(name: full_name).and_return(collection)
@@ -107,6 +122,18 @@ RSpec.describe ActiveContext::Databases::Concerns::Executor do
         expect(executor).to receive(:drop_collection_record).with(collection)
 
         executor.drop_collection(name)
+      end
+
+      context 'when destroying the collection record' do
+        before do
+          allow(executor).to receive(:do_drop_collection)
+        end
+
+        it 'destroys the collection record' do
+          expect(collection).to receive(:destroy!)
+
+          executor.drop_collection(name)
+        end
       end
     end
 
@@ -122,29 +149,128 @@ RSpec.describe ActiveContext::Databases::Concerns::Executor do
         executor.drop_collection(name)
       end
     end
-  end
 
-  describe '#drop_collection_record' do
-    it 'destroys the collection record' do
-      expect(collection).to receive(:destroy!)
+    context 'when not implemented in a subclass' do
+      let(:executor) { incomplete_class.new(adapter) }
 
-      executor.send(:drop_collection_record, collection)
+      before do
+        allow(collections).to receive(:find_by).with(name: full_name).and_return(collection)
+      end
+
+      it 'raises NotImplementedError' do
+        expect { executor.drop_collection(name) }
+          .to raise_error(NotImplementedError)
+      end
     end
   end
 
-  describe '#do_create_collection' do
-    it 'raises NotImplementedError if not implemented in a subclass' do
-      executor = incomplete_class.new(adapter)
-      expect { executor.send(:do_create_collection, name: 'test', number_of_partitions: 1, fields: []) }
-        .to raise_error(NotImplementedError)
+  describe '#add_field' do
+    let(:field) { { name: 'title', type: 'string' } }
+
+    before do
+      allow(mock_builder).to receive(:add_field)
+      allow(mock_builder).to receive(:fields).and_return([field])
+    end
+
+    context 'when collection exists' do
+      before do
+        allow(collections).to receive(:find_by).with(name: full_name).and_return(collection)
+      end
+
+      it 'calls do_add_field for each field yielded by the builder' do
+        expect(executor).to receive(:do_add_field).with(collection, field)
+
+        executor.add_field(name) { |b| b.add_field('title', 'string') }
+      end
+
+      context 'when multiple fields are added' do
+        let(:another_field) { { name: 'body', type: 'text' } }
+
+        before do
+          allow(mock_builder).to receive(:fields).and_return([field, another_field])
+        end
+
+        it 'calls do_add_field for each field' do
+          expect(executor).to receive(:do_add_field).with(collection, field)
+          expect(executor).to receive(:do_add_field).with(collection, another_field)
+
+          executor.add_field(name) { |b| b.add_field('title', 'string') }
+        end
+      end
+    end
+
+    context 'when collection does not exist' do
+      before do
+        allow(collections).to receive(:find_by).with(name: full_name).and_return(nil)
+      end
+
+      it 'raises an error' do
+        expect do
+          executor.add_field(name) { |b| b.add_field('title', 'string') }
+        end.to raise_error(/Collection .* not found/)
+      end
+    end
+
+    context 'when not implemented in a subclass' do
+      let(:executor) { incomplete_class.new(adapter) }
+
+      before do
+        allow(collections).to receive(:find_by).with(name: full_name).and_return(collection)
+      end
+
+      it 'raises NotImplementedError' do
+        expect { executor.add_field(name) { |b| b.add_field('title', 'string') } }
+          .to raise_error(NotImplementedError)
+      end
     end
   end
 
-  describe '#do_drop_collection' do
-    it 'raises NotImplementedError if not implemented in a subclass' do
-      executor = incomplete_class.new(adapter)
-      expect { executor.send(:do_drop_collection, collection) }
-        .to raise_error(NotImplementedError)
+  describe '#nullify_field' do
+    let(:field_name) { 'description' }
+
+    context 'when collection exists' do
+      before do
+        allow(collections).to receive(:find_by).with(name: full_name).and_return(collection)
+      end
+
+      it 'calls do_nullify_field with correct parameters' do
+        expect(executor).to receive(:do_nullify_field).with(collection, field_name, batch_size: 1000)
+
+        executor.nullify_field(name, field_name, batch_size: 1000)
+      end
+
+      it 'returns the result from do_nullify_field' do
+        allow(executor).to receive(:do_nullify_field).and_return(42)
+
+        result = executor.nullify_field(name, field_name, batch_size: 1000)
+
+        expect(result).to eq(42)
+      end
+    end
+
+    context 'when collection does not exist' do
+      before do
+        allow(collections).to receive(:find_by).with(name: full_name).and_return(nil)
+      end
+
+      it 'raises an error' do
+        expect do
+          executor.nullify_field(name, field_name, batch_size: 1000)
+        end.to raise_error(/Collection .* not found/)
+      end
+    end
+
+    context 'when not implemented in a subclass' do
+      let(:executor) { incomplete_class.new(adapter) }
+
+      before do
+        allow(collections).to receive(:find_by).with(name: full_name).and_return(collection)
+      end
+
+      it 'raises NotImplementedError' do
+        expect { executor.nullify_field(name, 'field_name', batch_size: 1000) }
+          .to raise_error(NotImplementedError)
+      end
     end
   end
 end

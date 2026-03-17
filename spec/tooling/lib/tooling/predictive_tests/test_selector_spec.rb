@@ -51,4 +51,67 @@ RSpec.describe Tooling::PredictiveTests::TestSelector, :aggregate_failures, feat
       mappings_limit_percentage: rspec_mappings_limit_percentage
     )
   end
+
+  context 'when use_duo is enabled' do
+    subject(:test_selector) do
+      described_class.new(
+        changed_files: changed_files,
+        rspec_test_mapping_path: crystalball_mapping_path,
+        git_diff_content: nil,
+        use_duo: true
+      )
+    end
+
+    let(:duo_strategy) do
+      instance_double(Tooling::PredictiveTests::DuoSystemSpecStrategy, execute: ["specs_from_duo"])
+    end
+
+    before do
+      allow(Tooling::PredictiveTests::DuoSystemSpecStrategy).to receive(:new).and_return(duo_strategy)
+    end
+
+    it "includes Duo system specs in the output" do
+      expect(test_selector.rspec_spec_list).to match_array(%w[
+        specs_from_graphql
+        specs_from_views
+        specs_from_js
+        specs_from_mapping
+        specs_from_duo
+      ])
+
+      expect(Tooling::PredictiveTests::DuoSystemSpecStrategy).to have_received(:new)
+        .with(changed_files: changed_files, git_diff_content: nil, logger: kind_of(Logger))
+    end
+
+    describe '#duo_spec_list' do
+      it 'returns specs from Duo strategy' do
+        expect(test_selector.duo_spec_list).to eq(['specs_from_duo'])
+      end
+    end
+
+    describe '#duo_confident?' do
+      it 'returns true when strategy is confident' do
+        allow(duo_strategy).to receive(:confident?).and_return(true)
+        expect(test_selector.duo_confident?).to be true
+      end
+    end
+
+    context 'when use_duo is disabled' do
+      subject(:test_selector) do
+        described_class.new(
+          changed_files: changed_files,
+          rspec_test_mapping_path: crystalball_mapping_path,
+          use_duo: false
+        )
+      end
+
+      it 'duo_spec_list returns empty array' do
+        expect(test_selector.duo_spec_list).to eq([])
+      end
+
+      it 'duo_confident? returns false' do
+        expect(test_selector.duo_confident?).to be false
+      end
+    end
+  end
 end

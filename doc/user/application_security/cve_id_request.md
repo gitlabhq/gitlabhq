@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: CVE ID request
 description: Vulnerability tracking and security disclosure.
 ---
@@ -44,9 +44,7 @@ To submit a CVE ID request:
 
 1. Go to the vulnerability's issue and select **Create CVE ID Request**. The new issue page of
    the [GitLab CVE project](https://gitlab.com/gitlab-org/cves) opens.
-
 1. In the **Title** box, enter a brief description of the vulnerability.
-
 1. In the **Description** box, enter the following details:
 
    - A detailed description of the vulnerability

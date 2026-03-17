@@ -1,7 +1,7 @@
 ---
 stage: Developer Experience
 group: API Platform
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: REST API resources
 description: "GitLab REST API resources organized by context (project, group, standalone, and templates) with endpoint paths."
 ---
@@ -80,7 +80,7 @@ The following API resources are available in the project context:
 | [Jobs Artifacts](job_artifacts.md)                                             | `/projects/:id/jobs/:job_id/artifacts` |
 | [Labels](labels.md)                                                            | `/projects/:id/labels` |
 | [Maven repository](packages/maven.md)                                          | `/projects/:id/packages/maven` (also available for groups and standalone) |
-| [Members](members.md)                                                          | `/projects/:id/members` (also available for groups) |
+| [Members](project_members.md)                                                  | `/projects/:id/members` (also available for groups) |
 | [Merge request approvals](merge_request_approvals.md)                          | `/projects/:id/approvals`, `/projects/:id/merge_requests/.../approvals` |
 | [Merge requests](merge_requests.md)                                            | `/projects/:id/merge_requests` (also available for groups and standalone) |
 | [Merge trains](merge_trains.md)                                                | `/projects/:id/merge_trains` |
@@ -159,7 +159,7 @@ The following API resources are available in the group context:
 | [Issues Statistics](issues_statistics.md)                      | `/groups/:id/issues_statistics` (also available for projects and standalone) |
 | [Linked epics](linked_epics.md)                                | `/groups/:id/epics/.../related_epics` |
 | [Member Roles](member_roles.md)                                | `/groups/:id/member_roles` |
-| [Members](members.md)                                          | `/groups/:id/members` (also available for projects) |
+| [Members](group_members.md)                                    | `/groups/:id/members` (also available for projects) |
 | [Merge requests](merge_requests.md)                            | `/groups/:id/merge_requests` (also available for projects and standalone) |
 | [Notes](notes.md) (comments)                                   | `/groups/:id/epics/.../notes` (also available for projects) |
 | [Notification settings](notification_settings.md)              | `/groups/:id/notification_settings` (also available for projects and standalone) |
@@ -183,6 +183,7 @@ The following API resources are available outside of project and group contexts 
 | [Dependency list exports](dependency_list_export.md)                                         | `/pipelines/:id/dependency_list_exports`, `/projects/:id/dependency_list_exports`, `/groups/:id/dependency_list_exports`, `/security/dependency_list_exports/:id`, `/security/dependency_list_exports/:id/download` |
 | [Deploy keys](deploy_keys.md)                                                                | `/deploy_keys` (also available for projects) |
 | [Deploy tokens](deploy_tokens.md)                                                            | `/deploy_tokens` (also available for projects and groups) |
+| [GitLab Duo Agent Platform flows](duo_agent_platform_flows.md)                                      | `/ai/duo_workflows` |
 | [Events](events.md)                                                                          | `/events`, `/users/:id/events` (also available for projects) |
 | [Feature flags](features.md)                                                                 | `/features` |
 | [Geo Nodes](geo_nodes.md)                                                                    | `/geo_nodes` |
@@ -223,7 +224,6 @@ The following API resources are available outside of project and group contexts 
 | [Topics](topics.md)                                                                          | `/topics` |
 | [Users](users.md)                                                                            | `/users` |
 | [Web commits](web_commits.md)                                                                | `/web_commits/public_key` |
-| [Version](version.md)                                                                        | `/version` |
 
 ## Template resources
 

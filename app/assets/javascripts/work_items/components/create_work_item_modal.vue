@@ -282,7 +282,7 @@ export default {
           },
         },
       });
-      this.$emit('workItemCreated', workItem);
+      this.$emit('work-item-created', workItem);
       this.hideCreateModal();
     },
     redirectToNewPage(event) {
@@ -377,7 +377,7 @@ export default {
         @changeType="selectedWorkItemTypeName = $event"
         @confirmCancel="handleConfirmCancellation"
         @discardDraft="handleDiscardDraft('createModal')"
-        @workItemCreated="handleCreated"
+        @work-item-created="handleCreated"
       />
     </gl-modal>
     <create-work-item-cancel-confirmation-modal

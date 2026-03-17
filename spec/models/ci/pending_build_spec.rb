@@ -86,6 +86,14 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
   describe '.upsert_from_build!' do
     subject(:upsert_from_build) { described_class.upsert_from_build!(build) }
 
+    it 'delegates to upsert_from_args!' do
+      args = described_class.args_from_build(build)
+      allow(described_class).to receive(:args_from_build).with(build).and_return(args)
+      expect(described_class).to receive(:upsert_from_args!).with(args).and_call_original
+
+      upsert_from_build
+    end
+
     context 'another pending entry does not exist' do
       it 'creates a new pending entry' do
         result = upsert_from_build
@@ -240,6 +248,33 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
           expect(latest_pending_build.namespace_traversal_ids).to be_empty
         end
       end
+    end
+  end
+
+  describe '.upsert_from_args!' do
+    let!(:args) { described_class.args_from_build(build) }
+
+    subject(:upsert_from_args) { described_class.upsert_from_args!(args) }
+
+    it 'creates a new pending entry from pre-computed args' do
+      expect(described_class).not_to receive(:args_from_build)
+
+      result = upsert_from_args
+
+      expect(result.rows.dig(0, 0)).to eq build.id
+      expect(build.reload.queuing_entry).to be_present
+    end
+  end
+
+  describe '.args_from_build' do
+    it 'is a public class method' do
+      expect(described_class).to respond_to(:args_from_build)
+    end
+
+    it 'returns a hash with expected keys' do
+      args = described_class.args_from_build(build)
+
+      expect(args).to include(:build, :project, :protected, :namespace, :tag_ids, :instance_runners_enabled)
     end
   end
 

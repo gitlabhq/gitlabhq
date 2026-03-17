@@ -95,7 +95,13 @@ module Observability
     end
 
     def otel_address
-      "#{o11y_service_name}.otel.gitlab-o11y.com"
+      if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- endpoint differs between SaaS and self-managed
+        "#{o11y_service_name}.otel.gitlab-o11y.com"
+      else
+        raise ArgumentError, "o11y_service_url must be present" if o11y_service_url.blank?
+
+        Addressable::URI.parse(o11y_service_url).host
+      end
     end
 
     private

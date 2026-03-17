@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Subscription Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Buy, view, and renew your GitLab subscriptions.
 title: Manage subscription
 ---
@@ -38,6 +38,12 @@ Members of every subgroup and project in the group:
 - Can use the features of the subscription.
 - Consume seats in the subscription.
 
+If a user views or selects a different top-level group (one they have created themselves, for example)
+and that group does not have a paid subscription, the user does not see any of the paid features.
+
+A user can belong to two different top-level groups with different subscriptions.
+In this case, the user sees only the features available to that subscription.
+
 To subscribe to GitLab.com:
 
 1. View the [GitLab.com feature comparison](https://about.gitlab.com/pricing/feature-comparison/)
@@ -48,7 +54,7 @@ To subscribe to GitLab.com:
 1. Create additional users and
    [add them to the group](../user/group/_index.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
    the features of your subscription tier, and they consume a seat in your subscription.
-1. On the left sidebar, select **Settings** > **Billing** and choose a tier. You are taken to the Customers Portal.
+1. In the left sidebar, select **Settings** > **Billing** and choose a tier. You are taken to the Customers Portal.
 1. Fill out the form to complete your purchase.
 
 ### For GitLab Self-Managed
@@ -88,7 +94,7 @@ Prerequisites:
 
 To see the status of your GitLab.com subscription:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Billing**.
 
 The following information is displayed:
@@ -233,7 +239,7 @@ When a subscription is set to auto-renew, it renews automatically at midnight UT
 You receive [email notifications](#renewal-notifications) before a subscription automatically renews.
 
 Seat counts do not decrease automatically at renewal time. If you have more billable users than your current subscription quantity at renewal time, your seat count increases automatically to match the current number of users in your
-[group](manage_users_and_seats.md#view-seat-usage) or [instance](manage_users_and_seats.md#view-users).
+[group](manage_users_and_seats.md#view-seat-usage) or [instance](../administration/moderate_users.md#view-users).
 To avoid unexpectedly renewing your subscription for more seats, learn how to [renew for fewer seats](#renew-for-fewer-seats).
 
 Subscriptions purchased through the Customers Portal are set to auto-renew by default,

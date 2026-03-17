@@ -550,7 +550,7 @@ module MergeRequestsHelper
                 query: 'authorOrAssigneeMergeRequests',
                 variables: {
                   reviewStates: %w[REVIEWED REQUESTED_CHANGES],
-                  ignoredReviewerUsername: duo_code_review_bot.username
+                  ignoredReviewerUsername: duo_code_review_bot_username(current_user)
                 }
               },
               {
@@ -571,7 +571,7 @@ module MergeRequestsHelper
                   draft: merge_request_dashboard_show_drafts?,
                   or: {
                     reviewerWildcard: 'NONE',
-                    onlyReviewerUsername: duo_code_review_bot.username
+                    onlyReviewerUsername: duo_code_review_bot_username(current_user)
                   }
                 }
               }
@@ -597,7 +597,7 @@ module MergeRequestsHelper
                 helpContent: _('Your merge requests that are waiting for approvals.'),
                 query: 'authorOrAssigneeMergeRequests',
                 variables: {
-                  ignoredReviewerUsername: duo_code_review_bot.username,
+                  ignoredReviewerUsername: duo_code_review_bot_username(current_user),
                   reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED],
                   not: {
                     reviewStates: %w[REQUESTED_CHANGES REVIEWED]
@@ -621,7 +621,7 @@ module MergeRequestsHelper
                 helpContent: _('Your merge requests with approvals by all assigned reviewers.'),
                 query: 'authorOrAssigneeMergeRequests',
                 variables: {
-                  ignoredReviewerUsername: duo_code_review_bot.username,
+                  ignoredReviewerUsername: duo_code_review_bot_username(current_user),
                   reviewState: 'APPROVED',
                   not: {
                     reviewStates: %w[REQUESTED_CHANGES REVIEWED UNREVIEWED REVIEW_STARTED UNAPPROVED]
@@ -673,10 +673,11 @@ module MergeRequestsHelper
       &.dig(:title) || ''
   end
 
-  def duo_code_review_bot
-    ::Users::Internal.duo_code_review_bot
+  def duo_code_review_bot_username(user)
+    strong_memoize_with(:duo_code_review_bot_username, user) do
+      ::Users::Internal.in_organization(user.organization_id).duo_code_review_bot.username
+    end
   end
-  strong_memoize_attr :duo_code_review_bot
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

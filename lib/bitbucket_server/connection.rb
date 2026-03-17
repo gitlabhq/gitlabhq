@@ -86,6 +86,8 @@ module BitbucketServer
       message += ": #{details}" if details
 
       raise ConnectionError, message
+    rescue JSON::NestingError
+      raise
     rescue JSON::ParserError
       raise ConnectionError, "Unable to parse the server response as JSON"
     end

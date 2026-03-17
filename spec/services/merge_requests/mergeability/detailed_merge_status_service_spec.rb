@@ -115,4 +115,51 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
       end
     end
   end
+
+  context 'with duration logging' do
+    let(:current_user) { create(:user) }
+
+    before do
+      merge_request.project.update!(only_allow_merge_if_pipeline_succeeds: false)
+      allow(Gitlab::AppJsonLogger).to receive(:info)
+    end
+
+    it 'logs duration for mergeability checks' do
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        hash_including(
+          event: 'merge_requests_detailed_merge_status_service_executed',
+          operation: :verify_all_mr_mergeability_checks,
+          merge_request_id: merge_request.id,
+          duration_s: a_kind_of(Numeric)
+        )
+      )
+
+      detailed_merge_status
+    end
+
+    it 'logs duration for ci status check' do
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        hash_including(
+          event: 'merge_requests_detailed_merge_status_service_executed',
+          operation: :check_ci_status,
+          merge_request_id: merge_request.id,
+          duration_s: a_kind_of(Numeric)
+        )
+      )
+
+      detailed_merge_status
+    end
+
+    context 'when log_detailed_merge_status_duration_enabled feature flag is disabled' do
+      before do
+        stub_feature_flags(log_detailed_merge_status_duration_enabled: false)
+      end
+
+      it 'does not log duration' do
+        expect(Gitlab::AppJsonLogger).not_to receive(:info).with(
+          hash_including(event: 'merge_requests_detailed_merge_status_service_executed'))
+        detailed_merge_status
+      end
+    end
+  end
 end

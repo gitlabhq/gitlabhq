@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Optimize
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Gain insights into DevOps performance and identify opportunities for workflow improvements.
 title: DevOps Research and Assessment (DORA) metrics
 ---
@@ -28,7 +28,6 @@ The four DORA metrics measure two critical aspects of DevOps:
 - **Velocity metrics** track how quickly your organization delivers software:
   - [Deployment frequency](#deployment-frequency): How often code is deployed to production
   - [Lead time for changes](#lead-time-for-changes): How long it takes code to reach production
-
 - **Stability metrics** measure your software's reliability:
   - [Change failure rate](#change-failure-rate): How often deployments cause production failures
   - [Time to restore service](#time-to-restore-service): How quickly service recovers after failures

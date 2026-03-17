@@ -6,5 +6,5 @@
 
   - c.with_body do
     %p= restore_namespace_scheduled_for_deletion_message(context)
-    = render Pajamas::ButtonComponent.new(method: :post, href: restore_namespace_path(context)) do
-      = _('Restore')
+    = gitlab_ui_form_for context, url: restore_namespace_path(context), method: :post do |f|
+      = f.submit _('Restore'), pajamas_button: true, variant: :default, data: { event_tracking: tracking_event, event_label: 'setting' }

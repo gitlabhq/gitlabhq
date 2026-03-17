@@ -1,0 +1,17 @@
+---
+name: security_manager
+description: Fill in security_manager role description
+inherits_from:
+- reporter
+project:
+  permissions: []
+  raw_permissions:
+  - access_security_and_compliance
+  - admin_security_attributes
+  - cancel_build
+  - create_build
+  - read_runners
+  - read_security_configuration
+group:
+  permissions: []
+  raw_permissions: []

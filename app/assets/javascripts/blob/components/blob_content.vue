@@ -81,6 +81,7 @@ export default {
       default: false,
     },
   },
+  emits: [BLOB_RENDER_EVENT_LOAD, BLOB_RENDER_EVENT_SHOW_SOURCE],
   data() {
     return { richContentLoaded: false };
   },

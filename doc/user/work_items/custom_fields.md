@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: "Create and use custom fields for work items to track specific information unique to your workflow. Configure field types to enhance planning and reporting capabilities."
 title: Custom fields
 ---
@@ -56,9 +56,9 @@ Prerequisites:
 
 To create a custom field:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings** > **Issues**.
+1. Select **Settings** > **Work items**.
 1. Select **Create field**.
 1. Complete the fields:
    - In **Type**, select what type the field should be:
@@ -87,9 +87,9 @@ Prerequisites:
 
 To edit a custom field:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings** > **Issues**.
+1. Select **Settings** > **Work items**.
 1. Next to the field you want to edit, select **Edit `<field name>`** ({{< icon name="pencil" >}}).
 1. Make changes to any of the fields.
 1. Select **Update**.
@@ -105,9 +105,9 @@ Prerequisites:
 
 To archive a custom field:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings** > **Issues**.
+1. Select **Settings** > **Work items**.
 1. Next to the field you want to archive, select **Archive `<field name>`** ({{< icon name="archive" >}}).
 
 ### Unarchive a custom field
@@ -121,9 +121,9 @@ Prerequisites:
 
 To unarchive a custom field:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings** > **Issues**.
+1. Select **Settings** > **Work items**.
 1. Select the **Archived** tab to list archived fields.
 1. Next to the field you want to unarchive, select **Unarchive `<field name>`** ({{< icon name="redo" >}}).
 

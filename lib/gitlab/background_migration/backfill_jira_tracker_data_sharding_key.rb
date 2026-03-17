@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     class BackfillJiraTrackerDataShardingKey < BatchedMigrationJob
       operation_name :backfill_jira_tracker_data_sharding_key
-      feature_category :integrations
+      feature_category :team_planning
 
       class Integration < ::ApplicationRecord
         self.table_name = 'integrations'

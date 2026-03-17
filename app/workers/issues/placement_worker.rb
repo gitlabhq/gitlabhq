@@ -19,8 +19,18 @@ module Issues
     QUERY_LIMIT = 100
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def perform(issue_id, project_id = nil)
-      issue = find_issue(issue_id, project_id)
+    def perform(params, project_id = nil)
+      # Passing an integer project_id to Issues::PlacementWorker is deprecated.
+      # This is here to support existing jobs during upgrades.
+      namespace = if params.is_a?(Hash)
+                    Namespace.find_by_id(params['namespace_id'])
+                  else
+                    namespace_from_project_id(project_id)
+                  end
+
+      return unless namespace
+
+      issue = find_representative_issue(namespace)
       return unless issue
 
       # Temporary disable moving null elements because of performance problems
@@ -41,27 +51,32 @@ module Issues
 
       Issue.move_nulls_to_end(to_place)
       Issues::BaseService.new(container: nil).rebalance_if_needed(to_place.max_by(&:relative_position))
-      Issues::PlacementWorker.perform_async(nil, leftover.project_id) if leftover.present?
+      Issues::PlacementWorker.perform_async({ 'namespace_id' => namespace.id }) if leftover.present?
     rescue RelativePositioning::NoSpaceLeft => e
-      Gitlab::ErrorTracking.log_exception(e, issue_id: issue_id, project_id: project_id)
-      Issues::RebalancingWorker.perform_async(nil, *root_namespace_id_to_rebalance(issue, project_id))
+      Gitlab::ErrorTracking.log_exception(e, namespace_id: namespace.id)
+      Issues::RebalancingWorker.perform_async(nil, *issue.project.self_or_root_group_ids)
     end
-
-    def find_issue(issue_id, project_id)
-      return Issue.id_in(issue_id).take if issue_id
-
-      project = Project.id_in(project_id).take
-      return unless project
-
-      project.issues.take
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
-    def root_namespace_id_to_rebalance(issue, project_id)
-      project_id = project_id.presence || issue.project_id
-      Project.find(project_id)&.self_or_root_group_ids
+    def namespace_from_project_id(project_id)
+      project = Project.find_by_id(project_id)
+      return unless project
+
+      return project.project_namespace if project.parent.user_namespace?
+
+      project.root_ancestor
     end
+
+    def find_representative_issue(namespace)
+      projects = if namespace.project_namespace?
+                   [namespace.project]
+                 else
+                   namespace.all_projects
+                 end
+
+      Issue.in_projects(projects).take
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

@@ -234,7 +234,6 @@ describe('BaseToken', () => {
               props,
               mountFn: shallowMountExtended,
               stubs: {},
-              data: { isFetching: true },
             });
             findGlFilteredSearchToken().vm.$emit('input', { data: searchKey });
 
@@ -261,7 +260,6 @@ describe('BaseToken', () => {
         getRecentlyUsedSuggestions.mockReturnValue([]);
         wrapper = createComponent({
           props,
-          data: { isFetching: true },
           mountFn: shallowMountExtended,
           stubs: {},
         });
@@ -394,9 +392,9 @@ describe('BaseToken', () => {
 
     describe('with no suggestions', () => {
       it.each`
-        data                                         | expected
-        ${{ searchKey: 'search', isFetching: true }} | ${'No matches found'}
-        ${{ isFetching: true }}                      | ${'No suggestions found'}
+        data                       | expected
+        ${{ searchKey: 'search' }} | ${'No matches found'}
+        ${{ hasFetched: true }}    | ${'No suggestions found'}
       `('shows $expected text', ({ data, expected }) => {
         wrapper = createComponent({
           props: {
@@ -463,7 +461,6 @@ describe('BaseToken', () => {
           config: mockLabelToken,
           suggestionsLoading: true,
         },
-        data: { isFetching: false },
         stubs: { Portal: true },
       });
 

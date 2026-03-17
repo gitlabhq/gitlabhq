@@ -376,6 +376,62 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#current_ref' do
+    let(:repository) { project.repository }
+
+    before do
+      helper.instance_variable_set(:@repository, repository)
+    end
+
+    context 'when current_branch exists in the repository' do
+      before do
+        allow(helper).to receive(:current_branch).and_return(project.default_branch)
+      end
+
+      it 'returns the current branch' do
+        expect(helper.send(:current_ref)).to eq(project.default_branch)
+      end
+    end
+
+    context 'when @wiki is set' do
+      before do
+        allow(helper).to receive(:current_branch).and_return(nil)
+        helper.instance_variable_set(:@wiki, double('Wiki'))
+        helper.instance_variable_set(:@ref, 'abc123fakewikicommitsha')
+      end
+
+      it 'returns root_ref instead of the wiki commit SHA' do
+        expect(helper.send(:current_ref)).to eq(repository.root_ref)
+      end
+    end
+
+    context 'when @wiki is not set and current_branch does not exist' do
+      before do
+        allow(helper).to receive(:current_branch).and_return(nil)
+      end
+
+      context 'when @ref is set' do
+        before do
+          helper.instance_variable_set(:@ref, 'some-ref')
+        end
+
+        it 'returns @ref' do
+          expect(helper.send(:current_ref)).to eq('some-ref')
+        end
+      end
+
+      context 'when @ref is not set' do
+        before do
+          helper.instance_variable_set(:@ref, nil)
+        end
+
+        it 'falls back to root_ref' do
+          expect(helper.send(:current_ref)).to eq(repository.root_ref)
+        end
+      end
+    end
+  end
+
   describe 'default_clone_protocol' do
     let(:user) { nil }
 
@@ -890,6 +946,17 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#transfer_project_message' do
+    let_it_be(:project) { create(:project, name: 'My Test  Project') }
+
+    it 'includes the project full path' do
+      result = helper.transfer_project_message(project)
+
+      expect(result).to include('class="gl-whitespace-pre-wrap"')
+      expect(result).to include(project.full_path)
+    end
+  end
+
   describe '#project_permissions_panel_data' do
     subject { helper.project_permissions_panel_data(project) }
 
@@ -932,6 +999,10 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     it 'includes membersPagePath' do
       expect(subject).to include(membersPagePath: project_project_members_path(project))
+    end
+
+    it 'includes groupPathRegex' do
+      expect(subject).to include(groupPathRegex: JsRegex.new(Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX).source)
     end
 
     it 'includes canAddCatalogResource' do
@@ -1897,18 +1968,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
       end
 
       it { is_expected.to be_truthy }
-    end
-  end
-
-  describe '#projects_filtered_search_and_sort_app_data' do
-    it 'returns expected json' do
-      expect(Gitlab::Json.parse(helper.projects_filtered_search_and_sort_app_data)).to eq(
-        {
-          'initial_sort' => 'created_desc',
-          'programming_languages' => ProgrammingLanguage.most_popular,
-          'paths_to_exclude_sort_on' => [starred_explore_projects_path, explore_root_path]
-        }
-      )
     end
   end
 

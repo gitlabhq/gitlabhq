@@ -216,6 +216,86 @@ describe('text_utility', () => {
     });
   });
 
+  describe('truncateByWords', () => {
+    describe('when word count is less than maxWords', () => {
+      it('returns the original string when word count is less than maxWords', () => {
+        const str = 'This is short';
+        expect(textUtils.truncateByWords(str, 7)).toBe(str);
+      });
+      it('handles single word correctly', () => {
+        const str = 'word';
+        expect(textUtils.truncateByWords(str, 7)).toBe('word');
+      });
+    });
+
+    describe('when word count exceeds maxWords', () => {
+      it('truncates and adds ellipsis when word count exceeds maxWords', () => {
+        const str = 'This is a much longer string with many words';
+        expect(textUtils.truncateByWords(str, 7)).toBe('This is a much longer string with…');
+      });
+
+      it('handles custom maxWords parameter', () => {
+        const str = 'one two three four five';
+        expect(textUtils.truncateByWords(str, 3)).toBe('one two three…');
+      });
+
+      it('handles maxWords of 1', () => {
+        const str = 'one two three';
+        expect(textUtils.truncateByWords(str, 1)).toBe('one…');
+      });
+    });
+
+    describe('when word count equals maxWords', () => {
+      it('returns the original string when word count equals maxWords', () => {
+        const str = 'one two three four five six seven';
+        expect(textUtils.truncateByWords(str, 7)).toBe(str);
+      });
+    });
+
+    describe('with default parameters', () => {
+      it('uses default maxWords of 7 when not specified', () => {
+        const str = 'one two three four five six seven eight nine';
+        expect(textUtils.truncateByWords(str)).toBe('one two three four five six seven…');
+      });
+    });
+
+    describe('with whitespace handling', () => {
+      it('handles multiple spaces between words', () => {
+        const str = 'one  two   three    four     five      six       seven        eight';
+        expect(textUtils.truncateByWords(str, 7)).toBe('one two three four five six seven…');
+      });
+
+      it('handles leading and trailing whitespace', () => {
+        const str = '  one two three four five six seven eight  ';
+        expect(textUtils.truncateByWords(str, 7)).toBe('one two three four five six seven…');
+      });
+
+      it('handles tabs and newlines as whitespace', () => {
+        const str = 'one\ttwo\nthree\r\nfour five six seven eight';
+        expect(textUtils.truncateByWords(str, 7)).toBe('one two three four five six seven…');
+      });
+    });
+
+    it('handles very long single word', () => {
+      const str = 'supercalifragilisticexpialidocious other words here more words';
+      expect(textUtils.truncateByWords(str, 3)).toBe(
+        'supercalifragilisticexpialidocious other words…',
+      );
+    });
+
+    it('passes through null input', () => {
+      expect(textUtils.truncateByWords(null, 7)).toBe(null);
+    });
+
+    it('passes through undefined input', () => {
+      expect(textUtils.truncateByWords(undefined, 7)).toBe(undefined);
+    });
+
+    it('passes through empty string', () => {
+      expect(textUtils.truncateByWords('', 7)).toBe('');
+    });
+  });
+
   describe('convertUnicodeToAscii', () => {
     it('does nothing on an empty string', () => {
       expect(textUtils.convertUnicodeToAscii('')).toBe('');

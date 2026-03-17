@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Localization
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Proofread Translations
 ---
 
@@ -45,7 +45,7 @@ are very appreciative of the work done by translators and proofreaders!
 - English (UK)
   - Proofreaders needed.
 - Esperanto
-  - Proofreaders needed.
+  - Jorge Maldonado Ventura - [GitLab](https://gitlab.com/jorgesumle), [Crowdin](https://crowdin.com/profile/jorgesumle)
 - Estonian
   - Proofreaders needed.
 - Farsi
@@ -120,6 +120,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Andrew Vityuk - [GitLab](https://gitlab.com/3_1_3_u), [Crowdin](https://crowdin.com/profile/andruwa13)
 - Welsh
   - Proofreaders needed.
+
 <!-- vale gitlab_base.Spelling = YES -->
 
 ## Become a proofreader
@@ -134,7 +135,6 @@ translations to the GitLab project.
    Proofreaders play an important role helping new contributors, and ensuring the consistency and
    quality of translations. Your conduct and contributions as a translator should reflect this
    before requesting to be a proofreader.
-
 1. Request proofreader permissions by opening a merge request to add yourself to the list of
    proofreaders.
 
@@ -147,7 +147,6 @@ translations to the GitLab project.
    - Link to your Crowdin profile
 
    In the merge request description, include links to any projects you have previously translated.
-
 1. [GitLab team members](https://about.gitlab.com/company/team/),
    [core team members](https://about.gitlab.com/community/core-team/),
    [globalization and localization team members](https://handbook.gitlab.com/handbook/marketing/localization/),

@@ -10,7 +10,7 @@ import {
   GlSprintf,
   GlIcon,
 } from '@gitlab/ui';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { clearDraft } from '~/lib/utils/autosave';
 import { isMetaEnterKeyPair, parseBoolean } from '~/lib/utils/common_utils';
@@ -27,6 +27,7 @@ import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue'
 import WorkItemMetadataProvider from '~/work_items/components/work_item_metadata_provider.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import {
+  findAssigneesWidget,
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
   getNewWorkItemWidgetsAutoSaveKey,
@@ -67,6 +68,8 @@ import {
   WORK_ITEM_CREATE_SOURCES,
   WORK_ITEM_TYPE_NAME_TICKET,
   CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
+  CREATION_CONTEXT_RELATED_ITEM,
+  CREATION_CONTEXT_SUPER_SIDEBAR,
 } from '../constants';
 import { TITLE_LENGTH_MAX } from '../../issues/constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
@@ -119,7 +122,7 @@ export default {
     PageHeading,
     WorkItemMetadataProvider,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     contributionGuidePath: {
       default: '',
@@ -266,6 +269,7 @@ export default {
         return {
           fullPath: this.newWorkItemPath,
           iid: NEW_WORK_ITEM_IID,
+          useWorkItemFeatures: this.useWorkItemFeatures,
         };
       },
       skip() {
@@ -300,14 +304,23 @@ export default {
           return;
         }
 
-        // The follow up title and description can come from the backend for the following three use cases
+        // The follow up title and description can come from the backend for the following three use cases except for
+        // when Work Item is being created from contexts like; super-sidebar, related-item or description checklist
         // 1. when resolving a discussion in the MR and we have the merge request id in the query param
         // 2. when the issue and title are added in the query param . read https://docs.gitlab.com/user/project/issues/create_issues/#using-a-url-with-prefilled-values
         // 3. when following up a work item with a vulnerability, where we have the vulnerability id in the query param
-        const workItemTitle = document.querySelector('.params-title')?.textContent.trim();
-        const workItemDescription = document
-          .querySelector('.params-description')
-          ?.textContent.trim();
+        let workItemTitle = '';
+        let workItemDescription = '';
+        if (
+          ![
+            CREATION_CONTEXT_SUPER_SIDEBAR,
+            CREATION_CONTEXT_RELATED_ITEM,
+            CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
+          ].includes(this.creationContext)
+        ) {
+          workItemTitle = document.querySelector('.params-title')?.textContent.trim();
+          workItemDescription = document.querySelector('.params-description')?.textContent.trim();
+        }
 
         for (const workItemType of this.workItemTypes) {
           setNewWorkItemCache({
@@ -321,6 +334,7 @@ export default {
             workItemTitle,
             workItemDescription,
             confidential: this.isConfidential,
+            useWorkItemFeatures: this.useWorkItemFeatures,
           });
         }
 
@@ -352,6 +366,7 @@ export default {
 
         if (selectedWorkItemType) {
           this.selectedWorkItemTypeId = selectedWorkItemType?.id;
+          this.$emit('changeType', selectedWorkItemType.name);
         } else {
           this.showWorkItemTypeSelect = true;
           const defaultSelectedWorkItemType =
@@ -368,6 +383,9 @@ export default {
     },
   },
   computed: {
+    useWorkItemFeatures() {
+      return Boolean(this.glFeatures.workItemFeaturesField);
+    },
     workItemTypeConfiguration() {
       return this.getWorkItemTypeConfiguration?.(this.selectedWorkItemTypeName);
     },
@@ -397,7 +415,10 @@ export default {
       return !this.selectedProjectFullPath || !this.selectedWorkItemTypeName;
     },
     hasWidgets() {
-      return this.workItem?.widgets?.length > 0;
+      return (
+        this.workItem?.widgets?.length > 0 ||
+        (this.useWorkItemFeatures && Object.keys(this.workItem?.feautures || {}))
+      );
     },
     relatedItemId() {
       return this.relatedItem?.id;
@@ -409,10 +430,12 @@ export default {
       return NAME_TO_TEXT_LOWERCASE_MAP[this.relatedItem?.type];
     },
     workItemAssignees() {
-      return findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
+      return findAssigneesWidget(this.workItem);
     },
     workItemMilestone() {
-      return findWidget(WIDGET_TYPE_MILESTONE, this.workItem);
+      return this.useWorkItemFeatures
+        ? this.workItem?.features?.milestone || {}
+        : findWidget(WIDGET_TYPE_MILESTONE, this.workItem);
     },
     workItemLabels() {
       return findWidget(WIDGET_TYPE_LABELS, this.workItem);
@@ -524,8 +547,9 @@ export default {
       return findWidget(WIDGET_TYPE_PARTICIPANTS, this.workItem);
     },
     workItemAssigneeIds() {
-      const assigneesWidget = findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
-      return assigneesWidget?.assignees?.nodes?.map((assignee) => assignee.id) || [];
+      return (
+        findAssigneesWidget(this.workItem)?.assignees?.nodes?.map((assignee) => assignee.id) || []
+      );
     },
     workItemLabelIds() {
       const labelsWidget = findWidget(WIDGET_TYPE_LABELS, this.workItem);
@@ -556,11 +580,15 @@ export default {
       return this.localTitle || this.workItem?.title || this.title;
     },
     workItemDescription() {
-      const descriptionWidget = findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
+      const descriptionWidget = this.useWorkItemFeatures
+        ? this.workItem?.features?.description
+        : findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
       return descriptionWidget?.description || this.description;
     },
     workItemStartAndDueDate() {
-      return findWidget(WIDGET_TYPE_START_AND_DUE_DATE, this.workItem);
+      return this.useWorkItemFeatures
+        ? this.workItem.features?.startAndDueDate
+        : findWidget(WIDGET_TYPE_START_AND_DUE_DATE, this.workItem);
     },
     workItemIterationId() {
       return this.workItemIteration?.iteration?.id;
@@ -694,6 +722,13 @@ export default {
     selectedWorkItemTypeName(newValue) {
       this.$emit('updateType', newValue);
     },
+    selectedWorkItemTypeId(newId) {
+      if (newId) {
+        // Whenever the ID changes, find the name and tell the parent
+        const typeName = this.findWorkItemTypeById(newId)?.name;
+        this.$emit('changeType', typeName);
+      }
+    },
   },
   mounted() {
     // We need this event listener in the document because when
@@ -778,6 +813,7 @@ export default {
         workItemTypeId: this.selectedWorkItemTypeId,
         workItemTypeIconName: this.selectedWorkItemTypeIconName,
         relatedItemId: this.relatedItemId,
+        useWorkItemFeatures: this.useWorkItemFeatures,
       });
 
       updateDraftWorkItemType({
@@ -978,7 +1014,7 @@ export default {
 
         setLastUsedWorkItemTypeIdForNamespace(this.selectedWorkItemTypeId, this.inputNamespacePath);
 
-        this.$emit('workItemCreated', {
+        this.$emit('work-item-created', {
           workItem: data.workItemCreate.workItem,
           numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
         });
@@ -1000,6 +1036,7 @@ export default {
               context: this.creationContext,
               workItemType: this.selectedWorkItemTypeName,
               relatedItemId: this.relatedItemId,
+              useWorkItemFeatures: this.useWorkItemFeatures,
               ...input,
             },
           },
@@ -1034,6 +1071,7 @@ export default {
         workItemTypeId: this.selectedWorkItemTypeId,
         workItemTypeIconName: this.selectedWorkItemTypeIconName,
         relatedItemId: this.relatedItemId,
+        useWorkItemFeatures: this.useWorkItemFeatures,
       });
     },
     onParentMilestone(parentMilestone) {

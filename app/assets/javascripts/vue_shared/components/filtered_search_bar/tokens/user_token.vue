@@ -1,6 +1,6 @@
 <script>
 import { GlAvatar, GlIcon, GlIntersperse, GlFilteredSearchSuggestion } from '@gitlab/ui';
-import { compact } from 'lodash';
+import { compact } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 

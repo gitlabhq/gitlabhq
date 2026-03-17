@@ -20,8 +20,11 @@ export default {
   ],
   // own attributes, also in created()
   data() {
+    const searchFromUrl = getParameterValues('search', window.location, {
+      preservePlusForParams: ['search'],
+    })[0];
     return {
-      searchTerm: getParameterValues('search')[0] || '',
+      searchTerm: searchFromUrl || '',
     };
   },
   computed: {

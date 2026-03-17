@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Database::BumpSequences, feature_category: :cell, query_a
   let!(:increment_by) { 1000 }
 
   let!(:main_org_sequence_name) { 'namespaces_id_seq' }
-  let!(:main_clusterwide_sequence_name) { 'users_id_seq' }
+  let!(:main_user_sequence_name) { 'users_id_seq' }
   let!(:ci_sequence_name) { 'ci_build_needs_id_seq' }
 
   let!(:main_sequence_name) do
@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Database::BumpSequences, feature_category: :cell, query_a
   # To give predictable test results.
   before do
     ApplicationRecord.connection.select_value("select nextval($1)", nil, [main_org_sequence_name])
-    ApplicationRecord.connection.select_value("select nextval($1)", nil, [main_clusterwide_sequence_name])
+    ApplicationRecord.connection.select_value("select nextval($1)", nil, [main_user_sequence_name])
     ApplicationRecord.connection.select_value("select nextval($1)", nil, [ci_sequence_name])
     ApplicationRecord.connection.select_value("select nextval($1)", nil, [main_sequence_name]) if main_sequence_name
   end
@@ -82,7 +82,7 @@ RSpec.describe Gitlab::Database::BumpSequences, feature_category: :cell, query_a
           last_value_of_sequence(ApplicationRecord.connection, main_org_sequence_name)
         }.by(1001)
         .and change {
-          last_value_of_sequence(ApplicationRecord.connection, main_clusterwide_sequence_name)
+          last_value_of_sequence(ApplicationRecord.connection, main_user_sequence_name)
         }.by(0)
         .and change {
           last_value_of_sequence(ApplicationRecord.connection, ci_sequence_name)

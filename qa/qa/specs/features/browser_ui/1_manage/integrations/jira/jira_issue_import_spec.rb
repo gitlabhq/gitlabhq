@@ -53,7 +53,11 @@ module QA
 
       def import_jira_issues
         Page::Project::Menu.perform(&:go_to_work_items)
-        Page::Project::WorkItem::Index.perform(&:go_to_jira_import_form)
+
+        Page::Project::WorkItem::Index.perform do |index|
+          index.dismiss_onboarding_modal_if_present
+          index.go_to_jira_import_form
+        end
 
         Page::Project::Issue::JiraImport.perform do |form|
           form.select_project_and_import(jira_project_key)

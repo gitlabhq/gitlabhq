@@ -5,53 +5,44 @@ module Gitlab
     module Pipeline
       module Chain
         class Metrics < Chain::Base
-          include Gitlab::InternalEventsTracking
-
           def perform!
-            increment_pipeline_created_counter
-            create_snowplow_event_for_pipeline_name
-            track_inputs_usage
+            ::Ci::PipelineCreationMetricsWorker.perform_async(
+              @pipeline.id,
+              inputs_count,
+              collect_template_names,
+              collect_keyword_usage
+            )
           end
 
           def break?
             false
           end
 
-          def increment_pipeline_created_counter
-            labels = {
-              source: @pipeline.source,
-              partition_id: @pipeline.partition_id
-            }
+          private
 
-            ::Gitlab::Ci::Pipeline::Metrics
-              .pipelines_created_counter
-              .increment(labels)
-          end
-
-          def create_snowplow_event_for_pipeline_name
-            return unless @pipeline.pipeline_metadata&.name
-
-            Gitlab::Tracking.event(
-              self.class.name,
-              'create_pipeline_with_name',
-              project: @pipeline.project,
-              user: @pipeline.user,
-              namespace: @pipeline.project.namespace)
-          end
-
-          def track_inputs_usage
+          def inputs_count
             return unless command.inputs.present?
 
-            track_internal_event(
-              'create_pipeline_with_inputs',
-              project: @pipeline.project,
-              user: @pipeline.user,
-              additional_properties: {
-                label: @pipeline.source,
-                property: @pipeline.config_source,
-                value: command.inputs.size
-              }
-            )
+            command.inputs.size
+          end
+
+          def collect_template_names
+            command.yaml_processor_result&.included_templates
+          end
+
+          def collect_keyword_usage
+            yaml_result = command.yaml_processor_result
+            return unless yaml_result
+
+            {
+              'run' => yaml_result.uses_keyword?(:run),
+              'only' => yaml_result.uses_keyword?(:only),
+              'except' => yaml_result.uses_keyword?(:except),
+              'artifacts_reports_junit' => yaml_result.uses_nested_keyword?(%i[artifacts reports junit]),
+              'job_inputs' => yaml_result.uses_keyword?(:inputs),
+              'inputs' => yaml_result.uses_inputs?,
+              'input_rules' => yaml_result.uses_input_rules?
+            }
           end
         end
       end

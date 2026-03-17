@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: Metadata
 ---
 
@@ -18,7 +18,7 @@ belongs to, an information block, and the page title. For example:
 ---
 stage: Example Stage
 group: Example Group
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Example page title
 ---
 ```
@@ -41,7 +41,7 @@ Documents in the `/development` directory get this metadata:
 ---
 stage: Example Stage
 group: Example Group
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Example page title
 ---
 ```
@@ -65,7 +65,7 @@ Documents with no clear group owner are considered _unassigned_ and get this met
 ---
 stage: none
 group: unassigned
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: Example page title
 ---
 ```
@@ -208,7 +208,6 @@ When you update the `codeowners.rake` file:
 
     In this example, `writer1` is a code owner for files related to this group that are in `/doc/user`.
     For everything else, `writer2` is made code owner. For an example, see [MR 127903](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127903).
-
 - For a group that does not have an assigned writer, include the group name in the file and comment out the line:
 
   ```ruby

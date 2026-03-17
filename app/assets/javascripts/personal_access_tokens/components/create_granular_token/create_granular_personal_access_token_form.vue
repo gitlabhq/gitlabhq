@@ -16,6 +16,7 @@ import {
   ACCESS_SELECTED_MEMBERSHIPS_ENUM,
   MAX_DESCRIPTION_LENGTH,
   ACCESS_USER_ENUM,
+  ACCESS_NAMESPACE_ENUMS,
 } from '~/personal_access_tokens/constants';
 import CreatedPersonalAccessToken from '../created_personal_access_token.vue';
 import PersonalAccessTokenExpirationDate from './personal_access_token_expiration_date.vue';
@@ -74,7 +75,7 @@ export default {
     },
     targetBoundaries() {
       return {
-        namespace: ['GROUP', 'PROJECT'],
+        namespace: ACCESS_NAMESPACE_ENUMS,
         user: [ACCESS_USER_ENUM],
       };
     },

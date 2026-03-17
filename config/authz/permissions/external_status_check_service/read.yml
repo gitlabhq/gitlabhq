@@ -1,5 +1,3 @@
 ---
 name: read_external_status_check_service
 description: Grants the ability to read external status check services
-boundaries:
-  - project

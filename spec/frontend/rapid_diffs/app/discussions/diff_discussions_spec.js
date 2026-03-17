@@ -8,16 +8,19 @@ import { useDiffDiscussions } from '~/rapid_diffs/stores/diff_discussions';
 describe('DiffDiscussions', () => {
   let pinia;
   let wrapper;
+  let store;
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(DiffDiscussions, {
       pinia,
       propsData: props,
+      provide: { store },
     });
   };
 
   beforeEach(() => {
     pinia = createTestingPinia();
+    store = useDiffDiscussions();
   });
 
   it('renders noteable discussions', () => {

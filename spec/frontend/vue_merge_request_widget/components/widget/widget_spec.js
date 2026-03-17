@@ -9,7 +9,6 @@ import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon
 import ActionButtons from '~/vue_merge_request_widget/components/widget/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
-import ReportListItem from '~/merge_requests/reports/components/report_list_item.vue';
 import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -308,6 +307,27 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(findToggleButton().attributes('aria-label')).toBe('Show details');
     });
 
+    it('displays custom button labels when provided', async () => {
+      await createComponent({
+        propsData: {
+          isCollapsible: true,
+          expandButtonLabel: 'Expand widget details',
+          collapseButtonLabel: 'Collapse widget details',
+        },
+        slots: {
+          content: '<b>More complex content</b>',
+        },
+      });
+
+      expect(findToggleButton().attributes('title')).toBe('Expand widget details');
+      expect(findToggleButton().attributes('aria-label')).toBe('Expand widget details');
+
+      findToggleButton().vm.$emit('click');
+      await nextTick();
+      expect(findToggleButton().attributes('title')).toBe('Collapse widget details');
+      expect(findToggleButton().attributes('aria-label')).toBe('Collapse widget details');
+    });
+
     it('displays the chevron correctly when toggle is clicked', async () => {
       await createComponent({
         propsData: {
@@ -328,7 +348,10 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(
         findToggleChevron().props('isOn') ?? parseBoolean(findToggleChevron().attributes('is-on')),
       ).toBe(true);
+      expect(findToggleButton().attributes('title')).toBe('Hide details');
+      expect(findToggleButton().attributes('aria-label')).toBe('Hide details');
     });
+
     it('does not display the content slot until toggle is clicked', async () => {
       await createComponent({
         propsData: {
@@ -345,7 +368,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(findExpandedSection().text()).toBe('More complex content');
     });
 
-    it('emits a toggle even when button is toggled', async () => {
+    it('emits a toggle event when button is toggled', async () => {
       await createComponent({
         propsData: {
           isCollapsible: true,
@@ -530,100 +553,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       findToggleButton().vm.$emit('click');
       await waitForPromises();
       expect(wrapper.findByText('Main text for the row').exists()).toBe(true);
-    });
-  });
-
-  describe('when mrReportsTab is enabled', () => {
-    beforeEach(() => {
-      window.gl = { mrWidgetData: { reportsTabPath: 'reportsTabPath' } };
-      window.mrTabs = { tabShown: jest.fn() };
-      jest.spyOn(window.history, 'replaceState');
-    });
-
-    it('does not render toggle button', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-        },
-        provide: { glFeatures: { mrReportsTab: true } },
-      });
-
-      expect(findToggleButton().exists()).toBe(false);
-    });
-
-    it('renders view reports action button', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-        },
-        provide: { glFeatures: { mrReportsTab: true } },
-      });
-
-      expect(findActionButtons().props('tertiaryButtons')).toEqual([
-        expect.objectContaining({ href: 'reportsTabPath/test', text: 'View report' }),
-      ]);
-    });
-
-    it('calls mrTabs.tabShown when clicking action button', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-        },
-        provide: { glFeatures: { mrReportsTab: true } },
-      });
-
-      wrapper.findByTestId('extension-actions-button').vm.$emit('click', { preventDefault() {} });
-
-      await nextTick();
-
-      expect(window.mrTabs.tabShown).toHaveBeenCalledWith('reports');
-      expect(window.history.replaceState).toHaveBeenCalledWith(null, null, 'reportsTabPath/test');
-    });
-  });
-
-  describe('when reportsTabSidebar is true', () => {
-    it('renders ReportListItem', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-        },
-        provide: { reportsTabSidebar: true },
-      });
-
-      expect(wrapper.findComponent(ReportListItem).exists()).toBe(true);
-    });
-
-    it('passes path as route name when path is provided', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-          path: 'security-reports',
-        },
-        provide: { reportsTabSidebar: true },
-      });
-
-      const reportListItem = wrapper.findComponent(ReportListItem);
-      expect(reportListItem.props('to') || reportListItem.attributes('to')).toBe(
-        'security-reports',
-      );
-    });
-
-    it('falls back to report route when path is not provided', async () => {
-      await createComponent({
-        propsData: {
-          isCollapsible: true,
-          summary: { title: 'Hello world' },
-        },
-        provide: { reportsTabSidebar: true },
-      });
-
-      const reportListItem = wrapper.findComponent(ReportListItem);
-      expect(reportListItem.props('to') || reportListItem.attributes('to')).toBe('report');
     });
   });
 

@@ -6,5 +6,3 @@ class GroupDeletionSchedule < ApplicationRecord
 
   validates :marked_for_deletion_on, presence: true
 end
-
-GroupDeletionSchedule.prepend_mod

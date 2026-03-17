@@ -1,0 +1,7 @@
+---
+name: read_container_registry_protection_tag_rule
+description: Grants the ability to read container registry protection tag rules
+boundaries:
+  - project
+permissions:
+ - read_container_registry_protection_tag_rule

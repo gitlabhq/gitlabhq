@@ -221,6 +221,35 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       it 'uses the deduplicated finder' do
         is_expected.to be_a(ClickHouse::Finders::Ci::FinishedBuildsDeduplicatedFinder)
       end
+
+      it 'generates valid SQL' do
+        expected_sql = <<~SQL.squish
+          SELECT `finished_builds`.`name`, round((avg(`finished_builds`.`duration`) / 1000.0), 2) AS mean_duration
+          FROM (SELECT `ci_finished_builds`.`id`,
+                       argMax(`ci_finished_builds`.`name`, `ci_finished_builds`.`version`)     AS name,
+                       argMax(`ci_finished_builds`.`duration`, `ci_finished_builds`.`version`) AS duration
+                FROM `ci_finished_builds`
+                WHERE `ci_finished_builds`.`project_id` = #{project.id}
+                  AND `ci_finished_builds`.`pipeline_id` IN (SELECT `ci_finished_pipelines`.`id`
+                                                             FROM `ci_finished_pipelines`
+                                                             WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path}'
+                                                               AND `ci_finished_pipelines`.`started_at` >=
+                                                                   toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+                                                               AND `ci_finished_pipelines`.`started_at` <
+                                                                   toDateTime64('#{1.hour.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+                                                               AND `ci_finished_pipelines`.`finished_at` >=
+                                                                   toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+                                                               AND `ci_finished_pipelines`.`source` = 'web'
+                                                               AND `ci_finished_pipelines`.`ref` = 'main')
+                  AND `ci_finished_builds`.`finished_at` >= toDateTime64('#{2.hours.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC')
+                GROUP BY id
+                HAVING argMax(`ci_finished_builds`.`name`, `ci_finished_builds`.`version`) ILIKE '%test%') finished_builds
+          GROUP BY `finished_builds`.`name`
+          ORDER BY `finished_builds`.`name` ASC
+        SQL
+
+        expect(query_builder.to_sql).to eq(expected_sql)
+      end
     end
 
     context 'when deduplication migration is not in progress' do
@@ -261,6 +290,14 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
         is_expected.to eq([:rate_of_success, :asc])
       end
     end
+
+    context 'with stage_name field' do
+      let(:sort_value) { 'stage_name_asc' }
+
+      it 'returns correct field and direction' do
+        is_expected.to eq([:stage_name, :asc])
+      end
+    end
   end
 
   describe 'integration with FinishedBuildsFinder' do
@@ -295,11 +332,14 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
 
     it 'generates valid SQL' do
       sql = query_builder.to_sql
+      formatted_time = 7.days.ago.utc.strftime('%Y-%m-%d %H:%M:%S')
       expected_sql = <<~SQL.squish.lines(chomp: true).join(' ')
         SELECT `ci_finished_builds`.`name`, round((avg(`ci_finished_builds`.`duration`) / 1000.0), 2) AS mean_duration
         FROM `ci_finished_builds` WHERE `ci_finished_builds`.`project_id` = #{project.id} AND `ci_finished_builds`.`pipeline_id` IN
         (SELECT `ci_finished_pipelines`.`id` FROM `ci_finished_pipelines` WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path}'
-        AND `ci_finished_pipelines`.`started_at` >= toDateTime64('#{7.days.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC'))
+        AND `ci_finished_pipelines`.`started_at` >= toDateTime64('#{formatted_time}', 6, 'UTC')
+        AND `ci_finished_pipelines`.`finished_at` >= toDateTime64('#{formatted_time}', 6, 'UTC'))
+        AND `ci_finished_builds`.`finished_at` >= toDateTime64('#{formatted_time}', 6, 'UTC')
         GROUP BY `ci_finished_builds`.`name`
       SQL
       expect(sql).to eq(expected_sql)
@@ -400,6 +440,34 @@ RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, featu
       it 'sorts results in descending order' do
         durations = query_result.pluck('mean_duration')
         expect(durations).to eq(durations.sort.reverse)
+      end
+    end
+
+    context 'with stage_name ascending sort' do
+      let(:options) do
+        {
+          select_fields: [:name, :stage_name],
+          sort: 'stage_name_asc'
+        }
+      end
+
+      it 'sorts results by stage name in ascending order' do
+        stage_names = query_result.pluck('stage_name')
+        expect(stage_names).to eq(stage_names.sort)
+      end
+    end
+
+    context 'with stage_name descending sort' do
+      let(:options) do
+        {
+          select_fields: [:name, :stage_name],
+          sort: 'stage_name_desc'
+        }
+      end
+
+      it 'sorts results by stage name in descending order' do
+        stage_names = query_result.pluck('stage_name')
+        expect(stage_names).to eq(stage_names.sort.reverse)
       end
     end
   end

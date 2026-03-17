@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { each } from 'lodash';
+import { each } from 'lodash-es';
 import EditorStateObserver, {
   tiptapToComponentMap,
 } from '~/content_editor/components/editor_state_observer.vue';

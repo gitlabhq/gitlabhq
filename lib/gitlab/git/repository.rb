@@ -12,7 +12,6 @@ module Gitlab
       include Gitlab::EncodingHelper
       include Gitlab::Utils::StrongMemoize
 
-      SEARCH_CONTEXT_LINES = 3
       REV_LIST_COMMIT_LIMIT = 2_000
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'
       GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
@@ -457,7 +456,7 @@ module Gitlab
         options = process_count_commits_options(options.dup)
 
         wrapped_gitaly_errors do
-          gitaly_commit_client.commit_count(options[:ref], options)
+          gitaly_commit_client.commit_count(options[:revisions], options)
         end
       end
 
@@ -1006,6 +1005,23 @@ module Gitlab
         true
       end
 
+      # Returns the initial commit (first commit with no parents) for the given ref
+      # @param ref [String] The reference to start from (default: root_ref)
+      # @return [Gitlab::Git::Commit, nil]
+      def initial_commit(ref = nil)
+        ref ||= root_ref
+        return unless ref
+
+        wrapped_gitaly_errors do
+          commits = gitaly_commit_client.list_commits(
+            [ref],
+            reverse: true,
+            pagination_params: { limit: 1 }
+          )
+          commits.first
+        end
+      end
+
       # Creates a commit
       #
       # @param [User] user The committer of the commit.
@@ -1319,9 +1335,9 @@ module Gitlab
 
       def process_count_commits_options(options)
         if options[:from] || options[:to]
-          ref = "#{options[:from]}..#{options[:to]}"
+          revisions = "#{options[:from]}..#{options[:to]}"
 
-          options.merge(ref: ref)
+          options.merge(revisions: revisions)
         else
           options
         end

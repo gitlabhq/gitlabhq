@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup, GlButton } from '@gitlab/ui';
-import { debounce, unionBy, uniqueId } from 'lodash';
+import { debounce, unionBy, uniqueId } from 'lodash-es';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, n__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';

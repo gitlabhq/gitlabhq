@@ -114,7 +114,7 @@
 
         = render 'remove_fork', project: @project
 
-        = render 'shared/groups_projects/settings/restore', context: @project
+        = render 'shared/groups_projects/settings/restore', context: @project, tracking_event: 'trigger_restore_on_project'
         = render 'delete'
 - else
   = render 'projects/settings/archive', project: @project

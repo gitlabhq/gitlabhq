@@ -95,7 +95,7 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
 
         expect(result).to be_success
         expect(group.reload.namespace_settings.archived).to be(true)
-        expect(group.state).to eq(Namespaces::Stateful::STATES[:archived])
+        expect(group.state).to eq('archived')
       end
     end
 
@@ -116,7 +116,7 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
         result = described_class.new(subgroup.reload, user).execute
         expect(result).to be_success
         expect(subgroup.reload.namespace_settings.archived).to be(true)
-        expect(subgroup.state).to eq(Namespaces::Stateful::STATES[:archived])
+        expect(subgroup.state).to eq('archived')
       end
     end
 
@@ -130,7 +130,7 @@ RSpec.describe Namespaces::Groups::ArchiveService, '#execute', feature_category:
       it 'updates the namespace state' do
         service_response
 
-        expect(group.state).to be(Namespaces::Stateful::STATES[:archived])
+        expect(group.state).to eq('archived')
       end
 
       it 'unarchives all descendant groups', :aggregate_failures do

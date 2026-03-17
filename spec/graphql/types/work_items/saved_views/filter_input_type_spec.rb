@@ -20,7 +20,7 @@ RSpec.describe Types::WorkItems::SavedViews::FilterInputType, feature_category: 
     # Arguments that exist in the work items resolver but should NOT be in Types::WorkItems::SavedViews::FilterInputType
     excluded_from_saved_views = %w[
       ids iids includeAncestors includeArchived parentIds parentWildcardId requirementLegacyWidget sort timeframe
-      verificationStatusWidget
+      verificationStatusWidget workItemTypeIds
     ]
 
     # Arguments that exist in Types::WorkItems::SavedViews::FilterInputType but NOT in the resolver

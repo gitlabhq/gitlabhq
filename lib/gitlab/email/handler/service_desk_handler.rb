@@ -37,10 +37,10 @@ module Gitlab
 
           create_work_item_or_note
 
-          if from_address
-            add_email_participants
-            send_thank_you_email unless reply_email?
-          end
+          return unless from_address
+
+          add_email_participants
+          send_thank_you_email unless reply_email?
         end
 
         def match_project_slug
@@ -62,12 +62,11 @@ module Gitlab
         end
 
         def project
-          strong_memoize(:project) do
-            project_record = super
-            project_record ||= project_from_key if service_desk_key
-            project_record && ::ServiceDesk.enabled?(project_record) ? project_record : nil
-          end
+          project_record = super
+          project_record ||= project_from_key if service_desk_key
+          project_record && ::ServiceDesk.enabled?(project_record) ? project_record : nil
         end
+        strong_memoize_attr :project
 
         private
 
@@ -149,15 +148,18 @@ module Gitlab
             Gitlab::ErrorTracking.log_exception(e)
           end
 
-          if service_desk_setting&.issue_template_missing?
-            create_template_not_found_note
-          end
+          return unless service_desk_setting&.issue_template_missing?
+
+          create_template_not_found_note
         end
 
         def work_item_from_reply_to
           return unless mail.in_reply_to
 
-          Issue::Email.find_by_email_message_id(mail.in_reply_to)&.work_item
+          Issue::Email.find_by_email_message_id_and_namespace_id(
+            mail.in_reply_to,
+            @project.project_namespace_id
+          )&.work_item
         end
         strong_memoize_attr :work_item_from_reply_to
 
@@ -169,6 +171,13 @@ module Gitlab
           @work_item = work_item_from_reply_to
 
           create_note(message_including_reply)
+
+          reopen_issue_on_external_participant_note(
+            noteable: @work_item,
+            author: author,
+            project: project,
+            support_bot: support_bot
+          )
         end
 
         def send_thank_you_email
@@ -180,10 +189,7 @@ module Gitlab
           description = message_including_reply_or_only_quotes
           template_content = service_desk_setting&.issue_template_content
 
-          if template_content.present?
-            description += "  \n" + template_content
-          end
-
+          description += "  \n" + template_content if template_content.present?
           description
         end
 
@@ -208,12 +214,9 @@ module Gitlab
             project,
             support_bot,
             noteable: @work_item,
-            note: note
+            note: note,
+            external_author: from_address
           ).execute
-        end
-
-        def from_address
-          (mail.reply_to || []).first || mail.from.first || mail.sender
         end
 
         def to_address
@@ -234,11 +237,8 @@ module Gitlab
         end
 
         def add_email_participants
-          return if reply_email? && !Feature.enabled?(:issue_email_participants, @work_item.project)
-
-          # Migrate this to ::IssueEmailParticipants::CreateService once the
-          # feature flag issue_email_participants has been enabled globally
-          # or removed: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137147#note_1652104416
+          # Migrate this to ::IssueEmailParticipants::CreateService
+          # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137147#note_1652104416
           @work_item.issue_email_participants.create(email: from_address)
 
           add_external_participants_from_cc

@@ -1,0 +1,7 @@
+---
+name: update_geo_site
+description: Grants the ability to update Geo sites
+boundaries:
+  - instance
+permissions:
+  - update_geo_site

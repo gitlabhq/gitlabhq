@@ -31,7 +31,6 @@ export default {
     'secretPushProtectionEnabled',
     'canEnableSpp',
     'secretPushProtectionLicensed',
-    'isGitlabCom',
     'projectFullPath',
     'secretDetectionConfigurationPath',
   ],
@@ -89,12 +88,6 @@ export default {
       }
       return '';
     },
-    availabilityText() {
-      if (this.isGitlabCom) {
-        return this.$options.i18n.availableWithUltimateAndPublic;
-      }
-      return this.$options.i18n.availableWith;
-    },
   },
   methods: {
     reportError(error) {
@@ -135,9 +128,6 @@ export default {
     enabled: s__('SecurityConfiguration|Enabled'),
     notEnabled: s__('SecurityConfiguration|Not enabled'),
     availableWith: s__('SecurityConfiguration|Available with Ultimate'),
-    availableWithUltimateAndPublic: s__(
-      'SecurityConfiguration|Available with Ultimate. Enabled by default for all public projects.',
-    ),
     learnMore: __('Learn more'),
     tooltipTitle: s__('SecretDetection|Action unavailable'),
     tooltipDescription: s__(
@@ -185,7 +175,7 @@ export default {
           </template>
 
           <template v-else>
-            {{ availabilityText }}
+            {{ $options.i18n.availableWith }}
           </template>
         </div>
       </div>
@@ -219,6 +209,7 @@ export default {
           icon="settings"
           category="secondary"
           :href="secretDetectionConfigurationPath"
+          :aria-label="$options.i18n.settingsButtonTooltip"
         />
       </div>
     </template>

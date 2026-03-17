@@ -192,7 +192,7 @@ describe('TimeAgo utils', () => {
         it.each`
           updateTooltip | title
           ${false}      | ${'some time'}
-          ${true}       | ${'February 18, 2020 at 10:22:32 PM GMT'}
+          ${true}       | ${'Tuesday, February 18, 2020 at 10:22:32 PM GMT'}
         `(
           `has content: '${text}' and tooltip: '$title' with updateTooltip = $updateTooltip`,
           ({ updateTooltip, title }) => {

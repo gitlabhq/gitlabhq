@@ -5,7 +5,8 @@ require "spec_helper"
 RSpec.describe API::Helpers::IntegrationsHelpers, feature_category: :integrations do
   let(:base_classes) { Integration::BASE_CLASSES.map(&:constantize) }
   let(:development_classes) { [Integrations::MockCi, Integrations::MockMonitoring] }
-  let(:instance_level_classes) { [Integrations::BeyondIdentity] }
+  let(:instance_level_classes) { Integration.instance_specific_integration_types.map(&:constantize) }
+  let(:deprecated) { [Integrations::Prometheus] }
 
   describe '.integrations' do
     it 'has correct integrations' do
@@ -14,11 +15,11 @@ RSpec.describe API::Helpers::IntegrationsHelpers, feature_category: :integration
     end
   end
 
-  describe '.integration_classes' do
-    it 'returns correct integrations',
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/9483' do
+  describe '.integration_classes', :eager_load do
+    it 'returns correct integrations' do
       expect(described_class.integration_classes)
-        .to match_array(Integration.descendants.without(base_classes, development_classes, instance_level_classes))
+        .to match_array(Integration.descendants.without(base_classes, development_classes, instance_level_classes,
+          deprecated))
     end
   end
 

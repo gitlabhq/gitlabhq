@@ -7,6 +7,7 @@ module Gitlab
 
       CONFIG_FILE_NAME = '.gitlab/duo/agent-config.yml'
       CACHE_EXPIRY = 5.minutes
+      MAX_USER_SPECIFIED_DOMAINS = 1000
 
       attr_reader :project
 
@@ -18,13 +19,32 @@ module Gitlab
       def default_image
         return unless valid?
 
-        @config&.dig('image')
+        @config['image']
+      end
+
+      def network_policy
+        return unless valid?
+
+        policy = @config['network_policy']
+        return unless policy.is_a?(Hash)
+
+        normalized_policy = policy.dup
+        normalized_policy['allowed_domains'] =
+          Array(policy['allowed_domains']).filter_map do |d|
+            d.to_s.downcase.delete("'")
+          end.uniq.first(MAX_USER_SPECIFIED_DOMAINS)
+        normalized_policy['denied_domains'] =
+          Array(policy['denied_domains']).filter_map do |d|
+            d.to_s.downcase.delete("'")
+          end.uniq.first(MAX_USER_SPECIFIED_DOMAINS)
+
+        normalized_policy
       end
 
       def setup_script
         return unless valid?
 
-        script = @config&.dig('setup_script')
+        script = @config['setup_script']
         return unless script
 
         # Ensure it's an array of strings
@@ -34,7 +54,7 @@ module Gitlab
       def cache_config
         return unless valid?
 
-        cache = @config&.dig('cache')
+        cache = @config['cache']
         return unless cache.is_a?(Hash)
 
         # Cache must have paths to be valid

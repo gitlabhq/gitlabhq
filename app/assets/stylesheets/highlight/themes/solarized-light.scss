@@ -106,7 +106,7 @@ $solarized-light-il: #2aa198;
 }
 
 @mixin match-line {
-  color: $gl-color-alpha-dark-24;
+  color: $gl-text-color-subtle;
   background: $solarized-light-matchline-bg;
 }
 
@@ -139,10 +139,10 @@ $solarized-light-il: #2aa198;
   --code-new-inline-diff-background-color: #{$solarized-light-new-idiff};
 
   --code-meta-diff-background-color: #{$solarized-light-matchline-bg};
-  --code-meta-diff-color: #{$gl-color-alpha-dark-24};
+  --code-meta-diff-color: #{$gl-text-color-subtle};
 
   --code-diff-hunk-header-background-color: #{$solarized-light-matchline-bg};
-  --code-diff-hunk-header-color: #{$gl-color-alpha-dark-24};
+  --code-diff-hunk-header-color: #{$gl-text-color-subtle};
 
   --code-highlighted-line-background-color: #{$solarized-light-hll-bg};
   --code-highlighted-line-border-color: #{color.adjust($solarized-light-hll-bg, $lightness: -15%)};

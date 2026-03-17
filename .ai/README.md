@@ -4,8 +4,14 @@ This directory contains modular AI agent instructions for the GitLab project.
 
 ## Quick Start
 
-AI tools like OpenCode automatically read `AGENTS.md` from the project root, which
-loads `.ai/AGENTS.md` by default. This gives you GitLab conventions out of the box.
+To use these AI instructions with OpenCode, copy `opencode.example.json` to `opencode.json`:
+
+```shell
+cp opencode.example.json opencode.json
+```
+
+This configuration loads both `AGENTS.local.md` (if it exists) and `.ai/AGENTS.md`,
+giving you GitLab conventions with optional personal customizations.
 
 ## Customization
 
@@ -13,7 +19,7 @@ loads `.ai/AGENTS.md` by default. This gives you GitLab conventions out of the b
 
 Create `AGENTS.local.md` in the project root to replace the default entirely:
 
-```bash
+```shell
 # Create your local override
 cat > AGENTS.local.md <<EOF
 # My Custom Agent Instructions
@@ -36,7 +42,7 @@ Read and follow all instructions in the .ai/ directory.
 
 Ignore all auto-loaded files and manually specify in your prompt:
 
-```
+```plaintext
 Read .ai/database.md and .ai/testing.md. Ignore all other .ai/ files.
 ```
 
@@ -53,27 +59,30 @@ Read .ai/database.md and .ai/testing.md. Ignore all other .ai/ files.
 
 ## File Loading Behavior
 
-By default, the root `AGENTS.md` contains:
+The `opencode.example.json` configuration explicitly loads:
 
-```
-If AGENTS.local.md exists, read and load that.
-Otherwise, read and load .ai/AGENTS.md
+```json
+"instructions": ["AGENTS.local.md", ".ai/AGENTS.md"]
 ```
 
 This means:
-- **No customization** - You get `.ai/AGENTS.md` (sensible defaults)
-- **Create `AGENTS.local.md`** - You get full control
+
+- **`AGENTS.local.md`** loads first (if it exists) - for your personal customizations
+- **`.ai/AGENTS.md`** loads second - providing project defaults
 - `AGENTS.local.md` is gitignored, so your customizations stay local
+- If `AGENTS.local.md` doesn't exist, you still get `.ai/AGENTS.md` defaults
 
 ## Troubleshooting
 
 **Agent not reading files?**
 
-Some AI tools don't reliably auto-load AGENTS.md files. If this happens:
+Make sure you have `opencode.json` configured (copy from `opencode.example.json`).
 
-1. Explicitly prompt: "Read AGENTS.md from the project root"
-2. Or be more specific: "Read .ai/database.md"
-3. Prepend important sessions with: "First, reread AGENTS.md, then..."
+If instructions still aren't loading:
+
+1. Check your `opencode.json` has the correct `instructions` array.
+1. Explicitly prompt: "Read .ai/database.md" to load specific modules.
+1. Verify the file paths are correct relative to the project root.
 
 **Too much context loaded?**
 

@@ -16,6 +16,7 @@ fragment MergeRequestDashboardFragment on MergeRequest {
   }
   milestone {
     ...MilestoneFragment
+    webPath
   }
   assignees {
     nodes {

@@ -3,10 +3,4 @@
 - add_page_specific_style 'page_bundles/observability'
 
 .observability-container
-  - if @data&.auth_tokens.blank?
-    = render Pajamas::AlertComponent.new(dismissible: false, variant: :danger, title: _('Unable to authenticate with the observability service. Please check your configuration and try again.'))
-  - elsif @data.provisioning?
-    = render Pajamas::AlertComponent.new(dismissible: false, variant: :info, title: _('The observability service is initializing. Please try again in a few minutes.'))
-    = render partial: 'groups/observability/setup/endpoint_configuration', locals: { configuration_settings: @data.observability_setting }
-  - else
-    #js-observability{ data: @data.to_h }
+  #js-observability{ data: @data.to_h.merge(polling_endpoint: url_for(format: :json, only_path: true)) }

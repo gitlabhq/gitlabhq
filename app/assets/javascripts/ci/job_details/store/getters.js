@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { checkJobHasLog } from './utils';
 
 export const hasForwardDeploymentFailure = (state) =>

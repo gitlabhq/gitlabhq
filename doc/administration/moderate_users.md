@@ -1,7 +1,8 @@
 ---
 stage: Fulfillment
 group: Provision
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: Block, deactivate, ban, or trust users to control instance access and activity.
 gitlab_dedicated: yes
 title: Moderate users
 ---
@@ -18,7 +19,16 @@ If you are an instance administrator, you have several options to moderate and c
 > [!note]
 > This topic is specifically related to user moderation in GitLab Self-Managed. For information related to groups, see the [group documentation](../user/group/moderate_users.md).
 
-## View users by type
+## View users
+
+To view all the users in your instance:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Overview** > **Users**.
+
+Select a user to view their account information.
+
+### View users by type
 
 {{< history >}}
 
@@ -37,6 +47,45 @@ To view users by type:
    - To display human users, enter **Type=Humans**.
    - To display bot users, enter **Type=Bots**.
 1. Press <kbd>Enter</kbd>.
+
+## Billable users
+
+You can view and update the [billable users](../subscriptions/manage_users_and_seats.md#billable-users) in your instance through the Rails console.
+
+### Check daily and historical billable users
+
+To get a list of daily and historical billable users in your GitLab instance:
+
+1. [Start a Rails console session](operations/rails_console.md#starting-a-rails-console-session).
+1. Count the number of users in the instance:
+
+   ```ruby
+   User.billable.count
+   ```
+
+1. Get the historical maximum number of users on the instance from the past year:
+
+   ```ruby
+   ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
+   ```
+
+### Update daily and historical billable users
+
+To trigger a manual update of the daily and historical billable users in your GitLab instance:
+
+1. [Start a Rails console session](operations/rails_console.md#starting-a-rails-console-session).
+1. Force an update of the daily billable users:
+
+   ```ruby
+   identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
+   ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
+   ```
+
+1. Force an update of the historical max billable users:
+
+   ```ruby
+   ::HistoricalDataWorker.new.perform
+   ```
 
 ## Users pending approval
 
@@ -155,7 +204,9 @@ To report abuse from other users, see [report abuse](../user/report_abuse.md). F
 
 {{< /history >}}
 
-A blocked user can be unblocked from the **Admin** area. To do this:
+You can unblock a user so they regain access to the instance.
+
+To unblock a user:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
@@ -228,7 +279,7 @@ Administrators can enable automatic deactivation of users who either:
 - Were created more than a week ago and have not signed in.
 - Have no activity for a specified period of time (default and minimum is 90 days).
 
-To do this:
+To automatically deactivate dormant members:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
@@ -294,9 +345,7 @@ A maximum of 240,000 users can be deleted per day.
 
 {{< /history >}}
 
-You can reactivate a deactivated user from the **Admin** area.
-
-To do this:
+To reactivate a user:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
@@ -333,7 +382,7 @@ A banned user:
 
 ### Ban a user
 
-To block a user and hide their contributions, administrators can ban the user.
+You can ban a user to block them and hide their contributions.
 
 To ban a user:
 
@@ -363,27 +412,18 @@ The user's state is set to active and they consume a
 
 ## Delete a user
 
-Use the **Admin** area to delete users.
+To delete a user:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
 1. For the user you want to delete, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Delete user**.
 1. Type the username.
-1. Select **Delete user**.
+1. Select either:
+   - **Delete user**, to delete only the user.
+   - **Delete user and contributions**, to delete the user and their contributions, such as merge requests, issues, and groups of which they are the only group owner.
 
 > [!note]
-> You can only delete a user if there are inherited or direct owners of a group. You cannot delete a user if they are the only group owner.
-
-You can also delete a user and their contributions, such as merge requests, issues, and groups of which they are the only group owner.
-
-1. In the upper-right corner, select **Admin**.
-1. Select **Overview** > **Users**.
-1. For the user you want to delete, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Delete user and contributions**.
-1. Type the username.
-1. Select **Delete user and contributions**.
-
-> [!note]
-> Before 15.1, additionally groups of which deleted user were the only owner among direct members were deleted.
+> You can only delete a user if they are an inherited or direct owner of a group. You cannot delete a user if they are the only group owner.
 
 ## Trust and untrust users
 
@@ -394,17 +434,11 @@ You can also delete a user and their contributions, such as merge requests, issu
 
 {{< /history >}}
 
-You can trust and untrust users from the **Admin** area.
+By default, users are not trusted and are blocked from creating issues, notes, and snippets considered to be spam. When you trust a user, they can create issues, notes, and snippets without being blocked.
 
-By default, a user is not trusted and is blocked from creating issues, notes, and snippets considered to be spam. When you trust a user, they can create issues, notes, and snippets without being blocked.
+### Trust a user
 
-Prerequisites:
-
-- You must be an administrator.
-
-{{< tabs >}}
-
-{{< tab title="Trust a user" >}}
+To trust a user:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
@@ -412,11 +446,9 @@ Prerequisites:
 1. From the **User administration** dropdown list, select **Trust user**.
 1. On the confirmation dialog, select **Trust user**.
 
-The user is trusted.
+### Untrust a user
 
-{{< /tab >}}
-
-{{< tab title="Untrust a user" >}}
+To untrust a user:
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Overview** > **Users**.
@@ -424,12 +456,6 @@ The user is trusted.
 1. Select a user.
 1. From the **User administration** dropdown list, select **Untrust user**.
 1. On the confirmation dialog, select **Untrust user**.
-
-The user is untrusted.
-
-{{< /tab >}}
-
-{{< /tabs >}}
 
 ## Troubleshooting
 

@@ -24,6 +24,7 @@
       count: @active_access_tokens_size,
       count_options: { class: 'js-token-count' },
       form_options: { class: 'gl-hidden js-toggle-content js-add-new-token-form' },
+      title_tag: 'div',
       options: { class: 'gl-mt-5 js-toggle-container js-token-card' }) do |c|
       - c.with_actions do
         - if current_user.can?(:create_resource_access_tokens, @project)
@@ -40,6 +41,7 @@
     .gl-mt-5
       = render ::Layouts::CrudComponent.new(_('Inactive project access tokens'),
         icon: 'token',
-        count: @inactive_access_tokens_size) do |c|
+        count: @inactive_access_tokens_size,
+        title_tag: 'div') do |c|
         - c.with_body do
           #js-inactive-access-token-table-app{ data: { no_inactive_tokens_message: _('This project has no inactive access tokens.'), pagination_url: inactive_project_settings_access_tokens_url(@project, format: :json) } }

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: SCSS style guide
 ---
 
@@ -79,7 +79,7 @@ You can use the [important modifier](https://tailwindcss.com/docs/configuration#
 ##### Spacing and sizing CSS utility classes
 
 Spacing and sizing CSS utility classes (for example, `margin`, `padding`, `width`, `height`) use our spacing scale defined in
-[src/tokens/build/tailwind/tokens.cjs](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/7c0fb4b07a0f0d0a58dd0137831412dbf53ea498/src/tokens/build/tailwind/tokens.cjs). See [https://design.gitlab.com/tailwind-documentation/margin](https://design.gitlab.com/tailwind-documentation/margin) for available CSS utility classes.
+[src/tokens/build/tailwind/tokens.cjs](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/7c0fb4b07a0f0d0a58dd0137831412dbf53ea498/src/tokens/build/tailwind/tokens.cjs). See <https://design.gitlab.com/tailwind-documentation/margin> for available CSS utility classes.
 
 **Example**: `gl-mt-5` is `margin-top: 1rem;`
 
@@ -87,7 +87,7 @@ Spacing and sizing CSS utility classes (for example, `margin`, `padding`, `width
 
 Color CSS utility classes (e.g. `color` and `background-color`) use colors defined in
 [src/tokens/build/tailwind/tokens.cjs](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/7c0fb4b07a0f0d0a58dd0137831412dbf53ea498/src/tokens/build/tailwind/tokens.cjs).
-See [https://design.gitlab.com/tailwind-documentation/text-color](https://design.gitlab.com/tailwind-documentation/text-color) for available CSS utility classes.
+See <https://design.gitlab.com/tailwind-documentation/text-color> for available CSS utility classes.
 
 **Example**: `gl-text-subtle` is `color: var(--gl-text-color-subtle, #626168);`
 
@@ -181,15 +181,14 @@ unless absolutely necessary, we can prevent confusion and potential conflicts.
 
 - **Reasons for the Preference**:
   - **Smaller CSS File Size**: Utilizing utility classes directly can lead to more compact CSS files and
-  promote a more consistent design system.
+    promote a more consistent design system.
   - **Clarity and Maintainability**: When utility classes are used in HTML, it's clearer how styles are
-  applied, reducing the risk of conflicts and regressions.
-
+    applied, reducing the risk of conflicts and regressions.
 - **Potential Issues with Combining Styles**:
   - **Conflicts**: If utility classes and custom styles are combined in a single class, conflicts can arise,
-  especially when the styles have interdependencies.
+    especially when the styles have interdependencies.
   - **Regressions**: It becomes less obvious how styles should resolve, leading to possible regressions
-  or unexpected behavior.
+    or unexpected behavior.
 
 By following these guidelines, we can create clean, maintainable stylesheets that leverage Tailwind CSS effectively.
 

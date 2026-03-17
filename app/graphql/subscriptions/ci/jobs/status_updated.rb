@@ -13,11 +13,7 @@ module Subscriptions
         payload_type Types::Ci::JobType
 
         def authorized?(job_id:)
-          job = force(GitlabSchema.find_by_gid(job_id))
-
-          unauthorized! unless job && Ability.allowed?(current_user, :read_build, job)
-
-          true
+          authorize_object_or_gid!(:read_build, gid: job_id)
         end
       end
     end

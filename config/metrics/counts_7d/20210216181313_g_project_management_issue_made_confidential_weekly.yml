@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_made_confidential_weekly
 description: Count of WAU making an issue confidential
 product_group: project_management
+product_categories:
+- team_planning
 value_type: number
 status: active
 time_frame: 7d

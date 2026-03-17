@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class LabelsFinder < UnionFinder
+  extend Gitlab::Utils::Override
   prepend FinderWithCrossProjectAccess
   include FinderWithGroupHierarchy
   include FinderMethods
@@ -95,9 +96,6 @@ class LabelsFinder < UnionFinder
   end
 
   def by_archived(labels)
-    group_actor = group? ? group : project&.group
-
-    return labels unless Feature.enabled?(:labels_archive, group_actor)
     return labels unless filter_by_archived?
 
     # When called from GraphQL, :archived will be boolean.
@@ -190,4 +188,17 @@ class LabelsFinder < UnionFinder
     Project.where(id: projects.select(:id)).ids_with_issuables_available_for(current_user)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  override :groups_user_can_read_items
+  def groups_user_can_read_items(groups)
+    return groups if group? && user_can_access_all_subgroup_labels?
+
+    super
+  end
+
+  def user_can_access_all_subgroup_labels?
+    ancestor_group = include_ancestor_groups? ? group.root_ancestor : group
+
+    Ability.allowed?(current_user, :read_all_resources) || ancestor_group.member?(current_user)
+  end
 end

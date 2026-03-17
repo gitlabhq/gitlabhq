@@ -1,6 +1,5 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { NAME_TO_ICON_MAP, NAME_TO_TEXT_MAP } from '../constants';
 import { convertTypeEnumToName } from '../utils';
 
 export default {
@@ -53,13 +52,14 @@ export default {
       return this.workItemType.replaceAll(' ', '_').toUpperCase();
     },
     workItemTypeName() {
-      return convertTypeEnumToName(this.workItemTypeEnum);
+      const name = convertTypeEnumToName(this.workItemTypeEnum);
+      return name || this.workItemType;
     },
     iconName() {
-      return NAME_TO_ICON_MAP[this.workItemTypeName] || this.typeIconName || 'work-item-issue';
+      return this.typeIconName || 'work-item-issue';
     },
     workItemTypeText() {
-      return NAME_TO_TEXT_MAP[this.workItemTypeName];
+      return this.workItemTypeName || '';
     },
     workItemTooltipTitle() {
       return this.showTooltipOnHover ? this.workItemTypeText : '';

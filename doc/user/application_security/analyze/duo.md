@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Explain vulnerabilities with AI
 ---
 
@@ -50,7 +50,7 @@ Prerequisites:
 
 To explain the vulnerability:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.

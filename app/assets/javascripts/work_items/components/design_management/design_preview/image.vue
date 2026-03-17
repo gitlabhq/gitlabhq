@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlIcon } from '@gitlab/ui';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { DESIGN_MARK_APP_START, DESIGN_MAIN_IMAGE_OUTPUT } from '~/performance/constants';
 import { performanceMarkAndMeasure } from '~/performance/utils';
 

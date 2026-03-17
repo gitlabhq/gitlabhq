@@ -34,6 +34,9 @@ export default {
     itemTestSelector(locale) {
       return `language_switcher_lang_${locale}`;
     },
+    itemLangAttribute(locale) {
+      return locale.replace(/_/g, '-');
+    },
   },
   HELP_TRANSLATE_MSG,
   HELP_TRANSLATE_HREF,
@@ -52,7 +55,7 @@ export default {
     @select="onLanguageSelected"
   >
     <template #list-item="{ item: locale }">
-      <span :data-testid="itemTestSelector(locale.value)">
+      <span :lang="itemLangAttribute(locale.value)" :data-testid="itemTestSelector(locale.value)">
         {{ locale.text }}
       </span>
     </template>

@@ -8,13 +8,15 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
     let(:expected_response) do
       {
         'resource' => [
-          "#{Gitlab.config.gitlab.url}/api/v4/mcp"
+          "#{Gitlab.config.gitlab.url}/api/v4/mcp",
+          "#{Gitlab.config.gitlab.url}/api/v4/orbit/mcp"
         ],
         'authorization_servers' => [
           Gitlab.config.gitlab.url
         ],
         'scopes_supported' => [
-          Gitlab::Auth::MCP_SCOPE.to_s
+          Gitlab::Auth::MCP_SCOPE.to_s,
+          Gitlab::Auth::MCP_ORBIT_SCOPE.to_s
         ]
       }
     end
@@ -55,13 +57,15 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
       it 'returns metadata with custom base URL' do
         expected_custom_response = {
           'resource' => [
-            "#{custom_host}/api/v4/mcp"
+            "#{custom_host}/api/v4/mcp",
+            "#{custom_host}/api/v4/orbit/mcp"
           ],
           'authorization_servers' => [
             custom_host
           ],
           'scopes_supported' => [
-            Gitlab::Auth::MCP_SCOPE.to_s
+            Gitlab::Auth::MCP_SCOPE.to_s,
+            Gitlab::Auth::MCP_ORBIT_SCOPE.to_s
           ]
         }
 
@@ -101,12 +105,13 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
 
       it 'has correct resource format' do
         resource_urls = response.parsed_body['resource']
-        expect(resource_urls.size).to eq(1)
+        expect(resource_urls.size).to eq(2)
 
         expect(resource_urls).to all be_a(String)
         expect(resource_urls).to all match(%r{\Ahttps?://})
 
-        expect(resource_urls.first).to end_with('/api/v4/mcp')
+        expect(resource_urls[0]).to end_with('/api/v4/mcp')
+        expect(resource_urls[1]).to end_with('/api/v4/orbit/mcp')
       end
 
       it 'has correct authorization_servers format' do
@@ -122,16 +127,43 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
         scopes = response.parsed_body['scopes_supported']
 
         expect(scopes).to be_a(Array)
-        expect(scopes.length).to eq(1)
-        expect(scopes).to contain_exactly(Gitlab::Auth::MCP_SCOPE.to_s)
+        expect(scopes).to contain_exactly(Gitlab::Auth::MCP_SCOPE.to_s, Gitlab::Auth::MCP_ORBIT_SCOPE.to_s)
       end
 
-      it 'authorization_servers contains the same base URL as resource' do
+      it 'authorization_servers contains the same base URL as resources' do
         response_body = response.parsed_body
-        resource_base = response_body['resource'][0].gsub('/api/v4/mcp', '')
         auth_server = response_body['authorization_servers'].first
 
-        expect(auth_server).to eq(resource_base)
+        response_body['resource'].each do |resource_url|
+          resource_base = resource_url.gsub(%r{/api/v4/(mcp|orbit/mcp)}, '')
+          expect(auth_server).to eq(resource_base)
+        end
+      end
+    end
+
+    context 'when accessing MCP-specific protected resource path' do
+      before do
+        get '/.well-known/oauth-protected-resource/api/v4/mcp'
+      end
+
+      it 'returns only mcp resource and scope' do
+        body = response.parsed_body
+
+        expect(body['resource']).to eq(["#{Gitlab.config.gitlab.url}/api/v4/mcp"])
+        expect(body['scopes_supported']).to eq([Gitlab::Auth::MCP_SCOPE.to_s])
+      end
+    end
+
+    context 'when accessing MCP Orbit-specific protected resource path' do
+      before do
+        get '/.well-known/oauth-protected-resource/api/v4/orbit/mcp'
+      end
+
+      it 'returns only mcp_orbit resource and scope' do
+        body = response.parsed_body
+
+        expect(body['resource']).to eq(["#{Gitlab.config.gitlab.url}/api/v4/orbit/mcp"])
+        expect(body['scopes_supported']).to eq([Gitlab::Auth::MCP_ORBIT_SCOPE.to_s])
       end
     end
 
@@ -146,7 +178,8 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
 
       it 'includes relative_url_root in resource URLs' do
         resource_urls = response.parsed_body['resource']
-        expect(resource_urls.first).to eq("#{base_url_with_root}/api/v4/mcp")
+        expect(resource_urls).to include("#{base_url_with_root}/api/v4/mcp")
+        expect(resource_urls).to include("#{base_url_with_root}/api/v4/orbit/mcp")
       end
 
       it 'includes relative_url_root in authorization_servers' do
@@ -156,10 +189,12 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
 
       it 'maintains consistency between resource and authorization_servers' do
         response_body = response.parsed_body
-        resource_base = response_body['resource'][0].gsub('/api/v4/mcp', '')
         auth_server = response_body['authorization_servers'].first
 
-        expect(auth_server).to eq(resource_base)
+        response_body['resource'].each do |resource_url|
+          resource_base = resource_url.gsub(%r{/api/v4/(mcp|orbit/mcp)}, '')
+          expect(auth_server).to eq(resource_base)
+        end
       end
     end
   end

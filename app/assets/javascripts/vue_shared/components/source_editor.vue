@@ -1,5 +1,5 @@
 <script>
-import { debounce, isEmpty } from 'lodash';
+import { debounce, isEmpty } from 'lodash-es';
 import { markRaw } from 'vue';
 import { CONTENT_UPDATE_DEBOUNCE, EDITOR_READY_EVENT } from '~/editor/constants';
 import Editor from '~/editor/source_editor';
@@ -64,6 +64,7 @@ export default {
       default: true,
     },
   },
+  emits: ['input', EDITOR_READY_EVENT],
   data() {
     return {
       editor: null,

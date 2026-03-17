@@ -200,7 +200,7 @@ describe('NoteableNote', () => {
       const spy = jest.spyOn(Element.prototype, 'scrollIntoView');
       createComponent({ note: createNote({ isEditing: true }) });
       await nextTick();
-      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith({ block: 'nearest' });
     });
 
     it('sends PUT request and emits noteUpdated on NoteBody save-note call', async () => {

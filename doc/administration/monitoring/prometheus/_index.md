@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Monitoring GitLab with Prometheus
 ---
 
@@ -220,7 +220,6 @@ To use an external Prometheus server:
    ```
 
 1. Install and set up a dedicated Prometheus instance, if necessary, using the [official installation instructions](https://prometheus.io/docs/prometheus/latest/installation/).
-
 1. On **all** GitLab Rails (Puma, Sidekiq) servers, set the Prometheus server IP address and listen port. For example:
 
    ```ruby

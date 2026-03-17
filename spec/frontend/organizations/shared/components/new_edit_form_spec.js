@@ -46,7 +46,7 @@ describe('NewEditForm', () => {
   const findNameField = () => wrapper.findByLabelText('Organization name');
   const findIdField = () => wrapper.findByLabelText('Organization ID');
   const findUrlField = () => wrapper.findComponent(OrganizationUrlField);
-  const findDescriptionField = () => wrapper.findByLabelText('Organization description (optional)');
+  const findDescriptionField = () => wrapper.find('textarea.note-textarea');
   const findDescriptionCharacterCounter = () =>
     wrapper.findByTestId('description-character-counter');
   const findAvatarField = () => wrapper.findComponent(AvatarUploadDropzone);

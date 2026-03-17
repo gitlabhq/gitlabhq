@@ -75,12 +75,12 @@ module Users
       # 72 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129022
       namespace_over_storage_users_combined_alert: 73, # EE-only
       # 74 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132751
-      vsd_feedback_banner: 75, # EE-only
+      # 75 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221970
       security_policy_protected_branch_modification: 76, # EE-only
       vulnerability_report_grouping: 77, # EE-only
       # 78 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161010,
       # 79 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143862
-      duo_chat_callout: 80, # EE-only
+      # 80 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224957
       # 81 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146322
       # 82 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203697
       joining_a_project_alert: 83, # EE-only
@@ -102,8 +102,8 @@ module Users
       pipl_compliance_alert: 98,
       # 99 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221009
       # 100 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220975
-      pipeline_new_inputs_adoption_banner: 101,
-      pipeline_schedules_inputs_adoption_banner: 102,
+      # 101 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225070
+      # 102 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225070
       # 103 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222229
       # 104 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218816
       # 105 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/218816
@@ -125,10 +125,11 @@ module Users
       file_tree_browser_popover: 121,
       virtual_registry_permission_change_alert: 122, # EE-only
       security_scanner_profiles_announcement: 123, # EE-only
-      # RESERVE CALLOUT ID 124 for a security fix 1509. See internal issue for more information.
+      single_origin_fallback_callout: 124,
       duo_panel_auto_expanded: 125, # EE-only
       work_items_nav_badge: 126,
-      work_items_onboarding_modal: 127
+      work_items_onboarding_modal: 127,
+      duo_panel_empty_state_auto_expanded: 128 # EE-only
     }
 
     validates :feature_name,

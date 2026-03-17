@@ -1,5 +1,3 @@
 ---
 name: read_issue_milestone_event
 description: Grants the ability to read Issue milestone events.
-boundaries:
-  - project

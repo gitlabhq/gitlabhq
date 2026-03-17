@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Use ChatOps to enable and disable feature flags
 ---
 
@@ -98,6 +98,7 @@ This depends on the feature and what sort of impact it might have.
 Guidelines:
 
 - Notify `#support_gitlab-com` beforehand. So in case if the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
+  - Include a brief description of what the feature flag does. You can start by asking GitLab Duo Chat (agentic): `Explain the feature flag <feature-flag-name> in the gitlab-org/gitlab project`.
 - If the feature meets the requirements for creating a [Change Management](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#change-request-workflows).
 - For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
 - For support requests to toggle feature flags for specific groups or projects, follow the process outlined in the [support workflows](https://handbook.gitlab.com/handbook/support/workflows/saas_feature_flags/).
@@ -450,7 +451,7 @@ Changes to the issue format can be submitted in the
 #### Instance level
 
 Any feature flag change that affects any GitLab instance is automatically logged in
-[features_json.log](../../administration/logs/_index.md#features_jsonlog).
+[`features_json.log`](../../administration/logs/_index.md#features_jsonlog).
 You can search the change history in [Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/).
 You can also access the feature flag change history for GitLab.com [in Kibana](https://log.gprd.gitlab.net/goto/d060337c017723084c6d97e09e591fc6).
 

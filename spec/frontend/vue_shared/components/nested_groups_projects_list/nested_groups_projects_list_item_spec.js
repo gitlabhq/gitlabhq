@@ -176,28 +176,49 @@ describe('NestedGroupsProjectsListItem', () => {
 
       describe('when children are loaded', () => {
         describe('when expandedOverride is true', () => {
-          beforeEach(async () => {
-            setup(true);
+          describe('when group has children', () => {
+            beforeEach(() => {
+              createComponent({
+                propsData: {
+                  item: {
+                    ...topLevelGroupA,
+                    children: topLevelGroupA.childrenToLoad,
+                  },
+                  expandedOverride: true,
+                },
+              });
+            });
 
-            await wrapper.setProps({
-              item: {
-                ...topLevelGroupA,
-                children: topLevelGroupA.childrenToLoad,
-              },
+            it('removes gl-hidden class', () => {
+              expect(findNestedGroupsProjectsList().classes()).not.toContain('gl-hidden');
+            });
+
+            it('updates button icon to chevron-down', () => {
+              expect(findToggleButton().props('icon')).toBe('chevron-down');
+            });
+
+            it('passes children to NestedGroupsProjectsList component', () => {
+              expect(findNestedGroupsProjectsList().props()).toMatchObject({
+                items: topLevelGroupA.childrenToLoad,
+              });
             });
           });
 
-          it('removes gl-hidden class', () => {
-            expect(findNestedGroupsProjectsList().classes()).not.toContain('gl-hidden');
-          });
+          describe('when group has no children', () => {
+            beforeEach(() => {
+              createComponent({
+                propsData: {
+                  expandedOverride: true,
+                },
+              });
+            });
 
-          it('updates button icon to chevron-down', () => {
-            expect(findToggleButton().props('icon')).toBe('chevron-down');
-          });
+            it('does not expand the list', () => {
+              expect(findNestedGroupsProjectsList().classes()).toContain('gl-hidden');
+            });
 
-          it('passes children to NestedGroupsProjectsList component', () => {
-            expect(findNestedGroupsProjectsList().props()).toMatchObject({
-              items: topLevelGroupA.childrenToLoad,
+            it('shows chevron-right icon', () => {
+              expect(findToggleButton().props('icon')).toBe('chevron-right');
             });
           });
         });
@@ -269,21 +290,43 @@ describe('NestedGroupsProjectsListItem', () => {
         expect(findNestedGroupsProjectsList().classes()).not.toContain('gl-hidden');
       });
 
-      describe('when there are more than 20 children', () => {
-        it('renders link to subgroup page', () => {
+      describe('when there are more children than loaded', () => {
+        beforeEach(() => {
           createComponent({
             propsData: {
               item: {
                 ...topLevelGroupA,
-                children: topLevelGroupA.childrenToLoad,
-                childrenCount: 25,
+                children: topLevelGroupA.childrenToLoad.slice(1),
+                childrenCount: 3,
               },
               expandedOverride: true,
             },
           });
+        });
 
+        it('renders link to subgroup page', () => {
           expect(findMoreChildrenLink().props('href')).toBe(topLevelGroupA.webUrl);
-          expect(findMoreChildrenLink().text()).toBe('View all (23 more items)');
+          expect(findMoreChildrenLink().text()).toBe('View all (2 more items)');
+        });
+
+        describe('when children are loading', () => {
+          beforeEach(() => {
+            createComponent({
+              propsData: {
+                item: {
+                  ...topLevelGroupA,
+                  children: topLevelGroupA.childrenToLoad.slice(1),
+                  childrenCount: 3,
+                  childrenLoading: true,
+                },
+                expandedOverride: true,
+              },
+            });
+          });
+
+          it('does not render link to subgroup page', () => {
+            expect(findMoreChildrenLink().exists()).toBe(false);
+          });
         });
       });
 

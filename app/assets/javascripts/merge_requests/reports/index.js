@@ -13,7 +13,20 @@ export default () => {
   const el = document.getElementById('js-reports-tab');
   const { projectPath, iid, basePath, hasPolicies } = el.dataset;
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(),
+    defaultClient: createDefaultClient(
+      {},
+      {
+        typePolicies: {
+          Query: {
+            fields: {
+              project: {
+                merge: true,
+              },
+            },
+          },
+        },
+      },
+    ),
   });
   const router = new VueRouter({
     base: basePath,

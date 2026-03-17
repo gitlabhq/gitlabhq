@@ -49,7 +49,7 @@ RSpec.describe Types::WorkItems::WidgetDefinitions::StartAndDueDateType, feature
     context 'when show_popover is set to true' do
       before do
         allow(widget_definition).to receive(:widget_options).and_return(
-          { start_and_due_date: { can_roll_up: true } }
+          { can_roll_up: true }
         )
       end
 
@@ -61,7 +61,7 @@ RSpec.describe Types::WorkItems::WidgetDefinitions::StartAndDueDateType, feature
     context 'when show_popover is set to false' do
       before do
         allow(widget_definition).to receive(:widget_options).and_return(
-          { start_and_due_date: { can_roll_up: false } }
+          { can_roll_up: false }
         )
       end
 

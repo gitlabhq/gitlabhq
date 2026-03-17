@@ -48,6 +48,24 @@ describe('CRUD Component', () => {
     expect(findTitle().text()).toBe('CRUD Component title');
   });
 
+  it('renders title as h2 by default', () => {
+    createComponent();
+
+    expect(findTitle().element.tagName).toBe('H2');
+  });
+
+  it('renders title with the specified titleTag', () => {
+    createComponent({ titleTag: 'h3' });
+
+    expect(findTitle().element.tagName).toBe('H3');
+  });
+
+  it('renders title as a div when titleTag is div', () => {
+    createComponent({ titleTag: 'div' });
+
+    expect(findTitle().element.tagName).toBe('DIV');
+  });
+
   it('renders the element specified by the containerTag prop', () => {
     createComponent({ containerTag: 'span' });
     expect(wrapper.element.tagName).toBe('SPAN');

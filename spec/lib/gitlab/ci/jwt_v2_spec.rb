@@ -109,6 +109,30 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       end
     end
 
+    describe 'when project_path and ref_protected provided' do
+      let(:sub_components) { [:project_path, :ref_protected] }
+
+      context 'when ref is protected' do
+        before do
+          allow(build).to receive(:protected).and_return(true)
+        end
+
+        it 'has project_path and ref_protected in sub section' do
+          expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_protected:true")
+        end
+      end
+
+      context 'when ref is not protected' do
+        before do
+          allow(build).to receive(:protected).and_return(false)
+        end
+
+        it 'has project_path and ref_protected in sub section' do
+          expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_protected:false")
+        end
+      end
+    end
+
     describe 'when project_path and invalid claim provided' do
       let(:sub_components) { [:project_path, :not_existing_claim] }
 

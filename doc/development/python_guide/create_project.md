@@ -1,8 +1,8 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
-title: Create a new python projects
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
+title: Create a new Python projects
 ---
 
 When creating a new Python repository, some guidelines help keep our code standardized.
@@ -261,7 +261,6 @@ To create a pool of reviewers specific to a project:
 1. Follow the
    [GitLab Dangerfiles instructions](https://gitlab.com/gitlab-org/ruby/gems/gitlab-dangerfiles/-/blob/master/README.md#simple_roulette)
    to add the configuration to your project.
-
 1. Implement the
    [Danger Reviewer component](https://gitlab.com/gitlab-org/components/danger-review#example) in
    your GitLab CI pipeline to automatically trigger the roulette.

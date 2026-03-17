@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
-  include Namespaces::StatefulHelpers
-
   let(:user) { create(:user) }
   let(:group) do
     create(:group_with_deletion_schedule,
@@ -92,13 +90,13 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
 
         context 'when group state is deletion_scheduled' do
           before do
-            set_state(group, :deletion_scheduled)
+            group.update!(state: :deletion_scheduled)
           end
 
           it 'changes the state of the group' do
             expect { execute }.to change { group.state }
-              .from(Namespaces::Stateful::STATES[:deletion_scheduled])
-              .to(Namespaces::Stateful::STATES[:ancestor_inherited])
+              .from('deletion_scheduled')
+              .to('ancestor_inherited')
           end
         end
 
@@ -119,24 +117,52 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
           end
         end
 
-        context 'when deletion schedule destroy fails' do
+        context 'when deletion_schedule is already nil after cancel_deletion succeeds' do
+          before do
+            group.update!(state: :deletion_scheduled)
+            group.deletion_schedule.destroy!
+            group.reload
+          end
+
+          it 'returns success' do
+            result = execute
+
+            expect(result).to be_success
+          end
+        end
+
+        context 'when cancel_deletion fails' do
           before do
             allow(group).to receive(:cancel_deletion).and_return(false)
             allow(group).to receive_message_chain(:errors, :full_messages).and_return(['resource error'])
           end
 
-          it 'returns error with combined messages' do
+          it 'returns error' do
             result = execute
 
             expect(result).to be_error
             expect(result.message).to eq('resource error')
           end
         end
+
+        context 'when deletion_schedule.destroy fails' do
+          before do
+            allow(group.deletion_schedule).to receive(:destroy).and_return(false)
+            allow(group).to receive_message_chain(:errors, :full_messages).and_return(['destroy error'])
+          end
+
+          it 'returns error' do
+            result = execute
+
+            expect(result).to be_error
+            expect(result.message).to eq('destroy error')
+          end
+        end
       end
 
       context 'when the group is deletion is in progress' do
         before do
-          set_state(group, :deletion_in_progress)
+          group.update!(state: :deletion_in_progress)
         end
 
         it 'returns error' do

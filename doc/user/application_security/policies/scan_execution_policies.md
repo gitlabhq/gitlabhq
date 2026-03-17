@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Scan execution policies
 ---
 
@@ -64,7 +64,7 @@ instead according to these rules:
 - If the `scan-policies` stage doesn't already exist, GitLab injects the stage into the CI/CD pipeline at evaluation time.
 - If the `build` stage exists, GitLab injects `scan-policies` immediately after the `build` stage.
 - If the `build` stage does not exist, GitLab injects `scan-policies` at
-the beginning of the pipeline.
+  the beginning of the pipeline.
 
 To avoid job name conflicts, a hyphen and a number are appended to the job name. Each number is a unique
 value for each policy action. For example, `secret-detection` becomes `secret-detection-1`.
@@ -90,23 +90,18 @@ Prerequisites:
 When you create your first scan execution policies, choose from these templates for common use cases:
 
 - Merge Request Security
-
   - Use case: You want security scans to run only when merge requests are created, not on every commit.
   - When to use: For projects using merge request pipelines that need security scans to run on
     source branches targeting default or protected branches.
   - Best for: Aligning with merge request approval policies and reducing infrastructure
     costs by avoiding scans on every branch.
   - Pipeline sources: Primarily merge request pipelines.
-
 - Scheduled Scanning
-
   - Use case: You want security scans to run automatically on a schedule (like daily or weekly) regardless of code changes.
   - When to use: For security scanning on a regular cadence, independent of development activity.
   - Best for: Compliance requirements, baseline security monitoring, or projects with infrequent commits.
   - Pipeline sources: Scheduled pipelines.
-
 - Release Security
-
   - Use case: You want security scans to run on all changes to your `main` or release branches.
   - When to use: For projects that need comprehensive scanning before releases, or on protected branches.
   - Best for: Release-gated workflows, production deployments, or high-security environments.
@@ -133,7 +128,7 @@ before the policy changes take effect.
 > [!note]
 > For DAST execution policies, the way you apply site and scanner profiles in the rule mode editor depends on
 > where the policy is defined:
-> 
+>
 > - For policies in projects, in the rule mode editor, choose from a list of profiles that are already defined in the project.
 > - For policies in groups, you must type in the names of the profiles to use. To prevent pipeline errors, profiles with
 >   matching names must exist in all of the group's projects.
@@ -352,7 +347,7 @@ Define how scheduled scans are distributed over time with the `time_window` obje
 | Field          | Type      | Required | Description                                                                                                                                                                          |
 |----------------|-----------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `distribution` | `string`  | true     | Distribution pattern for schedule scans. Supports only `random`, where scans are distributed randomly in the interval defined by the `value` key of the `time_window`. |
-| `value`        | `integer` | true     | The time window in seconds the schedule scans should run. Enter a value between 3600 (1 hour) and 86400 (24 hours).                                               |
+| `value`        | `integer` | true     | The time window in seconds the schedule scans should run. Enter a value between 3600 (1 hour) and 2629746 (approximately 30 days).                                               |
 
 #### `time_window` example
 
@@ -378,6 +373,47 @@ To optimize performance for projects at scale:
 - Roll out scheduled scan execution policies gradually, starting with a subset of projects. You can leverage security policy scopes to target specific groups, projects, or projects containing a given compliance framework label.
 - You can configure the policy to run the schedules on runners with a specified `tag`. Consider setting up a dedicated runner in each project to handle schedules enforced from a policy to reduce impact to other runners.
 - Test your implementation in a staging or lower environment before deploying to production. Monitor performance and adjust your rollout plan based on results.
+
+### Configuring the maximum scheduling timespan for scheduled scan execution policies
+
+Scheduled scan execution policies support monthly scheduling using the `cadence` field with cron expressions. You can configure the `time_window` up to 2629746 seconds (approximately 30 days) to randomly distribute scans within that period.
+
+For example, to schedule scans monthly with a 30-day distribution window:
+
+```yaml
+rules:
+  - type: schedule
+    cadence: '0 0 1 * *'  # Run on the first day of each month
+    time_window:
+      value: 2592000  # 30 days in seconds
+      distribution: random
+```
+
+#### Understanding scheduled scans during instance downtimes
+
+Scheduled scans keep track of their next execution time. After a successful scan, the system updates when the next scan should run. If the GitLab instance is unavailable during a scheduled scan time (due to maintenance, outage, or restart), the system identifies scans that should have already executed but haven't, and creates pipelines when the instance becomes available.
+
+#### Deleting projects with scheduled scans
+
+When you delete a project, all associated scheduled scans are also deleted. No pipelines run for deleted projects.
+
+#### Canceling a running scheduled scan
+
+To cancel a scheduled scan, you have two options:
+
+- Cancel individual pipelines: If you have the necessary permissions to cancel jobs in the project, you can cancel running pipelines directly from the pipeline view.
+- **Disable the policy**: Set `enabled: false` in the policy editor to disable the scan execution policy. Scans that are already running or scheduled to run within the next 15 minutes (approximately) might still execute.
+
+#### Recommendations for large-scale deployments
+
+When you deploy scheduled scan execution policies across many projects, consider the following recommendations:
+
+- Use gradual rollouts: Start with a small subset of projects and gradually add more projects. Use [compliance framework labels](../../project/working_with_projects.md#add-a-compliance-framework-to-a-project) to scope policies to specific groups of projects.
+- Configure `time_window`: Always set the `time_window` parameter in your scheduled policies. Without it, all pipelines are scheduled for the same time, which can cause performance issues and resource contention.
+- Test in staging: Validate your policy configuration in a staging environment or lower before deploying to production. Monitor performance and adjust based on results.
+- Consider runner capacity: The impact on runners depends on your policy configuration, runner availability, and GitLab instance deployment. Configure policies to use runners with specific tags to distribute load.
+
+For more information on optimizing scheduled scans, see [optimize scheduled pipelines for projects at scale](#optimize-scheduled-pipelines-for-projects-at-scale).
 
 ### Concurrency control
 
@@ -410,11 +446,11 @@ rule in the defined policy are met.
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/profiles.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI/CD variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI/CD job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
-| `template` | `string` | `default` or `latest` | CI/CD template version to enforce. The `latest` version might introduce breaking changes and supports only `pipeline_sources` related to merge requests. For details, see [customize security scanning](../../application_security/detect/security_configuration.md#customize-security-scanning). |
+| `template` | `string` | `default` or `latest` | CI/CD template version to enforce. The `latest` version might introduce breaking changes and supports only `pipeline_sources` related to merge requests. For details, see [customize security scanning](../detect/security_configuration.md#customize-security-scanning). |
 | `scan_settings` | `object` | | A set of scan settings, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the setting name, with its `value` provided as a boolean or string. This parameter supports the settings defined in [scan settings](#scan-settings). |
 
 > [!note]
-> If you have merge request pipelines enabled for your project, you must set the `AST_ENABLE_MR_PIPELINES` CI/CD variable to `"true"` in your policy for each enforced scan. For more information on using security scanning tools with merge request pipelines, refer to the [security scanning documentation](../../application_security/detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
+> If you have merge request pipelines enabled for your project, you must set the `AST_ENABLE_MR_PIPELINES` CI/CD variable to `"true"` in your policy for each enforced scan. For more information on using security scanning tools with merge request pipelines, refer to the [security scanning documentation](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 ### Scanner behavior
 
@@ -497,6 +533,12 @@ In GitLab 16.9 and earlier:
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
 specified projects, groups, or compliance framework labels. For more details, see
 [Scope](_index.md#configure-the-policy-scope).
+
+> [!note]
+> Setting a `policy_scope` field to an empty collection (for example, `including: []`) is treated
+> the same as omitting the field, so the policy applies to all projects for that scope dimension.
+> To disable a policy entirely, use `enabled: false`. For more details, see
+> [Empty collections in `policy_scope`](_index.md#empty-collections-in-policy_scope).
 
 ## Policy update propagation
 

@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: QueryRecorder
 ---
 
@@ -128,7 +128,6 @@ There are multiple ways to find the source of queries.
 - View the call backtrace for the specific `QueryRecorder` instance you want
   by using `ActiveRecord::QueryRecorder.new(query_recorder_debug: true)`. The output
   is stored in file `test.log`.
-
 - Enable the call backtrace for all tests using the `QUERY_RECORDER_DEBUG` environment variable.
 
   To enable this, run the specs with the `QUERY_RECORDER_DEBUG` environment variable set. For example:

@@ -10,11 +10,13 @@ RSpec.describe 'Projects > Show > User sees a deletion failure message', feature
   end
 
   it 'shows error message if deletion for project fails' do
-    project.update!(delete_error: "Something went wrong", pending_delete: false)
+    project.deletion_error = "Something went wrong"
+    project.project_namespace.namespace_details.save!
+    project.update!(pending_delete: false)
 
     visit project_path(project)
 
     expect(page).to have_selector('.project-deletion-failed-message')
-    expect(page).to have_content("This project was scheduled for deletion, but failed with the following message: #{project.delete_error}")
+    expect(page).to have_content("This project was scheduled for deletion, but failed with the following message: #{project.deletion_error}")
   end
 end

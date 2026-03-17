@@ -1,44 +1,13 @@
-#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "./base_work_item_popover.fragment.graphql"
+#import "./base_work_item_popover_features.fragment.graphql"
 
-query workItemPopover($fullPath: ID!, $iid: String!) {
+query workItemPopover($fullPath: ID!, $iid: String!, $useWorkItemFeatures: Boolean = false) {
   namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {
-      id
-      iid
-      confidential
-      createdAt
-      fullReference: reference(full: true)
-      state
-      title
-      workItemType {
-        id
-        name
-        iconName
-      }
-      widgets {
-        ... on WorkItemWidgetAssignees {
-          type
-          assignees {
-            nodes {
-              ...User
-            }
-          }
-        }
-        ... on WorkItemWidgetMilestone {
-          type
-          milestone {
-            id
-            dueDate
-            startDate
-            title
-          }
-        }
-        ... on WorkItemWidgetStartAndDueDate {
-          type
-          dueDate
-          startDate
-        }
+      ...BaseWorkItemPopover
+      features @include(if: $useWorkItemFeatures) {
+        ...BaseWorkItemPopoverFeatures
       }
     }
   }

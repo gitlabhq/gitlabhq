@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: GitLabで作業をしているときに、AIネイティブな一連の機能から支援を受けましょう。
 title: GitLab Duo
 ---
@@ -12,8 +12,9 @@ GitLab Duoの機能は、[IDE拡張機能](../../editor_extensions/_index.md)と
 
 {{< walkthrough data="duo-walkthrough" >}}
 
-- [すべてのGitLab Duo機能のリストを表示](feature_summary.md)
-- [GitLab Self-Managed](setup.md)にGitLab Duoをセットアップする
+- [GitLab Duo Agent Platform](../duo_agent_platform/_index.md)
+- [GitLab Duo（クラシック）](feature_summary.md)
+- [GitLab Duoを設定する](../../administration/gitlab_duo/configure/_index.md)
 - [GitLab Duo Self-Hostedで独自のモデルを使用する](../../administration/gitlab_duo_self_hosted/_index.md)
 
 {{< /walkthrough >}}

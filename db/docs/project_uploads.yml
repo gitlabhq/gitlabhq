@@ -1,6 +1,7 @@
 ---
 table_name: project_uploads
 classes:
+- Geo::ProjectUpload
 - Project
 - Upload
 feature_categories:
@@ -12,3 +13,4 @@ table_size: large
 gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
+organization_transfer_support: todo

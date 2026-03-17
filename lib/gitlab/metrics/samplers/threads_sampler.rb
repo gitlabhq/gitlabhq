@@ -5,11 +5,6 @@ module Gitlab
     module Samplers
       class ThreadsSampler < BaseSampler
         DEFAULT_SAMPLING_INTERVAL_SECONDS = 5
-        KNOWN_PUMA_THREAD_NAMES = ['puma worker check pipe', 'puma server',
-          'puma threadpool reaper', 'puma threadpool trimmer',
-          'puma worker check pipe', 'puma stat payload'].freeze
-
-        SIDEKIQ_WORKER_THREAD_NAME = 'sidekiq_worker_thread'
 
         METRIC_PREFIX = "gitlab_ruby_threads_"
 
@@ -42,35 +37,11 @@ module Gitlab
         end
 
         def threads_by_name
-          Thread.list.group_by { |thread| name_for_thread(thread) }
+          Thread.list.group_by { |thread| ThreadNameCardinalityLimiter.normalize_thread_name(thread.name) }
         end
 
         def uses_db_connection(thread)
           thread[:uses_db_connection] ? "yes" : "no"
-        end
-
-        def name_for_thread(thread)
-          thread_name = thread.name.to_s.presence
-
-          if thread_name.presence.nil?
-            'unnamed'
-          elsif /puma threadpool \d+/.match?(thread_name)
-            # These are the puma workers processing requests
-            'puma threadpool'
-          elsif use_thread_name?(thread_name)
-            thread_name
-          else
-            'unrecognized'
-          end
-        end
-
-        def use_thread_name?(thread_name)
-          thread_name == SIDEKIQ_WORKER_THREAD_NAME ||
-            # Samplers defined in `lib/gitlab/metrics/samplers`
-            thread_name.ends_with?('sampler') ||
-            # Exporters from `lib/gitlab/metrics/exporter`
-            thread_name.ends_with?('exporter') ||
-            KNOWN_PUMA_THREAD_NAMES.include?(thread_name)
         end
       end
     end

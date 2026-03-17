@@ -24,9 +24,7 @@ class CreateVersionedContributionsNewTable < ClickHouse::Migration
       DROP VIEW IF EXISTS contributions_new_mv
     SQL
 
-    execute <<~SQL
-      EXCHANGE TABLES contributions_new_tmp AND contributions_new
-    SQL
+    safe_table_swap('contributions_new', 'contributions_new_tmp', '_old')
 
     execute <<~SQL
       CREATE MATERIALIZED VIEW IF NOT EXISTS contributions_new_mv

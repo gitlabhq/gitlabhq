@@ -10,6 +10,7 @@ import {
   setAttributes,
   replaceCommentsWith,
   waitForElement,
+  toggleDisplay,
 } from '~/lib/utils/dom_utils';
 
 const TEST_MARGIN = 5;
@@ -272,6 +273,52 @@ describe('DOM Utils', () => {
       expect(div.innerHTML).toBe(
         '<h1> hi there <comment> some comment </comment> <p> <comment> another comment </comment></p></h1>',
       );
+    });
+  });
+
+  describe('toggleDisplay', () => {
+    let element;
+
+    beforeEach(() => {
+      element = document.createElement('div');
+    });
+
+    it('does nothing if element is null', () => {
+      expect(() => toggleDisplay(null, true)).not.toThrow();
+    });
+
+    it('shows element by clearing display style when show is true', () => {
+      element.style.display = 'none';
+
+      toggleDisplay(element, true);
+
+      expect(element.style.display).toBe('');
+    });
+
+    it('hides element by setting display to none when show is false', () => {
+      toggleDisplay(element, false);
+
+      expect(element.style.display).toBe('none');
+    });
+
+    it.each(['hidden', 'gl-hidden', '!gl-hidden', 'hide'])(
+      'removes "%s" class when showing element',
+      (className) => {
+        element.classList.add(className);
+
+        toggleDisplay(element, true);
+
+        expect(element.classList.contains(className)).toBe(false);
+      },
+    );
+
+    it('does not add hidden classes when hiding element', () => {
+      toggleDisplay(element, false);
+
+      expect(element.classList.contains('hidden')).toBe(false);
+      expect(element.classList.contains('gl-hidden')).toBe(false);
+      expect(element.classList.contains('!gl-hidden')).toBe(false);
+      expect(element.classList.contains('hide')).toBe(false);
     });
   });
 

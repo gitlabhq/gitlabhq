@@ -3,18 +3,56 @@
 require "spec_helper"
 
 RSpec.describe ::WorkItems::TypesFinder, feature_category: :team_planning do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:user_project) { create(:project) }
+  let_it_be(:group_project) { create(:project, group: group) }
+
+  let_it_be(:system_defined_work_item_type) { build(:work_item_system_defined_type, :issue) }
+
   subject(:finder) { described_class.new(container: container) }
 
   context 'when the container is a user namespace' do
-    let_it_be(:container) { create(:user, :with_namespace).namespace }
+    let(:container) { create(:user, :with_namespace).namespace }
 
     it 'returns empty list' do
       expect(finder.execute).to be_blank
     end
   end
 
-  context 'when the container is a project' do
-    let_it_be(:container) { create(:project) }
+  context 'when the container is a project in user namespace' do
+    let(:container) { user_project }
+
+    it_behaves_like 'allowed work item types for a project' do
+      subject(:types_list) { finder.execute(only_available: true).map(&:base_type) }
+    end
+
+    it_behaves_like 'lists all work item type values' do
+      subject(:types_list) { finder.execute.map(&:base_type) }
+    end
+
+    it_behaves_like 'filtering work item types by existing name' do
+      let(:name) { 'issue' }
+      subject(:types_list) { finder.execute(name: name).map(&:base_type) }
+
+      context 'and filtering by available' do
+        subject(:types_list) do
+          finder.execute(name: %w[issue ticket], only_available: true).map(&:base_type)
+        end
+
+        it 'returns only the available types from the given names' do
+          expect(types_list).to eq(%w[issue ticket])
+        end
+      end
+    end
+
+    it_behaves_like 'filtering work item types by non-existing name' do
+      let(:name) { 'unknown' }
+      subject(:types_list) { finder.execute(name: name).map(&:base_type) }
+    end
+  end
+
+  context 'when the container is a project in group namespace' do
+    let(:container) { group_project }
 
     it_behaves_like 'allowed work item types for a project' do
       subject(:types_list) { finder.execute(only_available: true).map(&:base_type) }
@@ -46,7 +84,7 @@ RSpec.describe ::WorkItems::TypesFinder, feature_category: :team_planning do
   end
 
   context 'when the container is a group' do
-    let_it_be(:container) { create(:group) }
+    let(:container) { group }
 
     it_behaves_like 'allowed work item types for a group' do
       subject(:types_list) { finder.execute(only_available: true).map(&:base_type) }

@@ -21,6 +21,7 @@ export const initGroupDeleteButton = () => {
   new Vue({
     el,
     name: 'GroupDeleteButtonRoot',
+    provide: { triggerDeleteLocation: 'setting' },
     render(createElement) {
       return createElement(DeleteButton, {
         props: {

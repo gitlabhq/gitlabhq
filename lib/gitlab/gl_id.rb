@@ -2,16 +2,15 @@
 
 module Gitlab
   module GlId
-    def self.gl_id(user)
-      if user.present?
-        gl_id_from_id_value(user.id)
+    def self.gl_id(actor)
+      case actor
+      when User
+        "user-#{actor.id}"
+      when DeployToken
+        "deploy-token-#{actor.id}"
       else
         ''
       end
-    end
-
-    def self.gl_id_from_id_value(id)
-      "user-#{id}"
     end
   end
 end

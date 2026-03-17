@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Analytics dashboards
 ---
 
@@ -138,7 +138,6 @@ To create a built-in analytics dashboard:
    ```
 
    Refer to the `DashboardFilters` type in the [`ee/app/validators/json_schemas/analytics_dashboard.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_dashboard.json) for a list of supported filters.
-
 1. Optional. Set the appropriate status of the dashboard if it is not production ready:
 
    ```yaml
@@ -174,7 +173,6 @@ To create a built-in analytics dashboard:
    Both `query` and `options` objects will be passed to the data source and used to build the proper query.
 
    Refer to [Data source](#data-source) for a list of supported data sources, and [Visualization](#visualization) for a list of supported visualization render types.
-
 1. To add panels to your dashboard that reference your visualizations, use either:
    - Recommended. Use an inline visualization within the dashboard configuration file:
 
@@ -233,7 +231,6 @@ To create a built-in analytics dashboard:
    `tooltip` adds a help icon next to the panel title that displays contextual help on hover, using `description` text and an optional `descriptionLink` to embed a link between the `%{linkStart}` and `%{linkEnd}` placeholders. You can also define a `tooltip` at the visualization level in `visualization.options` or dynamically using the [`setVisualizationOverrides`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/analytics/analytics_dashboards/components/analytics_dashboard_panel.vue#L261) callback function from a data source. Note that panel-level tooltips take precedence over visualization-level tooltips.
 1. Register the dashboard by adding it to `builtin_dashboards` in [ee/app/models/analytics/dashboard.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/dashboard.rb).
    Here you can make your dashboard available at project-level or group-level (or both), restrict access based on feature flags, license or user role etc.
-
 1. Optional. Register visualization templates by adding them to `get_path_for_visualization` in [ee/app/models/analytics/visualization.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/visualization.rb).
 
 For a complete example, refer to the GitLab Duo and SDLC trends [dashboard config](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/ai_impact_dashboard/dashboard.yaml).

@@ -142,7 +142,7 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def valid_create_params?
-    create_params.all? { _1[:source_type] == 'group_entity' }
+    create_params.all? { |param| param[:source_type] == 'group_entity' }
   end
 
   def bulk_import_params

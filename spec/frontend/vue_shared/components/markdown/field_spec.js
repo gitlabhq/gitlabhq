@@ -1,9 +1,9 @@
-import $ from 'jquery';
 import { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import GLForm from '~/gl_form';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownFieldHeader from '~/vue_shared/components/markdown/header.vue';
 import MarkdownToolbar from '~/vue_shared/components/markdown/toolbar.vue';
@@ -109,7 +109,7 @@ describe('Markdown field component', () => {
   const findDropzone = () => subject.find('.div-dropzone');
   const findMarkdownHeader = () => subject.findComponent(MarkdownFieldHeader);
   const findMarkdownToolbar = () => subject.findComponent(MarkdownToolbar);
-  const findGlForm = () => $(subject.vm.$refs['gl-form']).data('glForm');
+  const findGlForm = () => GLForm.getInstance(subject.vm.$refs['gl-form']);
 
   describe('mounted', () => {
     const previewHTML = `

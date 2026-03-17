@@ -319,9 +319,7 @@ module Gitlab
               .order(Issue.arel_table[:id].asc)
               .pick(Issue.arel_table[:id])
 
-            ::RelativePositioning
-              .mover
-              .context(Issue.find_by(id: anchor_issue_id))&.max_relative_position || 0
+            ::Issue.mover.context(Issue.find_by(id: anchor_issue_id))&.max_relative_position || 0
           end
         end
 

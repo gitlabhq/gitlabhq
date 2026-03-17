@@ -1,0 +1,7 @@
+---
+name: read_batched_background_migration
+description: Grants the ability to read batched background migrations
+permissions:
+  - read_batched_background_migration
+boundaries:
+  - instance

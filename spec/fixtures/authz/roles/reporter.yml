@@ -1,0 +1,15 @@
+---
+name: reporter
+description: Test reporter role
+inherits_from:
+  - guest
+project:
+  permissions: []
+  raw_permissions:
+    - read_code
+    - download_code
+group:
+  permissions: []
+  raw_permissions:
+    - read_package
+    - read_prometheus

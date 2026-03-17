@@ -72,9 +72,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     before do
       allow(project.repository).to receive(:languages).and_return(
         [{ value: 66.69, label: "Ruby", color: "#701516", highlight: "#701516" },
-         { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
-         { value: 7.91, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
-         { value: 2.42, label: "CoffeeScript", color: "#244776", highlight: "#244776" }]
+          { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+          { value: 7.91, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+          { value: 2.42, label: "CoffeeScript", color: "#244776", highlight: "#244776" }]
       )
     end
 
@@ -2967,6 +2967,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response).to have_key('emails_disabled')
         expect(json_response).to have_key('emails_enabled')
         expect(json_response).to have_key('show_diff_preview_in_email')
+        expect(json_response['protect_merge_request_pipelines']).to eq(project.protect_merge_request_pipelines)
+        expect(json_response['ci_display_pipeline_variables']).to eq(project.ci_display_pipeline_variables)
       end
 
       it 'exposes all necessary attributes' do
@@ -3475,7 +3477,9 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           'auto_devops_enabled',
           'auto_devops_deploy_strategy',
           'import_error',
-          'ci_push_repository_for_job_token_allowed'
+          'ci_push_repository_for_job_token_allowed',
+          'protect_merge_request_pipelines',
+          'ci_display_pipeline_variables'
         )
       end
     end
@@ -4495,6 +4499,34 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    describe 'updating protect_merge_request_pipelines attribute' do
+      it 'is enabled by default' do
+        expect(project.protect_merge_request_pipelines).to be_truthy
+      end
+
+      it 'disables protect_merge_request_pipelines' do
+        put(api(path, user), params: { protect_merge_request_pipelines: false })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.protect_merge_request_pipelines).to be_falsey
+        expect(json_response['protect_merge_request_pipelines']).to eq(false)
+      end
+    end
+
+    describe 'updating ci_display_pipeline_variables attribute' do
+      it 'is disabled by default' do
+        expect(project.ci_display_pipeline_variables).to be_falsey
+      end
+
+      it 'enables ci_display_pipeline_variables' do
+        put(api(path, user), params: { ci_display_pipeline_variables: true })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.ci_display_pipeline_variables).to be_truthy
+        expect(json_response['ci_display_pipeline_variables']).to eq(true)
+      end
+    end
+
     describe 'updating ci_push_repository_for_job_token_allowed attribute' do
       it 'is disabled by default' do
         expect(project.ci_push_repository_for_job_token_allowed).to be_falsey
@@ -5108,21 +5140,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response['topics']).to eq(%w[topic2])
-      end
-
-      it 'updates the merge_request_title_regex and description' do
-        project3.update!(merge_request_title_regex: nil)
-
-        project_param = { merge_request_title_regex: '/aaa/', merge_request_title_regex_description: 'Description of regex' }
-
-        expect { put api("/projects/#{project3.id}", user), params: project_param }
-          .to change { [project3.reload.merge_request_title_regex, project3.merge_request_title_regex_description] }
-          .from([nil, nil])
-          .to([/aaa/, "Description of regex"])
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['merge_request_title_regex']).to eq("/aaa/")
-        expect(json_response['merge_request_title_regex_description']).to eq("Description of regex")
       end
 
       it 'updates enforce_auth_checks_on_uploads' do

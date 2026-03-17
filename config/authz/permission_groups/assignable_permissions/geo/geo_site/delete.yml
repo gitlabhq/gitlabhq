@@ -1,0 +1,7 @@
+---
+name: delete_geo_site
+description: Grants the ability to delete Geo sites
+boundaries:
+  - instance
+permissions:
+  - delete_geo_site

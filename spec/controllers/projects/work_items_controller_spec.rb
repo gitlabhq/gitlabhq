@@ -37,6 +37,11 @@ RSpec.describe Projects::WorkItemsController, feature_category: :team_planning d
     end
   end
 
+  describe 'GET #new' do
+    it_behaves_like 'issue building actions',
+      assigned_name: :work_item
+  end
+
   describe 'POST authorize' do
     subject do
       post(:authorize, params: { namespace_id: project.namespace, project_id: project, file: file })

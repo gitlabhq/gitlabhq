@@ -4,6 +4,7 @@ import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import GroupsProjectsDeleteModal from '~/groups_projects/components/delete_modal.vue';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
+import { InternalEvents } from '~/tracking';
 
 export default {
   RESOURCE_TYPES,
@@ -19,6 +20,8 @@ export default {
     ),
   },
   components: { GroupsProjectsDeleteModal, GlAlert, GlSprintf },
+  mixins: [InternalEvents.mixin()],
+  inject: ['triggerDeleteLocation'],
   model: {
     prop: 'visible',
     event: 'change',
@@ -86,6 +89,15 @@ export default {
   },
   methods: {
     numberToMetricPrefix,
+    handlePrimary() {
+      this.trackEvent('trigger_delete_on_project', {
+        label: this.triggerDeleteLocation,
+        property: String(this.markedForDeletion),
+        actor: 'user',
+      });
+
+      this.$emit('primary');
+    },
   },
 };
 </script>
@@ -99,7 +111,7 @@ export default {
     :confirm-loading="confirmLoading"
     :marked-for-deletion="markedForDeletion"
     :permanent-deletion-date="permanentDeletionDate"
-    @primary="$emit('primary')"
+    @primary="handlePrimary"
     @change="$emit('change', $event)"
   >
     <template #alert>

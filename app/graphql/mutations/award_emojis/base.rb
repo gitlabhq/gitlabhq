@@ -26,7 +26,14 @@ module Mutations
 
       def authorize!(object)
         super
-        raise_resource_not_available_error!(NOT_EMOJI_AWARDABLE) unless object.emoji_awardable?
+
+        return unless !object.emoji_awardable? || cannot_read_merge_request?(object)
+
+        raise_resource_not_available_error!(NOT_EMOJI_AWARDABLE)
+      end
+
+      def cannot_read_merge_request?(object)
+        object.is_a?(MergeRequest) && !Ability.allowed?(current_user, :read_merge_request, object)
       end
     end
   end

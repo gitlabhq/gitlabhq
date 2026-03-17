@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab UIからの署名されたコミット
 ---
 
@@ -14,23 +14,20 @@ title: GitLab UIからの署名されたコミット
 
 {{< history >}}
 
-- **検証済み**バッジが、GitLab 16.3で[導入された](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218)、`gitaly_gpg_signing`という名前の[フラグ付き](../../../../administration/feature_flags/_index.md)の署名されたGitLab UIコミットに表示されます。デフォルトでは無効になっています。
-- `rotated_signing_keys`オプションで指定された複数のキーを使用して署名を検証します。[導入](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6163) GitLab 16.3。
-- `gitaly_gpg_signing`機能フラグがGitLab 17.0のGitLab Self-ManagedとGitLab Dedicatedで[デフォルトで有効](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6876)になりました。
+- 署名されたGitLab UIコミットの**検証済み**バッジの表示：GitLab 16.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218)（`gitaly_gpg_signing`という[機能フラグ](../../../../administration/feature_flags/_index.md)を使用）。デフォルトでは無効になっています。
+- `rotated_signing_keys`オプションで指定された複数のキーを使用した署名の検証：GitLab 16.3で[導入](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6163)。
+- `gitaly_gpg_signing`機能フラグは、GitLab 17.0のGitLab Self-ManagedおよびGitLab Dedicatedで[デフォルトで有効](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6876)になっています。
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+> [!flag]
+> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
 
-この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
+GitLabUIを使用してコミットを作成する場合、コミットはユーザーが直接プッシュするわけではありません。代わりに、コミットはユーザーの代わりに作成されます。
 
-{{< /alert >}}
+これらのコミットに署名するために、GitLabはインスタンス用に設定されたグローバルキーを使用します。GitLabはユーザーのプライベートキーにアクセスできないため、作成されたコミットは、ユーザーのアカウントに関連付けられたキーを使用して署名できません。
 
-GitLabユーザーインターフェースを使用してコミットを作成すると、コミットが直接プッシュされることはありません。代わりに、コミットはお客様の代わりに行われます。
-
-これらのコミットに署名するために、GitLabはインスタンスに設定されたグローバルキーを使用します。GitLabはあなたのプライベートキーにアクセスできないため、作成されたコミットはあなたのアカウントに関連付けられたキーを使用して署名できません。
-
-たとえば、ユーザーAがユーザーBが作成した[提案](../../merge_requests/reviews/suggestions.md)を適用する場合、コミットには次のものが含まれます:
+たとえば、ユーザーAがユーザーBが作成した[提案](../../merge_requests/reviews/suggestions.md)を適用すると、コミットには次のものが含まれます:
 
 ```plaintext
 Author: User A <a@example.com>
@@ -39,36 +36,88 @@ Committer: GitLab <noreply@gitlab.com>
 Co-authored-by: User B <b@example.com>
 ```
 
-## 前提要件 {#prerequisites}
+## 前提条件 {#prerequisites}
 
-GitLab UIコミットのコミット署名を使用する前に、[構成](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits)する必要があります。
+GitLabUIのコミット署名を使用する前に、[設定](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits)する必要があります。
+
+## グループまたはプロジェクトのWebベースコミット署名をオンにする {#turn-on-web-based-commit-signing-for-a-group-or-project}
+
+{{< details >}}
+
+提供形態: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- GitLab 18.9で`configure_web_based_commit_signing`[フラグ](../../../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/work_items/542975)されました。これは、ユーザーに段階的に展開されます。
+
+{{< /history >}}
+
+> [!flag]
+> この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。
+
+グループ内のすべてのプロジェクト、または個々のプロジェクトに対して、Webベースコミット署名をオンにできます。
+
+Webベースコミット署名がオンになっている場合、GitLabUI（Webエディタ、Web IDE、およびマージリクエスト）を介して行われたすべてのコミットは、インスタンスの設定済み署名キーで自動的に署名されます。
+
+### グループの場合 {#for-a-group}
+
+前提条件: 
+
+- グループのオーナーのロールを持っている必要があります。
+
+グループ内のすべてのプロジェクトに対してWebベースコミット署名をオンにするには、次の手順を実行します:
+
+1. 上部のバーで、**検索または移動先**を選択して、グループを見つけます。
+1. **設定** > **リポジトリ**を選択します。
+1. **一般**を展開する。
+1. **Webベースコミットに署名**チェックボックスを選択します。
+
+グループ内のプロジェクトは、この設定を継承します。
+
+### プロジェクトの場合 {#for-a-project}
+
+前提条件: 
+
+- プロジェクトのメンテナーまたはオーナーロールが必要です。
+
+> [!note]
+> プロジェクトは、すでにWebベースコミット署名がオンになっているグループに属してはなりません。グループ設定がオンの場合、プロジェクトのチェックボックスは使用できません。
+
+プロジェクトのWebベースコミット署名をオンにするには、次の手順を実行します:
+
+1. 上部のバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
+1. **設定** > **リポジトリ**を選択します。
+1. **一般**を展開する。
+1. **Webベースコミットに署名**チェックボックスを選択します。
 
 ## コミットのコミッターフィールド {#committer-field-of-the-commits}
 
-Gitでは、コミットには作成者とコミッターの両方がいます。Webコミットの場合、`Committer`フィールドは設定可能です。このフィールドを更新するには、[GitLab UIコミットのコミット署名の構成](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits)を参照してください。
+Gitでは、コミットには作成者とコミッターの両方があります。Webコミットの場合、`Committer`フィールドは設定可能です。このフィールドを更新するには、[GitLab UIコミットの署名設定](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits)を参照してください。
 
-GitLabは、`Committer`フィールドがコミットを作成するユーザーに設定されていることに依存する複数のセキュリティ機能を提供します。例: 
+GitLabは、`Committer`フィールドがコミットを作成したユーザーに設定されていることに依存する、複数のセキュリティ機能を提供します。例: 
 
-- [プッシュルール](../push_rules.md):（`Reject unverified users`または`Commit author's email`）。
+- [プッシュルール](../push_rules.md)：（`Reject unverified users`または`Commit author's email`）。
 - [マージリクエスト承認の防止](../../merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits)。
 
-コミットがインスタンスによって署名されると、GitLabはこれらの機能のために`Author`フィールドに依存します。
+コミットがインスタンスによって署名されている場合、GitLabはこれらの機能のために`Author`フィールドに依存します。
 
 ## REST APIを使用して作成されたコミット {#commits-created-using-rest-api}
 
-[REST APIを使用して作成されたコミット](../../../../api/commits.md#create-a-commit-with-multiple-files-and-actions)も、Webベースのコミットと見なされます。REST APIエンドポイントを使用すると、コミットの`author_name`フィールドと`author_email`フィールドを設定できます。これにより、他のユーザーの代わりにコミットを作成できます。
+[REST APIを使用して作成されたコミット](../../../../api/commits.md#create-a-commit)も、Webベースのコミットと見なされます。REST APIエンドポイントを使用すると、コミットの`author_name`および`author_email`フィールドを設定できるため、他のユーザーの代わりにコミットを作成できます。
 
-コミット署名が有効になっている場合、REST APIリクエストを送信するユーザーとは異なる`author_name`と`author_email`を持つREST APIを使用して作成されたコミットは拒否されます。
+コミット署名が有効になっている場合、APIリクエストを送信するユーザーとは異なる`author_name`および`author_email`を持つREST APIを使用して作成されたコミットは拒否されます。
 
 ## トラブルシューティング {#troubleshooting}
 
-### Webコミットは、リベース後に署名されなくなります {#web-commits-become-unsigned-after-rebase}
+### リベース後にWebコミットが署名解除される {#web-commits-become-unsigned-after-rebase}
 
-以前に署名されたブランチ内のコミットは、次の場合に署名されなくなります:
+ブランチ内の以前に署名されたコミットは、次の場合に署名解除されます:
 
-- コミット署名は、GitLab UIから作成されたコミットに対して構成されています。
-- マージリクエストは、GitLab UIからリベースされます。
+- コミット署名は、GitLabUIから作成されたコミットに対して構成されています。
+- マージリクエストは、GitLabUIからリベースされます。
 
-これは、以前のコミットが変更され、ターゲットブランチの上に追加されるために発生します。GitLabはこれらのコミットに署名できません。
+これは、以前のコミットが変更され、ターゲットブランチの一番上に追加されるために発生します。GitLabはこれらのコミットに署名できません。
 
 この問題を回避するには、ブランチをローカルでリベースし、変更をGitLabにプッシュして戻します。

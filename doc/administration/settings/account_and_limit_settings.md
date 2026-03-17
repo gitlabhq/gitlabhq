@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 description: Configure the maximum number of projects users can create on GitLab Self-Managed. Configure size limits for attachments, pushes, and repository size.
 title: Account and limit settings
@@ -178,7 +178,7 @@ You can change how long users can remain signed in without activity.
    > [!note]
    > For GitLab Dedicated, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request a restart of your instance.
 
-If [Remember me](#configure-the-remember-me-option) is enabled, users' sessions can remain active for an indefinite period of time.
+If the [**Remember me** option](#configure-the-remember-me-option) is enabled, users' sessions can remain active for an indefinite period of time.
 
 For details, see [cookies used for sign-in](../../user/profile/_index.md#cookies-used-for-sign-in).
 
@@ -196,7 +196,7 @@ By default, sessions expire a set amount of time after the session becomes inact
 When the session duration is met, the session ends and the user is signed out even if:
 
 - The user is still actively using the session.
-- The user selected [remember me](#configure-the-remember-me-option) during sign in.
+- The user selected [**Remember me**](#configure-the-remember-me-option) during sign in.
 
 1. In the upper-right corner, select **Admin**.
 1. Select **Settings** > **General**.
@@ -313,7 +313,7 @@ This setting is turned on by default and applies to:
 - Project access tokens.
 
 For personal access tokens for service accounts, use the `service_access_tokens_expiration_enforced`
-setting in the [Application Settings API](../../api/settings.md).
+setting in the [Application settings API](../../api/settings.md).
 
 To require expiration dates for new access tokens:
 
@@ -327,6 +327,35 @@ When you require expiration dates for new access tokens:
 
 - Users must set an expiration date that does not exceed the allowed lifetime for new access tokens.
 - To control the maximum access token lifetime, use the [**Limit the lifetime of access tokens** setting](#limit-the-lifetime-of-access-tokens).
+
+## Inactive project and group access token retention period
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+By default, GitLab deletes group and project access tokens and their [token family](../../api/personal_access_tokens.md#automatic-reuse-detection)
+30 days after the last active token in the token family becomes inactive. This deletion removes all
+tokens in the token family, the associated bot user, and moves any bot contributions to a
+[ghost user](../../user/profile/account/delete_account.md#associated-records).
+
+Prerequisites:
+
+- Administrator access.
+
+To modify the retention period for inactive tokens:
+
+1. In the upper-right corner, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **Account and limit**.
+1. In the **Inactive project and group access token retention period** text box, modify the retention period.
+   - If a number is defined, all group and project access tokens are deleted after they are inactive for the specified number of days.
+   - If the field is blank, inactive tokens are never deleted.
+1. Select **Save changes**.
+
+You can also use the [application settings API](../../api/settings.md) to modify the `inactive_resource_access_tokens_delete_after_days` attribute.
 
 ## Personal access token prefix
 

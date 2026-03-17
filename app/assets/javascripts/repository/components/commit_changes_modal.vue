@@ -129,6 +129,7 @@ export default {
       default: null,
     },
   },
+  emits: ['submit-form', 'close-commit-changes-modal'],
   data() {
     const form = {
       state: false,

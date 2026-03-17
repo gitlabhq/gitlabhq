@@ -213,19 +213,5 @@ RSpec.describe 'JobRetry', feature_category: :continuous_integration do
         )
       end
     end
-
-    context 'when the ci_job_inputs feature flag is disabled' do
-      before do
-        stub_feature_flags(ci_job_inputs: false)
-      end
-
-      it 'returns an error when inputs are provided' do
-        post_graphql_mutation(mutation, current_user: user)
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(mutation_response['job']).to be_nil
-        expect(mutation_response['errors']).to eq(['The inputs argument is not available'])
-      end
-    end
   end
 end

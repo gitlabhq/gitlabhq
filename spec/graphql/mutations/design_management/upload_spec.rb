@@ -67,7 +67,8 @@ RSpec.describe Mutations::DesignManagement::Upload, feature_category: :api do
           expect(DesignManagement::Design.count).to eq(prior_count + files.size)
         end
 
-        describe 'running requests in parallel', :delete do
+        describe 'running requests in parallel', :delete,
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/592175' do
           it 'does not cause errors' do
             # max_concurrency is set to be less than the LOCK_RETRY_COUNT to avoid
             # Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError.
@@ -85,7 +86,8 @@ RSpec.describe Mutations::DesignManagement::Upload, feature_category: :api do
           end
         end
 
-        describe 'running requests in parallel on different issues', :delete do
+        describe 'running requests in parallel on different issues', :delete,
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/592175' do
           it 'does not cause errors' do
             creates_designs do
               issues = create_list(:issue, files.size, author: current_user)

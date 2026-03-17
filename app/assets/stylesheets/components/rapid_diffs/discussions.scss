@@ -23,9 +23,9 @@
   }
 }
 
-.rd-discussion-row {
+.rd-discussion-row,
+.rd-diff-file-discussions {
   --rd-line-border-color: var(--rd-content-border-color);
-  --content-border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
   display: grid;
   grid-auto-columns: 1fr;
   grid-auto-flow: column;
@@ -37,45 +37,61 @@
   container: discussion-row / inline-size;
 }
 
+.rd-diff-file-discussions {
+  border-top: 0;
+
+  &:empty {
+    display: none;
+  }
+}
+
 .rd-discussion-row.rd-discussion-row:last-child {
   border-bottom: 0;
 }
 
+.rd-gutter-toggle {
+  z-index: constants.$diff-file-discussion-row-z-index;
+}
+
 .rd-discussion-row > td {
-  @apply gl-max-w-limited;
-  flex: 1;
   min-width: 0;
   padding: 0;
-  border-left: 1px solid var(--rd-line-border-color);
-  border-right: 1px solid var(--rd-line-border-color);
-  border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
-}
-
-.rd-discussion-row > td:empty {
-  border-right-color: transparent;
-}
-
-.rd-discussion-row > td:only-child {
-  @container discussion-row (min-width: theme('maxWidth.limited')) {
-    border-bottom-right-radius: 0;
-    border-right-color: var(--rd-line-border-color);
-  }
+  vertical-align: top;
+  background-color: var(--gl-background-color-subtle);
+  container: discussion-cell / inline-size;
 }
 
 .rd-discussion-row > td:first-child {
-  margin-left: -1px;
+  border-left: 0;
 }
 
 .rd-discussion-row > td:last-child {
-  margin-right: -1px;
+  border-right: 0;
 }
 
-.rd-discussion-row > td:first-child:not(:only-child) {
-  margin-right: -1px;
+.rd-discussion-row > td + td {
+  border-left: 1px solid var(--rd-line-border-color);
 }
 
-.rd-discussion-row > td:first-child:empty {
-  border-right-color: transparent;
+.rd-discussion-row:last-child > td {
+  border-bottom: 0;
+}
+
+.rd-discussion-row[data-collapsed],
+.rd-discussion-row[data-collapsed] > td {
+  border: 0;
+}
+
+.rd-diff-line-discussions-list {
+  @apply gl-max-w-limited;
+  --content-border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
+  border-radius: var(--content-border-radius);
+}
+
+@container discussion-cell (min-width: theme('maxWidth.limited')) {
+  .rd-diff-line-discussions-list {
+    border-right: 1px solid var(--rd-line-border-color);
+  }
 }
 
 .rd-new-discussion-toggle {

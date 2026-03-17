@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Control how jobs run
 ---
 
@@ -70,6 +70,9 @@ When running manual jobs you can supply additional job specific CI/CD variables.
 Specify variables here when you want to alter the execution of a job that uses
 [CI/CD variables](../variables/_index.md).
 
+For typed, validated parameters that can be overridden when both running and retrying manual jobs,
+use [job inputs](job_inputs.md) instead.
+
 To run a manual job and specify additional variables:
 
 - Select the **name** of the manual job in the pipeline view, not **Run** ({{< icon name="play" >}}).
@@ -79,10 +82,10 @@ To run a manual job and specify additional variables:
 > [!warning]
 > Any project member with permissions to run a manual job can retry the job and view the variables
 > that were provided when the job was initially run. This includes:
-> 
+>
 > - In public projects: Users with the Developer, Maintainer, or Owner role.
 > - In private or internal projects: Users with the Guest, Planner, Reporter, Developer, Maintainer, or Owner role.
-> 
+>
 > Consider this visibility when entering sensitive information as manual job variables.
 
 If you add a variable that is already defined in the CI/CD settings or `.gitlab-ci.yml` file,
@@ -101,12 +104,14 @@ and not [masked](../variables/_index.md#mask-a-cicd-variable).
 When you retry a manual job that was previously run with manually-specified variables,
 you can update the variables or use the same variables.
 
+To retry manual jobs with typed, validated parameters, use [job inputs](job_inputs.md) instead.
+
 To retry a manual job with previously-specified variables:
 
 - With the same variables:
   - From the job details page, select **Retry** ({{< icon name="retry" >}}).
 - With updated variables:
-  - From the job details page, select **Retry job with modified value** in dropdown.
+  - From the job details page, select **Retry job with modified values** in dropdown.
   - The variables that were specified in the previous run are prefilled in the form.
     You can add, modify, or delete CI/CD variables from this form.
   - Select **Run job again**.

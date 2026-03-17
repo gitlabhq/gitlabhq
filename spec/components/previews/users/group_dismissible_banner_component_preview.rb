@@ -6,20 +6,18 @@ module Users
   class GroupDismissibleBannerComponentPreview < ViewComponent::Preview
     # @label Default Group dismissal
     # @param button_text text
-    # @param button_link text
     # @param content textarea
     # @param variant select {{ Pajamas::BannerComponent::VARIANT_OPTIONS }
     # @param feature_id select {{ Users::GroupCallout.feature_names.keys }}
     def default(
       button_text: "Learn more",
-      button_link: "https://about.gitlab.com/",
       content: "Add your message here.",
       variant: :promotion,
       feature_id: :preview_user_over_limit_free_plan_alert
     )
       render(Users::GroupDismissibleBannerComponent.new(
         button_text: button_text,
-        button_link: button_link,
+        button_link: "#",
         svg_path: "illustrations/devops-sm.svg",
         variant: variant,
         dismiss_options: {

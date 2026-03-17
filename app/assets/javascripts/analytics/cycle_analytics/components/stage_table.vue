@@ -177,21 +177,21 @@ export default {
       const { sort, direction, page } = this.pagination;
       const prevPage = Math.max(page - 1, 1);
       this.track('click_button', { label: 'pagination' });
-      this.$emit('handleUpdatePagination', { sort, direction, page: prevPage });
+      this.$emit('handle-update-pagination', { sort, direction, page: prevPage });
       this.scrollToTop();
     },
     onNextPage() {
       const { sort, direction, page } = this.pagination;
       const nextPage = page + 1;
       this.track('click_button', { label: 'pagination' });
-      this.$emit('handleUpdatePagination', { sort, direction, page: nextPage });
+      this.$emit('handle-update-pagination', { sort, direction, page: nextPage });
       this.scrollToTop();
     },
     onSort({ sortBy, sortDesc }) {
       const direction = sortDesc ? PAGINATION_SORT_DIRECTION_DESC : PAGINATION_SORT_DIRECTION_ASC;
       this.sort = sortBy;
       this.sortDesc = sortDesc;
-      this.$emit('handleUpdatePagination', { sort: sortBy, direction });
+      this.$emit('handle-update-pagination', { sort: sortBy, direction });
       this.track('click_button', { label: `sort_${sortBy}_${direction}` });
     },
     scrollToTop() {

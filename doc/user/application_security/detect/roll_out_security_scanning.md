@@ -1,7 +1,7 @@
 ---
 stage: Secure
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Roll out application security testing'
 ---
 
@@ -62,22 +62,18 @@ The pilot phase helps you achieve several key objectives:
   scope while collecting valuable data on your current security posture. In the rollout phase you
   should use a [merge request approval policy](#merge-request-approval-policy) to add an additional
   approval gate when vulnerabilities are detected in merge requests.
-
 - Establish scalable detection methods
 
   Implement application security testing on pilot projects in a way that can be expanded to include
   all projects in the wider rollout scope. Focus on configurations that scale well and can be
   standardized across projects.
-
 - Test scan times
 
   Test scan times on representative codebases and applications.
-
 - Simulate the vulnerability remediation workflow
 
   Simulate detecting, triaging, analyzing, and remediating vulnerabilities in the developer
   workflows. Verify that engineers can act on findings.
-
 - Compare maintenance costs
 
   Compare the maintenance of a single solution versus integrating multiple endpoint solutions. How
@@ -156,7 +152,7 @@ Prerequisites:
 
 For each project in scope:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. Expand **Security configuration**.
 1. Enable the appropriate application security testing based on your project's stack.
@@ -169,9 +165,15 @@ Introduce developers to the tools that provide visibility into security findings
 
 #### Pipeline results
 
-Developers can view security findings directly in pipeline results:
+Developers can view security findings directly in pipeline results.
 
-1. On the top bar, select **Search or go to** and find your project.
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To view pipeline results:
+
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select the pipeline to review.
 1. In the pipeline details, select the **Security** tab to view detected vulnerabilities.
@@ -181,7 +183,13 @@ For more details, see
 
 #### Merge request security widget
 
-The security widget provides visibility into vulnerabilities detected in merge request pipelines:
+The security widget provides visibility into vulnerabilities detected in merge request pipelines.
+
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To view the security widget:
 
 1. Open a merge request.
 1. Review the security widget to see detected vulnerabilities.
@@ -189,16 +197,22 @@ The security widget provides visibility into vulnerabilities detected in merge r
 
 For more details, see [View security scan results in merge requests](security_scanning_results.md).
 
-#### VS Code integration with GitLab Workflow extension
+#### VS Code integration
 
-Developers can view security findings directly in their IDE:
+Developers can view security findings directly in their IDE.
 
-1. Install the GitLab Workflow extension for VS Code.
+Prerequisites:
+
+- The Developer, Maintainer, or Owner role for the project.
+
+To view security findings in VS Code:
+
+1. Install the GitLab for VS Code extension.
 1. Connect the extension to your GitLab instance.
 1. Use the extension to view security findings without leaving your development environment.
 
 For more details, see
-[GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md).
+[GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/_index.md).
 
 ## Vulnerability management workflow
 
@@ -253,9 +267,13 @@ Use a merge request approval policy to add an extra approval requirement if the 
 severity of vulnerabilities in a merge request exceeds a specific threshold. This allows an extra
 review from a member of the application security team, providing an extra level of scrutiny.
 
-Configure approval policies to require security reviews:
+Prerequisites:
 
-1. On the top bar, select **Search or go to** and find your group.
+- The Owner role for the group, or a custom role with `manage_security_policy_link` permission.
+
+To configure approval policies to require security reviews:
+
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Policies**.
 1. Select **New policy**
 1. In the **Merge request approval policy** pane, select **Select policy**.
@@ -342,7 +360,7 @@ Prerequisites:
 - You must have the Owner role, or a custom role with `manage_security_policy_link` permission, for
   the groups in which application security testing is to be enabled.
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Secure** > **Policies**.
 1. Create scan execution policies based on the application security testing configuration used
    during the pilot phase.

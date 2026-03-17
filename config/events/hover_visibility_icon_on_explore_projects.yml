@@ -1,0 +1,18 @@
+---
+description: User hovers over a group visibility icon on Explore > Projects
+internal_events: true
+action: hover_visibility_icon_on_explore_projects
+identifiers:
+  - user
+additional_properties:
+  label:
+    description: Visibility level (e.g. "public", "private", "internal")
+product_group: organizations
+product_categories:
+  - groups_and_projects
+milestone: '18.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226026
+tiers:
+  - free
+  - premium
+  - ultimate

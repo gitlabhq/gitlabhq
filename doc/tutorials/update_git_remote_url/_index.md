@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Update Git remote URLs'
 ---
 
@@ -49,15 +49,14 @@ You must have:
   already familiar with their system's CLI.
 - Authentication credentials for GitLab:
   - You must authenticate with GitLab to update Git remote URLs. If your GitLab account uses
-  basic username and password authentication, you must have [two factor authentication (2FA)](../../user/profile/account/two_factor_authentication.md)
-  disabled to authenticate from the CLI. Alternatively, you can [use an SSH key to authenticate with GitLab](../../user/ssh.md).
+    basic username and password authentication, you must have [two factor authentication (2FA)](../../user/profile/account/two_factor_authentication.md)
+    disabled to authenticate from the CLI. Alternatively, you can [use an SSH key to authenticate with GitLab](../../user/ssh.md).
 
 ## Determine existing and new URLs
 
 To update the Git remote URL, determine the existing and new URLs for your repository:
 
 1. Open a terminal or command prompt.
-
 1. Go to your local repository working copy. To change directory, use `cd`:
 
    ```shell
@@ -72,14 +71,13 @@ To update the Git remote URL, determine the existing and new URLs for your repos
    ```
 
 1. Copy and keep note of the returned URLs. They are usually identical.
-
 1. Get the new URL:
    1. Go to GitLab.
    1. In the top bar, select **Search or go to** and find your project.
    1. In the left sidebar, select **Code** > **Repository**, to go to the project's **Repository** page
    1. In the upper-right corner, select **Code**
    1. Depending on which method you use for authentication and cloning with `git`,
-   copy either the HTTPS or SSH URL. If you're not sure, use the same method as the `origin` URL from the previous step.
+      copy either the HTTPS or SSH URL. If you're not sure, use the same method as the `origin` URL from the previous step.
    1. Keep note of the copied URL.
 
 ## Update Git remote URLs
@@ -87,7 +85,6 @@ To update the Git remote URL, determine the existing and new URLs for your repos
 To update the Git remote URL:
 
 1. Open a terminal or command prompt.
-
 1. Go to your local repository working copy. To change directory, use `cd`:
 
    ```shell
@@ -109,7 +106,7 @@ To update the Git remote URL:
    ```
 
    - If the update was unsuccessful, go back to the previous step, ensure you
-   have the correct `<new_url>`, and try again.
+     have the correct `<new_url>`, and try again.
 
 To update the remote URLs for multiple repositories:
 
@@ -146,9 +143,7 @@ access to the original repository.
 To add a new remote URL:
 
 1. Open a terminal or command prompt.
-
 1. Go to your local repository working copy.
-
 1. Add a new remote URL. Replace `<new_remote_name>` with a name for the new remote,
    for example, `new-origin`, and `<new_url>` with the new repository URL:
 

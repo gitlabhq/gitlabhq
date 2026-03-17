@@ -1,7 +1,7 @@
 ---
 stage: none
 group: none
-info: "See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines"
+info: "To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>"
 toc: false
 title: Deprecations and removals by version
 ---
@@ -28,21 +28,21 @@ DO NOT EDIT THIS PAGE DIRECTLY
 
 This page is automatically generated from the template located at
 `data/deprecations/templates/_deprecation_template.md.erb`, using
-the YAML files in `/data/deprecations` by the rake task
+the YAML files in `/data/deprecations` by the Rake task
 located at `lib/tasks/gitlab/docs/compile_deprecations.rake`,
 
 For deprecation authors (usually Product Managers and Engineering Managers):
 
 - To add a deprecation, use the example.yml file in `/data/deprecations/templates` as a template.
 - For more information about authoring deprecations, check the the deprecation item guidance:
-  https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
+  <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 
 For deprecation reviewers (Technical Writers only):
 
 - To update the deprecation doc, run: `bin/rake gitlab:docs:compile_deprecations`
 - To verify the deprecations doc is up to date, run: `bin/rake gitlab:docs:check_deprecations`
 - For more information about updating the deprecation doc, see the deprecation doc update guidance:
-  https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
+  <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 -->
 <%-
   CANCELLED_STATUSES = ["Cancelled", "Canceled"]

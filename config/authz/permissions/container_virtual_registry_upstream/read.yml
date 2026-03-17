@@ -1,5 +1,3 @@
 ---
 name: read_container_virtual_registry_upstream
 description: Grants the ability to read container virtual registry upstream
-boundaries:
-  - group

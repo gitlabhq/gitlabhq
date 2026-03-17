@@ -24,6 +24,12 @@ module Ci
     validates :key, :pipeline, presence: true
     validates :project_id, presence: true
 
+    # Should not be mutated outside of pipeline creation because it has to stay
+    # in sync with data stored in pipeline_artifacts_pipeline_variables.
+    def readonly?
+      persisted? && Feature.enabled?(:ci_stop_writing_to_pipeline_variables, pipeline&.project)
+    end
+
     def hook_attrs
       { key: key, value: value }
     end

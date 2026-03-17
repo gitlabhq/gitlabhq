@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Analytics Instrumentation
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Billable Events Schema
 ---
 
@@ -50,6 +50,7 @@ Fields that identify users, seats, and resources associated with the billable ev
 | `namespace_id` | ID of the associated namespace (e.g., `3445555`) | `namespace_id` | Integer |
 | `root_namespace_id` | ID of the associated ultimate parent namespace (e.g., `5343322`) | `root_namespace_id` | Integer |
 | `entity_id` | ID of the entity associated with the event | `entity_id` | String |
+| `organization_id` | ID of the associated organization (e.g., `1445`) | `organization_id` | Integer |
 
 ### Usage Measurement Fields
 

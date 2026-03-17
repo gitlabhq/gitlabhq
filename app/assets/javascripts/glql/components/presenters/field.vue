@@ -8,7 +8,6 @@ import MilestonePresenter from './milestone.vue';
 import UserPresenter from './user.vue';
 import LabelPresenter from './label.vue';
 import TypePresenter from './type.vue';
-import DimensionPresenter from './dimension.vue';
 import StatePresenter from './state.vue';
 import HtmlPresenter from './html.vue';
 import CodePresenter from './code.vue';
@@ -33,8 +32,6 @@ const presentersByObjectType = {
   Iteration: IterationPresenter,
   WorkItemStatus: StatusPresenter,
   WorkItemType: TypePresenter,
-
-  GlqlDimension: DimensionPresenter,
 };
 
 const presentersByFieldKey = {

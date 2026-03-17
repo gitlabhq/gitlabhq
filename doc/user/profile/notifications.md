@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Engagement
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Notification emails
 ---
 
@@ -49,7 +49,7 @@ GitLab does not send a notification when:
 - The account is a project bot.
 - The account is a service account with default email address.
 - The account is blocked (banned) or deactivated.
-- [A comment is edited to include a user mention](../discussions/_index.md#edit-a-comment-to-add-a-mention).
+- [A comment is edited to include a user mention](../discussions/_index.md#edit-a-comment-to-add-a-mention), unless the `email_on_added_mentions` [feature flag](../../administration/feature_flags/_index.md) is enabled.
 - An administrator has blocked notifications.
 
 ## Global notification settings
@@ -68,7 +68,7 @@ To edit your notification settings:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. On the left sidebar, select **Notifications**.
+1. In the left sidebar, select **Notifications**.
 1. In **Global notification email**, enter the email address your notifications are sent to.
    Defaults to your primary email address.
 1. For **Global notification level**, select the default [notification level](#notification-levels)
@@ -139,13 +139,13 @@ To select a notification level for a group, use either of these methods:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. On the left sidebar, select **Notifications**.
+1. In the left sidebar, select **Notifications**.
 1. Locate the group in the **Groups** section.
 1. Select the desired [notification level](#notification-levels).
 
 Or:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select the notification dropdown list, next to the bell icon ({{< icon name="notifications" >}}).
 1. Select the desired [notification level](#notification-levels).
 
@@ -156,7 +156,7 @@ You can use group notifications, for example, if you work freelance, and want to
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. On the left sidebar, select **Notifications**.
+1. In the left sidebar, select **Notifications**.
 1. Locate the group in the **Groups** section.
 1. Select the desired email address.
 
@@ -168,13 +168,13 @@ To select a notification level for a project, use either of these methods:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. On the left sidebar, select **Notifications**.
+1. In the left sidebar, select **Notifications**.
 1. Locate the project in the **Projects** section.
 1. Select the desired [notification level](#notification-levels).
 
 Or:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select the notification dropdown list, next to the bell icon ({{< icon name="notifications" >}}).
 1. Select the desired [notification level](#notification-levels).
 
@@ -297,7 +297,7 @@ Issue event notifications are sent for the following notification levels:
 | Reassigned                   | Yes   | Yes         |            | Yes        | If **Issue is reassigned** is selected | Also sent to the previous assignee. |
 | Reopened                     | Yes   | Yes         |            | Yes        | If **Issue is reopened** is selected |                    |
 
-<!-- For issue due timing source, see 'issue_due_scheduler_worker' in https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/1_settings.rb -->
+<!-- For issue due timing source, see 'issue_due_scheduler_worker' in <https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/initializers/1_settings.rb> -->
 
 Merge request notifications are sent for the following notification levels:
 
@@ -459,7 +459,7 @@ If you no longer wish to receive any email notifications:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Preferences**.
-1. On the left sidebar, select **Notifications**.
+1. In the left sidebar, select **Notifications**.
 1. Set your **Global notification level** to **Disabled**.
 1. Clear the **Receive notifications about your own activity** checkbox.
 1. If you belong to any groups or projects, set their notification setting to **Global** or

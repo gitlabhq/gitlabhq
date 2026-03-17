@@ -1,6 +1,6 @@
 import { within } from '@testing-library/dom';
 import { mount } from '@vue/test-utils';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { TEST_HOST } from 'helpers/test_constants';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import CodeSnippetAlert from '~/ci/pipeline_editor/components/code_snippet_alert/code_snippet_alert.vue';

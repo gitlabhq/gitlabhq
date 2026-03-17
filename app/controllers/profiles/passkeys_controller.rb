@@ -98,6 +98,8 @@ module Profiles
     end
 
     def setup_passkey_registration_page
+      @hide_search_settings = true
+
       @passkey ||= WebauthnRegistration.passkey.new
       @passkeys ||= get_passkeys
 

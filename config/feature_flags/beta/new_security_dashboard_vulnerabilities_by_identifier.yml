@@ -1,0 +1,10 @@
+---
+name: new_security_dashboard_vulnerabilities_by_identifier
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592087
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225792
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592130
+milestone: '18.10'
+group: group::security insights
+type: beta
+default_enabled: false

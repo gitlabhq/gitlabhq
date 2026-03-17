@@ -43,6 +43,14 @@ RSpec.describe ActiveContext::Query do
       end
     end
 
+    describe '.exists' do
+      it 'creates an exists query with a field name' do
+        query = described_class.exists('embedding')
+        expect(query.type).to eq(:exists)
+        expect(query.value).to eq('embedding')
+      end
+    end
+
     describe '.or' do
       it 'creates an OR query with multiple queries' do
         query1 = described_class.filter(project_id: 1)
@@ -156,6 +164,27 @@ RSpec.describe ActiveContext::Query do
         expect(missing_query.value).to eq('embedding_v2')
         expect(missing_query.children.first.type).to eq(:missing)
         expect(missing_query.children.first.value).to eq('embedding_v1')
+      end
+    end
+
+    describe '#exists' do
+      it 'creates an exists query chained with the base query as a child' do
+        base_query = described_class.filter(project_id: 1)
+        exists_query = base_query.exists('embedding')
+
+        expect(exists_query.type).to eq(:exists)
+        expect(exists_query.value).to eq('embedding')
+        expect(exists_query.children).to contain_exactly(base_query)
+      end
+
+      it 'chains multiple exists queries' do
+        base_query = described_class.filter(project_id: 1)
+        exists_query = base_query.exists('embedding_v1').exists('embedding_v2')
+
+        expect(exists_query.type).to eq(:exists)
+        expect(exists_query.value).to eq('embedding_v2')
+        expect(exists_query.children.first.type).to eq(:exists)
+        expect(exists_query.children.first.value).to eq('embedding_v1')
       end
     end
 
@@ -296,6 +325,29 @@ RSpec.describe ActiveContext::Query do
         expect(ast).to include('or')
         expect(ast).to include('missing(embedding_v1)')
         expect(ast).to include('missing(embedding_v2)')
+      end
+
+      it 'generates a readable AST representation for an exists query' do
+        query = described_class.exists('embedding')
+        ast = query.inspect_ast
+        expect(ast).to eq('exists(embedding)')
+      end
+
+      it 'generates a readable AST representation for an exists query with filter' do
+        query = described_class.filter(project_id: 1).exists('embedding')
+        ast = query.inspect_ast
+        expect(ast).to eq("exists(embedding)\n  filter(project_id: 1)")
+      end
+
+      it 'generates a readable AST representation for multiple exists queries with OR' do
+        query = described_class.or(
+          described_class.exists('embedding_v1'),
+          described_class.exists('embedding_v2')
+        )
+        ast = query.inspect_ast
+        expect(ast).to include('or')
+        expect(ast).to include('exists(embedding_v1)')
+        expect(ast).to include('exists(embedding_v2)')
       end
     end
 

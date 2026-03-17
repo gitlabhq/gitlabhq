@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Static Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Detect
 description: Vulnerability detection and result evaluation.
 ---
@@ -43,7 +43,7 @@ You can also run security scanning by:
 - Scheduling security scanning by using a [scan execution policy](../policies/scan_execution_policies.md).
 - For DAST only, running an [on-demand DAST scan manually](../dast/on-demand_scan.md) or
   [on a schedule](../../../ci/pipelines/schedules.md).
-- For SAST only, running a scan by using the [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md#perform-sast-scanning).
+- For SAST only, running a scan by using the [GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/security_scanning.md#perform-sast-scanning).
 
 ### Detection coverage
 
@@ -119,7 +119,6 @@ Security scanning jobs in a CI/CD pipeline are determined by the following crite
 
    Security scanning runs by default in branch pipelines. To run security scanning in merge request
    pipelines you must specifically [enable it](security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
-
 1. Evaluation of rules
 
    Each template has defined [rules](../../../ci/yaml/_index.md#rules) which determine if the
@@ -127,7 +126,6 @@ Security scanning jobs in a CI/CD pipeline are determined by the following crite
 
    For example, some analyzers run only if files of a specific type are detected in the
    repository.
-
 1. Analyzer logic
 
    If the template's rules dictate that the job is to be run, a job is created in the pipeline stage

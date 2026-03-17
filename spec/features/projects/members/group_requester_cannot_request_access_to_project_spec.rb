@@ -9,7 +9,7 @@ RSpec.describe 'Projects > Members > Group requester cannot request access to pr
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, namespace: group) }
   let(:more_actions_dropdown) do
-    find_by_testid('groups-projects-more-actions-dropdown')
+    find('#group-more-action-dropdown [data-testid="groups-list-item-actions"]')
   end
 
   before do
@@ -18,7 +18,7 @@ RSpec.describe 'Projects > Members > Group requester cannot request access to pr
     visit group_path(group)
     perform_enqueued_jobs do
       more_actions_dropdown.click
-      click_link 'Request Access'
+      click_link 'Request access'
     end
     visit project_path(project)
   end

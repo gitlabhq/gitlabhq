@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Enabling the analyzer
 ---
 
@@ -50,14 +50,11 @@ To configure API security testing scanning with an OpenAPI Specification:
 
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
-
 1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. Start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
    Provide the profile by adding the `APISEC_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
-
 1. Provide the location of the OpenAPI Specification as either a file or URL.
    Specify the location by adding the `APISEC_OPENAPI` variable.
-
 1. The target API instance's base URL is also required. Provide it by using the `APISEC_TARGET_URL`
    variable or an `environment_url.txt` file.
 
@@ -113,15 +110,12 @@ To configure API security testing to use a HAR file that provides information ab
 
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
-
 1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. Start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
 
    Provide the profile by adding the `APISEC_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
-
 1. Provide the location of the HAR file. You can provide the location as a file path
    or URL. Specify the location by adding the `APISEC_HAR` variable.
-
 1. The target API instance's base URL is also required. Provide it by using the `APISEC_TARGET_URL`
    variable or an `environment_url.txt` file.
 
@@ -183,9 +177,7 @@ To configure API security testing to use a GraphQL endpoint URL that provides in
 
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
-
 1. Provide the path to the GraphQL endpoint, for example `/api/graphql`. Specify the location by adding the `APISEC_GRAPHQL` variable.
-
 1. The target API instance's base URL is also required. Provide it by using the `APISEC_TARGET_URL`
    variable or an `environment_url.txt` file.
 
@@ -215,18 +207,15 @@ This example is a minimal configuration for API security testing. From here you 
 
 ### API security testing scanning with a GraphQL Schema file
 
-API security testing can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to a the introspection JSON format using an online 3rd party tool: [https://transform.tools/graphql-to-introspection-json](https://transform.tools/graphql-to-introspection-json).
+API security testing can use a GraphQL schema file to understand and test a GraphQL endpoint that has introspection disabled. To use a GraphQL schema file, it must be in the introspection JSON format. A GraphQL schema can be converted to a the introspection JSON format using an online 3rd party tool: <https://transform.tools/graphql-to-introspection-json>.
 
 To configure API security testing to use a GraphQL schema file that provides information about the target API to test:
 
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
-
 1. Provide the GraphQL endpoint path, for example `/api/graphql`. Specify the path by adding the `APISEC_GRAPHQL` variable.
-
 1. Provide the location of the GraphQL schema file. You can provide the location as a file path
    or URL. Specify the location by adding the `APISEC_GRAPHQL_SCHEMA` variable.
-
 1. The target API instance's base URL is also required. Provide it by using the `APISEC_TARGET_URL`
    variable or an `environment_url.txt` file.
 
@@ -294,14 +283,11 @@ API to test:
 
 1. [Include](../../../../ci/yaml/_index.md#includetemplate)
    the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml).
-
 1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. Start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
 
    Provide the profile by adding the `APISEC_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
-
 1. Provide the location of the Postman Collection file as either a file or URL. Specify the location by adding the `APISEC_POSTMAN_COLLECTION` variable.
-
 1. The target API instance's base URL is also required. Provide it by using the `APISEC_TARGET_URL`
    variable or an `environment_url.txt` file.
 

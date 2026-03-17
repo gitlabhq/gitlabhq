@@ -47,11 +47,10 @@ module Ci
       ]
     end
 
-    def pipelines_list_data(project, list_url)
+    def pipelines_list_data(project)
       artifacts_endpoint_placeholder = ':pipeline_artifacts_id'
 
       {
-        endpoint: list_url,
         project_id: project.id,
         default_branch_name: project.default_branch,
         params: params.to_json,

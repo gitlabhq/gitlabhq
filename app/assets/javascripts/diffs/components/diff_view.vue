@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapActions } from 'pinia';
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import draftCommentsMixin from '~/diffs/mixins/draft_comments';

@@ -3,6 +3,9 @@
 module API
   class Todos < ::API::Base
     include PaginationParams
+    include APIGuard
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     before { authenticate! }
 
@@ -28,6 +31,7 @@ module API
         params do
           requires type_id_str, type: Integer, desc: 'The internal ID of an issuable'
         end
+        route_setting :authorization, permissions: :create_todo, boundary_type: :project
         post ":id/#{type}/:#{type_id_str}/todo" do
           issuable = instance_exec(params[type_id_str], &finder)
 
@@ -100,6 +104,7 @@ module API
       params do
         use :pagination, :todo_filters
       end
+      route_setting :authorization, permissions: :read_todo, boundary_type: :user
       get do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/408576')
 
@@ -119,6 +124,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of to-do item'
       end
+      route_setting :authorization, permissions: :update_todo, boundary_type: :user
       post ':id/mark_as_done' do
         todo = current_user.todos.find(params[:id])
 
@@ -130,6 +136,7 @@ module API
       desc 'Mark all to-do items as done' do
         tags %w[to-dos]
       end
+      route_setting :authorization, permissions: :update_todo, boundary_type: :user
       post '/mark_as_done' do
         todos = find_todos
 

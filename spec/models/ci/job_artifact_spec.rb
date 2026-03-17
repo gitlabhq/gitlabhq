@@ -587,34 +587,6 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     end
   end
 
-  describe '#expiring?' do
-    subject { artifact.expiring? }
-
-    context 'when expire_at is nil' do
-      let(:artifact) { build(:ci_job_artifact, expire_at: nil) }
-
-      it 'returns false' do
-        is_expected.to be_falsy
-      end
-    end
-
-    context 'when expire_at is in the past' do
-      let(:artifact) { build(:ci_job_artifact, expire_at: Date.yesterday) }
-
-      it 'returns false' do
-        is_expected.to be_falsy
-      end
-    end
-
-    context 'when expire_at is in the future' do
-      let(:artifact) { build(:ci_job_artifact, expire_at: Date.tomorrow) }
-
-      it 'returns true' do
-        is_expected.to be_truthy
-      end
-    end
-  end
-
   describe '#expire_in' do
     subject { artifact.expire_in }
 

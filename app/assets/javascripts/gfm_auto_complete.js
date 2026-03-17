@@ -10,14 +10,19 @@ import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
-import { currentAssignees, linkedItems } from '~/graphql_shared/issuable_client';
-import { sidebarState } from '~/sidebar/sidebar_state';
-import { ISSUABLE_EPIC, NAME_TO_ICON_MAP, WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
+import {
+  currentAssignees,
+  currentReviewers,
+  appliedLabels,
+  linkedItems,
+} from '~/graphql_shared/issuable_client';
+import { ISSUABLE_EPIC } from '~/work_items/constants';
 import { InternalEvents } from '~/tracking';
 import {
   prioritizeCommandsWithFrequent,
   recordFrequentCommandUsage,
 } from '~/editor/quick_action_suggestions';
+import { isCurrentViewWorkItem } from '~/work_items/utils';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { newDate } from './lib/utils/datetime_utility';
@@ -211,16 +216,7 @@ export const defaultAutocompleteConfig = {
 
 class GfmAutoComplete {
   constructor(dataSources = {}) {
-    // Ensure that all possible work item paths are included
-    const page = document.body.dataset.page || '';
-    this.isWorkItemsView =
-      page.includes('groups:work_items') ||
-      page.includes('projects:work_items') ||
-      page.includes('groups:issues') ||
-      page.includes('projects:issues') ||
-      page.includes('groups:epics') ||
-      page.includes('issues:show') ||
-      page.includes('epics:show');
+    this.isWorkItemsView = isCurrentViewWorkItem();
 
     this.dataSources = dataSources;
     this.cachedData = {};
@@ -230,8 +226,11 @@ class GfmAutoComplete {
   }
 
   setup(input, enableMap = defaultAutocompleteConfig) {
+    // Accept both jQuery and DOM elements
+    const $input = input?.jquery ? input : $(input);
+
     // Add GFM auto-completion to all input fields, that accept GFM input.
-    this.input = input || $('.js-gfm-input');
+    this.input = $input || $('.js-gfm-input');
     this.enableMap = enableMap;
     this.setupLifecycle();
   }
@@ -354,6 +353,44 @@ class GfmAutoComplete {
             return $.fn.atwho.default.callbacks.sorter(query, prioritized, searchKey);
           }
 
+          // Custom sorting to prioritize prefix matches over substring matches
+          // This helps when typing an alias that no longer exists (e.g., /assign_reviewer)
+          // to show the aliased command (e.g., /request_review) higher in the list
+          const lowerQuery = query.toLowerCase();
+
+          // Helper function to check if an item's name starts with the query
+          const hasNamePrefix = (item) => (item.name || '').toLowerCase().startsWith(lowerQuery);
+
+          // Helper function to check if an item has an alias that starts with the query
+          const hasAliasPrefix = (item) =>
+            (item.aliases || []).some((alias) => alias.toLowerCase().startsWith(lowerQuery));
+
+          // Check if any item has an alias that matches the query as a prefix
+          const hasAliasMatch = items.some(hasAliasPrefix);
+
+          // Only apply custom sorting if the query matches an alias prefix
+          if (hasAliasMatch) {
+            const sorted = items.sort((a, b) => {
+              // Score items: name prefix (3) > alias prefix (2) > substring match (1)
+              let aScore = 1;
+              if (hasNamePrefix(a)) aScore = 3;
+              else if (hasAliasPrefix(a)) aScore = 2;
+
+              let bScore = 1;
+              if (hasNamePrefix(b)) bScore = 3;
+              else if (hasAliasPrefix(b)) bScore = 2;
+
+              if (aScore !== bScore) {
+                return bScore - aScore; // Higher score first
+              }
+
+              // Same score - preserve original order
+              return 0;
+            });
+            return sorted;
+          }
+
+          // No alias matches, use default sorter with original order
           return $.fn.atwho.default.callbacks.sorter(query, items, searchKey);
         },
         beforeSave(commands) {
@@ -550,23 +587,42 @@ class GfmAutoComplete {
             return null;
           });
 
-          // Cache assignees & reviewers list for easier filtering later
-          if (instance.isWorkItemsView) {
-            const element = this.$inputor.get(0).closest('.js-gfm-wrapper');
-            if (element) {
-              const { workItemId } = element.dataset;
-              assignees = (currentAssignees()[`${workItemId}`] || []).map(createMemberSearchString);
-            }
-          } else {
-            assignees =
-              SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
-          }
-          reviewers = sidebarState.issuable?.reviewers?.nodes?.map(createMemberSearchString) || [];
+          assignees =
+            SidebarMediator.singleton?.store?.assignees?.map(createMemberSearchString) || [];
+          reviewers = currentReviewers().map(createMemberSearchString);
 
           const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
           return match && match.length ? match[1] : null;
         },
         filter(query, data) {
+          // For work items, read from its cache to handle both /assign and /unassign
+          if (instance.isWorkItemsView) {
+            const gfmWrapper = this.$inputor.get(0).closest('.js-gfm-wrapper');
+            if (gfmWrapper?.dataset.workItemId) {
+              const { workItemId } = gfmWrapper.dataset;
+              const workItemCurrentAssignees = currentAssignees()[`${workItemId}`] || [];
+              const cachedAssignees = workItemCurrentAssignees.map(createMemberSearchString);
+
+              // Return assigned users as present in work item cache
+              if (command === MEMBER_COMMAND.UNASSIGN) {
+                return membersBeforeSave(workItemCurrentAssignees);
+              }
+
+              if (command === MEMBER_COMMAND.ASSIGN) {
+                if (GfmAutoComplete.isLoading(data) || instance.previousQuery !== query) {
+                  instance.previousQuery = query;
+                  fetchData(this.$inputor, this.at, query);
+                  return data.filter((member) => !member.disabled);
+                }
+
+                // For /assign, filter out already-assigned users from network results
+                return data
+                  .filter((member) => !member.disabled)
+                  .filter((member) => !cachedAssignees.includes(member.search));
+              }
+            }
+          }
+
           if (GfmAutoComplete.isLoading(data) || instance.previousQuery !== query) {
             instance.previousQuery = query;
 
@@ -944,6 +1000,14 @@ class GfmAutoComplete {
           return match && match.length ? match[1] : null;
         },
         filter(query, data, searchKey) {
+          if (instance.isWorkItemsView && command === LABEL_COMMAND.UNLABEL) {
+            const gfmWrapper = this.$inputor.get(0).closest('.js-gfm-wrapper');
+            if (gfmWrapper?.dataset.workItemId) {
+              const { workItemId } = gfmWrapper.dataset;
+              return appliedLabels()[`${workItemId}`] || [];
+            }
+          }
+
           if (GfmAutoComplete.isLoading(data)) {
             fetchData(this.$inputor, this.at);
             return data;
@@ -1472,8 +1536,7 @@ GfmAutoComplete.Issues = {
     return value.reference || '#${id}';
   },
   templateFunction({ id, title, reference, iconName }) {
-    const mappedIconName =
-      iconName === ISSUABLE_EPIC ? NAME_TO_ICON_MAP[WORK_ITEM_TYPE_NAME_EPIC] : iconName;
+    const mappedIconName = iconName === ISSUABLE_EPIC ? 'work-item-epic' : iconName;
     const icon = mappedIconName
       ? spriteIcon(mappedIconName, 'gl-fill-icon-subtle s16 gl-mr-2')
       : '';

@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlAlert } from '@gitlab/ui';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 import { TEST_HOST } from 'helpers/test_constants';
 import eventHub, { EVENT_OPEN_CONFIRM_MODAL } from '~/vue_shared/components/confirm_modal_eventhub';
 import ConfirmModal from '~/vue_shared/components/confirm_modal.vue';

@@ -41,21 +41,15 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         end
 
         def for_group(group)
-          traversal_path = group.traversal_path
-
-          condition =
-            Arel::Nodes::NamedFunction.new('startsWith', [Arel.sql('path'), Arel::Nodes.build_quoted(traversal_path)])
-
-          where(condition)
+          where(query_builder.func('startsWith', [query_builder[:path], query_builder.quote(group.traversal_path)]))
         end
 
         def within_dates(from_time, to_time)
           query = self
-          started_at_bucket = @query_builder.table[:started_at_bucket]
 
           # rubocop: disable CodeReuse/ActiveRecord -- this is a ClickHouse model
-          query = query.where(started_at_bucket.gteq(format_time(from_time))) if from_time
-          query = query.where(started_at_bucket.lt(format_time(to_time))) if to_time
+          query = query.where(query_builder[:started_at_bucket].gteq(format_time(from_time))) if from_time
+          query = query.where(query_builder[:started_at_bucket].lt(format_time(to_time))) if to_time
           # rubocop: enable CodeReuse/ActiveRecord
 
           query
@@ -66,7 +60,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         end
 
         def group_by_status
-          group(@query_builder.table[:status])
+          group(query_builder[:status])
         end
 
         def group_by_timestamp_bin
@@ -74,42 +68,41 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         end
 
         def timestamp_bin_function(time_series_period)
-          Arel::Nodes::NamedFunction.new(
+          query_builder.func(
             'dateTrunc',
             [
-              Arel::Nodes.build_quoted(time_series_period.to_s),
-              @query_builder.table[:started_at_bucket],
+              query_builder.quote(time_series_period.to_s),
+              query_builder[:started_at_bucket],
               timezone
             ]
           ).as(timestamp_alias)
         end
 
         def count_pipelines_function
-          Arel::Nodes::NamedFunction.new('countMerge', [@query_builder.table[:count_pipelines]])
+          query_builder.func('countMerge', [query_builder[:count_pipelines]])
         end
 
         def duration_quantile_function(quantile)
-          Arel::Nodes::NamedFunction
-            .new("quantileMerge(#{quantile / 100.0})", [@query_builder.table[:duration_quantile]])
+          query_builder.func("quantileMerge(#{quantile / 100.0})", [query_builder[:duration_quantile]])
             .as("p#{quantile}")
         end
 
         private
 
         def format_time(date)
-          Arel::Nodes::NamedFunction.new('toDateTime64', [
-            Arel::Nodes::SqlLiteral.new(date.utc.strftime("'%Y-%m-%d %H:%M:%S'")),
+          query_builder.func('toDateTime64', [
+            query_builder.quote(date.utc.strftime('%Y-%m-%d %H:%M:%S')),
             6,
             timezone
           ])
         end
 
         def timestamp_alias
-          Arel.sql('timestamp')
+          'timestamp'
         end
 
         def timezone
-          Arel::Nodes.build_quoted('UTC')
+          query_builder.quote('UTC')
         end
       end
     end

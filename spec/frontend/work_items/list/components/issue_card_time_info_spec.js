@@ -64,6 +64,40 @@ describe('CE IssueCardTimeInfo component', () => {
     ],
   });
 
+  const featuresObject = ({
+    milestoneStartDate,
+    milestoneDueDate,
+    startDate,
+    dueDate,
+    state,
+    timeEstimate,
+  } = {}) => ({
+    state,
+    features: {
+      milestone: {
+        milestone: {
+          dueDate: milestoneDueDate,
+          startDate: milestoneStartDate,
+          title: 'My milestone',
+          webPath: '/milestone/webPath',
+        },
+      },
+    },
+    widgets: [
+      {
+        type: WIDGET_TYPE_START_AND_DUE_DATE,
+        dueDate,
+        startDate,
+      },
+      {
+        type: WIDGET_TYPE_TIME_TRACKING,
+        humanReadableAttributes: {
+          timeEstimate,
+        },
+      },
+    ],
+  });
+
   const findMilestone = () => wrapper.findComponent(IssuableMilestone);
   const findWorkItemAttribute = () => wrapper.findComponent(WorkItemAttribute);
   const findDueDateIcon = () => wrapper.findByTestId('issuable-due-date').findComponent(GlIcon);
@@ -77,9 +111,10 @@ describe('CE IssueCardTimeInfo component', () => {
     });
 
   describe.each`
-    type           | object
-    ${'issue'}     | ${issueObject}
-    ${'work item'} | ${workItemObject}
+    type                         | object
+    ${'issue'}                   | ${issueObject}
+    ${'work item'}               | ${workItemObject}
+    ${'work item with features'} | ${featuresObject}
   `('with $type object', ({ object }) => {
     describe('milestone', () => {
       it('renders', () => {
@@ -181,6 +216,28 @@ describe('CE IssueCardTimeInfo component', () => {
         expect(findWorkItemAttribute().props('tooltipText')).toBe('Estimate');
         expect(timeEstimate.findComponent(GlIcon).props('name')).toBe('timer');
       });
+    });
+  });
+
+  describe('features.milestone priority', () => {
+    it('uses features.milestone over widgets milestone', () => {
+      wrapper = mountComponent({
+        issue: {
+          ...workItemObject(),
+          features: {
+            milestone: {
+              milestone: {
+                title: 'Features milestone',
+                webPath: '/features/milestone',
+              },
+            },
+          },
+        },
+      });
+
+      const milestone = findMilestone();
+      expect(milestone.exists()).toBe(true);
+      expect(milestone.props('milestone')).toMatchObject({ title: 'Features milestone' });
     });
   });
 

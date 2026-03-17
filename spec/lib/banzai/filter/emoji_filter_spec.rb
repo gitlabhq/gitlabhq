@@ -186,6 +186,39 @@ RSpec.describe Banzai::Filter::EmojiFilter, feature_category: :markdown do
     end
   end
 
+  # These patterns could cause slow regex matching without the pre-filter optimization.
+  context 'with pathological colon patterns' do
+    it 'quickly processes repeated colon-newline patterns' do
+      text = ":\n" * 10000
+
+      expect do
+        Timeout.timeout(1.second) { filter(text) }
+      end.not_to raise_error
+    end
+
+    it 'quickly processes repeated space-colon patterns' do
+      text = " :" * 10000
+
+      expect do
+        Timeout.timeout(1.second) { filter(text) }
+      end.not_to raise_error
+    end
+
+    it 'quickly processes repeated pipe-colon patterns' do
+      text = "|:" * 10000
+
+      expect do
+        Timeout.timeout(1.second) { filter(text) }
+      end.not_to raise_error
+    end
+
+    it 'still processes valid emoji codes including special formats' do
+      doc = filter(':smile: and :+1: and :100: and :-1: and :e-mail:')
+
+      expect(doc.css('gl-emoji').size).to eq 5
+    end
+  end
+
   it_behaves_like 'pipeline timing check'
   it_behaves_like 'a filter timeout' do
     let(:text) { 'text' }

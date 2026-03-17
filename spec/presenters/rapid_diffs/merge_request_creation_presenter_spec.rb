@@ -11,11 +11,12 @@ RSpec.describe ::RapidDiffs::MergeRequestCreationPresenter, feature_category: :c
   let(:request_params) { { source_branch: 'a', target_branch: 'b' } }
   let(:base_path) { "/#{namespace.to_param}/#{project.to_param}/-/merge_requests/new" }
   let(:url_params) { '?source_branch=a&target_branch=b' }
+  let(:current_user) { build_stubbed(:user) }
   let(:resource) { merge_request }
 
   subject(:presenter) do
     described_class.new(merge_request, project: project, diff_view: diff_view, diff_options: diff_options,
-      request_params: request_params)
+      request_params: request_params, current_user: current_user)
   end
 
   describe '#diffs_slice' do
@@ -26,6 +27,7 @@ RSpec.describe ::RapidDiffs::MergeRequestCreationPresenter, feature_category: :c
 
   it_behaves_like 'rapid diffs presenter base diffs_resource'
   it_behaves_like 'rapid diffs presenter diffs methods', sorted: false
+  it_behaves_like 'rapid diffs presenter syntax highlighting'
 
   describe '#diffs_stats_endpoint' do
     subject(:url) { presenter.diffs_stats_endpoint }

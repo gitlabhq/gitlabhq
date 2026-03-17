@@ -23,6 +23,19 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     it { is_expected.to have_gitlab_http_status(:unauthorized) }
   end
 
+  shared_examples 'rejects virtual_registry service_type' do
+    context 'with a token with virtual_registry service_type' do
+      let(:jwt) do
+        build_jwt(
+          user,
+          service_type: ::Auth::ContainerProxyAuthenticationService::SERVICE_TYPE_VIRTUAL_REGISTRY
+        )
+      end
+
+      it { is_expected.to have_gitlab_http_status(:unauthorized) }
+    end
+  end
+
   shared_examples 'with invalid path' do
     context 'with invalid image' do
       let(:image) { '../path_traversal' }
@@ -323,6 +336,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     context 'feature enabled' do
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
+      it_behaves_like 'rejects virtual_registry service_type'
 
       context 'remote token request fails' do
         let(:token_response) do
@@ -504,6 +518,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     context 'feature enabled' do
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
+      it_behaves_like 'rejects virtual_registry service_type'
 
       context 'a valid user' do
         before do
@@ -736,6 +751,54 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
 
         it_behaves_like 'namespace statistics refresh'
       end
+    end
+  end
+
+  shared_examples 'referrers endpoint returns 404' do
+    let(:expected_json) { { 'errors' => [{ 'code' => 'NAME_UNKNOWN', 'message' => 'Not Found' }] } }
+
+    it 'returns a 404 JSON response with the distribution API version header' do
+      subject
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(response.headers['Docker-Distribution-Api-Version']).to eq(DependencyProxy::DISTRIBUTION_API_VERSION)
+      expect(json_response).to eq(expected_json)
+    end
+  end
+
+  describe '#referrers_not_found (OCI referrers endpoint)', :aggregate_failures do
+    subject { get_referrers }
+
+    it_behaves_like 'referrers endpoint returns 404'
+
+    context 'with no authentication' do
+      before do
+        request.headers['HTTP_AUTHORIZATION'] = nil
+      end
+
+      it_behaves_like 'referrers endpoint returns 404'
+    end
+
+    context 'when dependency proxy is disabled' do
+      before do
+        disable_dependency_proxy
+      end
+
+      it_behaves_like 'referrers endpoint returns 404'
+    end
+
+    context 'with various HTTP methods' do
+      %i[get post put patch delete].each do |method|
+        context "with #{method.upcase}" do
+          subject { send(method, :referrers_not_found, params: { group_id: group.to_param, image: 'alpine', tag: 'latest' }) }
+
+          it_behaves_like 'referrers endpoint returns 404'
+        end
+      end
+    end
+
+    def get_referrers
+      get :referrers_not_found, params: { group_id: group.to_param, image: 'alpine', tag: 'latest' }
     end
   end
 

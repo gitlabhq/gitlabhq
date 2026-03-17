@@ -6,8 +6,7 @@ import {
   shouldStopPagination,
   hasMorePages,
   isExpandable,
-  createItemVisibilityObserver,
-  observeElements,
+  generateSkeletonItem,
 } from '~/repository/file_tree_browser/utils';
 import { FTB_MAX_PAGES, FTB_MAX_DEPTH } from '~/repository/constants';
 
@@ -90,6 +89,19 @@ describe('File tree browser utilities', () => {
     });
   });
 
+  describe('generateSkeletonItem', () => {
+    it('generates skeleton item with correct structure', () => {
+      const result = generateSkeletonItem('/path/to/directory', 2);
+
+      expect(result).toEqual({
+        id: `/path/to/directory-skeleton`,
+        level: 2,
+        parentPath: '/path/to/directory',
+        isSkeleton: true,
+      });
+    });
+  });
+
   describe('directoryContainsChild', () => {
     const trees = [
       { name: 'src', id: '1' },
@@ -146,62 +158,6 @@ describe('File tree browser utilities', () => {
       ${new Array(FTB_MAX_DEPTH).fill('folder')}     | ${true}
     `('returns $expected for segments length $segments.length', ({ segments, expected }) => {
       expect(isExpandable(segments)).toBe(expected);
-    });
-  });
-
-  describe('createItemVisibilityObserver', () => {
-    afterEach(() => document.querySelector('.js-static-panel-inner')?.remove());
-
-    it('creates an IntersectionObserver instance', () => {
-      const observer = createItemVisibilityObserver(jest.fn());
-
-      expect(observer).toBeInstanceOf(IntersectionObserver);
-      observer.disconnect();
-    });
-
-    it('creates observer with scrollMargin option and custom root element', () => {
-      const customRoot = document.createElement('div');
-      const mockIntersectionObserver = jest.fn();
-      global.IntersectionObserver = mockIntersectionObserver;
-      createItemVisibilityObserver(jest.fn(), customRoot);
-
-      expect(mockIntersectionObserver).toHaveBeenCalledWith(expect.any(Function), {
-        root: customRoot,
-        scrollMargin: '1500px',
-      });
-    });
-
-    it('creates observer with null root when panel does not exist', () => {
-      const mockIntersectionObserver = jest.fn();
-      global.IntersectionObserver = mockIntersectionObserver;
-      createItemVisibilityObserver(jest.fn());
-
-      expect(mockIntersectionObserver).toHaveBeenCalledWith(expect.any(Function), {
-        root: null,
-        scrollMargin: '1500px',
-      });
-    });
-  });
-
-  describe('observeElements', () => {
-    it('observes all elements matching the default selector', () => {
-      const container = document.createElement('div');
-      container.innerHTML = '<li data-item-id="1"></li><li data-item-id="2"></li>';
-      const observer = { observe: jest.fn() };
-
-      observeElements(container, observer);
-
-      expect(observer.observe).toHaveBeenCalledTimes(2);
-    });
-
-    it('observes elements matching a custom selector', () => {
-      const container = document.createElement('div');
-      container.innerHTML = '<div class="item"></div><div class="item"></div>';
-      const observer = { observe: jest.fn() };
-
-      observeElements(container, observer, '.item');
-
-      expect(observer.observe).toHaveBeenCalledTimes(2);
     });
   });
 });

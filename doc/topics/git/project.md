@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Create a project with `git push`
 ---
 
@@ -31,7 +31,7 @@ Prerequisites:
 - You must have permission to add new projects to a [namespace](../../user/namespace/_index.md).
   To verify your permissions:
 
-  1. On the top bar, select **Search or go to** and find your group.
+  1. In the top bar, select **Search or go to** and find your group.
   1. In the upper-right corner, confirm that **New project** is visible.
 
   If you do not have the necessary permission, contact your GitLab administrator.

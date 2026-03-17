@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import ItemTitle from '~/work_items/components/item_title.vue';
 
 const createComponent = ({ title = 'Sample title', disabled = false, useH1 = false } = {}) =>

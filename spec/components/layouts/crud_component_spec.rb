@@ -22,11 +22,18 @@ RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shar
     end
   end
 
+  describe 'title_tag' do
+    it 'renders the element specified by title_tag option' do
+      render_inline described_class.new(title, title_tag: :div)
+      expect(page).to have_selector('div[data-testid="crud-title"]')
+    end
+  end
+
   describe 'slots' do
     it 'renders title' do
       render_inline component_title
 
-      expect(page).to have_css('[data-testid="crud-title"]', text: title)
+      expect(page).to have_css('h2[data-testid="crud-title"]', text: title)
     end
 
     it 'renders description' do

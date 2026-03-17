@@ -7,9 +7,9 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
 
   describe "Commit info from gitaly commit" do
-    let(:subject) { (+"My commit").force_encoding('ASCII-8BIT') }
+    let(:commit_subject) { (+"My commit").force_encoding('ASCII-8BIT') }
     let(:body_size) { body.length }
-    let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body, body_size: body_size, tree_id: tree_id) }
+    let(:gitaly_commit) { build(:gitaly_commit, subject: commit_subject, body: body, body_size: body_size, tree_id: tree_id) }
     let(:id) { gitaly_commit.id }
     let(:tree_id) { 'd7f32d821c9cc7b1a9166ca7c4ba95b5c2d0d000' }
     let(:committer) { gitaly_commit.committer }
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
         Cc: Jane Doe <janedoe@gitlab.com>
       BODY
 
-      [subject, "\n", body].join.force_encoding("ASCII-8BIT")
+      [commit_subject, "\n", body].join.force_encoding("ASCII-8BIT")
     end
 
     it { expect(commit.short_id).to eq(id[0..10]) }
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           Changelog: Äpfel
         BODY
 
-        [subject, "\n", body.force_encoding("ASCII-8BIT")].join
+        [commit_subject, "\n", body.force_encoding("ASCII-8BIT")].join
       end
 
       it "parses non-ASCII commit trailers" do
@@ -105,7 +105,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       let(:body) { (+"").force_encoding('ASCII-8BIT') }
 
       context 'zero body_size' do
-        it { expect(commit.safe_message).to eq(subject) }
+        it { expect(commit.safe_message).to eq(commit_subject) }
       end
 
       context 'body_size less than threshold' do

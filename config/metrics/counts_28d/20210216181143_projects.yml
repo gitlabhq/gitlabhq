@@ -3,6 +3,8 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.plan.projects
 description: Count of MAU creating projects
 product_group: project_management
+product_categories:
+- groups_and_projects
 value_type: number
 status: active
 time_frame: 28d

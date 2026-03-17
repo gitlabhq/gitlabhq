@@ -1,7 +1,7 @@
 ---
 stage: Security Risk Management
 group: Security Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Security scanning results
 ---
 
@@ -30,15 +30,15 @@ For information about configuring security scanners, see [Security configuration
 Key terminology for understanding security scan results:
 
 Finding
-: - A finding is a potential vulnerability identified in a development branch. A finding becomes a
-    vulnerability when the branch is merged into the default branch.
-: - Findings expire, either when the related CI/CD job artifact expires, or 90 days after the
-    pipeline is created, even if the related job artifacts are locked.
+: A finding is a potential vulnerability identified in a development branch. A finding becomes a
+  vulnerability when the branch is merged into the default branch.
+: Findings expire, either when the related CI/CD job artifact expires, or 90 days after the
+  pipeline is created, even if the related job artifacts are locked.
 
 Vulnerability
-: - A vulnerability is a software security weakness identified in the default branch.
-: - Vulnerability records persist until they are [archived](../vulnerability_archival/_index.md),
-    even if the vulnerability is no longer detected in the default branch.
+: A vulnerability is a software security weakness identified in the default branch.
+: Vulnerability records persist until they are [archived](../vulnerability_archival/_index.md),
+  even if the vulnerability is no longer detected in the default branch.
 
 Vulnerabilities identified in the default branch are listed in the [vulnerability report](../vulnerability_report/_index.md).
 
@@ -75,7 +75,7 @@ Prerequisites:
 
 To download a security report:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -110,7 +110,7 @@ Prerequisites:
 
 To view a pipeline security report:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select the latest pipeline.
 
@@ -126,7 +126,7 @@ Prerequisites:
 
 To create an issue:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -148,7 +148,7 @@ Prerequisites:
 
 To change the status and severity of findings or vulnerabilities:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select the latest pipeline.
 1. Select the **Security** tab.
@@ -180,7 +180,7 @@ Prerequisites:
 
 To download a security report:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
@@ -211,10 +211,10 @@ For example, consider two pipelines with these scan results:
 - `V1` exists on both branches and is not shown on the merge request widget.
 
 To show the differences between the source branch and the target branch, security reports from both
-are required. The 10 most recent pipelines for the commit when the feature branch was created from
-the target branch are checked for a security report. If one can't be found in the 10 most recent
-pipelines then all findings are listed as new. Before enabling security scanning in merge requests
-ensure that security scanning is enabled for the default branch.
+are required. The system checks the last 10 commits on the target branch for valid security pipelines.
+For each commit, up to 10 of the most recent pipelines are checked for a security report. This approach ensures that a valid security report from an earlier commit is found, even if a commit skips the pipeline.
+If no security report is found, all findings are listed as new. Before enabling security scanning in
+merge requests, ensure that security scanning is enabled for the default branch.
 
 ### View security widget
 
@@ -226,7 +226,7 @@ Prerequisites:
 
 To view the security widget:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Merge requests**.
 1. Select a merge request.
 

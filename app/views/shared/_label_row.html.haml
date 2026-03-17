@@ -7,7 +7,7 @@
   - if show_labels_full_path?(@project, @group)
     .gl-mt-2
       = render 'shared/label_full_path', label: label
-.label-description.gl-w-full
+.label-description.gl-w-full{ class: '@md/panel:gl-mt-4' }
   .gl-flex.gl-items-stretch.gl-flex-wrap
     .gl-grow.gl-mt-1.gl-mr-5{ class: 'gl-basis-1/2' }
       - if label.description.present?

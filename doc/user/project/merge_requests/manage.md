@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use merge request reviews to discuss and improve code before it is merged into your project.
 title: Manage merge requests
 ---
@@ -19,7 +19,7 @@ Prerequisites:
 
 To delete a merge request:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find the merge request you want to delete.
 1. Select **Edit**.
 1. Scroll to the bottom of the page, and select **Delete merge request**.
@@ -27,7 +27,7 @@ To delete a merge request:
 > [!note]
 > Deleting a merge request does not completely erase all data.
 > Some information persists to maintain project history and to support recovery processes.
-> For more information, see [Handle sensitive information](../../../topics/git/undo.md#handle-sensitive-information).
+> For more information, see [handle sensitive information](../../../topics/git/undo.md#handle-sensitive-information).
 
 ## Bulk edit merge requests in a project
 

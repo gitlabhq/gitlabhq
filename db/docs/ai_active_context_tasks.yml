@@ -1,0 +1,13 @@
+---
+table_name: ai_active_context_tasks
+classes:
+  - Ai::ActiveContext::Task
+feature_categories:
+  - global_search
+description: Tracks the state and progress of AI active context tasks.
+  Tasks are reusable operations that can be triggered on-demand or as part of a dependent chain.
+  Unlike migrations, tasks can be re-run and support dependency ordering.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223160
+milestone: '18.10'
+gitlab_schema: gitlab_main_cell_local
+table_size: small

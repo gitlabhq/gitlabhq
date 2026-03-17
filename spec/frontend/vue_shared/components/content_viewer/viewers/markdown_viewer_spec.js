@@ -74,9 +74,8 @@ describe('MarkdownViewer', () => {
       ${'hack" onclick=alert(0)'}          | ${'hack" onclick=alert(0)'}
       ${'hack\\" onclick=alert(0)'}        | ${'hack\\" onclick=alert(0)'}
       ${"hack' onclick=alert(0)"}          | ${"hack' onclick=alert(0)"}
-      ${"hack'><script>alert(0)</script>"} | ${"hack'><script>alert(0)</script>"}
     `(
-      'transforms template tags with base64 encoded images available locally',
+      'transforms template tags with base64 encoded images available locally for imgSrc: $imgSrc, imgAlt: $imgAlt',
       ({ imgSrc, imgAlt }) => {
         createComponent({
           images: {
@@ -99,6 +98,45 @@ describe('MarkdownViewer', () => {
         });
       },
     );
+
+    /* eslint-disable no-script-url */
+    const invalidImgProperties = [
+      ["hack'><script>alert(0)</script>", "hack'><script>alert(0)</script>", ''],
+      ['javascript:alert(1)', 'javascript:alert(1)', 'javascript:alert(1)'],
+      ['jAvascript:alert(1)', 'jAvascript:alert(1)', 'jAvascript:alert(1)'],
+      [
+        'data:text/html,<script>alert(1);</script>',
+        'data:text/html,<script>alert(1);</script>',
+        '',
+      ],
+      [' javascript:', ' javascript:', 'javascript:'],
+      ['javascript :', 'javascript :', 'javascript :'],
+    ];
+    /* eslint-enable no-script-url */
+    it.each(invalidImgProperties)(
+      'removes attacks from values for %s',
+      (imgSrc, imgAlt, sanitizedAlt) => {
+        createComponent({
+          images: {
+            '{{gl_md_img_1}}': {
+              src: imgSrc,
+              alt: imgAlt,
+              title: imgAlt,
+            },
+          },
+        });
+
+        return waitForPromises().then(() => {
+          const img = wrapper.find('.md-previewer img').element;
+
+          // if the values are the same as the input, it means
+          // they were escaped correctly
+          expect(img.src).toBeNull();
+          expect(img.title).toBe(sanitizedAlt);
+          expect(img.alt).toBe(sanitizedAlt);
+        });
+      },
+    );
   });
 
   describe('error', () => {
@@ -109,6 +147,7 @@ describe('MarkdownViewer', () => {
           body: 'Internal Server Error',
         });
     });
+
     it('renders an error message if loading the markdown preview fails', () => {
       createComponent();
 

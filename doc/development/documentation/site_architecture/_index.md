@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: Documentation site architecture
 ---
 
@@ -60,7 +60,7 @@ Then you can use one of these approaches:
   [to the global navigation](global_nav.md#add-a-navigation-entry), but keep the rest
   of the documentation in the external repository. The landing page is indexed and
   searchable on <https://docs.gitlab.com>, but the rest of the documentation is not.
-  For example, the [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/_index.md).
+  For example, the [GitLab for VS Code extension](../../../editor_extensions/visual_studio_code/_index.md).
   We do not encourage the use of [pages with lists of links](../topic_types/_index.md#pages-and-topics-to-avoid),
   so only use this option if the recommended options are not feasible.
 

@@ -10,6 +10,7 @@ import discussionNavigation from '~/notes/mixins/discussion_navigation';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useDiscussions } from '~/notes/store/discussions';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   ...jest.requireActual('~/lib/utils/common_utils'),
@@ -62,7 +63,7 @@ describe('Discussion navigation mixin', () => {
 
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
-    useNotes().discussions = createDiscussions();
+    useDiscussions().discussions = createDiscussions();
     useNotes().setCurrentDiscussionId.mockReturnValue();
     wrapper = shallowMount(createComponent(), { pinia });
   });

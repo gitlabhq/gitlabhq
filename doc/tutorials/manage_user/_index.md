@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Tutorials
-info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: 'Tutorial: Set up your organization'
 description: Setup, configuration, onboarding, and organization structure.
 ---
@@ -89,7 +89,7 @@ For example, you cannot have a private parent group and a public subgroup.
 
 To create your organization subgroups:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **View all my groups**.
 1. Select **Development**. You should see an **Owner** label next to the group
    name as you have the Owner role.
@@ -107,7 +107,7 @@ To create your organization subgroups:
 Next, create UX Design and Technical Writing subgroups. These subgroups will be nested
 under the User Experience subgroup:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **View all my groups**.
 1. Select **Development**.
 1. Under the **Subgroups and projects** tab, select **User Experience**.
@@ -171,7 +171,7 @@ You can give users access to all projects in a group by adding them to that grou
 
 First, you will add all the users to the parent group, Development.
 
-1. On the top bar, select **Search or go to** and find the **Development** group.
+1. In the top bar, select **Search or go to** and find the **Development** group.
 1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. In the **Username, name or email address** dropdown list, select `Alex Smith`.
@@ -211,9 +211,9 @@ subgroups with the same role.
 You can filter a subgroup to show which users are direct members of that subgroup,
 and which members have inherited membership of that subgroup from the parent group.
 
-1. On the top bar, select **Search or go to** and find the **Development** group.
+1. In the top bar, select **Search or go to** and find the **Development** group.
 1. Select the **User Experience** subgroup.
-1. On the left sidebar, select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 1. On the **Members** page, select the **Filter members** field.
 1. Select **Membership**, then select **Indirect**, and press <kbd>Return</kbd>.
 
@@ -232,7 +232,7 @@ them from the parent group.
 
 Go back to the parent group and remove everyone except Alex Smith:
 
-1. On the top bar, select **Search or go to** and find the parent group.
+1. In the top bar, select **Search or go to** and find the parent group.
 1. Select **Manage** > **Members**.
 1. On the member row you want to remove, select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
    and then select **Remove member**.
@@ -251,9 +251,9 @@ You will now add users directly to the different subgroups.
 
 ### Add users to the Product Management subgroup
 
-1. On the top bar, select **Search or go to** and find the **Development** group.
+1. In the top bar, select **Search or go to** and find the **Development** group.
 1. Select the **Product Management** subgroup.
-1. On the left sidebar, select **Manage** > **Members**.
+1. In the left sidebar, select **Manage** > **Members**.
 
 Excluding you, Alex is the only member of this subgroup and is a direct member,
 which is correct. However, you believe they should have the Maintainer role
@@ -292,9 +292,9 @@ add users to the Engineering subgroup.
 
 You are now going to invite some users to the Engineering subgroup.
 
-1. On the top bar, select **Search or go to** and find the **Development** group.
+1. In the top bar, select **Search or go to** and find the **Development** group.
 1. Select the **Engineering** subgroup.
-1. On the left sidebar, select **Manage** > **Members**. The only
+1. In the left sidebar, select **Manage** > **Members**. The only
    members are you and Alex. Both members have the Owner role, which are inherited roles.
 1. Select **Invite members**.
 1. Complete the fields for the following members:
@@ -311,7 +311,6 @@ You are now going to invite some users to the Engineering subgroup.
    Blake Wang has the Maintainer role in this subgroup, in line with their responsibilities as
    engineering manager. The three developers all have the Developer role, which are
    direct roles.
-
 1. You can change their roles directly on this subgroup's member page. Under **Role**, select `Maintainer` to change Blake Wang's role
    to an Owner for this subgroup.
 1. Go back to the Development group's member page. You see that the members of the Engineering
@@ -337,9 +336,9 @@ included in both nested subgroups due to inherited permissions.
 Therefore, you will add these users to the appropriate nested subgroup directly
 rather than to the User Experience subgroup.
 
-1. On the top bar, select **Search or go to** and find the **Development** group.
+1. In the top bar, select **Search or go to** and find the **Development** group.
 1. Select the **User Experience** subgroup, and then the **UX Design** subgroup.
-1. On the left sidebar, select **Manage** > **Members**. You and Alex
+1. In the left sidebar, select **Manage** > **Members**. You and Alex
    Smith are the only members. These are inherited roles.
 1. Select **Invite members**.
 1. Complete the fields and select **Invite** for the following members:
@@ -364,7 +363,7 @@ You can add Grayson to the **User Experience** subgroup as a specific role, whil
 keeping their role for the **Technical Writing** subgroup the same.
 
 1. Go to the **User Experience** subgroup.
-1. On the left sidebar, select **Manage** > **Members**. You and Alex
+1. In the left sidebar, select **Manage** > **Members**. You and Alex
    Smith are the only members. These are inherited roles.
 1. Select **Invite members**.
 1. Invite Grayson Garcia as a Developer, a role with a lower level of permissions
@@ -401,7 +400,7 @@ need to work on. That piece of work is for the whole organization. To organize
 that work, you are going to create a project in the Development parent group, and
 add different users to that project.
 
-1. On the top bar, select **Search or go to** and find the **Development** group.
+1. In the top bar, select **Search or go to** and find the **Development** group.
 1. In the upper-right corner, select **Create new** ({{< icon name="plus" >}}) and **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
@@ -431,8 +430,8 @@ directly to the project.
 
 ## Add users to the project and parent group
 
-1. On the top bar, select **Search or go to** and find the **Release 2.0** project.
-1. On the left sidebar, select **Manage** > **Members**.
+1. In the top bar, select **Search or go to** and find the **Release 2.0** project.
+1. In the left sidebar, select **Manage** > **Members**.
 1. Select **Invite members**. Invite the following users:
 
    | User           | Role       | Access expiration date |

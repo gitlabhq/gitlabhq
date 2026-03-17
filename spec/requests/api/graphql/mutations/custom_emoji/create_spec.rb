@@ -22,7 +22,7 @@ RSpec.describe 'Creation of a new Custom Emoji', feature_category: :shared do
 
   context 'when the user has no permission' do
     it 'does not create custom emoji' do
-      expect { post_graphql_mutation(mutation, current_user: current_user) }.not_to change(CustomEmoji, :count)
+      expect { post_graphql_mutation(mutation, current_user: current_user) }.not_to change { CustomEmoji.count }
     end
   end
 
@@ -32,7 +32,7 @@ RSpec.describe 'Creation of a new Custom Emoji', feature_category: :shared do
     end
 
     it 'creates custom emoji' do
-      expect { post_graphql_mutation(mutation, current_user: current_user) }.to change(CustomEmoji, :count).by(1)
+      expect { post_graphql_mutation(mutation, current_user: current_user) }.to change { CustomEmoji.count }.by(1)
 
       gql_response = graphql_mutation_response(:create_custom_emoji)
       expect(gql_response['errors']).to eq([])

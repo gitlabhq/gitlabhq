@@ -20,7 +20,7 @@ module IssueEmailParticipants
       return unless emails.present?
 
       message = format(system_note_text, emails: emails.to_sentence)
-      ::SystemNoteService.email_participants(target, project, (user || current_user), message)
+      ::SystemNoteService.email_participants(target, project, user || current_user, message)
 
       message
     end
@@ -35,11 +35,6 @@ module IssueEmailParticipants
 
     def error(message)
       ServiceResponse.error(message: message)
-    end
-
-    def error_feature_flag
-      # Don't translate feature flag error because it's temporary.
-      error("Feature flag issue_email_participants is not enabled for this project.")
     end
 
     def error_underprivileged

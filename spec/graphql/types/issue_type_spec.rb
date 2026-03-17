@@ -24,7 +24,7 @@ RSpec.describe GitlabSchema.types['Issue'], feature_category: :team_planning do
       emails_disabled emails_enabled subscribed time_estimate total_time_spent human_time_estimate human_total_time_spent closed_at created_at updated_at task_completion_status
       design_collection alert_management_alert alert_management_alerts severity current_user_todos moved moved_to
       closed_as_duplicate_of create_note_email timelogs project_id customer_relations_contacts escalation_status external_author linked_work_items
-      name]
+      name work_item_type]
 
     fields.each do |field_name|
       expect(described_class).to have_graphql_field(field_name)
@@ -148,6 +148,39 @@ RSpec.describe GitlabSchema.types['Issue'], feature_category: :team_planning do
       it 'returns `false`' do
         expect(subject.dig('data', 'project', 'issue', 'hidden')).to eq(false)
       end
+    end
+  end
+
+  describe 'work_item_type' do
+    let_it_be(:issue) { create(:issue, project: project) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            issue(iid: "#{issue.iid}") {
+              workItemType {
+                id
+                name
+                iconName
+              }
+            }
+          }
+        }
+      )
+    end
+
+    subject(:work_item_type_data) do
+      GitlabSchema.execute(query, context: { current_user: user }).as_json
+        .dig('data', 'project', 'issue', 'workItemType')
+    end
+
+    it 'returns the work item type for the issue' do
+      expect(work_item_type_data).to include(
+        'id' => issue.work_item_type.to_global_id.to_s,
+        'name' => issue.work_item_type.name,
+        'iconName' => issue.work_item_type.icon_name
+      )
     end
   end
 

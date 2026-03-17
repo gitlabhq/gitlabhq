@@ -56,10 +56,21 @@ module Types
           null: true,
           description: 'Sort option associated with the saved view.'
 
+        # TODO: Remove once frontend has migrated to use is_private
         field :private,
           ::GraphQL::Types::Boolean,
           null: false,
-          description: 'Whether the saved view is private.'
+          description: 'Whether the saved view is private.',
+          deprecated: {
+            reason: 'Replaced by `isPrivate` field',
+            milestone: '18.10'
+          }
+
+        field :is_private,
+          ::GraphQL::Types::Boolean,
+          null: false,
+          description: 'Whether the saved view is private.',
+          method: :private
 
         field :share_url,
           ::GraphQL::Types::String,
@@ -80,6 +91,22 @@ module Types
             'This field can only be resolved for one saved view in any single request.' do
               extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
             end
+
+        field :updated_at,
+          Types::TimeType,
+          null: false,
+          description: 'Timestamp of when the saved view was last updated.'
+
+        field :author,
+          Types::UserType,
+          null: true,
+          description: 'Author of the saved view.'
+
+        field :last_updated_by,
+          Types::UserType,
+          null: true,
+          description: 'User who last updated the saved view.',
+          experiment: { milestone: '18.10' }
 
         def filters
           filters_data = validated_result[:filters]
@@ -111,6 +138,8 @@ module Types
             Gitlab::Routing.url_helpers.project_saved_view_url(project, object.id)
           end
         end
+
+        def last_updated_by; end
 
         private
 

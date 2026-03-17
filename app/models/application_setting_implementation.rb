@@ -30,6 +30,10 @@ module ApplicationSettingImplementation
     '/admin/session'
   ].freeze
 
+  DEFAULT_PROTECTED_PATHS_FOR_GET_REQUEST = [
+    '/users/sign_in_path'
+  ].freeze
+
   DEFAULT_MINIMUM_PASSWORD_LENGTH = 8
   DEFAULT_NUMBER_OF_DAYS_BEFORE_REMOVAL = 30
 
@@ -173,6 +177,7 @@ module ApplicationSettingImplementation
         instance_token_prefix: '',
         plantuml_enabled: false,
         plantuml_url: nil,
+        plantuml_diagram_proxy_enabled: false,
         diagramsnet_enabled: true,
         diagramsnet_url: 'https://embed.diagrams.net',
         polling_interval_multiplier: 1,
@@ -183,9 +188,11 @@ module ApplicationSettingImplementation
         project_import_limit: 6,
         protected_ci_variables: true,
         protected_paths: DEFAULT_PROTECTED_PATHS,
+        protected_paths_for_get_request: DEFAULT_PROTECTED_PATHS_FOR_GET_REQUEST,
         push_event_activities_limit: 3,
         push_event_hooks_limit: 3,
         raw_blob_request_limit: 300,
+        raw_blob_request_limit_unauthenticated: ApplicationSetting::DEFAULT_RAW_BLOB_UNAUTHENTICATED_REQUEST_LIMIT,
         recaptcha_enabled: false,
         receptive_cluster_agents_enabled: false,
         relation_export_batch_size: 50,
@@ -288,6 +295,7 @@ module ApplicationSettingImplementation
         kroki_enabled: false,
         kroki_url: nil,
         kroki_formats: { blockdiag: false, bpmn: false, excalidraw: false, mermaid: false },
+        kroki_diagram_proxy_enabled: false,
         rate_limiting_response_text: nil,
         whats_new_variant: 0,
         user_deactivation_emails_enabled: true,
@@ -745,10 +753,8 @@ module ApplicationSettingImplementation
 
   def parse_addr_and_port(str)
     case str
-    when /\A\[(?<address> .* )\]:(?<port> \d+ )\z/x      # string like "[::1]:80"
-      address = $~[:address]
-      port = $~[:port]
-    when /\A(?<address> [^:]+ ):(?<port> \d+ )\z/x       # string like "127.0.0.1:80"
+    when /\A\[(?<address> .* )\]:(?<port> \d+ )\z/x,     # string like "[::1]:80"
+      /\A(?<address> [^:]+ ):(?<port> \d+ )\z/x          # string like "127.0.0.1:80"
       address = $~[:address]
       port = $~[:port]
     else                                                 # string with no port number

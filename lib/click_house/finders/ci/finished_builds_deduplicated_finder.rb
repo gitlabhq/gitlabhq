@@ -66,12 +66,21 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           with_inner_query(inner_query.having(condition))
         end
 
+        def apply_finished_at_lower_bound(from_time)
+          with_inner_query(inner_query.where(inner_query[:finished_at].gteq(format_datetime64(from_time))))
+        end
+
         def limit(count)
           with_outer_query(outer_query.limit(count))
         end
 
         def offset(count)
           with_outer_query(outer_query.offset(count))
+        end
+
+        def final_query
+          inner = selected_fields ? inner_query : default_inner_query
+          outer_query.from(inner, SUBQUERY_ALIAS)
         end
 
         private
@@ -84,11 +93,6 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
         def base_outer_query
           ClickHouse::Client::QueryBuilder.new(SUBQUERY_ALIAS)
-        end
-
-        def final_query
-          inner = selected_fields ? inner_query : default_inner_query
-          outer_query.from(inner, SUBQUERY_ALIAS)
         end
 
         def default_inner_query

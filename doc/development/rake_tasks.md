@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Rake tasks for developers
 ---
 
@@ -74,7 +74,7 @@ and priority.
 
 #### Seeding groups with subgroups
 
-You can seed groups with subgroups that contain milestones/projects/issues
+You can seed groups with subgroups that contain milestones/projects
 with the `gitlab:seed:group_seed` task:
 
 ```shell

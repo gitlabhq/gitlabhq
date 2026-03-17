@@ -73,6 +73,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       manual_variables
       has_manual_actions
       has_scheduled_actions
+      pipeline_schedule
     ]
 
     if Gitlab.ee?
@@ -227,6 +228,63 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
 
       it 'returns the limited count' do
         expect(failed_jobs_count).to eq(3)
+      end
+    end
+  end
+
+  describe 'pipeline_schedule' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository, public_builds: false) }
+    let_it_be(:schedule) { create(:ci_pipeline_schedule, project: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, pipeline_schedule: schedule) }
+
+    let(:query) do
+      %(
+        {
+          project(fullPath: "#{project.full_path}") {
+            pipeline(iid: "#{pipeline.iid}") {
+              pipelineSchedule {
+                id
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:pipeline_schedule) { data.dig('data', 'project', 'pipeline', 'pipelineSchedule') }
+
+    subject(:data) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    before do
+      project.add_role(user, user_access_level) # rubocop:disable RSpec/BeforeAllRoleAssignment -- need dynamic settings `user_access_level`
+    end
+
+    context 'when the pipeline was triggered by a schedule' do
+      context 'when the user has permission to read the pipeline schedule' do
+        let(:user_access_level) { :owner }
+
+        it 'returns the pipeline schedule' do
+          expect(pipeline_schedule).not_to be_nil
+          expect(pipeline_schedule['id']).to eq(schedule.to_global_id.to_s)
+        end
+      end
+
+      context 'when the user does not have permission to read the pipeline schedule' do
+        let(:user_access_level) { :guest }
+
+        it 'returns nil' do
+          expect(pipeline_schedule).to be_nil
+        end
+      end
+    end
+
+    context 'when the pipeline was not triggered by a schedule' do
+      let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+      let(:user_access_level) { :developer }
+
+      it 'returns nil' do
+        expect(pipeline_schedule).to be_nil
       end
     end
   end

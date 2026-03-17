@@ -1,0 +1,14 @@
+.rd-viewed-toggle {
+  @apply -gl-mb-3;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.rd-file-comment-toggle.rd-file-comment-toggle.disabled {
+  border-color: transparent;
+}
+
+.user-logged-out .rd-viewed-toggle,
+.user-logged-out .rd-file-comment-toggle {
+  display: none;
+}

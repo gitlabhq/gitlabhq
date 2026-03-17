@@ -37,7 +37,8 @@ module Mcp
 
       # Registry of all custom tools mapped to their service classes
       CUSTOM_TOOLS = {
-        'get_mcp_server_version' => ::Mcp::Tools::GetServerVersionService
+        'get_mcp_server_version' => ::Mcp::Tools::GetServerVersionService,
+        'get_merge_request_conflicts' => ::Mcp::Tools::GetMergeRequestConflictsService
       }.freeze
 
       GRAPHQL_TOOLS = {

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Documentation on Git file blame.
 title: Git file blame
 ---
@@ -33,7 +33,7 @@ Prerequisites:
 
 To view the blame for a file:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Repository**.
 1. Select the file you want to review.
 1. Either:
@@ -54,7 +54,7 @@ changes to light gray.
 
 To see earlier revisions of a specific line:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Repository**.
 1. Select the file you want to review.
 1. In the upper-right corner, select **Blame**, and go to the line you want to see.
@@ -68,6 +68,7 @@ To see earlier revisions of a specific line:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514684) in GitLab 17.10 [with a flag](../../../../administration/feature_flags/_index.md) named `blame_ignore_revs`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/514325) in GitLab 17.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/525095) in GitLab 17.11. Feature flag `blame_ignore_revs` removed.
+
 {{< /history >}}
 
 To configure Git blame to ignore specific revisions:

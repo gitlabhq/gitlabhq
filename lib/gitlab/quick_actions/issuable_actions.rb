@@ -108,7 +108,6 @@ module Gitlab
           if labels_param.present?
             labels = find_labels(labels_param)
             label_ids = labels.map(&:id)
-            label_references = labels_to_reference(labels, :name)
 
             if label_ids.any?
               @updates[:remove_label_ids] ||= []
@@ -116,12 +115,18 @@ module Gitlab
 
               @updates[:remove_label_ids].uniq!
             end
+
+            @accumulated_label_references ||= {}
+            @accumulated_label_references[:unlabel] ||= []
+            @accumulated_label_references[:unlabel] |= labels_to_reference(labels, :name)
+
+            all_references = @accumulated_label_references[:unlabel].sort!
           else
             @updates[:label_ids] = []
-            label_references = []
+            all_references = []
           end
 
-          @execution_message[:unlabel] = remove_label_message(label_references)
+          @execution_message[:unlabel] = remove_label_message(all_references)
         end
 
         desc { _('Replace all labels') }
@@ -282,19 +287,23 @@ module Gitlab
           @updates[updates_key] += labels.map(&:id)
           @updates[updates_key].uniq!
 
-          label_references = labels_to_reference(labels, :name)
+          @accumulated_label_references ||= {}
+          @accumulated_label_references[command] ||= []
+          @accumulated_label_references[command] |= labels_to_reference(labels, :name)
+
+          all_references = @accumulated_label_references[command].sort!
           @execution_message[command] = case command
                                         when :relabel
                                           _('Replaced all labels with %{label_references} %{label_text}.') %
                                             {
-                                              label_references: label_references.join(' '),
-                                              label_text: 'label'.pluralize(label_references.count)
+                                              label_references: all_references.join(' '),
+                                              label_text: 'label'.pluralize(all_references.count)
                                             }
                                         when :label
                                           _('Added %{label_references} %{label_text}.') %
                                             {
-                                              label_references: label_references.join(' '),
-                                              label_text: 'label'.pluralize(labels.count)
+                                              label_references: all_references.join(' '),
+                                              label_text: 'label'.pluralize(all_references.count)
                                             }
                                         end
         end

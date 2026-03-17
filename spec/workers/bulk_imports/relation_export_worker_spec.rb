@@ -89,8 +89,12 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
       end
 
       context 'when offline export is provided' do
-        let_it_be(:export) { create(:offline_export) }
+        let_it_be(:export) { create(:offline_export, :with_configuration) }
         let(:offline_export_id) { export.id }
+
+        before do
+          stub_offline_import_object_storage(export.configuration)
+        end
 
         include_examples 'export service', BulkImports::RelationExportService
 
@@ -123,31 +127,69 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
 
   describe '.perform_failure', :aggregate_failures do
     let(:job) { { 'args' => job_args } }
-    let_it_be_with_reload(:export) { create(:bulk_import_export, group: group, relation: relation, user_id: user.id) }
-    let_it_be_with_reload(:offline_export) do
+    let_it_be_with_reload(:bulk_import_export) do
+      create(:bulk_import_export, group: group, relation: relation, user_id: user.id)
+    end
+
+    let_it_be_with_reload(:offline_relation_export) do
       create(:bulk_import_export, :offline, group: group, relation: relation, user_id: user.id)
     end
 
-    context 'when called by .sidekiq_retries_exhausted' do
-      it 'sets export status to failed and tracks the exception' do
-        expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception)
-          .with(kind_of(StandardError), portable_id: group.id, portable_type: group.class.name)
+    shared_examples 'a failed relation export' do
+      context 'when called by .sidekiq_retries_exhausted' do
+        it 'sets export status to failed and tracks the exception' do
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception)
+            .with(
+              kind_of(StandardError),
+              portable_id: group.id,
+              portable_type: group.class.name,
+              offline_export_id: offline_export_id
+            )
 
-        described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('*' * 300))
+          described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('*' * 300))
 
-        expect(export.reload).to be_failed
-        expect(export.error.size).to eq(255)
-        expect(offline_export.reload).not_to be_failed
+          expect(export.reload).to be_failed
+          expect(export.error.size).to eq(255)
+          expect(other_relation_export.reload).not_to be_failed
+        end
+      end
+
+      context 'when called by .sidekiq_interruptions_exhausted' do
+        it 'sets export status to failed and tracks the exception' do
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception)
+            .with(
+              kind_of(Import::Exceptions::SidekiqExhaustedInterruptionsError),
+              portable_id: group.id,
+              portable_type: group.class.name,
+              offline_export_id: offline_export_id
+            )
+
+          described_class.interruptions_exhausted_block.call(job)
+
+          expect(export.reload).to be_failed
+          expect(export.error).to eq('Export process reached the maximum number of interruptions')
+          expect(other_relation_export.reload).not_to be_failed
+        end
       end
     end
 
-    context 'when called by .sidekiq_interruptions_exhausted' do
-      it 'sets export status to failed' do
-        described_class.interruptions_exhausted_block.call(job)
-        expect(export.reload).to be_failed
-        expect(export.error).to eq('Export process reached the maximum number of interruptions')
-        expect(offline_export.reload).not_to be_failed
+    context 'when offline export is not provided' do
+      let(:job_args) { [user.id, group.id, group.class.name, relation, batched] }
+
+      it_behaves_like 'a failed relation export' do
+        let(:export) { bulk_import_export }
+        let(:other_relation_export) { offline_relation_export }
+      end
+    end
+
+    context 'when offline export is provided' do
+      let(:offline_export_id) { offline_relation_export.offline_export_id }
+
+      it_behaves_like 'a failed relation export' do
+        let(:export) { offline_relation_export }
+        let(:other_relation_export) { bulk_import_export }
       end
     end
   end

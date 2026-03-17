@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :groups_and_projects do
-  include Namespaces::StatefulHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
@@ -23,7 +22,7 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
 
     with_them do
       before do
-        set_state(namespace, initial_state)
+        namespace.update!(state: initial_state)
       end
 
       it "updates state_metadata on successful transition" do
@@ -51,15 +50,16 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
 
     with_them do
       before do
-        set_state(namespace, initial_state)
+        namespace.update!(state: initial_state)
       end
 
       it 'sets deletion schedule data on successful transition' do
         namespace.schedule_deletion!(transition_user: user)
 
-        metadata = namespace.reload.state_metadata
+        namespace.reload
+        metadata = namespace.state_metadata
 
-        expect(metadata['deletion_scheduled_at']).to eq(Time.current.as_json)
+        expect(namespace.deletion_scheduled_at).to eq(Time.current)
         expect(metadata['deletion_scheduled_by_user_id']).to eq(user.id)
       end
     end
@@ -70,7 +70,8 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
 
     with_them do
       before do
-        set_state(namespace, initial_state)
+        namespace.update!(state: initial_state)
+        namespace.update!(deletion_scheduled_at: 1.day.ago)
         namespace.state_metadata.merge!(
           deletion_scheduled_at: 1.day.ago.as_json,
           deletion_scheduled_by_user_id: user.id
@@ -81,17 +82,18 @@ RSpec.describe Namespaces::Stateful::TransitionCallbacks, feature_category: :gro
       it 'clears deletion schedule data on successful transition' do
         namespace.cancel_deletion!(transition_user: user)
 
-        metadata = namespace.reload.state_metadata
+        namespace.reload
 
-        expect(metadata['deletion_scheduled_at']).to be_nil
-        expect(metadata['deletion_scheduled_by_user_id']).to be_nil
+        expect(namespace.deletion_scheduled_at).to be_nil
+        expect(namespace.state_metadata['deletion_scheduled_at']).to be_nil
+        expect(namespace.state_metadata['deletion_scheduled_by_user_id']).to be_nil
       end
     end
   end
 
   describe '#update_state_metadata_on_failure' do
     before do
-      set_state(namespace, :archived)
+      namespace.update!(state: :archived)
     end
 
     it 'includes state errors when present' do

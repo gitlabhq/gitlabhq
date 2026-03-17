@@ -33,6 +33,8 @@ module Tooling
       }.freeze
       # @return [Integer] default spec runtime for tracking purposes
       DEFAULT_SPEC_RUNTIME_SECONDS = 0
+      # @return [Array] feature spec path prefixes (system tests)
+      FEATURE_SPEC_PREFIXES = %w[spec/features/ ee/spec/features/].freeze
 
       def initialize(
         test_type:,
@@ -79,9 +81,13 @@ module Tooling
       #
       # @return [Boolean]
       def export_rspec_metrics
-        export_all_strategies(TEST_TYPES[:backend]) do |strategy|
+        result = export_all_strategies(TEST_TYPES[:backend]) do |strategy|
           generate_and_record_metrics(strategy, rspec_matching_tests(strategy))
         end
+
+        export_duo_metrics
+
+        result
       end
 
       # Export jest test metrics
@@ -109,6 +115,56 @@ module Tooling
         end
 
         results.all?(true)
+      end
+
+      # Export Duo metrics by reading from artifact written by detect-system-tests-duo-experiment.
+      #
+      # Duo is intentionally NOT re-invoked here because:
+      # 1. It would incur additional LLM API costs
+      # 2. The LLM response is non-deterministic - a second call could return different
+      #    specs than what was actually used for test selection, making metrics misleading
+      #
+      # Instead, the detect-system-tests-duo-experiment job saves its predictions to a file which
+      # is passed to this job as an artifact via GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH.
+      #
+      # Note: missed_failing_test_files is calculated against feature specs only, since
+      # Duo exclusively predicts feature specs.
+      #
+      # @return [void]
+      def export_duo_metrics
+        system_tests_file = ENV['GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH']
+
+        unless system_tests_file
+          logger.info("Skipping Duo metrics - GLCI_PREDICTIVE_DUO_SYSTEM_TESTS_PATH not set")
+          return
+        end
+
+        unless File.exist?(system_tests_file)
+          logger.warn("Skipping Duo metrics - artifact file not found (#{system_tests_file})")
+          return
+        end
+
+        predicted_tests = read_array_from_file(system_tests_file)
+        predicted_failing = (predicted_tests & duo_failed_test_files).size
+        logger.info("Duo predicted #{predicted_failing} out of #{duo_failed_test_files.size} feature spec failures " \
+          "| #{failed_test_files.size} total test failures")
+
+        generate_and_record_metrics(:duo, predicted_tests, scoped_failed_files: duo_failed_test_files)
+      rescue StandardError => e
+        logger.error("Failed to export Duo metrics: #{e.message}")
+        logger.error(e.backtrace.select { |entry| entry.include?(project_root) }.join("\n")) if e.backtrace
+      end
+
+      # Failed test files scoped to feature specs only.
+      #
+      # Duo only predicts feature specs, so recall/miss metrics must be calculated
+      # against this subset rather than all pipeline failures.
+      #
+      # @return [Array]
+      def duo_failed_test_files
+        @duo_failed_test_files ||= failed_test_files.select do |f|
+          FEATURE_SPEC_PREFIXES.any? { |prefix| f.start_with?(prefix) }
+        end
       end
 
       # Project root folder
@@ -237,14 +293,17 @@ module Tooling
       # Create, save and export metrics for selected RSpec tests for specific strategy
       #
       # @param strategy [Symbol]
+      # @param predicted_test_files [Array]
+      # @param scoped_failed_files [Array] failed test files to calculate misses against
       # @return [void]
-      def generate_and_record_metrics(strategy, predicted_test_files)
+      def generate_and_record_metrics(strategy, predicted_test_files, scoped_failed_files: failed_test_files)
         logger.info("Generating metrics for mapping strategy '#{strategy}' ...")
 
         metrics = generate_metrics_data(
           changed_files,
           predicted_test_files,
-          strategy
+          strategy,
+          scoped_failed_files: scoped_failed_files
         )
 
         save_metrics(metrics, strategy)
@@ -268,8 +327,10 @@ module Tooling
       # @param changed_files [Array]
       # @param predicted_test_files [Array]
       # @param strategy [Symbol]
+      # @param scoped_failed_files [Array] failed test files to calculate misses against;
+      #   defaults to all failed files but can be scoped to a subset (e.g. feature specs for Duo)
       # @return [Hash]
-      def generate_metrics_data(changed_files, predicted_test_files, strategy)
+      def generate_metrics_data(changed_files, predicted_test_files, strategy, scoped_failed_files: failed_test_files)
         {
           timestamp: Time.now.iso8601,
           test_type: test_type,
@@ -277,9 +338,9 @@ module Tooling
           core_metrics: {
             changed_files_count: changed_files.size,
             predicted_test_files_count: predicted_test_files.size,
-            missed_failing_test_files: (failed_test_files - predicted_test_files).size,
-            predicted_failing_test_files: (failed_test_files & predicted_test_files).size,
-            failed_test_files_count: failed_test_files.size,
+            missed_failing_test_files: (scoped_failed_files - predicted_test_files).size,
+            predicted_failing_test_files: (scoped_failed_files & predicted_test_files).size,
+            failed_test_files_count: scoped_failed_files.size,
             # rspec tests have runtime information provided via knapsack report
             # frontend tests don't have a runtime report yet, so we skip them
             runtime_metrics: runtime_metrics(predicted_test_files)

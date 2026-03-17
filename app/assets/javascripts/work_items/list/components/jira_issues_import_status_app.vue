@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlLabel } from '@gitlab/ui';
-import { last } from 'lodash';
+import { last } from 'lodash-es';
 import {
   calculateJiraImportLabel,
   isInProgress,

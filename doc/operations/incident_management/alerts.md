@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Understand and manage alerts in GitLab, including viewing alert lists, changing statuses, assigning alerts, triggering actions, and responding to on-call notifications.
 title: Alerts
 ---
@@ -120,12 +120,9 @@ Prerequisites:
 To change an alert's status:
 
 - From the [alert list](#alert-list):
-
   1. In the **Status** column, next to an alert, select the status dropdown list.
   1. Select a status.
-
 - From the [alert details page](#alert-details-page):
-
   1. In the right sidebar, select **Edit**.
   1. Select a status.
 

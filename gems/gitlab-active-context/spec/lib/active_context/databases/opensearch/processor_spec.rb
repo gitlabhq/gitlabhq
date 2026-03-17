@@ -3,11 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe ActiveContext::Databases::Opensearch::Processor do
-  let(:collection) { double('collection', current_search_embedding_version: search_embedding_version) }
+  let(:collection) do
+    klass = Class.new(Test::Collections::Mock) do
+      def self.collection_name
+        'items'
+      end
+    end
+
+    allow(klass).to receive(:collection_record).and_return(
+      double("CollectionRecord", search_embedding_model: { field: 'preset_field', model_ref: 'model_001' })
+    )
+
+    klass
+  end
+
   let(:user) { double('user') }
-  let(:search_embedding_version) { { field: 'preset_field', model: model, class: Test::Embeddings } }
   let(:generated_embedding) { [0.5, 0.6] }
-  let(:model) { 'some-model' }
 
   it_behaves_like 'a query processor'
 
@@ -23,12 +34,6 @@ RSpec.describe ActiveContext::Databases::Opensearch::Processor do
         vector: [0.1, 0.2],
         k: 5
       )
-    end
-
-    before do
-      allow(ActiveContext::Embeddings).to receive(:generate_embeddings)
-        .with(anything, version: search_embedding_version, user: user)
-        .and_return([generated_embedding])
     end
 
     context 'with filter queries' do
@@ -211,25 +216,6 @@ RSpec.describe ActiveContext::Databases::Opensearch::Processor do
             }
           )
         end
-
-        it 'handles content-based KNN queries' do
-          content_knn = ActiveContext::Query.knn(
-            content: 'Sample text for embedding',
-            k: 5
-          )
-
-          result = processor.process(content_knn)
-
-          expect(result).to eq(
-            query: {
-              bool: {
-                should: [
-                  { knn: { 'preset_field' => { k: 5, vector: generated_embedding } } }
-                ]
-              }
-            }
-          )
-        end
       end
     end
 
@@ -260,6 +246,28 @@ RSpec.describe ActiveContext::Databases::Opensearch::Processor do
             bool: {
               should: [
                 { knn: { 'embedding' => { k: 5, vector: [0.1, 0.2] } } }
+              ]
+            }
+          }
+        )
+      end
+
+      it 'handles content-based KNN queries' do
+        allow_any_instance_of(::ActiveContext::EmbeddingModel).to receive(:generate_embeddings)
+          .with('Sample text for embedding', user: user).and_return([generated_embedding])
+
+        content_knn = ActiveContext::Query.knn(
+          content: 'Sample text for embedding',
+          k: 5
+        )
+
+        result = processor.process(content_knn)
+
+        expect(result).to eq(
+          query: {
+            bool: {
+              should: [
+                { knn: { preset_field: { k: 5, vector: generated_embedding } } }
               ]
             }
           }

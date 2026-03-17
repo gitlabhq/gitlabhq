@@ -19,7 +19,7 @@ module Integrations
         def help
           build_help_page_url(
             'user/project/integrations/pivotal_tracker.md',
-            s_("Add commit messages as comments to Pivotal Tracker stories.")
+            _("Add commit messages as comments to Pivotal Tracker stories.")
           )
         end
 

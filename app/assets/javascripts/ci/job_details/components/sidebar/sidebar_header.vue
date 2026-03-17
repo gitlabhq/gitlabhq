@@ -88,8 +88,8 @@ export default {
     isManualJob() {
       return this.job?.manualJob;
     },
-    retryButtonCategory() {
-      return this.restJob.status && this.restJob.recoverable ? 'primary' : 'secondary';
+    retryButtonVariant() {
+      return this.restJob.status && this.restJob.recoverable ? 'confirm' : 'default';
     },
     jobHasPath() {
       return Boolean(
@@ -131,8 +131,6 @@ export default {
             :href="restJob.new_issue_path"
             :title="$options.i18n.newIssue"
             :aria-label="$options.i18n.newIssue"
-            category="secondary"
-            variant="confirm"
             data-testid="job-new-issue"
             icon="work-item-new"
           />
@@ -151,12 +149,11 @@ export default {
             v-gl-tooltip.bottom
             :retry-button-title="buttonTitle"
             :is-manual-job="isManualJob"
-            :category="retryButtonCategory"
             :href="restJob.retry_path"
             :confirmation-message="jobConfirmationMessage"
             :job-name="restJob.name"
             :modal-id="$options.forwardDeploymentFailureModalId"
-            variant="confirm"
+            :variant="retryButtonVariant"
             data-testid="retry-button"
             @update-variables-clicked="$emit('update-variables')"
           />

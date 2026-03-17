@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: Switchboard
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Configure network access and security settings for GitLab Dedicated.
 title: GitLab Dedicated network access and security
 ---
@@ -235,9 +235,50 @@ Only the IAM principals you specify can create VPC endpoints to connect to your 
 The endpoint service is available in two availability zones that are either chosen
 during onboarding or randomly selected.
 
+#### Required IAM permissions
+
+To create the interface VPC endpoint, the IAM principal must have the following permissions:
+
+- `ec2:CreateVpcEndpoint`
+- `ec2:DescribeVpcEndpointServices`
+- `ec2:DescribeVpcEndpoints`
+- `ec2:DescribeVpcs`
+- `route53:AssociateVPCWithHostedZone`
+
+These permissions allow you to:
+
+- Discover the GitLab-provided endpoint service.
+- Create the interface VPC endpoint.
+- Associate the endpoint with the Route 53 private hosted zone when **Private DNS** is enabled.
+
+For example, attach the following IAM policy to the role or user creating the VPC endpoint:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "GitLabDedicatedInboundPrivateLink",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateVpcEndpoint",
+        "ec2:DescribeVpcEndpointServices",
+        "ec2:DescribeVpcEndpoints",
+        "ec2:DescribeVpcs",
+        "route53:AssociateVPCWithHostedZone"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
+#### Create an inbound private link
+
 Prerequisites:
 
 - Your VPC must be in the same region as your GitLab Dedicated instance.
+- The IAM principal must have the required IAM permissions.
 - Use IAM principals with role names only. Do not include role paths.
   - Valid: `arn:aws:iam::AWS_ACCOUNT_ID:role/RoleName`
   - Invalid: `arn:aws:iam::AWS_ACCOUNT_ID:role/somepath/AnotherRoleName`
@@ -388,7 +429,6 @@ This type of connection allows GitLab functionality to access private services:
 
   - [webhooks](../../../user/project/integrations/webhooks.md)
   - import or mirror projects and repositories
-
 - For hosted runners:
 
   - custom secrets managers
@@ -511,7 +551,7 @@ To add a private hosted zone:
    - In the **Hostname** field, enter your Private Hosted Zone (PHZ) entry.
    - For **Link type**, choose one of the following:
      - For an outbound private link PHZ entry, select the endpoint service from the dropdown list.
-     Only links with the `Available` or `Pending Acceptance` status are shown.
+       Only links with the `Available` or `Pending Acceptance` status are shown.
      - For other PHZ entries, provide a list of DNS aliases.
 1. Select **Save**.
    Your PHZ entry and any aliases should appear in the list.

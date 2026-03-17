@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Python Merge Requests Guidelines
 ---
 
@@ -27,12 +27,9 @@ For both large and small projects, Reviewer Roulette can automate the reviewer a
 Then, depending on your project size:
 
 - **For large projects with sufficient contributors**:
-
   - Eligible team members should add the Python project to the `projects` field in their individual entry in [team_members](https://gitlab.com/gitlab-com/www-gitlab-com/-/tree/master/data/team_members/person) or [team_database](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/doc/team_database.md), specifying appropriate roles such as reviewer or maintainer.
   - Add the [individual roulette configuration](https://gitlab.com/gitlab-org/python/code-review-templates/-/tree/main/individual_roulette?ref_type=heads) to your project.
-
 - **For smaller projects (for example, fewer than 10 contributors)**:
-
   - Leverage the company wide pool of Python experts by adding the [shared pool configuration](https://gitlab.com/gitlab-org/python/code-review-templates/-/tree/main/shared_pull/danger?ref_type=heads) to your project.
   - You can also encourage contributors or other non-domain reviewers to reach out in your team's Slack channel for domain expertise where needed.
 

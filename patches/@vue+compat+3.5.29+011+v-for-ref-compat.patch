@@ -1,0 +1,58 @@
+diff --git a/node_modules/@vue/compat/dist/vue.cjs.js b/node_modules/@vue/compat/dist/vue.cjs.js
+index c062307..ac004f8 100644
+--- a/node_modules/@vue/compat/dist/vue.cjs.js
++++ b/node_modules/@vue/compat/dist/vue.cjs.js
+@@ -55,7 +55,7 @@ const isPlainObject = (val) => toTypeString(val) === "[object Object]";
+ const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
+ const isReservedProp = /* @__PURE__ */ makeMap(
+   // the leading comma is intentional so empty string "" is also included
+-  ",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
++  ",key,ref,ref_for,refInFor,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
+ );
+ const isBuiltInDirective = /* @__PURE__ */ makeMap(
+   "bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo"
+@@ -11674,12 +11674,13 @@ const normalizeKey = ({ key }) => key != null ? key : null;
+ const normalizeRef = ({
+   ref,
+   ref_key,
+-  ref_for
++  ref_for,
++  refInFor
+ }) => {
+   if (typeof ref === "number") {
+     ref = "" + ref;
+   }
+-  return ref != null ? isString(ref) || isRef(ref) || isFunction(ref) ? { i: currentRenderingInstance, r: ref, k: ref_key, f: !!ref_for } : ref : null;
++  return ref != null ? isString(ref) || isRef(ref) || isFunction(ref) ? { i: currentRenderingInstance, r: ref, k: ref_key, f: !!ref_for || !!refInFor } : ref : null;
+ };
+ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, shapeFlag = type === Fragment ? 0 : 1, isBlockNode = false, needFullChildrenNormalization = false) {
+   const vnode = {
+diff --git a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+index fa396f6..9a300ee 100644
+--- a/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
++++ b/node_modules/@vue/compat/dist/vue.runtime.esm-bundler.js
+@@ -48,7 +48,7 @@ const isPlainObject = (val) => toTypeString(val) === "[object Object]";
+ const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
+ const isReservedProp = /* @__PURE__ */ makeMap(
+   // the leading comma is intentional so empty string "" is also included
+-  ",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
++  ",key,ref,ref_for,refInFor,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
+ );
+ const isBuiltInDirective = /* @__PURE__ */ makeMap(
+   "bind,cloak,else-if,else,for,html,if,model,on,once,pre,show,slot,text,memo"
+@@ -11625,12 +11625,13 @@ const normalizeKey = ({ key }) => key != null ? key : null;
+ const normalizeRef = ({
+   ref,
+   ref_key,
+-  ref_for
++  ref_for,
++  refInFor
+ }) => {
+   if (typeof ref === "number") {
+     ref = "" + ref;
+   }
+-  return ref != null ? isString(ref) || isRef(ref) || isFunction(ref) ? { i: currentRenderingInstance, r: ref, k: ref_key, f: !!ref_for } : ref : null;
++  return ref != null ? isString(ref) || isRef(ref) || isFunction(ref) ? { i: currentRenderingInstance, r: ref, k: ref_key, f: !!ref_for || !!refInFor } : ref : null;
+ };
+ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, shapeFlag = type === Fragment ? 0 : 1, isBlockNode = false, needFullChildrenNormalization = false) {
+   const vnode = {

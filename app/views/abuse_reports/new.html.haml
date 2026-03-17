@@ -6,7 +6,7 @@
 = gitlab_ui_form_for @abuse_report, html: { class: 'js-quick-submit'} do |f|
   .row
     .gl-col-lg-8
-      = form_errors(@abuse_report)
+      = form_errors(@abuse_report, custom_message: [:user_id])
 
   = f.hidden_field :user_id
 
@@ -35,7 +35,7 @@
   .form-group.row
     .gl-col-lg-8
       = f.label :message
-      = f.text_area :message, class: "form-control gl-form-input", rows: 4, required: true
+      = f.text_area :message, class: "form-control gl-form-input", rows: 4, required: true, maxlength: AbuseReport::MAX_MESSAGE_SIZE
       .form-text.gl-text-subtle
         = _("Explain why you're reporting the user.")
 

@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Install GitLab under a relative URL
 ---
 
@@ -133,6 +133,5 @@ To enable relative URLs in GitLab:
 To disable the relative URL:
 
 1. Remove `/home/git/gitlab/config/initializers/relative_url.rb`
-
 1. Follow the previous steps starting from 2. and set up the
    GitLab URL to one that doesn't contain a relative path.

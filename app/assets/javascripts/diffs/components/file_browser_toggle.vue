@@ -77,15 +77,11 @@ export default {
     @click="toggleFileBrowserVisibility"
   >
     <gl-tooltip
-      v-if="shortcutsEnabled"
-      custom-class="file-browser-toggle-tooltip"
+      custom-class="gl-tooltip file-browser-toggle-tooltip"
       :target="() => $refs.toggle && $refs.toggle.$el"
     >
       {{ toggleFileBrowserTitle }}
-      <shortcut
-        class="gl-whitespace-nowrap"
-        :shortcuts="$options.MR_TOGGLE_FILE_BROWSER.defaultKeys"
-      />
+      <shortcut v-if="shortcutsEnabled" :shortcuts="$options.MR_TOGGLE_FILE_BROWSER.defaultKeys" />
     </gl-tooltip>
     <gl-animated-sidebar-icon :is-on="fileBrowserVisible" class="gl-button-icon" />
   </gl-button>
@@ -93,6 +89,6 @@ export default {
 
 <style>
 .file-browser-toggle-tooltip .tooltip-inner {
-  max-width: 210px;
+  max-width: none;
 }
 </style>

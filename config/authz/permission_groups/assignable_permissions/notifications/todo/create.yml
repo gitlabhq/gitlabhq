@@ -1,0 +1,7 @@
+---
+name: create_todo
+description: Grants the ability to create todos
+boundaries:
+  - project
+permissions:
+  - create_todo

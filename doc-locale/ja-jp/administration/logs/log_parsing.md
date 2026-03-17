@@ -1,8 +1,8 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: "`jq` を使用したGitLabログの解析"
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: jqによるGitLabログの解析
 ---
 
 {{< details >}}
@@ -12,53 +12,50 @@ title: "`jq` を使用したGitLabログの解析"
 
 {{< /details >}}
 
-可能な限り、KibanaやSplunkのようなログ集計および検索ツールを使用することをお勧めしますが、利用できない場合は、[GitLabログ](_index.md)を[`jq`](https://stedolan.github.io/jq/)でJSON形式で解析できます。
+KibanaやSplunkなどのログ集計検索ツールを可能な限り使用することをおすすめしますが、これらのツールが利用できない場合でも、[GitLabログ](_index.md)をJSON形式で[`jq`](https://stedolan.github.io/jq/)を使用して素早く解析できます。
 
-{{< alert type="note" >}}
+> [!note]
+> 特にエラーイベントと基本的な使用統計を要約するために、GitLabサポートチームは専門の[`fast-stats`ツール](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/#when-to-use-it)を提供しています。通常、`jq`よりもはるかに高速に大規模なログを処理でき、より広範な統計出力を提供します。
 
-特に、エラーイベントと基本的な使用状況統計を要約するために、GitLabサポートチームは特殊な[`fast-stats`ツール](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/#when-to-use-it)を提供しています。
+## JQとは何ですか？ {#what-is-jq}
 
-{{< /alert >}}
-
-## JQとは？ {#what-is-jq}
-
-[マニュアル](https://stedolan.github.io/jq/manual/)に記載されているように、`jq`はコマンドラインJSONプロセッサーです。次の例では、GitLabログファイルを解析するためのユースケースが含まれています。
+[マニュアル](https://stedolan.github.io/jq/manual/)に記載されているように、`jq`はコマンドラインのJSONプロセッサーです。次の例は、GitLabログファイルの解析を対象としたユースケースを含んでいます。
 
 ## ログの解析 {#parsing-logs}
 
-以下に示す例では、それぞれのログファイルが、それぞれのLinuxパッケージインストールパスとデフォルトのファイル名で示されています。それぞれのフルパスは、[GitLabログ](_index.md#production_jsonlog)のセクションにあります。
+以下に挙げる例は、それぞれのログファイルを相対的なLinuxパッケージのインストールパスとデフォルトファイル名で扱います。それぞれの完全なパスは、[GitLabログのセクション](_index.md#production_jsonlog)にあります。
 
-### 圧縮ログ {#compressed-logs}
+### 圧縮されたログ {#compressed-logs}
 
-[ログファイルがローテーションされる](https://smarden.org/runit/svlogd.8)と、Unixタイムスタンプ形式で名前が変更され、`gzip`で圧縮されます。結果のファイル名は`@40000000624492fa18da6f34.s`のようになります。これらのファイルは、より新しいログファイルよりも前に解析する前に、異なる方法で処理する必要があります:
+[ログファイルがローテーションされる](https://smarden.org/runit/svlogd.8)と、Unixタイムスタンプ形式に名前が変更され、`gzip`で圧縮されます。結果のファイル名は`@40000000624492fa18da6f34.s`のようになります。これらのファイルは、より新しいログファイルとは異なり、解析前に異なる方法で処理する必要があります:
 
-- ファイルを解凍するには、`gunzip -S .s @40000000624492fa18da6f34.s`を使用して、ファイル名を圧縮ログファイルの名前に置き換えます。
-- ファイルを直接読み取るか、パイプ処理するには、`zcat`または`zless`を使用します。
+- ファイルを解凍するには、`gunzip -S .s @40000000624492fa18da6f34.s`を使用し、ファイル名を圧縮されたログファイルの名前に置き換えます。
+- ファイルを直接読み取りまたはパイプするには、`zcat`または`zless`を使用します。
 - ファイルの内容を検索するには、`zgrep`を使用します。
 
 ### 一般的なコマンド {#general-commands}
 
-#### 色分けされた`jq`出力を`less`にパイプ処理します {#pipe-colorized-jq-output-into-less}
+#### 色付けされた`jq`出力を`less`へパイプする {#pipe-colorized-jq-output-into-less}
 
 ```shell
 jq . <FILE> -C | less -R
 ```
 
-#### 用語を検索して、一致するすべての行をpretty印刷します {#search-for-a-term-and-pretty-print-all-matching-lines}
+#### 用語を検索し、一致するすべての行をprettyプリントする {#search-for-a-term-and-pretty-print-all-matching-lines}
 
 ```shell
 grep <TERM> <FILE> | jq .
 ```
 
-#### JSONの無効な行をスキップする {#skip-invalid-lines-of-json}
+#### 無効なJSON行をスキップする {#skip-invalid-lines-of-json}
 
 ```shell
 jq -cR 'fromjson?' file.json | jq <COMMAND>
 ```
 
-デフォルトでは、`jq`は有効なJSONではない行を検出するとエラーになります。これにより、無効な行はすべてスキップされ、残りが解析されます。
+デフォルトでは、`jq`は有効なJSONではない行に遭遇するとエラーを出力します。これにより、すべての無効な行をスキップし、残りを解析することができます。
 
-#### JSONログの時間範囲を印刷する {#print-a-json-logs-time-range}
+#### JSONログのタイムレンジを出力する {#print-a-json-logs-time-range}
 
 ```shell
 cat log.json | (head -1; tail -1) | jq '.time'
@@ -72,7 +69,7 @@ zcat @400000006026b71d1a7af804.s | (head -1; tail -1) | jq '.time'
 zcat some_json.log.25.gz | (head -1; tail -1) | jq '.time'
 ```
 
-#### 時系列順に複数のJSONログにわたる相関IDのアクティビティーを取得する {#get-activity-for-correlation-id-across-multiple-json-logs-in-chronological-order}
+#### 複数のJSONログ全体で相関IDのアクティビティを時系列順に取得する {#get-activity-for-correlation-id-across-multiple-json-logs-in-chronological-order}
 
 ```shell
 grep -hR <correlationID> | jq -c -R 'fromjson?' | jq -C -s 'sort_by(.time)'  | less -R
@@ -80,49 +77,49 @@ grep -hR <correlationID> | jq -c -R 'fromjson?' | jq -C -s 'sort_by(.time)'  | l
 
 ### `gitlab-rails/production_json.log`および`gitlab-rails/api_json.log`の解析 {#parsing-gitlab-railsproduction_jsonlog-and-gitlab-railsapi_jsonlog}
 
-#### 5XXステータスコードのすべてのリクエストを検索する {#find-all-requests-with-a-5xx-status-code}
+#### 5XXステータスコードを持つすべてのリクエストを検索する {#find-all-requests-with-a-5xx-status-code}
 
 ```shell
 jq 'select(.status >= 500)' <FILE>
 ```
 
-#### 上位10件の最も遅いリクエスト {#top-10-slowest-requests}
+#### 最も遅いリクエスト上位10件 {#top-10-slowest-requests}
 
 ```shell
 jq -s 'sort_by(-.duration_s) | limit(10; .[])' <FILE>
 ```
 
-#### プロジェクトに関連するすべてのリクエストを検索して、pretty印刷する {#find-and-pretty-print-all-requests-related-to-a-project}
+#### プロジェクトに関連するすべてのリクエストを検索し、prettyプリントする {#find-and-pretty-print-all-requests-related-to-a-project}
 
 ```shell
 grep <PROJECT_NAME> <FILE> | jq .
 ```
 
-#### 合計期間が5秒を超えるすべてのリクエストを検索する {#find-all-requests-with-a-total-duration--5-seconds}
+#### 合計処理時間が5秒を超えるすべてのリクエストを検索する {#find-all-requests-with-a-total-duration--5-seconds}
 
 ```shell
 jq 'select(.duration_s > 5000)' <FILE>
 ```
 
-#### 5回を超えるGitaly呼び出しがあるすべてのプロジェクトリクエストを検索する {#find-all-project-requests-with-more-than-5-gitaly-calls}
+#### Gitaly呼び出しが5回を超えるすべてのプロジェクトリクエストを検索する {#find-all-project-requests-with-more-than-5-gitaly-calls}
 
 ```shell
 grep <PROJECT_NAME> <FILE> | jq 'select(.gitaly_calls > 5)'
 ```
 
-#### Gitalyの期間が10秒を超えるすべてのリクエストを検索する {#find-all-requests-with-a-gitaly-duration--10-seconds}
+#### Gitaly処理時間が10秒を超えるすべてのリクエストを検索する {#find-all-requests-with-a-gitaly-duration--10-seconds}
 
 ```shell
 jq 'select(.gitaly_duration_s > 10000)' <FILE>
 ```
 
-#### キューの期間が10秒を超えるすべてのリクエストを検索する {#find-all-requests-with-a-queue-duration--10-seconds}
+#### キュー処理時間が10秒を超えるすべてのリクエストを検索する {#find-all-requests-with-a-queue-duration--10-seconds}
 
 ```shell
 jq 'select(.queue_duration_s > 10000)' <FILE>
 ```
 
-#### Gitaly呼び出しの＃による上位10件のリクエスト {#top-10-requests-by--of-gitaly-calls}
+#### Gitaly呼び出し数によるリクエスト上位10件 {#top-10-requests-by--of-gitaly-calls}
 
 ```shell
 jq -s 'map(select(.gitaly_calls != null)) | sort_by(-.gitaly_calls) | limit(10; .[])' <FILE>
@@ -136,7 +133,7 @@ jq 'select(.time >= "2023-01-10T00:00:00Z" and .time <= "2023-01-10T12:00:00Z")'
 
 ### `gitlab-rails/production_json.log`の解析 {#parsing-gitlab-railsproduction_jsonlog}
 
-#### リクエストボリュームによる上位3つのコントローラーメソッドと、それらの3つの最長期間を印刷する {#print-the-top-three-controller-methods-by-request-volume-and-their-three-longest-durations}
+#### リクエスト量で上位3つのコントローラーメソッドと、それらの3つの最長処理時間を表示する {#print-the-top-three-controller-methods-by-request-volume-and-their-three-longest-durations}
 
 ```shell
 jq -s -r 'group_by(.controller+.action) | sort_by(-length) | limit(3; .[]) | sort_by(-.duration_s) | "CT: \(length)\tMETHOD: \(.[0].controller)#\(.[0].action)\tDURS: \(.[0].duration_s),  \(.[1].duration_s),  \(.[2].duration_s)"' production_json.log
@@ -150,9 +147,15 @@ CT: 2435   METHOD: MetricsController#index DURS: 299.29,  284.01,  158.57
 CT: 1328   METHOD: Projects::NotesController#index DURS: 403.99,  386.29,  384.39
 ```
 
+または、[`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats)を使用します:
+
+```shell
+fast-stats --verbose --limit=3 production_json.log
+```
+
 ### `gitlab-rails/api_json.log`の解析 {#parsing-gitlab-railsapi_jsonlog}
 
-#### リクエスト数と3つの最長期間を含む上位3つのルートを印刷する {#print-top-three-routes-with-request-count-and-their-three-longest-durations}
+#### リクエスト数と最長処理時間トップ3を持つルートを上位3つ表示する {#print-top-three-routes-with-request-count-and-their-three-longest-durations}
 
 ```shell
 jq -s -r 'group_by(.route) | sort_by(-length) | limit(3; .[]) | sort_by(-.duration_s) | "CT: \(length)\tROUTE: \(.[0].route)\tDURS: \(.[0].duration_s),  \(.[1].duration_s),  \(.[2].duration_s)"' api_json.log
@@ -166,7 +169,13 @@ CT: 297  ROUTE: /api/:version/projects/:id/repository/tags       DURS: 731.39,  
 CT: 190  ROUTE: /api/:version/projects/:id/repository/commits    DURS: 1079.02,  979.68,  958.21
 ```
 
-#### 上位APIユーザーエージェントを印刷する {#print-top-api-user-agents}
+または、[`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats)を使用します:
+
+```shell
+fast-stats --verbose --limit=3 api_json.log
+```
+
+#### 上位APIユーザーエージェントを表示する {#print-top-api-user-agents}
 
 ```shell
 jq --raw-output '
@@ -177,7 +186,7 @@ jq --raw-output '
   | grep --invert-match --extended-regexp '^\s+\d{1,3}\b'
 ```
 
-**出力例**:
+**Example output**:
 
 ```plaintext
  1234 …01-12T01…  GET /api/:version/projects/:id/pipelines  some_user  # plus browser details; OK
@@ -185,18 +194,24 @@ jq --raw-output '
  5678 …01-12T01…  PATCH /api/:version/jobs/:id/trace gitlab-runner     # plus version details; OK
 ```
 
-この例は、カスタムツールまたはスクリプトが、予期しない高い[リクエストレート（>15 RPS）](../reference_architectures/_index.md#available-reference-architectures)をGitalyで引き起こしていることを示しています。この状況のユーザーエージェントは、特殊な[サードパーティクライアント](../../api/rest/third_party_clients.md)、または`curl`のような一般的なツールである可能性があります。
+この例は、カスタムツールまたはスクリプトが予期せず高い[リクエストレート（>15 RPS）](../reference_architectures/_index.md#available-reference-architectures)を引き起こしていることを示しています。このような状況でのユーザーエージェントは、専門の[サードパーティクライアント](../../api/rest/third_party_clients.md)や、`curl`のような一般的なツールである可能性があります。
 
-毎時の集計は、以下に役立ちます:
+時間ごとの集計は、次の目的に役立ちます:
 
-- [Prometheus](../monitoring/prometheus/_index.md)のようなモニタリングツールからのデータに、ボットまたはユーザーアクティビティーのスパイクを関連付けます。
-- [レート制限](../settings/user_and_ip_rate_limits.md)を評価します。
+- ボットまたはユーザーのアクティビティの急増を、[Prometheus](../monitoring/prometheus/_index.md)などのモニタリングツールからのデータと関連付けます。
+- [レート制限設定](../settings/user_and_ip_rate_limits.md)を評価します。
 
-これらのユーザーまたはボットのパフォーマンス統計を抽出するには、`fast-stats top` （ページ上部を参照）を使用することもできます。
+`jq`と並行して、[`fast-stats top`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/-/blob/main/README.md#top)を使用して、それらのユーザーとボットのパフォーマンスへの影響を確認します:
+
+```shell
+fast-stats top --display=percentage --sort-by=cpu-s api_json.log
+```
+
+高いリクエスト頻度だけでは自動的に問題にはなりませんが、いずれかのリソースの大部分を使用することは問題です。
 
 ### `gitlab-rails/importer.log`の解析 {#parsing-gitlab-railsimporterlog}
 
-[プロジェクトのインポート](../raketasks/project_import_export.md)または[移行](../../user/project/import/_index.md)をトラブルシューティングするには、次のコマンドラインを実行します:
+[プロジェクトのインポート](../raketasks/project_import_export.md)または[移行](../../user/import/_index.md)のトラブルシューティングを行うには、このコマンドを実行します:
 
 ```shell
 jq 'select(.project_path == "<namespace>/<project>").error_messages' importer.log
@@ -206,7 +221,7 @@ jq 'select(.project_path == "<namespace>/<project>").error_messages' importer.lo
 
 ### `gitlab-workhorse/current`の解析 {#parsing-gitlab-workhorsecurrent}
 
-#### 上位のWorkhorseユーザーエージェントを印刷する {#print-top-workhorse-user-agents}
+#### 上位のWorkhorseユーザーエージェントを表示する {#print-top-workhorse-user-agents}
 
 ```shell
 jq --raw-output '
@@ -217,15 +232,15 @@ jq --raw-output '
   sort | uniq -c
 ```
 
-[API `ua`の例](#print-top-api-user-agents)と同様に、この出力で予期しないユーザーエージェントが多数ある場合は、最適化されていないスクリプトを示しています。予期されるユーザーエージェントには、`gitlab-runner`、`GitLab-Shell`、およびブラウザーが含まれます。
+[API`ua`の例](#print-top-api-user-agents)と同様に、この出力に予期せぬ多くのユーザーエージェントがある場合、スクリプトが最適化されていないことを示します。期待されるユーザーエージェントには、`gitlab-runner`、`GitLab-Shell`、およびブラウザが含まれます。
 
-[`check_interval`設定](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)を増やすことで、新しいジョブをチェックするRunnerのパフォーマンスへの影響を軽減できます。
+たとえば、Runnerが新しいジョブをチェックする際のパフォーマンスへの影響は、[`check_interval`設定](https://docs.gitlab.com/runner/configuration/advanced-configuration/#the-global-section)を増やすことで軽減できます。
 
 ### `gitlab-rails/geo.log`の解析 {#parsing-gitlab-railsgeolog}
 
-#### 最も一般的なGeo同期エラーを検索する {#find-most-common-geo-sync-errors}
+#### 最も一般的なGeoの同期エラーを検索する {#find-most-common-geo-sync-errors}
 
-[`geo:status` Rakeタスク](../geo/replication/troubleshooting/common.md#sync-status-rake-task)が、一部のアイテムが100%に達しないことを繰り返しレポートする場合は、次のコマンドラインを実行すると、最も一般的なエラーに焦点を当てることができます。
+もし[`geo:status` Rakeタスク](../geo/replication/troubleshooting/common.md#sync-status-rake-task)が、一部の項目が100%に達しないと繰り返し報告する場合、以下のコマンドは最も一般的なエラーに焦点を当てるのに役立ちます。
 
 ```shell
 jq --raw-output 'select(.severity == "ERROR") | [
@@ -235,19 +250,19 @@ jq --raw-output 'select(.severity == "ERROR") | [
   | sort | uniq -c
 ```
 
-特定のエラーメッセージに関するアドバイスについては、[Geoトラブルシューティングページ](../geo/replication/troubleshooting/_index.md)を参照してください。
+特定のエラーメッセージに関するアドバイスについては、[弊社のGeoトラブルシューティングページ](../geo/replication/troubleshooting/_index.md)を参照してください。
 
 ### `gitaly/current`の解析 {#parsing-gitalycurrent}
 
-次の例を使用して、[Gitalyのトラブルシューティング](../gitaly/troubleshooting.md)を行います。
+以下の例を使用して、[Gitalyのトラブルシューティングを行う](../gitaly/troubleshooting.md)ことができます。
 
-#### ウェブUIから送信されたすべてのGitalyリクエストを検索する {#find-all-gitaly-requests-sent-from-web-ui}
+#### Web UIから送信されたすべてのGitalyリクエストを検索する {#find-all-gitaly-requests-sent-from-web-ui}
 
 ```shell
 jq 'select(."grpc.meta.client_name" == "gitlab-web")' current
 ```
 
-#### 失敗したすべてのGitalyリクエストを検索する {#find-all-failed-gitaly-requests}
+#### すべての失敗したGitalyリクエストを検索する {#find-all-failed-gitaly-requests}
 
 ```shell
 jq 'select(."grpc.code" != null and ."grpc.code" != "OK")' current
@@ -259,7 +274,7 @@ jq 'select(."grpc.code" != null and ."grpc.code" != "OK")' current
 jq 'select(."grpc.time_ms" > 30000)' current
 ```
 
-#### リクエストボリュームによる上位10件のプロジェクトと、それらの3つの最長期間を印刷する {#print-top-ten-projects-by-request-volume-and-their-three-longest-durations}
+#### リクエスト量で上位10のプロジェクトと、それらの3つの最長処理時間を表示する {#print-top-ten-projects-by-request-volume-and-their-three-longest-durations}
 
 ```shell
 jq --raw-output --slurp '
@@ -296,7 +311,13 @@ jq --raw-output --slurp '
   ...
 ```
 
-#### ユーザーとプロジェクトのアクティビティーの概要 {#types-of-user-and-project-activity-overview}
+または、[`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats)を使用します:
+
+```shell
+fast-stats top --sort-by=duration current
+```
+
+#### ユーザーとプロジェクトのアクティビティの種類の概要 {#types-of-user-and-project-activity-overview}
 
 ```shell
 jq --raw-output '[
@@ -306,7 +327,7 @@ jq --raw-output '[
   | grep --invert-match --extended-regexp '^\s+\d{1,3}\b'
 ```
 
-**出力例**:
+**Example output**:
 
 ```plaintext
  5678 …01-12T01…     ReferenceTransactionHook  # Praefect operation; OK
@@ -314,14 +335,20 @@ jq --raw-output '[
  1234 …01-12T01…  some_user  FindCommit  namespace/subgroup/project
 ```
 
-この例は、カスタムツールまたはスクリプトが、Gitalyで予期しない高い[リクエストレート（>15 RPS）](../reference_architectures/_index.md#available-reference-architectures)を引き起こしていることを示しています。毎時の集計は、以下に役立ちます:
+この例は、カスタムツールまたはスクリプトがGitaly上で予期せぬ高い[リクエストレート（>15 RPS）](../reference_architectures/_index.md#available-reference-architectures)を引き起こしていることを示しています。時間ごとの集計は、次の目的に役立ちます:
 
-- [Prometheus](../monitoring/prometheus/_index.md)のようなモニタリングツールからのデータに、ボットまたはユーザーアクティビティーのスパイクを関連付けます。
-- [レート制限](../settings/user_and_ip_rate_limits.md)を評価します。
+- ボットまたはユーザーのアクティビティの急増を、[Prometheus](../monitoring/prometheus/_index.md)などのモニタリングツールからのデータと関連付けます。
+- [レート制限設定](../settings/user_and_ip_rate_limits.md)を評価します。
 
-これらのユーザーまたはボットのパフォーマンス統計を抽出するには、`fast-stats top` （ページ上部を参照）を使用することもできます。
+`jq`と並行して、[`fast-stats top`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats/-/blob/main/README.md#top)を使用して、それらのユーザーとボットのパフォーマンスへの影響を確認します:
 
-#### 致命的なGitの問題の影響を受けるすべてのプロジェクトを検索する {#find-all-projects-affected-by-a-fatal-git-problem}
+```shell
+fast-stats top --display=percentage --sort-by=cpu-s current
+```
+
+高いリクエスト頻度だけでは自動的に問題にはなりませんが、いずれかのリソースの大部分を使用することは問題です。
+
+#### 致命的なGitの問題によって影響を受けるすべてのプロジェクトを検索する {#find-all-projects-affected-by-a-fatal-git-problem}
 
 ```shell
 grep "fatal: " current |
@@ -331,9 +358,9 @@ grep "fatal: " current |
 
 ### `gitlab-shell/gitlab-shell.log`の解析 {#parsing-gitlab-shellgitlab-shelllog}
 
-SSH経由でのGit呼び出しを調査する場合。
+SSHを介したGit呼び出しの調査用。
 
-プロジェクトとユーザーごとの上位20件の呼び出しを検索します:
+プロジェクトとユーザー別の呼び出し上位20件を検索する:
 
 ```shell
 jq --raw-output --slurp '
@@ -350,7 +377,7 @@ jq --raw-output --slurp '
   gitlab-shell.log
 ```
 
-プロジェクト、ユーザー、およびコマンドごとの上位20件の呼び出しを検索します:
+プロジェクト、ユーザー、およびコマンド別の呼び出し上位20件を検索する:
 
 ```shell
 jq --raw-output --slurp '

@@ -321,6 +321,309 @@ RSpec.describe Backup::Targets::Database, :reestablished_active_record_base, fea
           expect { databases.restore(backup_dir, backup_id) }.not_to raise_error
         end
       end
+
+      context 'on raising an ActiveRecord::StatementInvalid error' do
+        it 'returns an error when there is insufficient privilege' do
+          allow(databases).to receive(:drop_tables)
+            .and_raise(ActiveRecord::StatementInvalid.new('PG::InsufficientPrivilege test error'))
+          expect(databases).to receive(:report_success).with(false)
+          databases.restore(backup_dir, backup_id)
+        end
+
+        it 'raises an error that does not match an expected error' do
+          allow(databases).to receive(:drop_tables).and_raise(ActiveRecord::StatementInvalid.new('test error'))
+          expect do
+            databases.restore(backup_dir, backup_id)
+          end.to raise_error(ActiveRecord::StatementInvalid, 'test error')
+        end
+      end
+    end
+  end
+
+  describe '#include_additional_connections?' do
+    subject(:databases) { described_class.new(progress, options: backup_options) }
+
+    context 'when registry database environment variables are set' do
+      it 'returns true' do
+        allow(ENV).to receive(:keys).and_return(['REGISTRY_DATABASE_FAKE_OPTION'])
+
+        expect(databases.send(:include_additional_connections?)).to eq(true)
+      end
+    end
+
+    context 'when no registry database environment variables are set' do
+      it 'returns false' do
+        allow(ENV).to receive(:keys).and_return([])
+
+        expect(databases.send(:include_additional_connections?)).to eq(false)
+      end
+    end
+  end
+
+  describe '#registry_db_connection' do
+    subject(:databases) { described_class.new(progress, options: backup_options) }
+
+    let(:registry_db_config) do
+      {
+        adapter: 'postgresql',
+        database: 'registry_db',
+        username: 'registry_user',
+        password: 'registry_pass',
+        host: 'registry.example.com',
+        port: '5432',
+        sslmode: 'require',
+        sslcert: '/path/to/cert',
+        sslkey: '/path/to/key',
+        sslrootcert: '/path/to/rootcert'
+      }
+    end
+
+    let(:mock_connection) do
+      instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter).tap do |conn|
+        allow(conn).to receive(:postgresql_version).and_return(140000)
+        allow(conn).to receive(:execute)
+      end
+    end
+
+    let(:mock_db_connection) do
+      instance_double(Backup::DatabaseConnection,
+        connection: mock_connection,
+        connection_name: 'registry'
+      )
+    end
+
+    before do
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch).with('REGISTRY_DATABASE_NAME', nil).and_return(registry_db_config[:database])
+      allow(ENV).to receive(:fetch).with('REGISTRY_DATABASE_USER', nil).and_return(registry_db_config[:username])
+      allow(ENV).to receive(:fetch).with('REGISTRY_DATABASE_PASSWORD', nil).and_return(registry_db_config[:password])
+      allow(ENV).to receive(:fetch).with('REGISTRY_DATABASE_HOST', nil).and_return(registry_db_config[:host])
+      allow(ENV).to receive(:fetch).with('REGISTRY_DATABASE_PORT', nil).and_return(registry_db_config[:port])
+      allow(ENV).to receive(:fetch).with('REGISTRY_DATABASE_SSLMODE', nil).and_return(registry_db_config[:sslmode])
+      allow(ENV).to receive(:fetch).with('REGISTRY_DATABASE_SSLCERT', nil).and_return(registry_db_config[:sslcert])
+      allow(ENV).to receive(:fetch).with('REGISTRY_DATABASE_SSLKEY', nil).and_return(registry_db_config[:sslkey])
+      allow(ENV).to receive(:fetch).with('REGISTRY_DATABASE_ROOTCERT',
+        nil).and_return(registry_db_config[:sslrootcert])
+      allow(ENV).to receive(:keys).and_return(["REGISTRY_DATABASE_VARIABLE"])
+    end
+
+    context 'for additional_connections_config' do
+      it 'returns an array of connections' do
+        allow(Backup::DatabaseConnection).to receive(:new).and_return(mock_db_connection)
+
+        expect(databases.send(:additional_connections_config)).to eq([mock_db_connection])
+      end
+    end
+
+    it 'creates registry connection with correct config' do
+      expect(Backup::DatabaseConnection).to receive(:new).with('registry', custom_config: hash_including(
+        adapter: 'postgresql',
+        database: 'registry_db',
+        username: 'registry_user',
+        password: 'registry_pass',
+        host: 'registry.example.com',
+        port: '5432'
+      )).and_return(mock_db_connection)
+
+      databases.send(:registry_db_connection)
+    end
+
+    it 'validates registry connection is established' do
+      failing_connection = double
+      allow(failing_connection).to receive(:postgresql_version).and_raise(ActiveRecord::DatabaseConnectionError)
+
+      expect(Backup::DatabaseConnection).to receive(:new).with('registry', custom_config: anything).and_return(
+        instance_double(Backup::DatabaseConnection, connection: failing_connection)
+      )
+
+      expect do
+        databases.send(:registry_db_connection)
+      end.to raise_error(Backup::Error, /Unable to connect to the registry database/)
+    end
+
+    it 'returns a Backup::DatabaseConnection instance' do
+      expect(Backup::DatabaseConnection).to receive(:new).with('registry',
+        custom_config: anything).and_return(mock_db_connection)
+
+      connection = databases.send(:registry_db_connection)
+
+      expect(connection).to eq(mock_db_connection)
+      expect(connection.connection_name).to eq('registry')
+    end
+  end
+
+  describe '#dump with additional connections', :delete do
+    subject(:databases) { described_class.new(progress, options: backup_options) }
+
+    context 'when registry database is configured' do
+      let(:mock_registry_connection) do
+        instance_double(Backup::DatabaseConnection,
+          connection_name: 'registry',
+          snapshot_id: nil,
+          database_configuration: instance_double(Backup::DatabaseConfiguration,
+            pg_env_variables: {},
+            activerecord_variables: { database: 'registry_db' }
+          )
+        )
+      end
+
+      before do
+        stub_env({
+          'REGISTRY_DATABASE_NAME' => 'registry_db',
+          'REGISTRY_DATABASE_USER' => 'registry_user',
+          'REGISTRY_DATABASE_HOST' => 'localhost'
+        })
+
+        allow(databases).to receive(:additional_connections_config).and_return([mock_registry_connection])
+        allow(mock_registry_connection).to receive(:release_snapshot!)
+      end
+
+      it 'dumps additional database connections' do
+        Dir.mktmpdir do |dir|
+          dump_count = 0
+
+          allow(Backup::Dump::Postgres).to receive(:new).and_return(
+            double.tap do |postgres|
+              allow(postgres).to receive(:dump) do
+                dump_count += 1
+                true
+              end
+            end
+          )
+
+          databases.dump(dir, backup_id)
+
+          expected_dumps = base_models_for_backup.count + 1
+          expect(dump_count).to eq(expected_dumps)
+        end
+      end
+    end
+  end
+
+  describe '#restore with additional connections' do
+    subject(:databases) { described_class.new(progress, options: backup_options) }
+
+    let(:cmd) { %W[#{Gem.ruby} -e $stdout.puts(1)] }
+    let(:backup_dir) { Rails.root.join("spec/fixtures/") }
+    let(:rake_task) { instance_double(Rake::Task, invoke: true) }
+    let(:registry_config) { { database: 'registry_db', adapter: 'postgresql' } }
+    let(:registry_db_file) { "#{backup_dir}registry_database.sql.gz" }
+    let(:mock_registry_connection) do
+      instance_double(Backup::DatabaseConnection,
+        connection_name: 'registry',
+        database_configuration: instance_double(Backup::DatabaseConfiguration,
+          activerecord_variables: registry_config,
+          pg_env_variables: {}
+        ),
+        connection: instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter,
+          execute: nil),
+        tables: %w[test_table1 test_table2],
+        functions: %w[test_function1 test_function2]
+      )
+    end
+
+    before do
+      allow(Rake::Task).to receive(:[]).with(any_args).and_return(rake_task)
+      allow(databases).to receive(:pg_restore_cmd).and_return(cmd)
+    end
+
+    context 'when registry database is configured' do
+      before do
+        stub_env({
+          'REGISTRY_DATABASE_NAME' => 'registry_db',
+          'REGISTRY_DATABASE_USER' => 'registry_user',
+          'REGISTRY_DATABASE_HOST' => 'localhost'
+        })
+
+        allow(databases).to receive(:additional_connections_config).and_return([mock_registry_connection])
+      end
+
+      it 'restores additional database connections' do
+        allow(File).to receive(:exist?).and_call_original
+        allow(File).to receive(:exist?).with(registry_db_file).and_return(true)
+
+        restore_calls = []
+        allow(databases).to receive(:do_restore) do |connection, config, file|
+          restore_calls << { connection: connection, config: config, file: file }
+        end
+
+        databases.restore(backup_dir, backup_id)
+
+        registry_restore = restore_calls.find { |call| call[:connection] == mock_registry_connection }
+        expect(registry_restore).not_to be_nil
+        expect(registry_restore[:config]).to eq(registry_config)
+        expect(registry_restore[:file]).to eq(registry_db_file)
+      end
+
+      context 'in #drop_tables_for_additional_connections' do
+        before do
+          allow(File).to receive(:exist?).and_call_original
+          allow(File).to receive(:exist?).with(registry_db_file).and_return(true)
+          allow_next_instance_of(Backup::DatabaseConnection) do |connection|
+            allow(connection).to receive(:connection).and_return(mock_registry_connection)
+          end
+
+          mock_registry_connection.tables.each do |table|
+            allow(mock_registry_connection.connection).to receive(:quote_table_name).with(table).and_return(table)
+          end
+          mock_registry_connection.functions.each do |function|
+            allow(mock_registry_connection.connection).to receive(:quote_table_name).with(function).and_return(function)
+          end
+        end
+
+        it 'does not raise an error' do
+          expect(databases).to receive(:drop_tables_for_additional_connection).once.and_call_original
+          expect(mock_registry_connection).to receive(:connection)
+          mock_registry_connection.tables.each do |table|
+            expect(mock_registry_connection.connection)
+              .to receive(:execute).with("DROP TABLE IF EXISTS #{table} CASCADE")
+          end
+          mock_registry_connection.functions.each do |function|
+            expect(mock_registry_connection.connection).to receive(:execute).with("DROP FUNCTION IF EXISTS #{function}")
+          end
+          expect { databases.restore(backup_dir, backup_id) }.not_to raise_error
+        end
+
+        it 'does not raise an error when it receives a PG::ServerError' do
+          error = ActiveRecord::StatementInvalid.new("test error")
+          allow(error).to receive(:cause).and_return(PG::ServerError.new("server error"))
+          allow(mock_registry_connection.connection).to receive(:execute).and_raise(error)
+          expect { databases.restore(backup_dir, backup_id) }.not_to raise_error
+        end
+
+        it 'raises an error when it receives an error that is not of type PG::ServerError' do
+          error = ActiveRecord::StatementInvalid.new("test error")
+          allow(error).to receive(:cause).and_return(StandardError.new("server error"))
+          allow(mock_registry_connection.connection).to receive(:execute).and_raise(error)
+          expect { databases.restore(backup_dir, backup_id) }.to raise_error(StandardError, 'test error')
+        end
+      end
+
+      it 'skips restore when backup file does not exist' do
+        allow(File).to receive(:exist?).and_call_original
+        allow(File).to receive(:exist?).with(registry_db_file).and_return(false)
+
+        databases.restore(backup_dir, backup_id)
+
+        expect(progress_output).to include("Source backup for the database registry doesn't exist")
+      end
+    end
+
+    context 'when no additional databases are configured' do
+      it 'only restores base databases' do
+        allow(databases).to receive(:additional_connections_config).and_return([])
+
+        restore_calls = []
+        original_do_restore = databases.method(:do_restore)
+        allow(databases).to receive(:do_restore) do |connection, config, file|
+          restore_calls << file
+          original_do_restore.call(connection, config, file)
+        end
+
+        databases.restore(backup_dir, backup_id)
+
+        expect(restore_calls).not_to include(match(/registry/))
+      end
     end
   end
 end

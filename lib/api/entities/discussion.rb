@@ -5,6 +5,8 @@ module API
     class Discussion < Grape::Entity
       expose :id
       expose :individual_note?, as: :individual_note
+      expose :resolvable?, as: :resolvable, documentation: { type: 'Boolean' }
+      expose :resolved?, as: :resolved, documentation: { type: 'Boolean' }, if: ->(d, _) { d.resolvable? }
       expose :notes, using: Entities::Note
     end
   end

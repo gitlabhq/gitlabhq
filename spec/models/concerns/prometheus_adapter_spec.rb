@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PrometheusAdapter, feature_category: :integrations do
+RSpec.describe PrometheusAdapter, feature_category: :observability do
   # Temporary dummy class to test PrometheusAdapter independently.
   # The original PrometheusIntegration class has been removed, but we keep
   # this spec to ensure the concern itself is still covered. The adapter

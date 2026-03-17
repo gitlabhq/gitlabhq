@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RemoveClustersIntegrationPrometheusFkClusterId, feature_category: :integrations do
+RSpec.describe RemoveClustersIntegrationPrometheusFkClusterId, feature_category: :observability do
   include Database::TableSchemaHelpers
 
   let(:table_name) { :clusters_integration_prometheus }

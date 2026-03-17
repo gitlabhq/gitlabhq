@@ -1,5 +1,3 @@
 ---
 name: read_cluster_agent_token
 description: Grants the ability to view cluster agent tokens
-boundaries:
-  - project

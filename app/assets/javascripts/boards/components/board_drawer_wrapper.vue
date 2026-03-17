@@ -1,5 +1,5 @@
 <script>
-import { union } from 'lodash';
+import { union } from 'lodash-es';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import { TYPE_ISSUE } from '~/issues/constants';
@@ -66,6 +66,7 @@ export default normalizeRender({
         variables: {
           boardItem: null,
           listId: null,
+          isIssue: this.isIssue,
         },
       });
 

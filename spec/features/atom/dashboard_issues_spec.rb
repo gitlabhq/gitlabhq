@@ -24,6 +24,7 @@ RSpec.describe "Dashboard Issues Feed", feature_category: :devops_reports do
     before do
       project1.add_maintainer(user)
       project2.add_maintainer(user)
+      stub_feature_flags(work_items_consolidated_list_user: false, work_item_planning_view: false)
     end
 
     describe "atom feed" do

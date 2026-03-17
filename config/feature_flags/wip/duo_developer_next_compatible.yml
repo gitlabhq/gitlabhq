@@ -1,0 +1,8 @@
+---
+name: duo_developer_next_compatible
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226728
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/592992
+milestone: '18.10'
+type: wip
+group: group::agent foundations
+default_enabled: false

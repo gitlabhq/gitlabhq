@@ -1,8 +1,8 @@
 ---
-stage: Runtime
+stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: プロジェクトフォーク 
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+title: プロジェクトフォークAPI
 ---
 
 {{< details >}}
@@ -12,17 +12,17 @@ title: プロジェクトフォーク
 
 {{< /details >}}
 
-このAPIを使用して、GitLabプロジェクトのフォークを管理します。詳細については、[forks](../user/project/repository/forking_workflow.md)（../user/project/repository/forking_workflow.md）を参照してください。
+このAPIを使用して、GitLabプロジェクトのフォークを管理します。詳細については、[フォーク](../user/project/repository/forking_workflow.md)を参照してください。
 
 ## プロジェクトをフォークする {#fork-a-project}
 
-個人のネームスペースまたは指定されたネームスペースにプロジェクトをフォークします。
+プロジェクトを個人のネームスペース、または指定されたネームスペースにフォークする。
 
-前提要件: 
+前提条件: 
 
 - 認証済みである必要があります。
 
-プロジェクトのフォーク操作は非同期で、バックグラウンドジョブで完了します。リクエストはすぐに返されます。プロジェクトのフォークが完了したかどうかを判断するには、新しいプロジェクトの`import_status`をクエリします。
+プロジェクトのフォーク操作は非同期であり、バックグラウンドジョブで完了します。このリクエストはすぐに返されます。プロジェクトのフォークが完了したかどうかを判断するには、新しいプロジェクトの`import_status`をクエリする。
 
 ```plaintext
 POST /projects/:id/fork
@@ -30,40 +30,44 @@ POST /projects/:id/fork
 
 | 属性                | 型              | 必須 | 説明 |
 |:-------------------------|:------------------|:---------|:------------|
-| `id`                     | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `branches`               | 文字列            | いいえ       | ブランチをフォークします（すべてのブランチの場合は空）。 |
-| `description`            | 文字列            | いいえ       | フォーク後に結果として得られるプロジェクトに割り当てられた説明。 |
+| `id`                     | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `branches`               | 文字列            | いいえ       | フォークするブランチ（すべてのブランチの場合は空）。 |
+| `description`            | 文字列            | いいえ       | フォーク後に生成されるプロジェクトに割り当てられる説明。 |
 | `mr_default_target_self` | ブール値           | いいえ       | フォークされたプロジェクトの場合、マージリクエストのターゲットをこのプロジェクトに設定します。`false`の場合、ターゲットはアップストリームプロジェクトになります。 |
-| `name`                   | 文字列            | いいえ       | フォーク後に結果として得られるプロジェクトに割り当てられた名前。 |
-| `namespace_id`           | 整数           | いいえ       | プロジェクトのフォーク先のネームスペースのID。 |
-| `namespace_path`         | 文字列            | いいえ       | プロジェクトのフォーク先のネームスペースのパス。 |
-| `namespace`              | 整数または文字列 | いいえ       | _（非推奨）_プロジェクトのフォーク先のネームスペースのIDまたはパス。 |
-| `path`                   | 文字列            | いいえ       | フォーク後に結果として得られるプロジェクトに割り当てられたパス。 |
-| `visibility`             | 文字列            | いいえ       | フォーク後に結果として得られるプロジェクトに割り当てられた[表示レベル](projects.md#project-visibility-level)。 |
+| `name`                   | 文字列            | いいえ       | フォーク後に生成されるプロジェクトに割り当てられる名前。 |
+| `namespace_id`           | 整数           | いいえ       | プロジェクトがフォークしたネームスペースのID。 |
+| `namespace_path`         | 文字列            | いいえ       | プロジェクトがフォークしたネームスペースのパス。 |
+| `namespace`              | 整数または文字列 | いいえ       | _(Deprecated)_プロジェクトがフォークしたネームスペースのIDまたはパス。 |
+| `path`                   | 文字列            | いいえ       | フォーク後に生成されるプロジェクトに割り当てられるパス。 |
+| `visibility`             | 文字列            | いいえ       | フォーク後に生成されるプロジェクトに割り当てられる[表示レベル](projects.md#project-visibility-level)。 |
 
-## プロジェクトのフォークの一覧 {#list-forks-of-a-project}
+> [!note]
+> 
+> サービスアカウントを使用してプロジェクトをフォークする場合は、`namespace_id`または`namespace_path`のいずれかを指定する必要があります。サービスアカウントは、プロジェクトを個人のネームスペースにフォークすることはできません。詳細については、[グループまたはプロジェクトにサービスアカウントを追加する](../user/profile/service_accounts.md#add-a-service-account-to-a-group-or-project)を参照してください。
 
-指定されたプロジェクトとの間に確立されたフォークした関係を持つ、アクセス可能なプロジェクトを一覧表示します。
+## プロジェクトのフォークを一覧表示 {#list-forks-of-a-project}
+
+指定されたプロジェクトとフォークした関係が確立されている、アクセス可能なプロジェクトを一覧表示します。
 
 ```plaintext
 GET /projects/:id/forks
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                     | 型              | 必須 | 説明 |
 |:------------------------------|:------------------|:---------|:------------|
-| `id`                          | 整数または文字列 | はい      | プロジェクトの[IDまたはURLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `archived`                    | ブール値           | いいえ       | アーカイブ状態で制限します。 |
+| `id`                          | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `archived`                    | ブール値           | いいえ       | アーカイブステータスで制限します。 |
 | `membership`                  | ブール値           | いいえ       | 現在のユーザーがメンバーであるプロジェクトで制限します。 |
-| `min_access_level`            | 整数           | いいえ       | 現在のユーザーの最小[ロール（`access_level`）](members.md#roles)で制限します。 |
+| `min_access_level`            | 整数           | いいえ       | 現在のユーザーが指定されたアクセスレベル以上を持つプロジェクトに限定します。使用可能な値: `5` (最小アクセス)、`10` (ゲスト)、`15` (プランナー)、`20` (レポーター)、`30` (デベロッパー)、`40` (メンテナー)、または`50` (オーナー)。 |
 | `order_by`                    | 文字列            | いいえ       | `id`、`name`、`path`、`created_at`、`updated_at`、`star_count`、または`last_activity_at`のフィールドで並べ替えられたプロジェクトを返します。デフォルトは`created_at`です。 |
 | `owned`                       | ブール値           | いいえ       | 現在のユーザーが明示的に所有するプロジェクトで制限します。 |
 | `search`                      | 文字列            | いいえ       | 検索条件に一致するプロジェクトのリストを返します。 |
 | `simple`                      | ブール値           | いいえ       | プロジェクトごとに制限されたフィールドのみを返します。認証がない場合、このオペレーションは何も行いません。単純なフィールドのみが返されます。 |
 | `sort`                        | 文字列            | いいえ       | `asc`または`desc`の順にソートされたプロジェクトを返します。デフォルトは`desc`です。 |
-| `starred`                     | ブール値           | いいえ       | 現在のユーザーがお気に入りに登録したプロジェクトで制限します。 |
-| `statistics`                  | ブール値           | いいえ       | プロジェクトの統計を含めます。レポーター以上のロールを持つユーザーのみが利用できます。 |
+| `starred`                     | ブール値           | いいえ       | 現在のユーザーがStar付きに登録したプロジェクトで制限します。 |
+| `statistics`                  | ブール値           | いいえ       | プロジェクトの統計を含めます。レポーター、デベロッパー、メンテナー、またはオーナーのロールを持つユーザーのみ利用可能です。 |
 | `updated_after`               | 日時          | いいえ       | 指定された時刻以降に最終更新が行われたプロジェクトに結果を制限します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）。GitLab 15.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393979)されました。 |
 | `updated_before`              | 日時          | いいえ       | 指定された時刻以前に最終更新が行われたプロジェクトに結果を制限します。形式: ISO 8601（`YYYY-MM-DDTHH:MM:SSZ`）。GitLab 15.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393979)されました。 |
 | `visibility`                  | 文字列            | いいえ       | 表示レベル（`public`、`internal`、`private`）で制限します。 |
@@ -71,7 +75,7 @@ GET /projects/:id/forks
 | `with_issues_enabled`         | ブール値           | いいえ       | 有効になっているイシュー機能で制限します。 |
 | `with_merge_requests_enabled` | ブール値           | いいえ       | 有効になっているマージリクエスト機能で制限します。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/forks"
@@ -162,11 +166,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 ]
 ```
 
-## プロジェクト間のフォーク関係の作成 {#create-a-fork-relationship-between-projects}
+## プロジェクト間のフォーク関係を作成 {#create-a-fork-relationship-between-projects}
 
-プロジェクト間のフォーク関係を作成します。
+プロジェクト間にフォーク関係を作成します。
 
-前提要件: 
+前提条件: 
 
 - 管理者であるか、プロジェクトのオーナーロールが割り当てられている必要があります。
 
@@ -174,18 +178,18 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 POST /projects/:id/fork/:forked_from_id
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性        | 型              | 必須 | 説明 |
 |:-----------------|:------------------|:---------|:------------|
-| `forked_from_id` | ID                | はい      | フォーク元のプロジェクトのID。 |
+| `forked_from_id` | ID                | はい      | フォークした元のプロジェクトのID。 |
 | `id`             | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 
-## プロジェクト間のフォーク関係の削除 {#delete-a-fork-relationship-between-projects}
+## プロジェクト間のフォーク関係を削除 {#delete-a-fork-relationship-between-projects}
 
 プロジェクト間のフォーク関係を削除します。
 
-前提要件: 
+前提条件: 
 
 - 管理者であるか、プロジェクトのオーナーロールが割り当てられている必要があります。
 
@@ -193,7 +197,7 @@ POST /projects/:id/fork/:forked_from_id
 DELETE /projects/:id/fork
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |:----------|:------------------|:---------|:------------|

@@ -14,6 +14,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_LABELS,
   WIDGET_TYPE_VULNERABILITIES,
   WIDGET_TYPE_STATUS,
 } from '~/work_items/constants';
@@ -26,6 +27,8 @@ import { preserveDetailsState } from '~/work_items/utils';
 
 export const linkedItems = makeVar({});
 export const currentAssignees = makeVar({});
+export const currentReviewers = makeVar([]);
+export const appliedLabels = makeVar([]);
 export const availableStatuses = makeVar({});
 
 export const config = {
@@ -85,6 +88,16 @@ export const config = {
       },
       ProjectNamespaceMarkdownPaths: {
         merge: true,
+      },
+      GroupNamespaceMarkdownPaths: {
+        merge: true,
+      },
+      Discussion: {
+        fields: {
+          userPermissions: {
+            merge: true,
+          },
+        },
       },
       WorkItemWidgetDescription: {
         fields: {
@@ -307,12 +320,23 @@ export const config = {
                   };
                 }
 
-                if (existingWidget?.type === WIDGET_TYPE_ASSIGNEES && context.variables.id) {
-                  const workItemAssignees = existingWidget.assignees?.nodes || [];
-                  const users = workItemAssignees.map(
+                const mergedWidget = { ...existingWidget, ...incomingWidget };
+
+                if (mergedWidget?.type === WIDGET_TYPE_ASSIGNEES && context.variables.id) {
+                  const workItemAssignees = mergedWidget.assignees?.nodes || [];
+                  const users = workItemAssignees.map((user) => {
                     // eslint-disable-next-line no-underscore-dangle
-                    (user) => context.cache.extract()[user.__ref],
-                  );
+                    const userRef = context.cache.extract()[user.__ref];
+
+                    // We're copying `avatarUrl` into `avatar_url` because both
+                    // Quick action autocompletion setups;
+                    // 1. `gfm_auto_complete.js` - Plain Text Editor
+                    // 2. `content_editor/components/suggestions_dropdown.vue` - RTE
+                    // expect user avatars to be present in `avatar_url` and
+                    // adding `avatar_url || avatarUrl` there requires unnecessary
+                    // repetition.
+                    return { ...userRef, avatar_url: userRef.avatarUrl };
+                  });
 
                   const existingAssignees = currentAssignees();
                   currentAssignees({
@@ -321,7 +345,22 @@ export const config = {
                   });
                 }
 
-                return { ...existingWidget, ...incomingWidget };
+                // Extract currently applied labels into `appliedLabels` reactive prop
+                if (mergedWidget?.type === WIDGET_TYPE_LABELS && context.variables.id) {
+                  const workItemLabels = mergedWidget.labels?.nodes || [];
+                  const labels = workItemLabels.map(
+                    // eslint-disable-next-line no-underscore-dangle
+                    (label) => context.cache.extract()[label.__ref],
+                  );
+
+                  const existingAppliedLabels = appliedLabels();
+                  appliedLabels({
+                    ...existingAppliedLabels,
+                    [`${context.variables.id}`]: labels,
+                  });
+                }
+
+                return mergedWidget;
               });
             },
           },

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Documentation for the REST API for Git branches in GitLab.
 title: Branches API
 ---
@@ -330,7 +330,7 @@ curl --request DELETE \
 > [!note]
 > Deleting a branch does not completely erase all related data.
 > Some information persists to maintain project history and to support recovery processes.
-> For more information, see [Handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
+> For more information, see [handle sensitive information](../topics/git/undo.md#handle-sensitive-information).
 
 ## Delete all merged branches
 

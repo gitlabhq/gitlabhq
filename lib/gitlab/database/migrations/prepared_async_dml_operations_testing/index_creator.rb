@@ -19,7 +19,11 @@ module Gitlab
           rescue *TIMEOUT_EXCEPTIONS => error
             Gitlab::AppLogger.info(message: error, index: async_index.name)
           ensure
-            async_index.destroy!
+            connection.execute(
+              async_index.class.sanitize_sql(
+                ['DELETE FROM "postgres_async_indexes" WHERE id = ? /* SYNC_TESTING_EXECUTION */', async_index.id]
+              )
+            )
           end
 
           private

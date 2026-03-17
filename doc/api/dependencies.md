@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Composition Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Access the Dependencies API to retrieve project dependency information, including package details, versions, vulnerabilities, and licenses for supported package managers.
 title: Dependencies API
 ---
@@ -19,10 +19,7 @@ To see vulnerabilities in response, user should be authorized to read
 
 ## List project dependencies
 
-Get a list of project dependencies. This API partially mirroring
-[dependency list](../user/application_security/dependency_list/_index.md) feature.
-This list can be generated only for [languages and package managers](../user/application_security/dependency_scanning/_index.md#supported-languages-and-package-managers)
-supported by Gemnasium.
+Lists all dependencies for a specified project. This operation partially mirrors the [dependency list](../user/application_security/dependency_list/_index.md) feature, which is available only for [languages and package managers](../user/application_security/dependency_scanning/_index.md#supported-languages-and-package-managers) supported by Gemnasium.
 
 Responses are [paginated](rest/_index.md#pagination) and return 20 results by default.
 

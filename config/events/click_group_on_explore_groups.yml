@@ -1,0 +1,18 @@
+---
+description: User clicks on a group on Explore > Groups
+internal_events: true
+action: click_group_on_explore_groups
+identifiers:
+  - user
+additional_properties:
+  label:
+    description: Tab name (e.g. "active")
+product_group: organizations
+product_categories:
+  - groups_and_projects
+milestone: '18.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226214
+tiers:
+  - free
+  - premium
+  - ultimate

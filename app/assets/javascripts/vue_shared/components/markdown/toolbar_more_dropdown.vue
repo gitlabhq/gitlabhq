@@ -1,6 +1,6 @@
 <script>
 import { GlTooltip, GlDisclosureDropdown } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import Tracking from '~/tracking';
 import { __ } from '~/locale';
 import { updateText } from '~/lib/utils/text_markdown';

@@ -11,11 +11,10 @@ module Subscriptions
       description: 'ID of the issuable.'
 
     def authorized?(issuable_id:)
-      issuable = force(GitlabSchema.find_by_gid(issuable_id))
-
-      unauthorized! unless issuable && Ability.allowed?(current_user, :"read_#{issuable.to_ability_name}", issuable)
-
-      true
+      authorize_object_or_gid!(
+        :"read_#{issuable_id.model_class.to_ability_name}",
+        gid: issuable_id
+      )
     end
   end
 end

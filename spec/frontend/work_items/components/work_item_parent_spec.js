@@ -25,8 +25,10 @@ import {
   mockWorkItemReferenceQueryResponse,
   allowedParentTypesResponse,
   groupEpicsWithMilestonesQueryResponse,
+  groupEpicsWithMilestonesQueryResponseWithFeatures,
   mockFullWorkItemTypeConfiguration,
   mockMilestone,
+  mockFeaturesMilestone,
   availableObjectivesResponseWithoutParent,
 } from '../mock_data';
 
@@ -93,6 +95,7 @@ describe('WorkItemParent component', () => {
     parent = null,
     allowedParentTypesForNewWorkItem = [],
     searchQueryHandler = availableWorkItemsSuccessHandler,
+    groupSearchQueryHandler = groupWorkItemsSuccessHandler,
     mutationHandler = successUpdateWorkItemMutationHandler,
     hasParent = true,
     isGroup = false,
@@ -101,7 +104,7 @@ describe('WorkItemParent component', () => {
     wrapper = shallowMountExtended(WorkItemParent, {
       apolloProvider: createMockApollo([
         [projectWorkItemsQuery, searchQueryHandler],
-        [groupWorkItemsQuery, groupWorkItemsSuccessHandler],
+        [groupWorkItemsQuery, groupSearchQueryHandler],
         [updateWorkItemMutation, mutationHandler],
         [workItemsByReferencesQuery, workItemReferencesSuccessHandler],
         [getAllowedWorkItemParentTypes, allowedParentTypesHandler],
@@ -566,6 +569,43 @@ describe('WorkItemParent component', () => {
       await nextTick();
 
       expect(wrapper.emitted('parentMilestone')).toBeDefined();
+    });
+
+    describe('when workItemFeaturesField feature flag is enabled', () => {
+      it('emits parentMilestone with data from features.milestone', async () => {
+        const featuresHandler = jest
+          .fn()
+          .mockResolvedValue(groupEpicsWithMilestonesQueryResponseWithFeatures);
+
+        createComponent({
+          isGroup: true,
+          hasParent: false,
+          workItemType: 'Epic',
+          groupSearchQueryHandler: featuresHandler,
+          provide: { glFeatures: { workItemFeaturesField: true } },
+        });
+
+        showDropdown();
+        await waitForPromises();
+
+        expect(featuresHandler).toHaveBeenCalledWith(
+          expect.objectContaining({ useWorkItemFeatures: true }),
+        );
+
+        selectWorkItem(
+          groupEpicsWithMilestonesQueryResponseWithFeatures.data.namespace.workItems.nodes[0].id,
+        );
+        await waitForPromises();
+        await nextTick();
+
+        expect(wrapper.emitted('parentMilestone')).toBeDefined();
+        expect(wrapper.emitted('parentMilestone')[0]).toEqual([
+          expect.objectContaining({
+            id: mockFeaturesMilestone.id,
+            title: mockFeaturesMilestone.title,
+          }),
+        ]);
+      });
     });
   });
 

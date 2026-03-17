@@ -25,7 +25,7 @@ module QA
         Page::Project::Settings::Main.perform(&:expand_advanced_settings)
 
         Page::Project::Settings::Advanced.perform do |advanced|
-          advanced.transfer_project!(project.name, target_group.full_path)
+          advanced.transfer_project!(project.full_path, target_group.full_path)
         end
 
         Page::Project::Menu.perform(&:click_project)

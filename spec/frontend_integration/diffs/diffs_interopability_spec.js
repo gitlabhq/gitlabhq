@@ -3,7 +3,8 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import initDiffsApp from '~/diffs';
-import { initMrStateLazyLoad } from '~/mr_notes/init';
+import { setupMrNotesState } from '~/mr_notes/init_mr_notes';
+import { initMrStateLazyLoad } from '~/mr_notes/init_state_lazy_load';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { pinia } from '~/pinia/instance';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
@@ -88,6 +89,7 @@ const startDiffsApp = () => {
       $off() {},
     },
   };
+  setupMrNotesState(notesEl.dataset, el.dataset);
   initMrStateLazyLoad();
 
   return initDiffsApp();

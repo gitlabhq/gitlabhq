@@ -1,7 +1,7 @@
 ---
 stage: Package
 group: Container Registry
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Dependency proxy for container images
 description: To reduce data transfer from upstream container images, configure the GitLab Dependency Proxy for your container images.
 ---
@@ -46,7 +46,7 @@ For a list of planned additions, view the
 
 To enable or turn off the dependency proxy for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Packages and registries**.
 1. Expand the **Dependency Proxy** section.
 1. To enable the proxy, turn on **Enable Proxy**. To turn it off, turn the toggle off.
@@ -59,7 +59,7 @@ for the entire GitLab instance.
 
 To view the dependency proxy for container images:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Operate** > **Dependency Proxy**.
 
 The dependency proxy is not available for projects.
@@ -120,7 +120,7 @@ When authenticating with the dependency proxy for container images:
 - Tokens with the `write_virtual_registry` scope must also include the `write_registry` scope.
 
 Users accessing the dependency proxy for container images with a personal access token or username and password must
-have at least the Guest role for the group they pull images from.
+have the Guest, Planner, Reporter, Developer, Maintainer, or Owner role for the group they pull images from.
 
 The dependency proxy for container images follows the [Docker v2 token authentication flow](https://distribution.github.io/distribution/spec/auth/token/),
 issuing the client a JWT to use for the pulls. The JWT issued as a result of authenticating
@@ -225,7 +225,7 @@ To authenticate with Docker Hub, you can use:
 
 To set Docker Hub credentials for the dependency proxy for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Packages and registries**.
 1. Expand the **Dependency Proxy** section.
 1. Turn on **Enable Proxy**.
@@ -240,7 +240,7 @@ To set Docker Hub credentials for the dependency proxy for a group:
 To set Docker Hub credentials in the Dependency Proxy settings using the [GraphQL API](../../../api/graphql/_index.md):
 
 1. Go to GraphiQL:
-   - For GitLab.com, use [`https://gitlab.com/-/graphql-explorer`](https://gitlab.com/-/graphql-explorer).
+   - For GitLab.com, use <https://gitlab.com/-/graphql-explorer>.
    - For GitLab Self-Managed, use `https://gitlab.example.com/-/graphql-explorer`.
 1. In GraphiQL, enter this mutation:
 
@@ -283,7 +283,7 @@ If authentication is successful, you'll see activity in your [Docker Hub Usage d
 
 To store a Docker image in dependency proxy storage:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Operate** > **Dependency Proxy**.
 1. Copy the **Dependency Proxy image prefix**.
 1. Use one of these commands. In these examples, the image is `alpine:latest`.

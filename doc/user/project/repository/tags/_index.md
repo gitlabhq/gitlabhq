@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use Git tags to mark important points in a repository's history, and trigger CI/CD pipelines.
 title: Tags
 ---
@@ -52,12 +52,12 @@ In the GitLab UI, each tag displays:
 
 To view all existing tags for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Tags**.
 
 ## View tagged commits in the commits list
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Commits**.
 1. Commits with a tag are labeled with a tag icon ({{< icon name="tag" >}}) and the name of the tag.
    This example shows a commit tagged `v1.26.0`:
@@ -94,7 +94,7 @@ To create either a lightweight or annotated tag from the command line, and push 
 
 To create a tag from the GitLab UI:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Tags**.
 1. Select **New tag**.
 1. Provide a **Tag name**.
@@ -120,7 +120,7 @@ GitLab enforces these additional rules on all tags:
 
 To copy a tag name to your clipboard:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Tags**.
 1. Next to the tag name, select **Copy tag name** ({{< icon name="copy-to-clipboard" >}}).
 

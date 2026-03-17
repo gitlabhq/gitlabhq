@@ -1,0 +1,76 @@
+---
+name: owner
+description: Full control over the project or group, including deletion and visibility
+  settings.
+inherits_from:
+- maintainer
+- planner
+- security_manager
+project:
+  permissions: []
+  raw_permissions:
+  - add_catalog_resource
+  - archive_project
+  - change_namespace
+  - change_visibility_level
+  - create_group_link
+  - delete_group_link
+  - destroy_issue
+  - destroy_merge_request
+  - destroy_pipeline
+  - link_forked_project
+  - manage_owners
+  - remove_fork_project
+  - remove_project
+  - set_emails_disabled
+  - set_issue_created_at
+  - set_issue_iid
+  - set_issue_updated_at
+  - set_note_created_at
+  - set_show_default_award_emojis
+  - set_show_diff_preview_in_email
+  - set_warn_about_potentially_unwanted_characters
+  - update_group_link
+group:
+  permissions: []
+  raw_permissions:
+  - admin_add_on_purchase
+  - admin_cicd_variables
+  - admin_group
+  - admin_group_member
+  - admin_integrations
+  - admin_namespace
+  - admin_package
+  - admin_protected_environments
+  - admin_runners
+  - archive_group
+  - change_group
+  - change_new_user_signups_cap
+  - change_prevent_sharing_groups_outside_hierarchy
+  - change_seat_control
+  - change_visibility_level
+  - create_deploy_token
+  - create_group_link
+  - create_runners
+  - create_subgroup
+  - delete_group_link
+  - delete_subgroup
+  - destroy_deploy_token
+  - destroy_issue
+  - edit_billing
+  - manage_merge_request_settings
+  - read_billing
+  - read_runners
+  - read_runners_registration_token
+  - read_subscription_usage
+  - read_usage_quotas
+  - register_group_runners
+  - remove_group
+  - security_manager_access
+  - set_emails_disabled
+  - set_note_created_at
+  - set_show_diff_preview_in_email
+  - update_default_branch_protection
+  - update_git_access_protocol
+  - update_group_link
+  - update_runners_registration_token

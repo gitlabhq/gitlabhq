@@ -3,13 +3,10 @@
 import {
   GlBadge,
   GlLink,
-  GlSkeletonLoader,
   GlTooltipDirective,
   GlTruncate,
-  GlLoadingIcon,
   GlIcon,
   GlHoverLoadDirective,
-  GlIntersectionObserver,
 } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -21,18 +18,17 @@ import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
 import getRefMixin from '../../mixins/get_ref';
 import { getRefType } from '../../utils/ref_type';
+import SkeletonLoader from './skeleton_loader.vue';
 
 export default {
   components: {
     GlBadge,
     GlLink,
-    GlSkeletonLoader,
-    GlLoadingIcon,
+    SkeletonLoader,
     GlIcon,
     GlTruncate,
     TimeagoTooltip,
     FileIcon,
-    GlIntersectionObserver,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -41,6 +37,7 @@ export default {
   },
   mixins: [getRefMixin],
   inject: ['refType'],
+  inheritAttrs: false,
   props: {
     commitInfo: {
       type: Object,
@@ -110,9 +107,9 @@ export default {
       default: '',
     },
   },
+  emits: ['row-appear'],
   data() {
     return {
-      hasRowAppeared: false,
       delayedRowAppear: null,
       showCommitColumns: window.gon?.show_commit_columns !== false,
     };
@@ -161,8 +158,14 @@ export default {
       return this.commitData && this.commitData.lockLabel;
     },
     showSkeletonLoader() {
-      return !this.commitData && this.hasRowAppeared;
+      return !this.commitData;
     },
+  },
+  mounted() {
+    this.rowAppeared();
+  },
+  beforeDestroy() {
+    clearTimeout(this.delayedRowAppear);
   },
   methods: {
     handlePreload() {
@@ -191,8 +194,6 @@ export default {
       this.$apollo.query({ query, variables });
     },
     rowAppeared() {
-      this.hasRowAppeared = true;
-
       if (this.commitInfo) {
         return;
       }
@@ -202,17 +203,17 @@ export default {
         ROW_APPEAR_DELAY,
       );
     },
-    rowDisappeared() {
-      clearTimeout(this.delayedRowAppear);
-      this.hasRowAppeared = false;
-    },
   },
   safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
 };
 </script>
 
 <template>
-  <tr class="tree-item" data-event-tracking="click_file_list_on_repository_page">
+  <tr
+    class="tree-item"
+    :data-item-id="$attrs['data-item-id']"
+    data-event-tracking="click_file_list_on_repository_page"
+  >
     <component
       :is="nameCellComponent"
       class="tree-item-file-name gl-relative gl-cursor-default gl-font-normal"
@@ -274,19 +275,15 @@ export default {
         :title="commitData.message"
         class="str-truncated-100 tree-commit-link gl-text-subtle"
       />
-      <gl-intersection-observer @appear="rowAppeared" @disappear="rowDisappeared">
-        <gl-skeleton-loader v-if="showSkeletonLoader" :lines="1" />
-      </gl-intersection-observer>
+      <skeleton-loader v-if="showSkeletonLoader" />
     </td>
     <td v-if="showCommitColumns" class="tree-time-ago cursor-default gl-text-right gl-text-subtle">
-      <gl-intersection-observer @appear="rowAppeared" @disappear="rowDisappeared">
-        <timeago-tooltip
-          v-if="commitData"
-          :time="commitData.committedDate"
-          :show-date-when-over-a-year="false"
-        />
-      </gl-intersection-observer>
-      <gl-skeleton-loader v-if="showSkeletonLoader" :lines="1" />
+      <timeago-tooltip
+        v-if="commitData"
+        :time="commitData.committedDate"
+        :show-date-when-over-a-year="false"
+      />
+      <skeleton-loader v-if="showSkeletonLoader" />
     </td>
   </tr>
 </template>

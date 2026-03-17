@@ -1,6 +1,3 @@
 ---
 name: delete_push_rule
 description: Grants the ability to delete push rules
-boundaries:
-  - group
-  - project

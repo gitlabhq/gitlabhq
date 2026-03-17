@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Create a GitLab Pages deployment for a static site
 ---
 
@@ -42,7 +42,7 @@ This guide explains how to use the Pages UI to deploy a static site or framework
 
 To complete the setup and generate a GitLab Pages deployment:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Pages**.
 
    A **Get Started with Pages** form appears. If this form is not available,
@@ -71,7 +71,7 @@ and on the right side, select **Download artifacts**.
 
 After your pipeline completes successfully:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Pages**.
 1. In **Deployments**, you can view your active deployment URL.
 1. To visit your deployed GitLab Pages site, select the URL.

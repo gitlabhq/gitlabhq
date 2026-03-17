@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Group badges API
 ---
 
@@ -17,21 +17,17 @@ Use this API to interact with group badges. For more information, see [group bad
 Badges support placeholders that are replaced in real time in both the link and image URL.
 The following placeholders are available:
 
-<!-- vale gitlab_base.Spelling = NO -->
-
-- **%{project_path}**: replaced by the project path.
-- **%{project_title}**: replaced by the project title.
-- **%{project_name}**: replaced by the project name.
-- **%{project_id}**: replaced by the project ID.
-- **%{project_namespace}**: replaced by the project's namespace full path.
-- **%{group_name}**: replaced by the project's top-level group name.
-- **%{gitlab_server}**: replaced by the project's server name.
-- **%{gitlab_pages_domain}**: replaced by the domain name hosting GitLab Pages.
-- **%{default_branch}**: replaced by the project default branch.
-- **%{commit_sha}**: replaced by the project's last commit SHA.
-- **%{latest_tag}**: replaced by the project's last tag.
-
-<!-- vale gitlab_base.Spelling = YES -->
+- `%{project_path}`: replaced by the project path.
+- `%{project_title}`: replaced by the project title.
+- `%{project_name}`: replaced by the project name.
+- `%{project_id}`: replaced by the project ID.
+- `%{project_namespace}`: replaced by the project's namespace full path.
+- `%{group_name}`: replaced by the project's top-level group name.
+- `%{gitlab_server}`: replaced by the project's server name.
+- `%{gitlab_pages_domain}`: replaced by the domain name hosting GitLab Pages.
+- `%{default_branch}`: replaced by the project default branch.
+- `%{commit_sha}`: replaced by the project's last commit SHA.
+- `%{latest_tag}`: replaced by the project's last tag.
 
 Because these endpoints aren't inside a project's context, the information used to replace the placeholders comes
 from the first group's project by creation date. If the group has no project, the original URL with the placeholders is returned.

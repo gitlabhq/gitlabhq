@@ -1,6 +1,3 @@
 ---
 name: delete_markdown_upload
 description: Grants the ability to delete markdown uploads
-boundaries:
-  - project
-  - group

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Documenting pipeline configuration keywords
 ---
 
@@ -31,7 +31,6 @@ Each keyword entry in the reference:
 - Must have a simple introductory section. The introduction should give the fundamental
   information needed to use the keyword. Advanced details and tasks should be in
   feature pages, not the reference page.
-
 - Must use the keyword name as the title, for example:
 
   ```markdown
@@ -45,7 +44,6 @@ Each keyword entry in the reference:
 - (Optional) Can also include the following sections when needed:
   - [Additional details](#additional-details)
   - [Related topics](#related-topics)
-
 - Must use a horizontal divider (`---`) to separate keyword entries.
 
 The keyword name must always be in backticks without a final `:`, like `artifacts`, not `artifacts:`.

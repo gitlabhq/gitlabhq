@@ -1,0 +1,9 @@
+---
+name: ci_inputs_array_index_operator
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/587657
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/220610
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590455
+milestone: '18.10'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

@@ -18,6 +18,7 @@ query workItemMetadata($fullPath: ID!) {
       importWorkItems
       readCrmContact
       readCrmOrganization
+      createSavedView @gl_introduced(version: "18.10.0")
     }
     metadata {
       ...WorkItemMetadata

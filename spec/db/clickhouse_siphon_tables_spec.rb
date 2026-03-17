@@ -22,6 +22,7 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
       encrypted_password
       feed_token
       incoming_email_token
+      lock_version
       note_html
       otp_backup_codes
       otp_required_for_login

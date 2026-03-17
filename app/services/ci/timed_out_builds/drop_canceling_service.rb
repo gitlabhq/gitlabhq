@@ -8,8 +8,6 @@ module Ci
       MINUTE_BUFFER = 15.minutes
 
       def execute
-        return unless Feature.enabled?(:enforce_job_timeouts_on_canceling_jobs, :instance)
-
         Gitlab::AppLogger.info "#{self.class}: Cleaning timed-out canceling builds"
 
         Ci::Partition.find_each do |partition|

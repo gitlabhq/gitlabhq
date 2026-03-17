@@ -157,7 +157,7 @@ RSpec.describe LfsObject, feature_category: :source_code_management do
     let!(:lfs_object_project) { create(:lfs_objects_project, lfs_object: lfs_object) }
 
     it 'cannot be deleted' do
-      expect { lfs_object.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
+      expect { lfs_object.destroy! }.to raise_error(ActiveRecord::DeleteRestrictionError)
 
       lfs_object_project.destroy!
 

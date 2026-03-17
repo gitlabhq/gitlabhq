@@ -10,34 +10,29 @@ module Banzai
     # If the source content is large then the hidden attribute is added to the img tag.
     class KrokiFilter < HTML::Pipeline::Filter
       prepend Concerns::PipelineTimingCheck
-      include ActionView::Helpers::TagHelper
+      include Concerns::DiagramService
 
       MAX_CHARACTER_LIMIT = 2000
+      DIAGRAM_FORMAT = 'svg'
 
       def call
-        return doc unless settings.kroki_enabled
+        return doc unless settings.kroki_enabled?
 
-        diagram_selectors = ::Gitlab::Kroki.formats(settings)
-                                .map do |diagram_type|
-                                  %(pre[data-canonical-lang="#{diagram_type}"] > code,
-                                  pre > code[data-canonical-lang="#{diagram_type}"])
-                                end
-                                .join(', ')
+        diagram_formats = ::Gitlab::Kroki.formats(settings)
+        diagram_selectors = diagram_formats.map do |diagram_type|
+          css_selector_for_code_blocks(lang: diagram_type)
+        end.join(', ')
 
         xpath = Gitlab::Utils::Nokogiri.css_to_xpath(diagram_selectors)
-        return doc unless doc.at_xpath(xpath)
 
-        diagram_format = "svg"
         doc.xpath(xpath).each do |node|
-          diagram_type = node.parent['data-canonical-lang'] || node['data-canonical-lang']
-          next unless diagram_selectors.include?(diagram_type)
+          diagram_type = lang_from_code_block(node)
+          next unless diagram_formats.include?(diagram_type)
 
           diagram_src = node.content.chomp
-          image_src = create_image_src(diagram_type, diagram_format, diagram_src)
-          img_tag = Nokogiri::HTML::DocumentFragment.parse(content_tag(:img, nil, src: image_src))
-          img_tag = img_tag.children.first
 
-          next if img_tag.nil?
+          img_tag = doc.document.create_element('img')
+          img_tag['src'] = self.class.kroki_image_src(diagram_type, diagram_src)
 
           lazy_load = diagram_src.length > MAX_CHARACTER_LIMIT
           img_tag.set_attribute('hidden', '') if lazy_load
@@ -52,15 +47,11 @@ module Banzai
         doc
       end
 
-      private
-
-      def create_image_src(type, format, text)
-        ::AsciidoctorExtensions::KrokiDiagram.new(type, format, text)
-          .get_diagram_uri(settings.kroki_url)
-      end
-
-      def settings
-        Gitlab::CurrentSettings.current_application_settings
+      class << self
+        def kroki_image_src(diagram_type, diagram_src)
+          ::AsciidoctorExtensions::KrokiDiagram.new(diagram_type, DIAGRAM_FORMAT, diagram_src)
+            .get_diagram_uri(Gitlab::CurrentSettings.kroki_url)
+        end
       end
     end
   end

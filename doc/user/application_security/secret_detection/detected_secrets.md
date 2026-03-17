@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Secret Detection
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Detected secrets
 ---
 
@@ -32,6 +32,7 @@ If you want to add a new secret detection rule, you can [propose new detection r
 | Adafruit IO Key                               | AdafruitIOKey                                 | {{< yes >}} | {{< no >}} | {{< yes >}} |
 | Adobe Client ID (OAuth Web)                       | Adobe Client ID (Oauth Web)                   | {{< yes >}} | {{< no >}} | {{< no >}} |
 | Adobe client secret                               | Adobe Client Secret                           | {{< yes >}} | {{< no >}} | {{< yes >}} |
+| Adobe IMS Access Token                            | AdobeIMSAccessToken                           | {{< yes >}} | {{< no >}} | {{< no >}} |
 | Age secret key                                    | Age secret key                                | {{< yes >}} | {{< no >}} | {{< no >}} |
 | Aiven Service Password                            | AivenServicePassword                          | {{< yes >}} | {{< no >}} | {{< yes >}} |
 | Alibaba AccessKey ID                              | Alibaba AccessKey ID                          | {{< yes >}} | {{< no >}} | {{< no >}} |
@@ -151,6 +152,7 @@ If you want to add a new secret detection rule, you can [propose new detection r
 | Intercom App Access Token                         | IntercomAppAccessToken                        | {{< yes >}} | {{< no >}} | {{< yes >}} |
 | Intercom client secret or client ID               | Intercom client secret/ID                     | {{< yes >}} | {{< no >}} | {{< no >}} |
 | Ionic personal access token                       | Ionic API token                               | {{< yes >}} | {{< no >}} | {{< no >}} |
+| JFrog Platform Access Tokens                      | JfrogPlatformAccessToken                      | {{< yes >}} | {{< no >}} | {{< no >}} |
 | Kubernetes Service Account Token                  | KubernetesServiceAccToken                     | {{< yes >}} | {{< no >}} | {{< yes >}} |
 | LangChain API Key                                 | LangChainAPIKey                               | {{< yes >}} | {{< no >}} | {{< yes >}} |
 | Linear API token                                  | Linear API token                              | {{< yes >}} | {{< no >}} | {{< yes >}} |

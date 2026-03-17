@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Milestones
 description: Burndown charts, goals, progress tracking, and releases.
 ---
@@ -28,8 +28,8 @@ Group milestones apply to any issue, epic or merge request in that group's proje
 
 For information about project and group milestones API, see:
 
-- [Project Milestones API](../../../api/milestones.md)
-- [Group Milestones API](../../../api/group_milestones.md)
+- [Project milestones API](../../../api/milestones.md)
+- [Group milestones API](../../../api/group_milestones.md)
 
 ## Milestones as releases
 
@@ -42,7 +42,7 @@ Milestones can be used to track releases. To do so:
 1. Add issues to your release by selecting the milestone from the issue's right sidebar.
 
 Additionally, to automatically generate release evidence when you create your release, integrate
-milestones with the [Releases feature](../releases/_index.md#associate-milestones-with-a-release).
+milestones with the [releases feature](../releases/_index.md#associate-milestones-with-a-release).
 
 ## Project milestones and group milestones
 
@@ -53,14 +53,14 @@ You can assign **group milestones** to any issue, epic, or merge request of any 
 
 For information about project and group milestones API, see:
 
-- [Project Milestones API](../../../api/milestones.md)
-- [Group Milestones API](../../../api/group_milestones.md)
+- [Project milestones API](../../../api/milestones.md)
+- [Group milestones API](../../../api/group_milestones.md)
 
 ### View project or group milestones
 
 To view the milestone list:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Milestones**.
 
 In a project, GitLab displays milestones that belong to the project.
@@ -80,7 +80,7 @@ To do so:
 
 Alternatively, this project's issues are visible in the group's milestone page.
 
-Improving this experience is tracked in issue [339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009).
+Improving this experience is tracked in [issue 339009](https://gitlab.com/gitlab-org/gitlab/-/issues/339009).
 
 ### View all milestones
 
@@ -89,9 +89,9 @@ You might not see some milestones because they're in projects or groups you're n
 
 To do so:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. Select **Your work**.
-1. On the left sidebar, select **Milestones**.
+1. In the left sidebar, select **Milestones**.
 
 ### View milestone details
 
@@ -152,7 +152,7 @@ Prerequisites:
 
 To create a milestone:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Milestones**.
 1. Select **New milestone**.
 1. Enter the title.
@@ -183,7 +183,7 @@ Prerequisites:
 
 To edit a milestone:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Milestones**.
 1. Select a milestone's title.
 1. In the upper-right corner, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) and then select **Edit**.
@@ -209,7 +209,7 @@ Prerequisites:
 
 To close a milestone:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to close, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Close**.
@@ -230,7 +230,7 @@ Prerequisites:
 
 To delete a milestone:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to delete, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
@@ -264,7 +264,7 @@ Prerequisites:
 
 To promote a project milestone:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Milestones**.
 1. Either:
    - Next to the milestone you want to promote, select **Milestone actions** ({{< icon name="ellipsis_v" >}}) > **Promote**.

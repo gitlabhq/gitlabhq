@@ -33,8 +33,8 @@ module Gitlab
         track_struct_event(tracker, category, action, label: label, property: property, value: value, contexts: contexts)
       end
 
-      def frontend_client_options(group)
-        tracker.frontend_client_options(group)
+      def frontend_client_options
+        tracker.frontend_client_options
       end
 
       def collector_hostname

@@ -230,7 +230,7 @@ module Gitlab
           end
 
           def extract_owasp_top_10
-            owasp_identifier = identifiers.find { |id| id.external_type.casecmp?('owasp') }
+            owasp_identifier = identifiers.find { |id| id.external_type.casecmp?('owasp') && id.external_id.include?('2017') }
             return ::Vulnerabilities::Read::OWASP_TOP_10_DEFAULT unless owasp_identifier
 
             map_owasp_external_id(owasp_identifier.external_id)

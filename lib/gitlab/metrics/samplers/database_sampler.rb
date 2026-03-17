@@ -22,10 +22,8 @@ module Gitlab
         end
 
         def sample
-          host_stats.each do |host_stat|
-            METRIC_DESCRIPTIONS.each_key do |metric|
-              metrics[metric].set(host_stat[:labels], host_stat[:stats][metric])
-            end
+          host_metrics.each do |metric_data|
+            metrics[metric_data[:metric]].set(metric_data[:labels], metric_data[:value])
           end
         end
 
@@ -37,26 +35,46 @@ module Gitlab
           end
         end
 
-        def host_stats
-          connection_class_stats + replica_host_stats
+        def host_metrics
+          connection_class_metrics + replica_host_metrics
         end
 
-        def connection_class_stats
-          Gitlab::Database.database_base_models.each_value.with_object([]) do |base_model, stats|
+        def connection_class_metrics
+          Gitlab::Database.database_base_models.each_value.with_object([]) do |base_model, metrics|
             next unless base_model.connected?
 
-            stats << { labels: labels_for_class(base_model), stats: base_model.connection_pool.stat }
+            base_labels = labels_for_class(base_model)
+            metrics_for_base_model = build_metrics(base_labels, base_model.connection_pool.extended_stat)
+
+            metrics.concat(metrics_for_base_model)
           end
         end
 
-        def replica_host_stats
-          Gitlab::Database::LoadBalancing.each_load_balancer.with_object([]) do |load_balancer, stats|
+        def replica_host_metrics
+          Gitlab::Database::LoadBalancing.each_load_balancer.with_object([]) do |load_balancer, metrics|
             next if load_balancer.primary_only?
 
             load_balancer.host_list.hosts.each do |host|
-              stats << { labels: labels_for_replica_host(load_balancer, host), stats: host.pool.stat }
+              base_labels = labels_for_replica_host(load_balancer, host)
+              metrics_for_host = build_metrics(base_labels, host.pool.extended_stat)
+
+              metrics.concat(metrics_for_host)
             end
           end
+        end
+
+        def build_metrics(base_labels, stats)
+          simple_metrics = [
+            { metric: :size, labels: base_labels, value: stats[:size] },
+            { metric: :connections, labels: base_labels, value: stats[:connections] },
+            { metric: :idle, labels: base_labels, value: stats[:idle] },
+            { metric: :waiting, labels: base_labels, value: stats[:waiting] }
+          ]
+
+          dead_metrics = split_metric_by_thread_name(:dead, base_labels, stats[:dead_by_thread_name])
+          busy_metrics = split_metric_by_thread_name(:busy, base_labels, stats[:busy_by_thread_name])
+
+          simple_metrics + dead_metrics + busy_metrics
         end
 
         def labels_for_class(klass)
@@ -75,6 +93,25 @@ module Gitlab
             class: load_balancer.configuration.connection_specification_name,
             db_config_name: host.pool.db_config.name
           }
+        end
+
+        def split_metric_by_thread_name(metric, base_labels, values_by_thread_name)
+          values_by_thread_name = normalize_counts_by_thread_name(values_by_thread_name)
+          # We want to report 0 for threads that are running but don't have a thread in the given state
+          known_thread_names = Thread.list.map { |t| ThreadNameCardinalityLimiter.normalize_thread_name(t.name) }.uniq
+
+          candidate_names = (known_thread_names + values_by_thread_name.keys).uniq
+
+          candidate_names.each_with_object([]) do |name, metrics|
+            value = values_by_thread_name[name] || 0
+            metrics << { metric: metric, value: value, labels: base_labels.merge(thread_name: name) }
+          end
+        end
+
+        def normalize_counts_by_thread_name(counts_by_thread_name)
+          counts_by_thread_name.each_with_object(Hash.new(0)) do |(thread_name, count), result|
+            result[ThreadNameCardinalityLimiter.normalize_thread_name(thread_name)] += count
+          end
         end
       end
     end

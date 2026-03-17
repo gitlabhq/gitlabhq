@@ -11,6 +11,7 @@ module Gitlab
         MINIMUM_PAUSE_MS = 100
         PARTITION_DURATION = 14.days
         MAX_ATTEMPTS = 3
+        STUCK_JOBS_TIMEOUT = 1.hour.freeze
 
         REQUIRED_COLUMNS = %i[
           batch_size
@@ -28,6 +29,8 @@ module Gitlab
         ].freeze
 
         included do |job_class|
+          include FromUnion
+
           REQUIRED_COLUMNS.each do |column|
             validates column, presence: true
           end
@@ -45,7 +48,8 @@ module Gitlab
           scope :finished, -> { where.not(finished_at: nil) }
           scope :created_since, ->(date) { where(arel_table[:created_at].gteq(date)) }
           scope :below_max_attempts, -> { where(arel_table[:attempts].lt(MAX_ATTEMPTS)) }
-          scope :retriable, -> { failed.below_max_attempts }
+          scope :stale, -> { running.where(arel_table[:started_at].lteq(STUCK_JOBS_TIMEOUT.ago)) }
+          scope :retriable, -> { from_union([failed.below_max_attempts, stale]) }
           scope :successful_in_execution_order, -> { finished.succeeded.order_by_finished_at }
           scope :order_by_finished_at, -> { order(:finished_at) }
 

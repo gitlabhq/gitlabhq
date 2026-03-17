@@ -321,6 +321,13 @@ class TodoService
     todos_ids
   end
 
+  def resolve_merge_train_removed_todos(merge_request)
+    resolve_todos_with_attributes_for_target(
+      merge_request,
+      { action: Todo::MERGE_TRAIN_REMOVED }
+    )
+  end
+
   def create_todos(users, attributes, namespace, project)
     users = Array(users)
 

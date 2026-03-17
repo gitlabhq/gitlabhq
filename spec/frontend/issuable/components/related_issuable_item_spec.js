@@ -282,11 +282,11 @@ describe('RelatedIssuableItem', () => {
       });
     });
 
-    describe('when it emits "workItemDeleted" event', () => {
+    describe('when it emits "work-item-deleted" event', () => {
       it('emits "relatedIssueRemoveRequest" event', () => {
         mountComponent();
 
-        findWorkItemDetailModal().vm.$emit('workItemDeleted', workItemId);
+        findWorkItemDetailModal().vm.$emit('work-item-deleted', workItemId);
 
         expect(wrapper.emitted('relatedIssueRemoveRequest')).toEqual([[workItemId]]);
       });

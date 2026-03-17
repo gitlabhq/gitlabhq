@@ -5,7 +5,7 @@ exports[`Snippet Blob Edit component with loaded blob matches snapshot 1`] = `
   class="file-holder snippet"
   data-testid="file-holder-container"
 >
-  <blob-header-edit-stub
+  <snippet-blob-edit-header-stub
     candelete="true"
     data-testid="file-name-field"
     id="reference-0"

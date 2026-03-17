@@ -1,7 +1,7 @@
 ---
 stage: Shared responsibility based on functional area
 group: Shared responsibility based on functional area
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab Prometheus metrics
 ---
 
@@ -67,6 +67,8 @@ The following metrics are available:
 | `email_receiver_error`                                                         | Counter   |  14.1 |                                                                         | Total number of errors when processing incoming emails |
 | `failed_login_captcha_total`                                                   | Gauge     |  11.0 |                                                                         | Counter of failed CAPTCHA attempts during login |
 | `gitlab_application_rate_limiter_throttle_utilization_ratio`                   | Histogram |  17.6 | `throttle_key`, `peek`, `feature_category`                              | Utilization ratio of a throttle in GitLab Application Rate Limiter. |
+| `gitaly_circuit_breaker_requests_total`                                        | Counter   |  18.9 | `circuit_state`, `result`, `reason`                                     | Total Gitaly requests processed by circuit breaker. `result` can be `allowed`, `rejected`, or `error`. `reason` provides error detail (for example, `resource_exhausted`) |
+| `gitaly_circuit_breaker_transitions_total`                                     | Counter   |  18.9 | `from_state`, `to_state`                                                | Total circuit breaker state transitions. States are `closed`, `open`. Detailed endpoint and storage information is available in structured logs |
 | `gitlab_cache_misses_total`                                                    | Counter   |  10.2 | `controller`, `action`, `store`, `endpoint_id`                          | Cache read miss |
 | `gitlab_cache_operation_duration_seconds`                                      | Histogram |  10.2 | `operation`, `store`, `endpoint_id`                                     | Cache access time |
 | `gitlab_cache_operations_total`                                                | Counter   |  12.2 | `controller`, `action`, `operation`, `store`, `endpoint_id`             | Cache operations by controller or action |
@@ -226,6 +228,8 @@ The following metrics can be controlled by feature flags:
 | `gitlab_ci_current_queue_size`               | `gitlab_ci_builds_queuing_metrics` |
 | `gitlab_ci_queue_retrieval_duration_seconds` | `gitlab_ci_builds_queuing_metrics` |
 | `gitlab_ci_queue_active_runners_total`       | `gitlab_ci_builds_queuing_metrics` |
+| `gitaly_circuit_breaker_requests_total`      | `add_circuit_breaker_to_gitaly`    |
+| `gitaly_circuit_breaker_transitions_total`   | `add_circuit_breaker_to_gitaly`    |
 
 ## Praefect metrics
 
@@ -408,6 +412,26 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_snippet_repositories_registry`                      | Gauge     | 13.4  | `url`                                                                                     | Number of syncable snippets in the registry |
 | `geo_snippet_repositories_synced`                        | Gauge     | 13.4  | `url`                                                                                     | Number of syncable snippets synced on secondary |
 | `geo_snippet_repositories`                               | Gauge     | 13.4  | `url`                                                                                     | Number of snippets on primary |
+| `geo_abuse_report_uploads`                               | Gauge     | 18.10 | `url`                                                                                     | Number of abuse report uploads on primary |
+| `geo_abuse_report_uploads_checksum_total`                | Gauge     | 18.10 | `url`                                                                                     | Number of abuse report uploads to checksum on primary |
+| `geo_abuse_report_uploads_checksummed`                   | Gauge     | 18.10 | `url`                                                                                     | Number of abuse report uploads that successfully calculated the checksum on primary |
+| `geo_abuse_report_uploads_checksum_failed`               | Gauge     | 18.10 | `url`                                                                                     | Number of abuse report uploads failed to calculate the checksum on primary |
+| `geo_abuse_report_uploads_synced`                        | Gauge     | 18.10 | `url`                                                                                     | Number of syncable abuse report uploads synced on secondary |
+| `geo_abuse_report_uploads_failed`                        | Gauge     | 18.10 | `url`                                                                                     | Number of syncable abuse report uploads failed to sync on secondary |
+| `geo_abuse_report_uploads_registry`                      | Gauge     | 18.10 | `url`                                                                                     | Number of abuse report uploads in the registry |
+| `geo_abuse_report_uploads_verification_total`            | Gauge     | 18.10 | `url`                                                                                     | Number of abuse report uploads to attempt to verify on secondary |
+| `geo_abuse_report_uploads_verified`                      | Gauge     | 18.10 | `url`                                                                                     | Number of abuse report uploads successfully verified on secondary |
+| `geo_abuse_report_uploads_verification_failed`           | Gauge     | 18.10 | `url`                                                                                     | Number of abuse report uploads that failed verification on secondary |
+| `geo_project_uploads`                                    | Gauge     | 18.10 | `url`                                                                                     | Number of project uploads on primary |
+| `geo_project_uploads_checksum_total`                     | Gauge     | 18.10 | `url`                                                                                     | Number of project uploads to checksum on primary |
+| `geo_project_uploads_checksummed`                        | Gauge     | 18.10 | `url`                                                                                     | Number of project uploads that successfully calculated the checksum on primary |
+| `geo_project_uploads_checksum_failed`                    | Gauge     | 18.10 | `url`                                                                                     | Number of project uploads failed to calculate the checksum on primary |
+| `geo_project_uploads_synced`                             | Gauge     | 18.10 | `url`                                                                                     | Number of syncable project uploads synced on secondary |
+| `geo_project_uploads_failed`                             | Gauge     | 18.10 | `url`                                                                                     | Number of syncable project uploads failed to sync on secondary |
+| `geo_project_uploads_registry`                           | Gauge     | 18.10 | `url`                                                                                     | Number of project uploads in the registry |
+| `geo_project_uploads_verification_total`                 | Gauge     | 18.10 | `url`                                                                                     | Number of project uploads to attempt to verify on secondary |
+| `geo_project_uploads_verified`                           | Gauge     | 18.10 | `url`                                                                                     | Number of project uploads successfully verified on secondary |
+| `geo_project_uploads_verification_failed`                | Gauge     | 18.10 | `url`                                                                                     | Number of project uploads that failed verification on secondary |
 | `geo_status_failed_total`                                | Counter   | 10.2  | `url`                                                                                     | Number of times retrieving the status from the Geo Node failed |
 | `geo_terraform_state_versions_checksum_failed`           | Gauge     | 13.5  | `url`                                                                                     | Number of terraform state versions failed to calculate the checksum on primary |
 | `geo_terraform_state_versions_checksum_total`            | Gauge     | 13.12 | `url`                                                                                     | Number of terraform state versions that need to be checksummed on primary |

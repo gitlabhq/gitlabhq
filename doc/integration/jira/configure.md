@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Jira issues integration
 ---
 
@@ -56,7 +56,7 @@ on GitLab Self-Managed.
 With this integration, your GitLab project can interact with all Jira projects on your instance.
 To configure your project settings in GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Under **Enable integration**, select the **Active** checkbox.
@@ -135,7 +135,7 @@ Prerequisites:
 You can enable Jira issues for a specific group or project, but you can view the issues in GitLab projects only.
 To view issues from one or more Jira projects in a GitLab project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Jira issues**.
 
 By default, the issues are sorted by **Created date**.
@@ -208,7 +208,7 @@ You can set up verification rules to ensure Jira issues referenced in commit mes
 
 To configure Jira verification:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Go to the **Jira verification** section.
@@ -277,7 +277,7 @@ Prerequisites:
 You can create a Jira issue from GitLab to track any action taken to resolve or mitigate a vulnerability.
 To create a Jira issue for a vulnerability:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create Jira issue**.
@@ -286,7 +286,7 @@ To create a Jira issue for a vulnerability:
 
 The issue is created in the target Jira project with information from the vulnerability report.
 
-To create a GitLab issue, see [Create a GitLab issue for a vulnerability](../../user/application_security/vulnerabilities/_index.md#create-a-gitlab-issue-for-a-vulnerability).
+To create a GitLab issue, see [create a GitLab issue for a vulnerability](../../user/application_security/vulnerabilities/_index.md#create-a-gitlab-issue-for-a-vulnerability).
 
 ## Create a Jira Cloud API token
 
@@ -298,7 +298,6 @@ To create a Jira Cloud API token:
 
    The link opens the **API tokens** page. Alternatively, from your Atlassian
    profile, select **Account Settings** > **Security** > **Create and manage API tokens**.
-
 1. Select **Create API token**.
 1. On the dialog, enter a label for your token and select **Create**.
 

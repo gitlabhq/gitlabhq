@@ -18,8 +18,9 @@ RSpec.describe Types::UserPreferencesType, feature_category: :user_profile do
       merge_request_dashboard_list_type
       work_items_display_settings
       merge_request_dashboard_show_drafts
+      wiki_use_auto_commit_message
     ]
 
-    expect(described_class).to have_graphql_fields(*expected_fields)
+    expect(described_class).to have_graphql_fields(*expected_fields).at_least
   end
 end

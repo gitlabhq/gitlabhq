@@ -67,6 +67,11 @@ gl-emoji {
   width: 354px !important;
 }
 
+.emoji-picker .gl-new-dropdown-contents {
+  max-height: none !important;
+  overflow-y: hidden !important;
+}
+
 .emoji-picker-category-tab {
   border-bottom-color: transparent;
 

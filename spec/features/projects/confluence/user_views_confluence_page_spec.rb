@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views the Confluence page', feature_category: :integrations do
+RSpec.describe 'User views the Confluence page', feature_category: :wiki do
   let_it_be(:user) { create(:user) }
 
   let(:project) { create(:project, :public) }

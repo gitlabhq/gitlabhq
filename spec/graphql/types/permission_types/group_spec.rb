@@ -8,6 +8,7 @@ RSpec.describe Types::PermissionTypes::Group, feature_category: :groups_and_proj
   it 'has the correct permissions' do
     expected_permissions = %i[
       archive_group
+      change_group
       read_group
       create_projects
       create_custom_emoji

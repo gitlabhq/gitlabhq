@@ -130,6 +130,7 @@ export default {
     @input="(val) => (savedOpenState = val)"
   >
     <crud-component
+      :title="title"
       is-collapsible
       :collapsed="!isSectionOpen"
       :toggle-aria-label="toggleButtonLabel"
@@ -137,11 +138,8 @@ export default {
       @collapsed="onCollapsedSection"
       @expanded="onExpandSection"
     >
-      <template #title>
-        {{ title }}
-        <gl-badge v-if="!hideCount" size="sm" data-testid="merge-request-list-count">{{
-          count === null ? '-' : count
-        }}</gl-badge>
+      <template v-if="!hideCount" #count>
+        <span data-testid="merge-request-list-count">{{ count === null ? '-' : count }}</span>
       </template>
 
       <template #actions>
@@ -163,7 +161,7 @@ export default {
       </template>
 
       <template v-if="!hasMergeRequests && !loading && !error" #empty>
-        <p class="gl-pt-1 gl-text-center gl-text-subtle">
+        <p class="gl-mt-5 gl-text-center gl-text-subtle">
           {{ __('No merge requests match this list.') }}
         </p>
         <slot name="drafts"></slot>

@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Use wiki with your planning workflow
 description: Use GitLab Wiki with your planning workflow. Connect documentation to epics, issues, and boards.
 ---
@@ -34,7 +34,7 @@ A wiki helps your planning tools by giving you:
 
 To use this guide effectively, you should be familiar with:
 
-- [GitLab Wiki basics](_index.md)
+- [GitLab Wiki](_index.md)
 - [GitLab Flavored Markdown](../../markdown.md)
 - Creating and managing various work items, such as [issues](../issues/_index.md) and [epics](../../group/epics/_index.md)
 
@@ -47,11 +47,13 @@ Create links between wiki documentation and your planning items to build a conne
 Epics often need detailed specifications that are too long for an epic description.
 Keep the full documentation in a wiki:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Plan** > **Wiki**.
 1. Create a wiki page with your detailed requirements (for example, with slug `product-requirements`).
-1. On the top bar, select **Search or go to** and find your project's group.
-1. Select **Plan** > **Epics** and find your epic.
+1. In the top bar, select **Search or go to** and find your project's group.
+1. Select **Plan** > **Work items**.
+1. In the filter bar, select the filter **Type**, operator **is**, and value **Epic**.
+1. Identify your desired epic, and select its title.
 1. In the epic description, link to the wiki page:
 
    ```markdown
@@ -147,7 +149,7 @@ With custom text: [[Backend API Standards|backend/api:api-standards]]
 
 {{< /history >}}
 
-Transform your wiki pages into live dashboards using [GitLab Query Language](../../glql/_index.md) (GLQL).
+Transform your wiki pages into live dashboards using [GitLab Query Language (GLQL)](../../glql/_index.md).
 Embedded views automatically update when data changes, providing real-time visibility into your planning data
 without leaving the wiki.
 
@@ -510,8 +512,8 @@ query: project = "team/project" and milestone = "Sprint 23" and opened = true
 
 ## Work management
 
-- [Issue Board](https://gitlab.example.com/group/project/-/boards/123)
-- [Current Milestone](https://gitlab.example.com/group/project/-/milestones/45)
+- [Issue board](https://gitlab.example.com/group/project/-/boards/123)
+- [Current milestone](https://gitlab.example.com/group/project/-/milestones/45)
 - Label taxonomy: [[Label Definitions|label-definitions]]
 
 ## Onboarding
@@ -538,7 +540,7 @@ query: project = "team/project" and milestone = "Sprint 23" and opened = true
 | Root link                        | `[Link text](/page-from-root)`            | `[Home](/home)` |
 | Full URL                         | Standard Markdown                         | `[API Guide](https://gitlab.example.com/.../wikis/api-standards)` |
 
-<!-- The `page-from-root` example is added as exception in doc/.vale/gitlab_docs/InternalLinkFormat.yml -->
+<!-- The `page-from-root` example is added as exception in `doc/.vale/gitlab_docs/InternalLinkFormat.yml` -->
 
 ### Referencing work items
 

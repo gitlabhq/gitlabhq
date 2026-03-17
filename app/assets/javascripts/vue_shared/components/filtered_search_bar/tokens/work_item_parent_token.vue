@@ -96,15 +96,23 @@ export default {
     },
     getActiveWorkItem(workItems, data) {
       if (data && workItems.length) {
-        return workItems.find((workItem) => this.getValue(workItem) === data);
+        return workItems.find((workItem) => this.getValue(workItem) === data?.toString());
       }
       return undefined;
     },
     getValue(workItem) {
       return getIdFromGraphQLId(workItem[this.idProperty]).toString();
     },
-    displayValue(workItem) {
-      return workItem?.title;
+    displayValue(workItem, inputValue) {
+      if (workItem?.title) {
+        return workItem?.title;
+      }
+
+      return (
+        this.workItems.find((item) => {
+          return this.getValue(item) === inputValue?.toString();
+        })?.title || inputValue
+      );
     },
   },
 };
@@ -126,7 +134,7 @@ export default {
     v-on="$listeners"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
-      {{ activeTokenValue ? displayValue(activeTokenValue) : inputValue }}
+      {{ displayValue(activeTokenValue, inputValue) }}
     </template>
     <template #suggestions-list="{ suggestions }">
       <gl-filtered-search-suggestion

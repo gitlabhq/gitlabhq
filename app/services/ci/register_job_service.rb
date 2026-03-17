@@ -141,7 +141,7 @@ module Ci
     # rubocop: disable CodeReuse/ActiveRecord
     def each_build(params, &blk)
       queue = Ci::Queue::BuildQueueService.new(runner)
-      builds = queue.build_candidates
+      builds = queue.build_candidates.limit(MAX_QUEUE_DEPTH + 1)
 
       build_and_partition_ids = retrieve_queue(-> { queue.execute(builds) })
       queue_size = build_and_partition_ids.size
@@ -220,9 +220,11 @@ module Ci
     rescue StandardError => ex
       @metrics.increment_queue_operation(:build_conflict_exception)
 
-      # If an error (e.g. GRPC::DeadlineExceeded) occurred constructing
-      # the result, consider this as a failure to be retried.
-      scheduler_failure!(build)
+      # If an error (e.g. GRPC::DeadlineExceeded) occurred constructing the
+      # result, consider this as a failure to be retried. We call #reset because
+      # the state machine may have the wrong `from` state, see
+      # https://gitlab.com/gitlab-org/gitlab/-/work_items/590004
+      scheduler_failure!(build.reset)
       track_exception_for_build(ex, build)
 
       # skip, and move to next one
@@ -364,7 +366,8 @@ module Ci
     end
 
     def scheduler_failure!(build)
-      Gitlab::OptimisticLocking.retry_lock(build, 3, name: 'register_job_scheduler_failure') do |subject|
+      Gitlab::OptimisticLocking.retry_lock_with_transaction(build, 3,
+        name: 'register_job_scheduler_failure') do |subject|
         subject.drop!(:scheduler_failure)
       end
     rescue StandardError => ex

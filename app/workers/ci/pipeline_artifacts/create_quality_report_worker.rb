@@ -15,7 +15,7 @@ module Ci
       idempotent!
 
       def perform(pipeline_id)
-        Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
+        Ci::Pipeline.find_by_id_through_partition(pipeline_id).try do |pipeline|
           Ci::PipelineArtifacts::CreateCodeQualityMrDiffReportService.new(pipeline).execute
         end
       end

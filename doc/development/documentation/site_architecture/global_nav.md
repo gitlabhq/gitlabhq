@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 description: Learn how GitLab docs' global navigation works and how to add new items.
 title: Global navigation
 ---
@@ -68,12 +68,10 @@ With these groups in mind, the following are general rules for where new items s
 
 - User documentation belongs in **Use GitLab**.
 - Administration documentation belongs under **Administer**. This documentation often includes sections that mention:
-
   - Changing the `gitlab.rb` or `gitlab.yml` files.
   - Accessing the rails console or running Rake tasks.
   - Doing things in the **Admin** area.
   - Tasks that can only be done by an instance administrator.
-
 - Other documentation belongs at the top-level, but care must be taken to not create an enormously
   long top-level navigation, which defeats the purpose of it.
 
@@ -116,9 +114,18 @@ ignore_in_report: true
 
 All other pages should be in the global nav.
 
-The technical writing team runs a report to determine which pages are not in the nav.
-This report skips pages with `ignore_in_report: true` in the front matter.
+#### Check for missing pages
+
+The technical writing team runs a [report](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/scripts/pages_not_in_nav.cjs?ref_type=heads) to determine which pages are not in the nav.
 The team reviews this list each month.
+
+This report skips pages with `ignore_in_report: true` in the front matter.
+
+By default, the report also skips pages in the `/development` directory, but can be run with an `INCLUDE_DEV` flag to include these pages if needed:
+
+```plaintext
+make check-pages-not-in-nav INCLUDE_DEV=true
+```
 
 ### Use GitLab section
 

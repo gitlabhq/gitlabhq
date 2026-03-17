@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Dockerコンテナで実行されているGitLabをバックアップする
 ---
 
@@ -20,17 +20,11 @@ docker exec -t <container name> gitlab-backup create
 
 詳しくは、[GitLabのバックアップと復元](../../administration/backup_restore/_index.md)をご覧ください。
 
-{{< alert type="note" >}}
-
 GitLab設定をすべて`GITLAB_OMNIBUS_CONFIG`環境変数で提供している場合（GitLabの[「Dockerコンテナを事前設定する」](configuration.md#pre-configure-docker-container)の手順を使用している場合）、構成設定は`gitlab.rb`ファイルに保存されないため、`gitlab.rb`ファイルをバックアップする必要はありません。
 
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-バックアップからGitLabを復元する際に[複雑な手順](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost)を回避するには、[GitLabシークレットファイルのバックアップ](../../administration/backup_restore/backup_gitlab.md#storing-configuration-files)の手順にも従ってください。シークレットファイルは、コンテナ内の`/etc/gitlab/gitlab-secrets.json`ファイル、または[コンテナホスト上の](installation.md#create-a-directory-for-the-volumes)`$GITLAB_HOME/config/gitlab-secrets.json`ファイルに保存されます。
-
-{{< /alert >}}
+> [!warning]
+>
+>バックアップからGitLabを復旧する際に[複雑なステップ](../../administration/backup_restore/troubleshooting_backup_gitlab.md#when-the-secrets-file-is-lost)を回避するため、[GitLabシークレットファイルのバックアップ](../../administration/backup_restore/backup_gitlab.md#storing-configuration-files)の手順にも従ってください。シークレットファイルは、コンテナ内の`/etc/gitlab/gitlab-secrets.json`ファイル、または[コンテナホスト上の](installation.md#create-a-directory-for-the-volumes)`$GITLAB_HOME/config/gitlab-secrets.json`ファイルに保存されます。
 
 ## データベースのバックアップを作成する {#create-a-database-backup}
 
@@ -42,4 +36,4 @@ docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories
 
 バックアップは`/var/opt/gitlab/backups`に書き込まれますが、これは[Dockerによってマウントされたボリューム](installation.md#create-a-directory-for-the-volumes)上にあるはずです。
 
-アップグレードをロールバックするためにバックアップを使用する方法について詳しくは、[roll back a Docker instance](../../update/package/downgrade.md#roll-back-a-docker-instance)（Dockerインスタンスのロールバック）を参照してください。
+アップグレードをロールバックするためにバックアップを使用する方法について詳しくは、[Dockerインスタンスのロールバック](../../update/package/downgrade.md#roll-back-a-docker-instance)を参照してください。

@@ -63,6 +63,7 @@ export default {
       default: true,
     },
   },
+  emits: ['viewer-changed', 'copy'],
   data() {
     return {
       viewer: this.hideViewerSwitcher ? null : this.activeViewerType,

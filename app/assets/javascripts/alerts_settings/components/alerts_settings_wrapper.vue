@@ -353,6 +353,7 @@ export default {
         :count="integrations.length"
         :toggle-text="canAddIntegration ? $options.i18n.addNewIntegration : ''"
         icon="warning"
+        title-tag="h3"
       >
         <template #form>
           <alert-settings-form

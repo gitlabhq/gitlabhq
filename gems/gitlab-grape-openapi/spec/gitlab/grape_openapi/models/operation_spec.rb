@@ -116,5 +116,46 @@ RSpec.describe Gitlab::GrapeOpenapi::Models::Operation do
         end
       end
     end
+
+    context 'with annotations' do
+      context 'when annotations is nil' do
+        it 'generates hash without errors' do
+          operation.operation_id = 'getUsers'
+          operation.annotations = nil
+
+          result = operation.to_h
+
+          expect(result[:operationId]).to eq('getUsers')
+        end
+      end
+
+      context 'when annotations has single entry' do
+        it 'includes annotation in output' do
+          operation.operation_id = 'getUsers'
+          operation.annotations = { 'x-custom': 'custom-value' }
+
+          result = operation.to_h
+
+          expect(result[:'x-custom']).to eq('custom-value')
+        end
+      end
+
+      context 'when annotations has multiple entries' do
+        it 'includes all annotations in output' do
+          operation.operation_id = 'getUsers'
+          operation.annotations = {
+            'x-custom-field': 'value1',
+            'x-internal': true,
+            'x-rate-limit': 100
+          }
+
+          result = operation.to_h
+
+          expect(result[:'x-custom-field']).to eq('value1')
+          expect(result[:'x-internal']).to be true
+          expect(result[:'x-rate-limit']).to eq(100)
+        end
+      end
+    end
   end
 end

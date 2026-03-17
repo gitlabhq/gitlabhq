@@ -5,10 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Pipeline::Chain::Metrics, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
-
-  let_it_be(:pipeline) do
-    create(:ci_pipeline, project: project, ref: 'master', user: user, name: 'Build pipeline')
-  end
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', user: user) }
 
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
@@ -27,48 +24,16 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Metrics, feature_category: :continuo
     expect(step.break?).to be false
   end
 
-  it 'increments the metrics' do
-    expect(::Gitlab::Ci::Pipeline::Metrics.pipelines_created_counter)
-      .to receive(:increment)
-      .with({ partition_id: instance_of(Integer), source: 'push' })
+  it 'enqueues PipelineCreationMetricsWorker with basic params' do
+    expect(::Ci::PipelineCreationMetricsWorker)
+      .to receive(:perform_async)
+      .with(pipeline.id, nil, nil, nil)
 
     run_chain
   end
 
-  context 'with pipeline name' do
-    it 'creates snowplow event' do
-      run_chain
-
-      expect_snowplow_event(
-        category: described_class.to_s,
-        action: 'create_pipeline_with_name',
-        project: pipeline.project,
-        user: pipeline.user,
-        namespace: pipeline.project.namespace
-      )
-    end
-  end
-
-  context 'without pipeline name' do
-    let_it_be(:pipeline) do
-      create(:ci_pipeline, project: project, ref: 'master', user: user)
-    end
-
-    it 'does not create snowplow event' do
-      run_chain
-
-      expect_no_snowplow_event
-    end
-  end
-
-  context 'with inputs' do
-    let(:inputs) do
-      {
-        deploy_strategy: 'manual',
-        job_stage: 'deploy',
-        test_script: 'echo "test"'
-      }
-    end
+  context 'when pipeline has inputs' do
+    let(:inputs) { { deploy_strategy: 'manual', job_stage: 'deploy' } }
 
     let(:command) do
       Gitlab::Ci::Pipeline::Chain::Command.new(
@@ -79,16 +44,94 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Metrics, feature_category: :continuo
       )
     end
 
-    it 'tracks the usage of inputs' do
-      expect { run_chain }.to trigger_internal_events('create_pipeline_with_inputs').with(
-        project: pipeline.project,
-        user: pipeline.user,
-        additional_properties: {
-          label: 'push',
-          property: 'unknown_source',
-          value: 3
-        }
+    before do
+      allow(command).to receive(:yaml_processor_result).and_return(nil)
+    end
+
+    it 'enqueues worker with inputs_count' do
+      expect(::Ci::PipelineCreationMetricsWorker)
+        .to receive(:perform_async)
+        .with(pipeline.id, 2, nil, nil)
+
+      run_chain
+    end
+  end
+
+  context 'when pipeline has templates' do
+    let(:yaml_processor_result) { instance_double(Gitlab::Ci::YamlProcessor::Result) }
+    let(:template_names) { ['Auto-DevOps.gitlab-ci.yml', 'Security/SAST.gitlab-ci.yml'] }
+
+    before do
+      allow(command).to receive(:yaml_processor_result).and_return(yaml_processor_result)
+      allow(yaml_processor_result).to receive_messages(
+        included_templates: template_names,
+        uses_keyword?: false,
+        uses_nested_keyword?: false,
+        uses_inputs?: false,
+        uses_input_rules?: false
       )
+    end
+
+    it 'enqueues worker with template_names' do
+      expect(::Ci::PipelineCreationMetricsWorker)
+        .to receive(:perform_async)
+        .with(
+          pipeline.id,
+          nil,
+          template_names,
+          {
+            'run' => false,
+            'only' => false,
+            'except' => false,
+            'artifacts_reports_junit' => false,
+            'job_inputs' => false,
+            'inputs' => false,
+            'input_rules' => false
+          }
+        )
+
+      run_chain
+    end
+  end
+
+  context 'when pipeline uses keywords' do
+    let(:yaml_processor_result) { instance_double(Gitlab::Ci::YamlProcessor::Result) }
+
+    before do
+      allow(command).to receive(:yaml_processor_result).and_return(yaml_processor_result)
+      allow(yaml_processor_result).to receive_messages(
+        included_templates: nil,
+        uses_keyword?: false,
+        uses_nested_keyword?: false,
+        uses_inputs?: false,
+        uses_input_rules?: false
+      )
+      allow(yaml_processor_result).to receive(:uses_keyword?).with(:run).and_return(true)
+      allow(yaml_processor_result).to receive(:uses_keyword?).with(:only).and_return(false)
+      allow(yaml_processor_result).to receive(:uses_keyword?).with(:except).and_return(true)
+      allow(yaml_processor_result).to receive(:uses_keyword?).with(:inputs).and_return(false)
+      allow(yaml_processor_result).to receive(:uses_nested_keyword?).with(%i[artifacts reports junit]).and_return(false)
+    end
+
+    it 'enqueues worker with keyword_usage' do
+      expect(::Ci::PipelineCreationMetricsWorker)
+        .to receive(:perform_async)
+        .with(
+          pipeline.id,
+          nil,
+          nil,
+          {
+            'run' => true,
+            'only' => false,
+            'except' => true,
+            'artifacts_reports_junit' => false,
+            'job_inputs' => false,
+            'inputs' => false,
+            'input_rules' => false
+          }
+        )
+
+      run_chain
     end
   end
 end

@@ -4,8 +4,10 @@ description: Separate table for group wiki verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126753
 milestone: '16.3'
 feature_categories:
-- geo_replication
+  - geo_replication
 classes:
-- Geo::GroupWikiRepositoryState
-gitlab_schema: gitlab_main_cell_local
+  - Geo::GroupWikiRepositoryState
+gitlab_schema: gitlab_main_org
+sharding_key:
+  group_id: namespaces
 table_size: small

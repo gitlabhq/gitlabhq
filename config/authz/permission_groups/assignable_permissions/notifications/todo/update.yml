@@ -1,0 +1,7 @@
+---
+name: update_todo
+description: Grants the ability to update todos
+boundaries:
+  - user
+permissions:
+  - update_todo

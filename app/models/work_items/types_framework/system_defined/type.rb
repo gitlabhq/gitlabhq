@@ -83,6 +83,9 @@ module WorkItems
           end
         end
 
+        # Long-term these per-type predicates should be replaced with a single is_base_type?(name)
+        # method to avoid meta-programming and method_missing issues between CE/EE type classes.
+        # See https://gitlab.com/gitlab-org/gitlab/-/work_items/592881
         BASE_TYPES.each do |type|
           define_method :"#{type[:base_type]}?" do
             base_type == type[:base_type]
@@ -212,7 +215,7 @@ module WorkItems
 
         def show_project_selector?
           value = configuration_class.try(:show_project_selector?)
-          value.nil? ? true : value
+          value.nil? || value
         end
 
         def supports_move_action?
@@ -229,25 +232,21 @@ module WorkItems
 
         def configurable?
           value = configuration_class.try(:configurable?)
-          value.nil? ? true : value
+          value.nil? || value
         end
 
         def creatable?
           value = configuration_class.try(:creatable?)
-          value.nil? ? true : value
+          value.nil? || value
         end
 
         def visible_in_settings?
           value = configuration_class.try(:visible_in_settings?)
-          value.nil? ? true : value
+          value.nil? || value
         end
 
         def archived?
           configuration_class.try(:archived?) || false
-        end
-
-        def filterable?
-          configuration_class.try(:filterable?) || false
         end
 
         def only_for_group?
@@ -256,6 +255,26 @@ module WorkItems
 
         def enabled?
           true
+        end
+
+        def can_be_conversion_target?
+          value = configuration_class.try(:can_be_conversion_target?)
+          value.nil? || value
+        end
+
+        def allowed_child_types_config
+          configuration_class.try(:allowed_child_types) || []
+        end
+
+        def filterable_list_view?(resource_parent)
+          resource_parent = resource_parent.project if resource_parent.is_a?(Namespaces::ProjectNamespace)
+          value = configuration_class.try(:filterable_list_view?, resource_parent)
+          value.nil? || value
+        end
+
+        def filterable_board_view?(resource_parent)
+          resource_parent = resource_parent.project if resource_parent.is_a?(Namespaces::ProjectNamespace)
+          configuration_class.try(:filterable_board_view?, resource_parent) || false
         end
 
         private
@@ -270,7 +289,7 @@ module WorkItems
 
         # resource_parent is used in EE
         def supported_conversion_base_types(_resource_parent, _user)
-          self.class.all.map(&:base_type)
+          self.class.all.select(&:can_be_conversion_target?).map(&:base_type)
         end
 
         # overridden in EE to check for EE-specific restrictions

@@ -1,0 +1,10 @@
+---
+name: org_admin_area
+description: Enable the organization admin area for organization owners
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/587370
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225916
+rollout_issue_url:
+milestone: '18.10'
+group: group::organizations
+type: wip
+default_enabled: false

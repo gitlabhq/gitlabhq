@@ -2,6 +2,9 @@
 key_path: counts.users_without_group_or_project_membership
 description: "Count of active users without any group or project membership"
 product_group: seat_management
+product_categories:
+- seat_cost_management
+- user_management
 value_type: number
 status: active
 milestone: "18.9"

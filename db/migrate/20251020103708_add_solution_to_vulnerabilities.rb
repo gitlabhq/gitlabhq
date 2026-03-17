@@ -7,7 +7,7 @@ class AddSolutionToVulnerabilities < Gitlab::Database::Migration[2.3]
 
   def up
     with_lock_retries do
-      add_column :vulnerabilities, :solution, :text, if_not_exists: true
+      add_column :vulnerabilities, :solution, :text, if_not_exists: true # rubocop:disable Migration/PreventAddingColumns -- table size was reclassified after this migration was created
     end
 
     add_text_limit :vulnerabilities, :solution, 7000, validate: false

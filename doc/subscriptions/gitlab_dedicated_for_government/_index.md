@@ -1,7 +1,7 @@
 ---
 stage: GitLab Dedicated
 group: US Public Sector Services
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Single-tenant SaaS solution for government agencies and regulated industries.
 title: GitLab Dedicated for Government
 ---
@@ -19,6 +19,7 @@ government agencies and organizations in regulated industries.
 It provides the following:
 
 - [FedRAMP Moderate authorized](https://marketplace.fedramp.gov/products/FR2411959145?cache=true) with Authority to Operate (ATO)
+- TX-RAMP Level 2 certified (TX-RAMP ID: TX1549412)
 - Isolated infrastructure in a dedicated AWS account deployed on [AWS GovCloud](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/whatis.html) in the US-West region
 - GitLab manages all operations and compliance requirements with government-specialized teams and processes
 - Access to complete DevSecOps platform capabilities while maintaining FedRAMP compliance
@@ -67,7 +68,7 @@ Your instance leverages modified versions of the
 [cloud native hybrid reference architectures](../../administration/reference_architectures/_index.md#cloud-native-hybrid)
 with high availability enabled.
 
-When [onboarding](../../administration/dedicated/create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance),
+When [onboarding](../../administration/dedicated/create_instance/_index.md#create-your-instance),
 GitLab matches you to the closest reference architecture size based on your number of users.
 
 > [!note]

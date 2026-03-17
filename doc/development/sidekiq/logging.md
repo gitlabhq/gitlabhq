@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Sidekiq logging
 ---
 
@@ -118,7 +118,6 @@ blocks:
 
 - The `arguments_proc` which needs to return the list of arguments the
   job needs to be scheduled with.
-
 - The `context_proc` which needs to return a hash with the context
   information for the job.
 

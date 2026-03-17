@@ -1,7 +1,7 @@
 <script>
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { orderBy } from 'lodash';
+import { orderBy } from 'lodash-es';
 import BoardFilteredSearch from 'ee_else_ce/boards/components/board_filtered_search.vue';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';

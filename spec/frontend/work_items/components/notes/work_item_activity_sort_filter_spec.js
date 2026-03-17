@@ -97,6 +97,7 @@ describe('Work Item Activity/Discussions Filtering', () => {
           category: TRACKING_CATEGORY_SHOW,
           label: trackingLabel,
           property: 'type_Task',
+          extra: { viewContext: 'full_screen' },
         });
       });
     },

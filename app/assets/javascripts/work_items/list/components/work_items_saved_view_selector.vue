@@ -125,7 +125,7 @@ export default {
       :toggle-text="savedView.name"
       auto-close
       class="saved-view-selector saved-view-selector-active !gl-h-full !gl-rounded-none"
-      toggle-class="gl-max-w-15 md:gl-max-w-30 gl-truncate"
+      toggle-class="gl-max-w-15 md:gl-max-w-none gl-truncate"
       data-testid="saved-view-selector"
       @shown="dropdownTooltip = ''"
       @hidden="dropdownTooltip = savedView.name"
@@ -155,9 +155,8 @@ export default {
         </template>
       </gl-disclosure-dropdown-item>
 
-      <gl-disclosure-dropdown-group bordered>
+      <gl-disclosure-dropdown-group v-if="canDeleteSavedView" bordered>
         <gl-disclosure-dropdown-item
-          v-if="canDeleteSavedView"
           data-testid="delete-action"
           variant="danger"
           @action="deleteView"
@@ -174,7 +173,7 @@ export default {
       v-gl-tooltip.top.viewport="savedView.name"
       category="tertiary"
       :to="viewLink"
-      class="saved-view-selector gl-h-full gl-max-w-15 gl-truncate !gl-rounded-none md:gl-max-w-30"
+      class="saved-view-selector gl-h-full gl-max-w-15 gl-truncate !gl-rounded-none md:gl-max-w-none"
     >
       {{ savedView.name }}
     </gl-button>

@@ -1,4 +1,4 @@
-import { delay } from 'lodash';
+import { delay } from 'lodash-es';
 import api from '~/api';
 import { DEFER_DURATION, TRACKING_CAP_KEY, TRACKING_CAP_LENGTH } from '../constants';
 

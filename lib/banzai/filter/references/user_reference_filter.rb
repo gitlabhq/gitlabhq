@@ -55,7 +55,7 @@ module Banzai
             if Feature.disabled?(:disable_all_mention) && username == 'all' && !skip_project_check?
               link_to_all(match_text:, link_content_html:)
             else
-              cached_call(:banzai_url_for_object, match_text, path: [User, username]) do
+              cached_call(:banzai_url_for_object, link_content_html ? nil : match_text, path: [User, username]) do
                 # order is important: per-organization usernames should be checked before global namespace
                 if org_user_detail = org_user_details[username.downcase]
                   link_to_org_user_detail(org_user_detail, match_text:, link_content_html:)

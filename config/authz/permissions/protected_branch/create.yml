@@ -1,6 +1,3 @@
 ---
 name: create_protected_branch
 description: Grants the ability to create protected branches
-boundaries:
-  - project
-  - group

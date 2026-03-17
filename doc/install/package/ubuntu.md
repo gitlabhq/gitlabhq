@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Install the Linux package on Ubuntu
 title: Install the Linux package on Ubuntu
 ---
@@ -38,8 +38,7 @@ title: Install the Linux package on Ubuntu
   Google Cloud Storage. If using a firewall, you will need to allow access to
   the following URL prefixes:
       - `https://packages.gitlab.com/*`
-      - `https://storage.googleapis.com/package-ops/*`
-      - `https://storage.googleapis.com/package-static-files-ops/*`
+      - `https://storage.googleapis.com/packages-ops/*`
 
 ## Enable SSH and open firewall ports
 

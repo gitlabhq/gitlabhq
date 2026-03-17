@@ -7,7 +7,7 @@ RSpec.describe 'Branch rule callout', feature_category: :source_code_management 
   let_it_be(:user) { create(:user) }
   let_it_be(:callout_message) do
     'Edit branch protections, approval rules, and status checks from a single page. ' \
-      'How to use branch rules?'
+      'How do I use branch rules?'
   end
 
   before_all do
@@ -21,7 +21,7 @@ RSpec.describe 'Branch rule callout', feature_category: :source_code_management 
 
   it 'displays callout on repository settings page' do
     expect(page).to have_content callout_message
-    expect(page).to have_link('How to use branch rules',
+    expect(page).to have_link('How do I use branch rules',
       href: help_page_path('user/project/repository/branches/branch_rules.md', anchor: 'create-a-branch-rule'))
   end
 

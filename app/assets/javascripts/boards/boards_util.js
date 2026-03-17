@@ -1,4 +1,4 @@
-import { sortBy, cloneDeep, find, inRange } from 'lodash';
+import { sortBy, cloneDeep, find, inRange } from 'lodash-es';
 import {
   TYPENAME_BOARD,
   TYPENAME_CUSTOM_FIELD,

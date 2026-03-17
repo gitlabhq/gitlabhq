@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { scrollToElement } from '~/lib/utils/scroll_utils';
 import { slugify } from '~/lib/utils/text_utility';

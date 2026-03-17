@@ -1,5 +1,5 @@
 <script>
-import { memoize } from 'lodash';
+import { memoize } from 'lodash-es';
 import { parseData } from '~/ci/pipeline_details/utils/parsing_utils';
 import LinksInner from '~/ci/pipeline_details/graph/components/links_inner.vue';
 

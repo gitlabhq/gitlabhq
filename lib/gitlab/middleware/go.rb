@@ -55,12 +55,23 @@ module Gitlab
       # authentication for their go toolchain.
       def handle_go_get_request(request)
         path_info = request.env["PATH_INFO"].delete_prefix('/')
-        project = project_for_path(path_info)
+
+        paths = candidate_paths(path_info)
+        project = project_for_paths(paths)
+        redirect = nil
+
+        unless project
+          redirect = redirect_for_paths(paths)
+          project = redirect&.source
+        end
 
         if project && can_read_project?(request, project)
           return not_found_response unless project.repository_exists?
 
-          create_go_get_html_response(project.full_path)
+          # When accessed via redirect, use the requested path as import prefix
+          # but point repo URL to actual location. This follows Go's vanity import pattern.
+          import_prefix = redirect&.path || project.full_path
+          create_go_get_html_response(import_prefix, project.full_path)
         elsif request.authorization.present?
           not_found_response
         else
@@ -69,7 +80,7 @@ module Gitlab
 
           two_segment_path = path_segments.first(2).join('/')
 
-          create_go_get_html_response(two_segment_path)
+          create_go_get_html_response(two_segment_path, two_segment_path)
         end
       end
 
@@ -84,9 +95,11 @@ module Gitlab
       end
 
       # create_go_get_html_response creates a HTML document for go get with the expected meta tags.
-      def create_go_get_html_response(project_full_path)
-        root_path = get_root_path(project_full_path)
-        repo_url = get_repo_url(project_full_path)
+      # import_prefix: the path used in the go-import meta tag (what users import)
+      # repo_path: the actual repository path for the repo URL
+      def create_go_get_html_response(import_prefix, repo_path)
+        root_path = get_root_path(import_prefix)
+        repo_url = get_repo_url(repo_path)
 
         go_import_meta_tag = tag.meta(name: 'go-import', content: "#{root_path} git #{repo_url}")
         head_tag = content_tag :head, go_import_meta_tag
@@ -108,10 +121,10 @@ module Gitlab
         Gitlab::Utils.append_path(Gitlab.config.gitlab.url, project_full_path)
       end
 
-      # project_for_path searches for a project based on the path_info
-      def project_for_path(path_info)
+      # candidate_paths builds a list of potential project paths from longest to shortest
+      def candidate_paths(path_info)
         project_path_match = "#{path_info}/".match(PROJECT_PATH_REGEX)
-        return unless project_path_match
+        return [] unless project_path_match
 
         path = project_path_match[1]
 
@@ -123,20 +136,25 @@ module Gitlab
         # Apply maximum upper limit to number of segments (group + 20 subgroups + project = 22 elements)
         path_segments = path.split('/').take(22) # rubocop: disable CodeReuse/ActiveRecord -- not an active record operation
 
-        project_paths = []
+        paths = []
         begin
-          project_paths << path_segments.join('/')
+          paths << path_segments.join('/')
           path_segments.pop
         end while path_segments.length >= 2
 
-        project = Project.where_full_path_in(project_paths).first
-        return project if project
+        paths
+      end
 
-        # It's possible that the project was transferred and has a redirect
-        redirect = RedirectRoute.for_source_type(Project).by_paths(project_paths).first
-        return redirect.source if redirect
+      def project_for_paths(paths)
+        return if paths.empty?
 
-        nil
+        Project.where_full_path_in(paths).first
+      end
+
+      def redirect_for_paths(paths)
+        return if paths.empty?
+
+        RedirectRoute.for_source_type(Project).by_paths(paths).first
       end
 
       # can_read_project? checks if the request's credentials have read access to the project

@@ -170,10 +170,12 @@ describe('diff_discussion_header component', () => {
   });
 
   describe('replies toggle', () => {
-    it('renders replies toggle', () => {
+    it('renders replies toggle inside a list element', () => {
       createComponent();
-      expect(wrapper.findComponent(ToggleRepliesWidget).exists()).toBe(true);
-      expect(wrapper.findComponent(ToggleRepliesWidget).props()).toMatchObject({
+      const toggleWidget = wrapper.findComponent(ToggleRepliesWidget);
+      expect(toggleWidget.exists()).toBe(true);
+      expect(toggleWidget.element.parentElement.tagName).toBe('UL');
+      expect(toggleWidget.props()).toMatchObject({
         collapsed: false,
         replies: discussionMock.notes,
       });

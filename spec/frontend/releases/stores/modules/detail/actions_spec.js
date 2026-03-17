@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json';
 import testAction from 'helpers/vuex_action_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';

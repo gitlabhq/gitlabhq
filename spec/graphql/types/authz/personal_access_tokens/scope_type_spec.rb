@@ -15,8 +15,14 @@ RSpec.describe Types::Authz::PersonalAccessTokens::ScopeType, feature_category: 
   describe '.resolve_type' do
     subject(:resolve_type) { described_class.resolve_type(object, {}) }
 
-    context 'with a legacy scope' do
+    context 'with a legacy scope as a string' do
       let(:object) { 'api' }
+
+      it { is_expected.to eq(Types::Authz::AccessTokens::LegacyScopeType) }
+    end
+
+    context 'with a legacy scope as a symbol' do
+      let(:object) { :api }
 
       it { is_expected.to eq(Types::Authz::AccessTokens::LegacyScopeType) }
     end

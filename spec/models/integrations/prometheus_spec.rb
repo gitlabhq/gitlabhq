@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Integrations::Prometheus, feature_category: :integrations do
+RSpec.describe Integrations::Prometheus, feature_category: :observability do
   let_it_be(:integration) { create(:prometheus_integration) }
 
   it { is_expected.to belong_to(:project) }

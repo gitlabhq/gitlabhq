@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
-import { clone } from 'lodash';
+import { clone } from 'lodash-es';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import { mountExtended } from 'helpers/vue_test_utils_helper';

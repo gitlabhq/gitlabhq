@@ -20,6 +20,9 @@ module API
           end
 
           route_setting :authorization, skip_granular_token_authorization: true
+          desc 'Get Unleash features' do
+            tags unleash_tags
+          end
           get do
             # not supported yet
             status :ok
@@ -45,12 +48,18 @@ module API
             present_feature_flags
           end
 
+          desc 'Register Unleash client' do
+            tags unleash_tags
+          end
           route_setting :authorization, skip_granular_token_authorization: true
           post 'client/register' do
             # not supported yet
             status :ok
           end
 
+          desc 'Report Unleash client metrics' do
+            tags unleash_tags
+          end
           route_setting :authorization, skip_granular_token_authorization: true
           post 'client/metrics', urgency: :low do
             # not supported yet

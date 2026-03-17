@@ -134,7 +134,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/services/phone_verification/users/verify_code_service.rb'
     - 'ee/app/services/security/orchestration/assign_service.rb'
     - 'ee/app/services/security/token_revocation_service.rb'
-    - 'ee/app/services/system_notes/epics_service.rb'
     - 'ee/app/workers/requirements_management/process_requirements_reports_worker.rb'
     - 'ee/bin/custom-ability'
     - 'ee/db/fixtures/development/90_productivity_analytics.rb'

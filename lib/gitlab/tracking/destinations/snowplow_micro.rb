@@ -17,7 +17,7 @@ module Gitlab
         end
 
         override :snowplow_options
-        def snowplow_options(group)
+        def snowplow_options
           # Using camel case as these keys will be used only in JavaScript
           super.merge(
             protocol: protocol,

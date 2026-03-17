@@ -3,6 +3,8 @@ data_category: optional
 key_path: redis_hll_counters.secure.users_expanding_secure_security_report
 description: Count of expanding the security report widget
 product_group: security_insights
+product_categories:
+- vulnerability_management
 value_type: number
 status: active
 milestone: '13.11'

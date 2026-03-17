@@ -104,30 +104,6 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         end
       end
 
-      context "when work_item_system_defined_type is disabled" do
-        before do
-          stub_feature_flags(work_item_system_defined_type: false)
-        end
-
-        it 'raises an error if work item types have not been created yet' do
-          WorkItems::Type.delete_all
-
-          expect do
-            issue
-          end.to raise_error(
-            WorkItems::Type::DEFAULT_TYPES_NOT_SEEDED,
-            <<~STRING
-            Default work item types have not been created yet. Make sure the DB has been seeded successfully.
-            See related documentation in
-            https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
-
-            If you have additional questions, you can ask in
-            https://gitlab.com/gitlab-org/gitlab/-/issues/423483
-          STRING
-          )
-        end
-      end
-
       it 'creates the issue with the given params' do
         expect(Issuable::CommonSystemNotesService).to receive_message_chain(:new, :execute)
 
@@ -353,9 +329,19 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
       end
 
       it 'moves the issue to the end, in an asynchronous worker' do
-        expect(Issues::PlacementWorker).to receive(:perform_async).with(be_nil, Integer)
+        expect(Issues::PlacementWorker).to receive(:perform_async).with({ 'namespace_id' => group.id })
 
         described_class.new(container: project, current_user: user, params: opts).execute
+      end
+
+      context 'when issue is from a personal namespace' do
+        let(:project) { create(:project, :public, namespace: user.namespace) }
+
+        it 'passes the project_namespace_id to the placement worker' do
+          expect(Issues::PlacementWorker).to receive(:perform_async).with({ 'namespace_id' => project.project_namespace_id })
+
+          described_class.new(container: project, current_user: user, params: opts).execute
+        end
       end
 
       context 'when label belongs to project group' do
@@ -733,7 +719,7 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
       end
 
       context 'with alert bot author' do
-        let_it_be(:user) { Users::Internal.alert_bot }
+        let_it_be(:user) { Users::Internal.in_organization(project.organization).alert_bot }
         let_it_be(:label) { create(:label, project: project) }
 
         let(:opts) do

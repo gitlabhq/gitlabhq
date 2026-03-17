@@ -1,8 +1,8 @@
 ---
 stage: GitLab Dedicated
 group: Switchboard
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Switchboardを使用してGitLab Dedicatedインスタンスを作成します。
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: GitLab Dedicatedインスタンスを作成してアクセスするために、スイッチボードのオンボーディングプロセスを完了してください。
 title: GitLab Dedicatedインスタンスを作成する
 ---
 
@@ -13,104 +13,147 @@ title: GitLab Dedicatedインスタンスを作成する
 
 {{< /details >}}
 
-このページの指示では、GitLab Dedicatedポータルである[スイッチボード](https://about.gitlab.com/direction/platforms/switchboard/)を使用して、GitLab Dedicatedインスタンスのオンボーディングと初期設定について説明します。
+GitLab Dedicated管理ポータルであるスイッチボードを使用して、あなたのGitLab Dedicatedインスタンスを作成します。
 
-## ステップ1: スイッチボードへのアクセス {#step-1-get-access-to-switchboard}
+このプロセスには、次のステップが含まれます:
 
-GitLab Dedicatedインスタンスは、スイッチボードを使用して設定されます。スイッチボードへのアクセスを取得するには、アカウントチームに次の情報を提供してください:
+- スイッチボードへのアクセスを取得します。
+- あなたのインスタンスを作成します。
+- 新しいインスタンスにアクセスします。
 
-- 予想されるユーザー数。
-- リポジトリの初期ストレージサイズ（GiB単位）。
-- オンボーディングを完了し、GitLab Dedicatedインスタンスを作成する必要があるすべてのユーザーのメールアドレス。
-- [独自の暗号化キー（BYOK）を持ち込む](../encryption.md#bring-your-own-key-byok)かどうか。その場合、GitLabはBYOKを有効にするために必要なAWSアカウントIDを提供します。
-- Dedicatedインスタンスの受信移行にGitLab Geo移行を使用するかどうか。
+## スイッチボードへのアクセスを取得します {#get-access-to-switchboard}
 
-スイッチボードへのアクセス権が付与されている場合は、サインインするための仮認証情報が記載されたメールによる招待状が届きます。
+スイッチボードにアクセスするには:
 
-スイッチボードの認証情報は、Self-ManagedインスタンスまたはGitLab.comにサインインするために既にお持ちの他のGitLab認証情報とは異なります。
+1. アカウントチームに以下を提供してください:
 
-スイッチボードに最初にサインインした後、新しいインスタンスを作成するためのオンボーディングを完了する前に、パスワードを更新し、多要素認証を設定する必要があります。
+   - 予想されるユーザー数
+   - [購入したストレージ容量の合計](storage_types.md#total-purchased-storage)
+   - GiBでのリポジトリの初期ストレージサイズ
+   - GitLab Dedicatedインスタンスを作成するためにスイッチボードアクセスが必要なユーザーのメールアドレス
+   - Geo移行を使用するかどうか
+   - GitLabが暗号化を管理する代わりに、独自の暗号化キーを使用してデータを保護するかどうか
 
-## ステップ2: GitLab Dedicatedインスタンスを作成する {#step-2-create-your-gitlab-dedicated-instance}
+   独自の暗号化キーを使用する場合、GitLabはキーの設定のためにAWSアカウントIDを提供します。
 
-スイッチボードにサインインした後、次の手順に従ってインスタンスを作成します:
+1. 一時的なスイッチボード認証情報が記載された招待状をメールで確認してください。
 
-1. **Account details**（アカウントの詳細）ページで、サブスクリプション設定を確認して確定します。これらの設定は、アカウントチームに提供した情報に基づいています:
+   > [!note]
+   > スイッチボード認証情報は、既存のGitLab.comまたはGitLab Self-Managed認証情報とは別個のものです。
 
-   - **Reference architecture**（リファレンスアーキテクチャ）: インスタンスで許可される最大ユーザー数。詳細については、[可用性とスケーラビリティ](data_residency_high_availability.md#availability-and-scalability)を参照してください。たとえば、最大3,000人のユーザー。
+1. 一時的な認証情報を使用してスイッチボードにサインインしてください。
+1. パスワードを更新し、多要素認証（MFA）を設定します。
 
-   - **Total repository capacity**（リポジトリの総容量）: インスタンス内のすべてのリポジトリで使用できる合計ストレージ容量。例: 16 GiB。この設定は、インスタンスの作成後に減らすことはできません。必要に応じて、後でストレージ容量を増やすことができます。GitLab Dedicatedのストレージがどのように計算されるかの詳細については、[GitLab Dedicatedストレージタイプ](storage_types.md)を参照してください。
+## あなたのインスタンスを作成します {#create-your-instance}
 
-   これらの値のいずれかを変更する必要がある場合は、[サポートチケットを送信](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650)してください。
-
-1. **設定**ページで、環境アクセス、場所、およびメンテナンス期間設定を選択します:
-
-   - **Tenant name**（テナント名）: テナントの名前を入力します。[独自のドメインを持ち込む](../configure_instance/network_security.md#bring-your-own-domain-byod)場合を除き、この名前は永続的です。
-
-   - **Tenant URL**（テナントURL）: インスタンスのURLは、`<tenant_name>.gitlab-dedicated.com`として自動的に生成されます。
-
-   - **Primary region**（プライマリリージョン）: データストレージに使用するプライマリAWSリージョンを選択します。詳細については、[利用可能なAWSリージョン](data_residency_high_availability.md#primary-regions)を参照してください。
-     - オプション。プライマリリージョンのアベイラビリティーゾーンIDを選択します。それ以外の場合、AZ IDはインスタンスのプロビジョニング中に自動的に選択されます。
-
-   - **Secondary region**（セカンダリリージョン）: データストレージと[ディザスターリカバリー](../disaster_recovery.md)に使用するセカンダリAWSリージョンを選択します。このフィールドは、既存のSelf-ManagedインスタンスからのGitLab Geo移行には表示されません。一部のリージョンでは[サポートが制限されています](data_residency_high_availability.md#secondary-regions-with-limited-support)。
-     - オプション。セカンダリリージョンのアベイラビリティーゾーンIDを選択します。それ以外の場合、AZ IDはインスタンスのプロビジョニング中に自動的に選択されます。
-
-   - **Backup region**（バックアップリージョン）: プライマリデータのバックアップをレプリケートして保存するリージョンを選択します。プライマリリージョンまたはセカンダリリージョンと同じオプションを使用するか、[冗長性の向上](../disaster_recovery.md)のために別のリージョンを選択できます。
-
-   - **タイムゾーン**: GitLabが定期メンテナンスとアップグレードを実行する毎週4時間の時間帯を選択します。詳細については、[メンテナンス期間](../maintenance.md#maintenance-windows)を参照してください。
-
-1. オプション。**セキュリティ**ページで、暗号化されたAWSサービス用の[AWS KMS](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html)を追加します。キーを追加しない場合、GitLabはインスタンスの暗号化キーを生成します。詳細については、[保存時のデータを暗号化する](../encryption.md#encrypted-data-at-rest)を参照してください。
-
-1. **Tenant summary**（テナントのサマリー）ページで、テナントの設定の詳細を確認します。前の手順で提供した情報が正確であることを確認したら、**Create tenant**（テナントの作成）を選択します。
-
-   {{< alert type="note" >}}
-
-   これらの設定は、インスタンスを作成する前に注意深く確認してください。後で変更することはできません:
-
-   - セキュリティキーとAWS KMSキー（BYOK）設定
-   - AWSリージョン（プライマリ、セカンダリ、バックアップ）
-   - リポジトリの総容量（ストレージは増やすことはできますが、減らすことはできません）
-   - テナント名とURL（[独自のドメインを持ち込む](../configure_instance/network_security.md#bring-your-own-domain-byod)場合を除く）
-
-   {{< /alert >}}
-
-GitLab Dedicatedインスタンスの作成には、最大3時間かかる場合があります。セットアップが完了すると、GitLabから確認メールが送信されます。
-
-## ステップ3: GitLab Dedicatedインスタンスへのアクセスと設定 {#step-3-access-and-configure-your-gitlab-dedicated-instance}
-
-GitLab Dedicatedインスタンスにアクセスして設定するには:
+あなたのGitLab Dedicatedインスタンスを作成するには:
 
 1. [スイッチボード](https://console.gitlab-dedicated.com/)にサインインします。
-1. **Access your GitLab Dedicated instance**（GitLab Dedicatedインスタンスにアクセス）バナーで、**認証情報の表示**を選択します。
-1. インスタンスのテナントURLと一時的なルート認証情報をコピーします。
+1. **Account details**ページで、あなたのサブスクリプション設定を確認してください:
 
-   {{< alert type="note" >}}
+   - **Reference architecture**: 予想される負荷と使用パターンに基づいた、インスタンスのインフラストラクチャサイズ階層。推奨される最大ユーザー数によって命名されます（例: 「最大3,000ユーザー」）。契約要件に基づき、アカウントチームによって決定されます。詳細については、[予想される負荷](../../reference_architectures/_index.md#expected-load)を参照してください。
+   - **購入したストレージ容量の合計**: 契約で購入したストレージ容量の合計（リポジトリとオブジェクトストレージ）。アカウントチームによって事前に決定されます。
+   - **リポジトリのストレージ**: すべてのリポジトリに利用可能なストレージ容量の合計（例: 16 GiB）。[Evaluateツール](https://gitlab.com/gitlab-org/professional-services-automation/tools/utilities/evaluate)を使用した初期容量計画の議論に基づきます。プロビジョニング後に増やすことはできますが、減らすことはできません。
 
-   セキュリティのため、一時的なルート認証情報はスイッチボードから1回のみ取得できます。スイッチボードを離れる前に、これらの認証情報を安全に（たとえば、パスワードマネージャーに）保存してください。
+   これらの設定は、契約とアカウントチームとの議論によって事前に決定されます。
 
-   {{< /alert >}}
+1. **設定**ページで、以下のフィールドを完了します:
 
-1. GitLab DedicatedインスタンスのテナントURLに移動し、一時的なルート認証情報でサインインします。
-1. 一時的なルートパスワードを新しい安全なパスワードに[変更](../../../user/profile/user_passwords.md#change-your-password)します。
-1. 管理者エリアに移動し、GitLab Dedicatedサブスクリプションの[ライセンスキーを追加](../../license_file.md#add-license-in-the-admin-area)します。
+   - **Tenant name**: あなたのインスタンスURL（`<tenant_name>.gitlab-dedicated.com`）の名前を入力します。プロビジョニング後に変更することはできません。ただし、カスタムドメインを設定した場合は除きます。
+   - **Primary region**: 運用とデータストレージに使用するAWSリージョンを選択します。すべてのインフラストラクチャ（コンピューティング、ストレージ、データベース）がこのリージョンでプロビジョニングされるため、プロビジョニング後に変更することはできません。
+   - **Primary region Availability Zone IDs（AZ IDs）**: GitLabがアベイラビリティーゾーンを選択する方法を選択します:
+     - **Default AZ IDs**: GitLabがあなたのインスタンスのアベイラビリティーゾーンを選択します。
+     - **Custom AZ IDs**: 既存のAWSインフラストラクチャに一致する2つのAZ IDsを選択します。PrivateLink接続を含む、特定の可用性ゾーン内で独自のAWSインフラストラクチャをGitLab Dedicatedインスタンスに接続するために必要です。プロビジョニング後に変更することはできません。
+   - **Secondary region**: オプション。GeoベースのディザスターリカバリーのためにAWSリージョンを選択します。プロビジョニング後に変更することはできません。Geo移行方法を使用している場合は不要です。
+   - **Secondary region Availability Zone IDs（AZ IDs）**: セカンダリーリージョンを設定した場合にのみ利用可能です。GitLabがアベイラビリティーゾーンを選択する方法を選択します:
+     - **Default AZ IDs**: GitLabがあなたのインスタンスのアベイラビリティーゾーンを選択します。
+     - **Custom AZ IDs**: 既存のAWSインフラストラクチャに一致する2つのAZ IDsを選択します。プロビジョニング後に変更することはできません。
+   - **Backup region**: バックアップレプリケーションのためにAWSリージョンを選択します。プライマリーとセカンダリーと同じでも、冗長性を高めるために異なっても構いません。バックアップボールトとレプリケーションはプロビジョニング中に設定されるため、プロビジョニング後に変更することはできません。
+   - **Maintenance window**: 更新と[メンテナンス](../maintenance.md)のために、週ごとの希望する4時間枠を選択します。オプションはタイムゾーン（APAC、EU、米国）と一致します。詳細については、[GitLab Dedicated情報ポータル](https://gitlab-com.gitlab.io/cs-tools/gitlab-cs-tools/dedicated-info-portal/)を参照してください。
+
+1. **セキュリティ**ページで、インスタンスの暗号化を設定します。
+
+   GitLabが暗号化キーを自動的に管理します（推奨）。または、コンプライアンス要件のために独自のキーを管理することもできます。
+
+   > [!warning]
+   > 顧客管理の暗号化キーは、独自のAWSアカウントでの追加のセットアップと継続的な管理が必要です。あなたのインスタンスをプロビジョニングする前に、AWS KMSキーを作成し、設定する必要があります。一度設定されると、これらの設定はプロビジョニング後に変更できません。
+
+   GitLab管理の暗号化（推奨）の場合:
+
+   - すべてのAWS Key Management Service（KMS）フィールドを空のままにします。GitLabは、すべてのサービス（バックアップ、EBSディスク、RDSデータベース、S3オブジェクトストレージ、および高度な検索）にわたって暗号化を自動的に設定します。
+
+   顧客管理の暗号化の場合:
+
+   1. [暗号化キーを作成](../encryption.md#create-encryption-keys)します。
+   1. オプション。[レプリカキー](../encryption.md#create-replica-keys)は、Geoベースのディザスターリカバリーのためにセカンダリーリージョンを選択した場合にのみ作成します。
+   1. 各キーまたはレプリカキーのAmazon Resource Name（ARN）を収集します。ARN形式は次のとおりです: `arn:aws:kms:<REGION>:<ACCOUNT-ID>:key/<KEY-ID>`。
+
+      例: `arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012`
+
+   1. 選択した各AWSリージョン（プライマリー、セカンダリー、バックアップ）について、このマッピングを使用してキーフィールドを完了します:
+
+      - **Primary region Default**: プライマリーリージョンのキーARNを使用します。
+      - **Secondary region Default**: レプリカキーARNを使用します（Geoのためにセカンダリーリージョンを設定した場合のみ）。
+      - **Backup region Default**: バックアップリージョンのキーARNを使用します。あなたのバックアップリージョンがプライマリーリージョンと同じである場合、同じキーARNを使用します。
+
+   1. 各サービス（**バックアップ**、**EBS（ディスク）**、**RDS（データベース）**、**S3（オブジェクトストレージ）**、**高度な検索**）について: そのリージョンのデフォルトキーを使用するために空のままにするか、そのサービスに特定のKMSキーARNを入力します。サービス固有のキーは、対応するデフォルトキーと同じAWSリージョンのものである必要があります。
+   1. 使用しないリージョンのフィールドは空白のままにします。例えば、プライマリーリージョンのみを使用している場合、セカンダリーおよびバックアップリージョンのフィールドは空のままにします。
+   1. 続行する前にすべてのARNが正しいことを確認してください。
+
+1. オプション。**Geo migration secrets**ページで、あなたのGitLab Self-Managedインスタンスから暗号化されたシークレットを収集し、アップロードします:
+
+   > [!note]
+   > このステップは、アカウント設定中にGeo移行を選択した場合にのみ必要です。
+
+   1. インストールタイプに対応するスクリプトをダウンロードし、あなたのGitLab Self-Managedインスタンスで実行してください。
+   1. あなたの`migration_secrets.json.age`ファイルをアップロードします。
+   1. オプション。オプション。あなたの`ssh_host_keys.json.age`ファイルをアップロードします（カスタムドメインの使用を予定している場合は推奨）。
+
+   詳細な手順とトラブルシューティングについては、[GeoでGitLab Dedicatedに移行する](../geo_migration.md)を参照してください。
+
+1. **Tenant summary**ページで、すべての設定の詳細を確認してください。
+
+   > [!warning]
+   > プロビジョニング後、これらの設定は変更できません:
+   > - AWS KMSキー（BYOK）の設定
+   > - AWSリージョン（プライマリー、セカンダリー、およびバックアップリージョン）
+   > - AWSアベイラビリティーゾーンIDs（プライマリーおよびセカンダリーリージョン）
+   > - リポジトリ容量（増加のみ可能）
+   > - テナント名とURL
+
+1. **Create tenant**を選択します。
+
+あなたのインスタンスのプロビジョニングには最大3時間かかります。セットアップが完了すると、確認メールが届きます。
+
+## あなたのインスタンスにアクセスします {#access-your-instance}
+
+あなたのGitLab Dedicatedインスタンスにアクセスするには:
+
+1. [スイッチボード](https://console.gitlab-dedicated.com/)にサインインします。
+1. **Access your GitLab Dedicated instance**バナーで、**認証情報の表示**を選択します。
+1. テナントURLと一時的なroot認証情報をコピーします。
+
+   > [!note]
+   > 一時的なroot認証情報は一度しか取得することはできません。スイッチボードを離れる前に、それらを安全に保管してください。
+
+1. あなたのテナントURLにアクセスし、一時的なroot認証情報でサインインします。
+1. [一時的なrootパスワードを変更](../../../user/profile/user_passwords.md#change-your-password)します。
+1. **管理者**エリアで、[ライセンスキーを追加](../../license_file.md#add-license-in-the-admin-area)します。
 1. スイッチボードに戻り、必要に応じて[ユーザーを追加](../configure_instance/users_notifications.md#add-switchboard-users)します。
-1. アップグレードとメンテナンスの[リリースロールアウトスケジュール](../releases.md#release-rollout-schedule)を確認します。
 
-次のGitLab Dedicated機能が必要な場合は、事前に計画してください:
+## 次の手順 {#next-steps}
 
-- [受信Private Link](../configure_instance/network_security.md#inbound-private-link)
-- [送信Private Link](../configure_instance/network_security.md#outbound-private-link)
-- [SAML SSO](../configure_instance/saml.md)
-- [独自のドメインを持ち込む](../configure_instance/network_security.md#bring-your-own-domain-byod)
+アップグレードとメンテナンスのために、[リリースロールアウトスケジュール](../releases.md#release-rollout-schedule)を確認してください。
 
-利用可能なすべてのインフラストラクチャ設定オプションを表示するには、[GitLab Dedicatedインスタンスの設定](../configure_instance/_index.md)を参照してください。
+以下の機能が必要な場合は、事前に計画を立ててください:
 
-{{< alert type="note" >}}
+- [受信プライベートリンク](../configure_instance/network_security.md#inbound-private-link)
+- [送信プライベートリンク](../configure_instance/network_security.md#outbound-private-link)
+- [SAML SSO](../configure_instance/authentication/saml.md)
+- [カスタムドメイン](../configure_instance/network_security.md#custom-domains)
 
-新しいGitLab Dedicatedインスタンスは、Self-Managedインスタンスと同じデフォルト設定を使用します。GitLab管理者は、[管理者エリア](../../admin_area.md)からこれらの設定を変更できます。
+すべての設定オプションについては、[あなたのGitLab Dedicatedインスタンスを設定](../configure_instance/_index.md)を参照してください。
 
-GitLab 18.0以降に作成されたインスタンスの場合、すべてのユーザーに対して[Duo Core](../../../subscriptions/subscription-add-ons.md#gitlab-duo-core)機能がデフォルトで有効になっています。
-
-組織が指定されたリージョン内にデータを保持する必要がある場合、または人工知能機能の使用に制限がある場合は、[Duo Coreをオフにする](../../../user/gitlab_duo/turn_on_off.md#for-an-instance)ことができます。
-
-{{< /alert >}}
+> [!note] GitLab Dedicatedインスタンスは、GitLab Self-Managedインスタンスと同じデフォルト設定を使用します。
+>
+> GitLab 18.0以降、[GitLab Duo Core](../../../subscriptions/subscription-add-ons.md#gitlab-duo-core)機能は新しいインスタンスでデフォルトで有効になります。データレジデンシー要件またはAI使用ポリシーに準拠するため、[GitLab Duo Coreを無効にする](../../../user/gitlab_duo/turn_on_off.md#for-an-instance)ことができます。

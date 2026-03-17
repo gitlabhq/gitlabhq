@@ -1,5 +1,5 @@
 query getUserGroupsAndProjects($id: UserID, $search: String) {
-  projects(membership: true, search: $search) {
+  projects(membership: true, search: $search, searchNamespaces: true) {
     nodes {
       id
       name

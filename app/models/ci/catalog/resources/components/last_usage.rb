@@ -12,6 +12,9 @@ module Ci
 
           scope :older_than_30_days, -> { where(last_used_date: ...30.days.ago.to_date) }
           scope :within_last_30_days, -> { where(last_used_date: 30.days.ago.to_date..) }
+          scope :for_catalog_resource_with_component_versions, ->(catalog_resource_id) {
+            where(catalog_resource_id: catalog_resource_id).includes(component: :version)
+          }
 
           belongs_to :component, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :last_usages
           belongs_to :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :component_last_usages

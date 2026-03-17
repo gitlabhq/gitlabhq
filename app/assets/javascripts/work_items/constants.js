@@ -241,7 +241,7 @@ export const NO_WORK_ITEM_IID = 'no-work-item-iid';
 export const DETAIL_VIEW_QUERY_PARAM_NAME = 'show';
 export const DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME = 'version';
 export const ROUTES = {
-  index: 'workItemList',
+  index: 'planningView',
   workItem: 'workItem',
   new: 'new',
   design: 'design',
@@ -261,10 +261,14 @@ export const WORK_ITEM_BASE_ROUTE_MAP = {
 };
 
 export const WORKITEM_LINKS_SHOWLABELS_LOCALSTORAGEKEY = 'workItemLinks.showLabels';
+export const WORKITEM_LINKS_METADATA_LOCALSTORAGEKEY = 'workItemLinks.hiddenMetadataKeys';
 export const WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY = 'workItemTree.showLabels';
 export const WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemTree.showClosed';
+export const WORKITEM_TREE_METADATA_LOCALSTORAGEKEY = 'workItemTree.hiddenMetadataKeys';
 export const WORKITEM_RELATIONSHIPS_SHOWLABELS_LOCALSTORAGEKEY = 'workItemRelationships.showLabels';
 export const WORKITEM_RELATIONSHIPS_SHOWCLOSED_LOCALSTORAGEKEY = 'workItemRelationships.showClosed';
+export const WORKITEM_RELATIONSHIPS_METADATA_LOCALSTORAGEKEY =
+  'workItemRelationships.hiddenMetadataKeys';
 
 export const BASE_ALLOWED_CREATE_TYPES = [
   WORK_ITEM_TYPE_NAME_INCIDENT,
@@ -528,4 +532,11 @@ export const ICON_NAVIGATION_KEYS = {
   PREVIOUS: [ARROW_LEFT_KEY, ARROW_UP_KEY],
   NEXT: [ARROW_RIGHT_KEY, ARROW_DOWN_KEY],
   IGNORE: [' ', ENTER_KEY],
+};
+
+export const VIEW_CONTEXT = {
+  fullScreen: 'full_screen',
+  drawerBoard: 'drawer_board',
+  drawerList: 'drawer_list',
+  drawerWorkItem: 'drawer_work_item',
 };

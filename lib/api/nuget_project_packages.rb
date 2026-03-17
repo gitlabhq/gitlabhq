@@ -395,14 +395,6 @@ module API
 
             destroy_conditionally!(find_package) do |package|
               ::Packages::MarkPackageForDestructionService.new(container: package, current_user: current_user).execute
-
-              track_package_event(
-                'delete_package',
-                :nuget,
-                category: 'API::NugetPackages',
-                project: package.project,
-                namespace: package.project.namespace
-              )
             end
           end
 

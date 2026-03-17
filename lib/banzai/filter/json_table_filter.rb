@@ -7,14 +7,16 @@ module Banzai
     # If the `markdown` option is not specfied or a boolean true, then we do
     # nothing and allow the frontend to sanitize it and display it.
     #
-    # If `markdown: true` is included in the table, then we
-    # - extract the data from the JSON
-    # - build a markdown pipe table with the data
-    # - run the markdown pipe table through the MarkdownFilter
-    # - run the caption through markdown and add as <caption> to table
-    # - add the table options as `data-` attributes so the frontend can properly display
-    # - note that this filter is handled _before_ the SanitizationFilter, which means
-    #   the resulting HTML will get properly sanitized at that point.
+    # If `"markdown": true` is included in the table, we:
+    #
+    # - Parse and normalise the input
+    # - Build the table, running Markdown-specific fields through MarkdownFilter
+    # - Add the table options as `data-` attributes for the frontend
+    #
+    # Note that this filter is run _before_ SanitizationFilter, which means
+    # the resulting HTML will be sanitised as if it were directly input by the user.
+    # As a corollary, data-table-{fields,filter,markdown} aren't trustable by the
+    # frontend.
     class JsonTableFilter < HTML::Pipeline::Filter
       include Concerns::OutputSafety
 
@@ -31,87 +33,122 @@ module Banzai
 
       private
 
-      attr_reader :fields, :items
-
       def process_json_table(code_node)
         return if code_node.parent&.parent.nil?
 
-        json = begin
-          Gitlab::Json.parse(code_node.text)
-        rescue JSON::ParserError
-          nil
+        input = Input.parse(code_node.text)
+        return unless input
+
+        markdown_context = context.merge(no_sourcepos: true)
+
+        table = doc.document.create_element('table')
+        table['data-table-fields'] = input.fields.to_json
+        table['data-table-filter'] = 'true' if input.filter
+        table['data-table-markdown'] = 'true'
+
+        if input.caption.present?
+          caption = doc.document.create_element('caption')
+          table << caption
+          caption.inner_html = Banzai::Filter::MarkdownFilter.new(input.caption.to_s, markdown_context).call
         end
 
-        # JSON not valid, let the frontend handle this block
-        return unless json
-        return unless json.is_a?(Hash)
-        return unless json['markdown']
+        table << render_thead(input.fields)
+        table << render_tbody(input.fields, input.items, markdown_context)
 
-        @fields = json['fields']
-        @items = json['items']
-
-        return unless valid_items_format?
-
-        table = table_header
-        table << table_body
-
-        table_context = context.merge(no_sourcepos: true)
-        html = Banzai::Filter::MarkdownFilter.new(table, table_context).call
-
-        table_node = Nokogiri::HTML::DocumentFragment.parse(html)
-        table_node = table_node.children.first
-
-        table_node.set_attribute('data-table-fields', field_data.to_json)
-        table_node.set_attribute('data-table-filter', 'true') if json['filter']
-        table_node.set_attribute('data-table-markdown', 'true') if json['markdown']
-
-        if json['caption'].present?
-          html = Banzai::Filter::MarkdownFilter.new(json['caption'], table_context).call
-          caption_node = doc.document.create_element('caption')
-          caption_node << html
-          table_node.prepend_child(caption_node)
-        end
-
-        # frontend needs a wrapper div
         wrapper = doc.document.create_element('div')
-        wrapper.add_child(table_node)
+        wrapper << table
 
         code_node.parent.replace(wrapper)
       end
 
-      def table_header
-        labels = fields ? fields.pluck('label') : items.first.keys
+      def render_thead(fields)
+        thead = doc.document.create_element('thead')
 
-        <<~TABLE_HEADER
-          | #{labels.join(' | ')} |
-          #{'| --- ' * labels.size} |
-        TABLE_HEADER
-      end
-
-      def table_body
-        body = +''
-        item_keys = fields ? fields.pluck('key') : items.first.keys
-
-        items.each do |item|
-          row = item_keys.map { |key| item[key] || ' ' }
-
-          body << "| #{row.join(' | ')} |\n"
+        thead_tr = doc.document.create_element('tr')
+        thead << thead_tr
+        fields.each do |field|
+          th = doc.document.create_element('th')
+          thead_tr << th
+          # Fields do not support Markdown.
+          th.content = field['label'] || field['key']
         end
 
-        body
+        thead
       end
 
-      def field_data
-        return fields if fields
+      def render_tbody(fields, items, markdown_context)
+        tbody = doc.document.create_element('tbody')
+        items.each do |item|
+          tr = doc.document.create_element('tr')
+          tbody << tr
+          fields.each do |field|
+            td = doc.document.create_element('td')
+            tr << td
 
-        array = []
-        items.first.each_key { |value| array.push({ 'key' => value }) }
+            cell_markdown = item[field['key']].to_s
+            td.inner_html = Banzai::Filter::MarkdownFilter.new(cell_markdown, markdown_context).call
 
-        array
+            # If this produced a single <p>, promote the paragraph contents to
+            # being the direct cell contents.
+            td.child.replace(td.child.children) if td.children.length == 1 && td.child.name == 'p'
+          end
+        end
+
+        tbody
       end
 
-      def valid_items_format?
-        items.is_a?(Array) && items.any? && items.all?(Hash)
+      class Input
+        def self.parse(source)
+          json = begin
+            Gitlab::Json.safe_parse(source)
+          rescue JSON::ParserError
+            nil
+          end
+
+          return unless json
+          return unless json.is_a?(Hash)
+          return unless json['markdown']
+
+          begin
+            new(json)
+          rescue ArgumentError
+            nil
+          end
+        end
+
+        attr_reader :fields, :items, :markdown, :filter, :caption
+
+        def initialize(data)
+          self.fields = data['fields']
+          self.items = data['items']
+          self.markdown = data['markdown']
+          self.filter = data['filter']
+          self.caption = data['caption']
+
+          raise ArgumentError if fields && !(fields.is_a?(Array) && fields.all?(Hash))
+          raise ArgumentError unless items.is_a?(Array) && items.any? && items.all?(Hash)
+
+          # If 'fields' is specified, it has this shape:
+          #
+          # [
+          #   {
+          #     "key": "starts_at",
+          #     "label": "Date < & >",
+          #     "sortable": true
+          #   },
+          #   {
+          #     "key": "url",
+          #     "label": "URL"
+          #   }
+          # ]
+          #
+          # If not, we infer it based on the keys of the first item only.
+          self.fields ||= items.first.keys.map { |key| { 'key' => key } }
+        end
+
+        private
+
+        attr_writer :fields, :items, :markdown, :filter, :caption
       end
     end
   end

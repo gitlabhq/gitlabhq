@@ -1,0 +1,20 @@
+---
+description: User changes sort order on the Explore > Projects page
+internal_events: true
+action: click_sort_on_explore_projects
+identifiers:
+  - user
+additional_properties:
+  label:
+    description: Tab name (e.g. "active")
+  property:
+    description: Sort value
+product_group: organizations
+product_categories:
+  - groups_and_projects
+milestone: '18.10'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226026
+tiers:
+  - free
+  - premium
+  - ultimate

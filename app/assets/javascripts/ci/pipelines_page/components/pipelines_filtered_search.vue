@@ -1,6 +1,6 @@
 <script>
 import { GlFilteredSearch } from '@gitlab/ui';
-import { map } from 'lodash';
+import { map } from 'lodash-es';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';

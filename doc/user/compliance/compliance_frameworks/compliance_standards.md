@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Compliance standards
 ---
 
@@ -24,7 +24,7 @@ compliance standards.
 The [Compliance Adherence Templates](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates) project
 contains a library of JSON templates. Use these templates to quickly adopt predefined compliance frameworks.
 
-<!-- Content for tables is sourced from https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates -->
+<!-- Content for tables is sourced from <https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates> -->
 
 ## CIS CSC compliance requirements
 
@@ -74,7 +74,8 @@ to create a compliance framework for this standard.
 
 ## DORA compliance requirements
 
-DORA is DevOps Research and Assessment.
+The Digital Operational Resilience Act (DORA) is a European Union regulation aimed at increasing the digital
+operational resilience of the financial sector.
 
 The following table lists the requirements supported by GitLab for DORA and the controls for the requirements.
 You can use the

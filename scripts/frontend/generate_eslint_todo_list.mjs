@@ -3,9 +3,7 @@ import fs from 'node:fs';
 import { ESLint } from 'eslint';
 import { program } from 'commander';
 import * as prettier from 'prettier';
-import kebabCase from 'lodash/kebabCase.js';
-import camelCase from 'lodash/camelCase.js';
-import sortBy from 'lodash/sortBy.js';
+import { kebabCase, camelCase, sortBy } from 'lodash-es';
 import eslintConfig from '../../eslint.config.mjs';
 
 const ROOT_PATH = path.resolve(import.meta.dirname, '../../');

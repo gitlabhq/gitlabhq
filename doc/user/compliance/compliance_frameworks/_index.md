@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Compliance frameworks
 ---
 
@@ -76,7 +76,7 @@ has the correct permissions. The GitLab UI presents a read-only view to discoura
 
 To apply a compliance framework to a project through a compliance framework:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
@@ -102,7 +102,7 @@ A compliance framework that is set to default has a `default` label.
 
 To set as default (or remove the default) from [compliance projects report](../compliance_center/compliance_projects_report.md):
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
@@ -111,7 +111,7 @@ To set as default (or remove the default) from [compliance projects report](../c
 
 To set as default (or remove the default) from [compliance framework report](../compliance_center/compliance_frameworks_report.md):
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
@@ -143,7 +143,7 @@ With this feature, you can share and back up compliance frameworks.
 
 To export a compliance framework from the compliance center:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Locate the compliance framework you wish to export.
@@ -158,7 +158,7 @@ With this feature, you can use shared or backed up compliance frameworks. The JS
 
 To import a compliance framework by using a JSON template:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework**.
@@ -378,7 +378,7 @@ Status checks fail if an external control stays in the pending state for more th
 
 To add an external control when creating or editing a framework:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
@@ -583,7 +583,7 @@ The external service can use this information to perform its compliance checks a
 
 To add a requirement when creating or editing a framework:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
@@ -597,7 +597,7 @@ To add a requirement when creating or editing a framework:
 
 To edit a requirement when creating or editing a framework:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.

@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :groups_and_projects do
-  include Namespaces::StatefulHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
@@ -29,8 +28,8 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
       let_it_be(:child) { create(:group, parent: parent) }
 
       after do
-        set_state(parent, :ancestor_inherited)
-        set_state(child, :ancestor_inherited)
+        parent.update!(state: :ancestor_inherited)
+        child.update!(state: :ancestor_inherited)
       end
 
       describe 'blocks transition when parent in blocking state' do
@@ -48,8 +47,8 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
 
         with_them do
           it "prevents #{params[:event]} when parent is #{params[:parent_state]}" do
-            set_state(parent, parent_state)
-            set_state(child, child_from)
+            parent.update!(state: parent_state)
+            child.update!(state: child_from)
 
             expect { child.public_send(event, transition_user: user) }.not_to change { child.reload.state_name }
             expect(child.errors[:state]).to include(match(/cannot be changed as ancestor ID \d+ is #{parent_state}/))
@@ -67,7 +66,7 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
 
         with_them do
           it "allows #{params[:event]} for root namespace" do
-            set_state(namespace, from_state)
+            namespace.update!(state: from_state)
 
             expect { namespace.public_send(event, transition_user: user) }
               .to change { namespace.reload.state_name }.from(from_state).to(to_state)
@@ -87,8 +86,8 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
 
         with_them do
           it "allows #{params[:event]} when parent is #{params[:parent_state]}" do
-            set_state(parent, parent_state)
-            set_state(child, child_from)
+            parent.update!(state: parent_state)
+            child.update!(state: child_from)
 
             expect { child.public_send(event, transition_user: user) }
               .to change { child.reload.state_name }.from(child_from).to(child_to)
@@ -111,8 +110,8 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
 
         with_them do
           before do
-            set_state(parent, parent_state)
-            set_state(child, child_from)
+            parent.update!(state: parent_state)
+            child.update!(state: child_from)
 
             allow(child).to receive(:restore_to_archived_on_cancel_deletion?).and_return(true) if child_to == :archived
           end
@@ -135,7 +134,7 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
 
         with_them do
           before do
-            set_state(namespace, from_state)
+            namespace.update!(state: from_state)
           end
 
           it 'blocks transition when transition_user is not provided' do
@@ -163,7 +162,7 @@ RSpec.describe Namespaces::Stateful::TransitionValidation, feature_category: :gr
 
         with_them do
           before do
-            set_state(namespace, from_state)
+            namespace.update!(state: from_state)
           end
 
           it 'allows transition without transition_user' do

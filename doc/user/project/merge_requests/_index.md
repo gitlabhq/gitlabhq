@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Propose, review, and collaborate on changes to a project.
 title: Merge requests
 description: Code review, collaboration, branch merging, and commits.
@@ -70,11 +70,11 @@ You can view merge requests for your project, group, or yourself.
 To view all merge requests on the homepage, use the <kbd>Shift</kbd>+<kbd>m</kbd>
 keyboard shortcut, or:
 
-1. On the left sidebar, select the **Merge requests** icon.
+1. In the left sidebar, select the **Merge requests** icon.
 
 or:
 
-1. On the top bar, select **Search or go to**.
+1. In the top bar, select **Search or go to**.
 1. From the dropdown list, select **Merge requests**.
 
 {{< /tab >}}
@@ -83,7 +83,7 @@ or:
 
 To view all merge requests for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests**.
 
 Or, to use a keyboard shortcut, press <kbd>g</kbd>+<kbd>m</kbd>.
@@ -94,7 +94,7 @@ Or, to use a keyboard shortcut, press <kbd>g</kbd>+<kbd>m</kbd>.
 
 To view merge requests for all projects in a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. In the left sidebar, select **Code** > **Merge requests**.
 
 If your group contains subgroups, this view also displays merge requests from the subgroup projects.
@@ -107,11 +107,11 @@ When viewing a file in your repository, GitLab shows a badge with the number of 
 that target the current branch and modify the file. This helps you identify files that have pending changes.
 
 The availability of this feature is controlled by a feature flag.
-For more information, see [View open merge requests for a file](../repository/files/_index.md#view-open-merge-requests-for-a-file).
+For more information, see [view open merge requests for a file](../repository/files/_index.md#view-open-merge-requests-for-a-file).
 
 To view the open merge requests for a file:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to the file you want to view.
 1. In the upper right of the screen, next to the filename, look for the green badge with the number
    of {{< icon name="merge-request-open" >}} **Open** merge requests.
@@ -135,7 +135,7 @@ To view the open merge requests for a file:
 
 To filter the list of merge requests:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests**.
 1. Above the list of merge requests, select **Search or filter results**.
 1. From the dropdown list, select the attribute you wish to filter by. Some examples:
@@ -144,7 +144,7 @@ To filter the list of merge requests:
    - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
      - **Approved by**, for merge requests already approved by a user. Premium and Ultimate only.
      - **Approver**, for merge requests that this user is eligible to approve.
-       (For more information, read about [Code owners](../codeowners/_index.md)). Premium and Ultimate only.
+       (For more information, read about [Code Owners](../codeowners/_index.md)). Premium and Ultimate only.
      - **Merged by**, for merge requests merged by this user.
      - **Reviewer**, for merge requests reviewed by this user.
 1. Select or type the operator to use for filtering the attribute. The following operators are
@@ -204,7 +204,7 @@ change, and whether you need access to a development environment:
 To assign the merge request to a user, use the `/assign @user` quick action in a text area in
 a merge request, or:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. In the right sidebar, expand the right sidebar and locate the **Assignees** section.
 1. Select **Edit**.
@@ -250,7 +250,7 @@ Prerequisites:
 
 To close merge requests in the project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Scroll to the comment box at the bottom of the page.
 1. Following the comment box, select **Close merge request**.
@@ -308,9 +308,9 @@ For a software developer working in a team:
 
 1. You check out a new branch, and submit your changes through a merge request.
 1. You gather feedback from your team.
-1. You work on the implementation optimizing code with [Code Quality reports](../../../ci/testing/code_quality.md).
-1. You verify your changes with [Unit test reports](../../../ci/testing/unit_test_reports.md) in GitLab CI/CD.
-1. You avoid using dependencies whose license is not compatible with your project with [License approval policies](../../compliance/license_approval_policies.md).
+1. You work on the implementation optimizing code with [code quality reports](../../../ci/testing/code_quality.md).
+1. You verify your changes with [unit test reports](../../../ci/testing/unit_test_reports.md) in GitLab CI/CD.
+1. You avoid using dependencies whose license is not compatible with your project with [license approval policies](../../compliance/license_approval_policies.md).
 1. You request the [approval](approvals/_index.md) from your manager.
 1. Your manager:
    1. Pushes a commit with their final review.
@@ -347,7 +347,7 @@ For a web developer writing a webpage for your company's website:
 To understand the history of a merge request, filter its activity feed to show you
 only the items that are relevant to you.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests**.
 1. Select a merge request.
 1. Scroll to **Activity**.
@@ -390,7 +390,7 @@ merge request. This merge request has three open threads:
 
 To see all comments in the collapsed threads, expand the threads:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. In the merge request, in the upper right, find the **Open threads**
    dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
@@ -407,7 +407,7 @@ To move open threads to a new issue, and unblock a merge request:
 If you have one specific open thread in a merge request, you can
 create an issue to resolve it separately:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. In the merge request, find the thread you want to move.
 1. Below the last reply to the thread, next to **Resolve thread**, select
@@ -424,7 +424,7 @@ the newly created issue.
 If you have multiple open threads in a merge request, you can
 create an issue to resolve them separately:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. In the merge request, in the upper right, find the **Open threads**
    dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
@@ -444,7 +444,7 @@ You can prevent merge requests from merging while threads remain open.
 When you enable this setting, the **Open threads** counter in a merge request
 is shown in orange while at least one thread remains open.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge checks** section, select the **All threads must be resolved** checkbox.
 1. Select **Save changes**.
@@ -454,7 +454,7 @@ is shown in orange while at least one thread remains open.
 You can set merge requests to automatically resolve threads when a new push
 changes the lines they describe.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Merge requests**.
 1. In the **Merge options** section, select
    **Automatically resolve merge request diff threads when they become outdated**.
@@ -498,3 +498,4 @@ Enabling this feature flag moves the notifications and to-do item buttons to the
 - [Suggest code changes](reviews/suggestions.md)
 - [CI/CD pipelines](../../../ci/_index.md)
 - [Push options](../../../topics/git/commit.md) for merge requests
+- [Merge request title validation](title_validation.md)

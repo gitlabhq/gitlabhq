@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Source Editor
 ---
 
@@ -89,7 +89,6 @@ with additional functions on the instance level:
    rarely needed in HTML. To benefit the built-in loading state, set the `data-editor-loading`
    property on the HTML element that should contain the editor. When bootstrapping,
    Source Editor shows the loader automatically.
-
 1. Update syntax highlighting if the filename changes.
 
    ```javascript

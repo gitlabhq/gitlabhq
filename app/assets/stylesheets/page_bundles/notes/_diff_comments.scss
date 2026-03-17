@@ -52,7 +52,7 @@
 .unified-diff-components-diff-note-button {
   &::before {
     background-color: var(--gl-feedback-info-icon-color);
-    mask-image: url('icons-stacked.svg#comment');
+    mask-image: url('@gitlab/svgs/dist/icons-stacked.svg#comment');
     mask-repeat: no-repeat;
     mask-size: cover;
     mask-position: center;

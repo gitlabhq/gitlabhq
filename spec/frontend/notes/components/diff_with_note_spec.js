@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { PiniaVuePlugin } from 'pinia';

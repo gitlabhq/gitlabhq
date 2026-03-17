@@ -10,10 +10,15 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'creates a merge request', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347684' do
+      it 'creates a merge request', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347684',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/37617',
+          type: 'flaky'
+        } do
         feature_mr.visit!
 
         Page::MergeRequest::Show.perform do |merge_request|
+          merge_request.close_dap_panel_if_exists
           merge_request.merge!
           merge_request.cherry_pick!
         end

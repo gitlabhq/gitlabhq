@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: Developer documentation for extending the merge request report widget with additional features.
 title: Merge request widgets
 ---
@@ -240,7 +240,6 @@ To generate these known events for a single widget:
    ```
 
 1. Repeat step 6, but change the `data_source` to `redis_hll`.
-
 1. Add each event (those listed in the command in step 7, replacing `test_reports`
    with the appropriate name slug) to the aggregate files:
    1. `config/metrics/counts_7d/{timestamp}_code_review_category_monthly_active_users.yml`

@@ -76,11 +76,11 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
     context 'when adjacent is already in place' do
       using RSpec::Parameterized::TableSyntax
 
-      let_it_be_with_reload(:parent_item) { create(:work_item, :objective, project: project) }
-      let_it_be_with_reload(:current_item) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:parent_item) { create(:work_item, :issue, project: project) }
+      let_it_be_with_reload(:current_item) { create(:work_item, :task, project: project) }
 
       let_it_be_with_reload(:adjacent) do
-        create(:work_item, :objective, project: project)
+        create(:work_item, :task, project: project)
       end
 
       let_it_be_with_reload(:link_to_adjacent) do

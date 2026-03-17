@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use the Groups API to manage groups, subgroups, and project access.
 title: Groups API
 ---
@@ -313,7 +313,7 @@ Parameters:
 | `repository_storage`     | string            | no       | Filter by repository storage used by the group (administrators only). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3. Premium and Ultimate only. |
 | `marked_for_deletion_on` | date              | no       | Filter by date when group was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429315) in GitLab 17.1. Premium and Ultimate only. |
 | `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
-| `archived`               | boolean           | no       | Limit by groups that are archived. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519587) in GitLab 18.2. This parameter is an experiment. |
+| `archived`               | boolean           | no       | Limit by groups that are archived. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519587) in GitLab 18.2. |
 
 ```plaintext
 GET /groups
@@ -375,7 +375,6 @@ GET /groups?statistics=true
 When the parameter `statistics=true` is used and the authenticated user is an administrator, the response includes information about container registry storage size:
 
 - `container_registry_size`: Total storage size in bytes used by all container repositories in the group and its subgroups. Calculated as the sum of all repository sizes within the group's projects and subgroups. Available only when the container registry metadata database is enabled.
-
 - `container_registry_size_is_estimated`: Indicates whether the size is an exact calculation based on actual data from all repositories (`false`) or estimated due to performance constraints (`true`).
 
 For GitLab Self-Managed instances, the [container registry metadata database](../administration/packages/container_registry_metadata_database.md) must be enabled to include the container registry size attributes.
@@ -1472,15 +1471,9 @@ Parameters:
 
 ### Archive a group
 
-{{< details >}}
-
-- Status: Experiment
-
-{{< /details >}}
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/526771) in GitLab 18.9. Feature flag `archive_group` removed.
 
 {{< /history >}}
@@ -1565,15 +1558,9 @@ Example response:
 
 #### Unarchive a group
 
-{{< details >}}
-
-- Status: Experiment
-
-{{< /details >}}
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/526771) in GitLab 18.9. Feature flag `archive_group` removed.
 
 {{< /history >}}

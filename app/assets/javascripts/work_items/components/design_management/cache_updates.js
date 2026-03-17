@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { differenceBy } from 'lodash';
+import { differenceBy } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { findDesignsWidget } from '~/work_items/utils';
 import { designWidgetOf, extractCurrentDiscussion } from './utils';

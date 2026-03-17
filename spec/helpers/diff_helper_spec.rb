@@ -723,9 +723,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
       create(
         :merge_request,
         :conflict,
-        merge_status: 'cannot_be_merged',
-        source_branch_sha: 'abc123',
-        target_branch_sha: 'def456'
+        merge_status: 'cannot_be_merged'
       )
     end
 

@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Engagement
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Command palette
 ---
 
@@ -26,7 +26,7 @@ find an object more quickly.
 
 To open the command palette:
 
-1. On the top bar, select **Search or go to** or use the <kbd>/</kbd> key to enable.
+1. In the top bar, select **Search or go to** or use the <kbd>/</kbd> key to enable.
 1. Type one of the special characters:
 
    - <kbd>></kbd> - Create a new object or find a menu item.

@@ -126,7 +126,7 @@ RSpec.describe Users::ApproveService, feature_category: :user_management do
               end
 
               it 'does not log any audit event' do
-                expect { subject }.not_to change(AuditEvent, :count)
+                expect { subject }.not_to change { AuditEvent.count }
               end
             end
           end

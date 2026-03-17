@@ -1,174 +1,168 @@
 ---
 stage: GitLab Dedicated
 group: US Public Sector Services
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: 利用可能な機能とメリット
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
+description: 政府機関や規制対象業界向けのシングルテナントSaaSソリューション。
 title: 政府機関向けGitLab Dedicated
 ---
 
 {{< details >}}
 
 - プラン: Ultimate
-- 提供形態: GitLab Dedicated
+- 提供形態: 政府機関向けGitLab Dedicated
 
 {{< /details >}}
 
-政府機関向けGitLab Dedicatedは、完全に分離されたシングルテナントSaaSソリューションであり、以下の特徴があります:
+政府機関向けGitLab Dedicatedは、政府機関や規制対象業界の組織向けに設計されたシングルテナントSaaSソリューションです。
 
-- GitLab, Inc.がホストおよび管理します。
-- 米国西部リージョンの[AWS GovCloud](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/whatis.html)にデプロイされます。
+以下を提供します:
 
-政府機関向けGitLab Dedicatedは、プラットフォーム管理のオーバーヘッドをなくし、運用効率性、リスクの軽減、組織のスピードと俊敏性を向上させます。政府機関向けGitLab Dedicatedの各インスタンスは、高可用性を備えたディザスターリカバリーを提供します。GitLabチームは、分離された各インスタンスのメンテナンスと運用を完全に管理し、お客様は最新の製品改善にアクセスしながら、最も複雑なコンプライアンス基準を満たすことができます。これは、GitLab Dedicatedと同じ技術スタック上に構築され、米国の政府機関での使用に適応されています。
+- [FedRAMP Moderate認定済み](https://marketplace.fedramp.gov/products/FR2411959145?cache=true)（Authority to Operate（ATO）取得済み）
+- 専用のAWSアカウント内の隔離されたインフラストラクチャは、US-Westリージョンの[AWS GovCloud](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/whatis.html)にデプロイされています。
+- GitLabは、政府に特化したチームとプロセスによって、すべての運用とコンプライアンス要件を管理します。
+- DevSecOpsプラットフォームの全機能へのアクセスを可能にし、FedRAMPコンプライアンスを維持します。
 
-FedRAMPコンプライアンスなどの政府標準を満たす必要のある政府機関および関連組織にとって、最適なソリューションです。
+このサービスは、コンプライアンスインフラストラクチャ管理の複雑さを解消し、チームが開発に集中できるようにします。
+
+## セキュリティアーキテクチャ {#security-architecture}
+
+あなたのインスタンスには、以下のセキュリティ管理機能が含まれています:
+
+- 連邦要件に沿った継続的なモニタリングを備えたFedRAMP Moderateコンプライアンス
+- 米国西部地域のAWS GovCloudインフラストラクチャを通じて保証されるデータ主権
+- 他のすべてのテナントから分離された、専用のAWSアカウント内の隔離されたインフラストラクチャ
+- FIPS要件を満たす暗号化標準（データ保存時および転送時）
+- 最小特権の原則に従ったアクセス制御と包括的な監査証跡
+
+### データレジデンシーとインフラストラクチャの分離 {#data-residency-and-infrastructure-isolation}
+
+米国のデータレジデンシー要件を満たすため、あなたのインスタンスはUS-Westリージョンの[AWS GovCloud](https://docs.aws.amazon.com/govcloud-us/latest/UserGuide/whatis.html)にデプロイされています。
+
+リポジトリ、データベース、アーティファクト、バックアップを含むすべての顧客データは、AWS GovCloudの境界内に保持されます。あなたの環境には、GitLabアプリケーションをホストするために必要なすべてのインフラストラクチャが含まれており、GitLab.comから完全に分離されています。
+
+データは保存時と転送時にFIPS準拠の暗号化標準を使用して暗号化された状態で保護されます。
+
+### アクセス制御 {#access-controls}
+
+あなたの環境は、複数のセキュリティレイヤーで保護されています:
+
+- エンジニアはテナント環境に直接アクセスできず、それぞれの役割に必要な最小限の権限で操作します。
+- インフラストラクチャは、セキュリティ上の脅威や異常がないか、24時間365日監視されます。
+- すべてのアクセスと変更は、GitLabセキュリティインシデント対応チームによって記録およびレビューされます。
+- アクセスリクエストは、政府のコンプライアンス要件に合わせた正式なセキュリティポリシーと承認ワークフローに従います。
 
 ## 利用可能な機能 {#available-features}
 
-### データレジデンシー {#data-residency}
+政府機関向けGitLab Dedicatedは、[利用できない機能](#unavailable-features)を除き、完全なUltimateの機能セットを提供します。
 
-政府機関向けGitLab DedicatedはAWS GovCloudで利用でき、米国のデータレジデンシー要件を満たしています。
-
-### 高度な検索 {#advanced-search}
-
-{{< details >}}
-
-- ステータス: ベータ
-
-{{< /details >}}
-
-政府機関向けGitLab Dedicatedは、[高度な検索](../../user/search/advanced_search.md)を使用します。
+これらの機能は、FedRAMPコンプライアンスおよび政府のセキュリティフレームワーク内で機能するように設計されています。
 
 ### 可用性とスケーラビリティ {#availability-and-scalability}
 
-政府機関向けGitLab Dedicatedは、高可用性が有効になっている、修正版の[クラウドネイティブハイブリッドリファレンスアーキテクチャ](../../administration/reference_architectures/_index.md#cloud-native-hybrid)を活用します。[オンボーディング](../../administration/dedicated/create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance)の際、GitLabはお客様のユーザー数に基づいて、最も近いリファレンスアーキテクチャのサイズに適合させます。
+あなたのインスタンスは、[クラウドネイティブハイブリッドリファレンスアーキテクチャ](../../administration/reference_architectures/_index.md#cloud-native-hybrid)の修正バージョンとHAを有効にして利用しています。
 
-{{< alert type="note" >}}
+[オンボーディング](../../administration/dedicated/create_instance/_index.md#create-your-instance)時に、GitLabはユーザー数に基づいて最適なリファレンスアーキテクチャサイズを提示します。
 
-公開されている[リファレンスアーキテクチャ](../../administration/reference_architectures/_index.md)は、政府機関向けGitLab Dedicated環境内にデプロイされるクラウドリソースを定義する際の出発点として機能しますが、包括的なものではありません。GitLab Dedicatedは、環境のセキュリティと安定性を強化するために、標準のリファレンスアーキテクチャに含まれるもの以外にも、追加のクラウドプロバイダーサービスを活用します。したがって、政府機関向けGitLab Dedicatedのコストは、標準のリファレンスアーキテクチャのコストとは異なります。
+> [!note]
+> 公開されている[リファレンスアーキテクチャ](../../administration/reference_architectures/_index.md)は基盤として機能します。政府機関向けGitLab Dedicatedは、強化されたセキュリティとコンプライアンスのために、これらを追加のAWSサービスで拡張しています。これは、標準のリファレンスアーキテクチャの見積もりとはコストが異なることを意味します。
 
-{{< /alert >}}
+### ディザスターリカバリー {#disaster-recovery}
 
-#### ディザスターリカバリー {#disaster-recovery}
+GitLabは、データベースやGitリポジトリを含むすべてのデータストアのバックアップを取ります。これらのバックアップはテストされ、追加の冗長性のためにデフォルトで別のクラウドリージョンに安全に保存されます。
 
-GitLab Dedicatedは、データベースやGitリポジトリを含む、すべてのデータストアを定期的にバックアップします。これらのバックアップはテストされ、安全に保管されます。冗長性を高めるために、別のクラウドリージョンにバックアップコピーを保存できます。
+### 認証と認可 {#authentication-and-authorization}
 
-### セキュリティ {#security}
+SSO（SSO）は以下を使用して設定できます:
 
-#### 認証と認可 {#authentication-and-authorization}
+- [SAML](../../administration/dedicated/configure_instance/authentication/saml.md)
+- [OpenID Connect（OIDC）](../../administration/dedicated/configure_instance/authentication/openid_connect.md)
 
-{{< details >}}
+あなたのインスタンスはサービスプロバイダーとして機能し、GitLabがあなたのIdentity Provider（IdP）と通信するための必要な設定を提供します。
 
-- ステータス: ベータ
+あなたのインスタンスに複数のIdentity Providerを設定できます。
 
-{{< /details >}}
+### メール配信 {#email-delivery}
 
-GitLab Dedicatedは、シングルサインオン（SSO）用に[SAML](../../administration/dedicated/configure_instance/saml.md)および[OpenID Connect（OIDC）](../../administration/dedicated/configure_instance/openid_connect.md)プロバイダーをサポートしています。
+メールは[Amazon Simple Email Service（Amazon SES）](https://aws.amazon.com/ses/)を使用して送信されます。Amazon SESへの接続は暗号化された状態です。
 
-サポートされているプロバイダーを使用して、認証用のシングルサインオン（SSO）を設定できます。お客様のインスタンスはサービスプロバイダーとして機能し、お客様はGitLabがお客様のIDプロバイダー（IdPs）と通信するために必要な設定を提供します。
+Amazon SESの代わりにSMTPサーバーを使用してアプリケーションメールを送信するには、独自の[メールサービスを構成する](../../administration/dedicated/configure_instance/users_notifications.md#smtp-email-service)ことができます。
 
-#### 暗号化 {#encryption}
+### 高度な検索 {#advanced-search}
 
-データは、最新の暗号化標準を使用して、保存時および転送時に暗号化されます。
-
-#### SMTP {#smtp}
-
-{{< details >}}
-
-- ステータス: ベータ
-
-{{< /details >}}
-
-GitLab Dedicatedから送信されるメールは、[Amazon Simple Email Service（Amazon SES）](https://aws.amazon.com/ses/)を使用します。Amazon SESへの接続は暗号化された状態です。
-
-Amazon SESの代わりにSMTPサーバーを使用してアプリケーションメールを送信するには、[独自のメールサービスを設定する](../../administration/dedicated/configure_instance/users_notifications.md#smtp-email-service)ことができます。
-
-#### 分離 {#isolation}
-
-シングルテナントSaaSソリューションとして、政府機関向けGitLab Dedicatedは、GitLab環境のインフラストラクチャレベルの分離を提供します。お客様の環境は、他のテナントとは別のAWSアカウントに配置されます。このAWSアカウントには、GitLabアプリケーションをホストするために必要なすべての基盤となるインフラストラクチャが含まれており、お客様のデータはこのアカウントの境界内に留まります。お客様がアプリケーションを管理し、GitLabが基盤となるインフラストラクチャを管理します。テナント環境は、GitLab.comからも完全に分離されています。
-
-#### アクセス制御 {#access-controls}
-
-政府機関向けGitLab Dedicatedは、お客様の環境を保護するために、厳格なアクセス制御を実装しています:
-
-- 必要な最小限の権限のみを付与する最小特権の原則に従います。
-- テナントAWSアカウントを、トップレベルの政府機関向けGitLab DedicatedAWSの親組織の傘下に置きます。
-- AWS組織へのアクセスを、選択されたGitLabチームメンバーに制限します。
-- ユーザーアカウントに対する包括的なセキュリティポリシーとリクエストを実装します。
-- 自動化されたアクションと緊急アクセスのために、単一のHubアカウントを使用します。
-- HubアカウントでGitLab Dedicatedコントロールプレーンを使用して、テナントアカウントに対して自動化されたアクションを実行します。
-
-GitLab Dedicatedのエンジニアは、お客様のテナント環境に直接アクセスできません。[緊急](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/blob/main/engineering/breaking_glass.md)の場合、テナント環境内のリソースへのアクセスが、重大度の高いイシューに対処するために必要な場合、GitLabのエンジニアは、それらのリソースを管理するためにHubアカウントを経由する必要があります。これは承認プロセスで行われ、許可が付与された後、エンジニアは一時的にIAMロールを引き受けて、Hubアカウントを介してテナントリソースにアクセスします。Hubアカウントとテナントアカウント内のすべてのアクションは、CloudTrailに記録されます。
-
-テナントアカウント内では、GitLabはAWS GuardDutyからの侵入検知およびマルウェアスキャン機能を活用しています。インフラストラクチャログは、GitLab SecurityインシデントResponse Teamによって監視され、異常なイベントを検出します。
-
-### メンテナンス {#maintenance}
-
-GitLabは、お客様のインスタンスを最新の状態に保ち、セキュリティ上のイシューを修正し、環境全体の信頼性とパフォーマンスを確保するために、週1回のメンテナンス時間を利用します。
-
-#### アップグレード {#upgrades}
-
-GitLabは、お客様が希望する[メンテナンス時間](../../administration/dedicated/maintenance.md#maintenance-windows)中に最新のパッチリリースで、お客様のインスタンスを毎月アップグレードし、最新のGitLabリリースより1つ前のリリースを追跡します。たとえば、利用可能な最新バージョンのGitLabが16.8の場合、GitLab Dedicatedは16.7で実行されます。
-
-#### 予定外のメンテナンス {#unscheduled-maintenance}
-
-GitLabは、お客様のインスタンスのセキュリティ、可用性、または信頼性に影響を与える重大度の高いイシューに対処するために、[予定外のメンテナンス](../../administration/dedicated/maintenance.md#emergency-maintenance)を実施する場合があります。
-
-### アプリケーション {#application}
-
-政府機関向けGitLab Dedicatedには、以下に示す[サポートされていない機能](#unavailable-features)を除き、GitLab自己管理型[Ultimate機能セット](https://about.gitlab.com/pricing/feature-comparison/)が付属しています。
+[高度な検索](../../user/search/advanced_search.md)機能が含まれています。GitLabインスタンス全体で、codeコード、作業アイテム、マージリクエストなどを検索できます。
 
 ## 利用できない機能 {#unavailable-features}
 
-### アプリケーション機能 {#application-features}
+FedRAMP認証を維持し、政府のセキュリティ要件を満たすため、一部のGitLab機能は政府機関向けGitLab Dedicatedでは利用できません。
 
-次のGitLabアプリケーション機能は利用できません:
+### 認証、セキュリティ、およびネットワーキング {#authentication-security-and-networking}
 
-- LDAP、スマートカード、またはKerberos認証
-- 複数のログインプロバイダー
-- FortiAuthenticator、またはFortiToken 2FA
-- メールで返信する
-- サービスデスク
-- 一部のGitLab Duo AI機能
-  - サポートされているAI機能を確認するには、[AI機能の一覧](../../user/gitlab_duo/_index.md)をご覧ください。
-  - 詳細については、[カテゴリの方向性-GitLab Dedicated](https://about.gitlab.com/direction/gitlab_dedicated/#supporting-ai-features-on-gitlab-dedicated)をご覧ください。
-- GitLabユーザーインターフェースの外部で設定する必要がある[利用可能な機能](#available-features)以外の機能
-- `off`がデフォルトで切り替えられている機能フラグの背後にある機能または機能。
+| 機能                              | 代替 |
+| ------------------------------------ | ----------- |
+| LDAPまたはKerberos認証      | SAMLまたはOIDCをIdentity Providerとともに使用します |
+| FortiAuthenticatorまたはFortiToken 2要素認証 | Identity Provider MFAを使用します |
 
-以下の機能はサポートされません:
+### コミュニケーションとコラボレーション {#communication-and-collaboration}
 
-- Mattermost
-- [サーバー側のGitフック](../../administration/server_hooks.md)。政府機関向けGitLab Dedicatedは、SaaSサービスであり、基盤となるインフラストラクチャへのアクセスはGitLab, Inc.のチームメンバーのみが利用できます。サーバー側の設定の性質上、Dedicatedサービスで任意のコードを実行することによるセキュリティ上の懸念や、サービスのSLAに影響を与える可能性があります。代わりに、代替の[プッシュルール](../../user/project/repository/push_rules.md)または[Webhook](../../user/project/integrations/webhooks.md)を使用してください。
+| 機能        | 代替 |
+| -------------- | ----------- |
+| メールによる返信 | Webインターフェースを使用します |
+| サービスデスク   | イシュートラッキングを使用します |
+| Mattermost     | 外部チャットツールを使用します |
+
+### 開発とAI機能 {#development-and-ai-features}
+
+| 機能                                                            | 代替 |
+| ------------------------------------------------------------------ | ----------- |
+| 一部の[GitLab Duo AI機能](../../user/gitlab_duo/_index.md) | [サポートされているAI機能](../../user/gitlab_duo/_index.md)を参照してください |
+| サーバーサイドGit [フック](../../administration/server_hooks.md)      | [プッシュルール](../../user/project/repository/push_rules.md)または[Webhook](../../user/project/integrations/webhooks.md)を使用します |
+| GitLabユーザーインターフェース外で設定された機能           | サポートに連絡 |
 
 ### 運用機能 {#operational-features}
 
 以下の運用機能は利用できません:
 
 - Geo
-- セルフサービスによる購入と設定
-- 複数のログインプロバイダー
-- GCPやAzureなど、AWS以外のクラウドプロバイダーへのデプロイのサポート
-- スイッチボード
-- プレ本番環境インスタンス
+- セルフサービスでの購入と設定
+- GCPやAzureなどの非AWSクラウドプロバイダーへのデプロイのサポート
+- プレ本番環境
 
 ### 機能フラグ {#feature-flags}
 
-GitLabは、新しい機能や試験的な機能の開発とロールアウトをサポートするために、[機能フラグ](../../administration/feature_flags/_index.md)を使用します。政府機関向けGitLab Dedicated:
+FFは、あなたのインスタンスで利用可能な機能を制御します:
 
-- 機能フラグの背後にある、**既定で有効**になっている機能が利用可能です。
-- 機能フラグの背後にある、**既定で無効**になっている機能は利用できず、管理者が有効にすることもできません。
+- デフォルトで有効になっているFFを持つ機能のみが利用可能です
+- デフォルトで無効になっているFFを持つ機能は利用できません
+- FFを修正することはできません
 
-デフォルトで無効になっている機能フラグの背後にある機能は、本番環境での使用準備ができていないため、政府機関向けGitLab Dedicatedには安全ではありません。
+## サービス運用 {#service-operations}
 
-機能が一般的に利用可能になり、フラグが有効になるか削除されると、同じGitLabバージョンの政府機関向けGitLab Dedicatedでその機能が利用可能になります。
+GitLabは、政府固有の運用プロセスを使用して、あなたのインスタンスのすべての保守、モニタリング、およびサポートを管理します。これらのプロセスは、すべての保守およびサポート活動において、コンプライアンス、セキュリティ、および安定性を優先します。
 
-## サービスレベル契約 {#service-level-agreement}
+### メンテナンス {#maintenance}
 
-次のサービスレベル契約（SLA）の目標は、政府機関向けGitLab Dedicated向けに定義されています:
+あなたのインスタンスは定期的なメンテナンスを受けます:
 
-- 目標リカバリー時点（RPO）の目標値: 4時間。
-- 目標リカバリー時間（RTO）の目標値: RTOの目標はありません。サービスは、可能な範囲で復元するされます。
-- サービスレベル目標（SLO）の目標: SLOの目標はありません。
+- 希望する週次期間中に、最新のパッチリリースによる月次アップグレード
+- 重要なセキュリティイシューに対する緊急メンテナンス
 
-## お問い合わせ {#contact-sales}
+### リリースとバージョン {#releases-and-versions}
 
-政府機関向けGitLab Dedicatedの詳細については、[営業にお問い合わせ](https://about.gitlab.com/dedicated/)いただき、専門家にご相談ください。
+あなたのインスタンスは、最新のGitLabバージョンより1つ前のリリースを実行します。たとえば、最新のバージョンが16.8の場合、あなたのインスタンスは16.7を実行します。
+
+このアプローチにより、緊急メンテナンスを通じて重要なセキュリティパッチを受け取りながら、安定性が提供されます。機能は、コンプライアンスおよび変更レビュープロセス後に展開されます。
+
+### SLA {#service-level-agreement}
+
+あなたのインスタンスは、月間稼働率99.9%のSLA（SLA）を維持します。GitLabは、このSLAコミットメントの提供をサポートするために、内部のサービスレベル目標（SLO）を使用します。
+
+以下の目標が適用されます:
+
+- 目標リカバリー時点（RPO）目標: ディザスターリカバリーシナリオにおける最大4時間のデータ損失期間
+- 目標リカバリー時間（RTO）目標: サービス復旧は、インシデントの重大度と影響によって優先順位が付けられます
+
+GitLabは、データの整合性とセキュリティを確保しながら、可能な限り迅速にサービスを復元するよう努めます。
+
+## 営業へのお問い合わせ {#contact-sales}
+
+開始する準備はできていますか？要件について話し合い、組織のコンプライアンスとセキュリティのニーズをサポートする方法について知るには、[弊社の営業チームにお問い合わせください](https://about.gitlab.com/sales/dedicated/)。

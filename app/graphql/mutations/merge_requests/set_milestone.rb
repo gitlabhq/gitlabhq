@@ -5,7 +5,7 @@ module Mutations
     class SetMilestone < Base
       graphql_name 'MergeRequestSetMilestone'
 
-      argument :milestone_id,
+      argument :milestone_id, # rubocop:disable Graphql/ForbiddenLoadsArgument -- pre-existing code; removing `loads:` would be a breaking change
         ::Types::GlobalIDType[::Milestone],
         required: false,
         loads: Types::MilestoneType,

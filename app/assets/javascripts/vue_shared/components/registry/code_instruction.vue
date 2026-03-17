@@ -1,5 +1,5 @@
 <script>
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import Tracking from '~/tracking';
 import SimpleCopyButton from '~/vue_shared/components/simple_copy_button.vue';
 

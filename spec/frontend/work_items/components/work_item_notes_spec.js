@@ -76,7 +76,14 @@ const mockWorkItemNoteResponse = {
       id: mockDiscussions[0].notes.nodes[0].id,
       noteableType: ISSUE_NOTEABLE_TYPE,
       noteableId: getIdFromGraphQLId(mockWorkItemId),
-      discussion: { id: mockDiscussions[0].id, notes: mockDiscussions[0].notes },
+      discussion: {
+        id: mockDiscussions[0].id,
+        resolved: mockDiscussions[0].resolved,
+        resolvable: mockDiscussions[0].resolvable,
+        resolvedBy: mockDiscussions[0].resolvedBy,
+        userPermissions: mockDiscussions[0].userPermissions,
+        notes: mockDiscussions[0].notes,
+      },
     },
   },
 };

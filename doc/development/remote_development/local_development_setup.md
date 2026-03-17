@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Remote Development
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Set up local development environment
 ---
 
@@ -9,13 +9,10 @@ Set up your local development environment to work on the Remote Development Work
 You can choose between two setup modes depending on your development needs:
 
 - Agent for workspace (`agentw`):
-
   - Simpler setup.
   - Uses direct agent communication.
   - Recommended for most development scenarios.
-
 - GitLab Workspaces Proxy:
-
   - More complex setup.
   - Uses proxy for workspace communication.
   - Required for testing proxy-specific features.
@@ -49,13 +46,11 @@ You can choose between two setup modes depending on your development needs:
    ```
 
    Replace `/path/to/your/gdk` with your actual GDK directory path.
-
 1. [Set up an EE license](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses).
 1. Configure GDK to run on a local private IP address by following the [local network binding documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/local_network.md#local-network-binding).
 
    For this setup, we assume the private IP address is `172.16.123.1`. If you use a different IP address,
    substitute the correct value in later steps.
-
 1. Configure NGINX for GDK:
 
    1. Add this configuration to your `gdk.yml` file:
@@ -369,7 +364,6 @@ To enable AI features in workspaces:
    This page also lists other set up AI features options for local development. To provision a
    GitLab Self-Managed Ultimate Subscription with GitLab Duo Pro add-on license yourself, follow the cloud license
    with CustomersDot approach.
-
 1. Configure your instance to use the staging AI Gateway (`https://cloud.staging.gitlab.com/ai`).
 
 For workspaces, you must enable GitLab Duo Chat features. They are only available with a GitLab Duo Enterprise
@@ -432,7 +426,7 @@ scripts/remote_development/run-smoke-test-suite.sh
 
 > [!note]
 > The test does not set up or teardown any of these components as a part of its execution.
-> 
+>
 > At present, the test is tagged with a `quarantine` label so it does not run as a part of CI/CD, because
 > of complexities in spinning up KAS and `agentk` in the CI/CD environment. It must be run manually.
 

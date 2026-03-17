@@ -7,14 +7,11 @@
   }
 }
 
-.expandable-card {
-  &.is-collapsed header {
-    border-bottom: 0;
-    @apply gl-rounded-lg;
-    @apply hover:gl-bg-subtle;
-  }
+.expandable-card.is-collapsed {
+  @apply gl-pb-0;
 
   .crud-body {
-    margin: 0 !important;
+    @apply gl-p-0;
+    @apply gl-m-0;
   }
 }

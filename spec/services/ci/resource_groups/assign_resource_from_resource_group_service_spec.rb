@@ -28,6 +28,59 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
         expect(ci_build.resource).to be_present
       end
 
+      context 'when precompute_pending_build_args feature flag is enabled' do
+        it 'pre-computes pending build args outside the transaction' do
+          expect(Ci::PendingBuild).to receive(:args_from_build).with(ci_build).and_call_original
+          expect(Ci::PendingBuild).to receive(:upsert_from_args!)
+            .with(a_hash_including(:build, :project, :namespace))
+            .and_call_original
+
+          subject
+        end
+
+        it 'uses retry_lock without a wrapping transaction' do
+          expect(Gitlab::OptimisticLocking).to receive(:retry_lock).and_call_original
+          expect(Gitlab::OptimisticLocking).not_to receive(:retry_lock_with_transaction)
+
+          subject
+        end
+      end
+
+      context 'when precompute_pending_build_args feature flag is disabled' do
+        before do
+          stub_feature_flags(precompute_pending_build_args: false)
+        end
+
+        it 'uses retry_lock_with_transaction' do
+          expect(Gitlab::OptimisticLocking).to receive(:retry_lock_with_transaction).and_call_original
+
+          subject
+        end
+
+        it 'computes args inline via create_queuing_entry!' do
+          expect_any_instance_of(Ci::Build).to receive(:create_queuing_entry!).and_call_original
+
+          subject
+        end
+
+        context 'when build has an outdated deployment' do
+          before do
+            allow_next_found_instance_of(Ci::Build) do |job|
+              allow(job).to receive(:has_outdated_deployment?).and_return(true)
+            end
+          end
+
+          it 'drops the build with a reason of `failed_outdated_deployment_job`' do
+            expect_next_found_instance_of(Ci::Build) do |job|
+              allow(job).to receive(:has_outdated_deployment?).and_return(true)
+              expect(job).to receive(:drop!).with(:failed_outdated_deployment_job)
+            end
+
+            subject
+          end
+        end
+      end
+
       it_behaves_like 'internal event tracking' do
         let(:event) { 'job_enqueued_by_resource_group' }
         let(:category) { described_class.name }

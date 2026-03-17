@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Common commands and workflows.
 title: File management
 ---
@@ -119,7 +119,6 @@ To add a large file into your Git repository and track it with Git LFS:
    > [!note]
    > Ensure the files you're changing are not listed in a `.gitignore` file.
    > If they are, Git commits the change locally but doesn't push it to your upstream repository.
-
 1. Commit both files to your local copy of the repository:
 
    ```shell

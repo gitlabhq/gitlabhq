@@ -362,6 +362,28 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
       end
     end
 
+    context 'when response from activities endpoint raises JSON::NestingError' do
+      it 'logs the error and continues processing the remaining merge requests' do
+        allow_next_instance_of(BitbucketServer::Client) do |instance|
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_1).and_raise(JSON::NestingError)
+          allow(instance).to receive(:activities).with('key', 'slug', 101, page_hash_1).and_return([])
+        end
+
+        expect(Gitlab::Import::ImportFailureService).to receive(:track).with(
+          hash_including(
+            project_id: project.id,
+            error_source: described_class.name,
+            exception: instance_of(JSON::NestingError)
+          )
+        )
+
+        expect { importer.execute }.not_to raise_error
+
+        expect(Gitlab::Cache::Import::Caching.values_from_set(importer.send(:merge_request_processed_cache_key)))
+          .to match_array(%w[101])
+      end
+    end
+
     describe 'job delay' do
       let(:activities) { [merge_event, pr_comment, declined_event] }
 

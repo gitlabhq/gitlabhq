@@ -28,7 +28,7 @@ RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_mana
       aggregate_failures do
         expect do
           response = subject.execute
-        end.to change(Snippet, :count).by(-2)
+        end.to change { Snippet.count }.by(-2)
 
         expect(response).to be_success
         expect(repository_exists?(personal_snippet)).to be_falsey
@@ -61,7 +61,7 @@ RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_mana
       it 'no record is deleted' do
         expect do
           subject.execute
-        end.not_to change(Snippet, :count)
+        end.not_to change { Snippet.count }
       end
     end
 
@@ -81,7 +81,7 @@ RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_mana
         end
 
         it 'deletes all the snippets that belong to the user' do
-          expect { subject }.to change(Snippet, :count).by(-2)
+          expect { subject }.to change { Snippet.count }.by(-2)
         end
       end
     end
@@ -122,7 +122,7 @@ RSpec.describe Snippets::BulkDestroyService, feature_category: :source_code_mana
 
         expect do
           response = subject.execute
-        end.to change(Snippet, :count).by(-3)
+        end.to change { Snippet.count }.by(-3)
 
         expect(response).to be_success
       end

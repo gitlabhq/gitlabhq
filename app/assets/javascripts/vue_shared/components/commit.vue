@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlTooltipDirective, GlLink, GlIcon } from '@gitlab/ui';
-import { isString, isEmpty } from 'lodash';
+import { isString, isEmpty } from 'lodash-es';
 import { __, sprintf } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from './user_avatar/user_avatar_link.vue';

@@ -1,6 +1,15 @@
 <script>
-import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlIcon, GlLink } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlIcon,
+  GlLink,
+  GlButton,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { isLoggedIn } from '~/lib/utils/common_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
 import WorkItemsNewSavedViewModal from './work_items_new_saved_view_modal.vue';
 import WorkItemsExistingSavedViewsModal from './work_items_existing_saved_views_modal.vue';
 
@@ -13,6 +22,7 @@ export default {
     GlDisclosureDropdownItem,
     WorkItemsNewSavedViewModal,
     WorkItemsExistingSavedViewsModal,
+    GlButton,
   },
   i18n: {
     addViewButtonText: s__('WorkItem|Add view'),
@@ -21,7 +31,12 @@ export default {
     subscriptionLimitWarningMessage: s__(
       'WorkItem|You have reached the maximum number of views in your list.',
     ),
+    learnMore: s__('WorkItem|Learn more.'),
   },
+  savedViewLimitsHelpPath: helpPagePath('user/work_items/saved_views.md', {
+    anchor: 'saved-view-limits',
+  }),
+  inject: ['canCreateSavedView', 'signInPath'],
   props: {
     fullPath: {
       type: String,
@@ -47,11 +62,22 @@ export default {
       default: false,
     },
   },
+  emits: ['subscribe-from-modal'],
   data() {
     return {
       isNewViewModalVisible: false,
       isExistingViewModalVisible: false,
+      isLoggedIn: isLoggedIn(),
     };
+  },
+  methods: {
+    openExistingViewModal() {
+      if (this.isLoggedIn) {
+        this.isExistingViewModalVisible = true;
+      } else {
+        visitUrl(this.signInPath);
+      }
+    },
   },
 };
 </script>
@@ -59,6 +85,7 @@ export default {
 <template>
   <div class="gl-self-center">
     <gl-disclosure-dropdown
+      v-if="canCreateSavedView"
       icon="plus"
       category="tertiary"
       :toggle-text="$options.i18n.addViewButtonText"
@@ -71,7 +98,7 @@ export default {
           <span>{{ $options.i18n.newViewTitle }}</span>
         </template>
       </gl-disclosure-dropdown-item>
-      <gl-disclosure-dropdown-item @action="isExistingViewModalVisible = true">
+      <gl-disclosure-dropdown-item @action="openExistingViewModal">
         <template #list-item>
           <span>{{ $options.i18n.existingViewDropdownTitle }}</span>
         </template>
@@ -83,13 +110,22 @@ export default {
         <gl-icon name="warning" :size="16" class="gl-mt-1 gl-shrink-0 gl-text-orange-500" />
         <span class="gl-text-sm">
           {{ $options.i18n.subscriptionLimitWarningMessage }}
-          <!-- TODO: Replace with actual learn more URL -->
-          <gl-link href="#" target="_blank">
-            {{ s__('WorkItem|Learn more.') }}
+          <gl-link :href="$options.savedViewLimitsHelpPath" target="_blank">
+            {{ $options.i18n.learnMore }}
           </gl-link>
         </span>
       </div>
     </gl-disclosure-dropdown>
+    <gl-button
+      v-else
+      icon="plus"
+      category="tertiary"
+      data-testid="add-saved-view-fallback"
+      @click="openExistingViewModal"
+    >
+      {{ $options.i18n.addViewButtonText }}
+    </gl-button>
+
     <work-items-new-saved-view-modal
       v-model="isNewViewModalVisible"
       :full-path="fullPath"
@@ -104,6 +140,7 @@ export default {
       :full-path="fullPath"
       :show-subscription-limit-warning="showSubscriptionLimitWarning"
       @show-new-view-modal="isNewViewModalVisible = true"
+      @subscribe-from-modal="$emit('subscribe-from-modal')"
     />
   </div>
 </template>

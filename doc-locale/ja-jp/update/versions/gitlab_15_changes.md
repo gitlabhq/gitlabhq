@@ -1,9 +1,11 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab 15アップグレードノート
 ---
+
+<!-- vale gitlab_base.OutdatedVersions = NO-->
 
 {{< details >}}
 
@@ -17,11 +19,11 @@ title: GitLab 15アップグレードノート
 - お使いのインストールタイプ。
 - 現在のバージョンから移行先バージョンまでのすべてのバージョン。
 
-Helmチャートインストールに関する追加情報については、[Helmチャート6.0アップグレードノート](https://docs.gitlab.com/charts/releases/6_0.html)を参照してください。
+Helmチャートインストールに関する追加情報については、[Helmチャート6.0アップグレードノート](https://docs.gitlab.com/charts/releases/6_0/)を参照してください。
 
 ## 15.11.1 {#15111}
 
-- 多くの[プロジェクトインポーター](../../user/project/import/_index.md)および[グループインポーター](../../user/group/import/_index.md)で、これまでのデベロッパーロールに加えて、メンテナーロールが必要になりました。詳細については、お使いの各インポーターのドキュメントを参照してください。
+- 多くの[グループおよびプロジェクトインポーター](../../user/import/_index.md)は、デベロッパーロールのみが必要だった代わりに、メンテナーロールが必要になりました。詳細については、お使いの各インポーターのドキュメントを参照してください。
 
 ## 15.11.0 {#15110}
 
@@ -29,7 +31,7 @@ Helmチャートインストールに関する追加情報については、[Hel
 
 - 通常、PgBouncerを使用している環境では、バックアップ時に[`GITLAB_BACKUP_`をプレフィックスとする変数を設定してPgBouncerを回避する](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer)必要があります。ただし、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/422163)により、`gitlab-backup`は、オーバーライドで定義された直接接続ではなく、PgBouncerを介して標準のデータベース接続を使用するため、データベースのバックアップは失敗します。回避策は、`pg_dump`を直接使用することです。
 
-    **影響を受けるリリース**:
+  **影響を受けるリリース**:
 
   | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
   | ----------------------- | ----------------------- | -------- |
@@ -50,10 +52,10 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 
 - Patroniを使用して高可用性でデータベースを実行している。
 - データベースノードがGitLab Geo構成の一部である。
-- PostgreSQLの自動アップグレードを明示的に[オプトアウト](https://docs.gitlab.com/omnibus/settings/database.html#opt-out-of-automatic-postgresql-upgrades)している。
+- PostgreSQLの自動アップグレードを明示的に[オプトアウト](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades)している。
 - `/etc/gitlab/gitlab.rb`で`postgresql['version'] = 12`を設定している。
 
-耐障害性およびGeoインストールは、PostgreSQL 13への手動アップグレードをサポートしています。詳しくは、[HA/GeoクラスターにデプロイされたパッケージPostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#packaged-postgresql-deployed-in-an-hageo-cluster)を参照してください。
+耐障害性およびGeoインストールは、PostgreSQL 13への手動アップグレードをサポートしています。詳しくは、[HA/GeoクラスターにデプロイされたパッケージPostgreSQL](https://docs.gitlab.com/omnibus/settings/database/#packaged-postgresql-deployed-in-an-hageo-cluster)を参照してください。
 
 ### Geoインストール {#geo-installations}
 
@@ -72,7 +74,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 | 影響を受けるマイナーリリース | 影響を受けるパッチリリース | 修正リリース |
 |-------------------------|-------------------------|----------|
 | 15.2 - 15.10            | すべて                     | なし     |
-| 15.11                   | 15.11.0 - 15.11.11      | 15.11.12 以降 |
+| 15.11                   | 15.11.0 - 15.11.11      | 15.11.12以降 |
 
 組み込みの`pg-upgrade`ツールに[バグ](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841)があり、バンドルされているPostgreSQLデータベースをバージョン13にアップグレードできません。この結果、セカンダリサイトが破損状態となり、GeoインストールをGitLab 16.xにアップグレードできなくなります（[PostgreSQL 12のサポートは16.0以降のリリースで削除されています](../deprecations.md#postgresql-12-deprecated)）。この問題は、バンドルされているPostgreSQLソフトウェアを使用しており、セカンダリのメインRailsデータベースとトラッキングデータベースの両方を同じノードで実行しているセカンダリサイトで発生します。15.11.12以降にアップグレードできない場合は、手動による[回避策](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7841#workaround)があります。
 
@@ -87,7 +89,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
   - Sidekiqが飽和状態に達するまでに最大で1週間かかることがあるため、この問題がすぐに表面化するとは限りません。
   - この問題は、Elasticsearchを有効にしていない場合でも発生する可能性があります。
   - この問題を解決するには、15.11にアップグレードするか、問題の回避策を使用してください。
-- 多くの[プロジェクトインポーター](../../user/project/import/_index.md)および[グループインポーター](../../user/group/import/_index.md)で、これまでのデベロッパーロールに加えて、メンテナーロールが必要になりました。詳細については、お使いの各インポーターのドキュメントを参照してください。
+- 多くの[グループおよびプロジェクトインポーター](../../user/import/_index.md)は、デベロッパーロールのみが必要だった代わりに、メンテナーロールが必要になりました。詳細については、お使いの各インポーターのドキュメントを参照してください。
 
 ## 15.10.0 {#15100}
 
@@ -114,7 +116,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
      UPDATE oauth_access_tokens SET expires_in = '7200' WHERE expires_in IS NULL;
      ```
 
-  1. [データベースの移行を再実行します](../../administration/raketasks/maintenance.md#run-incomplete-database-migrations)。
+  1. [データベースのマイグレーションを再実行します](../../administration/raketasks/maintenance.md#run-incomplete-database-migrations)。
 
 - GitLab 15.10以降にアップグレードする際に、次のエラーが発生する可能性もあります:
 
@@ -214,7 +216,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 
 {{< /details >}}
 
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 
@@ -231,7 +233,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 
 {{< /details >}}
 
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 
@@ -250,7 +252,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 {{< /details >}}
 
 - `pg_upgrade`が、バンドルされているPostregSQLデータベースをバージョン13にアップグレードできません。[詳細と回避策については、こちら](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13)を参照してください。
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 - セカンダリサイトからのLFSオブジェクトのクローン作成では、セカンダリが完全に同期されている場合でも、プライマリサイトからダウンロードされます。[詳細と回避策については、こちら](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site)を参照してください。
@@ -268,7 +270,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 
 {{< /details >}}
 
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 
@@ -285,7 +287,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 
 {{< /details >}}
 
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 
@@ -302,7 +304,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 
 {{< /details >}}
 
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 
@@ -319,7 +321,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 
 {{< /details >}}
 
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 
@@ -337,12 +339,13 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 {{< /details >}}
 
 - `/api/v4/container_registry_event/events`エンドポイントによって[コンテナレジストリプッシュイベントが拒否される](https://gitlab.com/gitlab-org/gitlab/-/issues/386389)ため、Geoセカンダリサイトがコンテナレジストリイメージの更新を検知できず、アップグレードをレプリケートしません。その結果、フェイルオーバー後にセカンダリサイト上に古いコンテナイメージが含まれている可能性があります。この問題は、バージョン15.6.0 - 15.6.6および15.7.0 - 15.7.2に影響します。コンテナリポジトリでGeoを使用している場合は、フェイルオーバー後の潜在的なデータ損失を回避するために、この問題の修正が含まれているGitLab 15.6.7、15.7.3、または15.8.0にアップグレードすることをおすすめします。
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 
 ## 15.7.1 {#1571}
 
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 
 ### Geoインストール {#geo-installations-11}
@@ -355,7 +358,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 {{< /details >}}
 
 - `/api/v4/container_registry_event/events`エンドポイントによって[コンテナレジストリプッシュイベントが拒否される](https://gitlab.com/gitlab-org/gitlab/-/issues/386389)ため、Geoセカンダリサイトがコンテナレジストリイメージの更新を検知できず、アップデートをレプリケートしません。その結果、フェイルオーバー後にセカンダリサイト上に古いコンテナイメージが含まれている可能性があります。この問題は、バージョン15.6.0 - 15.6.6および15.7.0 - 15.7.2に影響します。コンテナリポジトリでGeoを使用している場合は、フェイルオーバー後の潜在的なデータ損失を回避するために、この問題の修正が含まれているGitLab 15.6.7、15.7.3、または15.8.0にアップグレードすることをおすすめします。
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 
@@ -375,7 +378,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
     Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
     ```
 
-    [データ変更とアップグレードを手動で完了する](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s)ための回避策があります。
+    [データ変更とアップグレードを手動で完了する](../package/package_troubleshooting.md#error-command-timed-out-after-3600s)ための回避策があります。
 - デフォルトのSidekiqの`max_concurrency`が20に変更されました。これにより、ドキュメントと製品のデフォルト設定で値が統一されました。
 
   以前の例:
@@ -387,7 +390,8 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
   リファレンスアーキテクチャでは、デフォルトとして引き続き10を使用します。これは、それぞれの構成に合わせて個別に設定されているためです。
 
   `max_concurrency`をすでに設定しているサイトには、この変更の影響はありません。[Sidekiqの並行処理設定の詳細については、こちらを参照してください](../../administration/sidekiq/extra_sidekiq_processes.md#concurrency)。
-- GitLab Runner 15.7.0では、CI/CDジョブに影響を与える破壊的な変更が導入されました: [ジョブファイル変数の展開を正しく処理するようになっています](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3613)。以前は、ジョブ定義変数が[ファイルタイプ変数](../../ci/variables/_index.md#use-file-type-cicd-variables)を参照している場合、その変数はファイル変数の値（ファイルの内容）に展開されていました。この動作は、通常のShell変数の展開ルールに従っていませんでした。また、ファイル変数とその内容が出力された場合、シークレットや機密情報が漏洩する可能性もありました。たとえば、echoコマンドで出力した場合などです。詳細については、[Understanding the file type variable expansion change in GitLab 15.7](https://about.gitlab.com/blog/2023/02/13/impact-of-the-file-type-variable-change-15-7/)を参照してください。
+- GitLab Runner 15.7.0では、CI/CDジョブに影響を与える破壊的な変更が導入されました: [ジョブファイル変数の展開を正しく処理するようになっています](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3613)。以前は、ジョブ定義変数が[ファイルタイプ変数](../../ci/variables/_index.md#use-file-type-cicd-variables)を参照している場合、その変数はファイル変数の値（ファイルの内容）に展開されていました。この動作は、通常のShell変数の展開ルールに従っていませんでした。また、ファイル変数とその内容が出力された場合、シークレットや機密情報が漏洩する可能性もありました。たとえば、echoコマンドで出力した場合などです。詳細については、[Understanding the file type variable expansion change in GitLab 15.7](https://about.gitlab.com/blog/impact-of-the-file-type-variable-change-15-7/)を参照してください。
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 - セカンダリサイトからのLFSオブジェクトのクローン作成では、セカンダリが完全に同期されている場合でも、プライマリサイトからダウンロードされます。[詳細と回避策については、こちら](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site)を参照してください。
 
@@ -402,7 +406,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 
 - `pg_upgrade`が、バンドルされているPostregSQLデータベースをバージョン13にアップグレードできません。[詳細と回避策については、こちら](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13)を参照してください。
 - `/api/v4/container_registry_event/events`エンドポイントによって[コンテナレジストリプッシュイベントが拒否される](https://gitlab.com/gitlab-org/gitlab/-/issues/386389)ため、Geoセカンダリサイトがコンテナレジストリイメージの更新を検知できず、アップデートをレプリケートしません。その結果、フェイルオーバー後にセカンダリサイト上に古いコンテナイメージが含まれている可能性があります。この問題は、バージョン15.6.0 - 15.6.6および15.7.0 - 15.7.2に影響します。コンテナリポジトリでGeoを使用している場合は、フェイルオーバー後の潜在的なデータ損失を回避するために、この問題の修正が含まれているGitLab 15.6.7、15.7.3、または15.8.0にアップグレードすることをおすすめします。
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 
@@ -419,7 +423,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 
 {{< /details >}}
 
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 
@@ -437,7 +441,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 {{< /details >}}
 
 - `/api/v4/container_registry_event/events`エンドポイントによって[コンテナレジストリプッシュイベントが拒否される](https://gitlab.com/gitlab-org/gitlab/-/issues/386389)ため、Geoセカンダリサイトがコンテナレジストリイメージの更新を検知できず、アップデートをレプリケートしません。その結果、フェイルオーバー後にセカンダリサイト上に古いコンテナイメージが含まれている可能性があります。この問題は、バージョン15.6.0 - 15.6.6および15.7.0 - 15.7.2に影響します。コンテナリポジトリでGeoを使用している場合は、フェイルオーバー後の潜在的なデータ損失を回避するために、この問題の修正が含まれているGitLab 15.6.7、15.7.3、または15.8.0にアップグレードすることをおすすめします。
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 
@@ -453,7 +457,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 {{< /details >}}
 
 - `/api/v4/container_registry_event/events`エンドポイントによって[コンテナレジストリプッシュイベントが拒否される](https://gitlab.com/gitlab-org/gitlab/-/issues/386389)ため、Geoセカンダリサイトがコンテナレジストリイメージの更新を検知できず、アップデートをレプリケートしません。その結果、フェイルオーバー後にセカンダリサイト上に古いコンテナイメージが含まれている可能性があります。この問題は、バージョン15.6.0 - 15.6.6および15.7.0 - 15.7.2に影響します。コンテナリポジトリでGeoを使用している場合は、フェイルオーバー後の潜在的なデータ損失を回避するために、この問題の修正が含まれているGitLab 15.6.7、15.7.3、または15.8.0にアップグレードすることをおすすめします。
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
@@ -470,7 +474,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 {{< /details >}}
 
 - `/api/v4/container_registry_event/events`エンドポイントによって[コンテナレジストリプッシュイベントが拒否される](https://gitlab.com/gitlab-org/gitlab/-/issues/386389)ため、Geoセカンダリサイトがコンテナレジストリイメージの更新を検知できず、アップデートをレプリケートしません。その結果、フェイルオーバー後にセカンダリサイト上に古いコンテナイメージが含まれている可能性があります。この問題は、バージョン15.6.0 - 15.6.6および15.7.0 - 15.7.2に影響します。コンテナリポジトリでGeoを使用している場合は、フェイルオーバー後の潜在的なデータ損失を回避するために、この問題の修正が含まれているGitLab 15.6.7、15.7.3、または15.8.0にアップグレードすることをおすすめします。
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
@@ -487,9 +491,10 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 {{< /details >}}
 
 - `/api/v4/container_registry_event/events`エンドポイントによって[コンテナレジストリプッシュイベントが拒否される](https://gitlab.com/gitlab-org/gitlab/-/issues/386389)ため、Geoセカンダリサイトがコンテナレジストリイメージの更新を検知できず、アップデートをレプリケートしません。その結果、フェイルオーバー後にセカンダリサイト上に古いコンテナイメージが含まれている可能性があります。この問題は、バージョン15.6.0 - 15.6.6および15.7.0 - 15.7.2に影響します。コンテナリポジトリでGeoを使用している場合は、フェイルオーバー後の潜在的なデータ損失を回避するために、この問題の修正が含まれているGitLab 15.6.7、15.7.3、または15.8.0にアップグレードすることをおすすめします。
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 
 ## 15.6.2 {#1562}
@@ -504,9 +509,10 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 {{< /details >}}
 
 - `/api/v4/container_registry_event/events`エンドポイントによって[コンテナレジストリプッシュイベントが拒否される](https://gitlab.com/gitlab-org/gitlab/-/issues/386389)ため、Geoセカンダリサイトがコンテナレジストリイメージの更新を検知できず、アップデートをレプリケートしません。その結果、フェイルオーバー後にセカンダリサイト上に古いコンテナイメージが含まれている可能性があります。この問題は、バージョン15.6.0 - 15.6.6および15.7.0 - 15.7.2に影響します。コンテナリポジトリでGeoを使用している場合は、フェイルオーバー後の潜在的なデータ損失を回避するために、この問題の修正が含まれているGitLab 15.6.7、15.7.3、または15.8.0にアップグレードすることをおすすめします。
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 
 ## 15.6.1 {#1561}
@@ -521,9 +527,10 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 {{< /details >}}
 
 - `/api/v4/container_registry_event/events`エンドポイントによって[コンテナレジストリプッシュイベントが拒否される](https://gitlab.com/gitlab-org/gitlab/-/issues/386389)ため、Geoセカンダリサイトがコンテナレジストリイメージの更新を検知できず、アップデートをレプリケートしません。その結果、フェイルオーバー後にセカンダリサイト上に古いコンテナイメージが含まれている可能性があります。この問題は、バージョン15.6.0 - 15.6.6および15.7.0 - 15.7.2に影響します。コンテナリポジトリでGeoを使用している場合は、フェイルオーバー後の潜在的なデータ損失を回避するために、この問題の修正が含まれているGitLab 15.6.7、15.7.3、または15.8.0にアップグレードすることをおすすめします。
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 
 ## 15.6.0 {#1560}
@@ -543,7 +550,7 @@ GitLab 15.11では、次の場合を除き、PostgreSQLは自動的に13.xにア
 
 ### Linuxパッケージインストール {#linux-package-installations-1}
 
-GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPostgreSQLのバージョン](../../administration/package_information/postgresql_versions.md)が12.12および13.8にアップグレードされました。[明示的にオプトアウト](https://docs.gitlab.com/omnibus/settings/database.html#automatic-restart-when-the-postgresql-version-changes)しない限り、これによりPostgreSQLサービスが自動的に再起動され、ダウンタイムが発生する可能性があります。
+GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPostgreSQLのバージョン](../../administration/package_information/postgresql_versions.md)が12.12および13.8にアップグレードされました。[明示的にオプトアウト](https://docs.gitlab.com/omnibus/settings/database/#automatic-restart-when-the-postgresql-version-changes)しない限り、これによりPostgreSQLサービスが自動的に再起動され、ダウンタイムが発生する可能性があります。
 
 ### Geoインストール {#geo-installations-20}
 
@@ -556,18 +563,21 @@ GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPost
 
 - `pg_upgrade`が、バンドルされているPostregSQLデータベースをバージョン13にアップグレードできません。[詳細と回避策については、こちら](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13)を参照してください。
 - `/api/v4/container_registry_event/events`エンドポイントによって[コンテナレジストリプッシュイベントが拒否される](https://gitlab.com/gitlab-org/gitlab/-/issues/386389)ため、Geoセカンダリサイトがコンテナレジストリイメージの更新を検知できず、アップデートをレプリケートしません。その結果、フェイルオーバー後にセカンダリサイト上に古いコンテナイメージが含まれている可能性があります。この問題は、バージョン15.6.0 - 15.6.6および15.7.0 - 15.7.2に影響します。コンテナリポジトリでGeoを使用している場合は、フェイルオーバー後の潜在的なデータ損失を回避するために、この問題の修正が含まれているGitLab 15.6.7、15.7.3、または15.8.0にアップグレードすることをおすすめします。
-- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証処理で一部のプロジェクトやWikiが長時間にわたって「キューに入っている」状態のままの場合、そのインストールがこの問題の影響を受けている可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
+- 一部のGeoインストールで、[プロジェクトおよびWikiのレプリケーションと検証が追いついていない](https://gitlab.com/gitlab-org/gitlab/-/issues/387980)問題が見つかりました。検証のために一部のプロジェクトやWikiが継続的に「キュー済み」状態にある場合、お使いのインストールが影響を受ける可能性があります。この問題により、フェイルオーバー後にデータが失われる可能性があります。
   - 影響を受けるバージョン: GitLabバージョン15.6.x、15.7.x、および15.8.0 - 15.8.2。
   - 修正を含むバージョン: GitLab 15.8.3以降。
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 - セカンダリサイトからのLFSオブジェクトのクローン作成では、セカンダリが完全に同期されている場合でも、プライマリサイトからダウンロードされます。[詳細と回避策については、こちら](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site)を参照してください。
 
 ## 15.5.5 {#1555}
 
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 
 ## 15.5.4 {#1554}
 
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 
 ## 15.5.3 {#1553}
@@ -580,6 +590,7 @@ GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPost
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 
 ## 15.5.2 {#1552}
@@ -592,6 +603,7 @@ GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPost
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 
 ## 15.5.1 {#1551}
@@ -604,6 +616,7 @@ GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPost
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 
 ## 15.5.0 {#1550}
@@ -616,6 +629,7 @@ GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPost
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 
 ### Geoインストール {#geo-installations-21}
@@ -632,7 +646,7 @@ GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPost
 
 ## 15.4.6 {#1546}
 
-- [GitLab 15.4.6で導入されたcURLのバグ](https://github.com/curl/curl/issues/10122)により、[`no_proxy`環境変数が正しく機能しない場合があります](../../administration/geo/replication/troubleshooting/client_http.md#secondary-site-returns-received-http-code-403-from-proxy-after-connect)。GitLab 15.4.5にダウングレードするか、GitLab 15.5.7以降のバージョンにアップグレードしてください。
+- Linuxパッケージ (Omnibus) の`no_proxy` [カスタム環境変数](https://docs.gitlab.com/omnibus/settings/environment-variables.md)は、GitLab 15.4.6に含まれる[cURLのバージョン](https://github.com/curl/curl/issues/10122)におけるバグのため、正常に機能しない可能性があります。このイシューにより、すべてのワイルドカードドメイン（`.example.com`など）は、`no_proxy`変数にリストされている最後のもの以外は無視されます。このイシューを回避するには、ワイルドカードドメインをリストの最後に移動するか、[修正されたcURLの以降バージョン](https://about.gitlab.com/releases/2023/01/09/security-release-gitlab-15-7-2-released/)にアップグレードしてください。
 - [GitLab 15.4で導入されたバグ](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)が原因で、Gitaly Cluster (Praefect)内の1つ以上のGitリポジトリが[利用できない](../../administration/gitaly/praefect/recovery.md#unavailable-repositories)場合、影響を受けるGitaly Cluster (Praefect)内のすべてのプロジェクトまたはプロジェクトWikiリポジトリに対して、[リポジトリチェック](../../administration/repository_checks.md)と[Geoのレプリケーションおよび検証](../../administration/geo/_index.md)が停止します。このバグは、[GitLab 15.9.0で変更をリバート](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823)することにより修正されました。このバージョンにアップグレードする前に、「利用できない」リポジトリが存在しないか確認してください。詳細については、[このバグのイシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/390155)を参照してください。
 
 ## 15.4.5 {#1545}
@@ -712,7 +726,7 @@ GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPost
 
 ## 15.3.3 {#1533}
 
-- GitLab 15.3.3では、[SAMLグループリンク](../../api/saml.md#saml-group-links)APIの`access_level`属性の型が`integer`に変更されました。[APIドキュメント](../../api/members.md)を参照してください。
+- GitLab 15.3.3では、[SAMLグループリンク](../../api/saml.md#saml-group-links)APIの`access_level`属性の型が`integer`に変更されました。[APIドキュメント](../../api/group_members.md)を参照してください。
 - [ライセンスのキャッシュの問題](https://gitlab.com/gitlab-org/gitlab/-/issues/376706)により、新しいライセンスを追加した場合に、GitLabのPremium機能の一部が正しく動作しなくなることがあります。この問題の回避策は次のとおりです:
 
   - 新しいライセンスを適用した後、すべてのRails、Sidekiq、Gitalyノードを再起動します。これにより、関連するライセンスキャッシュがクリアされ、すべてのPremium機能が正しく動作するようになります。
@@ -899,13 +913,13 @@ GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPost
 
 - グローバルサーバーフックを設定するための[`custom_hooks_dir`](../../administration/server_hooks.md#create-global-server-hooks-for-all-repositories)設定は、Gitalyで設定されるようになりました。これまでGitLab Shellで実装されていた設定は、GitLab 15.0で削除されました。この変更により、グローバルサーバーフックは、フックタイプにちなんで名付けられたサブディレクトリ内にのみ保存されるようになりました。グローバルサーバーフックを、カスタムフックディレクトリのルートに単一のフックファイルとして配置することはできなくなりました。たとえば、`<custom_hooks_dir>/<hook_name>.d/*`ではなく`<custom_hooks_dir>/<hook_name>`を使用する必要があります。
   - Linuxパッケージインスタンスの場合は、`gitlab.rb`で`gitaly['custom_hooks_dir']`を使用します。これは、`gitlab_shell['custom_hooks_dir']`を置き換えるものです。
-- PostgreSQL 13.6は、新規インストール時のデフォルトバージョンとして提供され、アップグレード時には12.10が使用されます。[アップグレードドキュメント](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server)に従って、PostgreSQL 13.6に手動でアップグレードできます:
+- PostgreSQL 13.6は、新規インストール時のデフォルトバージョンとして提供され、アップグレード時には12.10が使用されます。[アップグレードドキュメント](https://docs.gitlab.com/omnibus/settings/database/#upgrade-packaged-postgresql-server)に従って、PostgreSQL 13.6に手動でアップグレードできます:
 
   ```shell
   sudo gitlab-ctl pg-upgrade -V 13
   ```
 
-  PostgreSQL 12が削除されるまでは、互換性またはテスト環境の理由に応じて、[PostgreSQLのバージョンを固定](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only)できます。
+  PostgreSQL 12が削除されるまでは、互換性またはテスト環境の理由に応じて、[PostgreSQLのバージョンを固定](https://docs.gitlab.com/omnibus/settings/database/#pin-the-packaged-postgresql-version-fresh-installs-only)できます。
 
   [耐障害性およびGeoインストールには、追加の手順と計画が必要です](../../administration/postgresql/replication_and_failover.md#upgrading-postgresql-major-version-in-a-patroni-cluster)。
 
@@ -919,7 +933,7 @@ GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPost
   sudo gitlab-ctl restart patroni
   ```
 
-  PostgreSQLを再起動しないと、[ライブラリの読み込みに関連するエラー](https://docs.gitlab.com/omnibus/settings/database.html#could-not-load-library-plpgsqlso)が発生する可能性があります。
+  PostgreSQLを再起動しないと、[ライブラリの読み込みに関連するエラー](https://docs.gitlab.com/omnibus/settings/database/#could-not-load-library-plpgsqlso)が発生する可能性があります。
 
 - GitLab 15.0以降、PostgreSQLのバージョンが変更されると、`postgresql`および`geo-postgresql`サービスが自動的に再起動されます。PostgreSQLサービスを再起動すると、データベース操作が一時的に利用できなくなるため、ダウンタイムが発生します。この再起動はデータベースサービスを正常に動作させるために必須ですが、PostgreSQLの再起動のタイミングをより細かく制御したい場合があります。その場合は、`gitlab-ctl reconfigure`に含まれる自動再起動をスキップし、サービスを手動で再起動できます。
 
@@ -941,11 +955,9 @@ GitLab 15.6では、[`omnibus-gitlab`パッケージに同梱されているPost
      sudo gitlab-ctl reconfigure
      ```
 
-  {{< alert type="note" >}}
-
-  基盤となるPostgreSQLのバージョンを変更した場合は、[必要なライブラリの読み込みに関するエラー](https://docs.gitlab.com/omnibus/settings/database.html#could-not-load-library-plpgsqlso)など、ダウンタイムを引き起こす可能性のある問題を回避するために、PostgreSQLの再起動は必須です。そのため、前述の方法で自動再起動をスキップする場合は、GitLab 15.0にアップグレードする前にサービスを手動で再起動してください。
-
-  {{< /alert >}}
+  > [!note]
+  > 
+  > バージョン変更時に基盤となるPostgreSQLを再起動することは、ダウンタイムを引き起こす可能性のある[必要なライブラリの読み込みに関するイシューのようなエラー](https://docs.gitlab.com/omnibus/settings/database/#could-not-load-library-plpgsqlso)を避けるために必須です。そのため、前述の方法で自動再起動をスキップする場合は、GitLab 15.0にアップグレードする前にサービスを手動で再起動してください。
 
 - GitLab 15.0以降、NGINXにおいて`AES256-GCM-SHA384` SSL暗号がデフォルトで許可されなくなります。[AWS Classic Load Balancer](https://docs.aws.amazon.com/en_en/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html#ssl-ciphers)を使用しており、この暗号が必要な場合は、許可リストに追加できます。SSL暗号を許可リストに追加するには、次の手順に従います。
 

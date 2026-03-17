@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Operations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Working with the bundled PgBouncer service
 ---
 
@@ -31,9 +31,7 @@ This content has been moved to a [new location](replication_and_failover.md#conf
 ## PgBouncer as part of a non-fault-tolerant GitLab installation
 
 1. Generate `PGBOUNCER_USER_PASSWORD_HASH` with the command `gitlab-ctl pg-password-md5 pgbouncer`
-
 1. Generate `SQL_USER_PASSWORD_HASH` with the command `gitlab-ctl pg-password-md5 gitlab`. Enter the plaintext SQL_USER_PASSWORD later.
-
 1. On your database node, ensure the following is set in your `/etc/gitlab/gitlab.rb`
 
    ```ruby
@@ -76,7 +74,6 @@ This content has been moved to a [new location](replication_and_failover.md#conf
    [PgBouncer documentation](https://www.pgbouncer.org/config.html#section-databases).
 
 1. Run `gitlab-ctl reconfigure`
-
 1. On the node running Puma, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
    ```ruby
@@ -86,7 +83,6 @@ This content has been moved to a [new location](replication_and_failover.md#conf
    ```
 
 1. Run `gitlab-ctl reconfigure`
-
 1. At this point, your instance should connect to the database through PgBouncer. If you are having issues, see the [Troubleshooting](#troubleshooting) section
 
 ## Backups

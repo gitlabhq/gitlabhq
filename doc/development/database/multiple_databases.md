@@ -1,7 +1,7 @@
 ---
 stage: Runtime
 group: Cells Infrastructure
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Multiple Databases
 ---
 
@@ -25,7 +25,6 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 | Schema | Description | Notes |
 | -------- | ----------- | ------- |
 | `gitlab_main` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
-| `gitlab_main_cell` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_org` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_cell_setting` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
@@ -484,7 +483,7 @@ You can see a real example of using this method for fixing a cross-join in
 
 The easiest way of identifying a cross-join is via failing pipelines.
 
-As an example, in [!130038](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130038/diffs) we moved the `notification_settings` table to the `gitlab_main_cell` schema, by marking it as such in the `db/docs/notification_settings.yml` file.
+As an example, in [!130038](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130038/diffs) we moved the `notification_settings` table to the `gitlab_main_org` schema, by marking it as such in the `db/docs/notification_settings.yml` file.
 
 The pipeline failed with the following [error](https://gitlab.com/gitlab-org/gitlab/-/jobs/4929130983):
 
@@ -697,7 +696,7 @@ process of cleaning up orphaned records.
 
 The easiest way of identifying a cross-database foreign key is via failing pipelines.
 
-As an example, in [!130038](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130038/diffs) we moved the `notification_settings` table to the `gitlab_main_cell` schema, by marking it in the `db/docs/notification_settings.yml` file.
+As an example, in [!130038](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130038/diffs) we moved the `notification_settings` table to the `gitlab_main_org` schema, by marking it in the `db/docs/notification_settings.yml` file.
 
 `notification_settings.user_id` is a column that points to `users`, but the `users` table belongs to a different database, thus this is now treated as a cross-database foreign key.
 

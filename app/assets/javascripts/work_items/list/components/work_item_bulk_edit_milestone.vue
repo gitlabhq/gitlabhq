@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-import { debounce, unionBy, uniqueId } from 'lodash';
+import { debounce, unionBy, uniqueId } from 'lodash-es';
 import { createAlert } from '~/alert';
 import { MILESTONE_STATE } from '~/sidebar/constants';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';

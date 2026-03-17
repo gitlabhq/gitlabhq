@@ -15,6 +15,7 @@ class Explore::GroupsController < Explore::ApplicationController
 
         if @explore_groups_vue_enabled
           push_force_frontend_feature_flag(:explore_groups_vue, true)
+          push_frontend_feature_flag(:groups_list_keyset_pagination, current_user)
           next render :index
         end
 
@@ -36,3 +37,5 @@ class Explore::GroupsController < Explore::ApplicationController
     render_group_tree GroupsFinder.new(current_user, finder_params).execute.limit(MAX_QUERY_SIZE)
   end
 end
+
+Explore::GroupsController.prepend_mod_with('Explore::GroupsController')

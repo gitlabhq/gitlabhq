@@ -29,6 +29,7 @@ export default {
     data-testid="version-dropdown-content"
     size="small"
     category="tertiary"
+    toggle-class="gl-font-bold !gl-px-[0.25rem]"
   >
     <template v-for="version in versions">
       <gl-dropdown-divider v-if="version.addDivider" :key="version.id" />

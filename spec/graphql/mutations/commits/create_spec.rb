@@ -230,6 +230,131 @@ RSpec.describe Mutations::Commits::Create, feature_category: :source_code_manage
             expect(subject[:errors]).to match_array(['You are not allowed to push into this branch'])
           end
         end
+
+        describe 'tracking CI config file creation', :clean_gitlab_redis_shared_state do
+          let(:ci_config_path) { project.ci_config_path_or_default }
+
+          context 'when creating CI config file on default branch' do
+            let(:branch) { project.default_branch }
+            let(:actions) do
+              [{ action: 'create', file_path: ci_config_path, content: 'image: ruby:3.0' }]
+            end
+
+            it 'tracks create_ci_config_file_from_pipeline_editor event' do
+              expect { subject }
+                .to trigger_internal_events('create_ci_config_file_from_pipeline_editor')
+                .with(user: current_user, project: project, namespace: project.namespace, category: 'Mutations::Commits::Create')
+            end
+          end
+
+          context 'when creating CI config file on feature branch' do
+            let_it_be(:feature_branch_project) { create(:project, :public, :repository) }
+
+            let(:branch) { 'feature-branch' }
+            let(:actions) do
+              [{ action: 'create', file_path: feature_branch_project.ci_config_path_or_default, content: 'image: ruby:3.0' }]
+            end
+
+            subject do
+              feature_branch_project.add_developer(current_user)
+              mutation.resolve(
+                project_path: feature_branch_project.full_path,
+                branch: branch,
+                start_branch: feature_branch_project.default_branch,
+                message: 'Commit message',
+                actions: actions,
+                allow_empty: false
+              )
+            end
+
+            it 'tracks create_ci_config_file_from_pipeline_editor event' do
+              expect { subject }
+                .to trigger_internal_events('create_ci_config_file_from_pipeline_editor')
+                .with(user: current_user, project: feature_branch_project, namespace: feature_branch_project.namespace, category: 'Mutations::Commits::Create')
+            end
+          end
+
+          context 'when updating existing CI config file' do
+            let(:branch) { project.default_branch }
+            let(:actions) do
+              [{ action: 'update', file_path: ci_config_path, content: 'image: ruby:3.1' }]
+            end
+
+            before do
+              Files::CreateService.new(
+                project,
+                current_user,
+                start_branch: branch,
+                branch_name: branch,
+                commit_message: 'Add CI config',
+                file_path: ci_config_path,
+                file_content: 'image: ruby:3.0'
+              ).execute
+            end
+
+            it 'does not track create_ci_config_file_from_pipeline_editor event' do
+              expect { subject }
+                .not_to trigger_internal_events('create_ci_config_file_from_pipeline_editor')
+            end
+          end
+
+          context 'when creating a non-CI config file' do
+            let(:branch) { project.default_branch }
+            let(:actions) do
+              [{ action: 'create', file_path: 'README.md', content: '# Hello' }]
+            end
+
+            it 'does not track create_ci_config_file_from_pipeline_editor event' do
+              expect { subject }
+                .not_to trigger_internal_events('create_ci_config_file_from_pipeline_editor')
+            end
+          end
+
+          context 'when project has custom CI config path' do
+            let_it_be(:custom_project) { create(:project, :public, :repository, ci_config_path: 'custom/ci.yml') }
+
+            let(:branch) { custom_project.default_branch }
+            let(:actions) do
+              [{ action: 'create', file_path: 'custom/ci.yml', content: 'image: ruby:3.0' }]
+            end
+
+            subject do
+              custom_project.add_developer(current_user)
+              mutation.resolve(
+                project_path: custom_project.full_path,
+                branch: branch,
+                start_branch: nil,
+                message: 'Commit message',
+                actions: actions,
+                allow_empty: false
+              )
+            end
+
+            it 'tracks create_ci_config_file_from_pipeline_editor event' do
+              expect { subject }
+                .to trigger_internal_events('create_ci_config_file_from_pipeline_editor')
+                .with(user: current_user, project: custom_project, namespace: custom_project.namespace, category: 'Mutations::Commits::Create')
+            end
+          end
+
+          context 'when commit fails' do
+            let(:branch) { project.default_branch }
+            let(:actions) do
+              [{ action: 'create', file_path: ci_config_path, content: 'image: ruby:3.0' }]
+            end
+
+            before do
+              allow_next_instance_of(Files::MultiService) do |service|
+                allow(service).to receive(:execute).and_return({ status: :error, message: 'Commit failed' })
+              end
+            end
+
+            it 'does not track create_ci_config_file_from_pipeline_editor event' do
+              expect { subject }
+                .not_to trigger_internal_events('create_ci_config_file_from_pipeline_editor')
+            end
+          end
+        end
       end
     end
 

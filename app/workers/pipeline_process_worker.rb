@@ -14,12 +14,15 @@ class PipelineProcessWorker
 
   idempotent!
   deduplicate :until_executed, if_deduplicated: :reschedule_once, ttl: 1.minute
+  max_concurrency_limit_percentage 0.6
 
   def perform(pipeline_id)
-    Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
-      Ci::ProcessPipelineService
-        .new(pipeline)
-        .execute
-    end
+    partition_id = Ci::Partition.current&.id
+    scope = Ci::Pipeline.in_partition(partition_id)
+    pipeline = scope.find_by_id(pipeline_id) if Feature.enabled?(:ci_partition_pruning_workers, :current_request)
+    pipeline ||= Ci::Pipeline.find_by_id(pipeline_id)
+    return unless pipeline
+
+    Ci::ProcessPipelineService.new(pipeline).execute
   end
 end

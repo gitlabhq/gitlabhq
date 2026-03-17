@@ -1,5 +1,3 @@
 ---
 name: delete_remote_mirror
 description: Grants the ability to delete remote mirrors
-boundaries:
-  - project

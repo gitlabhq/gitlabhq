@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: User passwords
 description: Secure user passwords through requirements enforcement and password reset procedures.
 ---
@@ -88,7 +88,7 @@ To change your password:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Password**.
+1. In the left sidebar, select **Access** > **Password**.
 1. In the **Current password** text box, enter your current password.
 1. In the **New password** and **Password confirmation** text box, enter your new password.
 1. Select **Save password**.

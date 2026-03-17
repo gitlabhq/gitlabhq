@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Merge Request Performance Guidelines
 ---
 
@@ -475,7 +475,6 @@ We can consider the following types of storages:
   This storage is also very often SSD-based, thus is significantly faster.
   The local storage can be configured for the application with
   the usage of `TMPDIR` variable.
-
 - **Shared temporary storage** (short-term storage) This type of storage is network-based temporary storage,
   usually run with a common NFS server. As of Feb 2020, we still use this type of storage
   for most of our implementations. Even though this allows the above limit to be significantly larger,
@@ -484,13 +483,11 @@ We can consider the following types of storages:
   of operations creates a contention on execution of all other jobs and request
   across the whole application, this can impact stability of the whole GitLab.
   Be respectful of that.
-
 - **Shared persistent storage** (long-term storage) This type of storage uses
   shared network-based storage (for example, NFS). This solution is mostly used by customers running small
   installations consisting of a few nodes. The files on shared storage are easily accessible,
   but any job that is uploading or downloading data can create a serious contention to all other jobs.
   This is also an approach by default used by Omnibus.
-
 - **Object-based persistent storage** (long term storage) this type of storage uses external
   services like [AWS S3](https://en.wikipedia.org/wiki/Amazon_S3). The Object Storage
   can be treated as infinitely scalable and redundant. Accessing this storage usually requires

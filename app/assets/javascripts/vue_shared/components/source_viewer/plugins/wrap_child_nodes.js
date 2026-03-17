@@ -1,4 +1,4 @@
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 
 /**
  * Highlight.js plugin for wrapping nodes with the correct selectors to ensure

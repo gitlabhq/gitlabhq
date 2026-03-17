@@ -284,6 +284,9 @@ export default {
   >
     <div
       class="tree-ref-container !gl-mb-3 gl-flex gl-flex-wrap gl-items-center gl-gap-3 @md/panel:!gl-mb-0"
+      :class="{
+        'gl-flex-grow': isProjectOverview,
+      }"
     >
       <file-tree-browser-toggle
         v-show="showFileTreeBrowserToggle"

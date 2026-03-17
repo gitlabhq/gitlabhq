@@ -155,6 +155,42 @@ RSpec.describe WorkItems::SavedViews::FilterNormalizerService, feature_category:
         end
       end
 
+      context 'with wildcard Any' do
+        let(:filter_data) { { label_name: ['Any'] } }
+
+        it 'stores as label_wildcard_id instead of resolving to IDs' do
+          result = service.execute
+
+          expect(result).to be_success
+          expect(result.payload[:label_wildcard_id]).to eq('Any')
+          expect(result.payload).not_to have_key(:label_ids)
+        end
+      end
+
+      context 'with wildcard None' do
+        let(:filter_data) { { label_name: ['None'] } }
+
+        it 'stores as label_wildcard_id instead of resolving to IDs' do
+          result = service.execute
+
+          expect(result).to be_success
+          expect(result.payload[:label_wildcard_id]).to eq('None')
+          expect(result.payload).not_to have_key(:label_ids)
+        end
+      end
+
+      context 'with wildcard Any alongside regular label names' do
+        let(:filter_data) { { label_name: %w[Any bug] } }
+
+        it 'stores wildcard in label_wildcard_id and resolves remaining labels to IDs' do
+          result = service.execute
+
+          expect(result).to be_success
+          expect(result.payload[:label_wildcard_id]).to eq('Any')
+          expect(result.payload[:label_ids]).to eq([group_label.id])
+        end
+      end
+
       context 'with unioned label_names' do
         let(:filter_data) { { or: { label_names: %w[bug feature] } } }
 

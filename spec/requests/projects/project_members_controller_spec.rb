@@ -21,6 +21,42 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
     it_behaves_like 'request_accessable'
   end
 
+  describe 'DELETE /*namespace_id/:project_id/-/project_members/leave' do
+    before do
+      sign_in(user)
+    end
+
+    context 'when user is a direct member' do
+      before_all do
+        membershipable.add_developer(user)
+      end
+
+      it 'removes the member' do
+        expect do
+          delete leave_namespace_project_project_members_path(
+            namespace_id: membershipable.namespace,
+            project_id: membershipable
+          )
+        end.to change { membershipable.members.count }.by(-1)
+      end
+    end
+
+    context 'when user is a requester' do
+      before do
+        membershipable.request_access(user)
+      end
+
+      it 'removes the access request' do
+        expect do
+          delete leave_namespace_project_project_members_path(
+            namespace_id: membershipable.namespace,
+            project_id: membershipable
+          )
+        end.to change { membershipable.requesters.count }.by(-1)
+      end
+    end
+  end
+
   describe 'GET /*namespace_id/:project_id/-/project_members/invite_search.json' do
     subject(:request) do
       get invite_search_namespace_project_project_members_path(
@@ -41,7 +77,7 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
     let_it_be(:external_user) { create(:user, :external) }
     let_it_be(:unconfirmed_user) { create(:user, confirmed_at: nil) }
     let_it_be(:omniauth_user) { create(:omniauth_user) }
-    let_it_be(:internal_user) { Users::Internal.alert_bot }
+    let_it_be(:internal_user) { Users::Internal.in_organization(membershipable.organization).alert_bot }
     let_it_be(:project_bot_user) { create(:user, :project_bot) }
     let_it_be(:service_account_user) { create(:user, :service_account) }
     let_it_be(:other_organization) { create(:organization) }

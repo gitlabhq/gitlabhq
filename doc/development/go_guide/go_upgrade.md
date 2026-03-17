@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Managing Go versions
 ---
 
@@ -216,7 +216,6 @@ projects with:
   Integration tests are costly and should be testing inter-component
   operational issues. Isolated component testing reduces mean time to
   feedback on updates and decreases resource burn across the organization.
-
 - Components should have end-to-end test coverage in the GitLab Performance Test tool.
 - Integration validation through installation of fresh packages **_and_** upgrade from previous versions for:
   - Single GitLab Node

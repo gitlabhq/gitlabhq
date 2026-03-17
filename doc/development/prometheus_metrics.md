@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: GitLab Prometheus metrics development guidelines
 ---
 
@@ -42,7 +42,7 @@ generate them from a cron-based Sidekiq job:
 >
 > - The same exporter is not guaranteed to be queried consistently.
 > - This is especially problematic for gauge metrics, as each Sidekiq worker will continue reporting the last recorded value
-> until that specific worker runs the metric collection code again.
+>   until that specific worker runs the metric collection code again.
 > - This can lead to inconsistent or stale metrics data across your monitoring system.
 >
 > For more reliable metrics collection, consider creating the exporter as a custom exporter

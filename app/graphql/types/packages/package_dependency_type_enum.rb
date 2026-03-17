@@ -5,7 +5,7 @@ module Types
     class PackageDependencyTypeEnum < BaseEnum
       graphql_name 'PackageDependencyType'
 
-      ::Packages::DependencyLink.dependency_types.keys.each do |type|
+      ::Packages::DependencyLink.dependency_types.each_key do |type|
         value type.to_s.underscore.upcase, description: "#{type} dependency type", value: type.to_s
       end
     end

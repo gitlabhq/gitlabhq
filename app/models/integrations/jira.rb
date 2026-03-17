@@ -285,7 +285,7 @@ module Integrations
         {
           type: SECTION_TYPE_CONFIGURATION,
           title: _('Jira issue matching'),
-          description: s_('Configure custom rules for Jira issue key matching')
+          description: _('Configure custom rules for Jira issue key matching')
         }
       ]
 

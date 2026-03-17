@@ -3,7 +3,6 @@ import FieldPresenter from '~/glql/components/presenters/field.vue';
 import HealthPresenter from 'ee_else_ce/glql/components/presenters/health.vue';
 import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
 import StatusPresenter from 'ee_else_ce/glql/components/presenters/status.vue';
-import DimensionPresenter from '~/glql/components/presenters/dimension.vue';
 import BoolPresenter from '~/glql/components/presenters/bool.vue';
 import HtmlPresenter from '~/glql/components/presenters/html.vue';
 import IssuablePresenter from '~/glql/components/presenters/issuable.vue';
@@ -31,7 +30,6 @@ import {
   MOCK_WORK_ITEM,
   MOCK_STATUS,
   MOCK_WORK_ITEM_TYPE,
-  MOCK_DIMENSION,
 } from '../../mock_data';
 
 const MOCK_LINK = { title: 'title', webUrl: 'url' };
@@ -69,7 +67,6 @@ describe('FieldPresenter', () => {
     ${'iteration'} | ${MOCK_ITERATION}       | ${IterationPresenter}  | ${'IterationPresenter'}
     ${'status'}    | ${MOCK_STATUS}          | ${StatusPresenter}     | ${'StatusPresenter'}
     ${'type'}      | ${MOCK_WORK_ITEM_TYPE}  | ${TypePresenter}       | ${'TypePresenter'}
-    ${'dimension'} | ${MOCK_DIMENSION}       | ${DimensionPresenter}  | ${'DimensionPresenter'}
   `('renders $presenterName for data type: $dataType', ({ field, presenter }) => {
     createWrapper({ key: field }, 'key');
 

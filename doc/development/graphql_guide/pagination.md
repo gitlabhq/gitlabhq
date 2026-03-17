@@ -1,7 +1,7 @@
 ---
 stage: Developer Experience
 group: API Platform
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: GraphQL pagination
 ---
 
@@ -40,7 +40,6 @@ There are a couple of problems with this:
   increases, the performance degrades quickly.
   Read more in
   [The SQL I Love <3. Efficient pagination of a table with 100M records](http://allyouneedisbackend.com/blog/2017/09/24/the-sql-i-love-part-1-scanning-large-table/).
-
 - Data stability. When you get the 20 items for page 100 (at
   offset 2000), GitLab shows those 20 items. If someone then
   deletes or adds records in page 99 or before, the items at
@@ -67,12 +66,9 @@ on Jan 1 is on page 20 or page 100.
 Some of the benefits and tradeoffs of keyset pagination are
 
 - Performance is much better.
-
 - More data stability for end-users since records are not missing from lists due to
   deletions or insertions.
-
 - It's the best way to do infinite scrolling.
-
 - It's more difficult to program and maintain. Easy for `updated_at` and
   `sort_order`, complicated (or impossible) for [complex sorting scenarios](#query-complexity).
 

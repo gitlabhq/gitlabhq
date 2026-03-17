@@ -206,8 +206,8 @@ export default {
         :key="provider.id"
         class="gl-mb-6 gl-h-full"
       >
-        <gl-card class="gl-h-full">
-          <div class="gl-flex">
+        <gl-card class="gl-h-full" header-class="gl-flex gl-gap-4">
+          <template #header>
             <gl-toggle
               :value="provider.isEnabled"
               :label="__('Training mode')"
@@ -216,44 +216,45 @@ export default {
               :data-qa-training-provider="provider.name"
               @change="toggleProvider(provider)"
             />
-            <div v-if="$options.TEMP_PROVIDER_LOGOS[provider.name]" class="gl-ml-4">
-              <div
-                v-safe-html="$options.TEMP_PROVIDER_LOGOS[provider.name].svg"
-                data-testid="provider-logo"
-                style="width: 18px"
-                role="presentation"
-              ></div>
-            </div>
-            <div class="gl-ml-3">
-              <h3 class="gl-m-0 gl-mb-2 gl-text-lg">
+            <div class="gl-flex gl-justify-between gl-gap-2">
+              <div v-if="$options.TEMP_PROVIDER_LOGOS[provider.name]">
+                <div
+                  v-safe-html="$options.TEMP_PROVIDER_LOGOS[provider.name].svg"
+                  data-testid="provider-logo"
+                  style="width: 18px"
+                  role="presentation"
+                ></div>
+              </div>
+              <h3 class="!gl-mt-1">
                 {{ provider.name }}
               </h3>
-              <p>
-                {{ provider.description }}
-                <gl-link
-                  v-if="$options.TEMP_PROVIDER_URLS[provider.name]"
-                  :href="$options.TEMP_PROVIDER_URLS[provider.name]"
-                  target="_blank"
-                  @click="trackProviderLearnMoreClick(provider.id)"
-                >
-                  {{ __('Learn more.') }}
-                </gl-link>
-              </p>
-              <gl-form-radio
-                :checked="primaryProviderId"
-                :disabled="!provider.isEnabled"
-                :value="provider.id"
-                @change="setPrimaryProvider(provider)"
-              >
-                {{ $options.i18n.primaryTraining }}
-                <gl-icon
-                  v-gl-tooltip="$options.i18n.primaryTrainingDescription"
-                  name="information-o"
-                  class="gl-ml-2 gl-cursor-help"
-                />
-              </gl-form-radio>
             </div>
-          </div>
+          </template>
+
+          <p>
+            {{ provider.description }}
+            <gl-link
+              v-if="$options.TEMP_PROVIDER_URLS[provider.name]"
+              :href="$options.TEMP_PROVIDER_URLS[provider.name]"
+              target="_blank"
+              @click="trackProviderLearnMoreClick(provider.id)"
+            >
+              {{ __('Learn more.') }}
+            </gl-link>
+          </p>
+          <gl-form-radio
+            :checked="primaryProviderId"
+            :disabled="!provider.isEnabled"
+            :value="provider.id"
+            @change="setPrimaryProvider(provider)"
+          >
+            {{ $options.i18n.primaryTraining }}
+            <gl-icon
+              v-gl-tooltip="$options.i18n.primaryTrainingDescription"
+              name="information-o"
+              class="gl-ml-2 gl-cursor-help"
+            />
+          </gl-form-radio>
         </gl-card>
       </li>
     </ul>

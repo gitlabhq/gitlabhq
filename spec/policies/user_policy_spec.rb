@@ -23,11 +23,11 @@ RSpec.describe UserPolicy, feature_category: :permissions do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:read_user_personal_access_tokens) }
+        it { is_expected.to be_allowed(:read_personal_access_token) }
       end
 
       context 'when admin mode is disabled' do
-        it { is_expected.not_to be_allowed(:read_user_personal_access_tokens) }
+        it { is_expected.not_to be_allowed(:read_personal_access_token) }
       end
     end
 
@@ -35,11 +35,11 @@ RSpec.describe UserPolicy, feature_category: :permissions do
       context 'requesting their own personal access tokens' do
         subject { described_class.new(current_user, current_user) }
 
-        it { is_expected.to be_allowed(:read_user_personal_access_tokens) }
+        it { is_expected.to be_allowed(:read_personal_access_token) }
       end
 
       context "requesting a different user's personal access tokens" do
-        it { is_expected.not_to be_allowed(:read_user_personal_access_tokens) }
+        it { is_expected.not_to be_allowed(:read_personal_access_token) }
       end
     end
   end
@@ -49,17 +49,17 @@ RSpec.describe UserPolicy, feature_category: :permissions do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled and current_user is not blocked', :enable_admin_mode do
-        it { is_expected.to be_allowed(:create_user_personal_access_token) }
+        it { is_expected.to be_allowed(:create_personal_access_token) }
       end
 
       context 'when admin mode is enabled and current_user is blocked', :enable_admin_mode do
         let(:current_user) { create(:admin, :blocked) }
 
-        it { is_expected.not_to be_allowed(:create_user_personal_access_token) }
+        it { is_expected.not_to be_allowed(:create_personal_access_token) }
       end
 
       context 'when admin mode is disabled' do
-        it { is_expected.not_to be_allowed(:create_user_personal_access_token) }
+        it { is_expected.not_to be_allowed(:create_personal_access_token) }
       end
     end
 
@@ -68,18 +68,18 @@ RSpec.describe UserPolicy, feature_category: :permissions do
         subject { described_class.new(current_user, current_user) }
 
         context 'when current_user is not blocked' do
-          it { is_expected.to be_allowed(:create_user_personal_access_token) }
+          it { is_expected.to be_allowed(:create_personal_access_token) }
         end
 
         context 'when current_user is blocked' do
           let(:current_user) { create(:user, :blocked) }
 
-          it { is_expected.not_to be_allowed(:create_user_personal_access_token) }
+          it { is_expected.not_to be_allowed(:create_personal_access_token) }
         end
       end
 
       context "creating a different user's personal access tokens" do
-        it { is_expected.not_to be_allowed(:create_user_personal_access_token) }
+        it { is_expected.not_to be_allowed(:create_personal_access_token) }
       end
     end
   end

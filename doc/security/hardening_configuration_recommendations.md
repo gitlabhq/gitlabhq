@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Hardening - Configuration Recommendations
 ---
 
@@ -54,6 +54,8 @@ the security of NGINX itself:
 
    # Turn off session ticket reuse
    nginx['ssl_session_tickets'] = "off"
+   # Pick our own curve instead of what openssl hands us
+   nginx['ssl_ecdh_curve'] = "secp384r1"
    ```
 
 1. Reconfigure GitLab:

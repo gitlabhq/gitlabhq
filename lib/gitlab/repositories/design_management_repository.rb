@@ -7,19 +7,29 @@ module Gitlab
       extend Gitlab::Utils::Override
 
       override :name
-      def name = :design
+      def name
+        :design
+      end
 
       override :design
-      def suffix = :design
+      def suffix
+        :design
+      end
 
       override :access_checker_class
-      def access_checker_class = ::Gitlab::GitAccessDesign
+      def access_checker_class
+        ::Gitlab::GitAccessDesign
+      end
 
       override :guest_read_ability
-      def guest_read_ability = :download_code
+      def guest_read_ability
+        :download_code
+      end
 
       override :container_class
-      def container_class = DesignManagement::Repository
+      def container_class
+        DesignManagement::Repository
+      end
 
       override :project_for
       def project_for(design_management_repository)

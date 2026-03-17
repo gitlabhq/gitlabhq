@@ -100,13 +100,14 @@ RSpec.describe API::GroupExport, feature_category: :importers do
 
     context 'when the requests have exceeded the rate limit' do
       before do
-        allow(Gitlab::ApplicationRateLimiter)
-          .to receive(:increment)
-          .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_download_export][:threshold].call + 1)
+        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+          allow(strategy)
+            .to receive(:increment)
+            .and_return(Gitlab::ApplicationRateLimiter.rate_limits[:group_download_export][:threshold].call + 1)
+        end
       end
 
-      it 'throttles the endpoint',
-        quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/24871' do
+      it 'throttles the endpoint' do
         get api(download_path, user)
 
         expect(json_response["message"])

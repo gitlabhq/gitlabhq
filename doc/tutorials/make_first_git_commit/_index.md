@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Tutorials
-info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: 'Tutorial: Make your first Git commit'
 ---
 
@@ -105,10 +105,8 @@ a copy on your computer, or wherever you want to store and work with the files.
 1. On your project's overview page, in the upper-right corner, select **Code**, then copy the URL for **Clone with SSH**.
 
    ![Red arrows indicate the 'Clone' button and the 'Clone with SSH' option in the upper-right corner of the page](img/clone_project_v14_9.png)
-
 1. Open a terminal on your computer and go to the directory
    where you want to clone the files.
-
 1. Enter `git clone` and paste the URL:
 
    ```shell
@@ -151,7 +149,6 @@ work on your changes independently.
    ```
 
 1. Save the file.
-
 1. Git keeps track of changed files. To confirm which files have changed, get
    the status.
 

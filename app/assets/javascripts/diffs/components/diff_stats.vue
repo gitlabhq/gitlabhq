@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlSprintf } from '@gitlab/ui';
-import { isNumber } from 'lodash';
+import { isNumber } from 'lodash-es';
 import { n__ } from '~/locale';
 import { isNotDiffable, stats } from '../utils/diff_file';
 

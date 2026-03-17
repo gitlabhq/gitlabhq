@@ -8,17 +8,21 @@ module Sidebars
 
         override :link
         def link
-          issues_dashboard_path(assignee_username: @context.current_user.username)
+          if context.current_user.work_items_consolidated_list_enabled?
+            work_items_dashboard_path(assignee_username: @context.current_user.username)
+          else
+            issues_dashboard_path(assignee_username: @context.current_user.username)
+          end
         end
 
         override :title
         def title
-          _('Issues')
+          context.current_user.work_items_consolidated_list_enabled? ? _('Work items') : _('Issues')
         end
 
         override :sprite_icon
         def sprite_icon
-          'work-item-issue'
+          context.current_user.work_items_consolidated_list_enabled? ? 'work-items' : 'work-item-issue'
         end
 
         override :render?
@@ -28,7 +32,7 @@ module Sidebars
 
         override :active_routes
         def active_routes
-          { path: 'dashboard#issues' }
+          { path: %w[dashboard#issues dashboard#work_items] }
         end
 
         override :has_pill?

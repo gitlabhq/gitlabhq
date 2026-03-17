@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Gitaly
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Configure Gitaly Cluster (Praefect)
 ---
 
@@ -525,8 +525,9 @@ On the Praefect node:
 
 <!--
 Updates to example must be made at:
-- https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect.md
-- all reference architecture pages
+
+- <https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/configure_gitaly.md#configure-gitaly-server>
+- All reference architecture pages
 -->
 
    ```ruby
@@ -780,7 +781,6 @@ Configure Praefect with TLS.
 For Linux package installations:
 
 1. Create certificates for Praefect servers.
-
 1. On the Praefect servers, create the `/etc/gitlab/ssl` directory and copy your key
    and certificate there:
 
@@ -806,7 +806,6 @@ For Linux package installations:
    ```
 
 1. Save the file and [reconfigure](../../restart_gitlab.md#reconfigure-a-linux-package-installation).
-
 1. On the Praefect clients (including each Gitaly server), copy the certificates,
    or their certificate authority, into `/etc/gitlab/trusted-certs`:
 
@@ -1444,7 +1443,7 @@ Particular attention should be shown to:
 1. Check that the Praefect storage is configured to store new repositories:
 
    1. In the upper-right corner, select **Admin**.
-   1. On the left sidebar, select **Settings** > **Repository**.
+   1. In the left sidebar, select **Settings** > **Repository**.
    1. Expand the **Repository storage** section.
 
    Following this guide, the `default` storage should have weight 100 to store all new repositories.

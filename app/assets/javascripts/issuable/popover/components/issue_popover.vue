@@ -25,6 +25,7 @@ import {
   STATE_CLOSED as WORK_ITEM_STATUS_CLOSED,
   WORK_ITEM_TYPE_NAME_EPIC,
 } from '~/work_items/constants';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'IssuePopover',
@@ -44,7 +45,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [timeagoMixin],
+  mixins: [glFeatureFlagsMixin(), timeagoMixin],
   props: {
     target: {
       type: [HTMLElement, Function, Object, String],
@@ -82,6 +83,7 @@ export default {
         return {
           fullPath: this.namespacePath,
           iid: this.iid,
+          useWorkItemFeatures: Boolean(this.glFeatures?.workItemFeaturesField),
         };
       },
       update: (data) => data.namespace?.workItem,
@@ -116,8 +118,7 @@ export default {
       return this.workItemType?.iconName || '';
     },
     assignees() {
-      const assigneesWidget = findAssigneesWidget(this.workItem);
-      return assigneesWidget?.assignees?.nodes || [];
+      return findAssigneesWidget(this.workItem)?.assignees?.nodes || [];
     },
     assigneeAvatars() {
       return this.assignees.map((assignee) => ({
@@ -135,7 +136,7 @@ export default {
       return findStartAndDueDateWidget(this.workItem) ?? {};
     },
     milestoneWidget() {
-      return findMilestoneWidget(this.workItem) ?? {};
+      return this.workItem?.features?.milestone ?? findMilestoneWidget(this.workItem) ?? {};
     },
     weightWidget() {
       return findWeightWidget(this.workItem) ?? {};

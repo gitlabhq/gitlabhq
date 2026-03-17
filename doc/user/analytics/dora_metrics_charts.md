@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: DevOps Research and Assessment (DORA) metrics charts
 ---
 
@@ -27,7 +27,7 @@ Prerequisites:
 
 To view the DORA metrics dashboard for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Analyze** > **Analytics Dashboards**.
 1. Select **DORA metrics dashboard**.
 
@@ -35,6 +35,6 @@ To view the DORA metrics dashboard for a group:
 
 To view the DORA metrics dashboard for a project:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Analyze** > **Analytics Dashboards**.
 1. Select **DORA metrics dashboard**.

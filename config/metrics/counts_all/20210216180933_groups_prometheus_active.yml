@@ -3,6 +3,8 @@ data_category: optional
 key_path: counts.groups_prometheus_active
 description: Count of groups with active integrations for Prometheus
 product_group: platform_insights
+product_categories:
+- observability
 value_type: number
 status: removed
 time_frame: all

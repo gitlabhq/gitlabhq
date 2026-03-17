@@ -50,7 +50,6 @@ describe('InternalEvents', () => {
 
     it('does not track anything if event is not eligible', () => {
       jest.spyOn(utils, 'isEventEligible').mockReturnValue(false);
-      jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
       jest.spyOn(Tracking, 'event').mockImplementation(() => {});
 
       InternalEvents.trackEvent(event, allowedAdditionalProps, category);
@@ -58,7 +57,6 @@ describe('InternalEvents', () => {
       expect(utils.isEventEligible).toHaveBeenCalledWith(event);
       expect(Tracking.event).not.toHaveBeenCalled();
       expect(API.trackInternalEvent).not.toHaveBeenCalled();
-      expect(InternalEvents.trackBrowserSDK).not.toHaveBeenCalled();
     });
 
     it('trackEvent calls API.trackInternalEvent with correct arguments', () => {
@@ -116,30 +114,7 @@ describe('InternalEvents', () => {
       );
     });
 
-    it('trackEvent calls trackBrowserSDK with event name', () => {
-      jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
-
-      InternalEvents.trackEvent(event);
-
-      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledTimes(1);
-      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledWith(event, {});
-    });
-
-    it('trackEvent calls trackBrowserSDK with event name and additional Properties', () => {
-      jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
-
-      InternalEvents.trackEvent(event, allowedAdditionalProps);
-
-      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledTimes(1);
-      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalledWith(event, {
-        property: 'value',
-        label: 'value',
-        value: 2,
-      });
-    });
-
     it('throws an error if base property has incorrect type', () => {
-      jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
       jest.spyOn(Tracking, 'event').mockImplementation(() => {});
 
       const additionalProps = {
@@ -151,13 +126,11 @@ describe('InternalEvents', () => {
         InternalEvents.trackEvent(event, additionalProps, category);
       }).toThrow('value should be of type: number. Provided type is: string.');
 
-      expect(InternalEvents.trackBrowserSDK).not.toHaveBeenCalled();
       expect(Tracking.event).not.toHaveBeenCalled();
       expect(API.trackInternalEvent).not.toHaveBeenCalled();
     });
 
     it('does not throw an error for custom properties', () => {
-      jest.spyOn(InternalEvents, 'trackBrowserSDK').mockImplementation(() => {});
       jest.spyOn(Tracking, 'event').mockImplementation(() => {});
 
       const additionalProps = {
@@ -170,7 +143,6 @@ describe('InternalEvents', () => {
         InternalEvents.trackEvent(event, additionalProps, category);
       }).not.toThrow();
 
-      expect(InternalEvents.trackBrowserSDK).toHaveBeenCalled();
       expect(Tracking.event).toHaveBeenCalled();
       expect(API.trackInternalEvent).toHaveBeenCalled();
     });
@@ -347,103 +319,6 @@ describe('InternalEvents', () => {
 
         InternalEvents.trackInternalLoadEvents();
         expect(trackEventSpy).toHaveBeenCalledTimes(0);
-      });
-    });
-  });
-
-  describe('initBrowserSDK', () => {
-    beforeEach(() => {
-      window.glClient = {
-        setDocumentTitle: jest.fn(),
-        page: jest.fn(),
-      };
-      window.gl = {
-        environment: 'testing',
-        key: 'value',
-      };
-    });
-
-    it('should not call setDocumentTitle or page methods when window.glClient is undefined', () => {
-      window.glClient = undefined;
-
-      InternalEvents.initBrowserSDK();
-
-      expect(window.glClient?.setDocumentTitle).toBeUndefined();
-      expect(window.glClient?.page).toBeUndefined();
-    });
-
-    it('should call setDocumentTitle and page methods on window.glClient when it is defined', () => {
-      InternalEvents.initBrowserSDK();
-
-      expect(window.glClient.setDocumentTitle).toHaveBeenCalledWith('GitLab');
-      expect(window.glClient.page).toHaveBeenCalledWith({
-        title: 'GitLab',
-      });
-    });
-
-    it('should call setDocumentTitle and page methods with default data when window.gl is undefined', () => {
-      window.gl = undefined;
-
-      InternalEvents.initBrowserSDK();
-
-      expect(window.glClient.setDocumentTitle).toHaveBeenCalledWith('GitLab');
-      expect(window.glClient.page).toHaveBeenCalledWith({
-        title: 'GitLab',
-      });
-    });
-  });
-
-  describe('trackBrowserSDK', () => {
-    beforeEach(() => {
-      window.glClient = { track: jest.fn() };
-      Tracker.enabled = jest.fn();
-    });
-
-    afterEach(() => {
-      window.glClient = null;
-      window.gl = null;
-    });
-
-    const mockSnowplowContext = (projectId, namespaceId) => {
-      window.gl = {
-        snowplowStandardContext: {
-          data: { project_id: projectId, namespace_id: namespaceId },
-        },
-      };
-    };
-
-    it('should not call glClient.track if Tracker is not enabled', () => {
-      Tracker.enabled.mockReturnValue(false);
-
-      InternalEvents.trackBrowserSDK(event);
-
-      expect(window.glClient.track).not.toHaveBeenCalled();
-    });
-
-    it('should call glClient.track with event name if Tracker is enabled and no project_id and namespace_id present', () => {
-      mockSnowplowContext(null, null);
-      Tracker.enabled.mockReturnValue(true);
-
-      InternalEvents.trackBrowserSDK(event);
-
-      expect(window.glClient.track).toHaveBeenCalledTimes(1);
-      expect(window.glClient.track).toHaveBeenCalledWith(event, {
-        project_id: null,
-        namespace_id: null,
-      });
-    });
-
-    it('should call glClient.track with event name and additional properties if Tracker is enabled', () => {
-      mockSnowplowContext(123, 456);
-      Tracker.enabled.mockReturnValue(true);
-
-      InternalEvents.trackBrowserSDK(event, allowedAdditionalProps);
-
-      expect(window.glClient.track).toHaveBeenCalledTimes(1);
-      expect(window.glClient.track).toHaveBeenCalledWith(event, {
-        project_id: 123,
-        namespace_id: 456,
-        ...allowedAdditionalProps,
       });
     });
   });

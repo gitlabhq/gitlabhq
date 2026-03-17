@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate to the GitLab agent for Kubernetes
 ---
 
@@ -55,7 +55,7 @@ To migrate generic deployments:
 
 1. Install the [GitLab agent for Kubernetes](../../clusters/agent/install/_index.md).
 1. Follow the CI/CD workflow to [authorize the agent to access](../../clusters/agent/ci_cd_workflow.md#authorize-agent-access) groups and projects, or to [secure access with impersonation](../../clusters/agent/ci_cd_workflow.md#restrict-project-and-group-access-by-using-impersonation).
-1. On the left sidebar, select **Operate** > **Kubernetes clusters**.
+1. In the left sidebar, select **Operate** > **Kubernetes clusters**.
 1. From the certificate-based clusters section, open the cluster that serves the same environment scope.
 1. Select the **Details** tab and turn off the cluster.
 
@@ -158,7 +158,7 @@ To migrate from GitLab-managed clusters to GitLab-managed Kubernetes resources:
    ```
 
 1. In your CI/CD configuration, use the agent with the `environment.kubernetes.agent: <path/to/agent/project:agent-name>` syntax.
-1. On the left sidebar, select **Operate** > **Kubernetes clusters**.
+1. In the left sidebar, select **Operate** > **Kubernetes clusters**.
 1. From the certificate-based clusters section, open the cluster that serves the same environment scope.
 1. Select the **Details** tab and turn off the cluster.
 
@@ -174,7 +174,7 @@ Prerequisites
 To migrate from Auto DevOps:
 
 1. In GitLab, go to the project where you use Auto DevOps.
-1. Add three variables. On the left sidebar, select **Settings** > **CI/CD** and expand **Variables**.
+1. Add three variables. In the left sidebar, select **Settings** > **CI/CD** and expand **Variables**.
    - Add a key called `KUBE_INGRESS_BASE_DOMAIN` with the application deployment domain as the value.
    - Add a key called `KUBE_CONTEXT` with a value like `path/to/agent/project:agent-name`.
      Select the environment scope of your choice.
@@ -201,7 +201,7 @@ To migrate from Auto DevOps:
 
    - Add a key called `KUBE_NAMESPACE` with a value of the Kubernetes namespace for your deployments to target. Set the same environment scope.
 1. Select **Add variable**.
-1. On the left sidebar, select **Operate** > **Kubernetes clusters**.
+1. In the left sidebar, select **Operate** > **Kubernetes clusters**.
 1. From the certificate-based clusters section, open the cluster that serves the same environment scope.
 1. Select the **Details** tab and disable the cluster.
 1. Edit your `.gitlab-ci.yml` file and ensure it's using the Auto DevOps template. For example:
@@ -216,7 +216,7 @@ To migrate from Auto DevOps:
      KUBE_NAMESPACE: "demo-agent"
    ```
 
-1. To test your pipeline, on the left sidebar, select **Build** > **Pipelines** and then **New pipeline**.
+1. To test your pipeline, in the left sidebar, select **Build** > **Pipelines** and then **New pipeline**.
 
 For an example, [view this project](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service).
 

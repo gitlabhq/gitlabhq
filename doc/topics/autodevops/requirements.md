@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Requirements for Auto DevOps
 ---
 
@@ -126,7 +126,6 @@ To make full use of Auto DevOps with Kubernetes, you need:
   You must [specify the Auto DevOps base domain](#auto-devops-base-domain),
   which all of your Auto DevOps applications use. This domain must be configured
   with wildcard DNS.
-
 - **GitLab Runner** (for all stages)
 
   Your runner must be configured to run Docker, usually with either the
@@ -141,7 +140,6 @@ To make full use of Auto DevOps with Kubernetes, you need:
   Runners should be registered as [instance runners](../../ci/runners/runners_scope.md#instance-runners)
   for the entire GitLab instance, or [project runners](../../ci/runners/runners_scope.md#project-runners)
   that are assigned to specific projects.
-
 - **cert-manager** (optional, for TLS/HTTPS)
 
   To enable HTTPS endpoints for your application, you can [install cert-manager](https://cert-manager.io/docs/releases/),

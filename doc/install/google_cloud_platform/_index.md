@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Install a GitLab instance on a virtual machine in Google Cloud Platform.
 title: Installing GitLab on Google Cloud Platform
 ---
@@ -48,7 +48,7 @@ To deploy GitLab on GCP you must create a virtual machine:
 
    ![Configure your instance.](img/vm_details_v13_1.png)
 
-1. To select the size, type, and desired [operating system](../../install/package/_index.md),
+1. To select the size, type, and desired [operating system](../package/_index.md),
    select **Change** under `Boot disk`. select **Select** when finished.
 
 1. Required for paid licenses. Under **Labels**, add resource labels based on how you procured your GitLab license:
@@ -80,7 +80,6 @@ After a few seconds, the instance is created and available to sign in. The next 
    ![The command line interface of the instance](img/ssh_terminal_v10_6.png)
 
 1. Next, follow the instructions for installing GitLab for the operating system you choose, at <https://about.gitlab.com/install/>. You can use the external IP address you noted before as the hostname.
-
 1. Congratulations! GitLab is now installed and you can access it via your browser. To finish installation, open the URL in your browser and provide the initial administrator password. The username for this account is `root`.
 
    ![GitLab first sign in after installation.](img/first_signin_v10_6.png)

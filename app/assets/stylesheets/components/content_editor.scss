@@ -445,7 +445,7 @@
 }
 
 .immersive {
-  .rte-text-box>* {
+  .rte-text-box>*, .placeholder {
     margin-left: auto !important;
     margin-right: auto !important;
     max-width: var(--immersive-editor-text-width, $immersive-editor-text-width);

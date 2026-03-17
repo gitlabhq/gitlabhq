@@ -77,3 +77,5 @@ module Groups
     end
   end
 end
+
+Groups::MarkForDeletionService.prepend_mod

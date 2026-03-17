@@ -8,7 +8,7 @@ import {
   GlAvatarsInline,
   GlAnimatedChevronRightDownIcon,
 } from '@gitlab/ui';
-import { uniqBy } from 'lodash';
+import { uniqBy } from 'lodash-es';
 import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 

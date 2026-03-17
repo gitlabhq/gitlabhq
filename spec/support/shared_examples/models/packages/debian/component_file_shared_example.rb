@@ -105,6 +105,8 @@ RSpec.shared_examples 'Debian Component File' do |container_type, can_freeze|
 
     describe '#file_sha256' do
       it { is_expected.to validate_presence_of(:file_sha256) }
+      it { is_expected.to allow_value('A' * described_class::FILE_SHA256_MAX_LENGTH).for(:file_sha256) }
+      it { is_expected.not_to allow_value('A' * (described_class::FILE_SHA256_MAX_LENGTH + 1)).for(:file_sha256) }
     end
   end
 

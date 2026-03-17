@@ -1,5 +1,5 @@
 <script>
-import { throttle } from 'lodash';
+import { throttle } from 'lodash-es';
 import {
   keysFor,
   MR_NEXT_UNRESOLVED_DISCUSSION,

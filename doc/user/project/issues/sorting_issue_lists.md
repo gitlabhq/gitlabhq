@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Sorting and ordering issue lists
 ---
 
@@ -47,7 +47,7 @@ Ties are broken arbitrarily. Only the highest prioritized label is checked,
 and labels with a lower priority are ignored.
 For more information, see [issue 14523](https://gitlab.com/gitlab-org/gitlab/-/issues/14523).
 
-To learn how to change label priority, see [Label priority](../labels.md#set-label-priority).
+For more information, see [label priority](../labels.md#set-label-priority).
 
 ## Manual sorting
 
@@ -95,7 +95,7 @@ When you sort by **Priority**, the issue order changes to sort in this order:
 
 Ties are broken arbitrarily.
 
-To learn how to change label priority, see [Label priority](../labels.md#set-label-priority).
+For more information, see [label priority](../labels.md#set-label-priority).
 
 ## Sorting by title
 

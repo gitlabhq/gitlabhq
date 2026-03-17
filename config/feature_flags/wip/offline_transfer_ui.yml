@@ -1,0 +1,10 @@
+---
+name: offline_transfer_ui
+description: 'offline transfer frontend implementation'
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/586916
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223795
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/590880
+milestone: '18.10'
+group: group::import
+type: wip
+default_enabled: false

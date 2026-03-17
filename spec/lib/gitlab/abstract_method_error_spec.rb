@@ -3,8 +3,8 @@
 require 'fast_spec_helper'
 
 RSpec.describe Gitlab::AbstractMethodError, feature_category: :tooling do
-  it 'can be raised and caught as StandardError' do
-    expect { raise described_class }.to raise_error(StandardError, 'Inheriting class must implement this method')
+  it 'can be raised and caught as Exception' do
+    expect { raise described_class }.to raise_error(Exception, 'Inheriting class must implement this method')
   end
 
   it 'can be raised with a custom message' do

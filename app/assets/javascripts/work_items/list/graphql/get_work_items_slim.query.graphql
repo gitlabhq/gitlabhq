@@ -131,6 +131,7 @@ query getWorkItemsSlim(
         workItemType {
           id
           name
+          iconName
         }
       }
     }

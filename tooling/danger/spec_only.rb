@@ -23,7 +23,10 @@ module Tooling
       private
 
       def spec_only_eligible?
-        changed_files = helper.all_changed_files
+        changed_files = helper.all_changed_files + helper.deleted_files
+        renamed_files_before_after = helper.renamed_files.flat_map { |rename| [rename[:before], rename[:after]] }
+        changed_files += renamed_files_before_after
+
         return false if changed_files.empty?
 
         has_spec_files = changed_files.any? { |file| file.match?(SPEC_FILE_REGEX) }

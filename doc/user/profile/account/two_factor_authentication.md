@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: Two-factor authentication
 description: Enable multi-factor authentication for enhanced account protection.
@@ -35,9 +35,9 @@ or email OTP.
 
 > [!warning]
 > If you lose access to your OTP authenticator, you might be locked out of your account.
-> 
+>
 > To minimize this risk:
-> 
+>
 > - Enable cloud backup in your authenticator app.
 > - Save your backup passwords, secret keys, or recovery credentials in a secure location.
 > - Review the documentation for your specific OTP authenticator.
@@ -47,7 +47,7 @@ To register an OTP authenticator:
 1. Configure GitLab.
    1. In the upper-right corner, select your avatar.
    1. Select **Edit profile**.
-   1. On the left sidebar, select **Account**.
+   1. In the left sidebar, select **Account**.
    1. Select **Enable Two-factor Authentication**.
    1. In the **One-time password authenticator** section, select **Register authenticator**.
       A QR code and your OTP details are displayed.
@@ -103,7 +103,7 @@ To register a WebAuthn-compatible device:
 1. If using a physical device, plug it in to computer.
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Select **Enable Two-Factor Authentication**.
 1. In the **WebAuthn devices** section, select **Register device**.
 1. Select **Set up new device**.
@@ -144,7 +144,7 @@ Email OTP allows you to verify your identity by sending a six-digit verification
 
 > [!note]
 > You might be unable to use email OTP if:
-> 
+>
 > - Your group policy requires the use of other two-factor authentication methods.
 > - Your account uses an external identity provider.
 > - Your account is scheduled for automatic enablement at a future date.
@@ -153,7 +153,7 @@ To enable email OTP for your account:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Select **Manage two-factor authentication**.
 1. Select **Enable email OTP**.
 1. Enter your current password and select **Update email OTP settings**.
@@ -418,7 +418,7 @@ You can disable the OTP authenticator and WebAuthn devices individually or simul
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. Select **Manage two-factor authentication**.
 1. Select **Disable 2FA**.
 1. On the dialog, enter your current password and select **Disable 2FA**.

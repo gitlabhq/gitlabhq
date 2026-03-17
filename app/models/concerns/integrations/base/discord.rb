@@ -8,7 +8,7 @@ module Integrations
       include Integrations::Base::ChatNotification
 
       ATTACHMENT_REGEX = Gitlab::UntrustedRegexp.new(': (?<entry>[^\n]*)\n - (?<name>[^\n]*)\n*')
-      DISCORD_URI_REGEX = %r{\Ahttps://discord\.com(/.*)?\z}
+      DISCORD_URI_REGEX = %r{\Ahttps://(?:canary\.|ptb\.)?discord\.com(/.*)?\z}
       WEBHOOK_ADDRESSABLE_URL_OPTIONS = { schemes: %w[https] }.freeze
       SUPPORTED_EVENTS = %w[
         push

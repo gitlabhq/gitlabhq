@@ -31,6 +31,11 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
         expect(NotificationService).not_to receive(:new)
         perform
       end
+
+      it 'does not execute webhook' do
+        expect(::Projects::TriggeredHooks).not_to receive(:execute)
+        perform
+      end
     end
 
     context 'when feature flag is enabled' do
@@ -67,6 +72,11 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
               already_notified_deploy_token_2.reload.seven_days_notification_sent_at
             ]
           }
+        end
+
+        it 'does not execute webhook' do
+          expect(::Projects::TriggeredHooks).not_to receive(:execute)
+          perform
         end
       end
 
@@ -309,6 +319,11 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
           perform
         end
 
+        it 'does not execute webhook' do
+          expect(::Projects::TriggeredHooks).not_to receive(:execute)
+          perform
+        end
+
         it "doesn't update notification sent timestamps of deploy tokens" do
           expect { perform }.not_to change {
             [
@@ -355,6 +370,11 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
 
         it 'does not send notifications for revoked tokens' do
           expect(NotificationService).not_to receive(:new)
+          perform
+        end
+
+        it 'does not execute webhook' do
+          expect(::Projects::TriggeredHooks).not_to receive(:execute)
           perform
         end
       end
@@ -473,6 +493,77 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
         end
       end
 
+      context 'when testing project webhook execution with deploy token' do
+        let!(:project_expiring_token) do
+          create(:deploy_token, :project_type, projects: [project], expires_at: 6.days.from_now.iso8601)
+        end
+
+        let(:mock_wh_service) { double }
+
+        it 'executes project deploy token webhook' do
+          hook_data = {
+            object_kind: 'deploy_token',
+            event_name: 'expiring_deploy_token',
+            interval: 'seven_days'
+          }
+
+          project_hook = create(:project_hook, project: project, resource_deploy_token_events: true)
+
+          expect(Gitlab::DataBuilder::ResourceDeployTokenPayload).to receive(:build).and_return(hook_data)
+          expect(mock_wh_service).to receive(:async_execute).once
+
+          expect(WebHookService)
+            .to receive(:new)
+            .with(
+              project_hook,
+              hook_data,
+              'resource_deploy_token_hooks',
+              idempotency_key: anything
+            ) { mock_wh_service }
+
+          perform
+        end
+      end
+
+      context 'when webhook execution fails for a project deploy token' do
+        let!(:expiring_token) do
+          create(:deploy_token, :project_type, projects: [project], expires_at: 5.days.from_now.iso8601)
+        end
+
+        before do
+          allow(worker).to receive(:execute_resource_deploy_token_web_hooks)
+            .and_raise(StandardError.new('webhook failed'))
+        end
+
+        it 'logs the error and marks the result as failed' do
+          expect(worker).to receive(:log_error).with(
+            an_instance_of(StandardError),
+            'Failed to execute webhooks for expiring project deploy token',
+            expiring_token,
+            project
+          )
+
+          result = worker.send(:notify_users_of_deploy_token, expiring_token, :seven_days)
+
+          expect(result).to be false
+        end
+
+        it 'still sends notifications to users' do
+          notification_service = instance_double(NotificationService)
+          allow(NotificationService).to receive(:new).and_return(notification_service)
+
+          project_users = project.owners_and_maintainers
+
+          project_users.each do |project_user|
+            expect(notification_service).to receive(:deploy_token_about_to_expire)
+              .with(project_user, expiring_token.name, project, days_to_expire: 7)
+          end
+
+          result = worker.send(:notify_users_of_deploy_token, expiring_token, :seven_days)
+          expect(result).to be false
+        end
+      end
+
       context 'with multiple batches of tokens' do
         let_it_be(:expiring_deploy_tokens) do
           create_list(:deploy_token, 4, :project_type, expires_at: 6.days.from_now.iso8601, projects: [project])
@@ -521,6 +612,74 @@ RSpec.describe DeployTokens::ExpiringWorker, feature_category: :continuous_deliv
             expect(processed_count).to be <= expiring_deploy_tokens.count
           end
         end
+      end
+    end
+  end
+
+  describe '#execute_resource_deploy_token_web_hooks' do
+    subject(:execute_webhooks) do
+      worker.send(:execute_resource_deploy_token_web_hooks, deploy_token, :seven_days)
+    end
+
+    let(:worker) { described_class.new }
+
+    context 'when deploy token is project type and hooks are active' do
+      let_it_be(:deploy_token) { create(:deploy_token, :project, projects: [project]) }
+
+      before do
+        allow(project).to receive(:has_active_hooks?)
+          .with(:resource_deploy_token_hooks)
+          .and_return(true)
+
+        allow(Gitlab::DataBuilder::ResourceDeployTokenPayload)
+          .to receive(:build)
+          .and_return({ event_name: 'expiring_deploy_token' })
+
+        allow(project).to receive(:execute_hooks)
+      end
+
+      it 'executes project deploy token hooks' do
+        expect(project).to receive(:execute_hooks)
+          .with({ event_name: 'expiring_deploy_token' }, :resource_deploy_token_hooks)
+
+        execute_webhooks
+      end
+    end
+
+    context 'when deploy token is group type' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:deploy_token) { create(:deploy_token, :group) }
+
+      before do
+        create(:group_deploy_token, group: group, deploy_token: deploy_token)
+
+        allow(group).to receive(:has_active_hooks?)
+          .with(:resource_deploy_token_hooks)
+          .and_return(true)
+
+        allow(group).to receive(:execute_hooks)
+      end
+
+      it 'does not execute webhooks for group deploy tokens' do
+        execute_webhooks
+
+        expect(group).not_to have_received(:execute_hooks)
+      end
+    end
+
+    context 'when resource has no active hooks' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:deploy_token) { create(:deploy_token, :project) }
+
+      before do
+        allow(project).to receive(:has_active_hooks?)
+          .with(:resource_deploy_token_hooks)
+          .and_return(false)
+      end
+
+      it 'does not execute hooks' do
+        expect(project).not_to receive(:execute_hooks)
+        execute_webhooks
       end
     end
   end

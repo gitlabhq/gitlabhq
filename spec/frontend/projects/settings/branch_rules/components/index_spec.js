@@ -1,0 +1,812 @@
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import { GlCollapsibleListbox, GlModal, GlPopover, GlSprintf, GlToast } from '@gitlab/ui';
+import { sprintf } from '~/locale';
+import * as util from '~/lib/utils/url_utility';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createAlert } from '~/alert';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
+import RuleView from '~/projects/settings/branch_rules/components/index.vue';
+import AccessLevelsDrawer from '~/projects/settings/branch_rules/components/access_levels_drawer.vue';
+import SquashSettingsDrawer from '~/projects/settings/branch_rules/components/squash_settings_drawer.vue';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import Protection from '~/projects/settings/branch_rules/components/protection.vue';
+import ProtectionToggle from '~/projects/settings/branch_rules/components/protection_toggle.vue';
+import BranchRuleModal from '~/projects/settings/components/branch_rule_modal.vue';
+import getProtectableBranches from '~/projects/settings/graphql/queries/protectable_branches.query.graphql';
+
+import {
+  I18N,
+  ALL_BRANCHES_WILDCARD,
+  DELETE_RULE_MODAL_ID,
+  EDIT_RULE_MODAL_ID,
+} from '~/projects/settings/branch_rules/components/constants';
+import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
+import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
+import deleteBranchRuleMutation from '~/projects/settings/branch_rules/mutations/branch_rule_delete.mutation.graphql';
+import editBranchRuleMutation from 'ee_else_ce/projects/settings/branch_rules/mutations/edit_branch_rule.mutation.graphql';
+import editBranchRuleSquashOptionMutation from '~/projects/settings/branch_rules/mutations/edit_squash_option.mutation.graphql';
+import deleteBranchRuleSquashOptionMutation from '~/projects/settings/branch_rules/mutations/delete_squash_option.mutation.graphql';
+import {
+  editBranchRuleMockResponse,
+  editSquashOptionMockResponse,
+  deleteSquashOptionMockResponse,
+  deleteBranchRuleMockResponse,
+  branchProtectionsMockResponse,
+  branchProtectionsNoPushAccessMockResponse,
+  squashOptionMockResponse,
+  predefinedBranchRulesMockResponse,
+  matchingBranchesCount,
+  protectableBranchesMockResponse,
+  allowedToMergeDrawerProps,
+  protectionPropsMock,
+} from 'ee_else_ce_jest/projects/settings/branch_rules/components/mock_data';
+
+jest.mock('~/lib/utils/url_utility', () => ({
+  getParameterByName: jest.fn().mockReturnValue('main'),
+  mergeUrlParams: jest.fn().mockReturnValue('/branches?state=all&search=%5Emain%24'),
+  joinPaths: jest.fn(),
+  setUrlParams: jest
+    .fn()
+    .mockReturnValue('/project/Project/-/settings/repository/branch_rules?branch=main'),
+  setUrlFragment: jest.fn(),
+  visitUrl: jest.fn().mockName('visitUrlMock'),
+}));
+
+jest.mock('~/alert');
+
+Vue.use(VueApollo);
+Vue.use(GlToast);
+useMockLocationHelper();
+
+describe('View branch rules', () => {
+  let wrapper;
+  let fakeApollo;
+  const projectPath = 'test/testing';
+  const protectedBranchesPath = 'protected/branches';
+  const branchRulesPath = '/-/settings/repository#branch_rules';
+  const branchRulesMockRequestHandler = jest.fn().mockResolvedValue(branchProtectionsMockResponse);
+  const squashOptionMockRequestHandler = jest.fn().mockResolvedValue(squashOptionMockResponse);
+  const predefinedBranchRulesMockRequestHandler = jest
+    .fn()
+    .mockResolvedValue(predefinedBranchRulesMockResponse);
+  const deleteBranchRuleSuccessHandler = jest.fn().mockResolvedValue(deleteBranchRuleMockResponse);
+  const editBranchRuleSuccessHandler = jest.fn().mockResolvedValue(editBranchRuleMockResponse);
+  const editSquashOptionSuccessHandler = jest.fn().mockResolvedValue(editSquashOptionMockResponse);
+  const deleteSquashOptionSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(deleteSquashOptionMockResponse);
+  const protectableBranchesMockRequestHandler = jest
+    .fn()
+    .mockResolvedValue(protectableBranchesMockResponse);
+  const errorHandler = jest.fn().mockRejectedValue('error');
+  const showToast = jest.fn();
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+  const createComponent = async ({
+    canAdminProtectedBranches = true,
+    allowEditSquashSetting = true,
+    branchRulesQueryHandler = branchRulesMockRequestHandler,
+    squashOptionQueryHandler = squashOptionMockRequestHandler,
+    deleteMutationHandler = deleteBranchRuleSuccessHandler,
+    editMutationHandler = editBranchRuleSuccessHandler,
+    editSquashOptionMutationHandler = editSquashOptionSuccessHandler,
+    deleteSquashOptionMutationHandler = deleteSquashOptionSuccessHandler,
+  } = {}) => {
+    fakeApollo = createMockApollo([
+      [branchRulesQuery, branchRulesQueryHandler],
+      [squashOptionQuery, squashOptionQueryHandler],
+      [getProtectableBranches, protectableBranchesMockRequestHandler],
+      [deleteBranchRuleMutation, deleteMutationHandler],
+      [editBranchRuleMutation, editMutationHandler],
+      [editBranchRuleSquashOptionMutation, editSquashOptionMutationHandler],
+      [deleteBranchRuleSquashOptionMutation, deleteSquashOptionMutationHandler],
+    ]);
+
+    wrapper = shallowMountExtended(RuleView, {
+      apolloProvider: fakeApollo,
+      provide: {
+        projectPath,
+        protectedBranchesPath,
+        branchRulesPath,
+        canAdminProtectedBranches,
+        allowEditSquashSetting,
+      },
+      stubs: {
+        ApprovalRulesApp: true,
+        StatusChecks: true,
+        Protection,
+        ProjectRules: true,
+        ProtectionToggle,
+        BranchRuleModal,
+        AccessLevelsDrawer,
+        PageHeading,
+        CrudComponent,
+        GlSprintf,
+        GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
+      },
+      mocks: {
+        $toast: {
+          show: showToast,
+        },
+      },
+      directives: { GlModal: createMockDirective('gl-modal') },
+    });
+
+    await waitForPromises();
+  };
+
+  beforeEach(() => createComponent());
+
+  afterEach(() => {
+    fakeApollo = null;
+    showToast.mockReset();
+  });
+
+  const findBranchName = () => wrapper.findByTestId('branch');
+  const findAllBranches = () => wrapper.findByTestId('all-branches');
+  const findSettingsSection = () => wrapper.findComponent(SettingsSection);
+  const findAllowedToMerge = () => wrapper.findByTestId('allowed-to-merge-content');
+  const findAllowedToPush = () => wrapper.findByTestId('allowed-to-push-content');
+  const findAllowForcePushToggle = () => wrapper.findByTestId('force-push-content');
+  const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
+  const findDeleteRuleButton = () => wrapper.findByTestId('delete-rule-button');
+  const findDeleteRuleButtonPopover = () => wrapper.findComponent(GlPopover);
+  const findEditRuleNameButton = () => wrapper.findByTestId('edit-rule-name-button');
+  const findDeleteRuleModal = () => wrapper.findComponent(GlModal);
+  const findBranchRuleModal = () => wrapper.findComponent(BranchRuleModal);
+  const findBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findNoDataTitle = () => wrapper.findByText(I18N.noData);
+  const findAccessLevelsDrawer = () => wrapper.findComponent(AccessLevelsDrawer);
+  const findSquashSettingSection = () => wrapper.findByTestId('squash-setting-content');
+  const findSquashSettingsDrawer = () => wrapper.findComponent(SquashSettingsDrawer);
+
+  const findMatchingBranchesLink = () =>
+    wrapper.findByText(
+      sprintf(I18N.matchingBranchesLinkTitle, {
+        total: matchingBranchesCount,
+        subject: 'branches',
+      }),
+    );
+
+  describe('Squash settings', () => {
+    it.each`
+      scenario                           | canAdminProtectedBranches | expectedIsEditAvailable | description
+      ${'user has permission'}           | ${true}                   | ${true}                 | ${'shows edit button'}
+      ${'user does not have permission'} | ${false}                  | ${false}                | ${'hides edit button'}
+    `(
+      '$description when $scenario',
+      async ({ canAdminProtectedBranches, expectedIsEditAvailable }) => {
+        await createComponent({
+          canAdminProtectedBranches,
+        });
+
+        expect(findSquashSettingSection().props('isEditAvailable')).toBe(expectedIsEditAvailable);
+      },
+    );
+
+    it.each`
+      allowEditSquashSetting | branch            | expectedIsEditAvailable | description
+      ${true}                | ${'main'}         | ${true}                 | ${'allowEditSquashSetting is true and branch is main'}
+      ${false}               | ${'main'}         | ${false}                | ${'allowEditSquashSetting is false and branch is main'}
+      ${false}               | ${'All branches'} | ${true}                 | ${'allowEditSquashSetting is false and target is All branches'}
+    `(
+      'expectedIsEditAvailable: $expectedIsEditAvailable when $description',
+      async ({ allowEditSquashSetting, branch, expectedIsEditAvailable }) => {
+        jest.spyOn(util, 'getParameterByName').mockReturnValueOnce(branch);
+
+        await createComponent({
+          canAdminProtectedBranches: true,
+          allowEditSquashSetting,
+        });
+
+        expect(findSquashSettingSection().props('isEditAvailable')).toBe(expectedIsEditAvailable);
+      },
+    );
+
+    it('opens squash settings drawer when edit is clicked', async () => {
+      await createComponent();
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      expect(findSquashSettingsDrawer().props('isOpen')).toBe(true);
+    });
+
+    it('calls mutation with correct data when drawer emits submit', async () => {
+      const mutationSpy = jest.fn().mockResolvedValue({
+        data: { branchRuleSquashOptionUpdate: { errors: [] } },
+      });
+
+      await createComponent({
+        editSquashOptionMutationHandler: mutationSpy,
+      });
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      findSquashSettingsDrawer().vm.$emit('submit', 'always');
+      await waitForPromises();
+
+      expect(mutationSpy).toHaveBeenCalledWith({
+        input: {
+          branchRuleId: 'gid://gitlab/Projects/BranchRule/1',
+          squashOption: 'always',
+        },
+      });
+    });
+
+    it('shows error alert if mutation fails', async () => {
+      const mutationSpy = jest.fn().mockResolvedValue({
+        data: { branchRuleSquashOptionUpdate: { errors: ['error'] } },
+      });
+
+      await createComponent({
+        editSquashOptionMutationHandler: mutationSpy,
+      });
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      const drawer = wrapper.findComponent(SquashSettingsDrawer);
+      drawer.vm.$emit('submit', 'always');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        message: 'Something went wrong while updating branch rule.',
+        error: expect.any(Error),
+      });
+    });
+
+    it('calls delete mutation for DEFAULT option', async () => {
+      const deleteMutationSpy = jest.fn().mockResolvedValue({
+        data: { branchRuleSquashOptionDelete: { errors: [] } },
+      });
+
+      await createComponent({
+        deleteSquashOptionMutationHandler: deleteMutationSpy,
+      });
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      findSquashSettingsDrawer().vm.$emit('submit', 'DEFAULT');
+      await waitForPromises();
+
+      expect(deleteMutationSpy).toHaveBeenCalledWith({
+        input: { branchRuleId: 'gid://gitlab/Projects/BranchRule/1' },
+      });
+    });
+
+    it('shows error alert if delete mutation fails', async () => {
+      const deleteMutationSpy = jest.fn().mockResolvedValue({
+        data: { branchRuleSquashOptionDelete: { errors: ['delete error'] } },
+      });
+
+      await createComponent({ deleteSquashOptionMutationHandler: deleteMutationSpy });
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      findSquashSettingsDrawer().vm.$emit('submit', 'DEFAULT');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while deleting branch rule.',
+      });
+    });
+
+    it('closes drawer and refetches data after successful update', async () => {
+      await createComponent();
+      jest.spyOn(wrapper.vm.$apollo.queries.squashOption, 'refetch').mockResolvedValue({});
+
+      findSquashSettingSection().vm.$emit('edit');
+      await nextTick();
+
+      const drawer = findSquashSettingsDrawer();
+      drawer.vm.$emit('submit', 'always');
+      await waitForPromises();
+
+      expect(drawer.props('isOpen')).toBe(false);
+      expect(wrapper.vm.$apollo.queries.squashOption.refetch).toHaveBeenCalledTimes(1);
+    });
+
+    it('renders squash settings section', () => {
+      const content = findSquashSettingSection();
+      expect(content.text()).toContain('Encourage');
+      expect(content.text()).toContain('Checkbox is visible and selected by default.');
+    });
+
+    it('renders squash heading and content with an empty state', async () => {
+      const mockResponse = {
+        data: {
+          project: {
+            id: 'gid://gitlab/Project/6',
+            __typename: 'Project',
+            branchRules: {
+              __typename: 'BranchRuleConnection',
+              nodes: [],
+            },
+          },
+        },
+      };
+
+      const squashOptionQueryMock = jest.fn().mockResolvedValue(mockResponse);
+
+      await createComponent({ squashOptionQueryHandler: squashOptionQueryMock });
+      const content = findSquashSettingSection().text();
+
+      expect(content).toContain('Squash commits when merging');
+      expect(content).toContain(
+        'Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests.',
+      );
+
+      // Empty state
+      expect(content).toContain('Default');
+      expect(content).toContain(
+        'No explicit squash settings. Inherits project squash settings when available.',
+      );
+    });
+
+    it('does not render squash settings for wildcard branch rules', async () => {
+      jest.spyOn(util, 'getParameterByName').mockReturnValueOnce('*');
+      await createComponent();
+
+      expect(findSquashSettingSection().exists()).toBe(false);
+    });
+
+    it.each`
+      branch                      | expectedExists | description
+      ${'main'}                   | ${true}        | ${'shows squash section for regular branch'}
+      ${'All branches'}           | ${true}        | ${'shows squash section for all branches'}
+      ${'All protected branches'} | ${false}       | ${'hides squash section for protected branches'}
+      ${'feature-*'}              | ${false}       | ${'hides squash section for wildcard branches'}
+    `('$description', async ({ branch, expectedExists }) => {
+      jest.spyOn(util, 'getParameterByName').mockReturnValueOnce(branch);
+
+      await createComponent();
+
+      expect(findSquashSettingSection().exists()).toBe(expectedExists);
+    });
+  });
+
+  it('renders page title', () => {
+    const pageTitle = wrapper.findComponent(PageHeading).props('heading');
+
+    expect(pageTitle).toBe('Branch rule details');
+  });
+
+  it('gets the branch param from url and renders it in the view', () => {
+    expect(util.getParameterByName).toHaveBeenCalledWith('branch');
+    expect(findBranchName().text()).toBe('main');
+  });
+
+  it('renders the correct label if all branches are targeted with wildcard', async () => {
+    jest.spyOn(util, 'getParameterByName').mockReturnValueOnce(ALL_BRANCHES_WILDCARD);
+    await createComponent();
+
+    expect(findAllBranches().text()).toBe('*');
+  });
+
+  it('renders matching branches link', () => {
+    const mergeUrlParams = jest.spyOn(util, 'mergeUrlParams');
+    const matchingBranchesLink = findMatchingBranchesLink();
+
+    expect(mergeUrlParams).toHaveBeenCalledWith({ state: 'all', search: `^main$` }, '');
+    expect(matchingBranchesLink.exists()).toBe(true);
+    expect(matchingBranchesLink.attributes().href).toBe('/branches?state=all&search=%5Emain%24');
+  });
+
+  it('renders a branch protection title', () => {
+    expect(findSettingsSection().attributes('heading')).toBe('Protect branch');
+  });
+
+  it('renders a branch protection component for push rules', () => {
+    expect(findAllowedToPush().props()).toMatchObject({
+      roles: protectionPropsMock.roles,
+      header: 'Allowed to push and merge',
+      count: 2,
+      isProtectedByPolicy: false,
+    });
+  });
+
+  it('passes expected roles for push rules via props', () => {
+    expect(findAllowedToPush().props('roles')).toEqual(protectionPropsMock.roles);
+  });
+
+  it('does not render Allow force push toggle if there are no push rules set', async () => {
+    await createComponent({
+      branchRulesQueryHandler: jest
+        .fn()
+        .mockResolvedValue(branchProtectionsNoPushAccessMockResponse),
+    });
+
+    expect(findAllowForcePushToggle().exists()).toBe(false);
+  });
+
+  it.each`
+    allowForcePush | iconTitle                          | description
+    ${true}        | ${I18N.allowForcePushTitle}        | ${I18N.forcePushDescriptionWithDocs}
+    ${false}       | ${I18N.doesNotAllowForcePushTitle} | ${I18N.forcePushDescriptionWithDocs}
+  `(
+    'renders force push section with the correct title and description',
+    async ({ allowForcePush, iconTitle, description }) => {
+      const mockResponse = branchProtectionsMockResponse;
+      mockResponse.data.project.branchRules.nodes[0].branchProtection.allowForcePush =
+        allowForcePush;
+      await createComponent({
+        branchRulesQueryHandler: jest.fn().mockResolvedValue(mockResponse),
+      });
+
+      expect(findAllowForcePushToggle().props('iconTitle')).toEqual(iconTitle);
+      expect(findAllowForcePushToggle().props('description')).toEqual(description);
+    },
+  );
+
+  it('renders a branch protection component for merge rules', () => {
+    expect(findAllowedToMerge().props()).toMatchObject({
+      roles: protectionPropsMock.roles,
+      header: 'Allowed to merge',
+      count: 2,
+    });
+  });
+
+  it('passes expected roles form merge rules via props', () => {
+    expect(findAllowedToMerge().props('roles')).toEqual(protectionPropsMock.roles);
+  });
+
+  it('does not render a branch protection component for status checks', () => {
+    expect(findStatusChecksTitle().exists()).toBe(false);
+  });
+
+  describe('Editing branch rule', () => {
+    describe('when canAdminProtectedBranches is false', () => {
+      it('does not render edit rule button', () => {
+        createComponent({ canAdminProtectedBranches: false });
+        expect(findEditRuleNameButton().exists()).toBe(false);
+      });
+    });
+
+    beforeEach(async () => {
+      await createComponent();
+    });
+
+    it('renders edit branch rule button', () => {
+      expect(findEditRuleNameButton().text()).toBe('Edit');
+    });
+
+    it('passes correct props to the edit rule modal', () => {
+      expect(findBranchRuleModal().props()).toMatchObject({
+        actionPrimaryText: 'Update',
+        id: 'editRuleModal',
+        title: 'Update target branch',
+      });
+    });
+
+    it('renders correct modal id for the edit button', () => {
+      const binding = getBinding(findEditRuleNameButton().element, 'gl-modal');
+
+      expect(binding.value).toBe(EDIT_RULE_MODAL_ID);
+    });
+
+    it('renders the correct modal content', async () => {
+      await nextTick();
+      expect(findBranchRuleListbox().props('items')).toHaveLength(3);
+    });
+
+    it('when edit button in the modal is clicked it makes a call to edit rule and redirects to new branch rule page', async () => {
+      findBranchRuleModal().vm.$emit('primary', 'main');
+      await nextTick();
+      await waitForPromises();
+      expect(editBranchRuleSuccessHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            id: 'gid://gitlab/Projects/BranchRule/1',
+            name: 'main',
+            branchProtection: expect.anything(),
+          },
+        }),
+      );
+      await waitForPromises();
+      expect(util.setUrlParams).toHaveBeenCalledWith({ branch: 'main' });
+      expect(util.visitUrl).toHaveBeenCalledWith(
+        '/project/Project/-/settings/repository/branch_rules?branch=main',
+      );
+    });
+
+    it('emits a tracking event when edit button in modal is clicked', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      findBranchRuleModal().vm.$emit('primary', '*-test');
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith('change_branch_rule_target', {
+        label: 'branch_rule_details',
+      });
+    });
+
+    it('shows an alert if response contains an error', async () => {
+      const mockResponse = {
+        branchRuleUpdate: {
+          errors: [
+            'Squash option cannot be used with wildcard branch rules. Use an exact branch name.',
+          ],
+          branchRule: null,
+        },
+      };
+      const editMutationHandler = jest
+        .fn()
+        .mockResolvedValue({ ...editBranchRuleMockResponse, data: mockResponse });
+
+      await createComponent({
+        branchRulesQueryHandler: branchRulesMockRequestHandler,
+        editMutationHandler,
+      });
+
+      findBranchRuleModal().vm.$emit('primary', 'main');
+      await nextTick();
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message:
+          'Squash option cannot be used with wildcard branch rules. Use an exact branch name.',
+        captureError: true,
+        error: 'Squash option cannot be used with wildcard branch rules. Use an exact branch name.',
+      });
+    });
+
+    it('shows fallback error message when update mutation fails with network error', async () => {
+      const networkError = new Error('Network error');
+      const editMutationHandler = jest.fn().mockRejectedValue(networkError);
+
+      await createComponent({
+        branchRulesQueryHandler: branchRulesMockRequestHandler,
+        editMutationHandler,
+      });
+
+      findBranchRuleModal().vm.$emit('primary', 'main');
+      await nextTick();
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while updating branch rule.',
+        captureError: true,
+        error: networkError,
+      });
+    });
+  });
+
+  describe('Deleting branch rule', () => {
+    describe('when canAdminProtectedBranches is false', () => {
+      it('does not render delete rule button', () => {
+        createComponent({ canAdminProtectedBranches: false });
+        expect(findDeleteRuleButton().exists()).toBe(false);
+      });
+    });
+
+    it('does not render delete rule button when target is All branches', () => {
+      jest.spyOn(util, 'getParameterByName').mockReturnValueOnce('All branches');
+      createComponent();
+
+      expect(findDeleteRuleButton().exists()).toBe(false);
+    });
+
+    it('renders delete rule button', () => {
+      expect(findDeleteRuleButton().text()).toBe('Delete rule');
+    });
+
+    it('renders a delete modal with correct props/attributes', () => {
+      expect(findDeleteRuleModal().props()).toMatchObject({
+        modalId: DELETE_RULE_MODAL_ID,
+        title: 'Delete branch rule?',
+      });
+      expect(findDeleteRuleModal().attributes('ok-title')).toBe('Delete branch rule');
+    });
+
+    it('renders correct modal id for the default action', () => {
+      const binding = getBinding(findDeleteRuleButton().element, 'gl-modal');
+
+      expect(binding.value).toBe(DELETE_RULE_MODAL_ID);
+    });
+
+    it('renders the correct modal content', () => {
+      expect(findDeleteRuleModal().text()).toContain(
+        'Are you sure you want to delete this branch rule? This action cannot be undone.',
+      );
+    });
+
+    it('when delete button in the modal is clicked it makes a call to delete rule and redirects to overview page', async () => {
+      findDeleteRuleModal().vm.$emit('ok');
+      await waitForPromises();
+      expect(deleteBranchRuleSuccessHandler).toHaveBeenCalledWith({
+        input: { id: 'gid://gitlab/Projects/BranchRule/1' },
+      });
+      expect(util.visitUrl).toHaveBeenCalledWith('/-/settings/repository#branch_rules');
+    });
+
+    it('emits tracking event when branch rule is deleted', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      findDeleteRuleModal().vm.$emit('ok');
+      await nextTick();
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith('unprotect_branch', {
+        label: 'branch_rule_details',
+      });
+    });
+
+    it('if error happens it shows an alert', async () => {
+      await createComponent({
+        branchRulesQueryHandler: branchRulesMockRequestHandler,
+        deleteMutationHandler: errorHandler,
+      });
+      findDeleteRuleModal().vm.$emit('ok');
+      await nextTick();
+      await waitForPromises();
+      expect(errorHandler).toHaveBeenCalledWith({
+        input: { id: 'gid://gitlab/Projects/BranchRule/1' },
+      });
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        message: 'Something went wrong while deleting branch rule.',
+        error: expect.any(Error),
+      });
+    });
+
+    it('does not render prevent delete by security policy popover', () => {
+      expect(findDeleteRuleButtonPopover().exists()).toBe(false);
+    });
+  });
+
+  describe('When rendered for predefined rules', () => {
+    beforeEach(async () => {
+      jest.spyOn(util, 'getParameterByName').mockReturnValueOnce('All branches');
+
+      await createComponent({
+        branchRulesQueryHandler: predefinedBranchRulesMockRequestHandler,
+      });
+    });
+
+    it('renders the correct branch rule title', () => {
+      expect(findBranchName().text()).toBe('All branches');
+    });
+
+    it('does not render edit button', () => {
+      expect(findEditRuleNameButton().exists()).toBe(false);
+    });
+
+    it('does not render Protect Branch section', () => {
+      const sections = wrapper.findAllComponents(SettingsSection);
+      expect(sections).toHaveLength(1);
+      expect(sections.at(0).attributes('heading')).toBe('Merge requests');
+    });
+  });
+
+  describe.each`
+    drawerType          | title                               | findProtection        | accessLevels
+    ${'merge'}          | ${'Edit allowed to merge'}          | ${findAllowedToMerge} | ${{ mergeAccessLevels: [{ accessLevel: 30 }] }}
+    ${'push and merge'} | ${'Edit allowed to push and merge'} | ${findAllowedToPush}  | ${{ pushAccessLevels: [{ accessLevel: 30 }] }}
+  `('allowed to $drawerType drawer', ({ drawerType, title, findProtection, accessLevels }) => {
+    const openEditRuleDrawer = () => {
+      findProtection().vm.$emit('edit');
+      return nextTick();
+    };
+
+    it('access levels drawer is closed by default', () => {
+      expect(findAccessLevelsDrawer().props('isOpen')).toBe(false);
+    });
+
+    it('passes expected props to access levels drawer', async () => {
+      await openEditRuleDrawer();
+
+      expect(findAccessLevelsDrawer().props()).toMatchObject({
+        ...allowedToMergeDrawerProps,
+        isOpen: true,
+        title,
+      });
+    });
+
+    it('when save button is clicked it calls edit rule mutation', async () => {
+      await openEditRuleDrawer();
+      findAccessLevelsDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
+      await nextTick();
+
+      expect(findAccessLevelsDrawer().props('isLoading')).toEqual(true);
+
+      await waitForPromises();
+
+      expect(editBranchRuleSuccessHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            branchProtection: expect.objectContaining({
+              allowForcePush: false,
+              ...accessLevels,
+            }),
+            id: 'gid://gitlab/Projects/BranchRule/1',
+            name: 'main',
+          },
+        }),
+      );
+
+      expect(findAccessLevelsDrawer().props('isLoading')).toEqual(false);
+    });
+
+    it('emits a tracking event when save button is clicked', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      await openEditRuleDrawer();
+      findAccessLevelsDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
+      await waitForPromises();
+
+      const eventName =
+        drawerType === 'merge' ? 'change_allowed_to_merge' : 'change_allowed_to_push_and_merge';
+      expect(trackEventSpy).toHaveBeenCalledWith(eventName, {
+        label: 'branch_rule_details',
+      });
+    });
+  });
+
+  describe('Allow force push editing', () => {
+    it('renders force push section with the correct props', () => {
+      expect(findAllowForcePushToggle().props('label')).toEqual('Allow force push');
+      expect(findAllowForcePushToggle().props('description')).toEqual(
+        'Allow all users with push access to %{linkStart}force push%{linkEnd}.',
+      );
+      expect(findAllowForcePushToggle().props('isProtectedByPolicy')).toEqual(false);
+    });
+
+    it('when a toggle is triggered, it goes into a loading state, then shows a toast message', async () => {
+      findAllowForcePushToggle().vm.$emit('toggle', false);
+      await nextTick();
+      expect(findAllowForcePushToggle().props('isLoading')).toEqual(true);
+      await waitForPromises();
+      expect(showToast).toHaveBeenCalledTimes(1);
+      expect(showToast).toHaveBeenCalledWith('Allowed force push disabled');
+      expect(findAllowForcePushToggle().props('isLoading')).toEqual(false);
+    });
+
+    it('when a toggle is triggered it calls edit rule mutation', async () => {
+      findAllowForcePushToggle().vm.$emit('toggle', false);
+      await nextTick();
+      await waitForPromises();
+      expect(editBranchRuleSuccessHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          input: {
+            branchProtection: expect.objectContaining({
+              allowForcePush: false,
+            }),
+            id: 'gid://gitlab/Projects/BranchRule/1',
+            name: 'main',
+          },
+        }),
+      );
+    });
+
+    it('emits a tracking event when a toggle is triggered', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      findAllowForcePushToggle().vm.$emit('toggle', false);
+      await nextTick();
+      await waitForPromises();
+      expect(trackEventSpy).toHaveBeenCalledWith('change_allow_force_push', {
+        label: 'branch_rule_details',
+      });
+    });
+  });
+
+  describe('When rendered for a non-existing rule', () => {
+    beforeEach(async () => {
+      jest.spyOn(util, 'getParameterByName').mockReturnValueOnce('non-existing-rule');
+      await createComponent();
+    });
+
+    it('shows empty state', () => {
+      expect(findNoDataTitle().text()).toBe('No data to display');
+    });
+  });
+});

@@ -25,24 +25,15 @@ import {
   METADATA_KEYS,
   STATE_CLOSED,
   STATE_OPEN,
-  WORK_ITEM_TYPE_NAME_INCIDENT,
-  WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_NAME_TEST_CASE,
-  WORK_ITEM_TYPE_NAME_TICKET,
-  WORK_ITEM_TYPE_ENUM_TEST_CASE,
-  WORK_ITEM_TYPE_ENUM_TICKET,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from '~/work_items/constants';
 import {
-  isAssigneesWidget,
+  findAssigneesWidget,
   findLabelsWidget,
   findLinkedItemsWidget,
   canRouterNav,
 } from '~/work_items/utils';
 import { routeForWorkItemTypeName } from '~/work_items/router/utils';
-import { SUPPORT_BOT_USERNAME } from '~/issues/show/utils/issuable_data';
 
 export default {
   components: {
@@ -144,34 +135,12 @@ export default {
     workItemType() {
       return this.issuable.workItemType?.name;
     },
+    workItemTypeIconName() {
+      return this.issuable.workItemType?.iconName;
+    },
     workItemFullPath() {
       return (
         this.issuable.namespace?.fullPath || this.issuable.reference?.split(this.issuableSymbol)[0]
-      );
-    },
-    isIncident() {
-      // Remove once we have the workItemConfig returning real data
-      const isTypeIncident =
-        this.workItemType === WORK_ITEM_TYPE_NAME_INCIDENT ||
-        this.issuable?.type === WORK_ITEM_TYPE_ENUM_INCIDENT;
-
-      return this.workItemConfig?.isIncidentManagement || isTypeIncident;
-    },
-    isServiceDeskIssue() {
-      const isTypeServiceDeskIssue =
-        (this.issuable?.type === WORK_ITEM_TYPE_ENUM_ISSUE ||
-          this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE) &&
-        this.issuable?.author?.username === SUPPORT_BOT_USERNAME;
-
-      const isTicketType =
-        this.issuable?.type === WORK_ITEM_TYPE_ENUM_TICKET ||
-        this.workItemType === WORK_ITEM_TYPE_NAME_TICKET;
-      return this.workItemConfig?.isServiceDesk || isTypeServiceDeskIssue || isTicketType;
-    },
-    isTestCase() {
-      return (
-        this.workItemType === WORK_ITEM_TYPE_NAME_TEST_CASE ||
-        this.issuable?.type === WORK_ITEM_TYPE_ENUM_TEST_CASE
       );
     },
     workItemConfig() {
@@ -216,7 +185,7 @@ export default {
       return (
         this.issuable.assignees?.nodes ||
         this.issuable.assignees ||
-        this.issuable.widgets?.find(isAssigneesWidget)?.assignees?.nodes ||
+        findAssigneesWidget(this.issuable)?.assignees?.nodes ||
         []
       );
     },
@@ -318,15 +287,13 @@ export default {
       // eslint-disable-next-line no-underscore-dangle
       return this.issuable.__typename === 'MergeRequest';
     },
-    isAllowedType() {
-      return !this.isIncident && !this.isServiceDeskIssue && !this.isTestCase;
+    useIssueView() {
+      return this.workItemConfig?.useIssueView;
     },
     useWorkItemTemplate() {
       if (this.isGroup) return false;
 
-      // Use new config-based check first, fall back to legacy hardcoded checks for backward compatibility
-      // TODO: Add back !this.useIssueView once it is populated by the backend
-      return this.isAllowedType;
+      return !this.useIssueView;
     },
     hiddenIssuableTitle() {
       if (this.isMergeRequest) {
@@ -365,9 +332,8 @@ export default {
         return;
       }
       e.preventDefault();
-      // Unsupported types incidents and Service Desk issues
-      // should not open in drawer
-      if (!this.isAllowedType || !this.preventRedirect) {
+      // Unsupported types incidents, tickets, and test cases should not open in drawer
+      if (this.useIssueView || !this.preventRedirect) {
         this.navigateToIssuable();
         return;
       }
@@ -465,6 +431,7 @@ export default {
           v-if="showWorkItemTypeIcon"
           class="gl-mr-2"
           :work-item-type="type"
+          :type-icon-name="workItemTypeIconName"
           show-tooltip-on-hover
           icon-variant="subtle"
         />
@@ -502,8 +469,8 @@ export default {
               data-testid="issuable-title-link"
               v-bind="issuableTitleProps"
               @click.stop="handleIssuableItemClick"
-              @mouseover.native="prefetchWorkItem(issuableIid)"
-              @mouseout.native="clearPrefetching"
+              @mouseover="prefetchWorkItem(issuableIid)"
+              @mouseout="clearPrefetching"
             >
               {{ issuable.title }}
               <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
@@ -700,7 +667,9 @@ export default {
         <li v-else-if="detailLoading" class="!gl-mr-0">
           <gl-skeleton-loader :width="45" :lines="1" equal-width-lines />
         </li>
-        <slot name="custom-status"></slot>
+        <li class="!gl-mr-0 empty:gl-hidden">
+          <slot name="custom-status"></slot>
+        </li>
       </ul>
       <div
         class="gl-hidden @sm/panel:gl-flex @sm/panel:gl-flex-col @sm/panel:gl-items-end @md/panel:gl-flex-row @md/panel:gl-items-center"

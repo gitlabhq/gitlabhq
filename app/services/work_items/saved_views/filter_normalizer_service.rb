@@ -5,6 +5,8 @@ module WorkItems
     class FilterNormalizerService < FilterBaseService
       include ::API::Concerns::Milestones::GroupProjectParams
 
+      LABEL_WILDCARDS = %w[Any None].freeze
+
       attr_reader :normalized_filters
 
       def initialize(filter_data:, container:, current_user:)
@@ -181,10 +183,18 @@ module WorkItems
       end
 
       def normalize_label_names
-        # Label is passed differently in the GQL depending on the context (negated / unioned)
+        if filters[:label_name]
+          label_names = Array.wrap(filters[:label_name])
+          idx = label_names.find_index { |name| label_wildcard?(name) }
+
+          if idx
+            normalized_filters[:label_wildcard_id] = label_names.delete_at(idx).to_s
+            filters.delete(:label_name) if label_names.empty?
+          end
+        end
+
         normalize_with_context(:label_name, :label_ids) do |label_name_or_names|
-          label_names = Array.wrap(label_name_or_names)
-          find_label_ids(label_names)
+          find_label_ids(Array.wrap(label_name_or_names))
         end
 
         return unless filters.dig(:or, :label_names)
@@ -198,6 +208,10 @@ module WorkItems
 
         normalized_filters[:not] ||= {}
         normalized_filters[:not][:parent_ids] = filters[:not][:parent_ids]
+      end
+
+      def label_wildcard?(value)
+        LABEL_WILDCARDS.include?(value.to_s)
       end
     end
   end

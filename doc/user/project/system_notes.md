@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: System notes track the history of changes made to an object, like a merge request or issue, in your GitLab project.
 title: System notes
 description: Event history, activity log, and comment history.
@@ -41,22 +41,23 @@ Merge requests provide more granular filtering options.
 
 ### On an epic
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Epics**.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**.
+1. In the filter bar, select the filter **Type**, operator **is**, and value **Epic**.
 1. Identify your desired epic, and select its title.
 1. Go to the **Activity** section.
 1. For **Sort or filter**, select **Show all activity**.
 
 ### On an issue
 
-1. On the top bar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues** and find your issue.
+1. In the top bar, select **Search or go to** and find your project.
+1. Select **Plan** > **Work items**, then filter by **Type** = **Issue** and select your issue.
 1. Go to **Activity**.
 1. For **Sort or filter**, select **Show all activity**.
 
 ### On a merge request
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. In the left sidebar, select **Code** > **Merge requests** and find your merge request.
 1. Go to **Activity**.
 1. For **Sort or filter**, select **Show all activity** to see all system notes.

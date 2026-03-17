@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Troubleshooting help for merge requests.
 title: Troubleshooting merge requests
 ---
@@ -331,4 +331,4 @@ Merging the `several-fixes` branch merges all commits on that branch, including 
 Even though no action has been taken on the branch `single-fix`, commit `cd87d6` was merged
 as part of `several-fixes`, so `single-fix` now shows as merged.
 
-For more information, see [Multiple branches containing the same commit](../repository/branches/_index.md#multiple-branches-containing-the-same-commit).
+For more information, see [multiple branches containing the same commit](../repository/branches/_index.md#multiple-branches-containing-the-same-commit).

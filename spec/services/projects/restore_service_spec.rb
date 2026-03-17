@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Projects::RestoreService, feature_category: :groups_and_projects do
-  include Namespaces::StatefulHelpers
-
   let_it_be(:user) { create(:user, :with_namespace) }
 
   subject(:execute) { described_class.new(project, user).execute }
@@ -102,13 +100,13 @@ RSpec.describe Projects::RestoreService, feature_category: :groups_and_projects 
 
       context 'when project_namespace state is deletion_scheduled' do
         before do
-          set_state(project.project_namespace, :deletion_scheduled)
+          project.project_namespace.update!(state: :deletion_scheduled)
         end
 
         it 'changes the state of the project' do
           expect { execute }.to change { project.project_namespace.state }
-            .from(Namespaces::Stateful::STATES[:deletion_scheduled])
-            .to(Namespaces::Stateful::STATES[:ancestor_inherited])
+            .from('deletion_scheduled')
+            .to('ancestor_inherited')
         end
       end
 

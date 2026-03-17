@@ -155,7 +155,7 @@ export default {
       <label data-testid="confirm-danger-phrase" for="confirm_name_input" class="gl-mb-1 gl-w-full">
         <gl-sprintf :message="$options.i18n.CONFIRM_DANGER_PHRASE_TEXT" />
       </label>
-      <code class="gl-max-w-fit">{{ phrase }}</code>
+      <code class="gl-max-w-fit gl-whitespace-pre-wrap">{{ phrase }}</code>
     </div>
     <gl-form-group :state="isValid" class="gl-mb-0">
       <gl-form-input

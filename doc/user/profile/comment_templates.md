@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Code Review
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Build templates for text frequently used in comments, and share those templates with your project or group.
 title: Comment templates
 ---
@@ -53,7 +53,7 @@ To create a comment template for your own use:
 
 1. In the upper-right corner, select your avatar.
 1. From the dropdown list, select **Preferences**.
-1. On the left sidebar, select **Comment templates** ({{< icon name="comment-lines" >}}).
+1. In the left sidebar, select **Comment templates** ({{< icon name="comment-lines" >}}).
 1. Select **Add new**.
 1. Provide a **Name** for your comment template.
 1. Enter the **Content** of your reply. You can use any formatting you use in
@@ -102,7 +102,7 @@ To see existing comment templates:
 
 1. In the upper-right corner, select your avatar.
 1. From the dropdown list, select **Preferences**.
-1. On the left sidebar, select **Comment templates** ({{< icon name="comment-lines" >}}).
+1. In the left sidebar, select **Comment templates** ({{< icon name="comment-lines" >}}).
 1. Scroll to **Comment templates**.
 
 ### For a group
@@ -135,7 +135,7 @@ To edit or delete an existing comment template:
 
 1. In the upper-right corner, select your avatar.
 1. From the dropdown list, select **Preferences**.
-1. On the left sidebar, select **Comment templates** ({{< icon name="comment-lines" >}}).
+1. In the left sidebar, select **Comment templates** ({{< icon name="comment-lines" >}}).
 1. Scroll to **Comment templates**, and identify the comment template you want to edit.
 1. To edit, select **Edit** ({{< icon name="pencil" >}}).
 1. To delete, select **Delete** ({{< icon name="remove" >}}), then select **Delete** again on the dialog.

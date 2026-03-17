@@ -1,7 +1,6 @@
 ---
 RSpec/MultipleMemoizedHelpers:
   Exclude:
-    - 'ee/spec/features/boards/swimlanes/epics_swimlanes_filtering_spec.rb'
     - 'ee/spec/finders/epics_finder_spec.rb'
     - 'ee/spec/finders/incident_management/oncall_users_finder_spec.rb'
     - 'ee/spec/lib/gitlab/graphql/loaders/bulk_epic_aggregate_loader_spec.rb'

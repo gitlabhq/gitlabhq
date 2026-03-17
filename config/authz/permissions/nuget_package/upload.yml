@@ -1,5 +1,3 @@
 ---
 name: upload_nuget_package
 description: Grants the ability to upload NuGet packages
-boundaries:
-  - project

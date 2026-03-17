@@ -1,0 +1,7 @@
+---
+name: delete_zoekt_namespace
+description: Grants the ability to delete zoekt namespaces
+boundaries:
+  - instance
+permissions:
+  - delete_zoekt_namespace

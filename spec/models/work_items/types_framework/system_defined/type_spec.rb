@@ -800,10 +800,10 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
       expect(result.map(&:base_type)).to include('incident')
     end
 
-    it 'includes ticket type for issue conversion' do
+    it 'excludes ticket type for issue conversion' do
       result = issue_type.supported_conversion_types(project, user)
 
-      expect(result.map(&:base_type)).to include('ticket')
+      expect(result.map(&:base_type)).not_to include('ticket')
     end
   end
 
@@ -1089,30 +1089,6 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
       end
     end
 
-    describe '#filterable?' do
-      context 'when configuration_class responds to filterable?' do
-        it 'returns true when configuration_class.filterable? is true' do
-          allow(type.configuration_class).to receive(:filterable?).and_return(true)
-
-          expect(type.filterable?).to be true
-        end
-
-        it 'returns false when configuration_class.filterable?is explicitly false' do
-          allow(type.configuration_class).to receive(:filterable?).and_return(false)
-
-          expect(type.filterable?).to be false
-        end
-      end
-
-      context 'when configuration_class does not respond to filterable?' do
-        it 'returns false as default when value is nil' do
-          allow(type.configuration_class).to receive(:try).with(:filterable?).and_return(nil)
-
-          expect(type.filterable?).to be false
-        end
-      end
-    end
-
     describe '#only_for_group?' do
       context 'when configuration_class responds to only_for_group?' do
         it 'returns true when configuration_class.only_for_group? is true' do
@@ -1142,6 +1118,99 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
         expect(type.enabled?).to be true
       end
     end
+  end
+
+  describe 'resolved type configuration' do
+    it_behaves_like 'work item type configuration', :creatable?, {
+      issue: true,
+      task: true,
+      incident: true,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :configurable?, {
+      issue: true,
+      task: true,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :visible_in_settings?, {
+      issue: true,
+      task: true,
+      incident: true,
+      ticket: true
+    }
+
+    it_behaves_like 'work item type configuration', :show_project_selector?, {
+      issue: true,
+      task: true,
+      incident: true,
+      ticket: true
+    }
+
+    it_behaves_like 'work item type configuration', :can_be_conversion_target?, {
+      issue: true,
+      task: true,
+      incident: true,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :archived?, {
+      issue: false,
+      task: false,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :only_for_group?, {
+      issue: false,
+      task: false,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :supports_roadmap_view?, {
+      issue: false,
+      task: false,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :use_legacy_view?, {
+      issue: false,
+      task: false,
+      incident: true,
+      ticket: true
+    }
+
+    it_behaves_like 'work item type configuration', :supports_move_action?, {
+      issue: true,
+      task: false,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :can_promote_to_objective?, {
+      issue: false,
+      task: false,
+      incident: false,
+      ticket: false
+    }
+
+    it_behaves_like 'work item type configuration', :service_desk?, {
+      issue: false,
+      task: false,
+      incident: false,
+      ticket: true
+    }
+
+    it_behaves_like 'work item type configuration', :incident_management?, {
+      issue: false,
+      task: false,
+      incident: true,
+      ticket: false
+    }
   end
 
   describe '.base_types' do
@@ -1326,6 +1395,119 @@ RSpec.describe WorkItems::TypesFramework::SystemDefined::Type, feature_category:
 
         expect(type.licensed?).to be false
       end
+    end
+  end
+
+  describe '#filterable_list_view?' do
+    let(:issue_type) { build(:work_item_system_defined_type, :issue) }
+    let(:task_type) { build(:work_item_system_defined_type, :task) }
+    let(:incident_type) { build(:work_item_system_defined_type, :incident) }
+    let(:ticket_type) { build(:work_item_system_defined_type, :ticket) }
+
+    shared_examples "a type that supports filterable list view" do
+      let(:all_types) { [issue_type, task_type, incident_type, ticket_type] }
+      it "returns true for all types", :aggregate_failures do
+        all_types.each do |type|
+          expect(type.filterable_list_view?(resource_parent)).to be true
+        end
+      end
+    end
+
+    context 'when resource_parent is a project' do
+      let(:resource_parent) { build(:project) }
+
+      it_behaves_like "a type that supports filterable list view"
+    end
+
+    context 'when resource_parent is nil' do
+      let(:resource_parent) { nil }
+
+      it_behaves_like "a type that supports filterable list view"
+    end
+
+    context "when resource parent is a group" do
+      let(:resource_parent) { build(:group) }
+
+      it_behaves_like "a type that supports filterable list view"
+    end
+
+    context 'when resource_parent is a Namespaces::ProjectNamespace' do
+      let(:project) { build(:project) }
+      let(:resource_parent) { project.project_namespace }
+
+      it_behaves_like "a type that supports filterable list view"
+    end
+  end
+
+  describe '#filterable_board_view?' do
+    let(:issue_type) { build(:work_item_system_defined_type, :issue) }
+    let(:incident_type) { build(:work_item_system_defined_type, :incident) }
+    let(:ticket_type) { build(:work_item_system_defined_type, :ticket) }
+    let(:task_type) { build(:work_item_system_defined_type, :task) }
+    let(:project) { build(:project) }
+
+    shared_examples "filterable_board_view for all types except task" do
+      let(:all_types_without_task) { [issue_type, incident_type, ticket_type] }
+
+      it "returns true for all types except task", :aggregate_failures do
+        all_types_without_task.each do |type|
+          expect(type.filterable_board_view?(resource_parent)).to be true
+        end
+      end
+    end
+
+    shared_examples "filterable_board_view for tasks" do |expected_with_license:|
+      context 'with task type' do
+        it 'returns expected result when feature flag is enabled' do
+          expect(task_type.filterable_board_view?(resource_parent)).to be expected_with_license
+        end
+
+        context "when the work_item_tasks_on_boards feature flag is disabled" do
+          before do
+            stub_feature_flags(work_item_tasks_on_boards: false)
+          end
+
+          it 'returns false when feature flag is disabled' do
+            expect(task_type.filterable_board_view?(resource_parent)).to be false
+          end
+        end
+      end
+    end
+
+    context 'when resource_parent is a project' do
+      let(:resource_parent) { build(:project) }
+
+      it_behaves_like "filterable_board_view for all types except task"
+      it_behaves_like "filterable_board_view for tasks", expected_with_license: true
+    end
+
+    context 'when resource_parent is nil' do
+      let(:resource_parent) { nil }
+
+      it_behaves_like "filterable_board_view for all types except task"
+      it_behaves_like "filterable_board_view for tasks", expected_with_license: false
+    end
+
+    context 'when resource_parent is a group' do
+      let(:resource_parent) { build(:group) }
+
+      it_behaves_like "filterable_board_view for all types except task"
+      it_behaves_like "filterable_board_view for tasks", expected_with_license: true
+    end
+
+    context 'when resource_parent is a Namespaces::ProjectNamespace' do
+      let(:project) { build(:project) }
+      let(:resource_parent) { project.project_namespace }
+
+      it_behaves_like "filterable_board_view for all types except task"
+      it_behaves_like "filterable_board_view for tasks", expected_with_license: true
+    end
+
+    context "when resource_parent is an Organization" do
+      let(:resource_parent) { build(:organization) }
+
+      it_behaves_like "filterable_board_view for all types except task"
+      it_behaves_like "filterable_board_view for tasks", expected_with_license: false
     end
   end
 end

@@ -1,7 +1,7 @@
 ---
 stage: Analytics
 group: Platform Insights
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Integrated error tracking
 ---
 
@@ -32,7 +32,7 @@ Prerequisites:
 
 To enable error tracking with GitLab as the backend:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to **Settings** > **Monitor**.
 1. Expand **Error Tracking**.
 1. For **Enable error tracking**, select **Active**.
@@ -62,7 +62,7 @@ For more information about user identification, see the [Sentry documentation](h
 After your application emits errors to the Error Tracking API through the Sentry SDK,
 those errors are available in the GitLab UI. To view them:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to **Monitor** > **Error Tracking** to see the list of open errors:
 
    ![MonitorListErrors](img/list_errors_v16_0.png)

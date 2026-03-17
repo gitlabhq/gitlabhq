@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Use a project as a Go package
 description: Go modules and import calls.
 ---
@@ -32,6 +32,8 @@ To use a project as a Go package, use the `go get` and `godoc.org` discovery req
 > [!note]
 > If you make a `go get` request with invalid HTTP credentials, you receive a 404 error.
 > You can find the HTTP credentials in `~/.netrc` (MacOS and Linux) or `~/_netrc` (Windows).
+> In Go 1.24 and later, you can also use the `GOAUTH` environment variable to provide credentials.
+> For more information, see [authenticate with `GOAUTH`](#authenticate-with-goauth).
 
 ## Authenticate Go requests to private projects
 
@@ -40,7 +42,75 @@ Prerequisites:
 - Your GitLab instance must be accessible with HTTPS.
 - You must have a [personal access token](../profile/personal_access_tokens.md) with `read_api` scope.
 
-To authenticate Go requests, create a [`.netrc`](https://everything.curl.dev/usingcurl/netrc.html) file with the following information:
+### Authenticate with `GOAUTH`
+
+In Go 1.24 and later, use the
+[`GOAUTH` environment variable](https://pkg.go.dev/cmd/go@master#hdr-GOAUTH_environment_variable)
+to provide credentials with a custom command.
+
+> [!note]
+> The `git dir` value for `GOAUTH` does not work for private projects in nested subgroups
+> with a depth greater than 1. Use a custom command instead.
+
+To authenticate with `GOAUTH`, create a custom command that adds an HTTP Basic
+authentication header to Go requests. The following example uses your Git over HTTPS
+credentials, returned by `git credential fill`, to authenticate requests to `gitlab.com`:
+
+```shell
+#!/usr/bin/env bash
+GITLAB_URL="https://gitlab.com"
+
+creds=$(echo "url=${GITLAB_URL}" | git credential fill 2>&1) || {
+  printf >&2 'error: git credential fill failed:\n%s\n' "$creds"
+  exit 1
+}
+
+username=""
+password=""
+while IFS='=' read -r key value; do
+  case "$key" in
+    username) username="$value" ;;
+    password) password="$value" ;;
+  esac
+done <<< "$creds"
+
+if [ -z "$username" ] || [ -z "$password" ]; then
+  printf >&2 'error: git credential fill did not return a username or password for %s\n' "$GITLAB_URL"
+  exit 1
+fi
+
+encoded=$(printf '%s:%s' "$username" "$password" | base64 | tr -d '\n')
+
+# Expected output format: https://pkg.go.dev/cmd/go@master#hdr-GOAUTH_environment_variable
+printf '%s\n\nAuthorization: Basic %s\n\n' "$GITLAB_URL" "$encoded"
+```
+
+To use this script:
+
+1. Save the script to a file, for example `gitlab_goauth.sh`.
+1. Make the file executable:
+
+   ```shell
+   chmod +x gitlab_goauth.sh
+   ```
+
+1. Set the `GOAUTH` environment variable to use your command:
+
+   ```shell
+   export GOAUTH="command <absolute_path_to_your_command>"
+   ```
+
+Alternatively, to use your existing `.netrc` file with `GOAUTH`:
+
+```shell
+export GOAUTH="netrc"
+```
+
+### Authenticate with `.netrc`
+
+To authenticate Go requests with a
+[`.netrc`](https://everything.curl.dev/usingcurl/netrc.html) file,
+create the file with the following information:
 
 ```plaintext
 machine gitlab.example.com
@@ -101,15 +171,12 @@ If the Go module is located under a private subgroup like
 `gitlab.com/namespace/subgroup/go-module`, then the Git authentication doesn't work.
 It happens, because `go get` makes an unauthenticated request to discover
 the repository path.
-Without an HTTP authentication by using a `.netrc` file, GitLab responds with
+Without authentication, GitLab responds with
 `gitlab.com/namespace/subgroup.git` to prevent a security risk of exposing
 the project's existence for unauthenticated users.
 As a result, the Go module cannot be downloaded.
 
-Unfortunately, Go doesn't provide any means of request authentication apart
-from `.netrc`. In a future version, Go may add support for arbitrary
-authentication headers.
-Follow [`golang/go#26232`](https://github.com/golang/go/issues/26232) for details.
+You can [configure Go authentication](#authenticate-go-requests-to-private-projects) to download Go modules in private subgroups.
 
 ### Workaround: use `.git` in the module name
 

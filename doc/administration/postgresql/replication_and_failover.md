@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Operations
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Set up PostgreSQL replication and automated failover for Linux package installations using Patroni, PgBouncer, and Consul.
 title: PostgreSQL replication and failover for Linux package installations
 ---
@@ -414,7 +414,6 @@ authentication mode (`patroni['tls_client_mode']`), must each have the same valu
 ### Configure PgBouncer nodes
 
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul-information), [`CONSUL_PASSWORD_HASH`](#consul-information), and [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer-information) before executing the next step.
-
 1. On each node, edit the `/etc/gitlab/gitlab.rb` configuration file and replace values noted in the `# START user configuration` section as below:
 
    ```ruby
@@ -451,7 +450,6 @@ authentication mode (`patroni['tls_client_mode']`), must each have the same valu
    ```
 
 1. Run `gitlab-ctl reconfigure`
-
 1. Create a `.pgpass` file so Consul is able to
    reload PgBouncer. Enter the `PGBOUNCER_PASSWORD` twice when asked:
 
@@ -973,15 +971,11 @@ Here are a few key facts that you must consider before upgrading PostgreSQL:
 - The main point is that you have to shut down the Patroni cluster. This means that your
   GitLab deployment is down for the duration of database upgrade or, at least, as long as your leader
   node is upgraded. This can be a significant downtime depending on the size of your database.
-
 - Upgrading PostgreSQL creates a new data directory with a new control data. From the perspective of Patroni, this is a new cluster that needs to be bootstrapped again. Therefore, as part of the upgrade procedure, the cluster state (stored in Consul) is wiped out. After the upgrade is complete, Patroni bootstraps a new cluster. This changes your cluster ID.
-
 - The procedures for upgrading leader and replicas are not the same. That is why it is important to use the right procedure on each node.
-
 - Upgrading a replica node deletes the data directory and resynchronizes it from the leader using the
   configured replication method (`pg_basebackup` is the only available option). It might take some
   time for replica to catch up with the leader, depending on the size of your database.
-
 - An overview of the upgrade procedure is outlined in [the Patroni documentation](https://patroni.readthedocs.io/en/latest/existing_data.html#major-upgrade-of-postgresql-version).
   You can still use `gitlab-ctl pg-upgrade` which implements this procedure with a few adjustments.
 

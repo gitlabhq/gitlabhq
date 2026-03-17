@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Documentation Guidelines
-info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this Style Guide page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 description: Documentation style guide and workflows.
 title: Contribute to the GitLab documentation
 ---
@@ -30,7 +30,6 @@ To update the documentation:
    The path is listed there.
 
    Alternatively, if you are already on the documentation page you would like to update, scroll to the bottom and on the footer, select **View page source**. This link takes you directly to the source file.
-
 1. In the upper right, select **Edit** > **Edit single file**.
 1. Make your updates.
 1. When you're done, in the **Commit message** text box, enter a commit message.

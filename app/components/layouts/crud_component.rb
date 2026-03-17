@@ -16,11 +16,12 @@ module Layouts
     # @param [Hash] footer_options
     # @param [Boolean] is_collapsible
     # @param [String] container_tag
+    # @param [String] title_tag
     def initialize(
       title, description: nil, count: nil, icon: nil, icon_class: nil,
       toggle_text: nil, options: {}, count_options: {}, body_options: {},
       form_options: {}, toggle_options: {}, footer_options: {},
-      is_collapsible: false, container_tag: 'section'
+      is_collapsible: false, container_tag: 'section', title_tag: 'h2'
     )
       @title = title
       @description = description
@@ -36,6 +37,7 @@ module Layouts
       @footer_options = footer_options
       @is_collapsible = is_collapsible
       @container_tag = container_tag
+      @title_tag = title_tag
     end
 
     renders_one :description
@@ -52,9 +54,10 @@ module Layouts
     def options_attrs
       default_testid = 'haml-crud'
       default_classes = [
-        'crud', 'gl-bg-subtle', 'gl-border', 'gl-border-section', 'gl-rounded-lg',
+        'crud', 'gl-flex', 'gl-flex-col', 'gl-bg-strong', 'gl-border', 'gl-border-transparent',
+        'gl-rounded-xl', 'gl-px-2', 'gl-pb-2', 'contrast-more:gl-border-strong',
         ('js-toggle-container' if @toggle_text),
-        ('js-crud-collapsible-section gl-mt-5' if @is_collapsible)
+        ('js-crud-collapsible-section gl-mt-3' if @is_collapsible)
       ]
       @options.merge(default_attrs(@options, default_testid, default_classes))
     end
@@ -62,7 +65,6 @@ module Layouts
     def body_options_attrs
       default_testid = 'crud-body'
       default_classes = [
-        ('gl-rounded-b-lg' unless footer),
         ('js-crud-collapsible-content' if @is_collapsible)
       ]
       @body_options.merge(default_attrs(@body_options, default_testid, default_classes))

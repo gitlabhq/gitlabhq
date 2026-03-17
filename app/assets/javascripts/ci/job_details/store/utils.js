@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 /**

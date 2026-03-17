@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Contributions calendar
 ---
 
@@ -105,7 +105,7 @@ To reset your feed token:
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. Select **Personal access tokens**.
+1. In the left sidebar, select **Access** > **Personal access tokens**.
 1. Scroll down. In the **Feed token** section, select the
    **reset this token** link.
 1. On the confirmation dialog, select **OK**.

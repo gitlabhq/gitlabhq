@@ -11,7 +11,7 @@ class PipelineMetricsWorker # rubocop:disable Scalability/IdempotentWorker
   urgency :low
 
   def perform(pipeline_id)
-    Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|
+    Ci::Pipeline.find_by_id_through_partition(pipeline_id).try do |pipeline|
       update_metrics_for_active_pipeline(pipeline) if pipeline.active?
       update_metrics_for_succeeded_pipeline(pipeline) if pipeline.success?
     end

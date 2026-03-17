@@ -6,8 +6,8 @@ module QA
       it 'connects and logs in with GitHub OAuth',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/402405',
         quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/17856',
-          type: :stale
+          issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/35790',
+          type: 'flaky'
         } do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
@@ -18,7 +18,7 @@ module QA
         # After OAuth login, user might be on profile page or dashboard
         # Check that we're logged in by verifying the user menu is present
         Page::Main::Menu.perform do |menu|
-          expect(menu).to be_signed_in
+          expect(menu).to have_personal_area
         end
       end
     end

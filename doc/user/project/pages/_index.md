@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Learn how to use GitLab Pages to deploy a static website at no additional cost.
 title: GitLab Pages
 description: Static site hosting, documentation publishing, project websites, and custom domains.
@@ -164,7 +164,7 @@ to share cookies.
 
 The project maintainer can disable this feature on:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Pages**.
 1. Clear the **Use unique domain** checkbox.
 1. Select **Save changes**.
@@ -188,7 +188,7 @@ Prerequisites:
 - You must have the Maintainer or Owner role for the project.
 - A [custom domain](custom_domains_ssl_tls_certification/_index.md#set-up-a-custom-domain) must be set up.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Pages**.
 1. From the **Primary domain** dropdown list, select the domain to redirect to.
 1. Select **Save changes**.
@@ -233,7 +233,7 @@ Prerequisites:
 
 To recover a stopped deployment that has not yet been deleted:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Pages**.
 1. Near **Deployments** turn on the **Include stopped deployments** toggle.
    If your deployment has not been deleted yet, it should be included in the
@@ -244,7 +244,7 @@ To recover a stopped deployment that has not yet been deleted:
 
 To delete a deployment:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Deploy** > **Pages**.
 1. Under **Deployments**, select any area on the deployment you wish to delete.
    The deployment details expand.

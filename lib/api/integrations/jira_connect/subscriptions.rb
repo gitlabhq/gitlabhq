@@ -4,7 +4,7 @@ module API
   class Integrations
     module JiraConnect
       class Subscriptions < ::API::Base
-        feature_category :integrations
+        feature_category :team_planning
 
         before { authenticate! }
 

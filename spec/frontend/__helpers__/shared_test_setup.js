@@ -3,6 +3,7 @@ import { ReadableStream, WritableStream } from 'node:stream/web';
 import { BroadcastChannel } from 'node:worker_threads';
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import Vue from 'vue';
+import { uniqueId } from 'lodash';
 import { enableAutoDestroy } from '@vue/test-utils';
 import 'jquery';
 import Translate from '~/vue_shared/translate';
@@ -83,4 +84,7 @@ beforeEach(() => {
 
   // Reset window.gon object
   window.gon = createGon(window.IS_EE);
+
+  // Reset the lodash/uniqueId counter
+  uniqueId.reset();
 });

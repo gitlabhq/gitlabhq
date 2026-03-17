@@ -107,50 +107,83 @@ RSpec.describe BulkImports::RelationBatchExportWorker, feature_category: :import
     end
   end
 
-  describe '.sidekiq_retries_exhausted' do
+  describe '.perform_failure', :aggregate_failures do
     let(:job) { { 'args' => job_args } }
 
-    it 'sets export status to failed and tracks the exception' do
-      portable = batch.export.portable
+    shared_examples 'a failed relation batch export' do
+      context 'when called by .sidekiq_retries_exhausted' do
+        it 'sets export status to failed and tracks the exception' do
+          portable = batch.export.portable
 
-      expect(Gitlab::ErrorTracking)
-        .to receive(:track_exception)
-        .with(kind_of(StandardError), portable_id: portable.id, portable_type: portable.class.name)
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception)
+            .with(
+              kind_of(StandardError),
+              portable_id: portable.id,
+              portable_type: portable.class.name,
+              offline_export_id: offline_export_id
+            )
 
-      described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('*' * 300))
-
-      expect(batch.reload.failed?).to eq(true)
-      expect(batch.error.size).to eq(255)
-    end
-
-    context 'when the relation export batch has been deleted' do
-      let(:job_args) { [user.id, non_existing_record_id] }
-
-      it 'does not raise an error' do
-        expect do
           described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('*' * 300))
-        end.not_to raise_error
+
+          expect(batch.reload.failed?).to eq(true)
+          expect(batch.error.size).to eq(255)
+        end
+
+        context 'when the relation export batch has been deleted' do
+          let(:job_args) { [user.id, non_existing_record_id] }
+
+          it 'does not raise an error' do
+            expect do
+              described_class.sidekiq_retries_exhausted_block.call(job, StandardError.new('*' * 300))
+            end.not_to raise_error
+          end
+        end
       end
-    end
-  end
 
-  describe '.sidekiq_interruptions_exhausted' do
-    let(:job) { { 'args' => job_args } }
+      context 'when called by .sidekiq_interruptions_exhausted' do
+        it 'sets export status to failed and tracks the exception' do
+          portable = batch.export.portable
 
-    it 'sets export status to failed' do
-      described_class.interruptions_exhausted_block.call(job)
-      expect(batch.reload).to be_failed
-      expect(batch.error).to eq('Export process reached the maximum number of interruptions')
-    end
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception)
+            .with(
+              kind_of(Import::Exceptions::SidekiqExhaustedInterruptionsError),
+              portable_id: portable.id,
+              portable_type: portable.class.name,
+              offline_export_id: offline_export_id
+            )
 
-    context 'when the relation export batch has been deleted' do
-      let(:job_args) { [user.id, non_existing_record_id] }
-
-      it 'does not raise an error' do
-        expect do
           described_class.interruptions_exhausted_block.call(job)
-        end.not_to raise_error
+
+          expect(batch.reload).to be_failed
+          expect(batch.error).to eq('Export process reached the maximum number of interruptions')
+        end
+
+        context 'when the relation export batch has been deleted' do
+          let(:job_args) { [user.id, non_existing_record_id] }
+
+          it 'does not raise an error' do
+            expect do
+              described_class.interruptions_exhausted_block.call(job)
+            end.not_to raise_error
+          end
+        end
       end
+    end
+
+    context 'when batch does not belong to an offline export' do
+      let(:offline_export_id) { nil }
+
+      it_behaves_like 'a failed relation batch export'
+    end
+
+    context 'when batch belongs to an offline export' do
+      let_it_be(:offline_relation_export) { create(:bulk_import_export, :batched, :offline, project: project) }
+      let_it_be_with_reload(:batch) { create(:bulk_import_export_batch, export: offline_relation_export) }
+      let(:offline_export_id) { offline_relation_export.offline_export_id }
+
+      it_behaves_like 'a failed relation batch export'
     end
   end
 end

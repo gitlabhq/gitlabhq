@@ -1,6 +1,3 @@
 ---
 name: delete_npm_package_tag
 description: Grants the ability to delete NPM package tags
-boundaries:
-  - group
-  - project

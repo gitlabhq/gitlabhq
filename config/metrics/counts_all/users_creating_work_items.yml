@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.work_items.users_creating_work_items
 description: Unique users creating work items
 product_group: project_management
+product_categories:
+- team_planning
 value_type: number
 status: active
 milestone: '14.9'

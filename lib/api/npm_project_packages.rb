@@ -26,6 +26,7 @@ module API
 
     helpers do
       include Gitlab::Utils::StrongMemoize
+      include Gitlab::InternalEventsTracking
 
       def error_reason_to_http_status(reason)
         ERROR_REASON_TO_HTTP_STATUS_MAPPTING.fetch(reason, 400)
@@ -153,7 +154,9 @@ module API
           render_structured_api_error!({ message: response.message, error: response.message }, error_reason_to_http_status(response.reason))
         end
 
-        unless npm_command_deprecate?
+        if npm_command_deprecate?
+          track_internal_event('deprecate_npm_package', project: project, user: current_user)
+        else
           track_package_event('push_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
         end
 

@@ -1,5 +1,5 @@
 <script>
-import { camelCase, chunk } from 'lodash';
+import { camelCase, chunk } from 'lodash-es';
 import { GlForm } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';

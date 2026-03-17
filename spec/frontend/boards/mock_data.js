@@ -1,5 +1,5 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
-import { keyBy } from 'lodash';
+import { keyBy } from 'lodash-es';
 import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
@@ -302,6 +302,12 @@ export const rawIssue = {
   healthStatus: null,
   status: null,
   type: 'ISSUE',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/1',
+    name: 'Issue',
+    iconName: 'work-item-issue',
+    __typename: 'WorkItemType',
+  },
   linkedWorkItems: {
     __typename: 'LinkedWorkItemTypeConnection',
     nodes: [
@@ -358,6 +364,12 @@ export const mockIssue = {
   healthStatus: null,
   status: null,
   type: 'ISSUE',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/1',
+    name: 'Issue',
+    iconName: 'work-item-issue',
+    __typename: 'WorkItemType',
+  },
   __typename: 'Issue',
   linkedWorkItems: {
     __typename: 'LinkedWorkItemTypeConnection',

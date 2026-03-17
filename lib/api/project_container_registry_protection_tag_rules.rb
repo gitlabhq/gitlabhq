@@ -25,6 +25,8 @@ module API
           tags %w[projects]
           is_array true
         end
+        route_setting :authorization, permissions: :read_container_registry_protection_tag_rule,
+          boundary_type: :project
         get do
           authorize! :admin_container_image, user_project
 
@@ -57,6 +59,8 @@ module API
             desc: 'Minimum GitLab access level required to delete container tags. ' \
               'For example, Maintainer, Owner, or Admin.'
         end
+        route_setting :authorization, permissions: :create_container_registry_protection_tag_rule,
+          boundary_type: :project
         post do
           authorize! :admin_container_image, user_project
 
@@ -101,6 +105,8 @@ module API
               desc: 'Minimum GitLab access level required to delete container tags. ' \
                 'For example, Maintainer, Owner, or Admin. To unset the value, use an empty string (`""`).'
           end
+          route_setting :authorization, permissions: :update_container_registry_protection_tag_rule,
+            boundary_type: :project
           patch do
             authorize! :admin_container_image, user_project
 
@@ -125,6 +131,8 @@ module API
             ]
             tags %w[projects]
           end
+          route_setting :authorization, permissions: :delete_container_registry_protection_tag_rule,
+            boundary_type: :project
           delete do
             protection_rule = user_project.container_registry_protection_tag_rules.find(params[:protection_rule_id])
 

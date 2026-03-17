@@ -18,4 +18,5 @@ desired_sharding_key:
         sharding_key: project_id
         belongs_to: package_file
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/587559
+desired_sharding_key_migration_job_name: BackfillPackagesPackageFileStatesProjectId
 table_size: large

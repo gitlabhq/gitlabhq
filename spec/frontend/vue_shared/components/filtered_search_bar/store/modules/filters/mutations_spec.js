@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import { mockBranches } from 'jest/vue_shared/components/filtered_search_bar/mock_data';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';

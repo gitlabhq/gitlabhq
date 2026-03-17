@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Use OpenID Connect as an authentication provider
 ---
 
@@ -490,9 +490,7 @@ As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgra
   configure the following:
   - In a Linux package installation, [`omniauth_auto_link_user`](../../integration/omniauth.md#link-existing-users-to-omniauth-users).
   - In a Helm installation, [`autoLinkUser`](https://docs.gitlab.com/charts/charts/globals/#omniauth).
-
 - **For users with no email address**, administrators must take one of the following actions:
-
   - Set up another authentication method or enable sign-in using GitLab username and password. The user can then sign in and link their Azure identity manually using their profile.
   - Implement OpenID Connect as a new provider alongside the existing `azure_oauth2` so the user can sign in through OAuth 2.0, and link their OpenID Connect identity (similar to the previous method). This method would also work for users with email addresses, as long as `auto_link_user` is enabled.
   - Update `extern_uid` manually. To do this, use the [API or Rails console](../../integration/omniauth.md#change-apps-or-configuration) to update the `extern_uid` for each user.
@@ -518,9 +516,7 @@ Configure the app:
 
 1. Set the app `Redirect URI`. For example, If your GitLab domain is `gitlab.example.com`,
    set the app `Redirect URI` to `https://gitlab.example.com/users/auth/openid_connect/callback`.
-
 1. [Enable the ID tokens](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga#enable-id-token-implicit-grant).
-
 1. Add the following API permissions to the app:
 
    - `openid`
@@ -1094,9 +1090,8 @@ response to identify users as [external users](../external_users.md)
 based on group membership, configure GitLab to identify:
 
 - Where to look for the groups in the OIDC response, using the `groups_attribute` setting.
-- Which group memberships should identify a user as an
-  [external user](../external_users.md), using the
- `external_groups` setting.
+- Which group memberships should identify a user as an [external user](../external_users.md),
+  using the `external_groups` setting.
 
 {{< tabs >}}
 
@@ -1512,9 +1507,7 @@ Keycloak supports step-up authentication by defining levels of authentication an
 To require step-up authentication for Admin Mode with Keycloak:
 
 1. [Configure Keycloak](#configure-keycloak) in GitLab.
-
 1. Follow the steps in the Keycloak documentation to [create a browser login flow with step-up authentication in Keycloak](https://www.keycloak.org/docs/latest/server_admin/#_step-up-flow).
-
 1. Edit your GitLab configuration file (`gitlab.yml` or `/etc/gitlab/gitlab.rb`) to enable
    step-up authentication in the Keycloak OIDC provider configuration.
 
@@ -1576,12 +1569,9 @@ Consider the following aspects:
 To require step-up authentication for Admin Mode with Microsoft Entra ID:
 
 1. [Configure Microsoft Entra ID](#configure-microsoft-azure) in GitLab.
-
 1. Follow the steps in the Microsoft Entra ID documentation to
    [define conditional access authentication contexts in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context).
-
 1. In Microsoft Entra ID, define [the optional claim `acrs` to include in the ID token](https://openid.net/specs/openid-connect-core-1_0.html#IDToken).
-
 1. Edit your GitLab configuration file (`gitlab.yml` or `/etc/gitlab/gitlab.rb`) to enable
    step-up authentication in the Microsoft Entra ID provider configuration:
 
@@ -1747,25 +1737,33 @@ step-up authentication actually failed, making the guidance more relevant and ac
 
 > [!note]
 > Best practices for documentation links:
-> 
+>
 > - Use HTTPS URLs for security.
 > - Link to internal documentation that explains the specific authentication requirements for your organization.
 > - Include information about how to enable `MFA` or other required authentication methods.
 
-### Session expiration
+### Disable session expiration
 
 By default, step-up authentication sessions expire based on the identity provider (IdP) token
-expiration time, typically around 10 minutes. This behavior provides strong security assurance
-but may require users to re-authenticate frequently during long working sessions.
+expiration time, typically around 10 minutes.
 
-#### Disabling session expiration
+You can control session expiration with the `session_expiration_enabled` setting:
 
-To allow step-up authentication to remain valid for the entire user session,
-you can disable session expiration in your provider configuration:
+| Setting                                      | Behavior |
+| -------------------------------------------- | -------- |
+| `session_expiration_enabled: true` (default) | Step-up authentication expires based on IdP token `exp` claim. This is typically around 10 minutes. |
+| `session_expiration_enabled: false`          | Step-up authentication remains valid for the entire user session until the user signs out. |
 
-:::Tabs
+> [!warning]
+> Disabling session expiration means users authenticate only once per session
+> rather than periodically re-verifying their identity. Only disable this setting
+> if your security requirements allow session-lifetime step-up authentication.
 
-:::TabTitle Linux package (Omnibus)
+To disable session expiration:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1797,7 +1795,9 @@ you can disable session expiration in your provider configuration:
    sudo gitlab-ctl reconfigure
    ```
 
-:::TabTitle Self-compiled (source)
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
 
 1. Edit `config/gitlab.yml`:
 
@@ -1833,37 +1833,25 @@ you can disable session expiration in your provider configuration:
    sudo service gitlab restart
    ```
 
-:::EndTabs
+{{< /tab >}}
 
-| Setting | Behavior |
-|---------|----------|
-| `session_expiration_enabled: true` (default) | Step-up authentication expires based on IdP token `exp` claim (typically ~10 minutes). |
-| `session_expiration_enabled: false` | Step-up authentication remains valid for the entire user session until logout. |
-
-WARNING:
-Disabling session expiration reduces security assurance. Only disable this setting if your
-security requirements allow session-lifetime step-up authentication. When disabled, users
-authenticate once per session rather than periodically re-verifying their identity.
+{{< /tabs >}}
 
 ## Troubleshooting
 
 1. Ensure `discovery` is set to `true`. If you set it to `false`, you must
    specify all the URLs and keys required to make OpenID work.
-
 1. Check your system clock to ensure the time is synchronized properly.
-
 1. As mentioned in [the OmniAuth OpenID Connect documentation](https://github.com/omniauth/omniauth_openid_connect),
    make sure `issuer` corresponds to the base URL of the Discovery URL. For
    example, `https://accounts.google.com` is used for the URL
    `https://accounts.google.com/.well-known/openid-configuration`.
-
 1. The OpenID Connect client uses HTTP Basic Authentication to send the
    OAuth 2.0 access token if `client_auth_method` is not defined or if set to `basic`.
    If you see 401 errors when retrieving the `userinfo` endpoint, check
    your OpenID web server configuration. For example, for
    [`oauth2-server-php`](https://github.com/bshaffer/oauth2-server-php), you may have to
    [add a configuration parameter to Apache](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778).
-
 1. **Step-up authentication only**: Ensure that any parameters defined in
    `step_up_auth => admin_mode => params` are also defined in `args => allow_authorize_params`.
    This includes the parameters in the request query parameters used to

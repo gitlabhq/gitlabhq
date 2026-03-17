@@ -16,12 +16,16 @@ export default {
     workItemType() {
       return typeof this.data === 'string' ? this.data : this.data.name;
     },
+    workItemTypeIconName() {
+      return typeof this.data === 'object' ? this.data.iconName : '';
+    },
   },
 };
 </script>
 <template>
   <work-item-type-icon
     :work-item-type="workItemType"
+    :type-icon-name="workItemTypeIconName"
     :show-text="true"
     class="gl-whitespace-nowrap"
   />

@@ -158,12 +158,12 @@ export default {
       }
     },
     renderMarkdown,
-    onResolverChange({ loading, query, config, data, aggregate, groupBy, error }) {
+    onResolverChange({ loading, query, config, data, error }) {
       this.loading = loading;
       this.query = query;
       this.config = config;
       this.data = data;
-      this.itemsCount = aggregate?.length && groupBy?.length ? null : data?.count;
+      this.itemsCount = data?.count;
 
       if (error) {
         this.handleError(error);

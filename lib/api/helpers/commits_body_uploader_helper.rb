@@ -60,6 +60,19 @@ module API
           check_rate_limit!(:user_large_commit_request, scope: current_user)
         end
       end
+
+      # Validates that a parameter value is a string if present.
+      # Does not validate presence - use existing blank? checks for that.
+      def validate_string_param!(params, key, prefix: nil)
+        return unless params.key?(key)
+
+        value = params[key]
+        return if value.nil?
+        return if value.is_a?(String)
+
+        param_name = prefix ? "#{prefix}[#{key}]" : key.to_s
+        bad_request!("#{param_name} must be a string")
+      end
     end
   end
 end

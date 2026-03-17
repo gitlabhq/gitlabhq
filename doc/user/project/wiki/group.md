@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Group wikis
 ---
 
@@ -22,7 +22,7 @@ Group wikis are similar to [project wikis](_index.md), with a few limitations:
 
 For updates, follow [the epic that tracks feature parity with project wikis](https://gitlab.com/groups/gitlab-org/-/epics/2782).
 
-Similar to project wikis, group members with at least the Developer role
+Similar to project wikis, group members with the Developer, Maintainer, or Owner role
 can edit group wikis. Group wiki repositories can be moved using the
 [Group repository storage moves API](../../../api/group_repository_storage_moves.md).
 
@@ -30,9 +30,9 @@ can edit group wikis. Group wiki repositories can be moved using the
 
 To access a group wiki:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. To display the wiki, either:
-   - On the left sidebar, select **Plan** > **Wiki**.
+   - In the left sidebar, select **Plan** > **Wiki**.
    - On any page in the group, use the <kbd>g</kbd>+<kbd>w</kbd>
      [wiki keyboard shortcut](../../shortcuts.md).
 
@@ -66,7 +66,7 @@ can enable or disable a group wiki through the group settings.
 
 To open group settings:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Scroll to **Wiki** and select one of these options:
@@ -100,7 +100,7 @@ Prerequisites:
 
 To delete all of the data from a group wiki and recreate it in a blank state:
 
-1. [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Start a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Run these commands:
 
    ```ruby

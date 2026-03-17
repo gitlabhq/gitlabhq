@@ -12,7 +12,7 @@ import groupRecentBoardsQuery from '~/boards/graphql/group_recent_boards.query.g
 import projectRecentBoardsQuery from '~/boards/graphql/project_recent_boards.query.graphql';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import { NAMESPACE_GROUP, NAMESPACE_PROJECT } from '~/issues/constants';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   mockBoard,
@@ -32,10 +32,11 @@ Vue.use(VueApollo);
 
 describe('BoardsSelector', () => {
   let wrapper;
-  let fakeApollo;
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findBoardForm = () => wrapper.findComponent(BoardForm);
+
+  let mockApollo;
 
   const fillSearchBox = async (filterTerm) => {
     await findDropdown().vm.$emit('search', filterTerm);
@@ -60,8 +61,6 @@ describe('BoardsSelector', () => {
     .fn()
     .mockResolvedValue(mockEmptyProjectRecentBoardsResponse);
 
-  const boardsHandlerFailure = jest.fn().mockRejectedValue(new Error('error'));
-
   const createComponent = ({
     projectBoardsQueryHandler = projectBoardsQueryHandlerSuccess,
     projectRecentBoardsQueryHandler = projectRecentBoardsQueryHandlerSuccess,
@@ -71,7 +70,7 @@ describe('BoardsSelector', () => {
     provide = {},
     props = {},
   } = {}) => {
-    fakeApollo = createMockApollo([
+    mockApollo = createControlledMockApollo([
       [projectBoardsQuery, projectBoardsQueryHandler],
       [groupBoardsQuery, groupBoardsQueryHandler],
       [projectRecentBoardsQuery, projectRecentBoardsQueryHandler],
@@ -79,7 +78,7 @@ describe('BoardsSelector', () => {
     ]);
 
     wrapper = shallowMountExtended(BoardsSelector, {
-      apolloProvider: fakeApollo,
+      apolloProvider: mockApollo.apolloProvider,
       propsData: {
         throttleDuration,
         board: mockBoard,
@@ -108,13 +107,11 @@ describe('BoardsSelector', () => {
     cacheUpdates.setError = jest.fn();
   });
 
-  afterEach(() => {
-    fakeApollo = null;
-  });
+  afterEach(() => {});
 
   describe('template', () => {
-    beforeEach(() => {
-      createComponent({ isProjectBoard: true });
+    beforeEach(async () => {
+      await createComponent({ isProjectBoard: true });
     });
 
     describe('loading', () => {
@@ -123,8 +120,8 @@ describe('BoardsSelector', () => {
         await waitForPromises();
       });
 
-      it('displays loading state of dropdown while current board is being fetched', () => {
-        createComponent({
+      it('displays loading state of dropdown while current board is being fetched', async () => {
+        await createComponent({
           props: { isCurrentBoardLoading: true },
         });
         expect(findDropdown().props('loading')).toBe(true);
@@ -132,7 +129,7 @@ describe('BoardsSelector', () => {
       });
 
       it('shows loading spinner', async () => {
-        createComponent({
+        await createComponent({
           props: {
             isCurrentBoardLoading: true,
           },
@@ -147,13 +144,15 @@ describe('BoardsSelector', () => {
 
     describe('loaded', () => {
       beforeEach(async () => {
-        // Wait for current board to be loaded
-        await nextTick();
-
+        await createComponent({ isProjectBoard: true });
         // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
         findDropdown().vm.$emit('shown');
 
-        await nextTick();
+        await waitForPromises();
+
+        // Resolve the project boards and recent boards queries
+        await mockApollo.resolveQuery(projectBoardsQuery);
+        await mockApollo.resolveQuery(projectRecentBoardsQuery);
       });
 
       it('fetches all issue boards', () => {
@@ -194,8 +193,7 @@ describe('BoardsSelector', () => {
       });
 
       describe('recent boards section', () => {
-        it('shows only when boards are greater than 10', async () => {
-          await nextTick();
+        it('shows only when boards are greater than 10', () => {
           expect(projectRecentBoardsQueryHandlerSuccess).toHaveBeenCalled();
 
           expect(findDropdown().props('items')).toHaveLength(2);
@@ -204,7 +202,7 @@ describe('BoardsSelector', () => {
         });
 
         it('does not show when boards are less than 10', async () => {
-          createComponent({ projectBoardsQueryHandler: smallBoardsQueryHandlerSuccess });
+          await createComponent({ projectBoardsQueryHandler: smallBoardsQueryHandlerSuccess });
 
           await nextTick();
 
@@ -212,11 +210,12 @@ describe('BoardsSelector', () => {
         });
 
         it('does not show when recentIssueBoards api returns empty array', async () => {
-          createComponent({
+          await createComponent({
             projectRecentBoardsQueryHandler: emptyRecentBoardsQueryHandlerSuccess,
           });
 
           await nextTick();
+
           expect(findDropdown().props('items')).toHaveLength(0);
         });
 
@@ -236,17 +235,15 @@ describe('BoardsSelector', () => {
       ${NAMESPACE_GROUP}   | ${groupBoardsQueryHandlerSuccess}   | ${projectBoardsQueryHandlerSuccess}
       ${NAMESPACE_PROJECT} | ${projectBoardsQueryHandlerSuccess} | ${groupBoardsQueryHandlerSuccess}
     `('fetches $boardType boards', async ({ boardType, queryHandler, notCalledHandler }) => {
-      createComponent({
+      await createComponent({
         isGroupBoard: boardType === NAMESPACE_GROUP,
         isProjectBoard: boardType === NAMESPACE_PROJECT,
       });
 
-      await nextTick();
-
       // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
       findDropdown().vm.$emit('shown');
 
-      await nextTick();
+      await waitForPromises();
 
       expect(queryHandler).toHaveBeenCalled();
       expect(notCalledHandler).not.toHaveBeenCalled();
@@ -257,19 +254,20 @@ describe('BoardsSelector', () => {
       ${NAMESPACE_GROUP}
       ${NAMESPACE_PROJECT}
     `('sets error when fetching $boardType boards fails', async ({ boardType }) => {
-      createComponent({
+      await createComponent({
         isGroupBoard: boardType === NAMESPACE_GROUP,
         isProjectBoard: boardType === NAMESPACE_PROJECT,
-        projectBoardsQueryHandler: boardsHandlerFailure,
-        groupBoardsQueryHandler: boardsHandlerFailure,
+        projectBoardsQueryHandler: projectBoardsQueryHandlerSuccess,
+        groupBoardsQueryHandler: groupBoardsQueryHandlerSuccess,
       });
-
-      await nextTick();
 
       // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
       findDropdown().vm.$emit('shown');
 
       await waitForPromises();
+
+      const boardQuery = boardType === NAMESPACE_GROUP ? groupBoardsQuery : projectBoardsQuery;
+      await mockApollo.rejectQuery(boardQuery, new Error('error'));
 
       expect(cacheUpdates.setError).toHaveBeenCalled();
     });
@@ -277,16 +275,16 @@ describe('BoardsSelector', () => {
 
   describe('dropdown visibility', () => {
     describe('when multipleIssueBoardsAvailable is enabled', () => {
-      it('show dropdown', () => {
-        createComponent({ provide: { multipleIssueBoardsAvailable: true } });
+      it('show dropdown', async () => {
+        await createComponent({ provide: { multipleIssueBoardsAvailable: true } });
         expect(findDropdown().exists()).toBe(true);
         expect(findDropdown().props('toggleText')).toBe('Select board');
       });
     });
 
     describe('when multipleIssueBoardsAvailable is disabled but it hasMissingBoards', () => {
-      it('show dropdown', () => {
-        createComponent({
+      it('show dropdown', async () => {
+        await createComponent({
           provide: { multipleIssueBoardsAvailable: false, hasMissingBoards: true },
         });
         expect(findDropdown().exists()).toBe(true);
@@ -295,8 +293,8 @@ describe('BoardsSelector', () => {
     });
 
     describe("when multipleIssueBoardsAvailable is disabled and it dosn't hasMissingBoards", () => {
-      it('hide dropdown', () => {
-        createComponent({
+      it('hide dropdown', async () => {
+        await createComponent({
           provide: { multipleIssueBoardsAvailable: false, hasMissingBoards: false },
         });
         expect(findDropdown().exists()).toBe(false);
@@ -305,13 +303,13 @@ describe('BoardsSelector', () => {
   });
 
   describe('board form', () => {
-    it('does not show board form by default', () => {
-      createComponent();
+    it('does not show board form by default', async () => {
+      await createComponent();
       expect(findBoardForm().exists()).toBe(false);
     });
 
-    it('shows board form when boardModalForm prop is set', () => {
-      createComponent({
+    it('shows board form when boardModalForm prop is set', async () => {
+      await createComponent({
         props: {
           boardModalForm: formType.new,
         },
@@ -320,7 +318,7 @@ describe('BoardsSelector', () => {
     });
 
     it('emits showBoardModal when BoardForm emits cancel', async () => {
-      createComponent({
+      await createComponent({
         props: {
           boardModalForm: formType.new,
         },
@@ -333,17 +331,20 @@ describe('BoardsSelector', () => {
     });
 
     it('emits showBoardModal with new when clicking on create board button', async () => {
-      createComponent({ isProjectBoard: true });
+      await createComponent({ isProjectBoard: true });
 
       findDropdown().vm.$emit('shown');
       await waitForPromises();
+
+      await mockApollo.resolveQuery(projectBoardsQuery);
+      await mockApollo.resolveQuery(projectRecentBoardsQuery);
 
       wrapper.findComponent(GlButton).vm.$emit('click');
       expect(wrapper.emitted('showBoardModal')).toEqual([[formType.new]]);
     });
 
-    it('emits showBoardModal when BoardForm emits showBoardModal', () => {
-      createComponent({
+    it('emits showBoardModal when BoardForm emits showBoardModal', async () => {
+      await createComponent({
         isProjectBoard: true,
         props: {
           boardModalForm: formType.edit,

@@ -274,6 +274,10 @@ RSpec.shared_context '"Explore" navbar structure' do
       end,
 
       {
+        nav_item: _("Analytics dashboards"),
+        nav_sub_items: []
+      },
+      {
         nav_item: _("Topics"),
         nav_sub_items: []
       },

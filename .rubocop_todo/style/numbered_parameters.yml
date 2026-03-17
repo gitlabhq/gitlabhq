@@ -1,9 +1,6 @@
 ---
 Style/NumberedParameters:
   Exclude:
-    - 'app/controllers/concerns/web_hooks/hook_actions.rb'
-    - 'app/controllers/graphql_controller.rb'
-    - 'app/controllers/import/bulk_imports_controller.rb'
     - 'app/graphql/types/base_field.rb'
     - 'app/graphql/types/current_user_todos.rb'
     - 'app/graphql/types/design_management/design_fields.rb'
@@ -64,5 +61,4 @@ Style/NumberedParameters:
     - 'spec/support/helpers/graphql_helpers.rb'
     - 'spec/support/matchers/exceed_query_limit.rb'
     - 'spec/support/shared_examples/integrations/integration_settings_form.rb'
-    - 'spec/support/shared_examples/requests/api/hooks_shared_examples.rb'
     - 'spec/support_specs/helpers/active_record/query_recorder_spec.rb'

@@ -1,7 +1,7 @@
 ---
 stage: Platforms
 group: Scalability
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Sidekiq execution SLIs (service level indicators)
 ---
 
@@ -24,27 +24,20 @@ server misbehavior.
 - `gitlab_sli_sidekiq_execution_apdex_total`: This counter gets
   incremented for every successful job execution that does not result in an exception. It ensures slow jobs are not
   counted twice, because the job is already counted in the error SLI.
-
 - `gitlab_sli_sidekiq_execution_apdex_success_total`: This counter gets
   incremented for every successful job that performed faster than
   the [defined target duration depending on the job urgency](../sidekiq/worker_attributes.md#job-urgency).
-
 - `gitlab_sli_sidekiq_execution_error_total`: This counter gets
   incremented for every job that encountered an exception.
-
 - `gitlab_sli_sidekiq_execution_total`: This counter gets
   incremented for every job execution.
 
 These counters are labeled with:
 
 - `worker`: The identification of the worker.
-
 - `feature_category`: The feature category specified for that worker.
-
 - `urgency`: The urgency attribute specified for that worker.
-
 - `external_dependencies`: The boolean value `yes` or `no` based on the [external dependencies attribute](../sidekiq/worker_attributes.md#jobs-with-external-dependencies).
-
 - `queue`: The queue in which the job is running.
 
 For more information about these SLIs, see the [Sidekiq SLIs documentation](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/sidekiq/sidekiq-slis.md) in runbooks.

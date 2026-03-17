@@ -33,7 +33,7 @@ describe('NewEditForm', () => {
   const findGlFormFields = () => wrapper.findComponent(GlFormFields);
   const findNameField = () => wrapper.findByLabelText('Project name');
   const findIdField = () => wrapper.findByLabelText('Project ID');
-  const findDescriptionField = () => wrapper.findByLabelText('Project description (optional)');
+  const findDescriptionField = () => wrapper.find('textarea.note-textarea');
   const findDescriptionCharacterCounter = () =>
     wrapper.findByTestId('description-character-counter');
   const findDescriptionMarkdownField = () => wrapper.findComponent(MarkdownField);

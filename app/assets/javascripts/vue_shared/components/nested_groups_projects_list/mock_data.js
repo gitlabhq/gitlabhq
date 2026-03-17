@@ -1,5 +1,5 @@
 /* eslint-disable @gitlab/require-i18n-strings */
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { slugify } from '~/lib/utils/text_utility';
 import { LIST_ITEM_TYPE_PROJECT, LIST_ITEM_TYPE_GROUP } from './constants';

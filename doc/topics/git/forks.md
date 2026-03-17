@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Fork a Git repository when you want to contribute changes back to an upstream repository you don't have permission to contribute to directly.
 title: Update a fork
 ---
@@ -16,7 +16,7 @@ title: Update a fork
 A fork is a personal copy of the repository and all its branches, which you create
 in a namespace of your choice. You can use forks to propose changes to another project
 that you don't have access to. For more information,
-see [Forking workflows](../../user/project/repository/forking_workflow.md).
+see [forking workflows](../../user/project/repository/forking_workflow.md).
 
 You can also update a fork with the [GitLab UI](../../user/project/repository/forking_workflow.md#from-the-ui).
 
@@ -30,7 +30,7 @@ To update your fork from the command line:
 
 1. Check if an `upstream` remote repository is configured for your fork:
 
-   1. Clone your fork locally, if you haven't already. For more information, see [Clone a repository](clone.md).
+   1. Clone your fork locally, if you haven't already. For more information, see [clone a repository](clone.md).
    1. View the configured remotes for your fork:
 
       ```shell
@@ -101,7 +101,7 @@ In the following example:
 
 To change or add a commit to the contributor's merge request:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to **Code** > **Merge requests** and find the merge request.
 1. In the upper-right corner, select **Code**, then select **Check out branch**.
 1. On the dialog, select **Copy** ({{< icon name="copy-to-clipboard" >}}).
@@ -113,7 +113,6 @@ To change or add a commit to the contributor's merge request:
    ```
 
    These commands fetch the branch from the forked project and create a local branch for you to work on.
-
 1. Make your changes to the local copy of the branch, and then commit them.
 1. Push your local changes to the forked project. The following command pushes the
    local branch `contributor/fork-branch` to the `fork-branch` branch of

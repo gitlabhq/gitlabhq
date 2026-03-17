@@ -1512,18 +1512,18 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   end
 
   describe '#count_commits' do
-    it { expect(repository.count_commits(ref: "master")).to eq(37) }
-    it { expect(repository.count_commits(ref: "feature")).to eq(9) }
-    it { expect(repository.count_commits(ref: "does-not-exist")).to eq(0) }
+    it { expect(repository.count_commits(revisions: "master")).to eq(37) }
+    it { expect(repository.count_commits(revisions: "feature")).to eq(9) }
+    it { expect(repository.count_commits(revisions: "does-not-exist")).to eq(0) }
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :commit_count do
-      subject { repository.count_commits(ref: 'master') }
+      subject { repository.count_commits(revisions: 'master') }
     end
 
     describe 'extended commit counting' do
       context 'with after timestamp' do
         it 'returns the number of commits after timestamp' do
-          options = { ref: 'master', after: Time.iso8601('2013-03-03T20:15:01+00:00') }
+          options = { revisions: 'master', after: Time.iso8601('2013-03-03T20:15:01+00:00') }
 
           expect(repository.count_commits(options)).to eq(37)
         end
@@ -1531,7 +1531,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       context 'with before timestamp' do
         it 'returns the number of commits before timestamp' do
-          options = { ref: 'feature', before: Time.iso8601('2015-03-03T20:15:01+00:00') }
+          options = { revisions: 'feature', before: Time.iso8601('2015-03-03T20:15:01+00:00') }
 
           expect(repository.count_commits(options)).to eq(9)
         end
@@ -1539,7 +1539,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       context 'with max_count' do
         it 'returns the number of commits with path' do
-          options = { ref: 'master', max_count: 5 }
+          options = { revisions: 'master', max_count: 5 }
 
           expect(repository.count_commits(options)).to eq(5)
         end
@@ -1547,7 +1547,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       context 'with path' do
         it 'returns the number of commits with path' do
-          options = { ref: 'master', path: 'encoding' }
+          options = { revisions: 'master', path: 'encoding' }
 
           expect(repository.count_commits(options)).to eq(2)
         end
@@ -1569,7 +1569,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       context 'with max_count' do
         it 'returns the number of commits up to the passed limit' do
-          options = { ref: 'master', max_count: 10, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
+          options = { revisions: 'master', max_count: 10, after: Time.iso8601('2013-03-03T20:15:01+00:00') }
 
           expect(repository.count_commits(options)).to eq(10)
         end
@@ -1577,7 +1577,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       context "with all" do
         it "returns the number of commits in the whole repository" do
-          options = { all: true }
+          options = { revisions: '--all' }
 
           expect(repository.count_commits(options)).to eq(330)
         end
@@ -1597,7 +1597,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         end
       end
 
-      context 'without all or ref being specified' do
+      context 'without revisions being specified' do
         it "raises an ArgumentError" do
           expect { repository.count_commits({}) }.to raise_error(ArgumentError)
         end
@@ -2193,7 +2193,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       it { is_expected.to have_attributes(key: 'mit') }
     end
 
-    context 'when license is not recognized ' do
+    context 'when license is not recognized' do
       let_it_be(:project) { create(:project, :repository) }
       let(:repository) { project.repository.raw_repository }
 
@@ -2604,6 +2604,32 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       repository.bundle_to_disk(save_path)
 
       expect(File).to exist(save_path)
+    end
+  end
+
+  describe '#initial_commit' do
+    subject(:initial_commit) { repository.initial_commit(ref) }
+
+    let(:ref) { nil }
+
+    it 'returns the first commit with no parents' do
+      expect(initial_commit).to be_a(Gitlab::Git::Commit)
+      expect(initial_commit.parent_ids).to be_empty
+    end
+
+    context 'when ref is specified' do
+      let(:ref) { 'master' }
+
+      it 'returns the initial commit for that ref' do
+        expect(initial_commit).to be_a(Gitlab::Git::Commit)
+        expect(initial_commit.parent_ids).to be_empty
+      end
+    end
+
+    context 'when repository is empty' do
+      let(:repository) { create(:project, :empty_repo).repository.raw }
+
+      it { is_expected.to be_nil }
     end
   end
 

@@ -9,9 +9,12 @@ import (
 	"net/url"
 	"strings"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
+
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"google.golang.org/protobuf/proto"
 )
 
 // ActionResponseBodyLimit is the maximum size of response body that can be received.
@@ -94,6 +97,11 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 	nrw := &nullResponseWriter{header: make(http.Header)}
 	a.backend.ServeHTTP(nrw, req)
 
+	headers := make(map[string]string, len(nrw.Header()))
+	for k, v := range nrw.Header() {
+		headers[k] = strings.Join(v, ", ")
+	}
+
 	clientEvent := &pb.ClientEvent{
 		Response: &pb.ClientEvent_ActionResponse{
 			ActionResponse: &pb.ActionResponse{
@@ -102,11 +110,22 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 					HttpResponse: &pb.HttpResponse{
 						Body:       nrw.body.String(),
 						StatusCode: int32(nrw.status),
+						Headers:    headers,
 					},
 				},
 			},
 		},
 	}
+
+	log.WithContextFields(a.originalReq.Context(), log.Fields{
+		"path":                 a.action.GetRunHTTPRequest().Path,
+		"method":               a.action.GetRunHTTPRequest().Method,
+		"status_code":          nrw.status,
+		"payload_size":         proto.Size(clientEvent),
+		"event_type":           fmt.Sprintf("%T", clientEvent.Response),
+		"action_response_type": fmt.Sprintf("%T", clientEvent.GetActionResponse().GetResponseType()),
+		"request_id":           a.action.GetRequestID(),
+	}).Info("Sending HTTP response event")
 
 	return clientEvent, nil
 }

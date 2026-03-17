@@ -33,7 +33,7 @@ RSpec.describe Terraform::States::TriggerDestroyService, feature_category: :infr
       it 'does not modify the state' do
         expect(Terraform::States::DestroyWorker).not_to receive(:perform_async)
 
-        expect { subject }.not_to change(state, :deleted_at)
+        expect { subject }.not_to change { state.deleted_at }
         expect(subject).to be_error
         expect(subject.message).to eq(message)
       end

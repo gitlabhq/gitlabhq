@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: AI features based on 3rd-party integrations
 ---
 
@@ -13,18 +13,21 @@ For detailed instructions on setting up GitLab Duo licensing in your development
 
 Here is a list of all of the main steps to go through from a fresh, GDK-less computer to fully working ai-development ready.
 
-### Prepare your GDK 
+### Prepare your GDK
 
 Follow the instructions in the [GitLab Development Kit](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/) to set up
-GitLab Duo for local development purposes. These instructions describe how to fulfill prerequisites in your local environment and set up core
-backend components.
+GitLab Duo for local development purposes. These instructions describe how to fulfill prerequisites in your local environment and set up core backend components.
+
+### Update an existing GDK
+
+If you already have a GDK installed, you **still** must refer to the [GitLab Development Kit instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/) to set up DAP with the right environment variables, NGINX, your Anthropic key and more.
 
 ### Run `gitlab:duo:setup` task
 
 Run the `gitlab:duo:setup` Rake task to seed a test group and a project with GitLab Duo features enabled.
 
 > [!note]
-> this task is idempotent and skips reseeding if the `gitlab-duo` group
+> This task is idempotent and skips reseeding if the `gitlab-duo` group
 > already exists. To force reseeding from this task, set `GITLAB_DUO_RESEED=1`.
 > For details on the seeds used, see [Development seed files](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
 
@@ -86,14 +89,19 @@ Be sure to run the Rake task from the GitLab Rails root directory (typically `/p
    GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup[duo_core]'
    ```
 
-After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see GitLab Duo Chat. Send a question to Chat
-and make sure there are no errors. If there are, the two most common problems in development are [A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) and [A9999](../../user/gitlab_duo_chat/troubleshooting.md#error-a9999).
+After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see GitLab Duo Chat. Send a question to Chat and make sure there are no errors.
 
-`A9999` is a catchall error. The biggest offender is not setting up the AI Gateway URL correctly as described in the
+### Troubleshooting
+
+In most cases, you can simply run the [ai-services script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#step-1-run-the-automated-setup-script) to reset your GDK environment variables and it may be enough to fix any errors that occured.
+
+If you get error [A9999](../../user/gitlab_duo_chat/troubleshooting.md#error-a9999), it is a catchall error. The biggest offender is not setting up the AI Gateway URL correctly as described in the
 [AI Gateway installation instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway).
 If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repository with `make test` and that `gdk tail gitlab-ai-gateway` returns no error.
 
-`A1003` is more around permissions, either an invalid/missing Anthropic token or a misconfiguration of `gcloud`.
+[A1003](../../user/gitlab_duo_chat/troubleshooting.md#error-a1003) is more around permissions, either an invalid/missing Anthropic token or a misconfiguration of `gcloud`.
+
+In Agentic Chat, authentication errors may happen and **not** result in A1003 error. Use `gdk tail duo-workflow-service` to make sure the workflow service runs without issues. If you see an authentication error, you need to [get a new Anthropic key](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/ai/#set-up-anthropic-api-key) and [re-run the ai-setup script](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-the-ai-gateway)
 
 ### Tips for local development
 
@@ -102,9 +110,9 @@ If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repo
    doesn't work, try `gdk kill` and then `gdk start`.
 1. Alternatively, bypass Sidekiq entirely and run the service synchronously.
    This can help with debugging errors as GraphQL errors are now available in
-  the network inspector instead of the Sidekiq logs. To do that, temporarily alter
-  the `perform_for` method in `Llm::CompletionWorker` class by changing
-  `perform_async` to `perform_inline`.
+   the network inspector instead of the Sidekiq logs. To do that, temporarily alter
+   the `perform_for` method in `Llm::CompletionWorker` class by changing
+   `perform_async` to `perform_inline`.
 1. When testing model selection, add `export FETCH_MODEL_SELECTION_DATA_FROM_LOCAL=1` to your `env.runit` file, so that
    your GDK fetches model information from your local AI Gateway rather than cloud-connected AIGW.
 
@@ -255,19 +263,16 @@ When working with the `aiAction` mutation, several ID parameters are used for ro
   - Used for: Permission checks, request attribution, and response routing
   - Example: `gid://gitlab/User/123`
   - Note: This ID is automatically included by the GraphQL API framework
-
 - **client_subscription_id** (recommended for streaming or multiple features)
   - Client-generated UUID for tracking specific request/response pairs
   - Required when using streaming responses or when multiple AI features share the same page
   - Example: `"9f5dedb3-c58d-46e3-8197-73d653c71e69"`
   - Can be omitted for simple, isolated requests with no streaming
-
 - **resource_id** (contextual - required for some features)
   - Purpose: References a specific GitLab entity (project, issue, MR) that provides context for the AI operation
   - Used for: Permission verification and contextual information gathering
   - Real example: `"gid://gitlab/Issue/164723626"`
   - Note: Some features may not require a specific resource
-
 - **project_id** (contextual - required for some features)
   - Purpose: Identifies the project context for the AI operation
   - Used for: Project-specific permission checks and context

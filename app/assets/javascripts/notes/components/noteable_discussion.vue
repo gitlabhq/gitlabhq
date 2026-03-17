@@ -278,6 +278,10 @@ export default {
         note: { note: noteText },
       };
 
+      if (this.getNoteableData.diff_head_sha) {
+        postData.merge_request_diff_head_sha = this.getNoteableData.diff_head_sha;
+      }
+
       if (this.convertedDisscussionIds.includes(this.discussion.id)) {
         postData.return_discussion = true;
       }

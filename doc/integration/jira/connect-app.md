@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab for Jira Cloud app
 ---
 
@@ -60,7 +60,7 @@ Prerequisites:
 
 To install the GitLab for Jira Cloud app:
 
-1. In Jira, on the top bar, select **Apps** > **Explore more apps** and search for `GitLab for Jira Cloud`.
+1. In Jira, in the top bar, select **Apps** > **Explore more apps** and search for `GitLab for Jira Cloud`.
 1. Select **GitLab for Jira Cloud**, then select **Get it now**.
 
 Alternatively, [get the app directly from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
@@ -69,7 +69,7 @@ You can now [configure the GitLab for Jira Cloud app](#configure-the-gitlab-for-
 
 <i class="fa-youtube-play" aria-hidden="true"></i>
 For an overview, see
-[Installing the GitLab for Jira Cloud app from the Atlassian Marketplace for GitLab.com](https://youtu.be/52rB586_rs8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT).
+[installing the GitLab for Jira Cloud app from the Atlassian Marketplace for GitLab.com](https://youtu.be/52rB586_rs8?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT).
 <!-- Video published on 2024-10-30 -->
 
 The video above shows the older [Universal Plugin Manager interface](https://community.atlassian.com/forums/Community-Announcements-articles/Cloud-admins-we-re-making-app-management-easier/ba-p/2806285) which might be unavailable on newer Jira Cloud instances.
@@ -101,7 +101,6 @@ To configure the GitLab for Jira Cloud app:
 <!-- markdownlint-disable MD044 -->
 
 1. In Jira, select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) beside **Apps** and select **Manage your apps**.
-
 1. Navigate to the app using one of these methods:
 
    - For instances with centralized app management:
@@ -131,7 +130,6 @@ To configure the GitLab for Jira Cloud app:
    GitLab requires you to sign in to link groups, but does not tie the configuration to a
    specific user. The GitLab instance receives a token from Jira that is used to update information in Jira.
    For more information, see [GitLab access to Jira](#gitlab-access-to-jira).
-
 1. Select **Authorize**. A list of groups is now visible.
 1. Select **Link groups**.
 1. To link to a group, select **Link**.
@@ -177,7 +175,7 @@ In Jira Service Management:
 
 In GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Jira Cloud app**. If the integration is disabled, first [link a GitLab group](#configure-the-gitlab-for-jira-cloud-app)
    which enables the GitLab for Jira Cloud app integration for the group, its subgroups, and projects.
@@ -186,7 +184,7 @@ In GitLab:
 
 You can map up to 100 services.
 
-For more information about deployment tracking in Jira, see [Set up deployment tracking](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-tracking/).
+For more information about deployment tracking in Jira, see [set up deployment tracking](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-tracking/).
 
 ### Set up deployment gating with GitLab
 
@@ -231,7 +229,7 @@ To enable deployment gating:
 
 - In GitLab:
 
-  1. On the top bar, select **Search or go to** and find your project.
+  1. In the top bar, select **Search or go to** and find your project.
   1. Select **Settings** > **Integrations**.
   1. Select **GitLab for Jira Cloud app**.
   1. Under **Deployment gating**, select the **Enable deployment gating** checkbox.
@@ -239,7 +237,6 @@ To enable deployment gating:
      You can enter multiple environment names separated by commas (for example, `production, staging, testing, development`).
      Use lowercase letters only.
   1. Select **Save changes**.
-
 - In Jira Service Management:
 
   1. [Set up deployment gating](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-gating/).
@@ -249,7 +246,7 @@ To enable deployment gating:
 
 To add the service account to your protected environments in GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments** and select **Protect an environment**.
 1. From the **Select environment** dropdown list, select an environment to protect (for example, **staging**).
@@ -287,6 +284,46 @@ Most updates to the app are automatic. For more information, see the
 [Atlassian documentation](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/).
 
 If the app requires additional permissions, [you must manually approve the update in Jira](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/#changes-that-require-manual-customer-approval).
+
+## Migration from Atlassian Connect to Forge
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/592890) in GitLab 18.10.
+
+{{< /history >}}
+
+The GitLab for Jira Cloud app has been migrated from
+[Atlassian Connect](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/)
+to [Atlassian Forge](https://developer.atlassian.com/platform/forge/).
+This change follows the
+[end-of-support announcement for Connect apps](https://www.atlassian.com/blog/developer/announcing-connect-end-of-support-timeline-and-next-steps) by Atlassian.
+
+All existing features continue to work, including:
+
+- Syncing branches, commits, merge requests, pipelines, deployments, and
+  feature flags to the Jira development panel.
+- Creating GitLab branches from Jira issues.
+- Using Smart Commits for time tracking and issue transitions.
+- Supporting both GitLab.com and GitLab Self-Managed instances.
+
+If you installed the GitLab for Jira Cloud app from the
+[Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud):
+
+- The Forge version appears as a
+  [major upgrade](https://developer.atlassian.com/platform/marketplace/upgrading-and-versioning-cloud-apps/#changes-that-require-manual-customer-approval)
+  of the existing app.
+- A Jira administrator must approve the upgrade.
+- All previously synced development data is preserved automatically.
+  The Forge app uses the same app identifier, so you do not have to migrate any data.
+- You do not have to change your GitLab configuration.
+
+If you [installed the GitLab for Jira Cloud app manually](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually),
+the migration to Forge also affects your installation.
+This installation method is based on Atlassian Connect.
+
+For more information about the transition from Connect to Forge, see
+[the Atlassian guide on how to adopt Forge](https://developer.atlassian.com/platform/adopting-forge-from-connect/how-to-adopt/).
 
 ## Security considerations
 
@@ -372,4 +409,4 @@ In Jira:
 
 Your repositories should now appear in Jira Code.
 
-For more information, see [Jira Cloud issue `JRACLOUD-95847`](https://jira.atlassian.com/browse/JRACLOUD-95847).
+For more information, see [issue JRACLOUD-95847](https://jira.atlassian.com/browse/JRACLOUD-95847).

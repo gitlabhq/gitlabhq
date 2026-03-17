@@ -4,7 +4,26 @@ require 'spec_helper'
 
 RSpec.describe DashboardController, feature_category: :code_review_workflow do
   before do
-    stub_feature_flags(personal_homepage: true)
+    stub_feature_flags(personal_homepage: true, work_item_planning_view: false)
+  end
+
+  context 'when user is nil' do
+    before do
+      allow(controller).to receive(:authenticate_user!)
+      allow(controller).to receive(:projects)
+    end
+
+    it 'does not redirect issues to work_items dashboard' do
+      get :issues, params: { assignee_username: 'test' }, format: :atom
+
+      expect(response).not_to redirect_to(work_items_dashboard_path)
+    end
+
+    it 'does not redirect issues_calendar to work_items dashboard' do
+      get :issues_calendar, params: { assignee_username: 'test' }
+
+      expect(response).not_to redirect_to(work_items_dashboard_path)
+    end
   end
 
   context 'signed in' do
@@ -30,6 +49,53 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
       end
     end
 
+    describe 'GET issues' do
+      context 'when work_items_consolidated_list_user feature flag is enabled' do
+        before do
+          stub_feature_flags(work_items_consolidated_list_user: true)
+        end
+
+        it 'redirects to work_items with query parameters preserved' do
+          get :issues, params: { assignee_username: user.username, state: 'opened', sort: 'created_desc' }
+
+          expect(response).to redirect_to(work_items_dashboard_path(
+            assignee_username: user.username, state: 'opened', sort: 'created_desc'
+          ))
+          expect(response).to have_gitlab_http_status(:moved_permanently)
+        end
+      end
+
+      context 'when both feature flags are disabled' do
+        before do
+          stub_feature_flags(work_items_consolidated_list_user: false, work_item_planning_view: false)
+        end
+
+        it 'does not redirect and renders issues page' do
+          get :issues, params: { assignee_username: user.username }
+
+          expect(response).not_to redirect_to(work_items_dashboard_path(assignee_username: user.username))
+          expect(response).to render_template(:issues)
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
+    describe 'GET work_items' do
+      it 'renders issues template with filter params' do
+        get :work_items, params: { assignee_username: user.username }
+
+        expect(response).to render_template(:issues)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'renders issues template when no filters are set' do
+        get :work_items
+
+        expect(response).to render_template(:issues)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     describe 'GET issues.atom' do
       it_behaves_like 'issuables list meta-data', :issue, :issues, format: :atom
       it_behaves_like 'issuables requiring filter', :issues, format: :atom
@@ -38,6 +104,57 @@ RSpec.describe DashboardController, feature_category: :code_review_workflow do
         task = create(:work_item, :task, project: project, author: user)
 
         get :issues, params: { author_id: user.id }, format: :atom
+
+        expect(assigns[:issues].map(&:id)).to include(task.id)
+      end
+
+      context 'when work_items_consolidated_list_user feature flag is enabled' do
+        before do
+          stub_feature_flags(work_items_consolidated_list_user: true)
+        end
+
+        it 'redirects atom feed to work_items.atom' do
+          get :issues, params: { author_id: user.id }, format: :atom
+
+          expect(response).to redirect_to(work_items_dashboard_path(author_id: user.id, format: :atom))
+          expect(response).to have_gitlab_http_status(:moved_permanently)
+        end
+      end
+    end
+
+    describe 'GET issues_calendar' do
+      context 'when both feature flags are disabled' do
+        it 'does not redirect' do
+          get :issues_calendar, params: { assignee_username: user.username }
+
+          expect(response).not_to have_gitlab_http_status(:moved_permanently)
+        end
+      end
+
+      context 'when work_items_consolidated_list_user feature flag is enabled' do
+        before do
+          stub_feature_flags(work_items_consolidated_list_user: true)
+        end
+
+        it 'redirects to work_items.ics' do
+          get :issues_calendar, params: { assignee_username: user.username }
+
+          expect(response).to redirect_to(
+            work_items_dashboard_path(assignee_username: user.username, format: :ics)
+          )
+          expect(response).to have_gitlab_http_status(:moved_permanently)
+        end
+      end
+    end
+
+    describe 'GET work_items.atom' do
+      it_behaves_like 'issuables list meta-data', :issue, :work_items, format: :atom
+      it_behaves_like 'issuables requiring filter', :work_items, format: :atom
+
+      it 'includes tasks in work item list' do
+        task = create(:work_item, :task, project: project, author: user)
+
+        get :work_items, params: { author_id: user.id }, format: :atom
 
         expect(assigns[:issues].map(&:id)).to include(task.id)
       end

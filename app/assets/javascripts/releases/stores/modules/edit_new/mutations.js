@@ -1,4 +1,4 @@
-import { uniqueId, cloneDeep } from 'lodash';
+import { uniqueId, cloneDeep } from 'lodash-es';
 import { DEFAULT_ASSET_LINK_TYPE } from '../../../constants';
 import * as types from './mutation_types';
 import { SEARCH, CREATE, EXISTING_TAG, NEW_TAG } from './constants';

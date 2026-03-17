@@ -139,7 +139,11 @@ export default {
           <gl-form-group :label="$options.i18n.strategyTypeLabel" :label-for="strategyTypeId">
             <template #description>
               {{ $options.i18n.strategyTypeDescription }}
-              <gl-link :href="strategyTypeDocsPagePath" target="_blank">
+              <gl-link
+                :aria-label="s__('FeatureFlag|Feature flag strategy documentation')"
+                :href="strategyTypeDocsPagePath"
+                target="_blank"
+              >
                 <help-icon />
               </gl-link>
             </template>
@@ -204,7 +208,11 @@ export default {
       <span class="gl-inline-block gl-py-3">
         {{ $options.i18n.environmentsSelectDescription }}
       </span>
-      <gl-link :href="environmentsScopeDocsPath" target="_blank">
+      <gl-link
+        :aria-label="s__('FeatureFlag|Feature flag environment documentation')"
+        :href="environmentsScopeDocsPath"
+        target="_blank"
+      >
         <help-icon />
       </gl-link>
     </div>

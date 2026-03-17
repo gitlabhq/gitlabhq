@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: Editor Extensions
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Connect and use GitLab Duo in JetBrains IDEs.
 title: Install and set up the GitLab plugin for JetBrains IDEs
 ---
@@ -25,8 +25,8 @@ If you use an older version of a JetBrains IDE, download a version of the plugin
 
 To enable the plugin:
 
-1. In your IDE, on the top bar, select your IDE's name, then select **Settings**.
-1. On the left sidebar, select **Plugins**.
+1. In your IDE, in the top bar, select your IDE's name, then select **Settings**.
+1. In the left sidebar, select **Plugins**.
 1. Select the **GitLab Duo** plugin, and select **Install**.
 1. Select **OK** or **Save**.
 
@@ -48,8 +48,8 @@ Prerequisites:
 
 After you configure the plugin in your IDE, connect it to your GitLab account:
 
-1. In your IDE, on the top bar, select your IDE's name, then select **Settings**.
-1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
+1. In your IDE, in the top bar, select your IDE's name, then select **Settings**.
+1. In the left sidebar, expand **Tools**, then select **GitLab Duo**.
    If you don't see the plugin listed, restart your IDE.
 1. Provide the **URL to GitLab instance**. For GitLab.com, use `https://gitlab.com`.
 1. Select an authentication method, **OAuth**, **PAT**, or **1Password CLI**.
@@ -67,8 +67,12 @@ Prerequisites:
 
 - For agentic features, you meet the prerequisites for [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md#prerequisites).
 - You have GitLab Duo [turned on](../../user/gitlab_duo/turn_on_off.md).
-- You open a project that is linked to a remote repository on GitLab, or you set a default GitLab Duo
-  namespace in the extension.
+- For flows, you have [foundational flows turned on](../../user/duo_agent_platform/flows/foundational_flows/_index.md#turn-foundational-flows-on-or-off).
+- For agents, you have [foundational agents turned on](../../user/duo_agent_platform/agents/foundational_agents/_index.md#turn-foundational-agents-on-or-off)
+  and [custom agents enabled](../../user/duo_agent_platform/agents/custom.md#enable-an-agent), as
+  needed.
+- You have a [default GitLab Duo namespace](../../user/profile/preferences.md#namespace-resolution-in-your-local-environment)
+  set or have a project open that has GitLab Duo access.
 
 To enable GitLab Duo features:
 
@@ -76,20 +80,7 @@ To enable GitLab Duo features:
 1. Find the feature you want to enable and select the checkbox.
 1. Restart your IDE, if prompted.
 
-For GitLab Duo Code Suggestions, review the additional prerequisites and setup steps:
-
-- [GitLab Duo Code Suggestions](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites)
-- [GitLab Duo Code Suggestions (Classic)](../../user/project/repository/code_suggestions/set_up.md#prerequisites)
-
-## Set the default namespace
-
-The GitLab Duo Agent Platform uses the **Default Namespace** value when the plugin
-can't determine the current GitLab project. To configure this value:
-
-1. In your IDE, on the top bar, select your IDE's name, then select **Settings**.
-1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
-1. Enter a value for **Default Namespace**.
-1. Select **OK** or **Save**.
+For GitLab Duo Code Suggestions, [review the additional prerequisites and setup steps](../../user/duo_agent_platform/code_suggestions/set_up.md#prerequisites).
 
 ## Install alpha versions of the plugin
 

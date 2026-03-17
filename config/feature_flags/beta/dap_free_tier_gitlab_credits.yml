@@ -1,0 +1,10 @@
+---
+name: dap_free_tier_gitlab_credits
+description: Allow DAP access for free-tier namespaces with gitlab_credits add-on
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/work_items/20165
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226462
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/592715
+milestone: '18.10'
+group: group::agent foundations
+type: beta
+default_enabled: false

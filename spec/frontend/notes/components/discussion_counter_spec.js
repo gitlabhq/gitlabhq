@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import { PiniaVuePlugin } from 'pinia';
@@ -124,6 +124,40 @@ describe('DiscussionCounter component', () => {
       await wrapper.findComponent(GlDisclosureDropdown).trigger('click');
 
       expect(wrapper.find('[data-testid="resolve-all-with-issue-link"]').exists()).toBe(false);
+    });
+  });
+
+  describe('compact mode', () => {
+    const addNote = (note = {}) => {
+      const discussion = createDiscussionMock();
+      discussion.notes[0] = { ...discussion.notes[0], ...note };
+      useNotes()[types.ADD_OR_UPDATE_DISCUSSIONS]([discussion]);
+      useNotes().updateResolvableDiscussionsCounts();
+    };
+
+    it('renders icon and count with tooltip when threads are unresolved', () => {
+      addNote({ resolvable: true, resolved: false });
+      useNotes().unresolvedDiscussionsCount = 2;
+      createComponent({ blocksMerge: true, compact: true });
+
+      const compactEl = wrapper.find('[data-testid="discussions-counter-compact"]');
+
+      expect(compactEl.exists()).toBe(true);
+      expect(compactEl.findComponent(GlIcon).props('name')).toBe('comments');
+      expect(compactEl.text()).toContain('2');
+      expect(wrapper.find('[data-testid="discussions-counter-text"]').exists()).toBe(true);
+    });
+
+    it('renders success icon without count when all threads are resolved', () => {
+      addNote({ resolvable: true, resolved: true });
+      useNotes().unresolvedDiscussionsCount = 0;
+      createComponent({ blocksMerge: true, compact: true });
+
+      const compactEl = wrapper.find('[data-testid="discussions-counter-compact"]');
+
+      expect(compactEl.exists()).toBe(true);
+      expect(compactEl.findComponent(GlIcon).props('name')).toBe('status_success');
+      expect(compactEl.text()).toContain('All threads resolved!');
     });
   });
 

@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+info: For assistance with this tutorial, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects>.
 title: 'Tutorial: Convert a personal namespace into a group'
 ---
 
@@ -61,7 +61,7 @@ Before you start the transfer process, make sure you:
 
 To transfer a project to a group:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the group to transfer the project to.
@@ -79,7 +79,7 @@ To [change a user's username](../../user/profile/_index.md#change-your-username)
 
 1. In the upper-right corner, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Account**.
+1. In the left sidebar, select **Account**.
 1. In the **Change username** section, enter a new username as the path.
 1. Select **Update username**.
 
@@ -89,7 +89,7 @@ Finally, rename the new group's URL to the username of the original personal nam
 
 To [change your group path](../../user/group/manage.md#change-a-groups-path) (group URL):
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. Under **Change group URL**, enter the user's original username.

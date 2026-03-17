@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: プロジェクトテンプレートAPI
 ---
 
@@ -12,50 +12,50 @@ title: プロジェクトテンプレートAPI
 
 {{< /details >}}
 
-このAPIは、これらのエンドポイントのプロジェクト固有バージョンです:
+このAPIを使用して、これらのエンドポイントのプロジェクト固有のバージョンを取得します:
 
 - [Dockerfileテンプレート](templates/dockerfiles.md)
-- [Gitignore templates](templates/gitignores.md)
-- [GitLab CI/CD](templates/gitlab_ci_ymls.md)設定テンプレート
+- [Gitignoreテンプレート](templates/gitignores.md)
+- [GitLab CI/CD設定テンプレート](templates/gitlab_ci_ymls.md)
 - [オープンソースライセンステンプレート](templates/licenses.md)
 - [イシューとマージリクエストのテンプレート](../user/project/description_templates.md)
 
-これはこれらのエンドポイントを非推奨とし、APIのバージョン5で削除される予定です。
+これにより、これらのエンドポイントは非推奨となり、APIバージョン5で削除される予定です。
 
-インスタンス全体で共通のテンプレートに加えて、プロジェクト固有のテンプレートもこのAPIのエンドポイントから利用できます。
+インスタンス全体に共通するテンプレートに加えて、プロジェクト固有のテンプレートもこのAPIエンドポイントから利用できます。
 
 [グループのファイルテンプレート](../user/group/manage.md#group-file-templates)のサポートも利用できます。
 
-## 特定の種類のすべてのテンプレートを取得 {#get-all-templates-of-a-particular-type}
+## 特定の種類のテンプレートをすべてリスト表示 {#list-all-templates-of-a-particular-type}
 
-プロジェクトの特定の種類のすべてのテンプレートを取得します。
+プロジェクトの指定された種類のテンプレートをすべてリスト表示します。
 
 ```plaintext
 GET /projects/:id/templates/:type
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性 | 型              | 必須 | 説明 |
 |-----------|-------------------|----------|-------------|
 | `id`      | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `type`    | 文字列            | はい      | テンプレートのタイプ。指定できる値は、`dockerfiles`、`gitignores`、`gitlab_ci_ymls`、`licenses`、`issues`、`merge_requests`です。 |
+| `type`    | 文字列            | はい      | テンプレートのタイプ。指定できる値: `dockerfiles`、`gitignores`、`gitlab_ci_ymls`、`licenses`、`issues`、`merge_requests`。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性 | 型   | 説明 |
 |-----------|--------|-------------|
 | `key`     | 文字列 | テンプレートの固有識別子。 |
 | `name`    | 文字列 | テンプレートの人間が判読できる名前。 |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/templates/licenses"
 ```
 
-応答例（ライセンス）:
+レスポンス例（ライセンス）: 
 
 ```json
 [
@@ -110,31 +110,31 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 特定の種類の1つのテンプレートを取得 {#get-one-template-of-a-particular-type}
+## 特定の種類のテンプレートを取得する {#retrieve-a-template-of-a-particular-type}
 
-プロジェクトの特定のタイプの単一のテンプレートを取得します。
+プロジェクトの指定された種類のテンプレートを取得します。
 
 ```plaintext
 GET /projects/:id/templates/:type/:name
 ```
 
-サポートされている属性は以下のとおりです:
+サポートされている属性は以下のとおりです: 
 
 | 属性                    | 型              | 必須 | 説明 |
 |------------------------------|-------------------|----------|-------------|
 | `id`                         | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `name`                       | 文字列            | はい      | コレクションエンドポイントから取得したテンプレートのキー。 |
-| `type`                       | 文字列            | はい      | テンプレートのタイプ。`dockerfiles`、`gitignores`、`gitlab_ci_ymls`、`licenses`、`issues`、または`merge_requests`のいずれか。 |
+| `type`                       | 文字列            | はい      | テンプレートのタイプ。次のいずれか: `dockerfiles`、`gitignores`、`gitlab_ci_ymls`、`licenses`、`issues`、`merge_requests`。 |
 | `fullname`                   | 文字列            | いいえ       | テンプレート内のプレースホルダーを展開するときに使用する著作権者のフルネーム。ライセンスのみに影響します。 |
 | `project`                    | 文字列            | いいえ       | テンプレート内のプレースホルダーを展開するときに使用するプロジェクト名。ライセンスのみに影響します。 |
-| `source_template_project_id` | 整数           | いいえ       | 特定のテンプレートが保存されているプロジェクトID。異なるプロジェクトの複数のテンプレートが同じ名前を持つ場合に役立ちます。複数のテンプレートが同じ名前を持つ場合、`source_template_project_id`が指定されていない場合は、最も近い祖先からのマージが返されます。 |
+| `source_template_project_id` | 整数           | いいえ       | 指定されたテンプレートが保存されているプロジェクトID。異なるプロジェクトの複数のテンプレートが同じ名前を持つ場合に役立ちます。複数のテンプレートが同じ名前を持つ場合、`source_template_project_id`が指定されていない場合は、最も近い祖先からの一致が返されます。 |
 
-成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します:
+成功した場合、[`200 OK`](rest/troubleshooting.md#status-codes)と次のレスポンス属性を返します: 
 
 | 属性     | 型     | 説明                                                   |
 |---------------|----------|---------------------------------------------------------------|
 | `conditions`  | 配列    | ライセンス条件の配列。ライセンスでのみ使用可能です。    |
-| `content`     | 文字列   | テンプレートのコンテンツ。                                             |
+| `content`     | 文字列   | テンプレートの内容。                                             |
 | `description` | 文字列   | ライセンスの説明。ライセンスでのみ使用可能です。     |
 | `html_url`    | 文字列   | ライセンス情報ページへのURL。ライセンスでのみ使用可能です。 |
 | `key`         | 文字列   | テンプレートの固有識別子。ライセンスでのみ使用可能です。 |
@@ -142,17 +142,17 @@ GET /projects/:id/templates/:type/:name
 | `name`        | 文字列   | テンプレートの人間が判読できる名前。                          |
 | `nickname`    | 文字列   | ライセンスの一般的なニックネーム。ライセンスでのみ使用可能です。 |
 | `permissions` | 配列    | ライセンス許可の配列。ライセンスでのみ使用可能です。   |
-| `popular`     | ブール値  | `true`の場合、これは一般的なライセンスであることを示します。ライセンスでのみ使用可能です。 |
+| `popular`     | ブール値  | `true`の場合、これがよく使われるライセンスであることを示します。ライセンスでのみ使用可能です。 |
 | `source_url`  | 文字列   | ライセンスソースへのURL。ライセンスでのみ使用可能です。      |
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/templates/dockerfiles/Binary"
 ```
 
-応答例（Dockerfile）:
+レスポンス例（Dockerfile）: 
 
 ```json
 {
@@ -161,14 +161,14 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-リクエスト例:
+リクエスト例: 
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/templates/licenses/mit"
 ```
 
-応答例（ライセンス）:
+レスポンス例（ライセンス）: 
 
 ```json
 {

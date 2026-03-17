@@ -2,6 +2,8 @@
 key_path: counts.count_total_click_print_as_pdf_in_wiki_page
 description: Total count of clicks on 'Print as PDF' in Wiki page dropdown
 product_group: knowledge
+product_categories:
+- wiki
 performance_indicator_type: []
 value_type: number
 status: active

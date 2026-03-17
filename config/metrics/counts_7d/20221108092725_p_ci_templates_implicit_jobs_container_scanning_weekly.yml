@@ -2,6 +2,8 @@
 key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_jobs_container_scanning_weekly
 description: Weekly counts for implicit use of Container Scanning CI template (Jobs folder)
 product_group: composition_analysis
+product_categories:
+- container_scanning
 value_type: number
 status: active
 milestone: '15.6'

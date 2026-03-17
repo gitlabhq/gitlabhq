@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Groups::Settings::IntegrationsController, feature_category: :integrations do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
+  let_it_be(:group) { create(:group, owners: [user]) }
+  let_it_be(:user_non_owner) { create(:user) }
 
   before do
     stub_feature_flags(remove_monitor_metrics: false)
@@ -20,37 +21,66 @@ RSpec.describe Groups::Settings::IntegrationsController, feature_category: :inte
         id: integration.to_param
       }
     end
-
-    before do
-      group.add_owner(user)
-    end
   end
 
   describe '#index' do
+    subject(:request) do
+      get :index, params: { group_id: group }
+    end
+
     context 'when user is not owner' do
+      before do
+        sign_in(user_non_owner)
+      end
+
       it 'renders not_found' do
-        get :index, params: { group_id: group }
+        request
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
     context 'when user is owner' do
-      before do
-        group.add_owner(user)
-      end
-
       it 'successfully displays the template' do
-        get :index, params: { group_id: group }
+        request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:index)
+      end
+    end
+
+    it 'sorts integrations alphabetically in control' do
+      stub_experiments(ordered_integrations: :control)
+
+      request
+
+      integrations = assigns(:integrations)
+      titles = integrations.map(&:title)
+
+      expect(titles).to eq(titles.sort_by(&:downcase))
+    end
+
+    describe 'integration sorting with ordered_integrations experiment', :experiment do
+      it 'sorts integrations by popularity ranking in candidate' do
+        stub_experiments(ordered_integrations: :candidate)
+
+        request
+
+        integrations = assigns(:integrations).map(&:type)
+
+        expect(integrations.first).to eq("Integrations::Jira")
+        expect(integrations[1]).to eq("Integrations::Discord")
+        expect(integrations.last).to eq("Integrations::Zentao")
       end
     end
   end
 
   describe '#edit' do
     context 'when user is not owner' do
+      before do
+        sign_in(user_non_owner)
+      end
+
       it 'renders not_found' do
         get :edit,
           params: {
@@ -65,10 +95,6 @@ RSpec.describe Groups::Settings::IntegrationsController, feature_category: :inte
     end
 
     context 'when user is owner' do
-      before do
-        group.add_owner(user)
-      end
-
       Integration.available_integration_names(
         include_project_specific: false, include_instance_specific: false
       ).each do |integration_name|
@@ -90,7 +116,6 @@ RSpec.describe Groups::Settings::IntegrationsController, feature_category: :inte
     let(:integration) { create(:jira_integration, :group, group: group) }
 
     before do
-      group.add_owner(user)
       stub_jira_integration_test
 
       put :update, params: { group_id: group, id: integration.class.to_param, service: params }
@@ -125,6 +150,10 @@ RSpec.describe Groups::Settings::IntegrationsController, feature_category: :inte
     end
 
     context 'when user is not owner' do
+      before do
+        sign_in(user_non_owner)
+      end
+
       it 'renders not_found' do
         subject
 
@@ -133,10 +162,6 @@ RSpec.describe Groups::Settings::IntegrationsController, feature_category: :inte
     end
 
     context 'when user is owner' do
-      before do
-        group.add_owner(user)
-      end
-
       it 'returns 200 OK', :aggregate_failures do
         subject
 

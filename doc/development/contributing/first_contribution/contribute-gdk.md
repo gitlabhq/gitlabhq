@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Contribute code with GDK
 ---
 
@@ -25,7 +25,6 @@ Use your local IDE to make changes to the code in the GDK directory.
 
 1. Search the `gitlab-development-kit/gitlab` directory for the string `Syntax highlighting`.
    The results show one `.haml` file and several `.po` files.
-
 1. Open the `app/views/profiles/preferences/show.html.haml` file.
 1. Update the string from `Syntax highlighting` to
    `Code syntax highlighting`.
@@ -41,7 +40,6 @@ Use your local IDE to make changes to the code in the GDK directory.
 
 1. Refresh the web browser where you're viewing the GDK.
    The changes should be displayed. Take a screenshot.
-
 1. Commit the changes:
 
    ```shell
@@ -53,7 +51,6 @@ Use your local IDE to make changes to the code in the GDK directory.
 
    Follow the GitLab
    [commit message guidelines](../merge_request_workflow.md#commit-messages-guidelines).
-
 1. Push the changes to the new branch:
 
    ```shell

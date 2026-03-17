@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: How to configure the Diffblue Cover GitLab integration - Cover Pipeline for GitLab
 title: Diffblue Cover
 ---
@@ -33,7 +33,7 @@ To integrate Diffblue Cover into your pipeline:
 
 ### Configure Diffblue Cover
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
    - If you want to test the integration with a sample project, you can [import](../user/project/import/repo_by_url.md)
      the Diffblue [Spring PetClinic sample project](https://github.com/diffblue/demo-spring-petclinic).
 1. Select **Settings** > **Integrations**.
@@ -58,14 +58,13 @@ To integrate Diffblue Cover into your pipeline:
 
 Create a merge request pipeline for the project that downloads the latest version of Diffblue Cover, builds the project, writes Java unit tests for the project, and commits the changes to the branch.
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Copy the contents of the [`Diffblue-Cover.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Diffblue-Cover.gitlab-ci.yml)
    into your project's `.gitlab-ci.yml` file.
 
    > [!note]
    > When using the Diffblue Cover pipeline template with your own project and existing pipeline file, add the Diffblue template content to your file and modify as needed.
    > For more information, see [Cover Pipeline for GitLab](https://docs.diffblue.com/features/cover-pipeline/cover-pipeline-for-gitlab) in the Diffblue documentation.
-
 1. Enter a commit message.
 1. Enter a new **Branch** name. For example, `add-diffblue-cover-pipeline`.
 1. Select **Start a new merge request with these changes**.

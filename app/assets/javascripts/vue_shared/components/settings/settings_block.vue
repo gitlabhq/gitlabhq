@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlCollapse, GlAnimatedChevronLgRightDownIcon } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { historyPushState } from '~/lib/utils/common_utils';
 
 import { __ } from '~/locale';

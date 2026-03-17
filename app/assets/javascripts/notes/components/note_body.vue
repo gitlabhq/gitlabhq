@@ -1,5 +1,5 @@
 <script>
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { mapState, mapActions } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, sprintf } from '~/locale';

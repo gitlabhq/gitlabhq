@@ -128,7 +128,7 @@ class SchemaRegenerator
   # applied, use +unhide_migrations+ to bring them back.
   def hide_migrations
     MIGRATION_DIRS.each do |dir|
-      File.rename(dir, "#{dir}__")
+      FileUtils.mv(dir, "#{dir}__")
     end
   end
 
@@ -141,7 +141,7 @@ class SchemaRegenerator
     error = nil
 
     MIGRATION_DIRS.each do |dir|
-      File.rename("#{dir}__", dir)
+      FileUtils.mv("#{dir}__", dir)
     rescue Errno::ENOENT
       nil
     rescue StandardError => e

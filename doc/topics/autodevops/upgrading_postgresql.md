@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Runner Core
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Upgrading PostgreSQL for Auto DevOps
 ---
 
@@ -38,8 +38,7 @@ involves:
 1. Prepare for downtime. The steps below include taking the application offline
    so that the in-cluster database does not get modified after the database dump is created.
 1. Ensure you have not set `POSTGRES_ENABLED` to `false`, as this setting deletes
-   any existing channel 1 database. For more information, see
-   [Detected an existing PostgreSQL database](troubleshooting.md#detected-an-existing-postgresql-database).
+   any existing channel 1 database.
 
 > [!note]
 > If you have configured Auto DevOps to have staging,
@@ -127,7 +126,6 @@ being modified after the database dump is created.
      ```
 
 1. Once the backup dump is complete, exit the Kubernetes exec process with <kbd>Control</kbd>-<kbd>D</kbd> or `exit`.
-
 1. Download the dump file with the following command:
 
    ```shell

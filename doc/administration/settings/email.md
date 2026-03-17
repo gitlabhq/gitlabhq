@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 gitlab_dedicated: yes
 title: Email
 ---
@@ -85,7 +85,7 @@ To change the hostname used in private commit emails:
 
 > [!note]
 > After the hostname is configured, every private commit email using the previous hostname is not
-> recognized by GitLab. This can directly conflict with certain [Push rules](../../user/project/repository/push_rules.md) such as
+> recognized by GitLab. This can directly conflict with certain [push rules](../../user/project/repository/push_rules.md) such as
 > `Check whether author is a GitLab user` and `Check whether committer is the current authenticated user`.
 
 ## Custom additional text

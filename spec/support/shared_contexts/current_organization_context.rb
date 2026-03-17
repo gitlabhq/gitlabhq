@@ -52,8 +52,15 @@ RSpec.configure do |rspec|
   # controllers or services rely on organization context.
   rspec.include_context 'with current_organization setting', type: :controller
   rspec.include_context 'with current_organization setting', type: :request
+  rspec.include_context 'with current_organization setting', type: :graphql
 
   # Allow explicit opt-in for non-controller specs using :with_current_organization tag
   rspec.include_context 'with current_organization setting', with_current_organization: true
   rspec.include_context 'with Organization URL helpers', with_organization_url_helpers: true
+end
+
+def seed_internal_bot(bot_type)
+  before do
+    Users::Internal.in_organization(current_organization).public_send(bot_type)
+  end
 end

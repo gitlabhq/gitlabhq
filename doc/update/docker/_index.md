@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Upgrade Docker instances
 description: Upgrade a single-node Docker-based instance.
 ---
@@ -44,7 +44,6 @@ To upgrade a GitLab instance that was
 
 1. Create a [backup](../../install/docker/backup.md). As a minimum, back up
    [the database](../../install/docker/backup.md#create-a-database-backup) and the GitLab secrets file.
-
 1. Stop the running container:
 
    ```shell

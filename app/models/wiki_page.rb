@@ -230,7 +230,7 @@ class WikiPage
   def count_versions
     return [] unless persisted?
 
-    wiki.repository.count_commits(ref: wiki.default_branch, path: page.path)
+    wiki.repository.count_commits(revisions: wiki.default_branch, path: page.path)
   end
 
   def last_version

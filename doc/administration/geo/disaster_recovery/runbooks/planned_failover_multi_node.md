@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 ignore_in_report: true
 title: Disaster Recovery (Geo) promotion runbooks
 ---
@@ -105,12 +105,12 @@ follow these steps to avoid unnecessary data loss:
       trigger the final replication process now.
    1. On the **primary** site:
       1. In the upper-right corner, select **Admin**.
-      1. On the left sidebar, select **Monitoring** > **Background jobs**.
+      1. In the left sidebar, select **Monitoring** > **Background jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
          those with `geo` in the name to drop to 0.
          These queues contain work that has been submitted by your users; failing over
          before it is completed, causes the work to be lost.
-      1. On the left sidebar, select **Geo** > **Sites** and wait for the
+      1. In the left sidebar, select **Geo** > **Sites** and wait for the
          following conditions to be true of the **secondary** site you are failing over to:
 
          - All replication meters reach 100% replicated, 0% failures.
@@ -120,7 +120,7 @@ follow these steps to avoid unnecessary data loss:
 
    1. On the **secondary** site:
       1. In the upper-right corner, select **Admin**.
-      1. On the left sidebar, select **Monitoring** > **Background jobs**.
+      1. In the left sidebar, select **Monitoring** > **Background jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
          queues to drop to 0 queued and 0 running jobs.
       1. [Run an integrity check](../../../raketasks/check.md) to verify the integrity
@@ -136,7 +136,7 @@ follow these steps to avoid unnecessary data loss:
    > that has not been replicated to the **secondary** site. This data should be treated
    > as lost if you proceed.
 
-   If you plan to [update the **primary** domain DNS record](../_index.md#step-4-optional-updating-the-primary-domain-dns-record),
+   If you plan to [update the **primary** domain DNS record](../_index.md#optional-updating-the-primary-domain-dns-record),
    you may wish to lower the TTL now to speed up propagation.
 
    When performing a failover, we want to avoid a split-brain situation where

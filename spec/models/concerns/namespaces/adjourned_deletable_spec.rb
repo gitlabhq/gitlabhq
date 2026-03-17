@@ -3,15 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_projects do
-  include Namespaces::StatefulHelpers
-
   let_it_be_with_reload(:record) { create(:group) }
 
   describe '#self_deletion_in_progress?' do
     it 'delegates to deletion_in_progress?' do
       expect(record.self_deletion_in_progress?).to be_falsy
 
-      set_state(record, :deletion_in_progress)
+      record.update!(state: :deletion_in_progress)
 
       expect(record.self_deletion_in_progress?).to be_truthy
     end
@@ -35,6 +33,14 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
         allow(record).to receive(:namespace_details).and_return(instance_double(Namespace::Detail, state_metadata: {}))
       end
 
+      context 'when deletion_scheduled_at column is present' do
+        it 'returns deletion_scheduled_at' do
+          allow(record).to receive(:deletion_scheduled_at).and_return(Time.current)
+
+          expect(record.self_deletion_scheduled_deletion_created_on).to eq(Time.current)
+        end
+      end
+
       context 'when record responds to :marked_for_deletion_on' do
         it 'returns marked_for_deletion_on' do
           allow(record).to receive(:marked_for_deletion_on).and_return(Time.current)
@@ -46,7 +52,9 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
 
     context 'when namespace_details.state_metadata is empty' do
       before do
-        allow(record).to receive(:namespace_details).and_return(instance_double(Namespace::Detail, state_metadata: {}))
+        allow(record).to receive(:namespace_details).and_return(
+          instance_double(Namespace::Detail, state_metadata: {}, deletion_scheduled_at: nil)
+        )
       end
 
       it 'returns nil' do
@@ -155,7 +163,7 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
 
       context 'when state is deletion_in_progress' do
         before do
-          set_state(namespace, :deletion_in_progress)
+          namespace.update!(state: :deletion_in_progress)
         end
 
         it 'returns true' do

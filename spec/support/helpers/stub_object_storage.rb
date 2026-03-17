@@ -201,4 +201,14 @@ module StubObjectStorage
         </InitiateMultipartUploadResult>
       EOS
   end
+
+  # @param [Import::Offline::Configuration] configuration
+  def stub_offline_import_object_storage(configuration)
+    stub_object_storage(
+      connection_params: {
+        provider: configuration.provider
+      }.merge(configuration.object_storage_credentials),
+      remote_directory: configuration.bucket
+    )
+  end
 end

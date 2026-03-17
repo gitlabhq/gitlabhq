@@ -5,8 +5,6 @@
   - if current_user && can?(current_user, :read_code, project)
     = render 'shared/invalid_gpg_key', project: project
     = render 'shared/no_password'
-    - unless project.empty_repo?
-      = render 'shared/auto_devops_implicitly_enabled_banner', project: project
     = render_if_exists 'projects/above_size_limit_warning', project: project
     = render_if_exists 'shared/shared_runners_minutes_limit', project: project
     = render 'projects/lfs_misconfiguration_banner', project: project

@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: SQL Query Guidelines
 ---
 
@@ -439,7 +439,7 @@ User.connection.execute(Gitlab::SQL::Union.new([scope1, scope2]).to_sql)
 > With the [Cells architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/),
 > ordering by `id` no longer reliably reflects creation order. Each Cell has a [provisioned database sequence range](cells/_index.md#database-sequences).
 > When data moves between Cells, records retain their original IDs from the source Cell.
-> 
+>
 > For accurate sorting by creation date, use `ORDER BY created_at, id` with appropriate indexing.
 
 In short, you should prefer `ORDER BY id` over `ORDER BY created_at` unless you

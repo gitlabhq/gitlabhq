@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate GitLab data by using file exports
 description: "Use file exports to migrate GitLab data."
 ---
@@ -15,7 +15,7 @@ description: "Use file exports to migrate GitLab data."
 
 {{< history >}}
 
-- Renaming milestone titles to avoid clashes on destination instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221447) in GitLab 18.9.
+- Renaming milestone titles to avoid clashes on destination instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/221447) in GitLab 18.6.7 and later, 18.7.5 and later, and 18.8.5 and later.
 
 {{< /history >}}
 
@@ -44,7 +44,7 @@ Use file exports to:
   to the importing user rather than the original author.
 - For merge requests, only the latest diff is preserved during import or export.
   After importing or exporting a project, only the latest diff version and the latest pipeline in merge requests are visible.
-- Imported milestones with titles [matching existing milestones](../../../user/project/milestones/_index.md#milestone-title-rules) within the
+- Imported milestones with titles [matching existing milestones](../milestones/_index.md#milestone-title-rules) within the
   destination namespace will have titles updated upon import. The new title will be appended with a unique suffix, e.g. `18.0` will become `18.0
   (imported-3d-1770206299)`. To avoid this, rename the milestone in the source group or project before initiating a direct transfer.
 
@@ -68,7 +68,7 @@ contribution history, do one of the following:
 
 - [Migrate by using direct transfer](../../group/import/_index.md).
 - Consider engaging Professional Services. For more information, see the
-  [Professional Services Full Catalog](https://about.gitlab.com/services/catalog/).
+  [Professional Services catalog](https://about.gitlab.com/services/catalog/).
 
 #### When migrating to GitLab Self-Managed
 
@@ -177,7 +177,7 @@ Prerequisites:
 
 To export a project and its data, follow these steps:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Export project**.
@@ -185,8 +185,18 @@ To export a project and its data, follow these steps:
    - Follow a link contained in an email that you should receive.
    - Refresh the project settings page and in the **Export project** area, select **Download export**.
 
-The export is generated in your configured `shared_path`, a temporary shared directory, and then
-moved to your configured `uploads_directory`. Every 24 hours, a worker deletes these export files.
+The export is generated in your configured `shared_path`, a temporary shared directory
+(by default, `<shared_path>/tmp/gitlab_exports`), and then either:
+
+- Moved to your configured `uploads_directory`.
+- Uploaded to object storage.
+
+Every 24 hours, a worker deletes these export files.
+
+On GitLab instances with separate Sidekiq, Gitaly, and GitLab application (Rails) nodes,
+the directory specified in the
+[`shared_path`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/b350e3cd5b06a94adb463ece4d41b9f3df6ab282/files/gitlab-config-template/gitlab.rb.template#L731)
+setting must be available to all nodes.
 
 #### Project items that are exported
 
@@ -462,7 +472,7 @@ Prerequisites:
 
 To export the contents of a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. In the **Advanced** section, select **Export group**.
 1. After the export is generated, you can:

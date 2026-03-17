@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Enterprise users
 description: Manage organization users through domain verification and centralized enterprise controls.
 ---
@@ -58,7 +58,7 @@ Prerequisites:
 
 To add a custom domain for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Domain Verification**.
 1. In the upper-right corner, select **Add Domain**.
 1. Configure the domain settings:
@@ -79,7 +79,7 @@ To add a custom domain for a group:
 1. Verify ownership of the domain:
    1. In **TXT**, copy the verification code.
    1. In your domain provider DNS settings, add the verification code as a `TXT` record.
-   1. In GitLab, on the top bar, select **Search or go to** and find your group.
+   1. In GitLab, in the top bar, select **Search or go to** and find your group.
    1. Select **Settings** > **Domain Verification**.
    1. Next to the domain name, select **Retry verification** ({{< icon name="retry" >}}).
 
@@ -88,9 +88,9 @@ After successful verification, the domain status changes to **Verified** and can
 > [!note]
 > Generally, DNS propagation completes in a few minutes, but can take up to 24 hours.
 > Until it completes, the domain remains unverified in GitLab.
-> 
+>
 > If the domain is still unverified after seven days, GitLab automatically removes the domain.
-> 
+>
 > After verification, GitLab periodically reverifies the domain. To avoid potential issues,
 > maintain the `TXT` record on your domain provider.
 
@@ -98,14 +98,14 @@ After successful verification, the domain status changes to **Verified** and can
 
 To view all custom domains for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Domain Verification**.
 
 ### Edit group domains
 
 To edit a custom domain for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Domain Verification**.
 1. Next to the domain name, select **Edit** ({{< icon name="pencil" >}}).
 
@@ -127,7 +127,7 @@ Deleting a group domain can impact enterprise users in your group. After you del
 
 To delete a custom domain for a group:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **Domain Verification**.
 1. Next to the domain name, select **Remove domain** ({{< icon name="remove" >}}).
 1. When prompted, select **Delete domain**.
@@ -184,8 +184,8 @@ You can restrict the specific authentication methods available to enterprise use
 reduce the security footprint of your users.
 
 - [Disable password authentication](../group/saml_sso/_index.md#disable-password-and-passkey-authentication-for-enterprise-users).
-- [Disable personal access tokens](../../user/profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
-- [Disable SSH Keys](../../user/ssh_advanced.md#disable-ssh-keys-for-enterprise-users).
+- [Disable personal access tokens](../profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
+- [Disable SSH Keys](../ssh_advanced.md#disable-ssh-keys-for-enterprise-users).
 - [Disable two-factor authentication](../../security/two_factor_authentication.md#enterprise-users).
 
 ### Restrict personal snippets
@@ -220,18 +220,18 @@ Prerequisites:
 
 To view an enterprise user's email address:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Manage** > **Members**.
 1. Hover over the enterprise user's name.
 
-You can also use the [group and project members API](../../api/members.md)
+You can also use the [group members API](../../api/group_members.md) and [project members API](../../api/project_members.md)
 to access users' information. For enterprise users of the group, this information
 includes users' email addresses.
 
 ### Change the email addresses for an enterprise user
 
 Enterprise users can follow the same process as other GitLab users to
-[change their primary email address](../../user/profile/_index.md#change-your-primary-email).
+[change their primary email address](../profile/_index.md#change-your-primary-email).
 The new email address must be from a verified domain. If your organization has no verified
 domains, your enterprise users cannot change their primary email address.
 
@@ -253,7 +253,7 @@ releasing the user which only removes the enterprise management features from th
 the user, you can choose to either:
 
 - Permanently delete the user and their
-  [contributions](../../user/profile/account/delete_account.md#associated-records).
+  [contributions](../profile/account/delete_account.md#associated-records).
 - Keep their contributions and transfer them to a ghost user.
 
 ### Release an enterprise user
@@ -297,7 +297,7 @@ Prerequisites:
 
 To enable the Extension Marketplace for enterprise users:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **Web IDE and workspaces**, select the **Enable extension marketplace** checkbox.

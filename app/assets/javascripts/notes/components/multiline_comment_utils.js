@@ -1,4 +1,4 @@
-import { takeRightWhile } from 'lodash';
+import { takeRightWhile } from 'lodash-es';
 
 export function getSymbol(type) {
   if (type === 'new') return '+';

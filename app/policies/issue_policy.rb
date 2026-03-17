@@ -16,7 +16,7 @@ class IssuePolicy < IssuablePolicy
   # rubocop:disable Cop/UserAdmin -- specifically check the admin attribute
   desc "User can read confidential issues"
   condition(:can_read_confidential) do
-    @user && (@user.admin? || planner_or_reporter_access? || assignee_or_author?)
+    @user && (@user.admin? || can?(:reporter_access) || can?(:planner_access) || assignee_or_author?)
   end
   # rubocop:enable Cop/UserAdmin
 
@@ -62,6 +62,8 @@ class IssuePolicy < IssuablePolicy
       true
     end
   end
+
+  rule { is_container_member & is_author }.enable :destroy_issue
 
   rule { group_issue & can?(:read_group) }.policy do
     enable :create_note
@@ -150,7 +152,7 @@ class IssuePolicy < IssuablePolicy
     enable :admin_issue_relation
   end
 
-  rule { can?(:guest_access) & can?(:read_issue) & is_project_member }.policy do
+  rule { can?(:guest_access) & can?(:read_issue) & is_container_member }.policy do
     enable :admin_issue_link
   end
 
@@ -164,7 +166,11 @@ class IssuePolicy < IssuablePolicy
     enable :set_issue_crm_contacts
   end
 
-  rule { planner_or_reporter_access }.policy do
+  rule { can?(:planner_access) }.policy do
+    enable :mark_note_as_internal
+  end
+
+  rule { can?(:reporter_access) }.policy do
     enable :mark_note_as_internal
   end
 

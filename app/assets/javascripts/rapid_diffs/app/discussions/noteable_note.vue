@@ -94,7 +94,7 @@ export default {
   watch: {
     isEditing: {
       handler(isEditing) {
-        if (isEditing) this.$nextTick(() => this.$el.scrollIntoView());
+        if (isEditing) this.$nextTick(() => this.$el.scrollIntoView({ block: 'nearest' }));
       },
       immediate: true,
     },

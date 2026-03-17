@@ -1,11 +1,12 @@
 <script>
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { fetchPolicies } from '~/lib/graphql';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { mergeUrlParams, queryToObject, visitUrl } from '~/lib/utils/url_utility';
 import { scrollTo } from '~/lib/utils/scroll_utils';
 import { __, s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import { unwrapStagesFromMutation } from '~/ci/pipeline_details/utils/unwrapping_utils';
 import ConfirmUnsavedChangesDialog from './components/ui/confirm_unsaved_changes_dialog.vue';
 import PipelineEditorEmptyState from './components/ui/pipeline_editor_empty_state.vue';
@@ -43,6 +44,7 @@ export default {
     PipelineEditorHome,
     PipelineEditorMessages,
   },
+  mixins: [InternalEvents.mixin()],
   inject: ['ciConfigPath', 'newMergeRequestPath', 'projectFullPath', 'usesExternalConfig'],
   data() {
     return {
@@ -105,6 +107,7 @@ export default {
 
           this.isNewCiConfigFile = false;
           if (!hasCIFile) {
+            this.trackEvent('visit_pipeline_editor_without_ci_config');
             if (this.shouldSkipStartScreen) {
               this.setNewEmptyCiConfigFile();
             } else {

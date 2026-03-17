@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Pipeline Security
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab CI/CD job token
 ---
 
@@ -228,7 +228,6 @@ You can also modify this setting with the [GraphQL](../../api/graphql/reference/
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. [with a flag](../../administration/feature_flags/_index.md) named `allow_push_repository_for_job_token`. Disabled by default.
 - **Token Access** section renamed to **Job token permissions**, and [**Limit access to this project** setting renamed to **Authorized groups and projects**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
-
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/468320) in GitLab 18.3
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468320) in GitLab 18.4. Feature flag `allow_push_repository_for_job_token` removed.
 
@@ -428,3 +427,21 @@ When `base64` encoding JWT format job tokens during job execution, for example w
 `echo $CI_JOB_TOKEN | base64`, the token is rendered invalid.
 
 To fix this issue, use `base64 -w0` to disable automatically wrapping the token.
+
+#### Error: `403 Forbidden` in long-running jobs
+
+When using JWT format job tokens in GitLab 18.8 and earlier, a job could fail with
+a `403 Forbidden` error. This can happen in:
+
+- Jobs that use [`needs`](../yaml/_index.md#needs).
+- Jobs triggered from [child pipelines](../pipelines/downstream_pipelines.md#parent-child-pipelines).
+- Jobs that run for longer than approximately 6 minutes without producing console output.
+
+The error typically appeared in runner logs as:
+
+```plaintext
+WARNING: Submitting job to coordinator... job failed
+  code=403 job=<job_id> status=PUT https://gitlab.com/api/v4/jobs/<job_id>: 403 Forbidden
+```
+
+Update to GitLab 18.9 to avoid this issue.

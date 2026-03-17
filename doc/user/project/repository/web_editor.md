@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Use the Web Editor to create, upload, and edit text files directly in the GitLab UI.
 title: Web Editor
 ---
@@ -40,7 +40,7 @@ You can create, edit, upload, and delete files with the Web Editor, directly fro
 
 To create a text file in the Web Editor:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to the directory where you want to create the new file.
 1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **New file**.
 1. Next to the branch name, enter a filename and extension. For example, `my_file.md`.
@@ -68,7 +68,7 @@ To create a text file in the Web Editor:
 
 To create a text file from a template in the Web Editor:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to the directory where you want to create the new file.
 1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **New file**.
 1. In **Filename**, enter a name that GitLab provides a template for:
@@ -84,7 +84,7 @@ To create a text file from a template in the Web Editor:
 
 To edit a text file in the Web Editor:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to the file you want to edit.
 1. Select **Edit** > **Edit single file**.
 1. Make your changes.
@@ -118,7 +118,7 @@ To edit a text file in the Web Editor:
 
 To preview a Markdown file in the Web Editor:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to the file you want to preview.
 1. Select **Edit** > **Edit single file**.
 1. Select the **Preview** tab.
@@ -159,7 +159,7 @@ you can edit a file and commit changes. To do this:
 
 To upload a file in the Web Editor:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to the directory where you want to upload the file.
 1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **Upload file**.
 1. Drop or upload the file you want to add.
@@ -186,7 +186,7 @@ To upload a file in the Web Editor:
 
 To delete a file in the Web Editor:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to the file you want to delete.
 1. Select **Delete**.
 1. In **Commit message**, enter a reason for the commit.
@@ -217,7 +217,7 @@ To delete a file in the Web Editor:
 
 To replace a file in the Web Editor:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to the file you want to replace.
 1. Select **Replace**.
 1. Drop or upload the file you want to upload and replace the existing one.
@@ -276,7 +276,7 @@ To complete these actions:
 
 To create a directory in the Web Editor:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Go to the directory where you want to create the new directory.
 1. Next to the directory name, select the plus icon ({{< icon name="plus" >}}) > **New directory**.
 1. In the **Directory name** field, enter your directory name.
@@ -302,7 +302,7 @@ To create a directory in the Web Editor:
 
 To create a [branch](branches/_index.md) in the Web Editor:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Next to the repository name, select the plus icon ({{< icon name="plus" >}}) > **New branch**.
 1. Complete the fields.
 1. Select **Create branch**.
@@ -312,7 +312,7 @@ To create a [branch](branches/_index.md) in the Web Editor:
 You can create [tags](tags/_index.md) to mark milestones such as
 production releases and release candidates. To create a tag in the Web Editor:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Next to the repository name, select the plus icon ({{< icon name="plus" >}}) > **New tag**.
 1. Complete the fields.
 1. Select **Create tag**.

@@ -22,6 +22,7 @@ import {
   otherNamespaceChild,
   workItemObjectiveMetadataWidgets,
   workItemObjectiveWithoutChild,
+  mockAssignees as mockAssigneesFromMockData,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -49,12 +50,13 @@ describe('WorkItemLinkChildContents', () => {
   const findScopedLabel = () => findAllLabels().at(1);
   const findRemoveButton = () => wrapper.findComponent(GlButton);
   const findRelationshipIconsComponent = () => wrapper.findComponent(WorkItemRelationshipIcons);
+  const findAvatarsInline = () => wrapper.findComponent(GlAvatarsInline);
   const findIssuableCardLinkOverlay = () => wrapper.findByTestId('issuable-card-link-overlay');
 
   const createComponent = ({
     canUpdate = true,
     childItem = workItemTask,
-    showLabels = true,
+    hiddenMetadataKeys = [],
     workItemFullPath = 'test-project-path',
     isGroup = false,
     getRoutesMock = defaultGetRoutesMock,
@@ -65,7 +67,7 @@ describe('WorkItemLinkChildContents', () => {
         canUpdate,
         isGroup,
         childItem,
-        showLabels,
+        hiddenMetadataKeys,
         workItemFullPath,
         contextualViewEnabled,
       },
@@ -121,7 +123,7 @@ describe('WorkItemLinkChildContents', () => {
   it('renders avatars for assignees', () => {
     createComponent();
 
-    const avatars = wrapper.findComponent(GlAvatarsInline);
+    const avatars = findAvatarsInline();
 
     expect(avatars.exists()).toBe(true);
     expect(avatars.props()).toMatchObject({
@@ -132,6 +134,21 @@ describe('WorkItemLinkChildContents', () => {
       badgeTooltipProp: 'name',
       badgeSrOnlyText: '',
     });
+  });
+
+  it('uses features.assignees over widgets assignees', () => {
+    const [firstAssignee] = mockAssigneesFromMockData;
+    createComponent({
+      childItem: {
+        ...workItemTask,
+        features: {
+          assignees: { assignees: { nodes: [firstAssignee] } },
+        },
+      },
+    });
+
+    const avatars = findAvatarsInline();
+    expect(avatars.props('avatars')).toEqual([firstAssignee]);
   });
 
   it('renders link with unique id', () => {
@@ -214,8 +231,10 @@ describe('WorkItemLinkChildContents', () => {
       expect(findMetadataComponent().props()).toMatchObject({
         reference: '#12',
         metadataWidgets: workItemObjectiveMetadataWidgets,
+        namespacePath: workItemObjectiveWithoutChild.namespace.fullPath,
       });
     });
+
     it('renders full path when not in the same namespace', () => {
       createComponent({
         childItem: otherNamespaceChild,
@@ -274,14 +293,18 @@ describe('WorkItemLinkChildContents', () => {
     });
 
     it.each`
-      expectedAssertion           | showLabels
-      ${'does not render labels'} | ${true}
-      ${'renders label'}          | ${false}
-    `('$expectedAssertion when showLabels is $showLabels', ({ showLabels }) => {
-      createComponent({ showLabels, childItem: workItemObjectiveWithChild });
+      expectedAssertion           | hiddenMetadataKeys
+      ${'renders label'}          | ${[]}
+      ${'does not render labels'} | ${['labels']}
+    `(
+      '$expectedAssertion when labels are hidden: $hiddenMetadataKeys',
+      ({ hiddenMetadataKeys }) => {
+        const showLabels = !hiddenMetadataKeys.includes('labels');
+        createComponent({ hiddenMetadataKeys, childItem: workItemObjectiveWithChild });
 
-      expect(findAllLabels().exists()).toBe(showLabels);
-    });
+        expect(findAllLabels().exists()).toBe(showLabels);
+      },
+    );
   });
 
   describe('Anchor overlay rendering based on contextual view state', () => {

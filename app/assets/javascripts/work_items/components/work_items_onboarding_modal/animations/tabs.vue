@@ -138,36 +138,87 @@ export default {
 
       <g clip-path="url(#clip0-third)">
         <!-- Border -->
-        <rect x="0.5" y="0.5" width="239" height="169" rx="7.5" stroke="#BFBFC3" />
+        <rect
+          x="0.5"
+          y="0.5"
+          width="239"
+          height="169"
+          rx="7.5"
+          stroke="var(--gl-border-color-strong)"
+        />
 
         <!-- Content rows - static -->
-        <rect x="8" y="99" width="176" height="8" rx="4" fill="#DCDCDE" />
-        <rect x="8" y="87" width="112" height="8" rx="4" fill="#BFBFC3" />
-        <rect x="8" y="131.996" width="144" height="8" rx="4" fill="#DCDCDE" />
-        <rect x="8" y="120" width="96" height="8" rx="4" fill="#BFBFC3" />
-        <rect x="8" y="165" width="160" height="8" rx="4" fill="#DCDCDE" />
-        <rect x="8" y="152.996" width="128" height="8" rx="4" fill="#BFBFC3" />
+        <rect
+          x="8"
+          y="99"
+          width="176"
+          height="8"
+          rx="4"
+          fill="var(--gl-status-neutral-background-color)"
+        />
+        <rect x="8" y="87" width="112" height="8" rx="4" fill="var(--gl-border-color-strong)" />
+        <rect
+          x="8"
+          y="131.996"
+          width="144"
+          height="8"
+          rx="4"
+          fill="var(--gl-status-neutral-background-color)"
+        />
+        <rect x="8" y="120" width="96" height="8" rx="4" fill="var(--gl-border-color-strong)" />
+        <rect
+          x="8"
+          y="165"
+          width="160"
+          height="8"
+          rx="4"
+          fill="var(--gl-status-neutral-background-color)"
+        />
+        <rect
+          x="8"
+          y="152.996"
+          width="128"
+          height="8"
+          rx="4"
+          fill="var(--gl-border-color-strong)"
+        />
 
         <!-- Search bar -->
-        <rect x="9" y="56" width="217" height="18" rx="9" stroke="#BFBFC3" stroke-width="2" />
+        <rect
+          x="9"
+          y="56"
+          width="217"
+          height="18"
+          rx="9"
+          stroke="var(--gl-border-color-strong)"
+          stroke-width="2"
+        />
 
         <!-- Search icon -->
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M214.254 61C216.052 61 217.509 62.457 217.509 64.2543C217.509 64.8577 217.343 65.4224 217.057 65.9068L218.762 67.6113C219.079 67.929 219.079 68.444 218.762 68.7617C218.444 69.0794 217.929 69.0794 217.611 68.7617L215.907 67.0573C215.422 67.3435 214.858 67.5085 214.254 67.5085C212.457 67.5085 211 66.0515 211 64.2543C211 62.457 212.457 61 214.254 61ZM214.254 62.6271C213.356 62.6271 212.627 63.3556 212.627 64.2543C212.627 65.1529 213.356 65.8814 214.254 65.8814C215.153 65.8814 215.881 65.1529 215.881 64.2543C215.881 63.3556 215.153 62.6271 214.254 62.6271Z"
-          fill="#BFBFC3"
+          fill="var(--gl-text-color-disabled)"
         />
 
         <!-- Search tags - static -->
-        <rect x="14" y="61" width="24" height="8" rx="4" fill="#89888D" />
-        <rect x="42" y="61" width="40" height="8" rx="4" fill="#89888D" />
+        <rect x="14" y="61" width="24" height="8" rx="4" fill="var(--gl-text-color-disabled)" />
+        <rect x="42" y="61" width="40" height="8" rx="4" fill="var(--gl-text-color-disabled)" />
 
         <!-- Filter button -->
-        <rect x="232" y="56" width="18" height="18" rx="9" stroke="#BFBFC3" stroke-width="2" />
+        <rect
+          x="232"
+          y="56"
+          width="18"
+          height="18"
+          rx="9"
+          stroke="var(--gl-border-color-strong)"
+          stroke-width="2"
+        />
 
         <!-- Divider -->
-        <path d="M8 41H239V43H8V41Z" fill="#DCDCDE" />
+        <path d="M8 41H239V43H8V41Z" fill="var(--gl-border-color-strong)" />
 
         <!-- Animated highlight pill -->
         <g
@@ -182,16 +233,16 @@ export default {
           <rect
             :x="currentFrame.highlightPill.x"
             :y="currentFrame.highlightPill.y"
-            width="52"
+            width="50"
             height="20"
             rx="10"
-            fill="#1F75CB"
+            fill="var(--blue-500)"
           />
         </g>
 
         <!-- Tab buttons - static tabs -->
-        <rect x="184" y="17" width="28" height="8" rx="4" fill="#BFBFC3" />
-        <rect x="16" y="17" width="28" height="8" rx="4" fill="#BFBFC3" />
+        <rect x="184" y="17" width="28" height="8" rx="4" fill="var(--gl-border-color-strong)" />
+        <rect x="16" y="17" width="28" height="8" rx="4" fill="var(--gl-border-color-strong)" />
 
         <!-- Tab 3 - moves from x=128 to x=72 -->
         <g
@@ -207,7 +258,11 @@ export default {
             width="28"
             height="8"
             rx="4"
-            :fill="currentFrame.activeTab === currentFrame.tab3X ? '#626168' : '#BFBFC3'"
+            :fill="
+              currentFrame.activeTab === currentFrame.tab3X
+                ? 'var(--gl-text-color-subtle)'
+                : 'var(--gl-border-color-strong)'
+            "
             :class="{
               'animated-tab-fill': !disableTransitions,
               'no-transition': disableTransitions,
@@ -229,7 +284,11 @@ export default {
             width="28"
             height="8"
             rx="4"
-            :fill="currentFrame.activeTab === currentFrame.tab2X ? '#626168' : '#BFBFC3'"
+            :fill="
+              currentFrame.activeTab === currentFrame.tab2X
+                ? 'var(--gl-text-color-subtle)'
+                : 'var(--gl-border-color-strong)'
+            "
             :class="{
               'animated-tab-fill': !disableTransitions,
               'no-transition': disableTransitions,
@@ -244,7 +303,7 @@ export default {
           :width="currentFrame.blueBarWidth"
           height="4"
           rx="2"
-          fill="#1F75CB"
+          fill="var(--blue-500)"
           :style="{
             opacity: currentFrame.blueBarOpacity !== undefined ? currentFrame.blueBarOpacity : 1,
           }"

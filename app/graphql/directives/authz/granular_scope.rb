@@ -3,8 +3,12 @@
 module Directives
   module Authz
     class GranularScope < GraphQL::Schema::Directive
-      argument :permissions, [Types::Authz::GranularScopePermissionEnum],
+      argument :permissions, [GraphQL::Types::String],
         description: 'Granular scope permissions required to access the field or type.'
+
+      argument :boundary_type, Types::Authz::AccessTokens::BoundaryEnum,
+        description: 'The type of authorization boundary (project, group, user, instance). ' \
+          'Used for validation and documentation of the permission boundary.'
 
       argument :boundary, GraphQL::Types::String,
         required: false,

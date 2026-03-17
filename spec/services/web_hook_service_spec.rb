@@ -497,33 +497,6 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         end
       end
 
-      context 'when serialization feature flag is disabled' do
-        before do
-          stub_feature_flags(custom_webhook_template_serialization: false)
-        end
-
-        context 'when description contains a backslash' do
-          let(:data) do
-            { changes: { description: "\\This has a backslash" } }
-          end
-
-          before do
-            project_hook.custom_webhook_template = '{"description":"{{changes.description}}"}'
-          end
-
-          it 'handles the error', :aggregate_failures do
-            result = service_instance.execute
-            expect(result).to have_attributes(status: :error)
-            expect(result.message).to match(/Error while parsing rendered custom webhook template:/)
-            expect(result.message).to match(/invalid escaped character/)
-            expect(result.message).to match(/line 1/)
-            expect(result.message).to match(/column 17/)
-            expect(result.message).to match(/\\This has a backslash/)
-            expect { service_instance.execute }.not_to raise_error
-          end
-        end
-      end
-
       context 'when template is valid' do
         before do
           project_hook.custom_webhook_template = '{"before":"{{before}}"}'

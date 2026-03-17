@@ -28,8 +28,7 @@ RSpec.describe 'Import/Export - project import integration test', :js, feature_c
     let(:project_name) { 'Test Project Name' + random_hex }
     let(:project_path) { 'test-project-name' + random_hex }
 
-    it 'user imports an exported project successfully', :sidekiq_might_not_need_inline,
-      quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/8540' do
+    it 'user imports an exported project successfully', :sidekiq_might_not_need_inline do
       visit new_project_path
       click_link 'Import project'
       click_link 'GitLab export'
@@ -38,11 +37,17 @@ RSpec.describe 'Import/Export - project import integration test', :js, feature_c
       fill_in :path, with: 'test-project-path', visible: true
       attach_file('file', file)
 
-      expect { click_button 'Import project' }.to change { Project.count }.by(1)
+      initial_count = Project.count
+
+      click_button 'Import project'
+
+      expect(page).to have_content("Project 'Test Project Name' is being imported")
+
+      expect(Project.count).to eq(initial_count + 1)
 
       project = Project.last
       expect(project).not_to be_nil
-      expect(page).to have_content("Project 'Test Project Name' is being imported")
+      expect(project.name).to eq('Test Project Name')
     end
 
     it 'invalid project' do

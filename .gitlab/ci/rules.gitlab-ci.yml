@@ -380,8 +380,7 @@
 
 .if-tech-docs-localization: &if-tech-docs-localization
   if: '($CI_PROJECT_PATH == "gitlab-com/localization" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH) ||
-      ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") ||
-      ($CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^docs-i18n-/ || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /-docs-i18n$/)'
+      ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train")'
 
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/breaking_windows.md"
@@ -497,6 +496,8 @@
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
+  # GraphQL query files
+  - "{,ee/,jh/}app/assets/javascripts/**/*.graphql"
   # Spec support files
   - "{,ee/,jh/}spec/{support,factories,fixtures,tooling/fixtures}/**/*"
   - "{,ee/,jh/}spec/{*.rb,.rspec}"
@@ -521,6 +522,8 @@
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
+  # GraphQL query files
+  - "{,ee/,jh/}app/assets/javascripts/**/*.graphql"
   # CI changes
   - "{,jh/}.gitlab-ci.yml"
   - "{,jh/}.gitlab/ci/**/*"
@@ -542,6 +545,8 @@
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
+  # GraphQL query files
+  - "{,ee/,jh/}app/assets/javascripts/**/*.graphql"
 
 .search-backend-patterns: &search-backend-patterns
   - "{,jh/}Gemfile.lock"
@@ -648,6 +653,7 @@
   - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
   - "ee/frontend_islands/apps/**/components.json"
   - "ee/frontend_islands/packages/**/index.{js,json}"
+  - "ee/frontend_islands/**/*.md"
 
 # Code patterns + .ci-patterns
 .code-patterns: &code-patterns
@@ -1009,6 +1015,7 @@
 .permissions-patterns: &permissions-patterns
   - "config/authz/permissions/**/*.yml"
   - "config/authz/permission_groups/**/*.yml"
+  - "lib/tasks/gitlab/permissions/**/*.rb"
   - "{,ee/}app/policies/**/*.rb"
   - "{,ee/}lib/api/**/*.rb"
 
@@ -1363,6 +1370,8 @@
     - <<: *if-sync-changes-on-stable-branches
     - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
     - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'
+    - <<: *if-merge-request
+      changes: *ruby-version-patterns
     - !reference [.frontend:rules:compile-test-assets, rules]
     - !reference [.frontend:rules:assets-shared, rules]
     - !reference [.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only, rules]
@@ -1473,16 +1482,6 @@
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
       changes: *spec-only-patterns
-
-##################
-# OpenAPI rules  #
-##################
-.openapi:rules:openapi-check_docs:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-default-refs
-      changes: *code-rest-api-patterns
 
 ############################
 # Audit event types rules  #
@@ -2195,6 +2194,7 @@
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
       when: manual
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
 
 .qa:rules:fulfillment-e2e-quarantine-report:
@@ -2656,7 +2656,6 @@
       when: never
     - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:system-default-rules", rules]
-    - !reference [".rails:rules:triggered-by-aigw-project", rules]
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
@@ -2799,11 +2798,11 @@
     - <<: *if-merge-request-labels-skip-undercoverage
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
-    # We cannot get the coverage data from child pipeline so we only run undercoverage on full pipelines for now
-    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113410#note_1335422806
-    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-merge-request-tier-3
+      changes: *code-backstage-patterns
     - <<: *if-merge-request
       changes: *code-backstage-patterns
+      allow_failure: true
 
 .rails:rules:rspec-merge-auto-explain-logs:
   rules:
@@ -3223,7 +3222,7 @@
     - !reference [".prevent-tier-2-and-above", rules]
     - <<: *if-merge-request
       changes: *code-patterns
-    - <<: *if-merge-request # no code changes, but has doc changes
+    - <<: *if-merge-request  # no code changes, but has doc changes
       changes:
         - "doc/**/*"
       when: never
@@ -3483,7 +3482,7 @@
     - if: '$AIGW_TAGGING_ACCESS_TOKEN == null'
       when: never
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.0-ee$/'
-      # Only run when a version tag is created (release is cut)
+    # Only run when a version tag is created (release is cut)
 
 .ai-gateway:rules:update-test-branch:
   rules:

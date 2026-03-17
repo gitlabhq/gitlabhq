@@ -13,11 +13,7 @@ module Subscriptions
         payload_type Types::Ci::PipelineType
 
         def authorized?(pipeline_id:)
-          pipeline = force(GitlabSchema.find_by_gid(pipeline_id))
-
-          unauthorized! unless pipeline && Ability.allowed?(current_user, :read_pipeline, pipeline)
-
-          true
+          authorize_object_or_gid!(:read_pipeline, gid: pipeline_id)
         end
       end
     end

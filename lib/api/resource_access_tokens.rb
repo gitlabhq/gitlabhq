@@ -17,7 +17,7 @@ module API
         desc 'Get list of all access tokens for the specified resource' do
           detail 'This feature was introduced in GitLab 13.9.'
           is_array true
-          tags ["#{source_type}_access_tokens"]
+          tags ['access_tokens']
           success Entities::ResourceAccessToken
         end
         params do
@@ -38,7 +38,7 @@ module API
 
         desc 'Get an access token for the specified resource by ID' do
           detail 'This feature was introduced in GitLab 14.10.'
-          tags ["#{source_type}_access_tokens"]
+          tags ['access_tokens']
           success Entities::ResourceAccessToken
         end
         params do
@@ -61,7 +61,7 @@ module API
 
         desc 'Revoke a resource access token' do
           detail 'This feature was introduced in GitLab 13.9.'
-          tags ["#{source_type}_access_tokens"]
+          tags ['access_tokens']
           success code: 204
           failure [
             { code: 400, message: 'Bad Request' },
@@ -90,7 +90,7 @@ module API
 
         desc 'Create a resource access token' do
           detail 'This feature was introduced in GitLab 13.9.'
-          tags ["#{source_type}_access_tokens"]
+          tags ['access_tokens']
           success Entities::ResourceAccessTokenWithToken
         end
         params do
@@ -136,7 +136,7 @@ module API
 
         desc 'Rotate a resource access token' do
           detail 'This feature was introduced in GitLab 16.0.'
-          tags ["#{source_type}_access_tokens"]
+          tags ['access_tokens']
           success Entities::ResourceAccessTokenWithToken
         end
         params do

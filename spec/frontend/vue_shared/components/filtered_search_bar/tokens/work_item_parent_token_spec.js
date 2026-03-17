@@ -301,6 +301,24 @@ describe('WorkItemParentToken', () => {
       expect(findViewSlot().text()).toBe('Order different types of grass');
     });
 
+    it('renders token item when value is numeric', async () => {
+      const mockWorkItems = mockProjectParentWorkItemsQueryResponse.data.project.workItems.nodes;
+      const config = {
+        ...mockWorkItemParentToken,
+        initialWorkItems: mockWorkItems,
+      };
+      createComponent({
+        config,
+        value: { data: Number(getIdFromGraphQLId(mockWorkItems[0].iid)) },
+        mountFn: mountExtended,
+        stubs: { Portal: true },
+      });
+
+      await activateSuggestionsList();
+
+      expect(findViewSlot().text()).toBe('Order different types of grass');
+    });
+
     it('renders provided defaultWorkItems as suggestions', () => {
       const defaultWorkItems = OPTIONS_NONE_ANY;
       const config = {

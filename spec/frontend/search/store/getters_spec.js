@@ -24,6 +24,8 @@ import {
   MOCK_LABEL_SEARCH_RESULT,
   MOCK_FILTERED_APPLIED_SELECTED_LABELS,
   MOCK_FILTERED_UNSELECTED_LABELS,
+  MOCK_WORK_ITEM_TYPE_AGGREGATION_BUCKETS,
+  MOCK_WORK_ITEM_TYPE_AGGREGATIONS,
 } from '../mock_data';
 
 describe('Global Search Store Getters', () => {
@@ -90,6 +92,20 @@ describe('Global Search Store Getters', () => {
       expect(getters.labelAggregationBuckets(state)).toStrictEqual(
         MOCK_LABEL_AGGREGATIONS.data[0].buckets,
       );
+    });
+  });
+
+  describe('workItemTypeAggregationBuckets', () => {
+    it('returns work item type buckets from aggregations', () => {
+      state.aggregations = MOCK_WORK_ITEM_TYPE_AGGREGATIONS;
+      expect(getters.workItemTypeAggregationBuckets(state)).toStrictEqual(
+        MOCK_WORK_ITEM_TYPE_AGGREGATION_BUCKETS,
+      );
+    });
+
+    it('returns empty array when no work item type aggregation exists', () => {
+      state.aggregations = MOCK_LABEL_AGGREGATIONS;
+      expect(getters.workItemTypeAggregationBuckets(state)).toStrictEqual([]);
     });
   });
 

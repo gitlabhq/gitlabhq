@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab for Slack app
 description: "Configure the GitLab for Slack app to use slash commands and receive notifications from GitLab in your Slack workspace."
 ---
@@ -49,7 +49,7 @@ Although functionality has not changed, you should [reinstall the app](#reinstal
 
 To install the GitLab for Slack app from the project or group settings:
 
-1. On the top bar, select **Search or go to** and find your project or group.
+1. In the top bar, select **Search or go to** and find your project or group.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
@@ -83,7 +83,7 @@ When GitLab releases new features for the GitLab for Slack app, you might have t
 
 To reinstall the GitLab for Slack app:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Select **Install GitLab for Slack app**. You're redirected to the Slack confirmation page.
@@ -146,7 +146,7 @@ You can use a project alias instead.
 
 To create a project alias for slash commands in the GitLab for Slack app:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. Next to the project path or alias, select **Edit**.
@@ -174,7 +174,7 @@ You can receive notifications to Slack channels for certain GitLab [events](#not
 
 To configure Slack notifications:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Slack app**.
 1. In the **Trigger** section:
@@ -218,11 +218,11 @@ The following GitLab events can trigger notifications in Slack:
 | Event                                                                 | Description |
 | --------------------------------------------------------------------- | ----------- |
 | Push                                                                  | A push is made to the repository. |
-| Issue                                                                 | An issue is created, closed, or reopened. |
-| Confidential issue                                                    | A confidential issue is created, closed, or reopened. |
+| Issue                                                                 | A work item is created, closed, or reopened. |
+| Confidential issue                                                    | A confidential work item is created, closed, or reopened. |
 | Merge request                                                         | A merge request is created, merged, approved, closed, or reopened. |
 | Note                                                                  | A comment is added. |
-| Confidential note                                                     | An internal note or comment on a confidential issue is added. |
+| Confidential note                                                     | An internal note or comment on a confidential work item is added. |
 | Tag push                                                              | A tag is pushed to the repository or removed. |
 | Pipeline                                                              | A pipeline status changes. |
 | Wiki page                                                             | A wiki page is created or updated. |

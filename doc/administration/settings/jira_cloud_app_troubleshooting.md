@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Troubleshooting GitLab for Jira Cloud app administration
 ---
 
@@ -49,15 +49,14 @@ Prerequisites:
 
 - Administrator access.
 
-- In GitLab 15.7:
+To disable the **Jira Connect Proxy URL** setting:
 
+- In GitLab 15.7:
   1. Open a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
   1. Execute `ApplicationSetting.current_without_cache.update(jira_connect_proxy_url: nil)`.
-
 - In GitLab 15.8 and later:
-
   1. In the upper-right corner, select **Admin**.
-  1. On the left sidebar, select **Settings** > **General**.
+  1. In the left sidebar, select **Settings** > **General**.
   1. Expand **GitLab for Jira App**.
   1. Clear the **Jira Connect Proxy URL** text box.
   1. Select **Save changes**.
@@ -361,3 +360,6 @@ Failed to sign in to GitLab
 
 To resolve this issue, ensure the **Trusted** and **Confidential** checkboxes are cleared in
 the [OAuth application](jira_cloud_app.md#set-up-oauth-authentication) created for the app.
+If the error persists, see [issue 581765](https://gitlab.com/gitlab-org/gitlab/-/work_items/581765).
+
+If you use Google Chrome for the app, try using a different browser.

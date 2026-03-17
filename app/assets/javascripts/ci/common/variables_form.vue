@@ -7,16 +7,15 @@ import {
   GlFormTextarea,
   GlLoadingIcon,
 } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
+import { uniqueId } from 'lodash-es';
 import { s__, __ } from '~/locale';
-import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import { CI_VARIABLE_TYPE_FILE, CI_VARIABLE_TYPE_ENV_VAR } from '../pipeline_new/constants';
 import VariableValuesListbox from '../pipeline_new/components/variable_values_listbox.vue';
 
 export default {
   name: 'VariablesForm',
-  formElementClasses: 'gl-basis-1/4 gl-shrink-0 gl-flex-grow-0',
+  formElementClasses: 'gl-mb-0 gl-basis-1/4 gl-shrink-0 gl-flex-grow-0',
   textAreaStyle: { height: '32px' },
   typeOptions: [
     {
@@ -35,7 +34,6 @@ export default {
     GlFormInput,
     GlFormTextarea,
     GlLoadingIcon,
-    InputsAdoptionBanner,
     Markdown,
     VariableValuesListbox,
   },
@@ -54,10 +52,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    userCalloutsFeatureName: {
-      type: String,
-      required: true,
     },
   },
   emits: ['validity-change', 'update-variables'],
@@ -162,9 +156,6 @@ export default {
         value: option,
       }));
     },
-    getPipelineAriaLabel(index) {
-      return `${s__('Pipeline|Variable')} ${index + 1}`;
-    },
     canRemove(index) {
       return index < this.variables.length - 1;
     },
@@ -185,6 +176,9 @@ export default {
         this.variables[index].empty = false;
       }
     },
+    removeAriaLabel(index) {
+      return `${s__('CiVariables|Remove variable')} ${index + 1}`;
+    },
   },
   i18n: {
     keyErrorCannotStartWithNumber: s__('CIVariablesForm|Variable key cannot start with a number.'),
@@ -200,39 +194,42 @@ export default {
   <gl-form-group id="pipeline-form-ci-variables" class="gl-mb-0" :label="s__('Pipeline|Variables')">
     <gl-loading-icon v-if="isLoading" class="gl-mb-5" size="md" />
     <template v-else>
-      <inputs-adoption-banner :feature-name="userCalloutsFeatureName" />
       <gl-form-group class="gl-mb-0">
         <template v-for="(variable, index) in variables">
           <div
             v-if="!variable.destroy"
             :key="variable.uniqueId"
-            class="gl-mb-4"
+            class="gl-mb-5"
             data-testid="ci-variable-row-container"
           >
             <div
               class="gl-flex gl-flex-col gl-gap-4 @md/panel:gl-flex-row @md/panel:gl-items-start"
             >
-              <gl-collapsible-listbox
-                :items="$options.typeOptions"
-                :selected="variable.variableType"
-                :class="$options.formElementClasses"
-                :aria-label="getPipelineAriaLabel(index)"
-                block
-                data-testid="pipeline-form-ci-variable-type"
-                @select="setVariableType(index, $event)"
-              />
               <gl-form-group
+                :label="s__('CiVariables|Variable type')"
+                :label-for="`pipeline-form-ci-variable-type-${index}`"
+                :class="$options.formElementClasses"
+              >
+                <gl-collapsible-listbox
+                  :toggle-id="`pipeline-form-ci-variable-type-${index}`"
+                  :items="$options.typeOptions"
+                  :selected="variable.variableType"
+                  block
+                  data-testid="pipeline-form-ci-variable-type"
+                  @select="setVariableType(index, $event)"
+                />
+              </gl-form-group>
+              <gl-form-group
+                :label="s__('CiVariables|Variable key')"
+                :label-for="`pipeline-form-ci-variable-key-${index}`"
                 :state="!variable.error"
                 :invalid-feedback="variable.error"
                 :class="$options.formElementClasses"
-                class="gl-mb-0"
-                label-class="!gl-pb-0"
                 data-testid="pipeline-form-ci-variable-key-group"
               >
                 <gl-form-input
+                  :id="`pipeline-form-ci-variable-key-${index}`"
                   :value="variable.key"
-                  :placeholder="s__('CiVariables|Input variable key')"
-                  :aria-label="s__('CiVariables|Input variable key')"
                   :state="!variable.error"
                   class="gl-self-start"
                   data-testid="pipeline-form-ci-variable-key-field"
@@ -240,34 +237,39 @@ export default {
                   @change="addEmptyVariable()"
                 />
               </gl-form-group>
-              <variable-values-listbox
-                v-if="shouldShowValuesDropdown(variable.valueOptions)"
-                :items="createListItemsFromVariableOptions(variable.valueOptions)"
-                :selected="variable.value"
+              <gl-form-group
+                :label="s__('CiVariables|Variable value')"
+                :label-for="`pipeline-form-ci-variable-value-${index}`"
                 :class="$options.formElementClasses"
                 class="!gl-mr-0 gl-grow"
-                data-testid="pipeline-form-ci-variable-value-dropdown"
-                @select="setVariableValue(index, $event)"
-              />
-              <gl-form-textarea
-                v-else-if="displayHiddenChars(index)"
-                :aria-label="s__('CiVariables|Hidden variable value')"
-                value="*****************"
-                disabled
-                class="!gl-h-7"
-                data-testid="pipeline-form-ci-variable-hidden-value"
-              />
-              <gl-form-textarea
-                v-else
-                v-model="variable.value"
-                :placeholder="s__('CiVariables|Input variable value')"
-                :aria-label="s__('CiVariables|Input variable value')"
-                :style="$options.textAreaStyle"
-                class="gl-min-h-7"
-                :no-resize="false"
-                data-testid="pipeline-form-ci-variable-value-field"
-                @change="resetVariable(index)"
-              />
+              >
+                <variable-values-listbox
+                  v-if="shouldShowValuesDropdown(variable.valueOptions)"
+                  :id="`pipeline-form-ci-variable-value-${index}`"
+                  :items="createListItemsFromVariableOptions(variable.valueOptions)"
+                  :selected="variable.value"
+                  data-testid="pipeline-form-ci-variable-value-dropdown"
+                  @select="setVariableValue(index, $event)"
+                />
+                <gl-form-textarea
+                  v-else-if="displayHiddenChars(index)"
+                  :id="`pipeline-form-ci-variable-value-${index}`"
+                  value="*****************"
+                  disabled
+                  class="!gl-h-7"
+                  data-testid="pipeline-form-ci-variable-hidden-value"
+                />
+                <gl-form-textarea
+                  v-else
+                  :id="`pipeline-form-ci-variable-value-${index}`"
+                  v-model="variable.value"
+                  :style="$options.textAreaStyle"
+                  class="gl-min-h-7"
+                  :no-resize="false"
+                  data-testid="pipeline-form-ci-variable-value-field"
+                  @change="resetVariable(index)"
+                />
+              </gl-form-group>
 
               <template v-if="variables.length > 1">
                 <gl-button
@@ -277,6 +279,7 @@ export default {
                   size="medium"
                   icon="remove"
                   category="secondary"
+                  :aria-label="removeAriaLabel(index)"
                   @click="removeVariable(index)"
                 >
                   {{ s__('CiVariables|Remove variable') }}
@@ -284,12 +287,12 @@ export default {
 
                 <!-- for the last row, the button is rendered disabled + invisible so it takes space in the row -->
                 <gl-button
-                  class="@max-md/panel:gl-hidden"
+                  class="@md/panel:gl-mt-6 @max-md/panel:gl-hidden"
                   data-testid="remove-ci-variable-button-desktop"
                   size="medium"
                   category="tertiary"
                   icon="remove"
-                  :aria-label="s__('CiVariables|Remove variable')"
+                  :aria-label="removeAriaLabel(index)"
                   :disabled="!canRemove(index)"
                   :class="{ 'gl-invisible': !canRemove(index) }"
                   @click="removeVariable(index)"

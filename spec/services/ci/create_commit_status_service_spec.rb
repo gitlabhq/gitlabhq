@@ -654,6 +654,46 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
     end
   end
 
+  context 'for tag property' do
+    context 'when creating a commit status with a tag ref' do
+      let(:params) do
+        {
+          sha: sha,
+          state: 'success',
+          ref: 'v1.0.0'
+        }
+      end
+
+      before do
+        allow(project.repository).to receive(:tag_exists?).and_return(true)
+      end
+
+      it 'creates a tag pipeline with tag: true' do
+        expect(response).to be_success
+        expect(::Ci::Pipeline.last.tag).to be true
+      end
+    end
+
+    context 'when creating a commit status with a branch ref' do
+      let(:params) do
+        {
+          sha: sha,
+          state: 'success',
+          ref: 'main'
+        }
+      end
+
+      before do
+        allow(project.repository).to receive(:tag_exists?).and_return(false)
+      end
+
+      it 'creates a branch pipeline with tag: false' do
+        expect(response).to be_success
+        expect(::Ci::Pipeline.last.tag).to be false
+      end
+    end
+  end
+
   def create_user(access_level_trait)
     user = create(:user)
     create(:project_member, access_level_trait, user: user, project: project)

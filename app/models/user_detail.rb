@@ -17,7 +17,7 @@ class UserDetail < ApplicationRecord
 
   validate :bot_namespace_user_type, if: :bot_namespace_id_changed?
 
-  ignore_column :skype, remove_after: '2025-09-18', remove_with: '18.4'
+  ignore_column :skype, remove_after: '2026-03-14', remove_with: '18.11'
   ignore_column :email_reset_offered_at, remove_after: '2026-01-16', remove_with: '18.8'
 
   DEFAULT_FIELD_LENGTH = 500
@@ -83,6 +83,10 @@ class UserDetail < ApplicationRecord
   before_validation :sanitize_attrs, if: -> { Feature.disabled?(:validate_sanitizable_user_details, user) }
 
   before_save :prevent_nil_fields
+
+  # This is needed because organization is synced to company column using a trigger
+  # If the organization is updated, we need to reload the user to get the updated company.
+  after_save :reload, if: -> { saved_change_to_organization? }
 
   # Exclude the hashed email_otp attribute
   def serializable_hash(options = nil)

@@ -8,6 +8,7 @@ query groupWorkItems(
   $iid: String = null
   $searchByIid: Boolean = false
   $searchByText: Boolean = true
+  $useWorkItemFeatures: Boolean = false
 ) {
   namespace: group(fullPath: $fullPath) {
     id
@@ -37,6 +38,17 @@ query groupWorkItems(
         widgets {
           type
           ... on WorkItemWidgetMilestone {
+            milestone {
+              id
+              dueDate
+              startDate
+              title
+              webPath
+            }
+          }
+        }
+        features @include(if: $useWorkItemFeatures) {
+          milestone {
             milestone {
               id
               dueDate

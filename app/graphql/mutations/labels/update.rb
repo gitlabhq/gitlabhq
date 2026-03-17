@@ -16,8 +16,7 @@ module Mutations
 
       argument :archived, GraphQL::Types::Boolean,
         required: false,
-        experiment: { milestone: '18.4' },
-        description: 'Whether the label should be archived. Available only if feature flag `labels_archive` is enabled.'
+        description: 'Whether to archive the label. Introduced in GitLab 18.10.'
 
       authorize :admin_label
 
@@ -30,11 +29,6 @@ module Mutations
         end
 
         authorize!(label)
-
-        group_actor = label.group || label.project.group
-        if args.key?(:archived) && Feature.disabled?(:labels_archive, group_actor)
-          raise_resource_not_available_error!("'labels_archive' feature flag is disabled")
-        end
 
         updated_label = ::Labels::UpdateService.new(args).execute(label)
 

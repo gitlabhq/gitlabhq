@@ -124,7 +124,7 @@ RSpec.describe Suggestions::CreateService, feature_category: :code_review_workfl
       end
 
       it 'creates no suggestion' do
-        expect { subject.execute }.not_to change(Suggestion, :count)
+        expect { subject.execute }.not_to change { Suggestion.count }
       end
 
       it_behaves_like 'service not tracking add suggestion event'

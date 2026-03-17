@@ -8,8 +8,6 @@ const TEST_FIELDS = [
     key: 'B',
     label: 'Second',
     sortable: true,
-    other: 'foo',
-    class: 'someClass',
   },
   {
     key: 'C',
@@ -99,24 +97,22 @@ describe('behaviors/components/json_table', () => {
     });
 
     it('passes cleaned fields and items to table', () => {
-      expect(findTable().props()).toMatchObject({
-        fields: [
-          'A',
-          {
-            key: 'B',
-            label: 'Second',
-            sortable: true,
-            class: 'someClass',
-          },
-          {
-            key: 'C',
-            label: 'Third',
-            sortable: false,
-            class: [],
-          },
-          'D',
-        ],
-      });
+      expect(findTable().props('fields')).toEqual([
+        'A',
+        {
+          key: 'B',
+          label: 'Second',
+          sortable: true,
+          sortByFormatted: false,
+        },
+        {
+          key: 'C',
+          label: 'Third',
+          sortable: false,
+          sortByFormatted: false,
+        },
+        'D',
+      ]);
 
       const html = findTable().html();
 
@@ -149,6 +145,44 @@ describe('behaviors/components/json_table', () => {
       expect(tableHtml).not.toContain('style=');
       expect(tableHtml).not.toContain('class="malicious-class"');
       expect(tableHtml).not.toContain('style="position:fixed;"');
+    });
+  });
+
+  describe('with dangerous field definitions and HTML', () => {
+    beforeEach(() => {
+      buildWrapper({
+        fields: [
+          {
+            key: 'E',
+            label: 'Evil',
+            class: 'js-evil-class modal-backdrop-to-trick-users',
+            thClass: 'js-evil-class-2 modal-backdrop-to-trick-users-2',
+            variant: 'danger',
+            sortable: true,
+            otherProperty: 'i-am-not-allowed',
+          },
+        ],
+        items: [{ E: '<script>console.log("oops!")</script>' }],
+      });
+    });
+
+    it('only allows key, label & sortable field properties', () => {
+      expect(findTable().props('fields')).toEqual([
+        {
+          key: 'E',
+          label: 'Evil',
+          sortable: true,
+          sortByFormatted: false,
+        },
+      ]);
+    });
+
+    it('only shows escaped HTML', () => {
+      const escapedTableContent = findTable().find('tbody').text();
+      expect(escapedTableContent).toEqual('<script>console.log("oops!")</script>');
+
+      const tdHtmlContent = findTable().find('tbody > tr > td').html();
+      expect(tdHtmlContent).toContain('&lt;script&gt;console.log("oops!")&lt;/script&gt;');
     });
   });
 });

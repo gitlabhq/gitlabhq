@@ -90,7 +90,11 @@ export default {
     <div class="gl-flex gl-items-center">
       <div class="title gl-font-bold">
         <span class="gl-mr-2">{{ $options.i18n.jobArtifacts }}</span>
-        <gl-link :href="$options.artifactsHelpPath" data-testid="artifacts-help-link">
+        <gl-link
+          :aria-label="s__('Job|Artifacts help')"
+          :href="$options.artifactsHelpPath"
+          data-testid="artifacts-help-link"
+        >
           <help-icon id="artifacts-help" />
         </gl-link>
         <gl-popover
@@ -124,6 +128,7 @@ export default {
       </span>
       <timeago-tooltip v-if="artifact.expireAt" :time="artifact.expireAt" />
       <gl-link
+        :aria-label="s__('Job|Expired artifact help')"
         :href="helpUrl"
         target="_blank"
         rel="noopener noreferrer nofollow"

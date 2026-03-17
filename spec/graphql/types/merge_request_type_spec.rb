@@ -40,6 +40,7 @@ RSpec.describe GitlabSchema.types['MergeRequest'], feature_category: :code_revie
       auto_merge_strategy merge_user award_emoji prepared_at codequality_reports_comparer supports_lock_on_merge
       mergeability_checks merge_after
       allows_multiple_assignees allows_multiple_reviewers retargeted name pipeline_creation_requests
+      linked_work_items
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields).at_least

@@ -131,6 +131,10 @@ FactoryBot.define do
       email { "#{User::SERVICE_ACCOUNT_PREFIX}_#{generate(:username)}@#{User::NOREPLY_EMAIL_DOMAIN}" }
     end
 
+    trait :can_create_group do
+      after(:create) { |user| user.update_column(:can_create_group, true) }
+    end
+
     trait :security_bot do
       user_type { :security_bot }
     end

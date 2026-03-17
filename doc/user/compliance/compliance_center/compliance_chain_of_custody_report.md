@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Compliance
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Generate and export the chain of custody report in GitLab to track project changes and merge details for compliance.
 title: Chain of custody report
 ---
@@ -55,7 +55,7 @@ If the commit has a related merge commit, then the following are also included:
 
 To generate the chain of custody report:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. In the upper-right corner, select **Export**.
 1. Select **Export chain of custody report**.
@@ -76,7 +76,7 @@ details for the provided commit SHA.
 
 To generate a commit-specific Chain of Custody report:
 
-1. On the top bar, select **Search or go to** and find your group.
+1. In the top bar, select **Search or go to** and find your group.
 1. Select **Secure** > **Compliance center**.
 1. In the upper-right corner, select **Export**.
 1. Select **Export custody report of a specific commit**.

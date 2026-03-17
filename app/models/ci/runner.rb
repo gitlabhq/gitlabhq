@@ -328,7 +328,7 @@ module Ci
       taggings_join_model
         .scoped_taggables
         .joins(:tag)
-        .select('COALESCE(array_agg(tags.name ORDER BY tags.name), ARRAY[]::text[])')
+        .select('COALESCE(array_agg(tags.name ORDER BY tags.name), ARRAY[]::text[])::text[]')
     end
 
     def self.runner_matchers
@@ -548,7 +548,7 @@ module Ci
     end
     strong_memoize_attr :namespace_ids
 
-    def compute_token_expiration
+    def compute_token_expiration(**)
       case runner_type
       when 'instance_type'
         compute_token_expiration_instance

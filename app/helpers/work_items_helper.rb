@@ -55,7 +55,6 @@ module WorkItemsHelper
     resource_parent.is_a?(Group) ? resource_parent : resource_parent.group
   end
 
-  # rubocop:disable Metrics/AbcSize -- Need to add additonal FF
   def base_data(resource_parent, current_user, group)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
@@ -88,19 +87,16 @@ module WorkItemsHelper
       rss_path: rss_path_for(resource_parent),
       calendar_path: calendar_path_for(resource_parent),
       has_projects: has_group_projects?(resource_parent).to_s,
-      work_item_planning_view_enabled: resource_parent.work_items_consolidated_list_enabled?(current_user).to_s,
-      work_items_saved_views_enabled: resource_parent.work_items_saved_views_enabled?(current_user).to_s
+      work_item_planning_view_enabled: resource_parent.work_items_consolidated_list_enabled?(current_user).to_s
     }
   end
-  # rubocop:enable Metrics/AbcSize
 
   def base_data_legacy_only(resource_parent, current_user)
     {
       full_path: resource_parent.full_path,
       issues_list_path: issues_path_for(resource_parent),
       default_branch: resource_parent.is_a?(Project) ? resource_parent.default_branch_or_main : nil,
-      work_item_planning_view_enabled: resource_parent.work_items_consolidated_list_enabled?(current_user).to_s,
-      work_items_saved_views_enabled: resource_parent.work_items_saved_views_enabled?(current_user).to_s
+      work_item_planning_view_enabled: resource_parent.work_items_consolidated_list_enabled?(current_user).to_s
     }
   end
 

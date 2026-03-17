@@ -11,17 +11,17 @@ Vue.use(VueRouter);
 
 export function createRouter({
   fullPath,
-  workspaceType = NAMESPACE_PROJECT,
+  namespaceType = NAMESPACE_PROJECT,
   defaultBranch,
   workItemType,
 }) {
-  const workspacePath = workspaceType === NAMESPACE_GROUP ? '/groups' : '';
+  const namespacePath = namespaceType === NAMESPACE_GROUP ? '/groups' : '';
   const base =
     workItemType === WORK_ITEM_TYPE_NAME_TICKET
-      ? joinPaths(gon?.relative_url_root, workspacePath, fullPath, '-', 'issues')
-      : joinPaths(gon?.relative_url_root, workspacePath, fullPath, '-');
+      ? joinPaths(gon?.relative_url_root, namespacePath, fullPath, '-', 'issues')
+      : joinPaths(gon?.relative_url_root, namespacePath, fullPath, '-');
 
-  if (workspaceType === NAMESPACE_PROJECT) {
+  if (namespaceType === NAMESPACE_PROJECT) {
     window.gl.webIDEPath = webIDEUrl(joinPaths('/', fullPath, 'edit/', defaultBranch, '/-/'));
   }
 

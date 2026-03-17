@@ -1,5 +1,11 @@
 # @feature_category: navigation
-query userProjects($limit: Int!, $includeFrecent: Boolean!, $includeStarred: Boolean!) {
+query userProjects(
+  $limit: Int!
+  $includeFrecent: Boolean!
+  $includeStarred: Boolean!
+  $includePersonal: Boolean!
+  $includeCurrentUser: Boolean!
+) {
   frecentProjects @include(if: $includeFrecent) {
     id
     name
@@ -7,15 +13,27 @@ query userProjects($limit: Int!, $includeFrecent: Boolean!, $includeStarred: Boo
     avatarUrl
     webPath
   }
-  currentUser @include(if: $includeStarred) {
+  currentUser @include(if: $includeCurrentUser) {
     id
-    starredProjects(first: $limit) {
+    starredProjects(first: $limit) @include(if: $includeStarred) {
       nodes {
         id
         name
         namespace: nameWithNamespace
         avatarUrl
         webPath
+      }
+    }
+    namespace @include(if: $includePersonal) {
+      id
+      projects(first: $limit) {
+        nodes {
+          id
+          name
+          namespace: nameWithNamespace
+          avatarUrl
+          webPath
+        }
       }
     }
   }

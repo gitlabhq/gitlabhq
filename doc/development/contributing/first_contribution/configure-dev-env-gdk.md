@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Install the GDK development environment
 ---
 
@@ -39,7 +39,6 @@ To install the GDK:
    The installation script installs the application to a new subdirectory called `gdk`.
 
    Keep the directory name short. Some users encounter issues with long directory names.
-
 1. From the command line, go to that directory.
    In this example, create and change to the `dev` directory:
 
@@ -57,7 +56,6 @@ To install the GDK:
 
    > [!note]
    > If you're using another tool version manager for those dependencies, refer to the [tool version manager](#use-a-different-tool-version-manager) to avoid conflicts.
-
 1. For the message `Where would you like to install the GDK? [./gdk]`,
    press <kbd>Enter</kbd> to accept the default location.
 1. For the message `Which GitLab repo URL would you like to clone?`, enter the GitLab community fork URL:
@@ -72,7 +70,6 @@ To install the GDK:
    While the installation is running, copy any messages that are displayed.
    If you have any problems with the installation, you can use this output as
    part of [troubleshooting](#troubleshoot-gdk).
-
 1. After the installation is complete, you might need to activate `mise`:
 
    For `bash`:
@@ -111,10 +108,8 @@ To install the GDK:
 
 1. Wait for `GitLab available at http://127.0.0.1:3000`,
    and connect to the GDK using the URL provided.
-
 1. Sign in with the username `root` and the password `5iveL!fe`. You will be prompted
    to reset your password the first time you sign in.
-
 1. Continue to [Change the code with the GDK](contribute-gdk.md).
 
 ## Update an existing GDK installation

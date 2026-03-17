@@ -12,6 +12,14 @@ RSpec.describe API::SidekiqMetrics, :clean_gitlab_redis_queues, :aggregate_failu
       it_behaves_like 'GET request permissions for admin mode' do
         let(:path) { path }
       end
+
+      it_behaves_like 'authorizing granular token permissions', :read_sidekiq_metric do
+        let(:boundary_object) { :instance }
+        let(:user) { admin }
+        let(:request) do
+          get api(path, personal_access_token: pat)
+        end
+      end
     end
 
     shared_examples 'GET sidekiq metrics' do

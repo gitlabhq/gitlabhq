@@ -45,13 +45,11 @@ module Groups
     end
 
     def destroy_deletion_schedule!
-      deletion_schedule_destroyed = ApplicationRecord.transaction do
-        resource.cancel_deletion(transition_user: current_user) && resource.deletion_schedule.destroy
+      ApplicationRecord.transaction do
+        raise DeletionScheduleDestroyingFailedError unless resource.cancel_deletion(transition_user: current_user)
+        next if resource.deletion_schedule.nil?
+        raise DeletionScheduleDestroyingFailedError unless resource.deletion_schedule.destroy
       end
-
-      return if deletion_schedule_destroyed
-
-      raise DeletionScheduleDestroyingFailedError
     end
   end
 end

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Import
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Migrate from ClearCase
 description: "Migrate from IBM ClearCase to Git."
 ---
@@ -51,7 +51,6 @@ While there doesn't exist a tool to fully migrate from ClearCase to Git, here
 are some useful links to get you started:
 
 - [Bridge for Git and ClearCase](https://github.com/charleso/git-cc)
-
 - [ClearCase to Git](https://therub.org/2013/07/19/clearcase-to-git/)
 - [Dual syncing ClearCase to Git](https://therub.org/2013/10/22/dual-syncing-clearcase-and-git/)
 - [Moving to Git from ClearCase](https://sateeshkumarb.wordpress.com/2011/01/15/moving-to-git-from-clearcase/)

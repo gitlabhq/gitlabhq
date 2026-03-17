@@ -1353,36 +1353,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
-    describe '.marked_for_deletion_before' do
-      let_it_be(:date) { 10.days.ago }
-
-      let_it_be(:group_not_marked_for_deletion) { create(:group) }
-      let_it_be(:group_marked_for_deletion_after_specified_date) do
-        create(:group_with_deletion_schedule, marked_for_deletion_on: date + 2.days)
-      end
-
-      let_it_be(:group_marked_for_deletion_before_specified_date) do
-        create(:group_with_deletion_schedule, marked_for_deletion_on: date - 2.days)
-      end
-
-      let_it_be(:group_marked_for_deletion_on_specified_date) do
-        create(:group_with_deletion_schedule, marked_for_deletion_on: date)
-      end
-
-      subject(:relation) { described_class.marked_for_deletion_before(date) }
-
-      it 'only includes groups that are marked for deletion on or before the specified date' do
-        expect(relation).to include(
-          group_marked_for_deletion_before_specified_date,
-          group_marked_for_deletion_on_specified_date
-        )
-        expect(relation).not_to include(
-          group_marked_for_deletion_after_specified_date,
-          group_not_marked_for_deletion
-        )
-      end
-    end
-
     describe '.marked_for_deletion_on' do
       let_it_be(:group_marked_for_deletion) { create(:group_with_deletion_schedule, marked_for_deletion_on: Date.parse('2024-01-01')) }
       let_it_be(:group_not_marked_for_deletion) { create(:group) }
@@ -1730,6 +1700,45 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it { is_expected.to include(group_with_integration) }
       it { is_expected.not_to include(group_without_integration) }
+    end
+
+    describe '.excluding_self_and_ancestors_archived' do
+      let_it_be(:root_group) { create(:group) }
+      let_it_be(:subgroup) { create(:group, parent: root_group) }
+      let_it_be(:sub_subgroup) { create(:group, parent: subgroup) }
+
+      subject { root_group.self_and_descendants.excluding_self_and_ancestors_archived }
+
+      context 'when no namespaces are archived' do
+        before do
+          subgroup.namespace_settings.update!(archived: false)
+        end
+
+        it 'returns all groups in the hierarchy' do
+          is_expected.to include(root_group, subgroup, sub_subgroup)
+        end
+      end
+
+      context 'when a mid-level group is archived' do
+        before do
+          subgroup.namespace_settings.update!(archived: true)
+        end
+
+        it 'excludes the archived group and its descendants but keeps the parent' do
+          is_expected.to include(root_group)
+          is_expected.not_to include(subgroup, sub_subgroup)
+        end
+      end
+
+      context 'when the root group is archived' do
+        before do
+          root_group.namespace_settings.update!(archived: true)
+        end
+
+        it 'excludes the entire hierarchy' do
+          is_expected.to be_empty
+        end
+      end
     end
   end
 
@@ -2395,6 +2404,49 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it 'returns false with maintainer as min_access_level param' do
         expect(group.member?(member_shared, Gitlab::Access::MAINTAINER)).to be_falsey
       end
+    end
+  end
+
+  describe '#member_of_self_or_descendant?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    subject { group.member_of_self_or_descendant?(user) }
+
+    context 'when user is nil' do
+      it 'is falsey' do
+        expect(group.member_of_self_or_descendant?(nil)).to be_falsey
+      end
+    end
+
+    context 'when user is not a member of the group' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when user is a member of the group' do
+      before do
+        group.add_guest(user)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when user is a member of a descendant group' do
+      before do
+        create(:group, parent: group).add_guest(user)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when user is a member of a shared descendant group' do
+      before do
+        shared_group = create(:group)
+        create(:group_group_link, shared_group: group, shared_with_group: shared_group)
+        shared_group.add_developer(user)
+      end
+
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -4257,52 +4309,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#work_items_saved_views_enabled?' do
-    let_it_be(:user) { create(:user) }
-
-    context 'when work_items_saved_views is enabled for the group' do
-      before do
-        stub_feature_flags(work_items_saved_views: group)
-      end
-
-      it 'returns true regardless of user' do
-        expect(group.work_items_saved_views_enabled?).to eq(true)
-        expect(group.work_items_saved_views_enabled?(user)).to eq(true)
-      end
-    end
-
-    context 'when work_items_saved_views is disabled for the group' do
-      before do
-        stub_feature_flags(work_items_saved_views: false)
-      end
-
-      context 'when work_items_saved_views_user is enabled for the user' do
-        before do
-          stub_feature_flags(work_items_saved_views_user: user)
-        end
-
-        it 'returns true when user is provided' do
-          expect(group.work_items_saved_views_enabled?(user)).to eq(true)
-        end
-
-        it 'returns false when no user is provided' do
-          expect(group.work_items_saved_views_enabled?).to eq(false)
-        end
-      end
-
-      context 'when work_items_saved_views_user feature flag is disabled' do
-        before do
-          stub_feature_flags(work_items_saved_views_user: false)
-        end
-
-        it 'returns false' do
-          expect(group.work_items_saved_views_enabled?(user)).to eq(false)
-          expect(group.work_items_saved_views_enabled?).to eq(false)
-        end
-      end
-    end
-  end
-
   describe '#has_active_hooks?' do
     let(:group) { build(:group) }
 
@@ -4665,8 +4671,8 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it 'resets the state to ancestor_inherited for archived descendants', :aggregate_failures do
       group.unarchive_descendants!
 
-      expect(subgroup.reload.state).to eq(Namespaces::Stateful::STATES[:ancestor_inherited])
-      expect(sub_subgroup.reload.state).to eq(Namespaces::Stateful::STATES[:ancestor_inherited])
+      expect(subgroup.reload.state).to eq('ancestor_inherited')
+      expect(sub_subgroup.reload.state).to eq('ancestor_inherited')
     end
 
     it 'does not unarchive parent groups' do
@@ -4713,9 +4719,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it 'resets the project namespace state to ancestor_inherited', :aggregate_failures do
       group.unarchive_all_projects!
 
-      expect(archived_project_1.reload.project_namespace.state).to eq(Namespaces::Stateful::STATES[:ancestor_inherited])
-      expect(archived_project_2.reload.project_namespace.state).to eq(Namespaces::Stateful::STATES[:ancestor_inherited])
-      expect(subgroup_archived_project.reload.project_namespace.state).to eq(Namespaces::Stateful::STATES[:ancestor_inherited])
+      expect(archived_project_1.reload.project_namespace.state).to eq('ancestor_inherited')
+      expect(archived_project_2.reload.project_namespace.state).to eq('ancestor_inherited')
+      expect(subgroup_archived_project.reload.project_namespace.state).to eq('ancestor_inherited')
     end
 
     it 'does not affect projects that are not archived' do

@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlPagination, GlSearchBoxByType, GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce } from 'lodash-es';
 import { s__, __ } from '~/locale';
 import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';

@@ -20,7 +20,7 @@
   - page_card_attributes("Namespace" => @group&.full_path, "Project" => @project&.full_path)
 
 #js-search-topbar{ data: { "default-branch-name": @project&.default_branch } }
-.results{ class: project_studio_enabled? ? "@md/panel:gl-flex" : "@lg/panel:gl-flex" }
+.results{ class: "@md/panel:gl-flex" }
   #js-search-sidebar{
     data: {
       navigation_json: search_navigation_json,
@@ -30,6 +30,7 @@
       search_level: search_service.level,
       group_initial_json: group_attributes.to_json,
       project_initial_json: project_attributes.to_json,
+      work_item_types_json: work_item_types_for_filter.to_json,
       ref: @project.present? ? repository_ref(@project) : nil
     } }
 

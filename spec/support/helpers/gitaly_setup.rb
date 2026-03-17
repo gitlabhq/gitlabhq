@@ -43,7 +43,20 @@ module GitalySetup
   end
 
   def runtime_dir
-    expand_path('tmp/run')
+    candidate = expand_path('tmp/run')
+    # Gitaly validates that the socket path fits in sockaddr_un.sun_path.
+    # On macOS the limit is 104 bytes; on Linux it is 108 bytes. Use 103 as
+    # the threshold so the check is safe on both platforms.
+    # The socket path Gitaly constructs is: <runtime_dir>/gitaly-<PID>/sock.d/tsocket
+    # We simulate the worst-case PID (99999) to get the maximum possible length.
+    socket_path = File.join(candidate, 'gitaly-99999', 'sock.d', 'tsocket')
+    if socket_path.bytesize > 103
+      # Fall back to a short /tmp-based path to avoid exceeding the OS limit.
+      # Including the UID makes it unique per user and avoids permission conflicts.
+      "/tmp/gitaly-test-#{Process.uid}"
+    else
+      candidate
+    end
   end
 
   def tmp_tests_gitaly_bin_dir
@@ -167,13 +180,11 @@ module GitalySetup
     secret_file = rails_gitlab_shell_secret
     shell_link = gitlab_shell_secret_file
 
-    unless File.size?(secret_file)
-      File.write(secret_file, SecureRandom.hex(16))
-    end
+    File.write(secret_file, SecureRandom.hex(16)) unless File.size?(secret_file)
 
-    unless File.exist?(shell_link)
-      FileUtils.ln_s(secret_file, shell_link)
-    end
+    return if File.exist?(shell_link)
+
+    FileUtils.ln_s(secret_file, shell_link)
   end
 
   def connect_proc(toml)

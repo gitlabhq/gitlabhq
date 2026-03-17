@@ -6,9 +6,6 @@ module Banzai
       def self.filters
         @filters ||= FilterArray[
           Filter::HtmlEntityFilter,
-          Filter::MinimumMarkdownSanitizationFilter,
-          Filter::SanitizeLinkFilter,
-          Filter::AssetProxyFilter,
           Filter::EmojiFilter,
           Filter::CustomEmojiFilter,
           Filter::AutolinkFilter,
@@ -34,7 +31,6 @@ module Banzai
       end
 
       def self.transform_context(context)
-        context = Filter::AssetProxyFilter.transform_context(context)
         context[:only_path] = true unless context.key?(:only_path)
 
         context

@@ -59,6 +59,28 @@ RSpec.describe 'Interceptor' do
         expect(errors[0]['url']).to eql(resource_url)
       end
 
+      it 'intercepts fetch errors when called with a Request object' do
+        trigger_fetch_with_request(resource_url, 'POST')
+
+        errors = get_cache['errors']
+
+        expect(errors.size).to be(1)
+        expect(errors[0]['status']).to be(-1)
+        expect(errors[0]['method']).to eql('POST')
+        expect(errors[0]['url']).to eql(resource_url)
+      end
+
+      it 'intercepts fetch errors when called with a URL object' do
+        trigger_fetch_with_url_object('GET')
+
+        errors = get_cache['errors']
+
+        expect(errors.size).to be(1)
+        expect(errors[0]['status']).to be(-1)
+        expect(errors[0]['method']).to eql('GET')
+        expect(errors[0]['url']).to be_a(String)
+      end
+
       it 'intercepts xhr' do
         trigger_xhr(resource_url, 'POST')
 
@@ -88,6 +110,22 @@ RSpec.describe 'Interceptor' do
     browser.execute_script <<~JS
       (() => {
         fetch('#{url}', { method: '#{method}' })
+      })()
+    JS
+  end
+
+  def trigger_fetch_with_request(url, method)
+    browser.execute_script <<~JS
+      (() => {
+        fetch(new Request('#{url}', { method: '#{method}' }))
+      })()
+    JS
+  end
+
+  def trigger_fetch_with_url_object(method)
+    browser.execute_script <<~JS
+      (() => {
+        fetch(new URL(window.location.href), { method: '#{method}' })
       })()
     JS
   end

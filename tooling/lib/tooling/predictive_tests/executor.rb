@@ -25,6 +25,8 @@ module Tooling
         @matching_js_files_path = options[:matching_js_files_path]
         @ci = options[:ci]
         @debug = options[:debug]
+        @use_duo = options[:use_duo] || false
+        @duo_system_test_files_path = options[:duo_system_test_files_path]
 
         # unlike backend mappings, this file is reused in other ci jobs so it's location needs to be configurable
         @frontend_fixtures_mapping_path = options[:frontend_fixtures_mapping_path] || File.join(
@@ -97,6 +99,8 @@ module Tooling
           Tooling::PredictiveTests::TestSelector.new(
             changed_files: all_changed_files,
             rspec_test_mapping_path: test_mapping_file,
+            use_duo: @use_duo,
+            git_diff_content: @use_duo ? git_diff_content : nil, # Only calculate if Duo enabled
             logger: logger
           )
         end
@@ -135,6 +139,40 @@ module Tooling
         run_git_cmd('diff --name-only HEAD').split("\n")
       end
 
+      def git_diff_content
+        logger.debug('Fetching git diff content for Duo analysis')
+
+        # In CI, fetch target branch and diff against it
+        if ENV['CI'] && !ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'].to_s.empty?
+          target = ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME']
+          logger.debug("CI mode: diffing against target branch #{target}")
+
+          fetch_out, fetch_status = Open3.capture2e("git fetch origin #{target} --depth=20")
+          unless fetch_status.success?
+            logger.debug("git remote -v: #{`git remote -v`.strip}")
+            logger.debug("git branch -r: #{`git branch -r`.strip}")
+            raise("git fetch origin #{target} failed (exit #{fetch_status.exitstatus}): #{fetch_out.strip}")
+          end
+
+          # Diff against the fetched target branch
+          return run_git_cmd("diff origin/#{target}...HEAD")
+        end
+
+        # Local: match the same logic as git_diff for filenames
+        clean = run_git_cmd('status --porcelain').strip.empty?
+
+        return run_git_cmd('diff HEAD') unless clean
+
+        branch = run_git_cmd('rev-parse --abbrev-ref HEAD').strip
+
+        if branch == 'master'
+          logger.debug('On master branch, returning empty diff')
+          return ''
+        end
+
+        run_git_cmd('diff master...HEAD')
+      end
+
       def create_output_files
         # Used by frontend related pipelines/jobs
         save_output(all_changed_files.join("\n"), @changed_files_path) if valid_file_path?(@changed_files_path)
@@ -151,6 +189,8 @@ module Tooling
           save_output(list.join(" "), @matching_ee_rspec_test_files_path)
           logger.info("Following ee rspec tests saved: #{JSON.pretty_generate(list)}")
         end
+
+        save_duo_output if @use_duo
 
         return unless valid_file_path?(@matching_js_files_path)
 
@@ -176,6 +216,22 @@ module Tooling
         raise("git command with args '#{args}' failed! Output: #{out}") unless status.success?
 
         out
+      end
+
+      def save_duo_output
+        unless valid_file_path?(@duo_system_test_files_path)
+          logger.info("duo_system_test_files_path not set, Duo predictions will not be saved to disk")
+          return
+        end
+
+        unless test_selector.duo_confident?
+          logger.info("Skipping Duo output - Duo bailed out (low confidence, large diff, or CLI failure)")
+          return
+        end
+
+        list = test_selector.duo_spec_list
+        save_output(list.join("\n"), @duo_system_test_files_path)
+        logger.info("Following Duo predicted system test files saved: #{JSON.pretty_generate(list)}")
       end
     end
     # rubocop:enable Gitlab/Json

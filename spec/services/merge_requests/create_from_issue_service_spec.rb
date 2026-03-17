@@ -82,7 +82,7 @@ RSpec.describe MergeRequests::CreateFromIssueService, feature_category: :code_re
       end
 
       it 'creates a merge request' do
-        expect { service.execute }.to change(target_project.merge_requests, :count).by(1)
+        expect { service.execute }.to change { target_project.merge_requests.count }.by(1)
       end
 
       it 'sets the merge request author to current user and assigns them' do
@@ -141,7 +141,7 @@ RSpec.describe MergeRequests::CreateFromIssueService, feature_category: :code_re
           end
 
           it 'creates a merge request' do
-            expect { subject }.to change(target_project.merge_requests, :count).by(1)
+            expect { subject }.to change { target_project.merge_requests.count }.by(1)
           end
 
           it 'sets the merge request target branch to the project default branch' do
@@ -153,7 +153,7 @@ RSpec.describe MergeRequests::CreateFromIssueService, feature_category: :code_re
           subject { described_class.new(project: project, current_user: user, mr_params: { ref: 'no-such-branch', **service_params }).execute }
 
           it 'creates a merge request' do
-            expect { subject }.to change(target_project.merge_requests, :count).by(1)
+            expect { subject }.to change { target_project.merge_requests.count }.by(1)
           end
 
           it 'sets the merge request target branch to the project default branch' do

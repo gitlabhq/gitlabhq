@@ -1,0 +1,7 @@
+---
+name: update_zoekt_namespace
+description: Grants the ability to update zoekt namespaces
+boundaries:
+  - instance
+permissions:
+  - update_zoekt_namespace

@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Execution
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: REST API to retrieve CI/CD job details, retry and cancel jobs, run manual jobs, and access job logs.
 title: Jobs API
 ---
@@ -839,16 +839,23 @@ Example of response:
 
 ## Retry a job
 
+{{< history >}}
+
+- `job_inputs` attribute [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17833) in GitLab 18.10.
+
+{{< /history >}}
+
 Retry a single job of a project
 
 ```plaintext
 POST /projects/:id/jobs/:job_id/retry
 ```
 
-| Attribute | Type           | Required | Description |
-|-----------|----------------|----------|-------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `job_id`  | integer        | Yes      | ID of a job. |
+| Attribute    | Type              | Required | Description |
+|--------------|-------------------|----------|-------------|
+| `id`         | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `job_id`     | integer           | Yes      | ID of a job. |
+| `job_inputs` | hash              | No       | A hash of [job input](../ci/jobs/job_inputs.md) values to use when retrying the job. |
 
 ```shell
 curl --request POST \
@@ -969,17 +976,24 @@ Example of response:
 
 ## Run a job
 
+{{< history >}}
+
+- `job_inputs` attribute [introduced](https://gitlab.com/groups/gitlab-org/-/work_items/17833) in GitLab 18.10.
+
+{{< /history >}}
+
 For a job in manual status, trigger an action to start the job.
 
 ```plaintext
 POST /projects/:id/jobs/:job_id/play
 ```
 
-| Attribute                  | Type            | Required | Description |
-|----------------------------|-----------------|----------|-------------|
-| `id`                       | integer or string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `job_id`                   | integer         | Yes      | ID of a job. |
-| `job_variables_attributes` | array of hashes | No       | An array containing the custom variables available to the job. |
+| Attribute                  | Type              | Required | Description |
+|----------------------------|-------------------|----------|-------------|
+| `id`                       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `job_id`                   | integer           | Yes      | ID of a job. |
+| `job_inputs`               | hash              | No       | A hash of [job input](../ci/jobs/job_inputs.md) values to use when playing the job. |
+| `job_variables_attributes` | array of hashes   | No       | An array containing the custom variables available to the job. |
 
 Example request:
 

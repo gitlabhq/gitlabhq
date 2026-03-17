@@ -67,6 +67,9 @@ export default {
     workItemType() {
       return this.workItem?.workItemType?.name;
     },
+    workItemTypeIconName() {
+      return this.workItem?.workItemType?.iconName;
+    },
     workItemMovedToWorkItemUrl() {
       return this.workItem?.movedToWorkItemUrl;
     },
@@ -133,6 +136,7 @@ export default {
       v-if="workItemType"
       class="gl-align-middle"
       :work-item-type="workItemType"
+      :type-icon-name="workItemTypeIconName"
       show-text
       icon-class="gl-fill-icon-subtle"
     />

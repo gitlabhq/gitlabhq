@@ -5,7 +5,6 @@ module ActiveContext
     module MigrationWorker
       extend ActiveSupport::Concern
 
-      RE_ENQUEUE_DELAY = 30.seconds
       LOCK_TIMEOUT = 30.minutes
       LOCK_SLEEP_SEC = 2
       LOCK_RETRIES = 10
@@ -83,15 +82,8 @@ module ActiveContext
         migration_record.mark_as_started! unless migration_record.in_progress?
         migration_instance.migrate!
 
-        if migration_instance.completed?
-          log "Marking migration #{migration_record.version} as completed"
-
-          migration_record.mark_as_completed!
-        else
-          log "Migration #{migration_record.version} incomplete, re-enqueueing worker"
-
-          re_enqueue_worker
-        end
+        log "Marking migration #{migration_record.version} as completed"
+        migration_record.mark_as_completed!
       rescue StandardError => e
         migration_record.decrease_retries!(e)
 
@@ -128,10 +120,6 @@ module ActiveContext
             migration_record.pending!
           end
         end
-      end
-
-      def re_enqueue_worker
-        self.class.perform_in(RE_ENQUEUE_DELAY)
       end
 
       def migrations

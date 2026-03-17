@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import createApolloProvider from 'helpers/mock_apollo_helper';
+import { createControlledMockApollo } from 'helpers/mock_apollo_helper';
 
 import BoardForm from '~/boards/components/board_form.vue';
 import { formType } from '~/boards/constants';
@@ -41,6 +41,9 @@ const defaultProps = {
 describe('BoardForm', () => {
   let wrapper;
   let requestHandlers;
+  let mockApollo;
+
+  Vue.use(VueApollo);
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findModalActionPrimary = () => findModal().props('actionPrimary');
@@ -75,25 +78,20 @@ describe('BoardForm', () => {
     }),
   };
 
-  const createMockApolloProvider = (handlers = {}) => {
-    Vue.use(VueApollo);
-    requestHandlers = handlers;
-
-    return createApolloProvider([
-      [createBoardMutation, handlers.createBoardMutationHandler],
-      [destroyBoardMutation, handlers.destroyBoardMutationHandler],
-      [updateBoardMutation, handlers.updateBoardMutationHandler],
-    ]);
-  };
-
   const createComponent = ({
     props,
     provide,
     handlers = defaultHandlers,
     stubs = { GlForm },
   } = {}) => {
+    requestHandlers = handlers;
+    mockApollo = createControlledMockApollo([
+      [createBoardMutation, handlers.createBoardMutationHandler],
+      [destroyBoardMutation, handlers.destroyBoardMutationHandler],
+      [updateBoardMutation, handlers.updateBoardMutationHandler],
+    ]);
     wrapper = shallowMountExtended(BoardForm, {
-      apolloProvider: createMockApolloProvider(handlers),
+      apolloProvider: mockApollo.apolloProvider,
       propsData: { ...defaultProps, ...props },
       provide: {
         boardBaseUrl: 'root',
@@ -111,8 +109,8 @@ describe('BoardForm', () => {
   });
 
   describe('when user can not admin the board', () => {
-    beforeEach(() => {
-      createComponent({
+    beforeEach(async () => {
+      await createComponent({
         props: { currentPage: formType.new },
       });
     });
@@ -131,8 +129,8 @@ describe('BoardForm', () => {
   });
 
   describe('when user can admin the board', () => {
-    beforeEach(() => {
-      createComponent({
+    beforeEach(async () => {
+      await createComponent({
         props: { canAdminBoard: true, currentPage: formType.new },
       });
     });
@@ -152,8 +150,8 @@ describe('BoardForm', () => {
 
   describe('when creating a new board', () => {
     describe('on non-scoped-board', () => {
-      beforeEach(() => {
-        createComponent({
+      beforeEach(async () => {
+        await createComponent({
           props: { canAdminBoard: true, currentPage: formType.new },
         });
       });
@@ -181,14 +179,13 @@ describe('BoardForm', () => {
     });
 
     describe('when submitting a create event', () => {
-      const fillForm = () => {
-        findInput().value = 'Test name';
-        findInput().trigger('input');
+      const fillForm = async () => {
+        await findInput().setValue('test');
         findInputFormWrapper().trigger('submit');
       };
 
       it('does not call API if board name is empty', async () => {
-        createComponent({
+        await createComponent({
           props: { canAdminBoard: true, currentPage: formType.new },
         });
         findInputFormWrapper().trigger('submit');
@@ -199,11 +196,11 @@ describe('BoardForm', () => {
       });
 
       it('calls a correct GraphQL mutation and sets board in state', async () => {
-        createComponent({
+        await createComponent({
           props: { canAdminBoard: true, currentPage: formType.new },
         });
 
-        fillForm();
+        await fillForm();
 
         await waitForPromises();
 
@@ -213,26 +210,22 @@ describe('BoardForm', () => {
           }),
         });
 
-        await waitForPromises();
+        await mockApollo.resolveMutation(createBoardMutation);
         expect(wrapper.emitted('addBoard')).toHaveLength(1);
       });
 
       it('sets error in state if GraphQL mutation fails', async () => {
-        createComponent({
+        await createComponent({
           props: { canAdminBoard: true, currentPage: formType.new },
-          handlers: {
-            ...defaultHandlers,
-            createBoardMutationHandler: jest.fn().mockRejectedValue('Houston, we have a problem'),
-          },
         });
 
-        fillForm();
+        await fillForm();
 
         await waitForPromises();
 
         expect(requestHandlers.createBoardMutationHandler).toHaveBeenCalled();
 
-        await waitForPromises();
+        await mockApollo.rejectMutation(createBoardMutation, 'Houston, we have a problem');
         expect(cacheUpdates.setError).toHaveBeenCalled();
       });
     });
@@ -240,8 +233,8 @@ describe('BoardForm', () => {
 
   describe('when editing a board', () => {
     describe('on non-scoped-board', () => {
-      beforeEach(() => {
-        createComponent({
+      beforeEach(async () => {
+        await createComponent({
           props: { canAdminBoard: true, currentPage: formType.edit },
         });
       });
@@ -266,8 +259,8 @@ describe('BoardForm', () => {
       it('renders form wrapper', () => {
         expect(findFormWrapper().exists()).toBe(true);
       });
-      it('emits showBoardModal with delete when clicking on delete board button', () => {
-        createComponent({
+      it('emits showBoardModal with delete when clicking on delete board button', async () => {
+        await createComponent({
           props: {
             currentPage: formType.edit,
             showDelete: true,
@@ -283,7 +276,7 @@ describe('BoardForm', () => {
 
     it('calls GraphQL mutation with correct parameters when issues are not grouped', async () => {
       setWindowLocation('https://test/boards/1');
-      createComponent({
+      await createComponent({
         props: { canAdminBoard: true, currentPage: formType.edit },
       });
 
@@ -297,7 +290,7 @@ describe('BoardForm', () => {
         }),
       });
 
-      await waitForPromises();
+      await mockApollo.resolveMutation(updateBoardMutation);
       expect(global.window.location.href).not.toContain('?group_by=epic');
       expect(wrapper.emitted('updateBoard')).toHaveLength(1);
       expect(wrapper.emitted('updateBoard')).toEqual([
@@ -312,7 +305,7 @@ describe('BoardForm', () => {
 
     it('calls GraphQL mutation with correct parameters when issues are grouped by epic', async () => {
       setWindowLocation('https://test/boards/1?group_by=epic');
-      createComponent({
+      await createComponent({
         props: { canAdminBoard: true, currentPage: formType.edit },
       });
 
@@ -326,17 +319,13 @@ describe('BoardForm', () => {
         }),
       });
 
-      await waitForPromises();
+      await mockApollo.resolveMutation(updateBoardMutation);
       expect(global.window.location.href).toContain('?group_by=epic');
     });
 
     it('sets error in state if GraphQL mutation fails', async () => {
-      createComponent({
+      await createComponent({
         props: { canAdminBoard: true, currentPage: formType.edit },
-        handlers: {
-          ...defaultHandlers,
-          updateBoardMutationHandler: jest.fn().mockRejectedValue('Houston, we have a problem'),
-        },
       });
 
       findInputFormWrapper().trigger('submit');
@@ -345,29 +334,29 @@ describe('BoardForm', () => {
 
       expect(requestHandlers.updateBoardMutationHandler).toHaveBeenCalled();
 
-      await waitForPromises();
+      await mockApollo.rejectMutation(updateBoardMutation, 'Houston, we have a problem');
       expect(cacheUpdates.setError).toHaveBeenCalled();
     });
   });
 
   describe('when deleting a board', () => {
-    it('passes correct primary action text and variant', () => {
-      createComponent({
+    it('passes correct primary action text and variant', async () => {
+      await createComponent({
         props: { canAdminBoard: true, currentPage: formType.delete },
       });
       expect(findModalActionPrimary().text).toBe('Delete');
       expect(findModalActionPrimary().attributes.variant).toBe('danger');
     });
 
-    it('renders delete confirmation message', () => {
-      createComponent({
+    it('renders delete confirmation message', async () => {
+      await createComponent({
         props: { canAdminBoard: true, currentPage: formType.delete },
       });
       expect(findDeleteConfirmation().exists()).toBe(true);
     });
 
-    it('lets user know they are deleting the last board when isLastBoard is true', () => {
-      createComponent({
+    it('lets user know they are deleting the last board when isLastBoard is true', async () => {
+      await createComponent({
         props: { canAdminBoard: true, currentPage: formType.delete, isLastBoard: true },
       });
       expect(findDeleteLastBoardMessage().exists()).toBe(true);
@@ -380,8 +369,8 @@ describe('BoardForm', () => {
       ${null}      | ${'Because this is the only board here'}
     `(
       'tells the user they are deleting the last board in the $expected when the parentType is $parentType',
-      ({ parentType, expected }) => {
-        createComponent({
+      async ({ parentType, expected }) => {
+        await createComponent({
           props: {
             canAdminBoard: true,
             currentPage: formType.delete,
@@ -394,7 +383,7 @@ describe('BoardForm', () => {
     );
 
     it('calls a correct GraphQL mutation and redirects to correct page after deleting board', async () => {
-      createComponent({
+      await createComponent({
         props: { canAdminBoard: true, currentPage: formType.delete },
       });
       findModal().vm.$emit('primary', { preventDefault: jest.fn() });
@@ -405,17 +394,13 @@ describe('BoardForm', () => {
         id: currentBoard.id,
       });
 
-      await waitForPromises();
+      await mockApollo.resolveMutation(destroyBoardMutation);
       expect(visitUrl).toHaveBeenCalledWith('root');
     });
 
     it('dispatches `setError` action when GraphQL mutation fails', async () => {
-      createComponent({
+      await createComponent({
         props: { canAdminBoard: true, currentPage: formType.delete },
-        handlers: {
-          ...defaultHandlers,
-          destroyBoardMutationHandler: jest.fn().mockRejectedValue('Houston, we have a problem'),
-        },
       });
 
       findModal().vm.$emit('primary', { preventDefault: jest.fn() });
@@ -424,7 +409,7 @@ describe('BoardForm', () => {
 
       expect(requestHandlers.destroyBoardMutationHandler).toHaveBeenCalled();
 
-      await waitForPromises();
+      await mockApollo.rejectMutation(destroyBoardMutation, 'Houston, we have a problem');
       expect(visitUrl).not.toHaveBeenCalled();
       expect(cacheUpdates.setError).toHaveBeenCalledWith(
         expect.objectContaining({

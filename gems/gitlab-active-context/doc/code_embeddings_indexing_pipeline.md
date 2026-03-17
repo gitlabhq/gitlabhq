@@ -226,12 +226,13 @@ namespace.experiment_features_enabled
 **4. Enable SaaS features locally by patching the SaaS check:**
 
 ```diff
-# ee/lib/ee/gitlab/saas.rb
+# ee/lib/gitlab/saas.rb
 @@ -53,6 +53,7 @@ module Saas
 
-       class_methods do
+       class << self
          def feature_available?(feature)
 +          return true
+           # Do not shim or create this method in FOSS
            raise MissingFeatureError, 'Feature does not exist' unless FEATURES.include?(feature)
 
            enabled?
@@ -244,7 +245,7 @@ Execute these scheduling tasks in sequence:
 Now run the initial indexing:
 
 ```ruby
-Ai::ActiveContext::Code::SchedulingWorker.new.perform("saas_initial_indexing")
+Ai::ActiveContext::Code::SchedulingWorker.new.perform("create_enabled_namespace")
 # Creates Ai::ActiveContext::Code::EnabledNamespace records
 ```
 

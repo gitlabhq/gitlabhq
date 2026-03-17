@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlAvatarLink, GlAvatar } from '@gitlab/ui';
-import { escape } from 'lodash';
+import { escape } from 'lodash-es';
 import { mapState, mapActions } from 'pinia';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -500,6 +500,7 @@ export default {
           :author-id="authorId"
           :note-id="note.id"
           :note-url="note.noteable_note_url"
+          :note-preview="note.body_first_line_html"
           :access-level="note.human_access"
           :is-contributor="note.is_contributor"
           :is-author="note.is_noteable_author"

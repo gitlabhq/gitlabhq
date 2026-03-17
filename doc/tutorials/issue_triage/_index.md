@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Project Management
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: 'Tutorial: Set up a project for issue triage'
 ---
 
@@ -43,7 +43,7 @@ To set up GitLab for issue triage in a project:
 A project contains the issues that are used for planning your upcoming code changes.
 
 If you already have a project you're working in, proceed to
-[Decide on the criteria for types, severity, and priority](#decide-on-the-criteria-for-types-severity-and-priority).
+[decide on the criteria for types, severity, and priority](#decide-on-the-criteria-for-types-severity-and-priority).
 
 To create a blank project:
 
@@ -115,7 +115,7 @@ previous one is removed.
 
 To create each label:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `type::bug`.
@@ -143,7 +143,7 @@ Now, set the new labels as priority labels, which ensures that the most importan
 of the issue list if you sort by priority or label priority.
 
 To learn what happens when you sort by priority or label priority, see
-[Sorting and ordering issue lists](../../user/project/issues/sorting_issue_lists.md).
+[sorting and ordering issue lists](../../user/project/issues/sorting_issue_lists.md).
 
 To prioritize a label:
 
@@ -165,7 +165,7 @@ To set up your issue board:
 
 1. Decide on the scope of the board. For example, create one that you'll use to assign
    severity to issues.
-1. On the top bar, select **Search or go to** and find your **Issue triage tutorial** project.
+1. In the top bar, select **Search or go to** and find your **Issue triage tutorial** project.
 1. Select **Plan** > **Issue boards**.
 1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Create new board**.
@@ -240,5 +240,5 @@ Next, you can:
 
   ![Diagonal heatmap for issues with "priority" and "severity" labels](img/triage_report_v16_3.png)
 
-To learn more about issue triage at GitLab, see [Issue Triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
-and [Triage Operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).
+To learn more about issue triage at GitLab, see [issue triage](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/)
+and [triage operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).

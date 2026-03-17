@@ -1,0 +1,8 @@
+---
+migration_job_name: FixMismatchedNamespaceTraversalIdsOnIssues
+description: Fixes issues where namespace_traversal_ids does not match namespaces.traversal_ids, which can occur due to concurrent namespace transfers during imports or worker failures.
+feature_category: portfolio_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/226579
+milestone: '18.10'
+queued_migration_version: 20260309205951
+finalized_by: # version of the migration that finalized this BBM

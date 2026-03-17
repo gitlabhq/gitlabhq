@@ -71,10 +71,12 @@ RSpec.shared_examples_for 'graphql mutations security ci configuration' do
       end
 
       it 'returns an array of errors' do
+        expected_message = "#{Gitlab::Utils::ErrorMessage::UF_ERROR_PREFIX} #{error_message}"
+
         expect(result).to include(
           branch: be_nil,
           success_path: be_nil,
-          errors: match_array([error_message])
+          errors: match_array([expected_message])
         )
       end
     end

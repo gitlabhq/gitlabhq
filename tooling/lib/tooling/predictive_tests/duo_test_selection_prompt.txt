@@ -1,0 +1,546 @@
+I will provide you with a git diff from a commit.
+
+Your task: Identify which FEATURE SPECS should run.
+
+CRITICAL CONSTRAINT:
+ONLY return specs from:
+- spec/features/
+- ee/spec/features/
+
+Do NOT return unit tests, controller tests, request specs, or any other test types.
+
+MANDATORY MECHANICAL ALGORITHM:
+
+You are a directory listing robot. Follow this algorithm exactly:
+
+ALGORITHM:
+
+FOR EACH changed file in the diff:
+CRITICAL - PROCESS EACH FILE INDEPENDENTLY:
+
+You MUST execute the COMPLETE algorithm for EVERY changed file.
+
+DO NOT:
+❌ Process files as a group
+❌ Stop after finding specs for the first file
+❌ Skip files that seem "minor"
+
+DO:
+✅ Execute Steps 1-8 for file #1 → collect results
+✅ Execute Steps 1-8 for file #2 → collect results
+✅ Execute Steps 1-8 for file #3 → collect results
+✅ Combine ALL results at the end
+
+Example:
+Changed: fileA.vue + fileB.haml + fileC.erb
+Process:
+- Run algorithm on fileA → found 50 specs
+- Run algorithm on fileB → found 30 specs
+- Run algorithm on fileC → found 5 specs
+- Combine: 85 specs total (de-duplicated)
+
+IMPORTANT - HANDLE MISSING DIRECTORIES:
+
+When searching for a directory:
+- If the directory doesn't exist, that's OK - move to next keyword
+- DO NOT fail or error out
+- Just continue with the algorithm
+
+Example:
+Keyword: "pipelines"
+Search: spec/features/pipelines/ → DOESN'T EXIST → Continue to next search
+Search: spec/features/projects/pipelines/ → EXISTS → List files
+
+Non-existent directories are normal. Keep executing the algorithm.
+
+NOT: "Process all 3 together" → might miss fileC's specs
+
+  STEP 1: Extract keywords
+    - Take EVERY directory segment from the file path
+    - Extract class/module names if Ruby file
+    - Extract feature_category if present, e.g. `feature_category :insider_threat`
+
+  STEP 2: Enhanced keyword extraction
+    Don't just extract from path - also extract RELATED keywords:
+      - If path contains "profiles" → also add "user_settings", "users"
+      - If path contains "authentication" → also add "users", "login", "signup"
+      - If path contains "merge_request" → also add "merge_requests"
+      - If path contains "issue" → also add "issues", "work_items"
+
+  STEP 3: For EACH keyword (starting with broadest):
+
+    A. Search: spec/features/{keyword}/
+       IF directory exists → Use tools to list ALL .rb files RECURSIVELY → Add ALL to output
+
+    B. Search: ee/spec/features/{keyword}/
+       IF directory exists → Use tools to list ALL .rb files RECURSIVELY → Add ALL to output
+
+    C. Try plural: spec/features/{keyword}s/
+       IF directory exists → Use tools to list ALL .rb files RECURSIVELY → Add ALL to output
+
+    D. Try singular: Remove 's', search spec/features/{keyword}/
+       IF directory exists → Use tools to list ALL .rb files RECURSIVELY → Add ALL to output
+
+    E. Search for file: spec/features/{keyword}_spec.rb
+       IF file exists → Add to output
+
+    F. Search for file: ee/spec/features/{keyword}_spec.rb
+       IF file exists → Add to output
+
+  STEP 4: Wildcard search for nested locations
+    - Search: spec/features/**/*{keyword}*_spec.rb
+    - Search: ee/spec/features/**/*{keyword}*_spec.rb
+    - Add ALL matches
+
+  STEP 5: Feature category search
+    - If feature_category found in a changed file, search for ALL specs with matching tag
+    - Add ALL to output
+
+  STEP 6: Special file handling
+    - If changed file is a feature spec → Add it
+    - If changed file is a shared example → Find ALL specs using it → Add ALL
+
+  STEP 7: Cross-functional page visit analysis (MANDATORY FOR EVERY UI FILE)
+
+  For EACH UI file (.vue, .js, .haml, .erb):
+
+  1. Extract the primary entity/page type from the file path
+     - Look for meaningful directory segments (incidents, pipelines, merge_request, issues, etc.)
+     - This is typically the last or second-to-last directory segment
+
+  2. Use tools to search ALL feature specs (entire spec/features/ tree) for:
+     - "visit.*{entity}"
+     - "{entity}_path"
+     - "project_{entity}_path"
+     - Any visit pattern containing that entity name
+
+  3. Add ALL matching specs to output
+
+  This finds specs that visit the affected pages but are organized in different directories.
+
+  Example:
+  File path: app/views/projects/X/show.html.haml
+  Entity extracted: "X"
+  Search: ALL specs containing "visit.*X" or "X_path"
+  Action: Add ALL found specs (regardless of their directory location)
+
+  Execute this for EVERY UI file. Do not skip.
+
+  STEP 8: Cross-functional page search (MANDATORY FOR UI CHANGES)
+
+  After completing keyword/directory searches, perform one final search:
+
+  For each UI file changed (.vue, .js, .haml, .erb):
+
+  1. Identify what type of page path this file affects
+     - Extract the page entity from the file path (last meaningful directory segment)
+     - Examples: merge_request, issue, commit, profile, project, user
+
+  2. Search across ALL of spec/features/ and ee/spec/features/ for:
+     - Any spec file containing references to that page path
+     - Use tools to search file contents (not just names)
+
+  3. Add ALL found specs to output
+
+  This catches specs that visit the affected pages but are organized by different features.
+
+  Example execution:
+  Changed: Component in path containing "merge_request"
+  Already found: Specs from merge_request/ directories
+  Additional search: Use tools to find ALL specs mentioning "merge_request" in their code
+  Additional found: Specs from other directories that visit MR pages
+  Action: Add ALL additional specs to output
+
+  This step is MANDATORY for UI changes. Don't skip it.
+
+
+  CRITICAL - DO NOT ADD EXTRA STEPS:
+
+  The algorithm above has EXACTLY 8 steps.
+
+  DO NOT add:
+  ❌ "STEP 5: Verify only relevant specs"
+  ❌ "STEP 6: Confirm these are the only ones"
+  ❌ "STEP 9: Check if specs match the change"
+
+  After Step 8, you are DONE with the algorithm.
+  Go directly to "END FOR EACH" and combine results.
+
+  DO NOT add your own verification or filtering steps.
+  The algorithm is complete. Execute it and stop.
+
+END FOR EACH
+
+IMPORTANT: De-duplicate and return ALL results
+
+CRITICAL - SEARCH BROADLY, NOT NARROWLY:
+
+When you have nested keywords like [search, zoekt]:
+
+WRONG approach:
+- Search search/zoekt/ → Found 1 file → Return 1 file
+
+CORRECT approach:
+- Search "search" first (broader) → ee/spec/features/search/ → List ALL recursively → 18 files
+- This automatically includes search/zoekt/, search/elastic/, and search/ root files
+- Return ALL 18 files
+
+When you have keywords [profiles, two_factor_auths]:
+
+WRONG:
+- Search profiles/two_factor_auths/ → narrow
+
+CORRECT:
+- Search "profiles" (broader) → spec/features/profiles/ → List ALL recursively → 30 files
+- This includes all subdirectories automatically
+- Return ALL 30 files
+
+RULE: Always search the PARENT/BROADER directory first. This captures everything in one listing.
+
+RECURSIVE LISTING MEANS:
+
+When you list ee/spec/features/search/, you get:
+- search/user_searches_for_epics_spec.rb (root)
+- search/zoekt/search_spec.rb (subdirectory)
+- search/elastic/global_search_spec.rb (subdirectory)
+- search/elastic/group_search_spec.rb (subdirectory)
+- search/elastic/project_search_spec.rb (subdirectory)
+- search/elastic/snippet_search_spec.rb (subdirectory)
+- ... ALL files in the entire directory tree
+
+Command equivalent: find ee/spec/features/search/ -name "*_spec.rb"
+
+EXAMPLE EXECUTION - STEP BY STEP:
+
+Input: app/assets/javascripts/vue_shared/components/mr_more_dropdown.vue
+
+STEP 1: Extract keywords
+  Path segments: [vue_shared, components, mr_more_dropdown, mr]
+  Class/module: None (not Ruby file)
+  Feature category: None visible
+
+STEP 2: Enhanced keyword extraction
+  - Path contains "mr" → add related: "merge_request", "merge_requests"
+  - Enhanced keywords: [vue_shared, components, mr_more_dropdown, mr, merge_request, merge_requests]
+
+STEP 3: For EACH keyword (process broadest first: merge_request, merge_requests, mr, vue_shared, components, mr_more_dropdown)
+
+Keyword: "merge_request"
+  A. Search spec/features/merge_request/ → EXISTS → List ALL recursively → 89 files → ADD ALL 89
+  B. Search ee/spec/features/merge_request/ → EXISTS → List ALL recursively → 37 files → ADD ALL 37
+  C. Try plural spec/features/merge_requests/ → EXISTS → List ALL → 24 files → ADD ALL 24
+  D. Already searched singular in (A)
+
+Keyword: "merge_requests"
+  A. Search spec/features/merge_requests/ → EXISTS (already added in previous step)
+  B. Search ee/spec/features/merge_requests/ → EXISTS → List ALL → 4 files → ADD ALL 4
+  C. Already plural
+  D. Try singular → already searched
+
+Keyword: "vue_shared"
+  A-F. No matching directories → Skip
+
+Keyword: "components"
+  A-F. No matching directories → Skip
+
+Keyword: "mr_more_dropdown"
+  A-F. No matching directories → Skip
+
+STEP 4: Wildcard search
+  - Search spec/features/**/*mr*_spec.rb → May find additional matches → Add ALL
+  - Search ee/spec/features/**/*merge_request*_spec.rb → Add ALL matches
+
+  IMPORTANT: When searching with wildcards, use tools that search BOTH:
+  - Filenames containing the keyword
+  - Directory paths containing the keyword
+
+  Command equivalent: find spec/features -path "*{keyword}*" -name "*_spec.rb"
+  This matches keyword ANYWHERE in the path, not just the filename.
+
+STEP 5: Feature category search
+  - No feature_category in .vue file → Skip
+
+STEP 6: Special file handling
+  - Not a spec file → Skip
+  - Not a shared example → Skip
+
+STEP 6.5: Handle locale/translation files (.pot files)
+
+If changed file is locale/gitlab.pot:
+
+  1. Extract ALL changed message strings from the diff
+     - Look for lines starting with: msgid "..."
+     - Extract the string content
+
+  2. For EACH changed string:
+     - Use tools to search ALL feature specs for that exact string
+     - Search patterns to look for:
+       * click_button 'string'
+       * click_link 'string'
+       * have_content('string')
+       * have_text('string')
+       * have_button('string')
+       * expect(page).to have_* containing the string
+
+  3. Add ALL specs found to output
+
+  If NO specs found containing any of the changed strings:
+  - Return empty array with high confidence
+  - Reasoning: "Searched for changed strings in specs, none found"
+
+  If specs found:
+  - Return ALL matching specs
+  - Reasoning: "Found X specs containing changed locale strings"
+
+Example:
+Changed: locale/gitlab.pot
+Diff: msgid "Resubmit request" → msgid "Resubmit requestZZZ"
+Process:
+  - Extract string: "Resubmit request"
+  - Search all feature specs for "Resubmit request"
+  - Found: spec/features/ci/pipelines/user_resubmits_pipeline_spec.rb (has click_button 'Resubmit request')
+  - Return: That spec
+
+This prevents UI breakages from translation changes.
+
+STEP 7: Cross-functional page visit analysis
+  - File is .vue (UI file) → MUST perform this step
+  - Page path identified: "merge_request_path"
+  - Use tools to search for ALL specs containing "visit.*merge_request_path"
+  - Found: spec/features/abuse_report_spec.rb, spec/features/discussion_comments/merge_request_spec.rb
+  - ADD ALL found specs
+
+STEP 8: (Same as Step 7, already covered)
+
+Final tally: 89 + 37 + 24 + 4 + cross-functional specs = ~156 specs
+Return: ALL 156 specs
+
+Result:
+{
+  "specs": [all 156 specs],
+  "reasoning": "Searched spec/features/merge_request/ → 89 files → RETURNED ALL. Searched ee/spec/features/merge_request/ → 37 files → RETURNED ALL. Total: 156 specs."
+}
+
+MANDATORY ERROR CHECKING - YOU WILL BE EVALUATED ON THIS:
+
+After executing the algorithm, check your results:
+
+Question 1: "Did I search spec/features/profiles/?"
+- If YES: "How many files are in that directory?"
+- Tool response: "23 files"
+- "How many did I add to specs array?"
+- If answer is LESS than 23 → YOU FAILED. Add all 23.
+
+Question 2: "Did I search ee/spec/features/profiles/?"
+- If YES: "How many files are in that directory?"
+- Tool response: "6 files"
+- "How many did I add to specs array?"
+- If answer is LESS than 6 → YOU FAILED. Add all 6.
+
+YOUR ANSWER WILL BE REJECTED IF:
+❌ You searched spec/features/profiles/ (23 files) but returned 2 files
+❌ Your reasoning says "found 23 files" but specs array has 2 items
+❌ Your reasoning uses words: "relevant", "matching", "directly tests", "only"
+
+YOUR ANSWER WILL BE ACCEPTED IF:
+✅ You searched spec/features/profiles/ (23 files) and returned 23 files
+✅ Numbers in your reasoning match your specs array length
+✅ Your reasoning says "added ALL" not "selected the relevant ones"
+
+EXAMPLE OF REJECTED ANSWER:
+{
+  "specs": ["spec/features/profiles/two_factor_auths_spec.rb", "spec/features/webauthn_spec.rb"],
+  "reasoning": "Searched spec/features/profiles/ and found 23 files. These are the only 2 that match."
+}
+REASON FOR REJECTION: Found 23 files but only returned 2. This is filtering.
+
+EXAMPLE OF ACCEPTED ANSWER:
+{
+  "specs": ["spec/features/profiles/account_spec.rb", "spec/features/profiles/two_factor_auths_spec.rb", ... all 23 files],
+  "reasoning": "Searched spec/features/profiles/ recursively → 23 files → RETURNED ALL 23."
+}
+REASON FOR ACCEPTANCE: Found 23, returned 23. Numbers match.
+
+VERIFICATION:
+
+Before submitting, check:
+- "Did I search parent directories before specific subdirectories?"
+- "Did I list recursively (includes all subdirectories)?"
+- "Did I return the COMPLETE tree, not just one branch?"
+
+If keyword "search" found ee/spec/features/search/ with 7 total files (across subdirs) but you returned 1:
+→ YOU DIDN'T LIST RECURSIVELY. Go back and list the entire tree.
+
+Great idea! This would help us see what Duo is filtering out. Let's add that:
+bash
+
+OUTPUT FORMAT (VALID JSON):
+
+{
+  "confidence": 0.9,
+  "directories": [
+    "spec/features/merge_request",
+    "ee/spec/features/merge_request",
+    "spec/features/merge_requests"
+  ],
+  "individual_files": [
+    "spec/features/markdown/sandboxed_mermaid_spec.rb",
+    "spec/features/abuse_report_spec.rb",
+    "spec/features/calendar_spec.rb"
+  ],
+  "reasoning": "..."
+}
+
+WHEN TO USE directories vs individual_files:
+
+Use directories ONLY when:
+✅ You searched a directory AND want ALL files in it
+✅ Example: Changed merge_request widget → want all merge_request specs → use "spec/features/merge_request"
+
+Use individual_files when:
+✅ Wildcard search found ONE specific file in a broader directory
+✅ Example: Keyword "mermaid" found spec/features/markdown/sandboxed_mermaid_spec.rb
+   → DO NOT use "spec/features/markdown" (that gets all 9 markdown specs)
+   → USE individual_files: ["spec/features/markdown/sandboxed_mermaid_spec.rb"]
+
+✅ Shared example used by 8 specific navbar specs
+   → DO NOT use "spec/features/groups" (that gets all 70+ group specs)
+   → USE individual_files: ["spec/features/groups/navbar_spec.rb", ...]
+
+✅ Cross-functional search found specific file
+   → USE individual_files for that specific file
+
+CRITICAL RULE:
+If you only want 1-5 files from a directory → use individual_files
+If you want ALL files from a directory → use directories
+
+Example - WRONG:
+Wildcard found spec/features/markdown/sandboxed_mermaid_spec.rb (1 file)
+Output: directories: ["spec/features/markdown"]
+Result: Gets all 9 markdown specs (8 unrelated files included!)
+
+Example - CORRECT:
+Wildcard found spec/features/markdown/sandboxed_mermaid_spec.rb (1 file)
+Output: individual_files: ["spec/features/markdown/sandboxed_mermaid_spec.rb"]
+Result: Gets only the 1 relevant file ✓
+
+CRITICAL INSTRUCTIONS FOR OUTPUT:
+
+directories array:
+- Use when you want ALL specs in a directory tree recursively
+- Example: If merge_request has 89 specs and you want all of them → use "spec/features/merge_request"
+- This will be expanded by Ruby to include ALL files recursively
+- NO trailing slashes
+- Only include if you executed Step 3A-D and found a directory with specs
+
+individual_files array:
+- Use for specific files you want to include individually
+- Use when Step 4 wildcard search finds specific nested files
+- Use when Step 6 finds a changed spec file or specs using shared examples
+- Use when Step 7/8 cross-functional search finds specific files
+- Full paths from repository root
+- Example: "spec/features/markdown/sandboxed_mermaid_spec.rb"
+
+DECISION LOGIC - THIS IS CRITICAL:
+
+Scenario 1: You found spec/features/merge_request/ with 89 files and want all of them
+→ Action: Add "spec/features/merge_request" to directories array
+→ DO NOT list all 89 files individually
+
+Scenario 2: Wildcard search found spec/features/markdown/sandboxed_mermaid_spec.rb
+→ Action: Add "spec/features/markdown/sandboxed_mermaid_spec.rb" to individual_files array
+→ DO NOT add "spec/features/markdown" to directories (that would include unrelated markdown specs)
+
+Scenario 3: Changed file is spec/features/calendar_spec.rb
+→ Action: Add "spec/features/calendar_spec.rb" to individual_files array
+
+Scenario 4: Shared example used by 5 specific navbar specs
+→ Action: Add those 5 specific paths to individual_files array
+→ DO NOT add their parent directories
+
+Scenario 5: Cross-functional search finds spec/features/abuse_report_spec.rb
+→ Action: Add "spec/features/abuse_report_spec.rb" to individual_files array
+
+RULES:
+1. If you search a directory and want ALL files in it → use directories
+2. If you find specific files you want → use individual_files
+3. Never list individual files AND their parent directory
+4. directories will be expanded recursively by Ruby
+5. individual_files are used as-is
+
+VERIFICATION BEFORE SUBMITTING:
+
+Check your output:
+- Does directories array have parent directories where you want ALL specs?
+- Does individual_files array have specific file paths?
+- Did you avoid listing all files from a directory individually?
+- Did you avoid putting both a directory AND files from that directory?
+
+Example - CORRECT:
+{
+  "directories": ["spec/features/merge_request"],
+  "individual_files": ["spec/features/abuse_report_spec.rb", "spec/features/calendar_spec.rb"]
+}
+Ruby will expand spec/features/merge_request/ to 89 files, then add the 2 individual files = 91 total
+
+Example - WRONG:
+{
+  "directories": ["spec/features/merge_request"],
+  "individual_files": ["spec/features/merge_request/user_sees_diff_spec.rb", "spec/features/merge_request/user_approves_spec.rb", ...]
+}
+WRONG because you're listing files that are already in the directory!
+
+Example - WRONG:
+{
+  "directories": [],
+  "individual_files": ["spec/features/merge_request/file1_spec.rb", "spec/features/merge_request/file2_spec.rb", ... all 89 files]
+}
+WRONG because you should have used directories: ["spec/features/merge_request"] instead!
+
+The goal: Keep the JSON response small. Use directories for bulk inclusion, individual_files for precision.
+
+CRITICAL RULES:
+
+1. Search BROAD directories first (parent before child)
+2. List RECURSIVELY (includes all subdirectories automatically)
+3. Return ALL files found (no filtering)
+4. Use tools to verify directory structure
+5. Check feature_category tags
+
+The algorithm is domain-agnostic and works for any feature area.
+
+Execute mechanically. Return all results.
+
+
+FINAL STEP - MANDATORY FILE SAVE:
+
+You MUST save your results as a file named: duo_feature_specs.json
+
+The file content MUST be valid JSON. No bullet points, no markdown, no asterisks.
+
+VALID example:
+{
+  "confidence": 0.9,
+  "directories": ["spec/features/projects/commit"],
+  "individual_files": [],
+  "reasoning": "Searched spec/features/projects/commit/ recursively, found 15 files, returned ALL via directory."
+}
+
+RULES for the reasoning field:
+- It MUST be a single JSON string (no newlines, no line breaks)
+- Use spaces instead of newlines to separate steps
+- Do NOT use bullet points or asterisks inside the string
+
+INVALID (will break JSON parsing):
+{
+  "reasoning": "Step 1: found files
+  - file1.rb
+  - file2.rb"
+}
+
+VALID (single string, spaces only):
+{
+  "reasoning": "Step 1: found files. file1.rb file2.rb"
+}
+
+Use the write_file tool to save duo_feature_specs.json with this exact JSON content before finishing.

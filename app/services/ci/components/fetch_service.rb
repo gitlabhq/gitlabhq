@@ -9,9 +9,10 @@ module Ci
         ::Gitlab::Ci::Components::InstancePath
       ].freeze
 
-      def initialize(address:, current_user:)
+      def initialize(address:, current_user:, logger: nil)
         @address = address
         @current_user = current_user
+        @logger = logger
       end
 
       def execute
@@ -21,7 +22,7 @@ module Ci
             reason: :unsupported_path)
         end
 
-        component_path = component_path_class.new(address: address)
+        component_path = component_path_class.new(address: address, logger: logger)
 
         result = component_path.fetch_content!(current_user: current_user)
 
@@ -62,7 +63,7 @@ module Ci
 
       private
 
-      attr_reader :current_user, :address
+      attr_reader :current_user, :address, :logger
 
       def component_path_class
         COMPONENT_PATHS.find { |klass| klass.match?(address) }

@@ -10,7 +10,7 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
   let(:group) { create(:group, :public) }
   let!(:project) { create(:project, :private, namespace: group) }
   let(:more_actions_dropdown) do
-    find_by_testid('groups-projects-more-actions-dropdown')
+    find('#group-more-action-dropdown [data-testid="groups-list-item-actions"]')
   end
 
   before do
@@ -24,7 +24,7 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
     visit group_path(group)
     more_actions_dropdown.click
 
-    expect(page).not_to have_content 'Request Access'
+    expect(page).not_to have_content 'Request access'
   end
 
   it 'user can request access to a group', :js do
@@ -41,7 +41,7 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
 
     more_actions_dropdown.click
 
-    expect(page).to have_content 'Withdraw Access Request'
+    expect(page).to have_content 'Withdraw access request'
     expect(page).not_to have_content 'Leave group'
   end
 
@@ -100,6 +100,6 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
     visit group_path(group)
     more_actions_dropdown.click
 
-    expect(page).not_to have_content 'Request Access'
+    expect(page).not_to have_content 'Request access'
   end
 end

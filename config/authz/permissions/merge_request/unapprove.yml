@@ -1,5 +1,3 @@
 ---
 name: unapprove_merge_request
 description: Grants the ability to unapprove merge requests
-boundaries:
-  - project

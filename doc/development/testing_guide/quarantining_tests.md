@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: 'See the Technical Writers assigned to Development Guidelines: https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-development-guidelines'
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 description: Technical reference for quarantining tests in GitLab.
 title: Quarantining tests
 ---

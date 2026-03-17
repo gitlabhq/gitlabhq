@@ -224,11 +224,6 @@ module WorkItems
     end
 
     # Temporary method for adding configuration thought the API
-    def filterable?
-      nil
-    end
-
-    # Temporary method for adding configuration thought the API
     def only_for_group?
       nil
     end

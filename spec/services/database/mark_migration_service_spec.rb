@@ -53,7 +53,7 @@ RSpec.describe Database::MarkMigrationService, feature_category: :database do
 
     context 'when the migration was already executed' do
       before do
-        allow(service).to receive(:all_versions).and_return([version])
+        allow(service).to receive(:executed_versions).and_return([version])
       end
 
       it { is_expected.to be_error }

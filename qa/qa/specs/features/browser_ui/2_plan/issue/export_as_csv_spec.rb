@@ -21,11 +21,13 @@ module QA
           only: { subdomain: :staging }
         } do
         Page::Project::WorkItem::Index.perform do |index|
+          index.dismiss_onboarding_modal_if_present
+
           index.click_work_items_list_more_actions_dropdown
 
           index.click_export_as_csv_button
 
-          expect(index.export_issues_modal).to have_content('2 issues selected')
+          expect(index.export_issues_modal).to have_content(/2 (issues|work items) selected/)
 
           index.click_export_issues_button
 

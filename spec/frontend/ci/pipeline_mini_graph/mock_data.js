@@ -350,3 +350,27 @@ export const downstreamPipelines = [
     },
   },
 ];
+
+export const stageJobUpdated = {
+  id: 'gid://gitlab/Ci::Build/2294',
+  detailedStatus: {
+    id: 'pending-2294-2294',
+    action: {
+      id: 'Ci::BuildPresenter-pending-2294',
+      confirmationMessage: null,
+      icon: 'cancel',
+      path: '/root/ci-project/-/jobs/2294/cancel',
+      title: 'Cancel',
+    },
+    detailsPath: '/root/ci-project/-/jobs/2294',
+    deploymentDetailsPath: null,
+    group: 'pending',
+    hasDetails: true,
+    icon: 'status_pending',
+    tooltip: 'pending',
+    label: 'pending',
+  },
+  name: 'test_job',
+  scheduled: false,
+  scheduledAt: null,
+};

@@ -1568,17 +1568,6 @@
   :tags:
   - :cronjob_child
   :queue_namespace: :dependency_proxy_blob
-- :name: dependency_proxy_blob:virtual_registries_packages_cache_destroy_orphan_entries
-  :worker_name: VirtualRegistries::Packages::Cache::DestroyOrphanEntriesWorker
-  :feature_category: :virtual_registry
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags:
-  - :cronjob_child
-  :queue_namespace: :dependency_proxy_blob
 - :name: dependency_proxy_manifest:dependency_proxy_cleanup_manifest
   :worker_name: DependencyProxy::CleanupManifestWorker
   :feature_category: :virtual_registry
@@ -2172,7 +2161,7 @@
   :queue_namespace: :incident_management
 - :name: jira_connect:integrations_jira_connect_remove_branch
   :worker_name: Integrations::JiraConnect::RemoveBranchWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2182,7 +2171,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_forward_event
   :worker_name: JiraConnect::ForwardEventWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2192,7 +2181,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_jira_cloud_app_deactivation
   :worker_name: JiraConnect::JiraCloudAppDeactivationWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2202,7 +2191,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_retry_request
   :worker_name: JiraConnect::RetryRequestWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2212,7 +2201,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_send_uninstalled_hook
   :worker_name: JiraConnect::SendUninstalledHookWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2222,7 +2211,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_branch
   :worker_name: JiraConnect::SyncBranchWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2232,7 +2221,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_builds
   :worker_name: JiraConnect::SyncBuildsWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2242,7 +2231,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_deployments
   :worker_name: JiraConnect::SyncDeploymentsWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2252,7 +2241,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_feature_flags
   :worker_name: JiraConnect::SyncFeatureFlagsWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2262,7 +2251,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_merge_request
   :worker_name: JiraConnect::SyncMergeRequestWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2272,7 +2261,7 @@
   :queue_namespace: :jira_connect
 - :name: jira_connect:jira_connect_sync_project
   :worker_name: JiraConnect::SyncProjectWorker
-  :feature_category: :integrations
+  :feature_category: :team_planning
   :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
@@ -2735,6 +2724,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :pipeline_background
+- :name: pipeline_background:ci_pipeline_creation_metrics
+  :worker_name: Ci::PipelineCreationMetricsWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :pipeline_background
 - :name: pipeline_background:ci_ref_delete_unlock_artifacts
   :worker_name: Ci::RefDeleteUnlockArtifactsWorker
   :feature_category: :continuous_integration
@@ -2990,6 +2989,16 @@
   :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 5
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :pipeline_processing
+- :name: pipeline_processing:ci_play_manual_stage
+  :worker_name: Ci::PlayManualStageWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :high
   :resource_boundary: :cpu
   :weight: 5
   :idempotent: true
@@ -3742,6 +3751,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: ci_execute_pipeline_build_hooks
+  :worker_name: Ci::ExecutePipelineBuildHooksWorker
+  :feature_category: :pipeline_composition
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: ci_initialize_pipelines_iid_sequence
   :worker_name: Ci::InitializePipelinesIidSequenceWorker
   :feature_category: :continuous_integration
@@ -4333,6 +4352,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: import_offline_export
+  :worker_name: Import::Offline::ExportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: import_reassign_placeholder_user_records
   :worker_name: Import::ReassignPlaceholderUserRecordsWorker
   :feature_category: :importers
@@ -4656,6 +4685,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: merge_requests_keep_around_refs
+  :worker_name: MergeRequests::KeepAroundRefsWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: merge_requests_mergeability_check_batch
   :worker_name: MergeRequests::MergeabilityCheckBatchWorker
   :feature_category: :code_review_workflow
@@ -4774,6 +4813,16 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: namespaces_groups_transfer
+  :worker_name: Namespaces::Groups::TransferWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
   :tags: []
   :queue_namespace:
 - :name: namespaces_process_sync_events
@@ -5163,6 +5212,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: projects_transfer
+  :worker_name: Projects::TransferWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace:
 - :name: projects_update_repository_storage
   :worker_name: Projects::UpdateRepositoryStorageWorker
   :feature_category: :gitaly
@@ -5287,6 +5346,16 @@
 - :name: repositories_cache_tag_signatures
   :worker_name: Repositories::CacheTagSignaturesWorker
   :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: repositories_leave_pool_repository
+  :worker_name: Repositories::LeavePoolRepositoryWorker
+  :feature_category: :gitaly
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

@@ -12,19 +12,19 @@ module Integrations
       exposes_secrets: true,
       required: true,
       placeholder: 'http://jenkins.example.com',
-      help: -> { s_('URL of the Jenkins server.') }
+      help: -> { _('URL of the Jenkins server.') }
 
     field :project_name,
       required: true,
       placeholder: 'my_project_name',
-      help: -> { s_('Name of the Jenkins project.') }
+      help: -> { _('Name of the Jenkins project.') }
 
     field :username,
-      help: -> { s_('Username of the Jenkins server.') }
+      help: -> { _('Username of the Jenkins server.') }
 
     field :password,
       type: :password,
-      help: -> { s_('Password of the Jenkins server.') },
+      help: -> { _('Password of the Jenkins server.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new password.') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password.') }
 
@@ -75,13 +75,13 @@ module Integrations
     end
 
     def self.description
-      s_('Run CI/CD pipelines with Jenkins.')
+      _('Run CI/CD pipelines with Jenkins.')
     end
 
     def self.help
       build_help_page_url(
         'integration/jenkins.md',
-        s_("Run CI/CD pipelines with Jenkins when you push to a repository, or when a merge request is created, updated, or merged.")
+        _("Run CI/CD pipelines with Jenkins when you push to a repository, or when a merge request is created, updated, or merged.")
       )
     end
 

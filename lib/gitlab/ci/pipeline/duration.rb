@@ -84,9 +84,12 @@ module Gitlab
 
         STATUSES = %w[success failed running canceled].freeze
 
-        Period = Struct.new(:first, :last) do
+        Period = Struct.new(:started_at, :finished_at, keyword_init: true) do
+          alias_method :first, :started_at
+          alias_method :last, :finished_at
+
           def duration
-            last - first
+            finished_at - started_at
           end
         end
 
@@ -103,7 +106,7 @@ module Gitlab
           now = Time.now
 
           periods = builds.map do |b|
-            Period.new(b.started_at, b.finished_at || now)
+            Period.new(started_at: b.started_at, finished_at: b.finished_at || now)
           end
 
           from_periods(periods)
@@ -130,11 +133,11 @@ module Gitlab
         end
 
         def overlap?(previous, current)
-          current.first <= previous.last
+          current.started_at <= previous.finished_at
         end
 
         def merge(previous, current)
-          Period.new(previous.first, [previous.last, current.last].max)
+          Period.new(started_at: previous.started_at, finished_at: [previous.finished_at, current.finished_at].max)
         end
 
         # rubocop: disable CodeReuse/ActiveRecord

@@ -149,6 +149,7 @@ describe('Work item add note', () => {
           category: TRACKING_CATEGORY_SHOW,
           label: 'item_comment',
           property: 'type_Task',
+          extra: { viewContext: 'full_screen' },
         });
       });
 

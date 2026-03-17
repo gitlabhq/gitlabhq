@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Mobile DevOps
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Google Play
 ---
 
@@ -39,7 +39,7 @@ Prerequisites:
 
 To enable the Google Play integration in GitLab:
 
-1. On the top bar, select **Search or go to** and find your project.
+1. In the top bar, select **Search or go to** and find your project.
 1. Select **Settings** > **Integrations**.
 1. Select **Google Play**.
 1. In **Enable integration**, select the **Active** checkbox.

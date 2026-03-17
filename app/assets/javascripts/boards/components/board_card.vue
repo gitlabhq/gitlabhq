@@ -148,7 +148,7 @@ export default {
         variables: {
           boardItem: this.isActive ? null : this.item,
           listId: this.list.id,
-          isIssue: this.isActive ? undefined : this.isIssueBoard,
+          isIssue: this.isIssueBoard,
         },
       });
     },

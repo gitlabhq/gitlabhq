@@ -127,7 +127,8 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
             'extension-marketplace-settings' => settings.to_json,
             'settings-context-hash' => expected_settings_hash,
             'extension-host-domain' => 'web-ide.net',
-            'extension-host-domain-changed' => "true"
+            'extension-host-domain-changed' => "true",
+            "is-single-origin-fallback-enabled" => "true"
           })
         end
       end

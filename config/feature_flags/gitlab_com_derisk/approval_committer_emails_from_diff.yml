@@ -1,0 +1,9 @@
+---
+name: approval_committer_emails_from_diff
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590452
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223603
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/590452
+milestone: '18.10'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

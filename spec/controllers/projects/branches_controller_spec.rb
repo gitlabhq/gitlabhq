@@ -561,6 +561,45 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
         expect(json_response.length).to eq 1
         expect(json_response.first).to eq 'master'
       end
+
+      # In URLs, '+' in the query string is normally decoded as space. Branch names can contain
+      # literal '+', so we parse search from the raw query string to preserve it (see issue 589047).
+      context 'when search param contains literal + in raw query string (branch names can contain +)' do
+        before do
+          project.repository.create_branch('release+1.0', 'master')
+          request.env['QUERY_STRING'] = 'search=release+1.0'
+          request.env['HTTP_ACCEPT'] = 'application/json'
+        end
+
+        it 'preserves + in search term and filters branches correctly' do
+          get :index, format: :json, params: {
+            namespace_id: project.namespace,
+            project_id: project
+          }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('release+1.0')
+        end
+      end
+
+      # When the client sends '+' as %2B, we decode it back to '+' so the branch name matches.
+      context 'when search param is percent-encoded plus (%2B) in query string' do
+        before do
+          project.repository.create_branch('release+1.0', 'master')
+          request.env['QUERY_STRING'] = 'search=release%2B1.0'
+          request.env['HTTP_ACCEPT'] = 'application/json'
+        end
+
+        it 'decodes %2B to + and filters branches correctly' do
+          get :index, format: :json, params: {
+            namespace_id: project.namespace,
+            project_id: project
+          }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('release+1.0')
+        end
+      end
     end
 
     context 'when a branch has multiple pipelines' do

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 title: Sentry monitoring in the frontend development of GitLab
 ---
 
@@ -18,7 +18,7 @@ We monitor two kinds of data: **Errors** and **Performance**.
 
 ## Start using Sentry
 
-Our Sentry instance is located at [https://new-sentry.gitlab.net/](https://new-sentry.gitlab.net/).
+Our Sentry instance is located at <https://new-sentry.gitlab.net/>.
 Only GitLab team members can access Sentry.
 
 After your first sign in you can join the `#gitlab` team by selecting **Join a team**. Confirm that

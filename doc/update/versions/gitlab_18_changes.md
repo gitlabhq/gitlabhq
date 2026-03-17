@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab 18 upgrade notes
 ---
 
@@ -41,11 +41,9 @@ required upgrade stops occur at versions:
   > Automatic database version upgrades only apply to single node instances when using the Linux package.
   > In all other cases, like Geo instances, PostgreSQL with high availability using the
   > Linux package, or using an external PostgreSQL database (like Amazon RDS), you must upgrade PostgreSQL manually. See [upgrading a Geo instance](https://docs.gitlab.com/omnibus/settings/database/#upgrading-a-geo-instance) for detailed steps.
-
 - From September 29th, 2025 Bitnami will stop providing tagged PostgreSQL and Redis images. If you deploy GitLab 17.11 or earlier using the
   GitLab chart with bundled Redis or Postgres, you must manually update your values to use the legacy repository to prevent unexpected
   downtime. For more information, see [issue 6089](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6089).
-
 - **Known issue:** The feature flag `ci_only_one_persistent_ref_creation` causes pipeline failures during zero-downtime upgrades when Rails is upgraded but Sidekiq remains on version 17.11 (see details in [issue 558808](https://gitlab.com/gitlab-org/gitlab/-/issues/558808)).
 
   **Prevention:** Open the Rails console and enable the feature flag before upgrading:
@@ -61,6 +59,43 @@ required upgrade stops occur at versions:
   $ sudo gitlab-rails console
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
+
+## 18.10.0
+
+### Geo installations 18.10.0
+
+- The current 8-hour (28,800 seconds) hardcoded Geo blob download timeout causes sync failures for very large LFS objects (5+ GB) that require longer transfer times, leaving them stuck in "started" state. A new `blob_download_timeout` setting controls the per-site timeout (in seconds) for blob replication (LFS objects, uploads, job artifacts, etc.). Configurable through the [Geo Sites API](../../api/geo_sites.md).
+  - Default: `28800` (8 hours).
+  - Maximum: `86400` (24 hours).
+
+## 18.9.0
+
+### Upgrade to 18.9.0 fails with `PG::CheckViolation`
+
+When upgrading a self-managed GitLab instance to GitLab 18.9.0 or 18.9.1, the upgrade fails during database migrations with:
+
+```plaintext
+PG::CheckViolation: ERROR: check constraint "check_xxxxxxxx" of relation "tablename" is violated by some row
+```
+
+This issue was caused by a bug fixed in GitLab 18.10 (see [merge request 224446](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/224446)). The fix was also backported and should be included in the next GitLab 18.9 patch release (see [merge request 225026](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225026)).
+
+However, the bug can cause batched background migrations to be skipped silently due to the single-record bug. When upgrading to v18.8,batched background migrations targeting tables with a single record were incorrectly marked as `finished` without ever executing. This left data unbackfilled, causing upgrade failures on self-managed instances.
+
+A proposed fix (see [merge request 225461](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/225461)) resets affected batched background migrations from `finished`/`finalized` back to `paused` so the scheduler re-executes them. It scopes to migrations with `queued_migration_version` between 18.5 and 18.8 where `min_value = max_value` or `min_cursor = max_cursor`.
+
+You have two options:
+
+- Apply the workaround now to complete your upgrade immediately.
+- Wait for the complete fix and upgrade after a release contains it.
+
+The following Knowledge Base articles describe workarounds for five known symptoms:
+
+- [`PG::CheckViolation: ERROR: check constraint "check_96233d37c0" of relation "pool_repositories" is violated by some row`](https://support.gitlab.com/hc/en-us/articles/25929006135068-PG-CheckViolation-ERROR-check-constraint-check-96233d37c0-of-relation-pool-repositories-is-violated-by-some-row)
+- [`PG::CheckViolation: ERROR: check constraint "check_f6590fe2c1" of relation "gpg_key_subkeys" is violated by some row`](https://support.gitlab.com/hc/en-us/articles/25756021007004-Upgrade-to-18-9-0-fails-with-PG-CheckViolation-on-gpg-key-subkeys)
+- [`PG::CheckViolation: ERROR: check constraint "check_17a3a18e31" of relation "user_agent_details" is violated by some row`](https://support.gitlab.com/hc/en-us/articles/25994671144348-Upgrade-to-18-9-0-fails-with-PG-CheckViolation-on-user-agent-details)
+- [`PG::CheckViolation: ERROR: check constraint "check_ddd6f289f4" of relation "commit_user_mentions" is violated by some row`](https://support.gitlab.com/hc/en-us/articles/25992549646364-Upgrade-to-18-9-0-fails-with-PG-CheckViolation-on-commit-user-mentions)
+- [`PG::CheckViolation: ERROR: check constraint "check_e69372e45f" of relation "suggestions" is violated by some row`](https://support.gitlab.com/hc/en-us/articles/25771198648732-Upgrade-to-18-9-0-fails-with-PG-CheckViolation-on-suggestions)
 
 ## 18.8.2
 
@@ -185,7 +220,6 @@ GitLab responds to requests that exceed the size limit with a `413 Entity Too la
   For most instances the migration should not take longer than 2 minutes, but for some larger instances,
   it could take up to 10 minutes.
   Please be patient and don't interrupt the migration process.
-
 - NGINX routing changes introduced in GitLab 18.5.0 can cause services to become inaccessible when using non-matching hostnames such as `localhost` or alternative domain names.
   This issue causes:
 
@@ -257,6 +291,18 @@ For more information, see [HTTP request limits](../../administration/instance_li
 - Elasticsearch indexing might fail with `strict_dynamic_mapping_exception` errors for Elasticsearch version 7. To resolve, see the "Possible fixes" section in [issue 566413](https://gitlab.com/gitlab-org/gitlab/-/issues/566413).
 - GitLab versions 18.1.0 and 18.1.1 show errors in PostgreSQL logs such as `ERROR:  relation "ci_job_artifacts" does not exist at ...`.
   These errors in the logs can be safely ignored but could trigger monitoring alerts, including on Geo sites. To resolve this issue, update to GitLab 18.1.2 or later.
+- Merge requests with commits by some users might not progress and continuously show `Your merge request is almost ready`. See [issue 554613](https://gitlab.com/gitlab-org/gitlab/-/issues/554613).
+  Additionally, [the `sidekiq/current` log](../../administration/logs/_index.md#sidekiq-logs) shows `undefined method 'id' for nil:NilClass` errors for `merge_request_diff_commit.rb`.
+  To fix this:
+
+  1. Start a [database console](../../administration/troubleshooting/postgresql.md#start-a-database-console).
+  1. Run the following command:
+
+     ```sql
+     REINDEX TABLE CONCURRENTLY public.merge_request_diff_commit_users;
+     ```
+
+  1. Close and re-open the affected merge requests.
 
 ### Geo installations 18.1.0
 
@@ -370,7 +416,6 @@ GitLab looks for the setting in order of precedence:
    > [!note]
    > If the pipeline archival range is later extended,
    > jobs without processing data will remain unexecutable.
-
 1. `GITLAB_DB_CI_JOBS_PROCESSING_DATA_CUTOFF` [environment variable](../../administration/environment_variables.md),
    if pipeline archival is not configured or needs to be overridden for this migration. It accepts duration strings
    like `1y` (1 year), `6mo` (6 months), `90d` (90 days).

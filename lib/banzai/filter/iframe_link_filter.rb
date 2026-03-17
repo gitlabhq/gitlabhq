@@ -2,12 +2,15 @@
 
 # Determines if an `img` tag references media to be embedded in an `iframe`. The administrator
 # needs to explicitly allow the domain and consider it trusted. The `js-render-iframe` class
-# will get added to allow the frontend to convert into an `iframe`
+# will get added to allow the frontend to convert into an `iframe`.
 #
 # Even though the `iframe` src will have been allowed by the administrator, don't insert
 # the `iframe` tag here on the backend - allow the frontend to handle it. This allows for
 # the administrator to remove the domain in the future if it becomes untrusted for some reason.
-# The markdown cache will not need to cleared as long as the `iframe` is added on the frontend.
+# The markdown cache will not need to be cleared as long as the `iframe` is added on the frontend.
+#
+# Elements that receive the `js-render-iframe` class are skipped by AssetProxyFilter and
+# ImageLazyLoadFilter, since proxying and lazy-loading are not applicable to iframe embeds.
 module Banzai
   module Filter
     class IframeLinkFilter < PlayableLinkFilter
@@ -38,7 +41,7 @@ module Banzai
 
       override :has_allowed_media?
       def has_allowed_media?(element)
-        src = element.attr('data-canonical-src').presence || element.attr('src')
+        src = element.attr('src')
         return unless src.present?
 
         uri = Addressable::URI.parse(src)

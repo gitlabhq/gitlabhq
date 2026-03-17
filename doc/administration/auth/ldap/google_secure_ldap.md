@@ -1,7 +1,7 @@
 ---
 stage: Software Supply Chain Security
 group: Authentication
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Google Secure LDAP
 ---
 
@@ -26,9 +26,7 @@ Secure LDAP is only available on specific Google Workspace editions. For more in
 ## Configuring Google LDAP client
 
 1. Go to <https://admin.google.com/Dashboard> and sign in as a Google Workspace domain administrator.
-
 1. Go to **Apps** > **LDAP** > **Add Client**.
-
 1. Provide an **LDAP client name** and an optional **Description**. Any descriptive
    values are acceptable. For example, the name could be `GitLab` and the
    description could be `GitLab LDAP Client`. Select **Continue**.

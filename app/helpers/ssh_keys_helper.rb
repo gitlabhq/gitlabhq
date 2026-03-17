@@ -45,8 +45,17 @@ module SshKeysHelper
   end
 
   def ssh_key_allowed_algorithms
-    allowed_algorithms = Gitlab::CurrentSettings.allowed_key_types.flat_map do |ssh_key_type_name|
-      Gitlab::SSHPublicKey.supported_algorithms_for_name(ssh_key_type_name)
+    allowed_algorithms = Gitlab::CurrentSettings.allowed_key_types.flat_map do |type|
+      tech = Gitlab::SSHPublicKey.technology(type)
+      restriction = Gitlab::CurrentSettings.key_restriction_for(type)
+
+      if restriction > 0 && tech.supported_sizes.length == tech.supported_algorithms.length
+        tech.supported_sizes.zip(tech.supported_algorithms)
+            .select { |size, _| size >= restriction }
+            .map(&:last)
+      else
+        tech.supported_algorithms
+      end
     end
 
     quoted_allowed_algorithms = allowed_algorithms.map { |name| "'#{name}'" }

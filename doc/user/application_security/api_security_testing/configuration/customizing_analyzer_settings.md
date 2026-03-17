@@ -1,7 +1,7 @@
 ---
 stage: Application Security Testing
 group: Dynamic Analysis
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: Customizing analyzer settings
 ---
 
@@ -71,7 +71,6 @@ Follow these steps to provide the Bearer token with `APISEC_OVERRIDES_ENV`:
    Due to the format of `TEST_API_BEARERAUTH` it's not possible to mask the variable.
    To mask the token's value, you can create a second variable with the token values, and define
    `TEST_API_BEARERAUTH` with the value `{"headers":{"Authorization":"Bearer $MASKED_VARIABLE"}}`.
-
 1. In your `.gitlab-ci.yml` file, set `APISEC_OVERRIDES_ENV` to the variable you just created:
 
    ```yaml

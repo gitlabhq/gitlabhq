@@ -1,7 +1,7 @@
 ---
 stage: GitLab Delivery
 group: Operate
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab application limits
 description: Configure limits on an instance.
 ---
@@ -36,7 +36,7 @@ information that is relevant to them.
 
 To visit the instance configuration page:
 
-1. On the left sidebar, select **Help** ({{< icon name="question-o" >}}) > **Help**.
+1. In the left sidebar, select **Help** ({{< icon name="question-o" >}}) > **Help**.
 1. On the Help page, select **Check the current instance configuration**.
 
 The direct URL is `<gitlab_url>/help/instance_configuration`. For GitLab.com,
@@ -66,17 +66,18 @@ Read more about [User and IP rate limits](settings/user_and_ip_rate_limits.md).
 
 ### By raw endpoint
 
-This setting limits the request rate per endpoint.
+These settings limit the request rate on raw endpoints.
 
 Read more about [raw endpoint rate limits](settings/rate_limits_on_raw_endpoints.md).
 
-- **Default rate limit**: 300 requests per project, per commit and per file path.
+- **Default rate limit (authenticated and unauthenticated)**: 300 requests per minute, per project and file path.
+- **Default rate limit (unauthenticated)**: 800 requests per minute, per project across all file paths.
 
 ### By protected path
 
 This setting limits the request rate on specific paths.
 
-GitLab rate limits the following paths by default:
+GitLab rate limits the following paths for POST requests by default:
 
 ```plaintext
 '/users/password',
@@ -88,6 +89,12 @@ GitLab rate limits the following paths by default:
 '/unsubscribes/',
 '/import/github/personal_access_token',
 '/admin/session'
+```
+
+GitLab rate limits the following paths for GET requests by default:
+
+```plaintext
+'/users/sign_in_path'
 ```
 
 Read more about [protected path rate limits](settings/protected_paths.md).
@@ -515,7 +522,7 @@ Some API endpoints have specific JSON validation limits.
 
 **Footnotes**:
 
-1. The Terraform state max size limit can be set by using the [application settings API](../../doc/api/settings.md) to set `max_terraform_state_size_bytes`.
+1. The Terraform state max size limit can be set by using the [application settings API](../api/settings.md) to set `max_terraform_state_size_bytes`.
 
 ### Environment variable configuration
 
@@ -624,7 +631,7 @@ Blocked recursive webhook calls are logged in `auth.log` with the message `"Recu
 
 {{< /history >}}
 
-The number of [placeholder users](../user/import/mapping.md#placeholder-users) created during an import can be limited per top-level namespace.
+The number of [placeholder users](../user/import/mapping/_index.md#placeholder-users) created during an import can be limited per top-level namespace.
 
 The default limit for [GitLab Self-Managed](../subscriptions/manage_subscription.md) is `0` (unlimited).
 
@@ -1274,6 +1281,24 @@ To change the limit, update `ci_partitions_size_limit` with the new value. For e
 ApplicationSetting.update(ci_partitions_size_limit: 20.gigabytes)
 ```
 
+### Maximum time window for CI/CD partitions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/577314) in GitLab 18.10.
+
+{{< /history >}}
+
+The time window, in seconds, before new CI partitions are created and the system switches
+to the next set of partitions. Must be between 1 month and 6 months. Defaults to 1 month (2592000 seconds).
+
+You can change this limit by using the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+To change the limit, update `ci_partitions_in_seconds_limit` with the new value. For example, to set it to 3 months:
+
+```ruby
+ApplicationSetting.update(ci_partitions_in_seconds_limit: ChronicDuration.parse('3 months'))
+```
+
 ### Maximum config value for automatic pipeline cleanup
 
 {{< history >}}
@@ -1642,7 +1667,6 @@ The Commits and Files APIs enforce maximum size and rate limits on the following
 - `POST /projects/:id/repository/commits` - [Create a commit](../api/commits.md#create-a-commit)
 - `POST /projects/:id/repository/files/:file_path` - [Create a file in a repository](../api/repository_files.md#create-a-file-in-a-repository)
 - `PUT /projects/:id/repository/files/:file_path` - [Update a file in a repository](../api/repository_files.md#update-a-file-in-a-repository)
-
 - **Maximum request size**: Requests that exceed this limit receive
   a `413 Request Entity Too Large` error with the following message: `RequestBody: upload failed: the upload size <size> is over maximum of 314572800 bytes: entity is too large`. The default is 300 MB (314,572,800 bytes).
 - **Rate limit**: 3 requests per 30 seconds for requests above 20 MB.

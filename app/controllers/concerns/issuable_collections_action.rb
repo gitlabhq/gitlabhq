@@ -6,27 +6,28 @@ module IssuableCollectionsAction
   include IssuesCalendar
 
   included do
-    before_action :check_search_rate_limit!, only: [:issues, :merge_requests, :search_merge_requests], if: -> {
-      params[:search].present?
-    }
+    before_action :check_search_rate_limit!,
+      only: [:issues, :merge_requests, :search_merge_requests, :work_items, :work_items_calendar],
+      if: -> { params[:search].present? }
   end
 
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def issues
     respond_to do |format|
       format.html
-      format.atom do
-        @issues = issuables_collection
-                  .non_archived
-                  .page(params[:page])
-
-        @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @issues).data
-
-        render layout: 'xml'
-      end
+      format.atom { render_issues_atom_feed }
     end
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  def work_items
+    respond_to do |format|
+      format.html { render :issues }
+      format.atom { render_issues_atom_feed }
+    end
+  end
+
+  def work_items_calendar
+    render_issues_calendar(issuables_collection)
+  end
 
   # -- Instance variables needed to pass data to views
   def merge_requests
@@ -49,7 +50,7 @@ module IssuableCollectionsAction
 
   def sorting_field
     case action_name
-    when 'issues'
+    when 'issues', 'work_items'
       Issue::SORTING_PREFERENCE_FIELD
     when 'merge_requests', 'search_merge_requests'
       MergeRequest::SORTING_PREFERENCE_FIELD
@@ -58,7 +59,7 @@ module IssuableCollectionsAction
 
   def finder_type
     case action_name
-    when 'issues', 'issues_calendar'
+    when 'issues', 'issues_calendar', 'work_items', 'work_items_calendar'
       IssuesFinder
     when 'merge_requests', 'search_merge_requests'
       MergeRequestsFinder
@@ -84,5 +85,16 @@ module IssuableCollectionsAction
 
     @search_timeout_occurred = true
   end
+
+  def render_issues_atom_feed
+    @issues = issuables_collection
+              .non_archived
+              .page(params[:page])
+
+    @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @issues).data
+
+    render :issues, layout: 'xml'
+  end
+
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

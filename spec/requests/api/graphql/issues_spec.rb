@@ -156,6 +156,20 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
     it_behaves_like 'query that requires at least one filter'
   end
 
+  context 'when filtering by workItemTypeIds' do
+    let_it_be(:task) { create(:issue, :task, project: project_a) }
+
+    let(:all_query_params) { { workItemTypeIds: [task.work_item_type.to_global_id.to_s] } }
+
+    it 'returns issues matching the type GID' do
+      post_query
+
+      issue_ids = graphql_dig_at(graphql_data_at('issues', 'nodes'), :id)
+
+      expect(issue_ids).to contain_exactly(task.to_gid.to_s)
+    end
+  end
+
   context 'with quarantine', quarantine: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/5996' do
     # All new specs should be added to the shared example if the change also
     # affects the `issues` query at the root level of the API.
@@ -237,7 +251,11 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
       private_project = create(:project, :private, group: private_group)
       create(:issue, project: private_project)
 
-      expect { post_query }.not_to exceed_all_query_limit(control).with_threshold(1)
+      # Threshold increased from 1 to 4: the test adds 2 projects in 2 new root namespaces,
+      # each requiring a one-time work_item_custom_types lookup for the configurable types
+      # cache (keyed per root ancestor in SafeRequestStore). This is O(new namespaces),
+      # not O(issues).
+      expect { post_query }.not_to exceed_all_query_limit(control).with_threshold(4)
       expect_graphql_errors_to_be_empty
     end
   end

@@ -164,13 +164,23 @@ RSpec.describe SortingPreference do
       end
     end
 
-    context 'when cookie exists' do
+    context 'when cookie exists with issue_sort => id_asc' do
       let(:cookies) { { 'issue_sort' => 'id_asc' } }
 
       it 'sets the cookie with the right values and flags' do
         subject
 
         expect(cookies['issue_sort']).to eq(expires: nil, value: 'created_asc', secure: false, httponly: false)
+      end
+    end
+
+    context 'when cookie exists with issue_sort => id_desc' do
+      let(:cookies) { { 'issue_sort' => 'id_desc' } }
+
+      it 'sets the cookie with the right values and flags' do
+        subject
+
+        expect(cookies['issue_sort']).to eq(expires: nil, value: 'created_desc', secure: false, httponly: false)
       end
     end
   end

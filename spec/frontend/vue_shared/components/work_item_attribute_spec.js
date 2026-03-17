@@ -180,4 +180,28 @@ describe('WorkItemAttribute Component', () => {
       expect(tooltip.text()).toBe('Custom Tooltip');
     });
   });
+
+  describe('when `popoverAttributes` is provided', () => {
+    const popoverAttributes = {
+      'data-reference-type': 'milestone',
+      'data-placement': 'top',
+      'data-milestone': 1,
+    };
+
+    beforeEach(() => {
+      createComponent({ popoverAttributes });
+    });
+
+    it('does not render tooltip', () => {
+      expect(findTooltip().exists()).toBe(false);
+    });
+
+    it('binds popover attributes to the wrapper element', () => {
+      expect(findWrapper().attributes()).toMatchObject({
+        'data-reference-type': 'milestone',
+        'data-placement': 'top',
+        'data-milestone': '1',
+      });
+    });
+  });
 });

@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Organizations
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see <https://docs.gitlab.com/development/development_processes/#development-guidelines-review>.
 description: Guidance and principles for sharding database tables to support organization isolation
 title: Sharding guidelines
 ---
@@ -38,7 +38,7 @@ The reasoning for adding sharding keys, and which keys to add to a table/row, go
   transfers) inefficient (due to `namespace_id` rewrites) to the point of being impractical.
 - Compromise: Add `organization_id`, `namespace_id`, or `project_id` to all rows of all tables (whichever is most specific).
 
-### Choosing the right sharding key
+## Choosing the right sharding key
 
 Every row must have exactly 1 sharding key, and it should be as specific as possible. Exceptions cannot be made on large
 tables.
@@ -98,7 +98,7 @@ The following are examples of valid sharding keys:
     user_id: users
   ```
 
-#### The sharding key must be immutable
+### The sharding key must be immutable
 
 The choice of a `sharding_key` should always be immutable. This is because the
 sharding key column is used as an index for the planned
@@ -121,7 +121,7 @@ existing feature that needs to allow moving data you will need to reach out to
 the Tenant Scale team early on to discuss options for how to manage the
 sharding key.
 
-#### Using `namespace_id` as sharding key
+### Using `namespace_id` as sharding key
 
 The `namespaces` table has rows that can refer to a `Group`, a `ProjectNamespace`,
 or a `UserNamespace`. The `UserNamespace` type is also known as a personal namespace.
@@ -131,7 +131,7 @@ refers to a `UserNamespace`. Because a user does not necessarily have a related
 `namespace` record, this sharding key can be `NULL`. A sharding key should not
 have `NULL` values.
 
-#### Using the same sharding key for projects and namespaces
+### Using the same sharding key for projects and namespaces
 
 Developers may also choose to use `namespace_id` only for tables that can
 belong to a project where the feature used by the table is being developed
@@ -140,7 +140,7 @@ following the
 In that case the `namespace_id` would need to be the ID of the
 `ProjectNamespace` and not the group that the namespace belongs to.
 
-#### Using `organization_id` as sharding key
+### Using `organization_id` as sharding key
 
 Usually, `project_id` or `namespace_id` are the most common sharding keys.
 However, there are cases where a table does not belong to a project or a namespace.
@@ -172,14 +172,106 @@ When you add a new table or modify an existing table to be sharded by `organizat
 1. **Add transfer service support**: Update records' `organization_id` when a group or users transfer to a new organization.
 1. **Use common organization in factories**: Ensure RSpec factories automatically associate with the common organization. See the after build block in the Namespaces factory.
 
-### Implementing sharding keys
+## Cross-schema references
+
+The Cells architecture requires that organization data be safely migratable between cells.
+Cross schema references are not allowed, in general.
+
+### Core principle: Organization data must be migratable
+
+When an organization moves to a different cell, all its data stored in organization-level tables must be transferred. This means:
+
+1. **Organization data cannot depend on cell-local data** unless that dependency is consistent or self-healing.
+1. **Cell-local data can reference organization data** because organization data is stable and moves with the organization.
+
+### Acceptable patterns
+
+These cross-schema references are permitted:
+
+| From | To | Why |
+|---|---|---|
+| `gitlab_main_cell_local` | `gitlab_main_org` | Cell-local data can safely reference org data; org data moves with the organization. |
+| `gitlab_ci_cell_local` | `gitlab_ci` | CI/CD cell-local data can reference CI/CD org data. |
+
+### Implementation guidance
+
+**If organization data needs to reference cell-local data:**
+
+Use a Loose Foreign Key to avoid blocking migrations:
+
+```yaml
+# config/gitlab_loose_foreign_keys.yml
+org_table:
+  - table: cell_local_table
+    column: cell_local_id
+    on_delete: async_delete
+```
+
+However, you must also implement application logic to self-heal or regenerate the reference after migration.
+The referenced cell-local data may not exist in the destination cell or may have different IDs.
+The application must either:
+
+- Regenerate the reference by re-computing or re-fetching the data from the source of truth
+- Gracefully handle missing or stale references
+- Validate and repair references as part of the migration process
+
+**If cell-local data needs to reference organization data:**
+
+Use a regular foreign key.
+
+```ruby
+class AddForeignKeyToCellLocalTable < Gitlab::Database::Migration[2.2]
+  disable_ddl_transaction!
+
+  def up
+    add_foreign_key :cell_local_table, :org_table,
+      column: :org_table_id,
+      on_delete: :cascade
+  end
+
+  def down
+    remove_foreign_key :cell_local_table, :org_table
+  end
+end
+```
+
+### Validation
+
+The test `spec/lib/gitlab/database/no_cross_db_foreign_keys_spec.rb` enforces these principles.
+If it fails with a cross-database foreign key error, either:
+
+1. Use a Loose Foreign Key (recommended for org → cell-local references).
+1. Add to `allowed_cross_database_foreign_keys` with an issue number (pre-existing FKs only).
+
+### Lesson learned: Avoid unstable identifiers in organization data
+
+When organization data references external sources (like Gitaly), don't persist identifiers that may be inconsistent across cells.
+
+**Example:** The `programming_languages` table receives data from Gitaly. IDs generated in one cell may differ from another because:
+
+- Different cells have different initial language sets
+- New languages are discovered at runtime
+- Insertion order varies between cells
+
+If organization data (like `repository_languages`) persists these unstable IDs, the data becomes inconsistent across cells and cannot be reliably migrated.
+
+**Solutions:**
+
+1. **Use globally stable identifiers**: If organization data must reference external data, use identifiers that are consistent across all cells (for example, from a pre-defined list).
+1. **Don't persist computed data**: If the data is computed on-the-fly and doesn't need to move with the organization, don't persist the IDs in organization tables.
+1. **Make references self-healing**: If you must persist references to cell-local data, ensure they can be regenerated or validated after migration.
+1. **Use Loose Foreign Keys**: For references from organization data to cell-local data, use Loose Foreign Keys so migrations aren't blocked.
+
+See [issue 519895](https://gitlab.com/gitlab-org/gitlab/-/work_items/519895) for a detailed case study.
+
+## Implementing sharding keys
 
 To add a sharding key to a table, follow these steps. We need to backfill a `sharding_key` to hundreds of tables that do
 not have one. To minimize repetitive effort, we've introduced a declarative way to describe how to backfill the
 `sharding_key` using [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper),
 which can create the MRs with the desired changes rather than manually doing it.
 
-#### Ensure sharding key presence on application level
+### Ensure sharding key presence on application level
 
 When you define your sharding key you must make sure it's filled on application level.
 Every `ApplicationRecord` model includes a helper `populate_sharding_key`, which
@@ -249,7 +341,7 @@ desired_sharding_key:
 There are edge cases where this `desired_sharding_key` structure is not suitable for backfilling a `sharding_key`. In
 such cases, the team owning the table will need to create the necessary merge requests manually.
 
-#### Add column, triggers, indexes, and foreign keys
+### Add column, triggers, indexes, and foreign keys
 
 This is the step where we add the sharding key column, indexes, foreign keys and necessary triggers.
 
@@ -264,8 +356,7 @@ This is the step where we add the sharding key column, indexes, foreign keys and
    git checkout sharding-key-backfill-keeps
    ```
 
-    > You can also find the branch in the [MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143774).
-
+   You can also find the branch in the [MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143774).
 1. Rebase this branch on top of master and push the changes back to origin. This makes sure that this branch is aware of changes in master:
 
    ```shell
@@ -298,9 +389,7 @@ The keep file contains code that:
 - For each entry, adds the sharding key column if needed, including indexes, triggers, and foreign keys
 
 1. Open the keep file and add `next unless entry.table_name == 'table name'`. Here, the table name will be the name of the table we want to create migrations for.
-
 1. Perform a quick check based on the `desired_sharding_key` configuration of the table. Is the configuration correct? Does the sharding key of the parent table include a `NOT NULL` constraint as expected? If not, skip that table and go for another one. If the table is OK, we can proceed.
-
 1. Let's check the table's primary key. Run the following commands in your terminal:
 
    - `gdk psql`
@@ -318,7 +407,6 @@ The keep file contains code that:
    - Foreign keys: Including references to `ci_builds` and `projects`
 
 1. This is important because we have many cases where the primary key is composite, non unique, etc., and requires some manual changes in the keep.
-
 1. Do a dry run of the execution as it will show you the generated changes and won't commit anything:
 
    - `bundle exec gitlab-housekeeper -k Keeps::BackfillDesiredShardingKeySmallTable -d`
@@ -333,9 +421,9 @@ The keep file contains code that:
 
 **Some useful hacks:**
 
-**1. Tables containing non :id primary key**
+**1. Tables containing non `:id` primary key**
 
-1. Replace :id with non-ID primary key [in the first diff](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143774/diffs#0d5f33d9793cf940dfdaca2d13dc36ffba642547_0_16), [in the second diff](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143774/diffs#0d5f33d9793cf940dfdaca2d13dc36ffba642547_0_31) and [in the third diff](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143774/diffs#a43ac76c906b5de1a49f01a1b9d3df52db53d824_0_18).
+1. Replace `:id` with non-ID primary key [in the first diff](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143774/diffs#0d5f33d9793cf940dfdaca2d13dc36ffba642547_0_16), [in the second diff](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143774/diffs#0d5f33d9793cf940dfdaca2d13dc36ffba642547_0_31) and [in the third diff](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143774/diffs#a43ac76c906b5de1a49f01a1b9d3df52db53d824_0_18).
 1. Comment this line [in this diff](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143774/diffs#9e60f08042851b8f971e69edf1b7ecf0c3650bad_0_121).
 1. Add a line in [this file](https://gitlab.com/gitlab-org/gitlab/-/blob/sharding-key-backfill-keeps/lib/generators/desired_sharding_key/templates/batched_background_migration_job_spec.template?ref_type=heads#L10) `let(:batch_column) { :non-id-pk }` like we did [in this example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165940/diffs#13b28b3d4235b2108dee9bad7345da521f72fb09_0_12).
 
@@ -353,14 +441,12 @@ The keep file contains code that:
     ![Migration code using cursor-based batching with `deployment_id` and `merge_request_id` columns.](img/deployment-merge-req-backfill_v18_6.png)
 
     Example MR: [!183738 (merged)](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183738)
-
 1. The above changes style can be used for other tables with such specifications too.
 1. Open the `lib/gitlab/background_migration/backfill_*.rb` and remove all the changes generated by keep and add:
 
     ![Background migration job implementing cursor-based iteration to update sharding keys.](img/batched-migration-job_v18_6.png)
 
     See [!183738](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183738/diffs#diff-content-c2163b12dc5e47a609975eef6d8ee2674c6e1846).
-
 1. If the table is large, add the sharding key to ignored FK list `:ignored_fk_columns_map` in [schema_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/db/schema_spec.rb?ref_type=heads#L30).
 1. Make sure to also update the [specs](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183738/diffs#diff-content-82b15af453642aa441801a31b12e5b3c22b009b7).
 
@@ -384,12 +470,11 @@ The keep file contains code that:
        on_delete: async_delete
    ```
 
-#### Finalization Migration
+### Finalization Migration
 
 Once the column has been added and the backfill is finished we need to finalize the migration. We can check the status of queued migration in `#chat-ops-test` Slack channel.
 
 - `/chatops run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>` to check the status of a particular job
-
 - Output will look something like:
 
   ![ChatOps response showing batched background migration status with progress percentage and batch counts.](img/chatops_v18_6.png)
@@ -409,7 +494,7 @@ Once the column has been added and the backfill is finished we need to finalize 
      milestone '17.6'
      disable_ddl_transaction!
 
-     restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+     restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
      def up
        ensure_batched_background_migration_is_finished(
@@ -430,7 +515,7 @@ Once the column has been added and the backfill is finished we need to finalize 
 
 - You are all set. Git commit and create MR 🎉
 
-#### Add a NOT NULL constraint
+### Add a NOT NULL constraint
 
 The last step is to make sure the sharding key has a `NOT NULL` constraint.
 
@@ -467,7 +552,7 @@ The last step is to make sure the sharding key has a `NOT NULL` constraint.
 
 In this case we have to add async validation before we can add the sharding key. It will be a 2 MR process. Let's take an example of table `packages_package_files`.
 
-*Step 1 (MR 1): [Add NOT NULL for sharding key on `packages_package_files`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184630/diffs)*
+Step 1 (MR 1): [Add NOT NULL for sharding key on `packages_package_files`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184630/diffs):
 
 1. Create a [post deployment migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184630/diffs#cf4ce3e2d6f2d05856d6d51ccd69955154aab90e_0_8) to add not null constraint with `validate: false`.
 
@@ -507,9 +592,9 @@ In this case we have to add async validation before we can add the sharding key.
    end
    ```
 
-- Run `bin/rails db:migrate` and create the MR with changes.
+1. Run `bin/rails db:migrate` and create the MR with changes.
 
-*Step 2 (MR 2): [Validate `project_id` NOT NULL on `packages_package_files`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185064/diffs)*
+Step 2 (MR 2): [Validate `project_id` NOT NULL on `packages_package_files`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185064/diffs):
 
 1. Once the MR in Step 1 is merged, wait for a couple of days to prepare, you can check the status on <https://console.postgres.ai/>, just ask the joe instance bot for the table information. Look for `Check constraints`.
 
@@ -541,20 +626,18 @@ In this case we have to add async validation before we can add the sharding key.
    ```
 
 1. Open the corresponding `db/docs.*.yml` file, in this case `db/docs/packages_package_files.yml`, and remove `desired_sharding_key` and `desired_sharding_key_migration_job_name` configuration and add the `sharding_key`.
-
 1. Create the MR with label `pipeline:skip-check-migrations` as reverting this migration is intended to be `#no-op`.
 
 > [!note]
 > Pipelines might complain about a missing FK. You must add the FK to `allowed_to_be_missing_foreign_key` in [sharding_key_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/lib/gitlab/organizations/sharding_key_spec.rb?ref_type=heads#L81).
 
-#### Add transfer service support
+### Add transfer service support
 
 1. When a table is sharded by `organization_id`, you must also add `organization_transfer_support` to track whether the table is handled during organization transfers (when users or groups move between organizations).
    - Set to `supported` if you've implemented the transfer logic in one of the transfer services:
-     - `app/services/organizations/groups/transfer_service.rb`
-     - `app/services/organizations/users/transfer_service.rb`
-     - `ee/app/services/ee/organizations/groups/transfer_service.rb`
-     - `ee/app/services/ee/organizations/users/transfer_service.rb`
+     - `app/services/organizations/transfer/groups_service.rb`
+     - `app/services/organizations/transfer/users_service.rb`
+     - `ee/app/services/ee/organizations/transfer/groups_service.rb`
    - Set to `todo` if the table needs transfer support but doesn't have it yet (only for existing tables - new tables must be `supported`)
 
    ```yaml
@@ -566,14 +649,14 @@ In this case we have to add async validation before we can add the sharding key.
 1. Add your table to the appropriate transfer service using the `update_organization_id_for` helper:
 
    ```ruby
-   # app/services/organizations/users/transfer_service.rb
+   # app/services/organizations/transfer/users_service.rb
    def update_associated_organization_ids(user_ids)
      update_organization_id_for(PersonalAccessToken) { |relation| relation.for_users(user_ids) }
      update_organization_id_for(YourModel) { |relation| relation.where(user_id: user_ids) }
    end
    ```
 
-#### Use common organization in factories
+### Use common organization in factories
 
 RSpec factories for models sharded by `organization_id` must automatically associate with the common organization.
 This ensures tests work correctly without requiring explicit organization setup.
@@ -587,7 +670,7 @@ factory :your_model do
 end
 ```
 
-#### Debug Failures
+### Debug Failures
 
 **Using Kibana**
 
@@ -600,43 +683,34 @@ Let's take the recent `BackfillPushEventPayloadsProjectId` BBM failure as an exa
 - Failures are also reported as a comment on backfilled original MR. Example: MR [!183123](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183123#note_2482744925)
 
   ![Merge request comment showing batched background migration failure notification.](img/bbm-failure_v18_6.png)
-
 - We can also check the status of the job in `#chat-ops-test` Slack channel, using `/chatops run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>`.
 
   ![ChatOps output indicating a failed batched background migration status.](img/backfill-chatops-failed_v18_6.png)
-
 - Let's figure out the reason for failure using [Kibana dashboard](https://log.gprd.gitlab.net/app/discover).
 
 1. Make sure the data view is set to `pubsub-sidekiq-inf-gprd*`.
 
-    ![Kibana data view selector showing the pubsub Sidekiq index pattern.](img/pubsub_v18_6.png)
-
+   ![Kibana data view selector showing the pubsub Sidekiq index pattern.](img/pubsub_v18_6.png)
 1. On the left side, you can see all the available fields. We only need `json.job_class_name` i.e. desired sharding key migration job name and the `json.new_state: failed`.
 
-    ![Kibana fields panel displaying available log fields including `job_class_name` and `new_state`.](img/pubsub-fields_v18_6.png)
-
+   ![Kibana fields panel displaying available log fields including `job_class_name` and `new_state`.](img/pubsub-fields_v18_6.png)
 1. Let's add those filters to get the desired logs.
 
-    ![Kibana filter interface ready to add search criteria.](img/pubsub-filters_v18_6.png)
-
+   ![Kibana filter interface ready to add search criteria.](img/pubsub-filters_v18_6.png)
 1. Set `json.job_class_name` to `BackfillPushEventPayloadsProjectId` in this case and `json.new_state` to `failed` and apply the filter.
 
-    ![Kibana filter configuration setting job class name and failed state parameters.](img/pubsub-filters-add_v18_6.png)
-
+   ![Kibana filter configuration setting job class name and failed state parameters.](img/pubsub-filters-add_v18_6.png)
 1. Make sure to select the right timeline, since this migration was reported as a failure a few days ago I will filter it to show only the last 7 days.
 
-    ![Kibana time picker configured to display logs from the last 7 days.](img/kibana-dashboard-timeline_v18_6.png)
-
+   ![Kibana time picker configured to display logs from the last 7 days.](img/kibana-dashboard-timeline_v18_6.png)
 1. After that you will see the desired logs with added filters.
 
-    ![Kibana logs view showing filtered results for failed migration jobs.](img/kibana-logs_v18_6.png)
-
+   ![Kibana logs view showing filtered results for failed migration jobs.](img/kibana-logs_v18_6.png)
 1. Let's expand the logs and find `json.exception_message`.
 
-    ![Expanded Kibana log entry revealing the exception message and error details.](img/kibana-logs-message_v18_6.png)
+   ![Expanded Kibana log entry revealing the exception message and error details.](img/kibana-logs-message_v18_6.png)
 
 - As you can see this BBM was failed due to `Sidekiq::Shutdown` 😡.
-
 - To fix it, just requeue the migration.
 
 **Using Grafana**
@@ -651,20 +725,17 @@ Let's take the recent `BackfillApprovalMergeRequestRulesUsersProjectId` BBM fail
 
 1. We can also check the status of the job in `#chat-ops-test` Slack channel, using `/chatops run batched_background_migrations list --job-class-name=<desired_sharding_key_migration_job_name>`.
 
-    ![ChatOps command output showing the failed migration status and progress details.](img/chatops-failed-status_v18_6.png)
-
+   ![ChatOps command output showing the failed migration status and progress details.](img/chatops-failed-status_v18_6.png)
 1. Let's check the Kibana dashboard. There are [no logs](https://log.gprd.gitlab.net/app/discover#/view/07cd7a8b-10bb-457c-8d25-3c6d6269e614?_g=h@9751b81&_a=h@ff28b71) for this job.
 1. Let's go to the [Grafana dashboard](https://dashboards.gitlab.net/explore).
 
-    ![Grafana homepage with navigation options and the Explore feature.](img/grafana_v18_6.png)
-
+   ![Grafana homepage with navigation options and the Explore feature.](img/grafana_v18_6.png)
 1. Click on `Explore` and add a new query.
 
-    ![Grafana Explore view with query builder for metrics and time ranges.](img/grafana-explore_v18_6.png)
-
+   ![Grafana Explore view with query builder for metrics and time ranges.](img/grafana-explore_v18_6.png)
 1. The easiest way to debug sharding key failures is to check the table size anomaly.
 
-    ![Grafana metrics browser showing table size metrics and label filters.](img/grafana-metrics_v18_6.png)
+   ![Grafana metrics browser showing table size metrics and label filters.](img/grafana-metrics_v18_6.png)
 
 - Metric: `gitlab_component_utilization:pg_table_size_bytes:1h`.
 - Label filters:
@@ -675,28 +746,23 @@ Let's take the recent `BackfillApprovalMergeRequestRulesUsersProjectId` BBM fail
 1. Timeline: select at least a few days prior to the date of job creation. You can see in the MR that failure was reported on [2025-03-31](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183354#note_2425371444) and the job was created on **2025-03-11**. I have selected the time range from **2025-03-01** to **2025-04-02**. You can adjust it accordingly.
 1. After running the query a graph will be generated within the selected time frame.
 
-    ![Grafana graph showing table size baseline at 90 GB from early March 2025.](img/grafana-output-1_v18_6.png)
-
+   ![Grafana graph showing table size baseline at 90 GB from early March 2025.](img/grafana-output-1_v18_6.png)
 1. Let's make sense of this graph. Backfill job started on **2025-03-11**, you can see a slight increase in table size starting at this date.
 
-    ![Graph showing gradual table size increase beginning March 11, 2025 when backfill started.](img/grafana-output-2_v18_6.png)
+   ![Graph showing gradual table size increase beginning March 11, 2025 when backfill started.](img/grafana-output-2_v18_6.png)
 
-    > This is very normal
-
+   This is very normal.
 1. Let's see the changes we have added in the [post migration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183354/diffs#396732f8126545e4961d048dbb6e81c4746b5557_0_11). First we added the `prepare_async` index. Let's check the size on [postgres.ai](https://console.postgres.ai/gitlab/gitlab-production-main/sessions/39129/commands/120292) it's size is 10 GB. It was created on **2025-03-15** at 00:00, as we can see in the spike in the graph.
 
-    ![Sharp spike on March 15, 2025 showing 10 GB increase from async index creation.](img/grafana-output-3_v18_6.png)
-
+   ![Sharp spike on March 15, 2025 showing 10 GB increase from async index creation.](img/grafana-output-3_v18_6.png)
 1. Once the index is created, backfill starts.
 
-    ![Continued table size growth after index creation, climbing toward 110 GB.](img/grafana-output-4_v18_6.png)
-
+   ![Continued table size growth after index creation, climbing toward 110 GB.](img/grafana-output-4_v18_6.png)
 1. The BBM fails on **2025-03-29**, you can see in the graph that at this point, table size dropped.
 
-    ![Sudden drop in table size on March 29, 2025 indicating migration failure and rollback.](img/grafana-output-5_v18_6.png)
+   ![Sudden drop in table size on March 29, 2025 indicating migration failure and rollback.](img/grafana-output-5_v18_6.png)
 
 - The index + the column backfill increased the table size to approx ~20 GB compared to before the backfill, an increase of ~22% in table size, from ~90 GB to ~110 GB 🫨.
-
 - We have a goal to keep all tables [under 100 GB](../../database/large_tables_limitations.md).
 
 ## Update unresolved, closed issues

@@ -83,14 +83,14 @@ module WorkItems
           return error(error_message, :unprocessable_entity)
         end
 
-        unless work_item.can_move?(current_user, target_namespace)
-          error_message = s_('MoveWorkItem|Unable to move. You have insufficient permissions.')
+        if target_namespace.deletion_in_progress_or_scheduled_in_hierarchy_chain?
+          error_message = s_('MoveWorkItem|Unable to move. Target namespace is pending deletion.')
 
           return error(error_message, :unprocessable_entity)
         end
 
-        if target_namespace.deletion_in_progress_or_scheduled_in_hierarchy_chain?
-          error_message = s_('MoveWorkItem|Unable to move. Target namespace is pending deletion.')
+        unless work_item.can_move?(current_user, target_namespace)
+          error_message = s_('MoveWorkItem|Unable to move. You have insufficient permissions.')
 
           return error(error_message, :unprocessable_entity)
         end

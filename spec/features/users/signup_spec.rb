@@ -45,6 +45,10 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
   include TermsHelper
   using RSpec::Parameterized::TableSyntax
 
+  # Make sure duo_code_review_bot is seeded before tests run to avoid
+  # flaky tests when testing signups.
+  seed_internal_bot(:duo_code_review_bot)
+
   let(:new_user) { build_stubbed(:user) }
 
   let(:terms_text) do
@@ -189,25 +193,24 @@ RSpec.describe 'Signup', :with_current_organization, :js, feature_category: :use
       end
 
       context 'when email confirmation setting is not `soft`' do
-        with_and_without_sign_in_form_vue do
-          it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming' do
-            perform_enqueued_jobs do
-              visit new_user_registration_path
+        it 'creates the user account and sends a confirmation email, and pre-fills email address after confirming',
+          :js do
+          perform_enqueued_jobs do
+            visit new_user_registration_path
 
-              expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
-              expect(page).to have_current_path users_almost_there_path, ignore_query: true
-              expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
-            end
-
-            mail = find_email_for(new_user.email)
-            expect(mail.subject).to eq('Confirmation instructions')
-
-            body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
-            confirmation_link = body.css('#cta a').attribute('href').value
-
-            expect { visit confirmation_link }.to change { User.find_by_email(new_user.email).confirmed_at }
-            expect(find_field('Username or primary email').value).to eq(new_user.email)
+            expect { fill_in_sign_up_form(new_user) }.to change { User.count }.by(1)
+            expect(page).to have_current_path users_almost_there_path, ignore_query: true
+            expect(page).to have_content("Please check your email (#{new_user.email}) to confirm your account")
           end
+
+          mail = find_email_for(new_user.email)
+          expect(mail.subject).to eq('Confirmation instructions')
+
+          body = Nokogiri::HTML::DocumentFragment.parse(mail.body.parts.last.to_s)
+          confirmation_link = body.css('#cta a').attribute('href').value
+
+          expect { visit confirmation_link }.to change { User.find_by_email(new_user.email).confirmed_at }
+          expect(find_field('Username or primary email').value).to eq(new_user.email)
         end
       end
 

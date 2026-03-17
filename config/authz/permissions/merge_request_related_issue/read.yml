@@ -1,5 +1,3 @@
 ---
 name: read_merge_request_related_issue
 description: Grants the ability to read issues related to merge requests
-boundaries:
-  - project

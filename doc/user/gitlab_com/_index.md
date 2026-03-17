@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see <https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments>
 title: GitLab.com settings
 description: Configuration for the GitLab.com instance.
 ---
@@ -100,7 +100,7 @@ the related documentation:
 To use the GitLab container registry, Docker clients must have access to:
 
 - The registry endpoint and GitLab.com for authorization.
-- Google Cloud Storage or Google Cloud Content Delivery Network to download images.
+- Google Cloud Storage (see [IP ranges that Google makes available to users on the internet](https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges)) or Google Cloud Content Delivery Network to download images.
 
 GitLab.com is fronted by Cloudflare.
 For incoming connections to GitLab.com, you must allow CIDR blocks of Cloudflare
@@ -288,10 +288,10 @@ which GitLab you use:
 
 ### Import placeholder user limits
 
-Imports into GitLab.com limit the number of [placeholder users](../import/mapping.md#placeholder-users)
+Imports into GitLab.com limit the number of [placeholder users](../import/mapping/_index.md#placeholder-users)
 for each top-level namespace. The limits differ depending on your plan and seat count.
 For more information, see the
-[table of placeholder user limits for GitLab.com](../import/mapping.md#placeholder-user-limits).
+[table of placeholder user limits for GitLab.com](../import/mapping/_index.md#placeholder-user-limits).
 
 ## IP range
 
@@ -456,6 +456,7 @@ The following table describes the rate limits for GitLab.com:
 |:-----------------------------------------------------------------|:--------------------------------|
 | Protected paths for an IP address                                | 10 requests each minute         |
 | Raw endpoint traffic for a project, commit, or file path         | 300 requests each minute        |
+| Unauthenticated raw endpoint traffic for a project               | 800 requests each minute        |
 | Unauthenticated traffic from an IP address                       | 500 requests each minute        |
 | Authenticated API traffic for a user                             | 2,000 requests each minute      |
 | Authenticated non-API HTTP traffic for a user                    | 1,000 requests each minute      |
@@ -490,7 +491,7 @@ The following table describes the rate limits for GitLab.com:
 | Groups list requests (`/api/v4/groups`)                            | 200 requests each minute        |
 | Single group requests (`/api/v4/groups/:id`)                       | 400 requests each minute        |
 | Runner jobs requests using a runner token (`/api/v4/jobs/request`) | 2,000 requests each minute      |
-| Runner job trace patch requests using a job token (`/api/v4/jobs/trace`) | 2,000 requests each minute      |
+| Runner job trace patch requests using a job token (`/api/v4/jobs/trace`) | 200 requests each minute      |
 | Runner jobs requests using a job token (`/api/v4/jobs/*`)          | 200 requests each minute        |
 | List all project members in a project                              | 200 requests each minute        |
 
@@ -634,7 +635,7 @@ Go to the current instance configuration to see the SSH host key fingerprints on
 GitLab.com.
 
 1. Sign in to GitLab.
-1. On the left sidebar, select **Help** ({{< icon name="question-o" >}}) > **Help**.
+1. In the left sidebar, select **Help** ({{< icon name="question-o" >}}) > **Help**.
 1. On the Help page, select **Check the current instance configuration**.
 
 In the instance configuration, you see the **SSH host key fingerprints**:

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Noteable::NotesChannel, feature_category: :team_planning do
+RSpec.describe Noteable::NotesChannel, :with_current_organization, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :repository, :private) }
   let_it_be(:user) { create(:user, developer_of: project) }
 
@@ -24,13 +24,22 @@ RSpec.describe Noteable::NotesChannel, feature_category: :team_planning do
     end
 
     before do
-      stub_action_cable_connection current_user: user
+      stub_action_cable_connection current_user: user, current_organization: current_organization
     end
 
     it 'rejects the subscription when noteable params are missing' do
       subscribe(project_id: project.id)
 
       expect(subscription).to be_rejected
+    end
+
+    it 'passes organization_id to NotesFinder' do
+      expect(NotesFinder).to receive(:new).with(
+        user,
+        hash_including(organization_id: current_organization.id)
+      ).and_call_original
+
+      subscribe(subscribe_params)
     end
 
     context 'on an issue' do
@@ -54,7 +63,8 @@ RSpec.describe Noteable::NotesChannel, feature_category: :team_planning do
     end
 
     before do
-      stub_action_cable_connection current_user: user, access_token: access_token
+      stub_action_cable_connection current_user: user, access_token: access_token,
+        current_organization: current_organization
     end
 
     context 'with an api scoped personal access token' do

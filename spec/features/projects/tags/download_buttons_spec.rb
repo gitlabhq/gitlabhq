@@ -37,6 +37,8 @@ RSpec.describe 'Download buttons in tags page', feature_category: :source_code_m
     it_behaves_like 'archive download buttons' do
       let(:path_to_visit) { project_tags_path(project) }
       let(:ref) { tag }
+      let(:ref_type) { 'tags' }
+      let(:download_button_container) { find_by_testid("tag-row", text: tag) }
     end
   end
 end

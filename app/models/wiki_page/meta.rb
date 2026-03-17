@@ -8,6 +8,7 @@ class WikiPage
     include Participable
     include Subscribable
     include Todoable
+    include Awardable
 
     self.table_name = 'wiki_page_meta'
 
