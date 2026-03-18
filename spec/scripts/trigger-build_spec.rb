@@ -497,7 +497,7 @@ RSpec.describe Trigger, feature_category: :tooling do
         it 'includes extra variables' do
           expect(subject.variables).to include({
             "FULL_RUBY_VERSION" => RUBY_VERSION,
-            "SKIP_JOB_REGEX" => "/final-images-listing/",
+            "SKIP_JOB_REGEX" => "/^(final-images-listing)$/",
             "DEBIAN_IMAGE" => "debian:bookworm-slim",
             "ALPINE_IMAGE" => "alpine:3.20",
             "CONTAINER_VERSION_SUFFIX" => "project-path",
@@ -601,7 +601,7 @@ RSpec.describe Trigger, feature_category: :tooling do
           it 'does not skip gitlab-rails job' do
             expect(subject.variables).to include({
               "SKIP_IMAGE_TAGGING" => "true",
-              "SKIP_JOB_REGEX" => "/final-images-listing|alpine-stable|debian-stable|gitlab-base/",
+              "SKIP_JOB_REGEX" => "/^(final-images-listing|alpine-stable|debian-stable|gitlab-base)$/",
               "DEBIAN_IMAGE" => "#{debian_image}@#{image_digest}",
               "DEBIAN_DIGEST" => image_digest,
               "DEBIAN_BUILD_ARGS" => "--build-arg DEBIAN_IMAGE=#{debian_image}@#{image_digest}",
@@ -629,7 +629,7 @@ RSpec.describe Trigger, feature_category: :tooling do
 
           it 'does not skip jobs with non existing tags' do
             expect(subject.variables).to include({
-              "SKIP_JOB_REGEX" => "/final-images-listing|alpine-stable|debian-stable|gitlab-rails-ee/"
+              "SKIP_JOB_REGEX" => "/^(final-images-listing|alpine-stable|debian-stable|gitlab-rails-ee)$/"
             })
           end
         end
