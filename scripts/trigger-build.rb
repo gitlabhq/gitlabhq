@@ -209,7 +209,7 @@ module Trigger
     DEFAULT_DEBIAN_IMAGE = "debian:bookworm-slim"
     DEFAULT_ALPINE_IMAGE = "alpine:3.20"
     DEFAULT_SKIPPED_JOBS = %w[final-images-listing].freeze
-    DEFAULT_SKIPPED_JOB_REGEX = "/#{DEFAULT_SKIPPED_JOBS.join('|')}/".freeze
+    DEFAULT_SKIPPED_JOB_REGEX = "/^(#{DEFAULT_SKIPPED_JOBS.join('|')})$/".freeze
     STABLE_BASE_JOBS = %w[alpine-stable debian-stable].freeze
 
     def variables
@@ -395,7 +395,7 @@ module Trigger
     #
     # @return [String]
     def skip_job_regex
-      "/#{[*DEFAULT_SKIPPED_JOBS, *STABLE_BASE_JOBS, *skippable_jobs].join('|')}/"
+      "/^(#{[*DEFAULT_SKIPPED_JOBS, *STABLE_BASE_JOBS, *skippable_jobs].join('|')})$/"
     end
 
     # Branch existence check
