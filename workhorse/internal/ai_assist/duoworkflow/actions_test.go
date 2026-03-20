@@ -308,6 +308,111 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 	})
 }
 
+func TestServeHTTPSafe(t *testing.T) {
+	t.Run("recovers ErrAbortHandler with canceled context and returns error", func(t *testing.T) {
+		handler := http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
+			panic(http.ErrAbortHandler)
+		})
+
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel() // cancel before the call to simulate a disconnected client
+
+		req, err := http.NewRequestWithContext(ctx, "GET", "http://example.com", nil)
+		require.NoError(t, err)
+
+		err = serveHTTPSafe(handler, httptest.NewRecorder(), req)
+
+		require.ErrorIs(t, err, context.Canceled)
+	})
+
+	t.Run("recovers ErrAbortHandler with non-canceled context and returns error", func(t *testing.T) {
+		handler := http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
+			panic(http.ErrAbortHandler)
+		})
+
+		req, err := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+		require.NoError(t, err)
+
+		err = serveHTTPSafe(handler, httptest.NewRecorder(), req)
+
+		require.EqualError(t, err, "serveHTTPSafe: request aborted")
+	})
+
+	t.Run("re-panics on unexpected panics", func(t *testing.T) {
+		handler := http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
+			panic("something unexpected")
+		})
+
+		req, err := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+		require.NoError(t, err)
+
+		require.Panics(t, func() {
+			_ = serveHTTPSafe(handler, httptest.NewRecorder(), req)
+		})
+	})
+
+	t.Run("returns nil when handler completes normally", func(t *testing.T) {
+		handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.WriteHeader(http.StatusOK)
+		})
+
+		req, err := http.NewRequestWithContext(context.Background(), "GET", "http://example.com", nil)
+		require.NoError(t, err)
+
+		err = serveHTTPSafe(handler, httptest.NewRecorder(), req)
+
+		require.NoError(t, err)
+	})
+}
+
+func TestRunHttpActionHandler_Execute_ContextCancelled(t *testing.T) {
+	t.Run("sends error to dws instead of panicking or erroring when context is canceled", func(t *testing.T) {
+		// This backend simulates what httputil.ReverseProxy does when the request
+		// context is canceled mid-flight: it panics with http.ErrAbortHandler.
+		// Without the serveHTTPSafe wrapper, this panic would propagate uncaught
+		// out of the agent goroutine and crash the process.
+		backend := http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
+			panic(http.ErrAbortHandler)
+		})
+
+		serverURL, err := url.Parse("http://localhost:0")
+		require.NoError(t, err)
+
+		action := &pb.Action{
+			RequestID: "req-cancel",
+			Action: &pb.Action_RunHTTPRequest{
+				RunHTTPRequest: &pb.RunHTTPRequest{
+					Method: "GET",
+					Path:   "/api/test",
+				},
+			},
+		}
+
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel()
+
+		originalReq := httptest.NewRequest("GET", "/ws", nil)
+		originalReq.RemoteAddr = testRemoteAddr
+
+		handler := &runHTTPActionHandler{
+			rails: &api.API{
+				Client: &http.Client{},
+				URL:    serverURL,
+			},
+			backend:     backend,
+			action:      action,
+			token:       "test-token",
+			originalReq: originalReq,
+		}
+
+		result, err := handler.Execute(ctx)
+
+		require.NoError(t, err)
+		require.NotNil(t, result)
+		require.NotEmpty(t, result.GetActionResponse().GetHttpResponse().Error)
+	})
+}
+
 func TestHeaderParsing(t *testing.T) {
 	t.Run("response headers are correctly parsed and joined", func(t *testing.T) {
 		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {

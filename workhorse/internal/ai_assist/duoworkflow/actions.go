@@ -34,16 +34,28 @@ type nullResponseWriter struct {
 	header http.Header
 	status int
 	body   bytes.Buffer
+	logger *log.Builder
 }
 
 func (w *nullResponseWriter) Write(p []byte) (int, error) {
 	available := ActionResponseBodyLimit - w.body.Len()
 	if available <= 0 {
+		w.logger.WithFields(log.Fields{
+			"current_size":    w.body.Len(),
+			"limit":           ActionResponseBodyLimit,
+			"attempted_write": len(p),
+		}).Error("nullResponseWriter: response body limit exceeded, dropping data")
 		return 0, nil
 	}
 
 	if len(p) > available {
 		// Write only what fits within the limit
+		w.logger.WithFields(log.Fields{
+			"requested_bytes": len(p),
+			"available_bytes": available,
+			"total_written":   w.body.Len(),
+			"limit":           ActionResponseBodyLimit,
+		}).Error("nullResponseWriter: partial write due to size limit")
 		n, _ := w.body.Write(p[:available])
 		return n, nil
 	}
@@ -59,6 +71,29 @@ func (w *nullResponseWriter) WriteHeader(status int) {
 	if w.status == 0 {
 		w.status = status
 	}
+}
+
+// serveHTTPSafe calls h.ServeHTTP and recovers from http.ErrAbortHandler panics.
+// httputil.ReverseProxy panics with http.ErrAbortHandler when the client disconnects
+// or the request context is canceled. This is normally caught by net/http's own
+// recovery in connection goroutines, but Execute is called from an agent goroutine
+// that is outside of that managed context, so we must recover here explicitly.
+func serveHTTPSafe(h http.Handler, w http.ResponseWriter, r *http.Request) (err error) {
+	defer func() {
+		if p := recover(); p != nil {
+			if p == http.ErrAbortHandler {
+				if ctxErr := r.Context().Err(); ctxErr != nil {
+					err = fmt.Errorf("serveHTTPSafe: request aborted with context error: %w", ctxErr)
+				} else {
+					err = fmt.Errorf("serveHTTPSafe: request aborted")
+				}
+			} else {
+				panic(p)
+			}
+		}
+	}()
+	h.ServeHTTP(w, r)
+	return nil
 }
 
 func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, error) {
@@ -94,22 +129,44 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 		req.Header.Set("X-Forwarded-For", header)
 	}
 
-	nrw := &nullResponseWriter{header: make(http.Header)}
-	a.backend.ServeHTTP(nrw, req)
+	logger := log.WithContextFields(a.originalReq.Context(), log.Fields{
+		"path":       a.action.GetRunHTTPRequest().Path,
+		"method":     a.action.GetRunHTTPRequest().Method,
+		"request_id": a.action.GetRequestID(),
+	})
 
+	logger.Info("Executing HTTP request")
+
+	nrw := &nullResponseWriter{header: make(http.Header), logger: logger}
+	err = serveHTTPSafe(a.backend, nrw, req)
+
+	clientEvent := a.buildClientEvent(nrw, err)
+
+	logger.WithFields(log.Fields{
+		"status_code":          nrw.status,
+		"error":                clientEvent.GetActionResponse().GetHttpResponse().Error,
+		"payload_size":         proto.Size(clientEvent),
+		"event_type":           fmt.Sprintf("%T", clientEvent.Response),
+		"action_response_type": fmt.Sprintf("%T", clientEvent.GetActionResponse().GetResponseType()),
+	}).Info("Sending HTTP response event")
+
+	return clientEvent, nil
+}
+
+func (a *runHTTPActionHandler) buildClientEvent(nrw *nullResponseWriter, err error) *pb.ClientEvent {
 	headers := make(map[string]string, len(nrw.Header()))
 	for k, v := range nrw.Header() {
 		headers[k] = strings.Join(v, ", ")
 	}
 
-	clientEvent := &pb.ClientEvent{
+	ce := &pb.ClientEvent{
 		Response: &pb.ClientEvent_ActionResponse{
 			ActionResponse: &pb.ActionResponse{
 				RequestID: a.action.RequestID,
 				ResponseType: &pb.ActionResponse_HttpResponse{
 					HttpResponse: &pb.HttpResponse{
 						Body:       nrw.body.String(),
-						StatusCode: int32(nrw.status),
+						StatusCode: int32(nrw.status), //nolint:gosec
 						Headers:    headers,
 					},
 				},
@@ -117,15 +174,9 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 		},
 	}
 
-	log.WithContextFields(a.originalReq.Context(), log.Fields{
-		"path":                 a.action.GetRunHTTPRequest().Path,
-		"method":               a.action.GetRunHTTPRequest().Method,
-		"status_code":          nrw.status,
-		"payload_size":         proto.Size(clientEvent),
-		"event_type":           fmt.Sprintf("%T", clientEvent.Response),
-		"action_response_type": fmt.Sprintf("%T", clientEvent.GetActionResponse().GetResponseType()),
-		"request_id":           a.action.GetRequestID(),
-	}).Info("Sending HTTP response event")
+	if err != nil {
+		ce.GetActionResponse().GetHttpResponse().Error = err.Error()
+	}
 
-	return clientEvent, nil
+	return ce
 }
