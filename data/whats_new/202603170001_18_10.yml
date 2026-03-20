@@ -1,0 +1,77 @@
+- name: "SAST false positive detection with GitLab Duo Agent Platform"
+  description: |
+    SAST false positive detection is now generally available in GitLab 18.10. When a security scan runs,
+    GitLab Duo Agent Platform automatically analyzes each critical and high severity SAST vulnerability to
+    determine the likelihood that it's a false positive, with contextual AI reasoning that factors in code
+    context, data flow, and vulnerability characteristics. The assessment appears directly in the vulnerability
+    report alongside existing severity and status information, giving teams the context they need to triage
+    with confidence. Users can also manually trigger analysis for individual vulnerabilities on-demand.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/application_security/vulnerabilities/false_positive_detection
+  image_url: https://about.gitlab.com/images/18_10/sast-false-positive-detection.png
+  published_at: 2026-03-19
+  release: 18.10
+
+- name: "Purchase GitLab Credits on the Free tier on GitLab.com"
+  description: |
+    Free tier group Owners on GitLab.com can now unlock AI with GitLab Credits. Purchase a monthly
+    credit amount, commit to an annual term, and get access to GitLab Duo Agent Platform agents and
+    flows. Credits refresh automatically each month and transfer if you later upgrade to Premium or
+    Ultimate. Monitor your credit usage through the GitLab Credits dashboard. This purchase option is
+    currently only available for free GitLab.com top-level groups.
+  stage: fulfillment
+  self-managed: false
+  gitlab-com: true
+  available_in: [Free]
+  documentation_link: https://docs.gitlab.com/subscriptions/gitlab_credits/#for-the-free-tier-on-gitlabcom
+  image_url: https://about.gitlab.com/images/18_10/Free_Credits_Purchase_Image.png
+  published_at: 2026-03-19
+  release: 18.10
+
+- name: "Sign in securely with passkeys"
+  description: |
+    GitLab now supports passkeys for passwordless sign-in and as a phishing-resistant two-factor
+    authentication method. Passkeys use public-key cryptography and biometric authentication or your device
+    PIN to securely access your account across desktop browsers, mobile devices, and hardware security keys.
+    Your private key never leaves your device, protecting your account even if GitLab servers are compromised.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/auth/passkeys/
+  image_url: https://img.youtube.com/vi/LN5MGRdTHR8/hqdefault.jpg
+  published_at: 2026-03-19
+  release: 18.10
+
+- name: "Introducing the work items list and saved views"
+  description: |
+    The GitLab planning experience is getting a significant upgrade with the work items list and saved
+    views, bringing together two long-requested capabilities. The work items list combines epics, issues,
+    and other work items into a single unified view, eliminating the need to switch between separate pages.
+    Saved views allow you to create and save customized list configurations, supporting standardized ways
+    of viewing work across your team.
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/work_items/
+  image_url: https://about.gitlab.com/images/18_10/work_items_list_and_saved_views.png
+  published_at: 2026-03-19
+  release: 18.10
+
+- name: "Enforce merge request title naming conventions with regex"
+  description: |
+    You can now configure a required title regex for merge requests in your project settings. GitLab
+    evaluates the merge request title against the pattern as a mergeability check, blocking the merge until
+    the title complies, regardless of when it was last changed.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/project/merge_requests/title_validation/
+  image_url: https://about.gitlab.com/images/18_10/create-enforce-mr-title-naming-convention.png
+  published_at: 2026-03-19
+  release: 18.10
