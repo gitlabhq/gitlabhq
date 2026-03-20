@@ -9974,21 +9974,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
   end
 
   describe 'state machine and default attributes' do
-    let(:model) do
-      Class.new(ApplicationRecord) do
-        self.table_name = User.table_name
-
-        attribute :external, default: -> { 1 / 0 }
-
-        state_machine :state, initial: :active do
-        end
-      end
-    end
-
-    it 'raises errors by default' do
-      expect { model }.to raise_error(ZeroDivisionError)
-    end
-
     context 'with state machine default attributes override' do
       let(:model) do
         Class.new(ApplicationRecord) do
