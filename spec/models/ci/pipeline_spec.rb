@@ -5414,6 +5414,53 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#builds_with_cte' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:build_1) { create(:ci_build, pipeline: pipeline, project: project) }
+    let_it_be(:build_2) { create(:ci_build, pipeline: pipeline, project: project) }
+    let_it_be(:other_pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:other_build) { create(:ci_build, pipeline: other_pipeline, project: project) }
+
+    subject { pipeline.builds_with_cte.pluck(:id) }
+
+    it 'returns build IDs belonging to the pipeline' do
+      expect(subject).to contain_exactly(build_1.id, build_2.id)
+    end
+
+    it 'does not include builds from other pipelines' do
+      expect(subject).not_to include(other_build.id)
+    end
+
+    context 'when pipeline has no builds' do
+      let_it_be(:empty_pipeline) { create(:ci_pipeline, project: project) }
+
+      it 'returns an empty result' do
+        expect(empty_pipeline.builds_with_cte.pluck(:id)).to be_empty
+      end
+    end
+  end
+
+  describe '#destroy_job_artifact_associations' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline, project: project) }
+
+    it 'uses Ci::Pipelines::DestroyAssociationsService' do
+      expect_next_instance_of(Ci::Pipelines::DestroyAssociationsService, pipeline) do |service|
+        expect(service).to receive(:destroy_records).and_call_original
+      end
+
+      pipeline.send(:destroy_job_artifact_associations)
+    end
+
+    it 'destroys the artifacts' do
+      artifact = create(:ci_job_artifact, :zip, job: build, project: project)
+
+      pipeline.send(:destroy_job_artifact_associations)
+
+      expect(Ci::JobArtifact.where(id: artifact.id)).to be_empty
+    end
+  end
+
   describe '#has_reports?' do
     subject { pipeline.has_reports?(Ci::JobArtifact.of_report_type(:test)) }
 

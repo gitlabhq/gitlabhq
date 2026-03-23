@@ -195,10 +195,10 @@ module Ci
     validates :yaml_errors, bytesize: { maximum: -> { YAML_ERRORS_MAX_LENGTH } }, if: :yaml_errors_changed?
 
     after_create :keep_around_commits, unless: :importing?
+    before_destroy :destroy_job_artifact_associations, prepend: true
     after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
     after_find :observe_age_in_minutes, unless: :importing?
 
-    use_fast_destroy :job_artifacts
     use_fast_destroy :build_trace_chunks
 
     # We use `Enums::Ci::Pipeline.sources` here so that EE can more easily extend
@@ -897,6 +897,23 @@ module Ci
         .flatten
         .compact
         .last
+    end
+
+    # Returns a Ci::Build relation wrapped in a CTE to force the query planner
+    # to use `p_ci_builds_commit_id_status_type_idx` instead of the primary key
+    # index. Without the CTE, queries with `ORDER BY id LIMIT 1` (from
+    # each_batch) trick the planner into scanning via pkey, causing timeouts.
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/582836
+    def builds_with_cte
+      cte = Gitlab::SQL::CTE.new(
+        :cte_builds,
+        builds.without_statuses([]).select(:id)
+      )
+
+      Ci::Build
+        .with(cte.to_arel)
+        .from("\"cte_builds\" AS #{Ci::Build.quoted_table_name}")
+        .unscope(where: :type)
     end
 
     # This batch loads the latest reports for each CI job artifact
@@ -1653,6 +1670,17 @@ module Ci
         sha
       end
     end
+
+    # rubocop: disable CodeReuse/ServiceClass -- mirrors FastDestroyAll pattern used by Ci::JobArtifact
+    def destroy_job_artifact_associations
+      service = ::Ci::Pipelines::DestroyAssociationsService.new(self)
+      service.destroy_records
+
+      run_after_commit do
+        service.update_statistics
+      end
+    end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def push_details
       strong_memoize(:push_details) do
