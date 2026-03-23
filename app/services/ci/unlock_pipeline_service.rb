@@ -84,7 +84,7 @@ module Ci
     def unlock_job_artifacts
       start = Time.current
 
-      builds_relation.each_batch(of: BATCH_SIZE) do |builds|
+      pipeline.builds_with_cte.each_batch(of: BATCH_SIZE) do |builds|
         # rubocop: disable CodeReuse/ActiveRecord
         Ci::JobArtifact.where(job_id: builds.pluck(:id), partition_id: partition_id)
                        .each_batch(of: BATCH_SIZE) do |job_artifacts|
@@ -100,24 +100,6 @@ module Ci
         end
         # rubocop: enable CodeReuse/ActiveRecord
       end
-    end
-
-    def builds_relation
-      # CTE is used to force the query to use index `p_ci_builds_commit_id_status_type_idx`
-      # rubocop: disable CodeReuse/ActiveRecord -- custom CTE query
-      cte = Gitlab::SQL::CTE.new(
-        :cte_builds,
-        # Two things to ensure:
-        #   - query `commit_id`, `status` and `type` to match the columns of `p_ci_builds_commit_id_status_type_idx`
-        #   - `ORDER BY id` should not be included so that the planner never considers using pkey index
-        pipeline.builds.without_statuses([]).select(:id)
-      )
-
-      Ci::Build
-        .with(cte.to_arel)
-        .from('"cte_builds" AS "p_ci_builds"')
-        .unscope(where: :type)
-      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     # All the partitionable entities connected to a pipeline

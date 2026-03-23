@@ -10,14 +10,13 @@ module Ci
     class DestroyAssociationsService
       BATCH_SIZE = 100
 
-      def initialize(job_artifacts_relation)
-        @job_artifacts_relation = job_artifacts_relation
+      def initialize
         @statistics_updates = {}
       end
 
-      def destroy_records
-        @job_artifacts_relation.each_batch(of: BATCH_SIZE) do |relation|
-          service = Ci::JobArtifacts::DestroyBatchService.new(relation, pick_up_at: Time.current)
+      def destroy_records(job_artifacts_relation)
+        job_artifacts_relation.each_batch(of: BATCH_SIZE) do |batch|
+          service = Ci::JobArtifacts::DestroyBatchService.new(batch, pick_up_at: Time.current)
           result  = service.execute(update_stats: false)
           @statistics_updates.merge!(result[:statistics_updates]) do |_project, existing_updates, new_updates|
             existing_updates.concat(new_updates)
