@@ -1759,15 +1759,11 @@ module Ci
 
     # rubocop: disable CodeReuse/ServiceClass -- mirrors FastDestroyAll pattern used by Ci::JobArtifact
     def destroy_job_artifact_associations
-      if Feature.enabled?(:ci_pipeline_destroy_two_level_batching, project)
-        service = ::Ci::Pipelines::DestroyAssociationsService.new(self)
-        service.destroy_records
+      service = ::Ci::Pipelines::DestroyAssociationsService.new(self)
+      service.destroy_records
 
-        run_after_commit do
-          service.update_statistics
-        end
-      else
-        perform_fast_destroy(job_artifacts)
+      run_after_commit do
+        service.update_statistics
       end
     end
     # rubocop: enable CodeReuse/ServiceClass

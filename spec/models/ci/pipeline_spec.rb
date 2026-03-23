@@ -5764,26 +5764,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       expect(Ci::JobArtifact.where(id: artifact.id)).to be_empty
     end
-
-    context 'when ci_pipeline_destroy_two_level_batching is disabled' do
-      before do
-        stub_feature_flags(ci_pipeline_destroy_two_level_batching: false)
-      end
-
-      it 'falls back to perform_fast_destroy' do
-        expect(pipeline).to receive(:perform_fast_destroy).with(pipeline.job_artifacts)
-
-        pipeline.send(:destroy_job_artifact_associations)
-      end
-
-      it 'destroys the artifacts' do
-        artifact = create(:ci_job_artifact, :zip, job: build, project: project)
-
-        pipeline.send(:destroy_job_artifact_associations)
-
-        expect(Ci::JobArtifact.where(id: artifact.id)).to be_empty
-      end
-    end
   end
 
   describe '#has_reports?' do
