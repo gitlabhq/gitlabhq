@@ -2,6 +2,32 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.10.1 (2026-03-24)
+
+### Fixed (2 changes)
+
+- [Backport https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227592](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dcd20db1d745fd351f9be200158b8d52cfc5fbb6)
+- [Zero downtime reindexing make setting aysc-durability optional](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9df15b8cd91531e0c731d73b8e6de880fd74ce61) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Remove ci_pipeline_destroy_two_level_batching feature flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8b502f568635ff620acc45d771e6866e3f9f4a17)
+
+### Security (12 changes)
+
+- [HTML injection in vulnerabilities Report Solution leads to ATO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5f0bfb38acade4b0acb35ee9cedfa126fa73889d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5926))
+- [Prevent large integer DoS via GraphQL JSON parsing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9dd85c2db8533b459c448c165522601e71637af7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5922))
+- [Remove undocumented access for Planner and Reporter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b23fb7a390e5db8da920197425f2d47f0fb7b969) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5904))
+- [Fix CSRF vulnerability on GLQL endpoint allowing mutation execution via GET requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/abfbbf06cf2da13db29c9b40eee2a1ca966dfdb8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5916))
+- [Fix fork push options updating unrelated upstream merge requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1bad896e7c2b4e87eeb714f7b595ce016ce0bed0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5914))
+- [Prevent DoS via scientific notation in custom webhook templates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5e34d7c706a3b1573fb1bc86b6dca16fa760a555) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5915))
+- [Always apply a purpose-specific CSP to Mermaid sandbox](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b350f1d6e457aedb4b4af45098edd0901fa048a1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5906))
+- [Backport 'Add permission check in resolve method in AiFeatureSettings'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/13a850fc6bce669fe928cb1375fa41aa22409b76) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5905))
+- [Validate YAML size before parsing to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7cf30c10efcaef19e7958b90e868f65ae478f54b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5919))
+- [Weak permissions installation controller jira cloud app](https://gitlab.com/gitlab-org/security/gitlab/-/commit/63ad2966e73d59848b20917881f39ca2cf7a595d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5913))
+- [Fix 2FA login sanitization bypass](https://gitlab.com/gitlab-org/security/gitlab/-/commit/638c2cb8fb26f63562b908e35032396426267378) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5907))
+- [Fix duo_workflow authorization for composite identity service accounts](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f6fb68457b26ac2a2970eaf26f40c502ead2dcce) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5785))
+
 ## 18.10.0 (2026-03-18)
 
 ### Added (168 changes)
