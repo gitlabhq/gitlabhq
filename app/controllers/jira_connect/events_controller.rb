@@ -37,7 +37,9 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
   def update_installation
     JiraConnectInstallations::UpdateService.execute(
       current_jira_installation,
-      update_params
+      nil,
+      update_params,
+      skip_jira_admin_check: true
     ).success?
   end
 
