@@ -10,6 +10,16 @@ module WebHooks
     MAX_PARAM_LENGTH = 8192
     MAX_CUSTOM_HEADER_NAME_LENGTH = 255
 
+    TEMPLATE_PARSE_LIMITS = {
+      max_depth: 32,
+      max_array_size: 100,
+      max_hash_size: 100,
+      max_total_elements: 500,
+      max_json_size_bytes: 4096
+    }.freeze
+
+    DANGEROUS_EXPONENT_RE = Gitlab::UntrustedRegexp.new('\d+(\.\d+)?[eE][+-]?\d{4,}')
+
     # See app/validators/json_schemas/web_hooks_url_variables.json
     VARIABLE_REFERENCE_RE = /\{([A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*)\}/
 
@@ -75,6 +85,7 @@ module WebHooks
       validates :custom_headers, json_schema: { filename: 'web_hooks_custom_headers' },
         unless: ->(hook) { hook.errors[:custom_headers].present? }
       validates :custom_webhook_template, length: { maximum: 4096 }
+      validate :validate_custom_webhook_template_numeric_safety
       validates :name, length: { maximum: 255 }
       validates :description, length: { maximum: 2048 }
 
@@ -233,6 +244,24 @@ module WebHooks
 
       def set_branch_filter_nil
         self.push_events_branch_filter = nil
+      end
+
+      def validate_custom_webhook_template_numeric_safety
+        return if custom_webhook_template.blank?
+
+        if DANGEROUS_EXPONENT_RE.match?(custom_webhook_template)
+          errors.add(:custom_webhook_template, 'contains a numeric value that is too large')
+          return
+        end
+
+        parsed = Gitlab::Json.safe_parse(custom_webhook_template, parse_limits: TEMPLATE_PARSE_LIMITS)
+        return unless parsed
+
+        Gitlab::Json::LimitedEncoder.check_numbers!(parsed)
+      rescue Gitlab::Json::LimitedEncoder::NumberLimitExceeded
+        errors.add(:custom_webhook_template, 'contains a numeric value that is too large')
+      rescue JSON::ParserError
+        errors.add(:custom_webhook_template, 'exceeds allowed JSON complexity limits')
       end
 
       def validate_custom_header_name_length

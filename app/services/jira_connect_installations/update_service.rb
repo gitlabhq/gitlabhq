@@ -2,16 +2,19 @@
 
 module JiraConnectInstallations
   class UpdateService
-    def self.execute(installation, update_params)
-      new(installation, update_params).execute
+    def self.execute(installation, jira_user, update_params, skip_jira_admin_check: false)
+      new(installation, jira_user, update_params, skip_jira_admin_check: skip_jira_admin_check).execute
     end
 
-    def initialize(installation, update_params)
+    def initialize(installation, jira_user, update_params, skip_jira_admin_check: false)
       @installation = installation
+      @jira_user = jira_user
       @update_params = update_params
+      @skip_jira_admin_check = skip_jira_admin_check
     end
 
     def execute
+      return forbidden_error unless can_administer_jira?
       return update_error unless @installation.update(@update_params)
 
       if @installation.instance_url?
@@ -56,6 +59,18 @@ module JiraConnectInstallations
 
     def update_error
       ServiceResponse.error(message: @installation.errors)
+    end
+
+    def forbidden_error
+      ServiceResponse.error(
+        message: s_('JiraConnect|The Jira user is not a site or organization administrator. ' \
+          'Check the permissions in Jira and try again.'),
+        reason: :forbidden
+      )
+    end
+
+    def can_administer_jira?
+      @skip_jira_admin_check || @jira_user&.jira_admin?
     end
   end
 end

@@ -696,7 +696,9 @@ class User < ApplicationRecord
   scope :by_login, ->(login) do
     return none if login.blank?
 
-    login.include?('@') ? iwhere(email: login) : iwhere(username: login)
+    stripped_login = login.strip
+
+    login.include?('@') ? iwhere(email: stripped_login) : iwhere(username: stripped_login)
   end
   scope :by_user_email, ->(emails) { iwhere(email: Array(emails)) }
   scope :by_emails, ->(emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }
@@ -2933,6 +2935,15 @@ class User < ApplicationRecord
 
   def composite_identity_enforced!
     @composite_identity_enforced_override = true
+  end
+
+  def authorization_user
+    return self unless service_account? && composite_identity_enforced?
+
+    identity = ::Gitlab::Auth::Identity.currently_linked
+    return self unless identity&.linked?
+
+    identity.scoped_user
   end
 
   def immutable_username_with_enforced_composite_identity

@@ -5,19 +5,75 @@ require 'spec_helper'
 RSpec.describe JiraConnectInstallations::UpdateService, feature_category: :integrations do
   describe '.execute' do
     it 'creates an instance and calls execute' do
-      expect_next_instance_of(described_class, 'param1', 'param2') do |update_service|
+      expect_next_instance_of(
+        described_class, 'param1', 'param2', 'param3', skip_jira_admin_check: false
+      ) do |update_service|
         expect(update_service).to receive(:execute)
       end
 
-      described_class.execute('param1', 'param2')
+      described_class.execute('param1', 'param2', 'param3')
+    end
+
+    it 'forwards skip_jira_admin_check to the instance' do
+      expect_next_instance_of(
+        described_class, 'param1', 'param2', 'param3', skip_jira_admin_check: true
+      ) do |update_service|
+        expect(update_service).to receive(:execute)
+      end
+
+      described_class.execute('param1', 'param2', 'param3', skip_jira_admin_check: true)
     end
   end
 
   describe '#execute' do
     let_it_be_with_reload(:installation) { create(:jira_connect_installation) }
+    let(:jira_user) { instance_double(Atlassian::JiraConnect::JiraUser, jira_admin?: true) }
     let(:update_params) { { client_key: 'new_client_key' } }
 
-    subject(:execute_service) { described_class.new(installation, update_params).execute }
+    subject(:execute_service) { described_class.new(installation, jira_user, update_params).execute }
+
+    context 'when jira_user is nil' do
+      let(:jira_user) { nil }
+
+      it 'returns a forbidden error' do
+        expect(execute_service).to be_error
+        expect(execute_service.reason).to eq(:forbidden)
+      end
+
+      it 'does not update the installation' do
+        expect { execute_service }.not_to change { installation.reload.client_key }
+      end
+
+      context 'when skip_jira_admin_check is true' do
+        subject(:execute_service) do
+          described_class.new(installation, jira_user, update_params, skip_jira_admin_check: true).execute
+        end
+
+        it 'allows the update for server-to-server lifecycle events' do
+          expect(execute_service).to be_success
+        end
+
+        it 'updates the installation' do
+          expect { execute_service }.to change { installation.reload.client_key }.to('new_client_key')
+        end
+      end
+    end
+
+    context 'when jira_user is not an admin' do
+      let(:jira_user) { instance_double(Atlassian::JiraConnect::JiraUser, jira_admin?: false) }
+
+      it 'returns a forbidden error' do
+        expect(execute_service).to be_error
+        expect(execute_service.reason).to eq(:forbidden)
+        expect(execute_service.message).to eq(
+          'The Jira user is not a site or organization administrator. Check the permissions in Jira and try again.'
+        )
+      end
+
+      it 'does not update the installation' do
+        expect { execute_service }.not_to change { installation.reload.client_key }
+      end
+    end
 
     it 'returns a ServiceResponse' do
       expect(execute_service).to be_kind_of(ServiceResponse)

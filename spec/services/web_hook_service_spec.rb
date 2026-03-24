@@ -550,11 +550,10 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         end
 
         it 'handles the error', :aggregate_failures do
-          result = service_instance.execute
-          expect(result).to have_attributes(status: :error)
-          expect(result.message).to match(/Error while parsing rendered custom webhook template:/)
-          expect(result.message).to match(/quoted string not terminated/)
-          expect(result.message).to match(/\{"test":"oldrev\}/)
+          expect(service_instance.execute).to have_attributes(
+            status: :error,
+            message: a_string_including('Error while parsing rendered custom webhook template:')
+          )
           expect { service_instance.execute }.not_to raise_error
         end
       end
@@ -575,6 +574,134 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
               'You may be trying to access an array value, which is not supported.'
           )
           expect { service_instance.execute }.not_to raise_error
+        end
+      end
+
+      context 'when template contains a numeric value in scientific notation' do
+        before do
+          # Bypass model validation to simulate a pre-existing dangerous template
+          project_hook.update_column(:custom_webhook_template, '9E9999999')
+        end
+
+        it 'rejects the payload and returns an error without exhausting resources', :aggregate_failures do
+          result = service_instance.execute
+
+          expect(result).to have_attributes(
+            status: :error,
+            message: a_string_including('NumberLimitExceeded')
+          )
+          expect { service_instance.execute }.not_to raise_error
+        end
+
+        it 'does not pass the dangerous payload to the execution log' do
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async) do |_hook_id, log_data, _category, _token|
+            expect(log_data['request_data']).to eq({})
+          end
+
+          service_instance.execute
+        end
+      end
+
+      context 'when template contains a scientific notation value as a JSON key' do
+        before do
+          project_hook.update_column(:custom_webhook_template, '{"9E9999999": "value"}')
+        end
+
+        it 'renders the template successfully since the key is a string' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(body: '{"9E9999999":"value"}')
+            .once
+        end
+      end
+
+      context 'when template contains an unquoted scientific notation key (invalid JSON)' do
+        before do
+          project_hook.update_column(:custom_webhook_template, '{9E9999999: "value"}')
+        end
+
+        it 'rejects the payload and returns an error' do
+          result = service_instance.execute
+
+          expect(result).to have_attributes(
+            status: :error,
+            message: a_string_including('Error while parsing rendered custom webhook template:')
+          )
+        end
+      end
+
+      context 'when template contains a large scientific notation number in a JSON object' do
+        before do
+          project_hook.update_column(:custom_webhook_template, '{"value": 1E100000}')
+        end
+
+        it 'rejects the payload and returns an error', :aggregate_failures do
+          result = service_instance.execute
+
+          expect(result).to have_attributes(
+            status: :error,
+            message: a_string_including('Gitlab::Json::LimitedEncoder::NumberLimitExceeded')
+          )
+        end
+
+        it 'does not pass the dangerous payload to the execution log' do
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async) do |_hook_id, log_data, _category, _token|
+            expect(log_data['request_data']).to eq({})
+          end
+
+          service_instance.execute
+        end
+      end
+
+      context 'when template contains deeply nested JSON' do
+        before do
+          project_hook.update_column(:custom_webhook_template, ('[[' * 50) + (']]' * 50))
+        end
+
+        it 'rejects the payload and returns an error', :aggregate_failures do
+          result = service_instance.execute
+
+          expect(result).to have_attributes(
+            status: :error,
+            message: a_string_including('Error while parsing rendered custom webhook template:')
+          )
+        end
+
+        it 'does not pass the dangerous payload to the execution log' do
+          expect(WebHooks::LogExecutionWorker).to receive(:perform_async) do |_hook_id, log_data, _category, _token|
+            expect(log_data['request_data']).to eq({})
+          end
+
+          service_instance.execute
+        end
+      end
+
+      context 'when template contains a safe numeric value' do
+        before do
+          project_hook.custom_webhook_template = '{"count": 42}'
+        end
+
+        it 'renders the template successfully' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(body: '{"count":42}')
+            .once
+        end
+      end
+
+      context 'when template contains a safe scientific notation number' do
+        before do
+          project_hook.custom_webhook_template = '{"value": 1.5E2}'
+        end
+
+        it 'renders the template successfully' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(body: '{"value":150.0}')
+            .once
         end
       end
     end

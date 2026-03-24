@@ -153,7 +153,7 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
     end
   end
 
-  describe 'private methods' do
+  describe 'instance methods' do
     context 'with .passwordless_passkey_params' do
       before do
         allow_next_instance_of(described_class) do |instance|
@@ -184,6 +184,40 @@ RSpec.describe SessionsController, type: :request, feature_category: :system_acc
           expect(sanitized_params.to_h).not_to include({
             admin: true,
             require_two_factor_authentication: false
+          })
+        end
+      end
+    end
+
+    context 'with .user_params' do
+      context 'when parameter sanitization is applied' do
+        let(:params) do
+          {
+            user: {
+              login: 'john_doe@gmail.com ',
+              password: 'password123',
+              device_response: 'valid_response',
+              remember_me: '1',
+              admin: true,
+              require_two_factor_authentication_from_group: false
+            }
+          }
+        end
+
+        let(:sanitized_params) { controller.send(:user_params) }
+
+        it 'returns a hash of only permitted scalar keys, with a stripped login' do
+          post user_session_path, params: params
+
+          expect(sanitized_params.to_h).to include({
+            login: 'john_doe@gmail.com',
+            device_response: 'valid_response',
+            remember_me: '1'
+          })
+
+          expect(sanitized_params.to_h).not_to include({
+            admin: true,
+            require_two_factor_authentication_from_group: false
           })
         end
       end
