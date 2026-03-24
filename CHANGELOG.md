@@ -2,6 +2,32 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.9.3 (2026-03-24)
+
+### Fixed (7 changes)
+
+- [Fix statement timeouts on p_ci_job_artifacts during pipeline deletion](https://gitlab.com/gitlab-org/security/gitlab/-/commit/13eb37d8e59caca3a8b4a41ae7bf56709ea61b98)
+- [Zero downtime reindexing make setting aysc-durability optional](https://gitlab.com/gitlab-org/security/gitlab/-/commit/72b8d70c9ad6c4f2a34539c9acc94011c302e174) **GitLab Enterprise Edition**
+- [Backport https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227592](https://gitlab.com/gitlab-org/security/gitlab/-/commit/15b84d6fde6cf593db08aad345d9e3a4ae2c38d8)
+- [Exclude group-covered projects from search authorization](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b0e4e2697d3686758fe3b923e5d14c2a8aa95cb3) **GitLab Enterprise Edition**
+- [GLQL advanced finder, remove project_ids](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2ba23c5fab2dae4d06e96c84067fb1cf55a71baa) **GitLab Enterprise Edition**
+- [Fix pipeline editor button not showing on ci file](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8c8f4651fff465c5da2c38ad45416f9a26bce26e)
+- [Fix gitlab:setup failure on fresh database](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c8029d0e016b485a489440aeb487e51b582b2702)
+
+### Security (11 changes)
+
+- [HTML injection in vulnerabilities Report Solution leads to ATO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/090e5395e3b5c53e8c04b6e8a221c8e9ce4bae0c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5927))
+- [Prevent large integer DoS via GraphQL JSON parsing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fd2ab696072de3b84ad2c5d5954f49e2119fa9b4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5923))
+- [Remove undocumented access for Planner and Reporter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1bce9ebdcf0973a7d4435caf651e128967e47555) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5874))
+- [Fix CSRF vulnerability on GLQL endpoint allowing mutation execution via GET requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fd0097bb9240b896967d731ed9cf651afb270677) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5917))
+- [Fix fork push options updating unrelated upstream merge requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1ca872d0c52953e95c211e7f11d288702ed01ac0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5896))
+- [Prevent DoS via scientific notation in custom webhook template](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4fcc8be1f57d7e42d20f6e83a5d399c8f0af67c3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5881))
+- [Always apply a purpose-specific CSP to Mermaid sandbox](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a580dff9d4169137325c09e66c3be1340f442dd4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5848))
+- [Backport 'Add permission check in resolve method in AiFeatureSettings'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/869de7e3a4fdffe5df553ef8259987d18a532913) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5859))
+- [Validate YAML size before parsing to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a1fe77f4d2f93bf9e2ba8601a2da000357568bb0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5868))
+- [Weak permissions installation controller jira cloud app](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aa9ae358d82e9e583f2fc180bfc2401d22f35b8e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5864))
+- [Fix 2FA login sanitization bypass](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8a2450fc4ca0dfc51a580de5b72eb25bccb8b897) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5891))
+
 ## 18.9.2 (2026-03-10)
 
 ### Added (1 change)
