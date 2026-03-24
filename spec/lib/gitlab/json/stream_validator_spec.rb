@@ -15,6 +15,7 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
       "Too many total parameters" | described_class::ElementCountLimitError
       "JSON body too large" | described_class::BodySizeExceededError
       "Invalid JSON format" | described_class::InvalidJsonError
+      "Numeric value too large" | described_class::NumericValueTooLargeError
       "Invalid JSON: limit exceeded" | StandardError
     end
 
@@ -83,6 +84,8 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
       "-1.23" | 5
       "-1.23e10" | 8
       "-1.23E-1" | 8
+      "1.5E1000" | 8
+      "-2.0e123456789" | 14
       '"simple"' | 8
       '"hello world"' | 13
       '""' | 2
@@ -287,6 +290,55 @@ RSpec.describe Gitlab::Json::StreamValidator, feature_category: :shared do
     with_them do
       it 'raises ElementCountLimitError' do
         expect { parse }.to raise_error(described_class::ElementCountLimitError, expected_error)
+      end
+    end
+  end
+
+  describe 'numeric value size validation' do
+    let(:options) { { max_depth: 0, max_array_size: 0, max_hash_size: 0, max_total_elements: 0 } }
+
+    subject(:parse) do
+      validator = described_class.new(options)
+      validator.validate!(json)
+    end
+
+    context 'when a large integer is nested in a hash value' do
+      let(:json) { "{\"key\":#{'9' * 1500}}" }
+
+      it 'raises NumericValueTooLargeError' do
+        expect { parse }.to raise_error(described_class::NumericValueTooLargeError, "Numeric value too large")
+      end
+    end
+
+    context 'when a large integer is nested in an array' do
+      let(:json) { "[#{10**1500}]" }
+
+      it 'raises NumericValueTooLargeError' do
+        expect { parse }.to raise_error(described_class::NumericValueTooLargeError, "Numeric value too large")
+      end
+    end
+
+    context 'when an integer is within the allowed size' do
+      let(:json) { "{\"key\":#{10**300}}" }
+
+      it 'does not raise an error' do
+        expect { parse }.not_to raise_error
+      end
+    end
+
+    context 'when a negative large integer is nested in a hash value' do
+      let(:json) { "{\"key\":-#{10**1500}}" }
+
+      it 'raises NumericValueTooLargeError' do
+        expect { parse }.to raise_error(described_class::NumericValueTooLargeError, "Numeric value too large")
+      end
+    end
+
+    context 'when the value is a non-integer type' do
+      let(:json) { '{"key":"a very long string value"}' }
+
+      it 'does not raise an error' do
+        expect { parse }.not_to raise_error
       end
     end
   end

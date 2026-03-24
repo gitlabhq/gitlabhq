@@ -6,9 +6,13 @@ class JiraConnect::InstallationsController < JiraConnect::ApplicationController
   end
 
   def update
+    return render_forbidden unless jira_user
+
     result = update_installation
     if result.success?
       render json: installation_json(current_jira_installation)
+    elsif result.reason == :forbidden
+      render_forbidden
     else
       render(
         json: { errors: result.message },
@@ -22,6 +26,7 @@ class JiraConnect::InstallationsController < JiraConnect::ApplicationController
   def update_installation
     JiraConnectInstallations::UpdateService.execute(
       current_jira_installation,
+      jira_user,
       installation_params
     )
   end
@@ -38,5 +43,15 @@ class JiraConnect::InstallationsController < JiraConnect::ApplicationController
       .require(:installation)
       .permit(:instance_url)
       .merge(organization_id: Current.organization.id)
+  end
+
+  def render_forbidden
+    render(
+      json: {
+        errors: s_('JiraConnect|The Jira user is not a site or organization administrator. ' \
+          'Check the permissions in Jira and try again.')
+      },
+      status: :forbidden
+    )
   end
 end

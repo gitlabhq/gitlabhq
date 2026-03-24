@@ -294,14 +294,26 @@ module Gitlab
 
     class LimitedEncoder
       LimitExceeded = Class.new(StandardError)
+      NumberLimitExceeded = Class.new(StandardError)
+
+      # Maximum number of digits a numeric value may produce when serialized.
+      # Numbers exceeding this are rejected to prevent denial-of-service via
+      # values like 9E9999999 which expand to billions of characters.
+      # 1 000 digits is generous for any legitimate use case (e.g. Unix
+      # timestamps are 10 digits, financial amounts rarely exceed 20).
+      MAXIMUM_NUMERIC_DIGITS = 1_000
 
       # Generates JSON for an object or raise an error if the resulting json string is too big
+      # or if the object contains a number that would serialize to too many digits.
       #
       # @param object [Hash, Array, Object] must be hash, array, or an object that responds to .to_h or .to_json
       # @param limit [Integer] max size of the resulting json string
       # @return [String]
       # @raise [LimitExceeded] if the resulting json string is bigger than the specified limit
+      # @raise [NumberLimitExceeded] if a numeric value would serialize to more than MAXIMUM_NUMERIC_DIGITS digits
       def self.encode(object, limit: 25.megabytes)
+        check_numbers!(object)
+
         buffer = StringIO.new
         buffer_size = 0
 
@@ -315,6 +327,29 @@ module Gitlab
         end
 
         buffer.string
+      end
+
+      # Recursively checks that no numeric value in the object would produce
+      # a dangerously long string when serialized to JSON.
+      #
+      # This is intentionally public so that callers (e.g. model validations)
+      # can reuse the same check without duplicating the logic.
+      #
+      # @raise [NumberLimitExceeded] if an unsafe numeric value is found
+      def self.check_numbers!(value)
+        case value
+        when BigDecimal, Float, Integer
+          # BigDecimal#exponent is constant-time and tells us the digit count
+          # of the integer part. Negative exponents mean small decimals like
+          # 0.000...001 which also expand to many characters in fixed notation.
+          bd = BigDecimal(value)
+          raise NumberLimitExceeded unless bd.finite?
+          raise NumberLimitExceeded if bd.exponent.abs > MAXIMUM_NUMERIC_DIGITS
+        when Hash
+          value.each_value { |v| check_numbers!(v) }
+        when Array
+          value.each { |v| check_numbers!(v) }
+        end
       end
     end
 
