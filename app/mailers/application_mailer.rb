@@ -10,7 +10,7 @@ class ApplicationMailer < ActionMailer::Base
   # These are transient and are fixed by a retry.
   SMTPConnectionError = Class.new(Gitlab::SidekiqMiddleware::RetryError)
 
-  rescue_from EOFError do
+  rescue_from EOFError, Net::SMTPServerBusy do
     raise SMTPConnectionError
   end
 

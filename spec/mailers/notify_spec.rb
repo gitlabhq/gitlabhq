@@ -2316,16 +2316,25 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
   end
 
   context 'with SMTP connection errors' do
-    it 'raises an SMTPConnectionError' do
-      expect_next_instance_of(Mail::TestMailer) do |instance|
-        expect(instance).to receive(:deliver!).and_raise(EOFError)
-      end
+    where(:error_class) do
+      [
+        EOFError,
+        Net::SMTPServerBusy
+      ]
+    end
 
-      expect do
-        perform_enqueued_jobs do
-          described_class.new_issue_email(assignee.id, issue.id).deliver_later
+    with_them do
+      it 'raises an SMTPConnectionError' do
+        expect_next_instance_of(Mail::TestMailer) do |instance|
+          expect(instance).to receive(:deliver!).and_raise(error_class, 'Error!')
         end
-      end.to raise_error(ApplicationMailer::SMTPConnectionError)
+
+        expect do
+          perform_enqueued_jobs do
+            described_class.new_issue_email(assignee.id, issue.id).deliver_later
+          end
+        end.to raise_error(ApplicationMailer::SMTPConnectionError)
+      end
     end
   end
 end
