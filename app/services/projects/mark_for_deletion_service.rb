@@ -41,7 +41,6 @@ module Projects
 
     def update_service_params
       {
-        archived: true,
         name: suffixed_identifier(resource.name),
         path: suffixed_identifier(resource.path),
         marked_for_deletion_at: Time.current,
