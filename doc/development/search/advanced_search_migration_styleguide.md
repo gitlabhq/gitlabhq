@@ -190,10 +190,11 @@ Use the following table to decide which helper to use when backfilling a field:
 
 | | `MigrationBackfillHelper` | `MigrationProjectScopedUpdateByQueryHelper` |
 |---|---|---|
-| **Mechanism** | Search for documents missing the field, build references, track them through the bookkeeping pipeline for re-indexing. | Search for projects with documents missing the field, issue async `update_by_query` tasks with a Painless script per project. |
+| **Mechanism** | Search for documents missing the field, build references, track them through the bookkeeping pipeline for re-indexing. | Search for projects with documents missing the field, issue async `update_by_query` tasks with a Painless script. Uses dual-mode strategy: safe mode for large projects (one at a time), speed mode for small projects (can batch multiple together). |
 | **Best for** | Indices backed by an ActiveRecord model (`DOCUMENT_TYPE`) where the indexer populates the field on re-index. | Project-scoped indices (commits, blobs, wikis) where the field value is derived from the project/namespace and the index is populated by the Go-based indexer. |
-| **Batch limit** | 10,000 documents per search (Elasticsearch default). | Configurable `batch_size` per `update_by_query` task, multiple projects processed concurrently. |
-| **Concurrency** | Sequential. | Concurrent — up to `max_projects_to_process` projects at a time (tunable at runtime via migration state). |
+| **Batch limit** | 10,000 documents per search (Elasticsearch default). | Configurable `batch_size` per task (safe mode) and `speed_mode_batch_size` for batched updates (speed mode). Both tunable at runtime via migration state. |
+| **Concurrency** | Sequential. | Concurrent — up to `max_concurrent_tasks` (default: 50) projects processed simultaneously. Tunable at runtime via migration state. |
+| **Optimization** | None - always sequential. | Automatically optimizes based on project size: careful processing for large projects (≥10k docs), batched processing for small projects. |
 
 ### Migration helpers
 
@@ -597,29 +598,114 @@ in-place with a Painless script directly in Elasticsearch.
 > use [`MigrationBackfillHelper`](#searchelasticmigrationbackfillhelper) or
 > [`MigrationReindexBasedOnSchemaVersion`](#searchelasticmigrationreindexbasedonschemaversion) instead.
 
-Requires three methods and supports one optional override:
+##### Dual-mode migration strategy
+
+This helper automatically adapts its strategy based on project size:
+
+- **Safe mode**: For large projects (≥10,000 documents by default) - processes one project at a time with careful concurrency control.
+- **Speed mode**: For smaller projects - can batch multiple projects together in a single update for faster processing.
+
+The helper determines which mode to use by checking if any remaining projects have document counts
+exceeding the `large_project_threshold`. Safe mode runs first when large projects remain, then
+automatically switches to speed mode after all large projects are complete.
+
+##### Required methods
+
+Migrations must implement four methods:
 
 ```ruby
-# Required:
-def index_name               # The Elasticsearch index to operate on
-def query_missing_field(exclude_project_ids = nil)  # ES query matching docs that need the update
-def update_script(project)   # Returns { source: "painless…", params: { … } }
+# The document type to filter by (e.g., 'commit', 'blob', 'wiki_blob')
+def document_type_value
+  'commit'
+end
 
-# Optional override (default: Project.includes(:namespace)):
-def project_relation
+# The field being backfilled
+def field_name
+  'traversal_ids'
+end
+
+# Painless script for updating a single project's documents
+# Used in safe mode (large projects) and as fallback in speed mode
+def update_script(project)
+  {
+    source: "ctx._source.traversal_ids = params.traversal_ids",
+    params: { traversal_ids: project.namespace.traversal_ids }
+  }
+end
+
+# Painless script for batch updating multiple projects at once
+# Used in speed mode for small projects
+# Must be implemented by all migrations using this helper
+def batch_update_script(projects)
+  # Convert IDs to strings to match ES keyword fields
+  project_values = projects.index_by { |p| p.id.to_s }.transform_values(&:namespace_ancestry)
+  {
+    source: "ctx._source.traversal_ids = params.project_values[ctx._source.rid.toString()]",
+    params: { project_values: project_values }
+  }
+end
 ```
 
-The number of projects processed concurrently defaults to 10 and can be
-increased at runtime without a code change by updating the migration state.
+##### Required: Implement batch processing
+
+Migrations must implement the `batch_update_script(projects)` method to enable batch processing in speed mode:
+
+```ruby
+# Returns a Painless script that works across multiple projects
+# Receives an array of Project objects in this batch
+# @param projects [Array<Project>] Projects being batched together
+# @return [Hash] Script with :source and :params keys
+def batch_update_script(projects)
+  # Build a lookup map from project data
+  # IMPORTANT: Convert project IDs to strings to match keyword fields in Elasticsearch
+  project_values = projects.index_by { |p| p.id.to_s }.transform_values(&:namespace_ancestry)
+  {
+    source: "ctx._source.traversal_ids = params.project_values[ctx._source.rid.toString()]",
+    params: { project_values: project_values }
+  }
+end
+```
+
+##### Optional overrides
+
+```ruby
+# Override to change the Elasticsearch field storing project ID (default: 'rid')
+def project_id_field
+  'rid'
+end
+
+# Override to customize eager loading (default: Project.with_namespace)
+def project_relation
+  Project.includes(:namespace, :route)
+end
+```
+
+##### Configuration via migration state
+
+All migration parameters can be tuned at runtime without code changes:
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `batch_size` | Inherited | Max documents per update_by_query task |
+| `max_concurrent_tasks` | 50 | Max concurrent update tasks allowed |
+| `speed_mode_batch_size` | 10,000 | Max documents when batching projects in speed mode |
+| `large_project_threshold` | 10,000 | Document count threshold for "large" projects |
 
 Using a Rails console:
 
 ```ruby
 migration = Elastic::DataMigrationService[20260216153009].send(:migration)
-migration.set_migration_state(migration.migration_state.merge(max_projects_to_process: 30))
+migration.set_migration_state(
+  migration.migration_state.merge(
+    batch_size: 5_000,
+    max_concurrent_tasks: 100,
+    speed_mode_batch_size: 20_000,
+    large_project_threshold: 15_000
+  )
+)
 ```
 
-Alternatively, you can update the migration state directly in Elasticsearch.
+Alternatively, update the migration state directly in Elasticsearch.
 Migration state is stored in the `#{target_name}-migrations` index
 (for example, `gitlab-production-migrations`). Each migration document is indexed
 by its version number, and the state is in the `state` field. Use the
@@ -627,18 +713,23 @@ by its version number, and the state is in the `state` field. Use the
 with the migration version as the document ID:
 
 ```shell
-# Update max_projects_to_process for migration 20260216153009
+# Update migration parameters for migration 20260216153009
 curl --request POST "localhost:9200/gitlab-production-migrations/_update/20260216153009" \
   --header 'Content-Type: application/json' --data'
 {
   "script": {
-    "source": "ctx._source.state.max_projects_to_process = params.value",
-    "params": { "value": 50 }
+    "source": "ctx._source.state.max_concurrent_tasks = params.max_tasks; ctx._source.state.batch_size = params.batch_size; ctx._source.state.speed_mode_batch_size = params.speed_batch_size; ctx._source.state.large_project_threshold = params.threshold",
+    "params": {
+      "max_tasks": 100,
+      "batch_size": 5000,
+      "speed_batch_size": 20000,
+      "threshold": 15000
+    }
   }
 }'
 ```
 
-Example migration:
+##### Example migration
 
 ```ruby
 class BackfillTraversalIdsOnCommits < Elastic::Migration
@@ -655,25 +746,45 @@ class BackfillTraversalIdsOnCommits < Elastic::Migration
 
   private
 
-  def query_missing_field(exclude_project_ids = nil)
-    {
-      bool: {
-        must_not: [{ exists: { field: 'traversal_ids' } }]
-      }
-    }.tap do |query|
-      query[:bool][:must_not] << { terms: { rid: exclude_project_ids } } if exclude_project_ids.present?
-    end
+  def document_type_value
+    'commit'
+  end
+
+  def field_name
+    'traversal_ids'
   end
 
   def update_script(project)
     {
       source: "ctx._source.traversal_ids = params.traversal_ids",
-      params: {
-        traversal_ids: project.elastic_namespace_ancestry
-      }
+      params: { traversal_ids: project.elastic_namespace_ancestry }
+    }
+  end
+
+  # Enable batching for faster processing in speed mode
+  def batch_update_script(projects)
+    # Convert IDs to strings to match keyword fields in ES
+    project_values = projects.index_by { |p| p.id.to_s }.transform_values(&:namespace_ancestry)
+    {
+      source: "ctx._source.traversal_ids = params.project_values[ctx._source.rid.toString()]",
+      params: { project_values: project_values }
     }
   end
 end
+```
+
+##### Migration progress and logging
+
+The helper logs the current mode and includes document counts for better observability:
+
+```plaintext
+Running migration in safe mode (processing large projects)
+In Progress: update_by_query task, project_id: 123, document_count: 15000
+Completed: update_by_query task, project_id: 123, document_count: 15000
+
+Running migration in speed mode (batching small projects)
+In Progress: update_by_query task, project_id: 456, document_count: 2000
+Completed: update_by_query task, project_id: 456, document_count: 2000
 ```
 
 You can test this migration with the
