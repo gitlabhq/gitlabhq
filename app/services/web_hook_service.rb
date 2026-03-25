@@ -94,19 +94,27 @@ class WebHookService
     )
 
     ServiceResponse.success(message: response.body, payload: { http_status: response.code })
-  rescue *Gitlab::HTTP::HTTP_ERRORS, CustomWebHookTemplateError, Zlib::DataError,
-    Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError => e
+  rescue CustomWebHookTemplateError,
+    Gitlab::Json::LimitedEncoder::NumberLimitExceeded => e
+    log_execution(
+      response: InternalErrorResponse.new,
+      execution_duration: 0,
+      error_message: e.to_s,
+      request_data: {}
+    )
+
+    ServiceResponse.error(message: e.to_s)
+  rescue *Gitlab::HTTP::HTTP_ERRORS, Zlib::DataError,
+    Gitlab::Json::LimitedEncoder::LimitExceeded,
+    URI::InvalidURIError => e
     execution_duration = ::Gitlab::Metrics::System.monotonic_time - start_time
     error_message = e.to_s
-
-    # An exception raised while rendering the custom template prevents us from calling `#request_payload`
-    request_data = e.instance_of?(CustomWebHookTemplateError) ? {} : request_payload
 
     log_execution(
       response: InternalErrorResponse.new,
       execution_duration: execution_duration,
       error_message: error_message,
-      request_data: request_data
+      request_data: request_payload
     )
 
     Gitlab::AppLogger.error("WebHook Error after #{execution_duration.to_i.seconds}s => #{e}")
@@ -302,7 +310,8 @@ class WebHookService
       hook_id: hook.id,
       duration_s: duration
     )
-    Gitlab::Json.parse(rendered_template)
+    Gitlab::Json.safe_parse(rendered_template,
+      parse_limits: WebHooks::Hook::TEMPLATE_PARSE_LIMITS) || raise_custom_webhook_template_error!('Invalid JSON')
   rescue JSON::ParserError => e
     raise_custom_webhook_template_error!(e.message)
   rescue TypeError

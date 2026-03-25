@@ -932,6 +932,120 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
     end
   end
 
+  describe 'when pushing to a fork with an existing upstream merge request' do
+    let_it_be(:attacker) { create(:user) }
+    let(:push_options) { { title: 'PWNED TITLE' } }
+    let(:changes) { existing_branch_changes }
+    let!(:upstream_merge_request) do
+      create(:merge_request, source_project: project, source_branch: source_branch, title: 'Original title')
+    end
+
+    let(:fork_service) do
+      described_class.new(
+        project: forked_project,
+        current_user: attacker,
+        changes: changes,
+        push_options: push_options
+      )
+    end
+
+    context 'when an unauthorized user pushes to a fork' do
+      before_all do
+        forked_project.add_developer(attacker)
+      end
+
+      it 'does not update the upstream merge request' do
+        expect { fork_service.execute }.not_to change { upstream_merge_request.reload.title }
+      end
+    end
+
+    context 'when a developer on the upstream project pushes to a fork' do
+      before_all do
+        forked_project.add_developer(user2) # user2 is already a developer on the upstream project
+      end
+
+      let(:fork_service) do
+        described_class.new(
+          project: forked_project,
+          current_user: user2,
+          changes: changes,
+          push_options: push_options
+        )
+      end
+
+      it 'does not update the upstream merge request' do
+        expect { fork_service.execute }.not_to change { upstream_merge_request.reload.title }
+      end
+    end
+
+    context 'when the fork owner updates their own fork-to-upstream merge request' do
+      let!(:fork_merge_request) do
+        create(:merge_request, source_project: forked_project, target_project: project,
+          source_branch: source_branch, title: 'Original title')
+      end
+
+      let(:fork_service) do
+        described_class.new(
+          project: forked_project,
+          current_user: user1,
+          changes: changes,
+          push_options: push_options
+        )
+      end
+
+      it 'updates the fork-to-upstream merge request' do
+        fork_service.execute
+
+        expect(fork_merge_request.reload.title).to eq('PWNED TITLE')
+      end
+
+      it 'does not update the upstream merge request' do
+        expect { fork_service.execute }.not_to change { upstream_merge_request.reload.title }
+      end
+    end
+  end
+
+  describe 'when updating a merge request via push options' do
+    let(:push_options) { { title: 'Updated title' } }
+    let(:changes) { existing_branch_changes }
+    let!(:merge_request) do
+      create(:merge_request, source_project: project, source_branch: source_branch, title: 'Original title')
+    end
+
+    context 'when the user is the merge request author' do
+      let(:service) do
+        described_class.new(project: project, current_user: merge_request.author, changes: changes, push_options: push_options)
+      end
+
+      it 'updates the merge request' do
+        service.execute
+
+        expect(merge_request.reload.title).to eq('Updated title')
+      end
+    end
+
+    context 'when the user does not have permission to update the merge request' do
+      let_it_be(:unauthorized_user) { create(:user) }
+      let(:service) do
+        described_class.new(project: project, current_user: unauthorized_user, changes: changes, push_options: push_options)
+      end
+
+      before_all do
+        project.add_guest(unauthorized_user)
+      end
+
+      it 'does not update the merge request' do
+        expect { service.execute }.not_to change { merge_request.reload.title }
+      end
+
+      it 'records an error' do
+        service.execute
+
+        expect(service.errors).to include('User access was denied')
+      end
+    end
+  end
+
   describe 'multiple pushed branches' do
     let(:push_options) { { create: true } }
     let(:changes) do

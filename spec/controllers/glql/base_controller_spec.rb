@@ -158,7 +158,8 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
             expect(instance).to receive(:execute).with(
               query: query,
               variables: {},
-              context: a_hash_including(is_sessionless_user: false)
+              context: a_hash_including(is_sessionless_user: false),
+              operation_name: 'GLQL'
             )
           end
 
@@ -174,7 +175,7 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
 
       let(:query) do
         <<~GRAPHQL
-          mutation {
+          mutation GLQL {
             createNote(input: {
               noteableId: "gid://gitlab/Issue/#{issue.id}",
               body: "*sips tea*"
@@ -397,7 +398,8 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
         expect(instance).to receive(:execute).with(
           query: query,
           variables: {},
-          context: a_hash_including(is_sessionless_user: false)
+          context: a_hash_including(is_sessionless_user: false),
+          operation_name: 'GLQL'
         )
       end
 
