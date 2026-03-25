@@ -132,6 +132,33 @@ RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_composi
     end
   end
 
+  context 'when raw yaml content is too large' do
+    let(:yml) { 'a' * 3.megabytes }
+
+    describe '#initialize' do
+      it 'raises DataTooLargeError before parsing' do
+        expect { loader }.to raise_error(
+          Gitlab::Config::Loader::Yaml::DataTooLargeError,
+          'The provided YAML is too big'
+        )
+      end
+    end
+  end
+
+  context 'when raw yaml content is just under the size limit' do
+    let(:yml) { "key: '#{'a' * (2.megabytes - 10)}'" }
+
+    before do
+      stub_application_setting(max_yaml_size_bytes: 2.megabytes)
+    end
+
+    describe '#initialize' do
+      it 'does not raise an error before parsing' do
+        expect { loader }.not_to raise_error
+      end
+    end
+  end
+
   # Prevent Billion Laughs attack: https://gitlab.com/gitlab-org/gitlab-foss/issues/56018
   context 'when yaml has cyclic data structure' do
     let(:yml) do

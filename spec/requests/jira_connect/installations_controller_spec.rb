@@ -65,7 +65,20 @@ RSpec.describe JiraConnect::InstallationsController, feature_category: :integrat
 
     context 'with valid JWT' do
       let(:qsh) { Atlassian::Jwt.create_query_string_hash('https://gitlab.test/subscriptions', 'GET', 'https://gitlab.test') }
-      let(:jwt) { Atlassian::Jwt.encode({ iss: installation.client_key, qsh: qsh }, installation.shared_secret) }
+      let(:jwt) do
+        Atlassian::Jwt.encode(
+          { iss: installation.client_key, qsh: qsh, sub: 'jira_user_id' },
+          installation.shared_secret
+        )
+      end
+
+      before do
+        allow_next_instance_of(Atlassian::JiraConnect::Client) do |client|
+          allow(client).to receive(:user_info).with('jira_user_id').and_return(
+            Atlassian::JiraConnect::JiraUser.new({ 'groups' => { 'items' => [{ 'name' => 'site-admins' }] } })
+          )
+        end
+      end
 
       it 'returns 200' do
         do_request
@@ -73,17 +86,46 @@ RSpec.describe JiraConnect::InstallationsController, feature_category: :integrat
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it 'passes current organization id to UpdateService' do
+      it 'passes jira_user and current organization id to UpdateService' do
         expect(JiraConnectInstallations::UpdateService)
           .to receive(:execute)
           .with(
             installation,
+            instance_of(Atlassian::JiraConnect::JiraUser),
             ActionController::Parameters
               .new(instance_url: nil, organization_id: current_organization.id)
               .permit(:instance_url, :organization_id))
           .and_call_original
 
         do_request
+      end
+
+      context 'when jira user is not an admin' do
+        before do
+          allow_next_instance_of(Atlassian::JiraConnect::Client) do |client|
+            allow(client).to receive(:user_info).with('jira_user_id').and_return(
+              Atlassian::JiraConnect::JiraUser.new({ 'groups' => { 'items' => [{ 'name' => 'regular-users' }] } })
+            )
+          end
+        end
+
+        it 'returns 403' do
+          do_request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'when JWT has no sub claim' do
+        let(:jwt) do
+          Atlassian::Jwt.encode({ iss: installation.client_key, qsh: qsh }, installation.shared_secret)
+        end
+
+        it 'returns 403' do
+          do_request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
 
       context 'with instance_url param' do
