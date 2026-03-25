@@ -21,14 +21,13 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
     allow(notification_service).to receive(:project_scheduled_for_deletion).with(project)
   end
 
-  it 'marks project as archived and marked for deletion', :aggregate_failures do
+  it 'marks project as marked for deletion', :aggregate_failures do
     expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async)
       .with(project.namespace_id).and_call_original
 
     expect(result).to be_success
 
     expect(Project.unscoped.all).to include(project)
-    expect(project.reload.archived).to be(false)
     expect(project.reload).to be_self_deletion_scheduled
     expect(project.reload.self_deletion_scheduled_deletion_created_on).not_to be_nil
     expect(project.reload.deleting_user).to eq(user)

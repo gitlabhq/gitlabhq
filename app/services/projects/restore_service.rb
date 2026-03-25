@@ -35,7 +35,6 @@ module Projects
           resource,
           current_user,
           {
-            archived: false,
             hidden: false,
             name: updated_value(resource.name),
             path: updated_value(resource.path),
