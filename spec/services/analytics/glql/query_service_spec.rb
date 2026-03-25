@@ -81,10 +81,29 @@ RSpec.describe Analytics::Glql::QueryService, feature_category: :custom_dashboar
         expect(GitlabSchema).to receive(:execute).with(
           query,
           variables: variables,
-          context: expected_context
+          context: expected_context,
+          operation_name: nil
         )
 
         service.execute(query: query, variables: variables, context: context)
+      end
+
+      it 'passes operation_name to GitlabSchema.execute when provided' do
+        expected_context = {
+          current_user: user,
+          current_organization: nil,
+          request: request,
+          is_sessionless_user: true
+        }
+
+        expect(GitlabSchema).to receive(:execute).with(
+          query,
+          variables: variables,
+          context: expected_context,
+          operation_name: 'TestOp'
+        )
+
+        service.execute(query: query, variables: variables, context: context, operation_name: 'TestOp')
       end
 
       it 'tracks SLI metrics for successful execution' do

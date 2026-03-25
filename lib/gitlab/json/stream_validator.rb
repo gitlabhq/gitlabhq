@@ -11,11 +11,14 @@ module Gitlab
       HashSizeLimitError = Class.new(LimitExceededError)
       BodySizeExceededError = Class.new(LimitExceededError)
       InvalidJsonError = Class.new(LimitExceededError)
+      NumericValueTooLargeError = Class.new(LimitExceededError)
 
       # Match integers, floats, and scientific notation with reasonable size limits
       # Supports: 123, -123, 12.3, -12.3, 1.23e10, -1.23E-10
       # Limits: max 15 digits for integer part, max 15 digits for fractional part, max 3 digits for exponent
-      NUMERIC_REGEX = /\A[+-]?(?:\d{1,15}\.?\d{0,15}|\.\d{1,15})(?:[eE][+-]?\d{1,3})?\z/
+      NUMERIC_REGEX = /\A[+-]?(?:\d{1,15}\.?\d{0,15}|\.\d{1,15})(?:[eE][+-]?\d{1,9})?\z/
+
+      MAX_NUMERIC_BIT_LENGTH = 3321 # ~1000 decimal digits
 
       attr_reader :result, :options
 
@@ -34,6 +37,8 @@ module Gitlab
           "JSON body too large"
         when ::Gitlab::Json::StreamValidator::InvalidJsonError
           "Invalid JSON format"
+        when ::Gitlab::Json::StreamValidator::NumericValueTooLargeError
+          "Numeric value too large"
         else
           "Invalid JSON: limit exceeded"
         end
@@ -128,6 +133,7 @@ module Gitlab
       # Called when a key/value pair is complete
       def hash_set(hash, key, value)
         increment_element_count!
+        check_numeric_size!(value)
 
         current_size = @hash_counts[hash.object_id] || 0 # rubocop:disable Lint/HashCompareByIdentity -- We want to track by object ID
         check_hash_size!(current_size)
@@ -163,6 +169,7 @@ module Gitlab
 
       def array_append(array, value)
         increment_element_count!
+        check_numeric_size!(value)
 
         current_size = @array_counts[array.object_id] || 0 # rubocop:disable Lint/HashCompareByIdentity -- We want to track by object ID
 
@@ -177,6 +184,7 @@ module Gitlab
       # Called for root values (when not in a hash or array)
       def add_value(value)
         increment_element_count!
+        check_numeric_size!(value)
         @result = value
       end
 
@@ -245,6 +253,13 @@ module Gitlab
 
         raise ElementCountLimitError,
           "Total elements (#{@total_elements}) exceeds limit of #{options[:max_total_elements]}"
+      end
+
+      def check_numeric_size!(value)
+        return unless value.is_a?(Integer)
+        return if value.bit_length <= MAX_NUMERIC_BIT_LENGTH
+
+        raise NumericValueTooLargeError, "Numeric value too large"
       end
 
       def increment_element_count!
