@@ -239,9 +239,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def user_params
-    params.require(:user).permit(:login, :password, :remember_me, :otp_attempt, :device_response).tap do |curr_params|
-      curr_params[:login] = curr_params[:login].strip if curr_params[:login].present?
-    end
+    params.require(:user).permit(:login, :password, :remember_me, :otp_attempt, :device_response)
   end
 
   def passwordless_passkey_params
@@ -252,7 +250,7 @@ class SessionsController < Devise::SessionsController
   def find_user
     strong_memoize(:find_user) do
       if user_params[:login]
-        User.find_by_login(user_params[:login]) || User.find_for_database_authentication(login: user_params[:login])
+        User.find_by_login(user_params[:login])
       elsif session[:otp_user_id]
         User.find_by_id(session[:otp_user_id])
       end

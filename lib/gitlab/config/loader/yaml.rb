@@ -17,9 +17,6 @@ module Gitlab
 
         def initialize(config, additional_permitted_classes: [], filename: nil)
           @raw = config
-
-          raise DataTooLargeError, "The provided YAML is too big" if content_too_large?
-
           @config = YAML.safe_load(config,
             permitted_classes: [Symbol, *additional_permitted_classes],
             permitted_symbols: [],
@@ -57,10 +54,6 @@ module Gitlab
 
         def too_big?
           !deep_size.valid?
-        end
-
-        def content_too_large?
-          @raw.bytesize > Gitlab::CurrentSettings.current_application_settings.max_yaml_size_bytes
         end
 
         def deep_size

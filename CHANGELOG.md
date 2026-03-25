@@ -2,32 +2,6 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 18.8.7 (2026-03-24)
-
-### Fixed (7 changes)
-
-- [Fix statement timeouts on p_ci_job_artifacts during pipeline deletion](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bc7908a111bcce1f3127836f0c84fd3d6ad446e4)
-- [Zero downtime reindexing make setting aysc-durability optional](https://gitlab.com/gitlab-org/security/gitlab/-/commit/96199fadcbe62a923bc4a4838b09ac79f1f01f87) **GitLab Enterprise Edition**
-- [Backport https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227592](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9b1ad45a701d7cf8626a8be823ed65ec478eddeb)
-- [Exclude group-covered projects from search authorization](https://gitlab.com/gitlab-org/security/gitlab/-/commit/40a6867a6f0e3e7db930549114e8e8e18c1c5e65) **GitLab Enterprise Edition**
-- [GLQL advanced finder, remove project_ids](https://gitlab.com/gitlab-org/security/gitlab/-/commit/87de79410db1ca101360d58e7afcaad8ba674fd3) **GitLab Enterprise Edition**
-- [Fix pipeline editor button not showing on ci file](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dbcad109afbcd88ba861b1df41e6a72c0a901946)
-- [Fix command exectution race condition in Agentic Chat](https://gitlab.com/gitlab-org/security/gitlab/-/commit/68a526902d7d6babde684d3eecdf6a0cf297311b) **GitLab Enterprise Edition**
-
-### Security (11 changes)
-
-- [HTML injection in vulnerabilities Report Solution leads to ATO](https://gitlab.com/gitlab-org/security/gitlab/-/commit/96052deb948fda65849bec519a161f897a4fa397) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5928))
-- [Prevent large integer DoS via GraphQL JSON parsing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5b4dbb7d3c365c71c266dd7f194f9e21e03939c4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5924))
-- [Remove undocumented access for Planner and Reporter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4dc2ba19b1af2052c3796f232376fb63899fa58e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5875))
-- [Fix CSRF vulnerability on GLQL endpoint allowing mutation execution via GET requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed92bf21845b99955ff0f9778efab9abb713bd91) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5918))
-- [Fix fork push options updating unrelated upstream merge requests](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3a3be65ed5057dad1603601329e6c0d0d25da19b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5895))
-- [Prevent DoS via scientific notation in custom webhook template](https://gitlab.com/gitlab-org/security/gitlab/-/commit/18f49152eb050c1bb2819fd87bb9cac42bdcafe3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5882))
-- [Always apply a purpose-specific CSP to Mermaid sandbox](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2e7d1b7725499bf45705542b5c7a65568af06c1d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5847))
-- [Backport 'Add permission check in resolve method in AiFeatureSettings'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/111a5c678b4f76f4a61d655a0efc5b795c7320d5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5858))
-- [Validate YAML size before parsing to prevent DoS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3f33fd8fe652528d944af80655d950cae0dfd261) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5869))
-- [Weak permissions installation controller jira cloud app](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cc9b0b89e225e5d35cf306744420fafd3df6446a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5865))
-- [Fix 2FA login sanitization bypass](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f7b9fb8d21f34fd1a8ee10e0df1a588b726c8200) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5892))
-
 ## 18.8.6 (2026-03-10)
 
 ### Added (1 change)

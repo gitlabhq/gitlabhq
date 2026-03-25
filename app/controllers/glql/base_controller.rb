@@ -17,8 +17,7 @@ module Glql
       result = query_service.execute(
         query: permitted_params[:query],
         variables: permitted_params[:variables].to_h,
-        context: context,
-        operation_name: permitted_params[:operationName]
+        context: context
       )
 
       # Handle rate limiting

@@ -694,9 +694,7 @@ class User < ApplicationRecord
   scope :by_login, ->(login) do
     return none if login.blank?
 
-    stripped_login = login.strip
-
-    login.include?('@') ? iwhere(email: stripped_login) : iwhere(username: stripped_login)
+    login.include?('@') ? iwhere(email: login) : iwhere(username: login)
   end
   scope :by_user_email, ->(emails) { iwhere(email: Array(emails)) }
   scope :by_emails, ->(emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }

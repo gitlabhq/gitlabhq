@@ -4597,13 +4597,6 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         expect(login_method(user.email.upcase)).to eq(user)
       end
     end
-
-    context 'when login is unstripped' do
-      it 'returns user' do
-        expect(login_method("#{user.username} ")).to eq(user)
-        expect(login_method("#{user.email} ")).to eq(user)
-      end
-    end
   end
 
   describe '.by_login' do
