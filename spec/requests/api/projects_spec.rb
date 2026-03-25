@@ -4313,16 +4313,15 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     let_it_be(:group) { create(:group, owners: user) }
     let_it_be_with_reload(:project) { create(:project, group: group) }
 
-    context 'when project is archived' do
+    context 'when project is scheduled for deletion' do
       before do
-        project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+        project.update!(marked_for_deletion_at: 1.day.ago, deleting_user: user)
       end
 
       it 'restores project' do
         post api("/projects/#{project.id}/restore", user)
 
         expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['archived']).to be_falsey
         expect(json_response['marked_for_deletion_at']).to be_falsey
         expect(json_response['marked_for_deletion_on']).to be_falsey
       end

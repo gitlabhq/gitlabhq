@@ -73,6 +73,9 @@ class ProjectPolicy < BasePolicy
   desc "Project is archived"
   condition(:archived, scope: :subject, score: 0) { project.self_or_ancestors_archived? }
 
+  desc "Project is scheduled for deletion"
+  condition(:deletion_scheduled, scope: :subject) { project.marked_for_deletion_at.present? }
+
   desc "Project user pipeline variables minimum override role"
   condition(:project_pipeline_override_role_owner) { project.ci_pipeline_variables_minimum_override_role == 'owner' }
 
@@ -573,7 +576,7 @@ class ProjectPolicy < BasePolicy
     prevent(*Authz::PermissionGroups::Internal.get('project:pending_deletion').permissions)
   end
 
-  rule { archived & ~self_deletion_in_progress }.policy do
+  rule { (archived | deletion_scheduled) & ~self_deletion_in_progress }.policy do
     prevent(*Authz::PermissionGroups::Internal.get('project:archived').permissions)
   end
 

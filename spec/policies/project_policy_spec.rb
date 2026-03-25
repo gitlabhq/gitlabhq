@@ -499,6 +499,82 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  context 'when project is scheduled for deletion' do
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:group_project) { create(:project, :repository, group: group) }
+    let_it_be(:project_owner) { create(:user) }
+
+    let(:current_user) { maintainer }
+
+    before_all do
+      group_project.add_developer(developer)
+      group_project.add_maintainer(maintainer)
+      group_project.add_owner(project_owner)
+    end
+
+    shared_examples 'deletion scheduled project behavior' do
+      it 'disallows write operations' do
+        expect_disallowed(*%i[
+          create_issue create_merge_request_in create_merge_request_from
+          push_code create_wiki create_deployment create_pipeline
+          update_pipeline create_pipeline_schedule create_environment
+          create_release update_release create_package destroy_package
+        ])
+      end
+
+      it 'allows read operations' do
+        expect_allowed(*%i[
+          read_project download_code read_issue read_merge_request
+          read_wiki read_deployment read_pipeline read_environment
+          read_release read_package
+        ])
+      end
+    end
+
+    context 'when project is marked for deletion' do
+      before do
+        group_project.update!(marked_for_deletion_at: Time.current)
+      end
+
+      let(:project) { group_project }
+
+      subject(:policy) { described_class.new(current_user, project) }
+
+      it_behaves_like 'deletion scheduled project behavior'
+
+      context 'with owner' do
+        let(:current_user) { project_owner }
+
+        it { is_expected.not_to be_allowed(:destroy_pipeline) }
+      end
+    end
+
+    context 'when project is marked for deletion and pending_delete' do
+      before do
+        group_project.update!(marked_for_deletion_at: Time.current, pending_delete: true)
+      end
+
+      let(:project) { group_project }
+      let(:current_user) { project_owner }
+
+      subject(:policy) { described_class.new(current_user, project) }
+
+      it 'allows destroy operations' do
+        expect_allowed(:destroy_pipeline)
+      end
+    end
+
+    context 'when project is not marked for deletion' do
+      let(:project) { group_project }
+
+      subject(:policy) { described_class.new(current_user, project) }
+
+      it 'allows read and write operations' do
+        expect_allowed(:create_issue, :push_code, :create_merge_request_in, :create_wiki)
+      end
+    end
+  end
+
   context 'manage_trigger' do
     using RSpec::Parameterized::TableSyntax
 
