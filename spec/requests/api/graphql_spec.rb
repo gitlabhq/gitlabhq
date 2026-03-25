@@ -178,6 +178,28 @@ RSpec.describe 'GraphQL', feature_category: :shared do
 
         expect(resp.dig('errors', 0, 'message')).to include "Mutations are forbidden"
       end
+
+      it 'fails when operationName does not match any operation in a document containing a mutation' do
+        get_graphql(mutation, current_user: user, params: { operationName: 'NonExistent' })
+
+        expect(graphql_errors).to include(a_hash_including('message' => /Mutations are forbidden/))
+      end
+
+      it 'fails when operationName is absent and the document contains an unnamed mutation' do
+        unnamed_mutation = 'mutation { echoCreate(input: { messages: ["hello", "world"] }) { echoes } }'
+
+        get_graphql(unnamed_mutation, current_user: user)
+
+        expect(graphql_errors).to include(a_hash_including('message' => /Mutations are forbidden/))
+      end
+
+      it 'fails when operationName does not match and the document contains an unnamed mutation' do
+        unnamed_mutation = 'mutation { echoCreate(input: { messages: ["hello", "world"] }) { echoes } }'
+
+        get_graphql(unnamed_mutation, current_user: user, params: { operationName: 'NonExistent' })
+
+        expect(graphql_errors).to include(a_hash_including('message' => /Mutations are forbidden/))
+      end
     end
   end
 

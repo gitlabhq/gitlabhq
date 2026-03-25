@@ -74,9 +74,6 @@ class ProjectPolicy < BasePolicy
   desc "Project is archived"
   condition(:archived, scope: :subject, score: 0) { project.self_or_ancestors_archived? }
 
-  desc "Project is scheduled for deletion"
-  condition(:deletion_scheduled, scope: :subject) { project.marked_for_deletion_at.present? }
-
   desc "Project user pipeline variables minimum override role"
   condition(:project_pipeline_override_role_owner) { project.ci_pipeline_variables_minimum_override_role == 'owner' }
 
@@ -774,7 +771,7 @@ class ProjectPolicy < BasePolicy
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
   rule { can?(:push_code) }.enable :admin_tag
 
-  rule { archived | deletion_scheduled }.policy do
+  rule { archived }.policy do
     prevent(*archived_abilities)
 
     archived_features.each do |feature|
@@ -786,7 +783,7 @@ class ProjectPolicy < BasePolicy
     end
   end
 
-  rule { (archived | deletion_scheduled) & ~pending_delete }.policy do
+  rule { archived & ~pending_delete }.policy do
     archived_features.each do |feature|
       prevent(:"destroy_#{feature}")
     end
