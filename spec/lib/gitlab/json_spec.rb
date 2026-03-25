@@ -240,6 +240,7 @@ RSpec.describe Gitlab::Json do
           ["-1.23", -1.23],
           ["-1.23e10", -12300000000.0],
           ["-1.23E-1", -1.23e-1],
+          ["1.5E1000", Float::INFINITY],
           ['"simple"', 'simple'],
           ['"hello world"', 'hello world'],
           ['""', ''],
@@ -579,6 +580,144 @@ RSpec.describe Gitlab::Json do
         expect { subject }.not_to raise_error
         expect(subject).to be_a(String)
         expect(subject.size).to eq(10001)
+      end
+    end
+
+    context 'when object contains a number that would serialize to too many digits' do
+      context 'with a BigDecimal from scientific notation' do
+        let(:obj) { { value: BigDecimal('9E9999999') } }
+
+        it 'raises NumberLimitExceeded error' do
+          expect { subject }.to raise_error(
+            Gitlab::Json::LimitedEncoder::NumberLimitExceeded
+          )
+        end
+      end
+
+      context 'with a very small BigDecimal' do
+        let(:obj) { { value: BigDecimal('1E-9999999') } }
+
+        it 'raises NumberLimitExceeded error' do
+          expect { subject }.to raise_error(
+            Gitlab::Json::LimitedEncoder::NumberLimitExceeded
+          )
+        end
+      end
+
+      context 'with an integer exceeding the digit limit' do
+        let(:obj) { { value: 10**1001 } }
+
+        it 'raises NumberLimitExceeded error' do
+          expect { subject }.to raise_error(
+            Gitlab::Json::LimitedEncoder::NumberLimitExceeded
+          )
+        end
+      end
+
+      context 'with a large negative integer exceeding the digit limit' do
+        let(:obj) { { value: -(10**1001) } }
+
+        it 'raises NumberLimitExceeded error' do
+          expect { subject }.to raise_error(
+            Gitlab::Json::LimitedEncoder::NumberLimitExceeded
+          )
+        end
+      end
+
+      context 'with Infinity' do
+        let(:obj) { { value: Float::INFINITY } }
+
+        it 'raises NumberLimitExceeded error' do
+          expect { subject }.to raise_error(
+            Gitlab::Json::LimitedEncoder::NumberLimitExceeded
+          )
+        end
+      end
+
+      context 'with a large number nested in a hash' do
+        let(:obj) { { outer: { inner: BigDecimal('9E9999999') } } }
+
+        it 'raises NumberLimitExceeded error' do
+          expect { subject }.to raise_error(
+            Gitlab::Json::LimitedEncoder::NumberLimitExceeded
+          )
+        end
+      end
+
+      context 'with a large number nested in an array' do
+        let(:obj) { [1, 2, BigDecimal('9E9999999')] }
+
+        it 'raises NumberLimitExceeded error' do
+          expect { subject }.to raise_error(
+            Gitlab::Json::LimitedEncoder::NumberLimitExceeded
+          )
+        end
+      end
+    end
+
+    context 'when object contains numbers within the digit limit' do
+      context 'with a large but safe integer' do
+        let(:obj) { { value: 10_000_000_000 } }
+
+        it 'returns json string' do
+          is_expected.to eq('{"value":10000000000}')
+        end
+      end
+
+      context 'with a safe negative integer' do
+        let(:obj) { { value: -9_999_999_999 } }
+
+        it 'returns json string' do
+          is_expected.to eq('{"value":-9999999999}')
+        end
+      end
+
+      context 'with a safe float' do
+        let(:obj) { { value: 1.5e2 } }
+
+        it 'returns json string' do
+          is_expected.to eq('{"value":150.0}')
+        end
+      end
+
+      context 'with a finite float near the max' do
+        let(:obj) { { value: 1.0e308 } }
+
+        it 'returns json string' do
+          expect { subject }.not_to raise_error
+        end
+      end
+
+      context 'with zero' do
+        let(:obj) { { value: 0 } }
+
+        it 'returns json string' do
+          is_expected.to eq('{"value":0}')
+        end
+      end
+
+      context 'with safe numbers in nested structures' do
+        let(:obj) { { a: [1, 2, 3], b: { c: 42 } } }
+
+        it 'returns json string' do
+          is_expected.to eq('{"a":[1,2,3],"b":{"c":42}}')
+        end
+      end
+
+      context 'with string values' do
+        let(:obj) { { text: "hello" } }
+
+        it 'does not check string values' do
+          is_expected.to eq('{"text":"hello"}')
+        end
+      end
+
+      context 'with a BigDecimal within the limit' do
+        let(:obj) { { value: BigDecimal('1.5E2') } }
+
+        it 'returns json string' do
+          expect { subject }.not_to raise_error
+        end
       end
     end
   end

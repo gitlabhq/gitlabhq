@@ -218,7 +218,17 @@ class GraphqlController < ApplicationController
   end
 
   def mutation?(query_string, operation_name = permitted_params[:operationName])
-    ::GraphQL::Query.new(GitlabSchema, query_string, operation_name: operation_name).mutation?
+    parsed = GraphQL.parse(query_string)
+    operations = parsed.definitions.select { |d| d.is_a?(GraphQL::Language::Nodes::OperationDefinition) }
+
+    if operation_name.present?
+      target = operations.find { |op| op.name == operation_name }
+      return target.operation_type == "mutation" if target
+    end
+
+    operations.any? { |op| op.operation_type == "mutation" }
+  rescue GraphQL::ParseError
+    false
   end
 
   # Tests may mark some GraphQL queries as exempt from SQL query limits

@@ -74,23 +74,25 @@ module Gitlab
         end
 
         def allow_vite_dev_server(directives)
-          return unless Rails.env.development? || Rails.env.test?
+          urls = vite_dev_server_urls
+          return unless urls
 
-          protocol = ViteRuby.config.https ? 'wss' : 'ws'
-          ws_origin = "#{protocol}://#{ViteRuby.config.host_with_port}"
-          # We need both Websocket and HTTP URLs because Vite will attempt to ping
-          # the HTTP URL if the Websocket isn't available:
-          # https://github.com/vitejs/vite/blob/899d9b1d272b7057aafc6fa01570d40f288a473b/packages/vite/src/client/client.ts#L320-L327
-          hmr_ws_url = Gitlab::Utils.append_path(ws_origin, 'assets/vite/')
-          http_path = Gitlab::Utils.append_path(ViteRuby.config.origin, 'assets/vite/')
-
-          # http_path is used for openInEditorHost feature
+          # http_path is also used for openInEditorHost feature
           # https://devtools.vuejs.org/getting-started/open-in-editor#customize-request
 
-          append_to_directive(directives, 'connect_src', "#{hmr_ws_url} #{http_path}")
-          append_to_directive(directives, 'worker_src', http_path)
-          append_to_directive(directives, 'style_src', http_path)
-          append_to_directive(directives, 'font_src', http_path)
+          append_to_directive(directives, 'connect_src', "#{urls[:hmr_ws_url]} #{urls[:http_path]}")
+          append_to_directive(directives, 'worker_src', urls[:http_path])
+          append_to_directive(directives, 'style_src', urls[:http_path])
+          append_to_directive(directives, 'font_src', urls[:http_path])
+        end
+
+        # Allows the Vite origin; for use when CSP is globally disabled (and so no nonce covers
+        # cross-origin scripts) but is enabled for a specific endpoint.
+        def allow_vite_dev_server_script(directives)
+          urls = vite_dev_server_urls
+          return unless urls
+
+          append_to_directive(directives, 'script_src', urls[:http_path])
         end
 
         def allow_letter_opener(directives)
@@ -195,6 +197,25 @@ module Gitlab
           fog = CarrierWave::Storage::Fog.new(uploader)
           fog_file = CarrierWave::Storage::Fog::File.new(uploader, fog, nil)
           fog_file.public_url || fog_file.url
+        end
+
+        private
+
+        def vite_dev_server_urls
+          return unless Rails.env.development? || Rails.env.test?
+
+          origin = ViteRuby.config.origin
+          return unless origin.present?
+
+          # We need both Websocket and HTTP URLs because Vite will attempt to ping
+          # the HTTP URL if the Websocket isn't available:
+          # https://github.com/vitejs/vite/blob/899d9b1d272b7057aafc6fa01570d40f288a473b/packages/vite/src/client/client.ts#L320-L327
+          http_path = Gitlab::Utils.append_path(origin, 'assets/vite/')
+          protocol = ViteRuby.config.https ? 'wss' : 'ws'
+          ws_origin = "#{protocol}://#{ViteRuby.config.host_with_port}"
+          hmr_ws_url = Gitlab::Utils.append_path(ws_origin, 'assets/vite/')
+
+          { http_path: http_path, hmr_ws_url: hmr_ws_url }
         end
       end
 

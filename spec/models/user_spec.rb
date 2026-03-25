@@ -1789,6 +1789,63 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#authorization_user' do
+    context 'when user is not a service account' do
+      it 'returns self' do
+        user = build(:user)
+
+        expect(user.authorization_user).to eq(user)
+      end
+    end
+
+    context 'when user is a service account without composite identity enforced' do
+      it 'returns self' do
+        user = build(:user, :service_account, composite_identity_enforced: false)
+
+        expect(user.authorization_user).to eq(user)
+      end
+    end
+
+    context 'when user is a service account with composite identity enforced' do
+      let(:user) { build(:user, :service_account, composite_identity_enforced: true) }
+
+      context 'when no identity is currently linked' do
+        before do
+          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(nil)
+        end
+
+        it 'returns self' do
+          expect(user.authorization_user).to eq(user)
+        end
+      end
+
+      context 'when an identity is linked but not active' do
+        let(:identity) { instance_double(::Gitlab::Auth::Identity, linked?: false) }
+
+        before do
+          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(identity)
+        end
+
+        it 'returns self' do
+          expect(user.authorization_user).to eq(user)
+        end
+      end
+
+      context 'when an active identity is linked' do
+        let(:scoped_user) { build(:user) }
+        let(:identity) { instance_double(::Gitlab::Auth::Identity, linked?: true, scoped_user: scoped_user) }
+
+        before do
+          allow(::Gitlab::Auth::Identity).to receive(:currently_linked).and_return(identity)
+        end
+
+        it 'returns the scoped user' do
+          expect(user.authorization_user).to eq(scoped_user)
+        end
+      end
+    end
+  end
+
   describe 'scopes' do
     describe '.ordered_by_name_asc_id_desc' do
       it 'returns users ordered by name ASC, id DESC' do
@@ -4829,6 +4886,13 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
         expect(login_method(user.email)).to eq(user)
         expect(login_method(user.email.downcase)).to eq(user)
         expect(login_method(user.email.upcase)).to eq(user)
+      end
+    end
+
+    context 'when login is unstripped' do
+      it 'returns user' do
+        expect(login_method("#{user.username} ")).to eq(user)
+        expect(login_method("#{user.email} ")).to eq(user)
       end
     end
   end

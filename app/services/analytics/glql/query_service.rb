@@ -16,9 +16,10 @@ module Analytics
         @current_organization = current_organization
       end
 
-      def execute(query:, variables: {}, context: {})
+      def execute(query:, variables: {}, context: {}, operation_name: nil)
         @query = query
         @variables = variables
+        @operation_name = operation_name
         @graphql_context = build_graphql_context(context)
 
         start_time = Gitlab::Metrics::System.monotonic_time
@@ -108,7 +109,7 @@ module Analytics
       private
 
       attr_reader :current_user, :original_query, :request, :current_organization, :query, :variables,
-        :graphql_context
+        :graphql_context, :operation_name
 
       def check_rate_limit
         return unless Gitlab::ApplicationRateLimiter.peek(:glql, scope: query_sha)
@@ -119,7 +120,7 @@ module Analytics
 
       def execute_graphql
         ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
-          GitlabSchema.execute(query, variables: variables, context: graphql_context)
+          GitlabSchema.execute(query, variables: variables, context: graphql_context, operation_name: operation_name)
         end
       end
 

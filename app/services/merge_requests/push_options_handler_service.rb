@@ -88,7 +88,7 @@ module MergeRequests
 
     # Returns a Hash of branch => MergeRequest
     def merge_requests
-      @merge_requests ||= MergeRequest.from_project(target_project)
+      @merge_requests ||= MergeRequest.from_project(project)
                                       .opened
                                       .from_source_branches(branches)
                                       .index_by(&:source_branch)
@@ -132,6 +132,11 @@ module MergeRequests
     end
 
     def update!(merge_request)
+      unless current_user.can?(:update_merge_request, merge_request)
+        errors << 'User access was denied'
+        return
+      end
+
       merge_request = ::MergeRequests::UpdateService.new(
         project: target_project,
         current_user: current_user,

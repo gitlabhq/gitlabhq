@@ -175,6 +175,20 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
     end
 
+    shared_examples '2FA sign-in after login with special characters' do
+      context 'with special characters after first factor login' do
+        render_views
+
+        it 'does not authenticate' do
+          post(:create, params: { user: { login: "#{user.email} ", password: user.password } })
+
+          expect(response).to render_template('devise/sessions/two_factor')
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(subject.current_user).not_to eq user
+        end
+      end
+    end
+
     it_behaves_like 'known sign in' do
       let(:user) { create(:user) }
       let(:post_action) { post(:create, params: { user: { login: user.username, password: user.password } }) }
@@ -640,6 +654,8 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
 
       context 'when authenticating with OTP' do
+        it_behaves_like '2FA sign-in after login with special characters'
+
         context 'when OTP is valid' do
           it 'authenticates correctly', :aggregate_failures do
             authenticate_2fa(otp_attempt: user.current_otp)
@@ -892,6 +908,22 @@ RSpec.describe SessionsController, feature_category: :system_access do
           change { AuthenticationEvent.count }.by(1))
         expect(AuthenticationEvent.last.provider).to eq("two-factor-via-webauthn-device")
       end
+
+      context 'with a #find_by_login and #find_for_database_authentication mismatch' do
+        before do
+          allow(User).to receive(:find_by_login).and_return(nil)
+        end
+
+        it 'still finds a user correctly using #find_for_database_authentication' do
+          post(:create, params: { user: { login: user.email, password: user.password } })
+
+          expect(response).to render_template('devise/sessions/two_factor')
+          expect(@request.env['warden']).not_to be_authenticated
+          expect(subject.current_user).not_to eq user
+        end
+      end
+
+      it_behaves_like '2FA sign-in after login with special characters'
 
       it_behaves_like '2FA sign-in with passkeys'
     end
