@@ -1,5 +1,7 @@
 # GitLab
 
+[![gitcgr](https://gitcgr.com/badge/gitlabhq/gitlabhq.svg)](https://gitcgr.com/gitlabhq/gitlabhq)
+
 ## Canonical source
 
 The canonical source of GitLab where all development takes place is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab).
