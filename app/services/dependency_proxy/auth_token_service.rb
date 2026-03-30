@@ -47,7 +47,9 @@ module DependencyProxy
                         get_deploy_token(token_payload['deploy_token'])
                       end
 
-      { user_or_token: user_or_token, service_type: token_payload['service_type'] }
+      result = { user_or_token: user_or_token, service_type: token_payload['service_type'] }
+      result[:scoped_user_id] = token_payload['scoped_user_id'] if token_payload['scoped_user_id']
+      result
     rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature
       nil
     end

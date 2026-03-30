@@ -93,6 +93,13 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     access_level(for_any_session: true) >= GroupMember::GUEST
   end
 
+  condition(:ai_service_account_with_composite_identity) do
+    next false unless @user&.ai_service_account?
+
+    identity = ::Gitlab::Auth::Identity.fabricate(@user)
+    identity&.linked?
+  end
+
   desc "Deploy token with read_package_registry scope"
   condition(:read_package_registry_deploy_token) do
     @user.is_a?(DeployToken) && @user.groups.include?(@subject) && @user.read_package_registry
@@ -332,7 +339,13 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group
   end
 
-  rule { dependency_proxy_access_allowed & dependency_proxy_available }
+  # AI service accounts (service_account? && composite_identity_enforced?) are not group members,
+  # so they fail the normal dependency_proxy_access_allowed membership check. Instead, we grant
+  # them access via ai_service_account_with_composite_identity, which verifies the composite
+  # identity is linked. The scoped user's own group access is then enforced by the dual-check
+  # in Ability#with_composite_identity_check - both the AI service account and the scoped user
+  # must independently satisfy the ability for access to be granted.
+  rule { (dependency_proxy_access_allowed | ai_service_account_with_composite_identity) & dependency_proxy_available }
     .enable :read_dependency_proxy
 
   rule { owner & dependency_proxy_available }.policy do

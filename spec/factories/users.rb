@@ -131,6 +131,14 @@ FactoryBot.define do
       email { "#{User::SERVICE_ACCOUNT_PREFIX}_#{generate(:username)}@#{User::NOREPLY_EMAIL_DOMAIN}" }
     end
 
+    trait :ai_service_account do
+      name { 'Service account user' }
+      user_type { :service_account }
+      skip_confirmation { true }
+      email { "#{User::SERVICE_ACCOUNT_PREFIX}_#{generate(:username)}@#{User::NOREPLY_EMAIL_DOMAIN}" }
+      composite_identity_enforced { true }
+    end
+
     trait :can_create_group do
       after(:create) { |user| user.update_column(:can_create_group, true) }
     end

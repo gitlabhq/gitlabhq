@@ -1759,6 +1759,26 @@ RSpec.describe User, :with_current_organization, feature_category: :user_profile
     end
   end
 
+  describe '#ai_service_account?' do
+    it 'returns true for a service account with composite_identity_enforced' do
+      user = build(:user, :service_account, composite_identity_enforced: true)
+
+      expect(user.ai_service_account?).to be true
+    end
+
+    it 'returns false for a service account without composite_identity_enforced' do
+      user = build(:user, :service_account)
+
+      expect(user.ai_service_account?).to be false
+    end
+
+    it 'returns false for a non-service-account user' do
+      user = build(:user)
+
+      expect(user.ai_service_account?).to be false
+    end
+  end
+
   describe '#composite_identity_enforced!' do
     it 'sets the @composite_identity_enforced_override instance variable to true' do
       user = build(:user)

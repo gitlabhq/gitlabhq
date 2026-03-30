@@ -1229,6 +1229,59 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         it_behaves_like 'disallows all dependency proxy access'
       end
 
+      context 'AI service account user', :request_store do
+        let_it_be(:service_account) { create(:user, :ai_service_account) }
+
+        # When the identity is not linked, the policy condition itself returns
+        # false, so be_disallowed works directly.
+        # When the identity is linked, the condition passes but the scoped
+        # user's group access is enforced by Ability#with_composite_identity_check,
+        # so those cases must go through Ability.allowed?.
+        context 'when the scoped user is a group member' do
+          before do
+            ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, guest)
+          end
+
+          it { expect(Ability.allowed?(service_account, :read_dependency_proxy, group)).to be(true) }
+          it { expect(Ability.allowed?(service_account, :admin_dependency_proxy, group)).to be(false) }
+        end
+
+        context 'when the scoped user is not a group member' do
+          before do
+            ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, non_group_member)
+          end
+
+          it { expect(Ability.allowed?(service_account, :read_dependency_proxy, group)).to be(false) }
+        end
+
+        context 'when identity is linked but scoped user is not a member of this group' do
+          let_it_be(:other_group) { create(:group) }
+          # scoped_user is a member of other_group, not of `group`
+          let_it_be(:unrelated_scoped_user) { create(:user, guest_of: other_group) }
+
+          before do
+            ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, unrelated_scoped_user)
+          end
+
+          # The condition only checks username prefix + linked identity; cross-group
+          # protection is enforced by Ability#with_composite_identity_check, not here.
+          it 'allows via direct policy check (cross-group check is Ability.allowed?\'s concern)' do
+            policy = described_class.new(service_account, group)
+            expect(policy.allowed?(:read_dependency_proxy)).to be(true)
+          end
+
+          it 'denies access via Ability.allowed?' do
+            expect(Ability.allowed?(service_account, :read_dependency_proxy, group)).to be(false)
+          end
+        end
+
+        context 'when the composite identity is not linked' do
+          subject { described_class.new(service_account, group) }
+
+          it { is_expected.to be_disallowed(:read_dependency_proxy) }
+        end
+      end
+
       context 'all other user types' do
         User::USER_TYPES.except(:human, :project_bot, :admin_bot, :placeholder, :import_user).each_value do |user_type|
           context "with user_type #{user_type}" do

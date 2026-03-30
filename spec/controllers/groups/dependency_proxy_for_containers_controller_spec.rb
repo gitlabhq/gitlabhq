@@ -380,6 +380,66 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
         end
       end
 
+      context 'with a composite identity service account', :request_store do
+        let_it_be(:scoped_user) { create(:user, guest_of: group) }
+        let_it_be(:service_account) { create(:user, :ai_service_account) }
+        let(:jwt) do
+          build_jwt(service_account) do |t|
+            t['user_id'] = service_account.id
+            t['scoped_user_id'] = scoped_user.id
+            t.expire_time = t.issued_at + 1.minute
+          end
+        end
+
+        it 'links composite identity and allows access' do
+          expect(::Gitlab::Auth::Identity).to receive(:link_from_scoped_user_id)
+            .with(service_account, scoped_user.id, context: :authentication)
+            .and_call_original
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        context 'when the scoped user is not a group member' do
+          let_it_be(:scoped_user) { create(:user) }
+
+          it 'denies access' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when the jwt does not include a scoped_user_id' do
+          let(:jwt) { build_jwt(service_account) }
+
+          it 'denies access' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when the jwt includes a non-integer scoped_user_id' do
+          let(:jwt) do
+            build_jwt(service_account) do |t|
+              t['user_id'] = service_account.id
+              t['scoped_user_id'] = 'not-an-integer'
+              t.expire_time = t.issued_at + 1.minute
+            end
+          end
+
+          it 'denies access without linking composite identity' do
+            expect(::Gitlab::Auth::Identity).not_to receive(:link_from_scoped_user_id)
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+      end
+
       # When authenticating with a job token, the encoded token is the same as
       # that built when authenticating with a user
       context 'a valid user or a job token' do

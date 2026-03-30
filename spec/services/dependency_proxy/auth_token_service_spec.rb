@@ -214,6 +214,22 @@ RSpec.describe DependencyProxy::AuthTokenService, feature_category: :virtual_reg
       end
     end
 
+    context 'with a scoped_user_id claim' do
+      let_it_be(:scoped_user) { create(:user) }
+
+      let(:token) do
+        build_jwt(user) do |jwt|
+          jwt['user_id'] = user.id
+          jwt['scoped_user_id'] = scoped_user.id
+          jwt.expire_time = jwt.issued_at + 1.minute
+        end
+      end
+
+      it 'returns the scoped_user_id' do
+        expect(subject).to eq({ user_or_token: user, service_type: nil, scoped_user_id: scoped_user.id })
+      end
+    end
+
     context 'with a decoding error' do
       before do
         allow(JWT).to receive(:decode).and_raise(JWT::DecodeError)

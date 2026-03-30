@@ -162,6 +162,43 @@ RSpec.describe Auth::ContainerProxyAuthenticationService, feature_category: :vir
       end
     end
 
+    describe 'scoped_user_id claim' do
+      let(:authentication_abilities) { described_class::REQUIRED_USER_ABILITIES }
+
+      context 'with a composite identity service account user', :request_store do
+        let_it_be(:scoped_user) { create(:user) }
+        let_it_be(:user) { create(:user, :service_account, composite_identity_enforced: true) }
+
+        before do
+          ::Gitlab::Auth::Identity.link_from_scoped_user(user, scoped_user)
+        end
+
+        it 'includes scoped_user_id in the token' do
+          decoded_token = decode(result[:token])
+
+          expect(decoded_token['scoped_user_id']).to eq(scoped_user.id)
+        end
+      end
+
+      context 'with a composite identity service account where identity is not linked' do
+        let_it_be(:user) { create(:user, :service_account, composite_identity_enforced: true) }
+
+        it 'does not include scoped_user_id in the token' do
+          decoded_token = decode(result[:token])
+
+          expect(decoded_token['scoped_user_id']).to be_nil
+        end
+      end
+
+      context 'with a non-composite identity user' do
+        it 'does not include scoped_user_id in the token' do
+          decoded_token = decode(result[:token])
+
+          expect(decoded_token['scoped_user_id']).to be_nil
+        end
+      end
+    end
+
     describe 'service_type claim' do
       let(:authentication_abilities) { described_class::REQUIRED_USER_ABILITIES }
 

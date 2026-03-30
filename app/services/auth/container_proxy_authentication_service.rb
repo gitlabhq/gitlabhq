@@ -65,6 +65,7 @@ module Auth
         token['personal_access_token'] = raw_token if personal_access_token_user?
         token['group_access_token'] = raw_token if group_access_token_user?
         token['service_type'] = detect_service_type if scopes.present?
+        token['scoped_user_id'] = composite_scoped_user_id if composite_scoped_user_id
         token.expire_time = self.class.token_expire_at
       end
     end
@@ -95,6 +96,13 @@ module Auth
 
     def personal_access_token_user?
       raw_token && current_user && (current_user.human? || current_user.service_account?)
+    end
+
+    def composite_scoped_user_id
+      return unless current_user&.composite_identity_enforced?
+
+      identity = ::Gitlab::Auth::Identity.fabricate(current_user)
+      identity&.linked? ? identity.scoped_user&.id : nil
     end
   end
 end

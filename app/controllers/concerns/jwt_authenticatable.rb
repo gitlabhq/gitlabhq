@@ -25,6 +25,7 @@ module JwtAuthenticatable
       case user_or_token
       when User
         set_auth_result(user_or_token, :user)
+        link_composite_identity_from_jwt(user_or_token, result)
         sign_in(user_or_token) if can_sign_in?(user_or_token)
       when PersonalAccessToken
         set_auth_result(user_or_token.user, :personal_access_token)
@@ -50,6 +51,14 @@ module JwtAuthenticatable
     return false if user_or_token.project_bot? || user_or_token.service_account?
 
     true
+  end
+
+  def link_composite_identity_from_jwt(user, result)
+    scoped_user_id = result&.dig(:scoped_user_id)
+    return unless scoped_user_id.is_a?(Integer)
+    return unless user.composite_identity_enforced?
+
+    ::Gitlab::Auth::Identity.link_from_scoped_user_id(user, scoped_user_id, context: :authentication)
   end
 
   def set_auth_result(actor, type)
