@@ -19,6 +19,8 @@ module Namespaces
       private
 
       def can_current_user_remove_group?
+        return false unless current_user
+
         Gitlab::Auth::CurrentUserMode.optionally_run_in_admin_mode(current_user) do
           current_user.can?(:remove_group, group)
         end

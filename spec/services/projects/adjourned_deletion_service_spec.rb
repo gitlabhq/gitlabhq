@@ -15,12 +15,4 @@ RSpec.describe Projects::AdjournedDeletionService, feature_category: :groups_and
   subject(:service) { described_class.new(project: project, current_user: user) }
 
   include_examples 'adjourned deletion service'
-
-  context 'when user cannot remove the project', :sidekiq_inline do
-    context 'with deleted user' do
-      let(:user) { nil }
-
-      it_behaves_like 'user cannot remove'
-    end
-  end
 end

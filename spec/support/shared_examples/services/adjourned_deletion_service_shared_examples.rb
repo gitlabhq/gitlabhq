@@ -20,7 +20,10 @@ RSpec.shared_examples 'adjourned deletion service' do
     it 'uses admin bot to restore the resource', :enable_admin_mode do
       service.execute
 
-      expect(resource.reload.self_deletion_scheduled?).to be(false)
+      resource.reload
+      expect(resource.self_deletion_scheduled?).to be(false)
+      expect(resource.namespace_details.deletion_scheduled_by_user_id).to be_nil
+      expect(resource.namespace_details.state_metadata).not_to have_key('deletion_scheduled_at')
     end
   end
 
@@ -83,6 +86,12 @@ RSpec.shared_examples 'adjourned deletion service' do
       before do
         user.ban!
       end
+
+      it_behaves_like 'user cannot remove'
+    end
+
+    context 'with deleted user' do
+      let(:user) { nil }
 
       it_behaves_like 'user cannot remove'
     end
