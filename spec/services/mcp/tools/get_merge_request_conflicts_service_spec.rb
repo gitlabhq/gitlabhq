@@ -441,11 +441,11 @@ RSpec.describe Mcp::Tools::GetMergeRequestConflictsService, feature_category: :m
       end
     end
 
-    context 'when user lacks push permission' do
-      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-      let_it_be(:guest_user) { create(:user) }
+    context 'when user lacks push permission but can read project and merge request' do
+      let_it_be(:reporter_user) { create(:user) }
 
-      let(:guest_service) { described_class.new(name: service_name, version: '0.1.0') }
+      let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+      let(:reporter_service) { described_class.new(name: service_name, version: '0.1.0') }
       let(:arguments) do
         {
           'project_id' => project.id.to_s,
@@ -454,18 +454,79 @@ RSpec.describe Mcp::Tools::GetMergeRequestConflictsService, feature_category: :m
       end
 
       before_all do
-        project.add_guest(guest_user)
+        project.add_reporter(reporter_user)
       end
 
       before do
-        guest_service.set_cred(current_user: guest_user, access_token: oauth_token)
+        reporter_service.set_cred(current_user: reporter_user, access_token: oauth_token)
       end
 
       it 'returns permission denied error' do
-        result = guest_service.execute(params: { arguments: arguments })
+        result = reporter_service.execute(params: { arguments: arguments })
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('does not have permission to push to branch')
+      end
+    end
+
+    context 'when user cannot read the target project' do
+      let_it_be(:private_project) { create(:project, :private, :repository) }
+      let_it_be(:outsider) { create(:user) }
+
+      let(:merge_request) do
+        create(:merge_request, source_project: private_project, target_project: private_project)
+      end
+
+      let(:outsider_service) { described_class.new(name: service_name, version: '0.1.0') }
+      let(:arguments) do
+        {
+          'project_id' => private_project.id.to_s,
+          'merge_request_iid' => merge_request.iid
+        }
+      end
+
+      before do
+        outsider_service.set_cred(current_user: outsider, access_token: oauth_token)
+      end
+
+      it 'returns permission denied error' do
+        result = outsider_service.execute(params: { arguments: arguments })
+
+        expect(result[:isError]).to be true
+        expect(result[:content].first[:text]).to include('does not have permission to read_merge_request')
+      end
+    end
+
+    context 'when user can read project but cannot read merge request' do
+      let_it_be(:restricted_user) { create(:user) }
+
+      let(:merge_request) do
+        create(:merge_request, source_project: project, target_project: project)
+      end
+
+      let(:restricted_service) { described_class.new(name: service_name, version: '0.1.0') }
+      let(:arguments) do
+        {
+          'project_id' => project.id.to_s,
+          'merge_request_iid' => merge_request.iid
+        }
+      end
+
+      before_all do
+        project.add_guest(restricted_user)
+      end
+
+      before do
+        restricted_service.set_cred(current_user: restricted_user, access_token: oauth_token)
+        allow(Ability).to receive(:allowed?).and_call_original
+        allow(Ability).to receive(:allowed?).with(restricted_user, :read_merge_request, merge_request).and_return(false)
+      end
+
+      it 'returns permission denied error' do
+        result = restricted_service.execute(params: { arguments: arguments })
+
+        expect(result[:isError]).to be true
+        expect(result[:content].first[:text]).to include('does not have permission to read_merge_request')
       end
     end
   end

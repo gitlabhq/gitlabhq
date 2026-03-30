@@ -3,6 +3,8 @@
 module Mcp
   module Tools
     class GetMergeRequestConflictsService < CustomService
+      include Gitlab::Utils::StrongMemoize
+
       # Register version with schema definition
       register_version '0.1.0', {
         description: 'Get merge conflict content for a merge request that cannot be merged. ' \
@@ -27,20 +29,27 @@ module Mcp
         }
       }
 
-      # Override authorization to match controller behavior
-      # Uses same check as MergeRequests::Conflicts::ListService#can_be_resolved_by?
-      def authorize!(params)
-        # Validate project exists first for better error messages
-        proj = project(params[:arguments])
-        raise ArgumentError, "#{name}: project not found or inaccessible" if proj.nil?
+      def auth_ability
+        :read_merge_request
+      end
 
-        mr = merge_request(params[:arguments])
-        raise ArgumentError, "#{name}: merge request not found" if mr.nil?
+      def auth_target(params)
+        strong_memoize_with(:auth_target, params[:arguments]) do
+          mr = merge_request(params[:arguments])
+          raise ArgumentError, "#{name}: merge request not found" if mr.nil?
+
+          mr
+        end
+      end
+
+      def authorize!(params)
+        super
+
+        mr = auth_target(params)
         raise ArgumentError, "#{name}: source project not found" unless mr.source_project
 
         access = ::Gitlab::UserAccess.new(current_user, container: mr.source_project)
-        allowed = access.can_push_to_branch?(mr.source_branch)
-        return if allowed
+        return if access.can_push_to_branch?(mr.source_branch)
 
         raise Gitlab::Access::AccessDeniedError, "User #{current_user.id} does not have permission to " \
           "push to branch '#{mr.source_branch}' in project #{mr.source_project.id}"
