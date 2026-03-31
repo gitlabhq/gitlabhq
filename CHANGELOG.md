@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.9.4 (2026-03-31)
+
+### Fixed (4 changes)
+
+- [Fix flaky spec](https://gitlab.com/gitlab-org/gitlab/-/commit/448dbecdc88d3495da8ac08f7a663b05faea7c6e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/229533))
+- [Surface group-level Duo setting with DAP self-hosted](https://gitlab.com/gitlab-org/gitlab/-/commit/c849ed16125cfbe35d5d908bb66eec0a614f6c36) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228970)) **GitLab Enterprise Edition**
+- [Fix regression: "Git operations for Deploy keys fail on a Geo Site"](https://gitlab.com/gitlab-org/gitlab/-/commit/e3e320e21b78857cb2a72458bb0a7490b3df751a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228269)) **GitLab Enterprise Edition**
+- [Backport of 'Stop archiving projects when marking for deletion'](https://gitlab.com/gitlab-org/gitlab/-/commit/9b7eb6357e0ebe55864ff2271760305929e7830d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227869))
+
 ## 18.9.3 (2026-03-24)
 
 ### Fixed (7 changes)
