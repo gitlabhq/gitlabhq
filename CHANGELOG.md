@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.10.2 (2026-03-31)
+
+### Fixed (3 changes)
+
+- [Surface group-level Duo setting with DAP self-hosted](https://gitlab.com/gitlab-org/gitlab/-/commit/0c479477b57af6d19fb59f92816c3a5cb7a567cc) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228968)) **GitLab Enterprise Edition**
+- [Fix regression: "Git operations for Deploy keys fail on a Geo Site"](https://gitlab.com/gitlab-org/gitlab/-/commit/e015f8f003d2921000ee075693d9c168f83fd8c3) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/228257)) **GitLab Enterprise Edition**
+- [Merge branch '588699-treat-scheduled-deletion-as-archived' into 'master'](https://gitlab.com/gitlab-org/gitlab/-/commit/65171eb97d7878e81bd1c932ec4dd5e990aa3189) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/227862))
+
 ## 18.10.1 (2026-03-24)
 
 ### Fixed (2 changes)
