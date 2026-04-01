@@ -2011,23 +2011,6 @@ module Gitlab
           it 'does not have the original job' do
             expect(builds).not_to include(:rspec)
           end
-
-          context 'when expanded job name exceeds the character limit' do
-            let(:long_value) { 'a' * 245 }
-            let(:parallel) do
-              {
-                matrix: [
-                  { 'VARIANT' => 'alpha', 'OPTIONS' => long_value }
-                ]
-              }
-            end
-
-            it 'returns an error' do
-              expect(config_processor.errors).to include(
-                a_string_including("job: name is too long (maximum is #{::Ci::BuildName::MAX_JOB_NAME_LENGTH} characters)")
-              )
-            end
-          end
         end
       end
 
@@ -2852,7 +2835,7 @@ module Gitlab
 
               it 'returns an error' do
                 expect(subject.errors).to include(
-                  a_string_including("job: name is too long (maximum is #{::Ci::BuildName::MAX_JOB_NAME_LENGTH} characters)")
+                  "test1 job: need `parallel: [#{var1}, #{var2}]` name is too long (maximum is #{::Ci::BuildNeed::MAX_JOB_NAME_LENGTH} characters)"
                 )
               end
             end
