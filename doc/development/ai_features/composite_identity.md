@@ -84,22 +84,27 @@ A request made with a composite identity token is authorized only if both are tr
 When a request includes a composite identity OAuth token, the Rails request context overrides `current_user` to the human user extracted from the `user:$ID` scope. While the token itself still belongs to the service account, the user who originated the request is considered the current user. This means:
 
 - Any code that depends on `current_user` runs as the human user.
-- You must update the code to invert composite identity to attribute actions to the service account.
+- Use `invert_composite_identity` to determine the correct actor for attribution, the result depends on how the identity was linked for the current request.
 
-### Attributing actions to the service account
+### Attributing actions to the correct actor
 
-Most features want the visible action (author/actor) to be the service account. In that case, you must update the code that is doing a write action so that it writes as the service account:
+Always use `invert_composite_identity` to resolve the actor for any write operation. You do not need to determine the context yourself — it is set automatically at the request boundary:
 
 ```ruby
-service_account_user = Gitlab::Auth::Identity.invert_composite_identity(current_user)
+actor = Gitlab::Auth::Identity.invert_composite_identity(current_user)
 ```
 
-- With composite identity, `invert_composite_identity` returns the primary (service account) user.
-- Without composite identity, it returns `current_user` unchanged.
+Use the returned `actor` wherever you set authorship (for example: notes, issues/MRs, commits, pipeline user context).
 
-Use the returned `service_account_user` wherever you set authorship/actor (for example: notes, issues/MRs, commits, pipeline user context).
+The method returns the correct actor for the situation:
 
-Reference: MR [!204010](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204010)
+- **Service account made the request** (OAuth token with `user:$ID` scope, or CI job): internally tagged as `:authentication` context. Returns the service account. The SA is the actor and should be attributed.
+- **Human made the request, SA was linked incidentally** (for example, a human assigns an SA as a reviewer): internally tagged as `:permission_check` context. Returns the human. The human is the actor and should be attributed.
+- **No composite identity**: returns `current_user` unchanged.
+
+You never need to call this method differently depending on the scenario — the identity system records the context when the request is authenticated, and `invert_composite_identity` uses it automatically.
+
+Reference: MR [!204010](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204010), MR [!223788](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223788)
 
 ## Verify your setup quickly
 
@@ -126,6 +131,6 @@ service_account.update!(composite_identity_enforced: true)
 
 - Dynamic scope rejected or ignored: ensure the OAuth app has `dynamic_scopes: "user:*"`.
 - Token missing `user:$ID`: re-issue the grant/token with the concrete `user:$ID` in scopes.
-- Platform action attributed to human, not service account: see [#attributing-actions-to-the-service-account]
+- Platform action attributed to human instead of service account (or vice versa): check which context the identity was linked with. OAuth/CI flows use `:authentication` (SA attributed); web/assignment flows use `:permission_check` (human attributed). See [Attributing actions to the correct actor](#attributing-actions-to-the-correct-actor).
 - 422 on token exchange: redirect URI mismatch or expired grant.
 - 403 on API requests: verify both principals have the required project/group permissions and that base scopes (for example, `api`) are present.

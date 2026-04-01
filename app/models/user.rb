@@ -2899,6 +2899,10 @@ class User < ApplicationRecord
     @free_or_trial_owned_group_ids ||= owned_groups.free_or_trial.ids
   end
 
+  def ai_service_account?
+    service_account? && composite_identity_enforced?
+  end
+
   def composite_identity_enforced?
     return !!@composite_identity_enforced_override if defined?(@composite_identity_enforced_override)
 

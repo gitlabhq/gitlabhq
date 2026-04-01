@@ -3208,6 +3208,36 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
+
+    context 'with composite identity', :request_store, :sidekiq_inline do
+      let_it_be(:service_account) do
+        create(:user, :service_account, composite_identity_enforced: true, developer_of: project)
+      end
+
+      context 'when human user assigns a service account as reviewer (web session)' do
+        it 'attributes the system note to the human user' do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user),
+            params: { reviewer_ids: [service_account.id] }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(merge_request.notes.system.last.author).to eq(user)
+        end
+      end
+
+      context 'when service account acts via OAuth token (authentication context)' do
+        before do
+          ::Gitlab::Auth::Identity.new(service_account).link!(user, context: :authentication)
+        end
+
+        it 'attributes the system note to the service account' do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", service_account),
+            params: { title: 'Updated title' }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(merge_request.notes.system.last.author).to eq(service_account)
+        end
+      end
+    end
   end
 
   describe "POST /projects/:id/merge_requests/:merge_request_iid/context_commits" do

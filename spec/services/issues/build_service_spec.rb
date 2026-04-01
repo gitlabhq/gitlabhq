@@ -211,7 +211,7 @@ RSpec.describe Issues::BuildService, :request_store, feature_category: :team_pla
       let(:user) { create(:user) }
 
       before do
-        ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, user)
+        ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, user, context: :authentication)
       end
 
       it 'attributes the change to the service account' do

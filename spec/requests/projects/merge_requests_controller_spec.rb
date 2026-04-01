@@ -426,6 +426,19 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
       login_as(user)
     end
 
+    context 'with composite identity', :request_store, :sidekiq_inline do
+      let_it_be(:service_account) do
+        create(:user, :service_account, composite_identity_enforced: true, developer_of: project)
+      end
+
+      it 'attributes the system note to the human user when assigning a service account as reviewer' do
+        put project_merge_request_path(project, merge_request),
+          params: { merge_request: { reviewer_ids: [service_account.id] } }
+
+        expect(merge_request.notes.system.last.author).to eq(user)
+      end
+    end
+
     it 'applies correct timezone to merge_after' do
       put project_merge_request_path(project, merge_request, merge_request: { merge_after: '2024-09-03T21:18' })
 

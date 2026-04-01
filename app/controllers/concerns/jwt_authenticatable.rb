@@ -19,11 +19,13 @@ module JwtAuthenticatable
     authenticate_with_http_token do |token, _|
       @authentication_result = EMPTY_AUTH_RESULT
 
-      user_or_token = ::DependencyProxy::AuthTokenService.user_or_token_from_jwt(token)
+      result = ::DependencyProxy::AuthTokenService.token_result_from_jwt(token)
+      user_or_token = result&.dig(:user_or_token) if valid_service_type?(result&.dig(:service_type))
 
       case user_or_token
       when User
         set_auth_result(user_or_token, :user)
+        link_composite_identity_from_jwt(user_or_token, result)
         sign_in(user_or_token) if can_sign_in?(user_or_token)
       when PersonalAccessToken
         set_auth_result(user_or_token.user, :personal_access_token)
@@ -51,6 +53,14 @@ module JwtAuthenticatable
     true
   end
 
+  def link_composite_identity_from_jwt(user, result)
+    scoped_user_id = result&.dig(:scoped_user_id)
+    return unless scoped_user_id.is_a?(Integer)
+    return unless user.composite_identity_enforced?
+
+    ::Gitlab::Auth::Identity.link_from_scoped_user_id(user, scoped_user_id, context: :authentication)
+  end
+
   def set_auth_result(actor, type)
     @authentication_result = Gitlab::Auth::Result.new(actor, nil, type, [])
   end
@@ -65,6 +75,12 @@ module JwtAuthenticatable
 
   def handle_personal_access_token(token)
     # Controllers can override this
+  end
+
+  def valid_service_type?(_service_type)
+    # Default: reject all service types for security.
+    # Controllers must override to specify which service types they accept.
+    false
   end
 end
 # rubocop:enable Gitlab/ModuleWithInstanceVariables

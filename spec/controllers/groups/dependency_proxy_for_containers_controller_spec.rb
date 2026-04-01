@@ -23,6 +23,19 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     it { is_expected.to have_gitlab_http_status(:unauthorized) }
   end
 
+  shared_examples 'rejects virtual_registry service_type' do
+    context 'with a token with virtual_registry service_type' do
+      let(:jwt) do
+        build_jwt(
+          user,
+          service_type: ::Auth::ContainerProxyAuthenticationService::SERVICE_TYPE_VIRTUAL_REGISTRY
+        )
+      end
+
+      it { is_expected.to have_gitlab_http_status(:unauthorized) }
+    end
+  end
+
   shared_examples 'with invalid path' do
     context 'with invalid image' do
       let(:image) { '../path_traversal' }
@@ -323,6 +336,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     context 'feature enabled' do
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
+      it_behaves_like 'rejects virtual_registry service_type'
 
       context 'remote token request fails' do
         let(:token_response) do
@@ -363,6 +377,66 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(response.body).to be_empty
+        end
+      end
+
+      context 'with a composite identity service account', :request_store do
+        let_it_be(:scoped_user) { create(:user, guest_of: group) }
+        let_it_be(:service_account) { create(:user, :ai_service_account) }
+        let(:jwt) do
+          build_jwt(service_account) do |t|
+            t['user_id'] = service_account.id
+            t['scoped_user_id'] = scoped_user.id
+            t.expire_time = t.issued_at + 1.minute
+          end
+        end
+
+        it 'links composite identity and allows access' do
+          expect(::Gitlab::Auth::Identity).to receive(:link_from_scoped_user_id)
+            .with(service_account, scoped_user.id, context: :authentication)
+            .and_call_original
+
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        context 'when the scoped user is not a group member' do
+          let_it_be(:scoped_user) { create(:user) }
+
+          it 'denies access' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when the jwt does not include a scoped_user_id' do
+          let(:jwt) { build_jwt(service_account) }
+
+          it 'denies access' do
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when the jwt includes a non-integer scoped_user_id' do
+          let(:jwt) do
+            build_jwt(service_account) do |t|
+              t['user_id'] = service_account.id
+              t['scoped_user_id'] = 'not-an-integer'
+              t.expire_time = t.issued_at + 1.minute
+            end
+          end
+
+          it 'denies access without linking composite identity' do
+            expect(::Gitlab::Auth::Identity).not_to receive(:link_from_scoped_user_id)
+
+            subject
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
 
@@ -504,6 +578,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     context 'feature enabled' do
       it_behaves_like 'without a token'
       it_behaves_like 'without permission'
+      it_behaves_like 'rejects virtual_registry service_type'
 
       context 'a valid user' do
         before do

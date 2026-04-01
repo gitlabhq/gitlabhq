@@ -155,7 +155,7 @@ RSpec.describe Issuable::Callbacks::Description, :request_store, feature_categor
       let_it_be(:author) { create(:user) }
 
       before do
-        ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, author)
+        ::Gitlab::Auth::Identity.link_from_scoped_user(service_account, author, context: :authentication)
       end
 
       it 'attributes the change to the service account' do

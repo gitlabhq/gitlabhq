@@ -22,27 +22,27 @@ module Gitlab
       # TODO: why is this called 3 times in doorkeeper_access_spec.rb specs?
       def self.link_from_oauth_token(oauth_token)
         fabricate(oauth_token.user).tap do |identity|
-          identity.link!(oauth_token.scope_user) if identity&.composite?
+          identity.link!(oauth_token.scope_user, context: :authentication) if identity&.composite?
         end
       end
 
       def self.link_from_job(job)
         fabricate(job.user).tap do |identity|
-          identity.link!(job.scoped_user) if identity&.composite?
+          identity.link!(job.scoped_user, context: :authentication) if identity&.composite?
         end
       end
 
-      def self.link_from_scoped_user_id(user, scoped_user_id)
+      def self.link_from_scoped_user_id(user, scoped_user_id, context: :permission_check)
         scoped_user = ::User.find_by_id(scoped_user_id)
 
         return unless scoped_user
 
-        ::Gitlab::Auth::Identity.link_from_scoped_user(user, scoped_user)
+        ::Gitlab::Auth::Identity.link_from_scoped_user(user, scoped_user, context: context)
       end
 
-      def self.link_from_scoped_user(user, scoped_user)
+      def self.link_from_scoped_user(user, scoped_user, context: :permission_check)
         ::Gitlab::Auth::Identity.fabricate(user).tap do |identity|
-          identity.link!(scoped_user) if identity&.composite?
+          identity.link!(scoped_user, context: context) if identity&.composite?
         end
       end
 
@@ -50,7 +50,7 @@ module Gitlab
         raise MissingServiceAccountError, 'service account is required' unless service_account
 
         fabricate(service_account).tap do |identity|
-          identity.link!(scoped_user) if identity&.composite?
+          identity.link!(scoped_user, context: :permission_check) if identity&.composite?
         end
       end
 
@@ -62,7 +62,7 @@ module Gitlab
 
         ::Gitlab::Auth::Identity
           .new(::User.find(ids.first))
-          .link!(::User.find(ids.second))
+          .link!(::User.find(ids.second), context: :authentication)
       end
 
       def self.currently_linked
@@ -90,7 +90,9 @@ module Gitlab
         # Check each composite identity to find the one with matching scoped user
         composite_identities.find do |primary_user|
           identity_key = format(COMPOSITE_IDENTITY_KEY_FORMAT, primary_user.id)
-          scoped_user = store.store[identity_key]
+          link_data = store.store[identity_key]
+
+          scoped_user = link_data.is_a?(Hash) ? link_data[:user] : link_data
 
           scoped_user&.id == scoped_user_id
         end
@@ -100,8 +102,16 @@ module Gitlab
         return unless current_user
 
         primary_user = Gitlab::Auth::Identity.find_primary_user_by_scoped_user_id(current_user.id)
+        return current_user unless primary_user
 
-        primary_user || current_user
+        identity = currently_linked
+        return current_user unless identity
+
+        if identity.link_context == :authentication
+          primary_user
+        else
+          current_user
+        end
       end
 
       def initialize(user, store: ::Gitlab::SafeRequestStore)
@@ -119,14 +129,17 @@ module Gitlab
         job[COMPOSITE_IDENTITY_SIDEKIQ_ARG] = [primary_user_id, scoped_user_id]
       end
 
-      def link!(scope_user)
+      def link!(scope_user, context: :authentication)
         return self unless scope_user
 
         ##
         # TODO: consider extracting linking to ::Gitlab::Auth::Identities::Link#create!
         #
         validate_link!(scope_user)
-        store_identity_link!(scope_user)
+
+        return self if linked? && link_context == :authentication && context == :permission_check
+
+        store_identity_link!(scope_user, context: context)
         append_log!(scope_user)
 
         self
@@ -145,9 +158,18 @@ module Gitlab
       end
 
       def scoped_user
-        @request_store.fetch(store_key) do
+        link_data = @request_store.fetch(store_key) do
           raise MissingCompositeIdentityError, 'composite identity missing'
         end
+
+        user_from_link_data(link_data)
+      end
+
+      def link_context
+        link_data = @request_store[store_key]
+        return unless link_data
+
+        link_data.is_a?(Hash) ? link_data[:context] : :authentication
       end
 
       def primary_user
@@ -174,8 +196,8 @@ module Gitlab
         scoped_user_id != scope_user.id
       end
 
-      def store_identity_link!(scope_user)
-        @request_store.store[store_key] = scope_user
+      def store_identity_link!(scope_user, context: :authentication)
+        @request_store.store[store_key] = { user: scope_user, context: context }
 
         composite_identities.add(@user)
 
@@ -192,6 +214,10 @@ module Gitlab
 
       def store_key
         @store_key ||= format(COMPOSITE_IDENTITY_KEY_FORMAT, @user.id)
+      end
+
+      def user_from_link_data(link_data)
+        link_data.is_a?(Hash) ? link_data[:user] : link_data
       end
     end
   end

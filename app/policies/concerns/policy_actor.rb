@@ -96,6 +96,10 @@ module PolicyActor
   def from_ci_job_token?
     false
   end
+
+  def ai_service_account?
+    false
+  end
 end
 
 PolicyActor.prepend_mod_with('PolicyActor')

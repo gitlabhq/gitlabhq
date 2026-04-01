@@ -16,6 +16,10 @@ module Groups
 
       private
 
+      def valid_service_type?(service_type)
+        service_type.nil? || service_type == ::Auth::ContainerProxyAuthenticationService::SERVICE_TYPE_DEPENDENCY_PROXY
+      end
+
       def handle_personal_access_token(token)
         @personal_access_token = token
       end
