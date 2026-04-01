@@ -3225,8 +3225,14 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       end
 
       context 'when service account acts via OAuth token (authentication context)' do
+        # Use a separate human_user rather than the shared `user` to avoid
+        # contaminating the shared AR object: resolve_composite_identity_user calls
+        # composite_identity_enforced! which sets an in-memory ivar that would
+        # otherwise leak to subsequent tests via the let_it_be(:user) object.
+        let(:human_user) { create(:user, developer_of: project) }
+
         before do
-          ::Gitlab::Auth::Identity.new(service_account).link!(user, context: :authentication)
+          ::Gitlab::Auth::Identity.new(service_account).link!(human_user, context: :authentication)
         end
 
         it 'attributes the system note to the service account' do
