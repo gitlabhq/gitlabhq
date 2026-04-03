@@ -156,6 +156,7 @@ RSpec.describe Gitlab::Rspec::Configurations::TestMetrics do
       before do
         stub_env('CI_COMMIT_REF_NAME', 'feature-branch')
         stub_env('CI_DEFAULT_BRANCH', 'master')
+        stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', nil)
         stub_env('CI_MERGE_REQUEST_IID', '12345')
       end
 
@@ -166,6 +167,7 @@ RSpec.describe Gitlab::Rspec::Configurations::TestMetrics do
       before do
         stub_env('CI_COMMIT_REF_NAME', 'as-if-foss/feature-branch')
         stub_env('CI_DEFAULT_BRANCH', 'master')
+        stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', nil)
         stub_env('CI_MERGE_REQUEST_IID', nil)
         stub_env('CI_PIPELINE_SOURCE', 'pipeline')
       end
@@ -177,6 +179,7 @@ RSpec.describe Gitlab::Rspec::Configurations::TestMetrics do
       before do
         stub_env('CI_COMMIT_REF_NAME', 'some-random-branch')
         stub_env('CI_DEFAULT_BRANCH', 'master')
+        stub_env('CI_MERGE_REQUEST_TARGET_BRANCH_NAME', nil)
         stub_env('CI_MERGE_REQUEST_IID', nil)
         stub_env('CI_PIPELINE_SOURCE', 'push')
       end
