@@ -158,4 +158,39 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
       end
     end
   end
+
+  # Regression test for https://gitlab.com/gitlab-org/gitlab/-/issues/589021
+  # A Guest must not see confidential issues by combining assignee_id (to satisfy
+  # includes_user? and bypass the confidentiality check) with assignee_username pointing
+  # to a group that includes the victim (to expand results via OR semantics to their issues).
+  describe 'confidential issue disclosure via assignee_id and group handle assignee_username' do
+    let_it_be(:victim) { create(:user) }
+    let_it_be(:attacker) { create(:user) }
+    let_it_be(:project) { create(:project, :private) }
+    # The attacker controls this group; the victim is a member so group handle expansion
+    # would include the victim's issues if param mixing were allowed.
+    let_it_be(:attacker_group) { create(:group, :private) }
+    let_it_be(:confidential_issue) do
+      create(:issue, :confidential, project: project, assignees: [victim])
+    end
+
+    before_all do
+      project.add_owner(victim)
+      project.add_guest(attacker)
+      attacker_group.add_developer(attacker)
+      attacker_group.add_guest(victim)
+    end
+
+    it 'does not expose confidential issues when combining assignee_id with a group handle' do
+      params = {
+        project_id: project.id,
+        assignee_id: attacker.id,
+        assignee_username: attacker_group.to_reference,
+        scope: 'all'
+      }
+      items = described_class.new(attacker, params).execute
+
+      expect(items).not_to include(confidential_issue)
+    end
+  end
 end

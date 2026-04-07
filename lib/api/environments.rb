@@ -124,9 +124,19 @@ module API
       route_setting :authorization, permissions: :update_environment, boundary_type: :project,
         job_token_policies: :admin_environments
       put ':id/environments/:environment_id' do
-        authorize! :update_environment, user_project
+        authorize! :read_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
+
+        docs_url = ::Gitlab::Routing.url_helpers
+                     .help_page_url('ci/environments/protected_environments.md')
+        reason = "You do not have permission to modify the protected environment " \
+          "'#{environment.name}'. This endpoint enforces Protected Environment access policies.\n" \
+          "To resolve this, ask a project Maintainer or Owner to grant you access under " \
+          "Settings > CI/CD > Protected environments, or use an account with the required permissions.\n" \
+          "Learn more: #{docs_url}"
+
+        authorize! :update_environment, environment, reason
 
         update_params = declared_params(include_missing: false).extract!(:external_url, :tier, :cluster_agent_id, :kubernetes_namespace, :flux_resource_path, :description, :auto_stop_setting)
 
