@@ -81,9 +81,40 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
           expect(prevent_assignement?).to be(true)
         end
       end
+
+      context 'when member has owner role' do
+        before do
+          member.update!(access_level: Gitlab::Access::OWNER)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when member has maintainer role' do
+        before do
+          member.update!(access_level: Gitlab::Access::MAINTAINER)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when member has a lower role' do
+        before do
+          member.update!(access_level: Gitlab::Access::DEVELOPER)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when access level is passed via params' do
+        let_it_be(:member) { build(:project_member, access_level: nil, project: project) }
+        let(:params) { { access_level: Gitlab::Access::OWNER } }
+
+        it { is_expected.to be(true) }
+      end
     end
 
-    context 'when current user is an admin', :enable_admin_mode do
+    context 'when current user is an ADMIN', :enable_admin_mode do
       before do
         current_user.update!(admin: true)
       end
@@ -103,6 +134,14 @@ RSpec.describe ProjectMember, feature_category: :groups_and_projects do
           expect(prevent_assignement?).to be(false)
         end
       end
+    end
+
+    context 'when current user is an OWNER' do
+      before do
+        project.add_owner(current_user)
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 

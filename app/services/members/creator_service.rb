@@ -194,10 +194,9 @@ module Members
 
     def commit_member
       return add_commit_error unless can_commit_member?
+      return add_authorization_error if prevent_role_change?
 
       assign_member_attributes
-
-      return add_authorization_error if role_too_high?
 
       return add_not_valid_org_error unless same_org?
 
@@ -215,7 +214,7 @@ module Members
       end
     end
 
-    def role_too_high?
+    def prevent_role_change?
       return false if skip_authorization?
       return false if member_attributes[:access_level].blank?
 

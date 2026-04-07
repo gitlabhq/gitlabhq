@@ -132,11 +132,25 @@ RSpec.describe 'Destroying multiple package files', feature_category: :package_r
         let(:ids) { package.package_files.map { |pf| pf.to_global_id.to_s } }
 
         before do
+          # for testing purposes reduce MAX_ARRAY_SIZE to 100
+          stub_const("Types::BaseArgument::MAX_ARRAY_SIZE", 100)
           project.add_maintainer(user)
           create_list(:package_file, 99, package: package)
         end
 
-        it_behaves_like 'denying the mutation request', 'Cannot delete more than 100 files'
+        it_behaves_like 'denying the mutation request',
+          'Mutations::Packages::DestroyFiles#ids cannot accept more than 100 items'
+
+        context 'when Types::BaseArgument::MAX_ARRAY_SIZE is higher than Packages::DestroyFiles::MAXIMUM_FILES' do
+          before do
+            # Types::BaseArgument::MAX_ARRAY_SIZE - overlaps with Mutations::Packages::DestroyFiles::MAXIMUM_FILES limit
+            # so we increase a bit the Types::BaseArgument::MAX_ARRAY_SIZE to have the Mutations::Packages::DestroyFiles
+            # check kick in
+            stub_const("Types::BaseArgument::MAX_ARRAY_SIZE", package.package_files.count + 1)
+          end
+
+          it_behaves_like 'denying the mutation request', 'Cannot delete more than 100 files'
+        end
       end
 
       context 'with files outside of the project' do

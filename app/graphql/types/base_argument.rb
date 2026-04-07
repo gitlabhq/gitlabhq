@@ -16,7 +16,7 @@ module Types
     # Fallback (automatic validation):
     #   argument :items, [GraphQL::Types::String]
     #   # Automatically limited to MAX_ARRAY_SIZE items
-    MAX_ARRAY_SIZE = 100
+    MAX_ARRAY_SIZE = 1000
 
     attr_reader :doc_reference
 
@@ -70,6 +70,8 @@ module Types
         # Validate array size
         if prepared_value.is_a?(Array) && prepared_value.size > MAX_ARRAY_SIZE
           log_argument_size(ctx.query.operation_name, prepared_value.size)
+          raise ::Gitlab::Graphql::Errors::ArgumentError,
+            "#{owner.name}##{name} cannot accept more than #{MAX_ARRAY_SIZE} items"
         end
 
         prepared_value

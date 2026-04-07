@@ -52,9 +52,49 @@ RSpec.describe ImportCsv::BaseService, feature_category: :importers do
       importer_klass.new(user, project, uploader)
     end
 
-    subject { service.execute }
+    subject(:import_result) { service.execute }
 
     it_behaves_like 'correctly handles invalid files'
+
+    describe 'column count validation' do
+      after do
+        file.unlink
+      end
+
+      context 'when column count exceeds limit' do
+        let(:file) do
+          header = (["col"] * (described_class::MAX_COLUMNS + 1)).join(",")
+          csv_tempfile("#{header}\n")
+        end
+
+        it 'returns parse error' do
+          expect(import_result[:parse_error]).to be(true)
+          expect(import_result[:error_lines]).to contain_exactly(1)
+        end
+      end
+
+      context 'when header line exceeds byte size limit' do
+        let(:file) do
+          header = "title,description,#{'a' * described_class::MAX_HEADER_LINE_BYTES}"
+          csv_tempfile("#{header}\nval1,val2,val3\n")
+        end
+
+        it 'returns parse error' do
+          expect(import_result[:parse_error]).to be(true)
+          expect(import_result[:error_lines]).to contain_exactly(1)
+        end
+      end
+
+      context 'when columns contain quoted separators' do
+        let(:file) do
+          csv_tempfile("\"title\",\"description,with comma\",\"extra\"\nval1,val2,val3\n")
+        end
+
+        it 'does not fail header validation' do
+          expect(import_result[:error_lines]).not_to include(1)
+        end
+      end
+    end
 
     describe '#detect_col_sep' do
       using RSpec::Parameterized::TableSyntax
@@ -84,6 +124,13 @@ RSpec.describe ImportCsv::BaseService, feature_category: :importers do
           end
         end
       end
+    end
+  end
+
+  def csv_tempfile(content)
+    Tempfile.new(['test', '.csv']).tap do |f|
+      f.write(content)
+      f.rewind
     end
   end
 end
