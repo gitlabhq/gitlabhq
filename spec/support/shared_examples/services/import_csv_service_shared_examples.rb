@@ -35,6 +35,28 @@ RSpec.shared_examples 'correctly handles invalid files' do
 
     it_behaves_like 'invalid file'
   end
+
+  context 'when given file with too many columns' do
+    let(:file) { fixture_file_upload('spec/fixtures/csv_too_many_columns.csv') }
+
+    it_behaves_like 'invalid file'
+  end
+
+  context 'when given file with header line exceeding byte size limit' do
+    let(:file) do
+      Tempfile.new(['oversized_header', '.csv']).tap do |f|
+        header = "title,description,#{'a' * ImportCsv::BaseService::MAX_HEADER_LINE_BYTES}"
+        f.write("#{header}\nval1,val2,val3\n")
+        f.rewind
+      end
+    end
+
+    after do
+      file.unlink
+    end
+
+    it_behaves_like 'invalid file'
+  end
 end
 
 RSpec.shared_examples 'performs a spam check' do |perform_check|
