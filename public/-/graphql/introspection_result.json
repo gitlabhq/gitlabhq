@@ -236846,7 +236846,7 @@
             },
             {
               "name": "email",
-              "description": "Email address of the pending member.",
+              "description": "Public email of the pending member.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -237069,7 +237069,7 @@
             },
             {
               "name": "email",
-              "description": "Email address of the pending member.",
+              "description": "Public email of the pending member.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
@@ -237396,7 +237396,7 @@
             },
             {
               "name": "email",
-              "description": "Email address of the pending member.",
+              "description": "Public email of the pending member.",
               "args": [],
               "type": {
                 "kind": "SCALAR",
