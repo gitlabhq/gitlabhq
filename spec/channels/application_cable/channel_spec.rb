@@ -7,7 +7,7 @@ RSpec.describe ApplicationCable::Channel, feature_category: :shared do
 
   let(:channel) { described_class.new(connection, {}) }
 
-  describe '#validate_user_authorization' do
+  describe 'before_subscribe :validate_user_authorization' do
     before do
       stub_action_cable_connection current_user: user
     end
@@ -20,7 +20,7 @@ RSpec.describe ApplicationCable::Channel, feature_category: :shared do
       expect(channel).to receive(:validate_and_save_access_token!)
         .with(scopes: [:api, :read_api], reset_token: true)
 
-      channel.validate_user_authorization
+      channel.send(:validate_user_authorization)
     end
 
     context 'when an authentication error occurs' do
@@ -32,7 +32,7 @@ RSpec.describe ApplicationCable::Channel, feature_category: :shared do
       it 'handles the authentication error' do
         expect(channel).to receive(:handle_authentication_error)
 
-        channel.validate_user_authorization
+        channel.send(:validate_user_authorization)
       end
 
       context 'when client is subscribed' do
@@ -43,7 +43,7 @@ RSpec.describe ApplicationCable::Channel, feature_category: :shared do
         it 'unsubscribes from the channel' do
           expect(channel).to receive(:unsubscribe_from_channel)
 
-          channel.validate_user_authorization
+          channel.send(:validate_user_authorization)
         end
       end
 
@@ -55,7 +55,7 @@ RSpec.describe ApplicationCable::Channel, feature_category: :shared do
         it 'rejects the subscription' do
           expect(channel).to receive(:reject)
 
-          channel.validate_user_authorization
+          channel.send(:validate_user_authorization)
         end
       end
     end
@@ -90,6 +90,31 @@ RSpec.describe ApplicationCable::Channel, feature_category: :shared do
       it 'rejects the subscription' do
         expect(subscription).not_to be_confirmed
       end
+    end
+  end
+
+  # See https://gitlab.com/gitlab-org/gitlab/-/work_items/588959
+  describe '#perform_action' do
+    let(:subclass) do
+      Class.new(described_class) do
+        def test_action
+          'test_action!'
+        end
+      end
+    end
+
+    let(:channel) { subclass.new(connection, {}) }
+
+    it 'does not dispatch a public method defined on ApplicationCable::Channel' do
+      expect(described_class.included_modules).to include(Gitlab::Auth::AuthFinders)
+      action = Gitlab::Auth::AuthFinders.public_instance_methods.sample.to_s
+
+      expect(channel.logger).to receive(:error).with("Unable to process #{subclass.name}##{action}")
+      channel.perform_action 'action' => action
+    end
+
+    it 'dispatches a public method defined on the subclass' do
+      expect(channel.perform_action('action' => 'test_action')).to eq('test_action!')
     end
   end
 end
