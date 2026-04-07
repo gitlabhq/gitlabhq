@@ -1823,6 +1823,22 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       end
     end
 
+    context 'when project runner is not assigned to any project', :enable_admin_mode do
+      let_it_be_with_reload(:unassigned_runner) { create(:ci_runner, :project, :without_projects) }
+
+      let(:current_user) { admin }
+      let(:runner) { unassigned_runner }
+
+      it 'returns unprocessable_entity' do
+        expect do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['error']).to include('needs to be assigned to at least one project')
+        end.not_to change { runner.reload.token }
+      end
+    end
+
     context 'unauthorized user' do
       let(:current_user) { nil }
       let(:runner) { project_runner }

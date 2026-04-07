@@ -65,5 +65,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end.not_to change { instance_runner.reload.token }
       end
     end
+
+    context 'when project runner is not assigned to any project' do
+      let_it_be(:project_runner, reload: true) { create(:ci_runner, :project, :without_projects) }
+
+      it 'returns unprocessable_entity' do
+        expect do
+          post api("/runners/reset_authentication_token"), params: { token: project_runner.reload.token }
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['error']).to include('needs to be assigned to at least one project')
+        end.not_to change { project_runner.reload.token }
+      end
+    end
   end
 end

@@ -13,12 +13,14 @@ module Ci
         @source = source
       end
 
-      def execute!
+      def execute
         return ServiceResponse.error(message: 'Not permitted to reset', reason: :forbidden) unless reset_permitted?
 
         runner.reset_token!
 
         ServiceResponse.success
+      rescue ActiveRecord::RecordInvalid => e
+        ServiceResponse.error(message: e.message, reason: :unprocessable_entity)
       end
 
       private
