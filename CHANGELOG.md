@@ -2,6 +2,31 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.9.5 (2026-04-07)
+
+### Changed (1 change)
+
+- [Correct SA attribution](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fa7d10244e2ea0850450687ae560e58565f1be5e)
+
+### Security (12 changes)
+
+- [Fix assignees filtering to not mix in different param versions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9263362f32e37864b24f865bb10fedea41750df4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5986))
+- [Enforce protected environment policy on PUT environments API endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/69f9ee604bc2a607af73f2f78374619259c841c2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5978))
+- [Update PendingMemberInterface.email to resolve to public email](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b8203ac4755914f71986cfb8f271e23c2767217c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5971))
+- [Use correct permission check when updating vuln flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4f58153ee9f94a703265ae3f2208711925b221ac) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5952))
+- [Limit cursor size in SBOM dependency paths resolver](https://gitlab.com/gitlab-org/security/gitlab/-/commit/69a09631745a604a51347e28271b293e2e7f73e4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5877))
+- [Don't allow perform methods from ApplicationCable::Channel via WebSocket](https://gitlab.com/gitlab-org/security/gitlab/-/commit/90a71c2869e434f93d444d2da35a815366d1d5b9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5962))
+- [Enforce size validation on array argument in GraphQL](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a12cab71c561e023ce9a48dde9f9ac636df7e408) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5956))
+- [Fix privilege escalation in member role management](https://gitlab.com/gitlab-org/security/gitlab/-/commit/395374650bd5f641fdcb46a2d333058f793036af) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5948))
+- [Fix XSS for codequality reports](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3dfdbfd18f473db5b569a2468bf1e324756c7fea) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5933))
+- [Limit body size to 4KB for TF state lock endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9b54e7ed801a4b3d78fa14bdad23e61b66268c13) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5909))
+- [Add column limit for CSV imports](https://gitlab.com/gitlab-org/security/gitlab/-/commit/02a8fd1066f0a5728c02c0de7c35644795f4ccdc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5936))
+- [Fix XSS vulnerability in Analytics dashboards DataTable component](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a3817606b8e106f533b131bf82b8654756146b33) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5943))
+
+### Other (1 change)
+
+- [Fix remaining failures in new_project_spec.rb](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ba01899b84cb3c6c3fe90533ee9b0de2ff8d0f0e) **GitLab Enterprise Edition**
+
 ## 18.9.4 (2026-03-31)
 
 ### Fixed (4 changes)
