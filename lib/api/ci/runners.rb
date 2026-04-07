@@ -308,7 +308,7 @@ module API
         desc 'Reset runner authentication token' do
           summary "Reset runner's authentication token"
           success Entities::Ci::ResetTokenResult
-          failure [[403, 'No access granted'], [404, 'Runner not found']]
+          failure [[403, 'No access granted'], [404, 'Runner not found'], [422, 'Unprocessable Entity']]
           tags %w[runners]
         end
         params do
@@ -318,8 +318,8 @@ module API
           runner = get_runner(params[:id])
           authenticate_update_runner!(runner)
 
-          result = ::Ci::Runners::ResetAuthenticationTokenService.new(runner: runner, current_user: current_user).execute!
-          error!(result.message, :forbidden) if result.error?
+          result = ::Ci::Runners::ResetAuthenticationTokenService.new(runner: runner, current_user: current_user).execute
+          error!(result.message, result.reason) if result.error?
 
           present runner.token_with_expiration, with: Entities::Ci::ResetTokenResult
         end

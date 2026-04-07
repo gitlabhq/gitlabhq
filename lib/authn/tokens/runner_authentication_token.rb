@@ -29,7 +29,7 @@ module Authn
         raise ::Authn::AgnosticTokenIdentifier::NotFoundError, 'Not Found' if revocable.blank?
 
         service = ::Ci::Runners::ResetAuthenticationTokenService.new(runner: revocable, current_user: current_user)
-        service.execute!
+        service.execute
       end
     end
   end

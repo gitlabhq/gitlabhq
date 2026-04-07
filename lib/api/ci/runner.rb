@@ -132,7 +132,7 @@ module API
 
         desc 'Reset runner authentication token with current token' do
           success Entities::Ci::ResetTokenResult
-          failure [[403, 'Forbidden']]
+          failure [[403, 'Forbidden'], [422, 'Unprocessable Entity']]
           tags ['ci_runners']
         end
         params do
@@ -141,8 +141,8 @@ module API
         post '/reset_authentication_token', urgency: :low, feature_category: :runner_core do
           authenticate_runner!
 
-          result = ::Ci::Runners::ResetAuthenticationTokenService.new(runner: current_runner, source: :runner_api).execute!
-          error!(result.message, :forbidden) if result.error?
+          result = ::Ci::Runners::ResetAuthenticationTokenService.new(runner: current_runner, source: :runner_api).execute
+          error!(result.message, result.reason) if result.error?
 
           present current_runner.token_with_expiration, with: Entities::Ci::ResetTokenResult
         end

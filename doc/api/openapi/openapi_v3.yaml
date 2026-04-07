@@ -60606,6 +60606,8 @@ paths:
           description: No access granted
         '404':
           description: Runner not found
+        '422':
+          description: Unprocessable Entity
       parameters:
       - name: id
         required: true
@@ -61059,6 +61061,8 @@ paths:
                 "$ref": "#/components/schemas/APIEntitiesCiResetTokenResult"
         '403':
           description: Forbidden
+        '422':
+          description: Unprocessable Entity
       requestBody:
         required: true
         content:

@@ -41050,6 +41050,8 @@ paths:
             "$ref": "#/definitions/API_Entities_Ci_ResetTokenResult"
         '403':
           description: Forbidden
+        '422':
+          description: Unprocessable Entity
       tags:
       - ci_runners
       operationId: postApiV4RunnersResetAuthenticationToken
@@ -41450,6 +41452,8 @@ paths:
           description: No access granted
         '404':
           description: Runner not found
+        '422':
+          description: Unprocessable Entity
       tags:
       - runners
       operationId: postApiV4RunnersIdResetAuthenticationToken
