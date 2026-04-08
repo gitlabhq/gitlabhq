@@ -90,6 +90,39 @@ describe('code quality issue body issue body', () => {
 
       expect(wrapper.text()).toContain(issueName);
     });
+
+    it('strips injected img tags from the issue name', () => {
+      createComponent(STATUS_NEUTRAL, {
+        ...codequalityIssue,
+        name: 'Before <img src="https://evil.example.com/steal.png"> after',
+      });
+
+      expect(findName().html()).not.toContain('<img');
+      expect(findName().text()).toContain('Before');
+      expect(findName().text()).toContain('after');
+    });
+
+    /* eslint-disable no-script-url */
+    it.each`
+      label            | name
+      ${'javascript:'} | ${'[click me](javascript:alert(1))'}
+      ${'data: URI'}   | ${'[click me](data:text/html,<script>alert(1)</script>)'}
+    `('strips $label hrefs from links in the issue name', ({ name }) => {
+      createComponent(STATUS_NEUTRAL, { ...codequalityIssue, name });
+
+      const link = findName().find('a');
+      expect(link.exists()).toBe(true);
+      expect(link.text()).toBe('click me');
+      expect(link.attributes('href')).toBeUndefined();
+    });
+    /* eslint-enable no-script-url */
+
+    it('still renders safe markdown like links', () => {
+      createComponent(STATUS_NEUTRAL);
+
+      const link = findName().find('a');
+      expect(link.attributes('href')).toBe('https://example.org');
+    });
   });
 
   describe('path', () => {

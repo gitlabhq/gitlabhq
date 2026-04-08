@@ -4,7 +4,8 @@
  * Fixed: [name] in [link]:[line]
  */
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { renderMarkdown } from '~/notes/utils';
+import { marked } from 'marked';
+import { strictMarkdownConfig } from '~/lib/utils/text_utility';
 import { s__ } from '~/locale';
 import ReportLink from '~/ci/reports/components/report_link.vue';
 import GlSafeHtmlDirective from '~/vue_shared/directives/safe_html';
@@ -21,6 +22,7 @@ export default {
     tooltip: GlTooltipDirective,
     SafeHtml: GlSafeHtmlDirective,
   },
+  safeHtmlConfig: strictMarkdownConfig,
   props: {
     status: {
       type: String,
@@ -51,8 +53,8 @@ export default {
     severityLabel() {
       return this.$options.severityText[this.issueSeverity] || this.$options.severityText.unknown;
     },
-    renderMarkdown() {
-      return renderMarkdown(this.issueName);
+    markedHtml() {
+      return marked(this.issueName);
     },
   },
   severityText: {
@@ -73,7 +75,10 @@ export default {
     <div class="gl-grow">
       <div>
         <strong v-if="isStatusSuccess">{{ s__('ciReport|Fixed:') }}</strong>
-        <div v-safe-html="renderMarkdown" data-testid="codequality-name"></div>
+        <div
+          v-safe-html:[$options.safeHtmlConfig]="markedHtml"
+          data-testid="codequality-name"
+        ></div>
       </div>
 
       <report-link v-if="issue.path" :issue="issue" />
