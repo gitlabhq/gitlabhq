@@ -177,6 +177,50 @@ func initRdb(t *testing.T) *redis.Client {
 	return rdb
 }
 
+func TestTerraformStateLockUnlockBodyLimit(t *testing.T) {
+	railsServer := startRailsServer(t, nil)
+	ws, _ := startWorkhorseServer(t, railsServer.URL, false)
+
+	url := ws.URL + "/api/v4/projects/123/terraform/state/mystate/lock"
+
+	tests := []struct {
+		desc      string
+		method    string
+		smallBody string
+	}{
+		{"lock", http.MethodPost, `{"ID":"abc","Operation":"OperationTypePlan","Info":"","Who":"user","Version":"1.5.0","Created":"2024-01-01T00:00:00Z","Path":""}`},
+		{"unlock", http.MethodDelete, `{"ID":"abc"}`},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.desc, func(t *testing.T) {
+			t.Run("small body is allowed", func(t *testing.T) {
+				req, err := http.NewRequest(tt.method, url, bytes.NewReader([]byte(tt.smallBody)))
+				require.NoError(t, err)
+				req.Header.Set("Content-Type", "application/json")
+
+				resp, err := http.DefaultClient.Do(req)
+				require.NoError(t, err)
+				defer resp.Body.Close()
+
+				require.Equal(t, http.StatusOK, resp.StatusCode)
+			})
+
+			t.Run("oversized body is rejected with 413 Request Entity Too Large", func(t *testing.T) {
+				req, err := http.NewRequest(tt.method, url, bytes.NewReader(bytes.Repeat([]byte("a"), 5*1024)))
+				require.NoError(t, err)
+				req.Header.Set("Content-Type", "application/json")
+
+				resp, err := http.DefaultClient.Do(req)
+				require.NoError(t, err)
+				defer resp.Body.Close()
+
+				require.Equal(t, http.StatusRequestEntityTooLarge, resp.StatusCode)
+			})
+		})
+	}
+}
+
 func TestWsRouteStrict(t *testing.T) {
 	u := newUpstream(config.Config{}, logrus.StandardLogger(), func(u *upstream) {
 		handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
