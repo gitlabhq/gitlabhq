@@ -49,11 +49,16 @@ module Issuables
     end
 
     def filter_by_assignees(issuables)
+      # Do not mix in different param names. Originally `assignee_ids` has returned param data in specific order:
+      # assignee_ids, assignee_id, assignee_username and only for one of these params. We should not be mixing
+      # different params as that combined with `includes_user?` that is called from
+      # `ConfidentialityFilter#user_can_see_all_confidential_issues?` can lead to data leakage.
+      unless params[:assignee_ids].present? || params[:assignee_id].present?
+        user_ids_from_group = extract_group_member_ids(params[:assignee_username])
+        return issuables.assigned_to(user_ids_from_group) if user_ids_from_group
+      end
+
       assignee_ids = assignee_ids(params)
-
-      user_ids_from_group = extract_group_member_ids(params[:assignee_username])
-      return issuables.assigned_to(user_ids_from_group) if user_ids_from_group
-
       return issuables.none if assignee_ids.blank?
 
       assignee_ids.each do |assignee_id|

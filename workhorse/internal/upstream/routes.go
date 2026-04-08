@@ -420,7 +420,9 @@ func configureRoutes(u *upstream) {
 
 		// Terraform State
 		u.route("POST",
-			newRoute(apiProjectPattern+`/terraform/state/[^/]+/lock`, "projects_api_terraform_state_lock", railsBackend), proxy),
+			newRoute(apiProjectPattern+`/terraform/state/[^/]+/lock`, "projects_api_terraform_state_lock", railsBackend), proxy, withBodyLimit(4*1024), withBodyLimitMode(bodylimit.ModeEnforced)), // 4 KB
+		u.route("DELETE",
+			newRoute(apiProjectPattern+`/terraform/state/[^/]+/lock`, "projects_api_terraform_state_unlock", railsBackend), proxy, withBodyLimit(4*1024), withBodyLimitMode(bodylimit.ModeEnforced)), // 4 KB
 
 		u.route("POST",
 			newRoute(apiProjectPattern+`/terraform/state/.*`, "projects_api_terraform_state", railsBackend), requestBodyUploader),

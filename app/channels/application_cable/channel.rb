@@ -8,6 +8,16 @@ module ApplicationCable
     before_subscribe :validate_user_authorization
     periodically :validate_user_authorization, every: 10.minutes
 
+    class << self
+      # See https://gitlab.com/gitlab-org/gitlab/-/work_items/588959
+      def action_methods
+        @action_methods ||=
+          super - ApplicationCable::Channel.public_instance_methods(true).map(&:to_s)
+      end
+    end
+
+    private
+
     def validate_user_authorization
       raise Gitlab::Auth::AuthenticationError unless Ability.allowed?(current_user, :access_api)
 
@@ -19,8 +29,6 @@ module ApplicationCable
     def authorization_scopes
       [:api, :read_api]
     end
-
-    private
 
     def client_subscribed?
       !subscription_rejected? && subscription_confirmation_sent?

@@ -18,6 +18,11 @@ RSpec.describe Types::BaseArgument, feature_category: :api do
     let_it_be(:user) { create(:user) }
     let_it_be(:field) { Types::BaseField.new(name: 'field', type: String, null: true) }
 
+    before do
+      # for testing purposes reduce MAX_ARRAY_SIZE to 100
+      stub_const('Types::BaseArgument::MAX_ARRAY_SIZE', 100)
+    end
+
     describe 'automatic validation detection' do
       context 'when argument is an array type without explicit validates' do
         it 'adds automatic validation via prepare option' do
@@ -252,7 +257,8 @@ RSpec.describe Types::BaseArgument, feature_category: :api do
           result = schema.execute(query_string, context: { current_user: user })
 
           expect(result['errors']).not_to be_nil
-          expect(result.dig('errors', 0, 'message')).to eq('Too many items')
+          expect(result.dig('errors', 0, 'message')).to include('Too many items')
+          expect(result.dig('data', 'testField')).to be_nil
         end
       end
 

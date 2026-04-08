@@ -5,6 +5,15 @@ module ImportCsv
     include Gitlab::Utils::StrongMemoize
     include Gitlab::Allowable
 
+    # The largest CSV export (Work Items EE) has 26 columns.
+    # 50 provides headroom for future additions while bounding
+    # per-row memory allocation from malicious files.
+    MAX_COLUMNS = 50
+    # The longest known header line (~26 columns) is under 300 bytes.
+    # 2KB provides ample headroom while rejecting multi-MB malicious
+    # headers before any CSV parsing occurs.
+    MAX_HEADER_LINE_BYTES = 2.kilobytes
+
     def initialize(user, project, csv_io)
       @user = user
       @project = project
@@ -46,8 +55,24 @@ module ImportCsv
       header_line = csv_data.lines.first
       raise CSV::MalformedCSVError.new('File is empty, no headers found', 1) if header_line.blank?
 
+      validate_column_count!(header_line)
       validate_headers_presence!(header_line)
-      detect_col_sep
+    end
+
+    def validate_column_count!(header_line)
+      if header_line.bytesize > MAX_HEADER_LINE_BYTES
+        raise CSV::MalformedCSVError.new(
+          "CSV header is too large (#{header_line.bytesize} bytes, maximum is #{MAX_HEADER_LINE_BYTES})", 1
+        )
+      end
+
+      columns = CSV.parse_line(header_line, col_sep: detect_col_sep)
+      column_count = columns.size
+      return unless column_count > MAX_COLUMNS
+
+      raise CSV::MalformedCSVError.new(
+        "CSV file contains too many columns (#{column_count}, maximum is #{MAX_COLUMNS})", 1
+      )
     end
 
     def preprocess!

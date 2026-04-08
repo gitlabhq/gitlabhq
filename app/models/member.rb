@@ -668,15 +668,12 @@ class Member < ApplicationRecord
   def prevent_role_assignement?(current_user, params)
     return false if current_user.can_admin_all_resources?
 
-    # access_level will already be set for accepting access request invites
-    assigning_access_level = params[:access_level] || access_level
-    current_access_level = params[:current_access_level]
+    assigning_access_level = params[:access_level]
+    current_access_level = params[:current_access_level] || access_level
 
-    # check if it's a valid downgrade, if the member's current access level encompasses the target level
-    return false if Gitlab::Access.level_encompasses?(
-      current_access_level: current_access_level,
-      level_to_assign: assigning_access_level
-    )
+    # Check that the current user's role encompasses the user's role being acted upon
+    # we do not want users to be able to downgrade roles that they cannot assign
+    return true unless source.can_assign_role?(current_user, current_access_level)
 
     !source.can_assign_role?(current_user, assigning_access_level)
   end
