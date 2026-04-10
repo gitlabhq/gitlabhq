@@ -91,9 +91,20 @@ module QA
       end
 
       def downstream_pipeline_id(bridge_name:)
-        result = pipeline_bridges.find { |bridge| bridge[:name] == bridge_name }
+        bridges = pipeline_bridges
+        result = bridges.find { |bridge| bridge[:name] == bridge_name }
 
-        result[:downstream_pipeline][:id]
+        unless result
+          available_names = bridges.pluck(:name).join(', ')
+          raise ResourceQueryError,
+            "Bridge '#{bridge_name}' not found. Available bridges: #{available_names}"
+        end
+
+        unless result[:downstream_pipeline]
+          raise ResourceQueryError, "No downstream pipeline found for bridge '#{bridge_name}'"
+        end
+
+        result.dig(:downstream_pipeline, :id)
       end
 
       def jobs
