@@ -23,6 +23,11 @@ class ExecuteBatchedBackgroundMigrationsAffectedBySingleRecordBug < Gitlab::Data
 
   PAUSED = 0
   ACTIVE = 1
+  FINALIZED = 6
+
+  FINALIZE_JOBS = %w[
+    BackfillSlackIntegrationsScopesShardingKey
+  ].freeze
 
   def up
     migrations_sql = Gitlab::Database::BackgroundMigration::BatchedMigration
@@ -47,6 +52,11 @@ class ExecuteBatchedBackgroundMigrationsAffectedBySingleRecordBug < Gitlab::Data
     migrations = Gitlab::Database::BackgroundMigration::BatchedMigration.find_by_sql(sql)
 
     migrations.each do |m|
+      # Mark as finalized jobs that reference tables which have been dropped in a later migration
+      if FINALIZE_JOBS.include?(m.job_class_name)
+        m.update!(status: FINALIZED, finished_at: Time.current)
+        next
+      end
       # Skip execution if the job class is missing
       next unless Gitlab::BackgroundMigration.const_defined?(m.job_class_name)
 
