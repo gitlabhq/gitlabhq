@@ -44,17 +44,37 @@ module QA
       upstream_project.visit!
       Page::Project::Show.perform(&:close_dap_panel_if_exists)
       Flow::Pipeline.wait_for_latest_pipeline
+
+      initial_pipeline_count = upstream_project.pipelines.size
+
       Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
       Page::Project::Pipeline::New.perform do |new|
         new.configure_variable(key: key, value: value)
         new.click_run_pipeline_button
       end
+
+      Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10, message: 'Wait for new pipeline to appear') do
+        current_pipelines = upstream_project.pipelines
+        if current_pipelines.size > initial_pipeline_count
+          newest_pipeline = current_pipelines.max_by { |p| p[:id].to_i }
+          newest_id = newest_pipeline&.dig(:id)
+          if newest_id
+            @triggered_pipeline_id = newest_id
+            true
+          else
+            false
+          end
+        else
+          false
+        end
+      end
     end
 
     def wait_for_pipelines
       Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10) do
-        upstream_pipeline.status == 'success' &&
-          downstream_pipeline(downstream1_project, 'downstream1_trigger').status == 'success'
+        triggered_pipeline&.status == 'success' &&
+          child_pipeline('child1_trigger')&.status == 'success' &&
+          downstream_pipeline(downstream1_project, 'downstream1_trigger')&.status == 'success'
       end
     end
 
@@ -66,6 +86,8 @@ module QA
       Page::Project::Pipeline::Show.perform do |show|
         show.close_dap_panel_if_exists
         show.expand_child_pipeline(title: pipeline_title)
+        # Wait for job items to render inside the expanded panel before clicking
+        show.wait_until { show.has_job?(job_name) }
         show.click_job(job_name)
       end
     end
@@ -84,12 +106,21 @@ module QA
       end
     end
 
-    def upstream_pipeline
-      create(:pipeline, project: upstream_project, id: upstream_project.pipelines.first[:id])
+    def triggered_pipeline
+      raise 'Triggered pipeline ID not set' unless @triggered_pipeline_id
+
+      create(:pipeline, project: upstream_project, id: @triggered_pipeline_id)
     end
 
     def downstream_pipeline(project, bridge_name)
-      create(:pipeline, project: project, id: upstream_pipeline.downstream_pipeline_id(bridge_name: bridge_name))
+      id = triggered_pipeline.downstream_pipeline_id(bridge_name: bridge_name)
+      return unless id
+
+      create(:pipeline, project: project, id: id)
+    end
+
+    def child_pipeline(bridge_name)
+      downstream_pipeline(upstream_project, bridge_name)
     end
 
     def upstream_child1_ci_file

@@ -29,15 +29,25 @@ module QA
       end
 
       def start_pipeline_via_api_with_variable
-        # Wait for 1st pipeline to finish
-        Support::Waiter.wait_until do
-          upstream_project.pipelines.size == 1 && upstream_pipeline.status == 'success'
+        Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10,
+          message: 'Wait for initial pipeline to complete') do
+          pipelines = upstream_project.pipelines
+          latest = pipelines.max_by { |p| p[:id].to_i }
+          pipelines.any? && latest&.dig(:status) == 'success'
         end
 
-        create(:pipeline, project: upstream_project, variables: [{ key: key, value: value, variable_type: 'env_var' }])
+        new_pipeline = create(:pipeline, project: upstream_project,
+          variables: [{ key: key, value: value, variable_type: 'env_var' }])
+        @triggered_pipeline_id = new_pipeline.id
+      end
 
-        # Wait for this pipeline to be created
-        Support::Waiter.wait_until { upstream_project.pipelines.size > 1 }
+      def wait_for_pipelines
+        Support::Waiter.wait_until(max_duration: 300, sleep_interval: 10) do
+          triggered_pipeline&.status == 'success' &&
+            child_pipeline('child1_trigger')&.status == 'success' &&
+            child_pipeline('child2_trigger')&.status == 'success' &&
+            downstream_pipeline(downstream1_project, 'downstream1_trigger')&.status == 'success'
+        end
       end
 
       def upstream_ci_file
