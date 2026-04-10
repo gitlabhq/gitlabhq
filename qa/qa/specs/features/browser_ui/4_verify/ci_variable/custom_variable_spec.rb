@@ -43,20 +43,22 @@ module QA
       end
 
       it 'manually creates a pipeline and uses the defined custom variable value',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378975',
-        quarantine: { issue: 'https://gitlab.com/gitlab-org/quality/test-failure-issues/-/issues/23168',
-                      type: 'flaky' } do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378975' do
+        initial_pipeline_count = project.pipelines.size
+
         Page::Project::Pipeline::New.perform do |new|
           new.configure_variable(value: variable_custom_value)
           new.click_run_pipeline_button
         end
 
         # Wait for pipeline creation via API to avoid flakiness from slow infrastructure
-        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project)
+        Flow::Pipeline.wait_for_pipeline_creation_via_api(project: project, size: initial_pipeline_count + 1)
 
         Page::Project::Pipeline::Show.perform do |show|
-          # Use longer timeout to account for runner availability delays
-          expect(show).to have_passed(timeout: 300)
+          # Reload-based retry to handle missed WebSocket status updates.
+          show.retry_on_exception(max_attempts: 2, reload: true, sleep_interval: 1) do
+            expect(show).to have_passed(timeout: 150)
+          end
 
           show.click_job(pipeline_job_name)
         end
